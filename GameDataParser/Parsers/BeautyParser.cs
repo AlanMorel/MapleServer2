@@ -38,770 +38,770 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                     ItemId = 10200002,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200003,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200004,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200005,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200014,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200015,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200016,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200019,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200020,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200023,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200028,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200029,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200034,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200035,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200036,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200037,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200038,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200039,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200041,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200043,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200045,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200046,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200049,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200050,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200051,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200052,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200053,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200062,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200063,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200065,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200068,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200069,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200071,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200073,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200074,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200075,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200077,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200079,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200080,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200081,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200082,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200089,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200090,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200092,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200093,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200097,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200098,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200101,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200104,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200105,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200106,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200116,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200118,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200119,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200120,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200122,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200125,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200130,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200131,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200139,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200141,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200144,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200149,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200150,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200153,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200154,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200155,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200164,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200165,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200166,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200167,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200168,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200169,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200173,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200175,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200177,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200179,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200183,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200185,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200194,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200195,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200196,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200197,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200198,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200200,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200202,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200204,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200206,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200208,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200210,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200212,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200214,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200216,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200218,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200220,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200222,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200225,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200227,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200229,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200233,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200235,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200237,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200239,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200241,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200243,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200245,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200249,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200253,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200255,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200257,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 // female hairs
                 new()
@@ -809,778 +809,778 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                     ItemId = 10200006,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200007,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200008,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200009,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200010,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200011,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200012,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200013,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200017,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200018,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200021,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200022,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200024,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200025,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200026,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200027,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200030,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200031,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200040,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200042,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200044,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200047,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200048,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200054,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200055,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200056,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200057,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200058,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200059,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200060,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200061,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200064,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200066,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200067,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200070,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200072,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200076,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200078,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200083,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200084,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200085,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200086,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200087,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200088,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200094,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200095,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200096,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200100,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200102,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200107,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200108,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200109,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200110,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200111,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200113,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200114,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200115,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200117,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200123,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200124,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200126,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200128,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200135,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200136,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200137,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200138,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200140,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200145,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200146,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200147,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200148,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200151,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200152,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200157,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200158,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200159,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200160,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200161,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200162,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200163,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200172,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200174,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200176,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200178,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200180,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200184,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200186,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200189,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200190,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200191,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200192,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200193,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200199,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200201,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200203,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200205,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200209,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200211,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200213,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200221,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200223,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200224,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200226,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200228,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200234,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200236,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200240,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200242,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200244,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200256,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
+                    TokenCost = 450
                 },
                 new()
                 {
                     ItemId = 10200258,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 450,
-                },
+                    TokenCost = 450
+                }
             }
         };
         shops.Add(rosetta);
@@ -1762,7 +1762,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                     TokenType = ShopCurrencyType.Item,
                     RequiredItemId = 20300246,
                     TokenCost = 15
-                },
+                }
             }
         };
 
@@ -1788,123 +1788,123 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                     ItemId = 10200121,
                     Gender = Gender.Male,
                     Flag = ShopItemFlag.New,
-                    TokenType = ShopCurrencyType.Meret,
+                    TokenType = ShopCurrencyType.Meret
                 },
                 new()
                 {
                     ItemId = 10200103,
                     Gender = Gender.Male,
                     Flag = ShopItemFlag.New,
-                    TokenType = ShopCurrencyType.Meret,
+                    TokenType = ShopCurrencyType.Meret
                 },
                 new()
                 {
                     ItemId = 10200099,
                     Gender = Gender.Male,
-                    TokenType = ShopCurrencyType.Meret,
+                    TokenType = ShopCurrencyType.Meret
                 },
                 new()
                 {
                     ItemId = 10200091,
                     Gender = Gender.Male,
-                    TokenType = ShopCurrencyType.Meret,
+                    TokenType = ShopCurrencyType.Meret
                 },
                 new()
                 {
                     ItemId = 10200127,
                     Gender = Gender.Male,
-                    TokenType = ShopCurrencyType.Meret,
+                    TokenType = ShopCurrencyType.Meret
                 },
                 new()
                 {
                     ItemId = 10200132,
                     Gender = Gender.Male,
-                    TokenType = ShopCurrencyType.Meret,
+                    TokenType = ShopCurrencyType.Meret
                 },
                 new()
                 {
                     ItemId = 10200133,
                     Gender = Gender.Male,
-                    TokenType = ShopCurrencyType.Meret,
+                    TokenType = ShopCurrencyType.Meret
                 },
                 new()
                 {
                     ItemId = 10200129,
                     Gender = Gender.Male,
-                    TokenType = ShopCurrencyType.Meret,
+                    TokenType = ShopCurrencyType.Meret
                 },
                 new()
                 {
                     ItemId = 10200143,
                     Gender = Gender.Male,
-                    TokenType = ShopCurrencyType.Meret,
+                    TokenType = ShopCurrencyType.Meret
                 },
                 new()
                 {
                     ItemId = 10200142,
                     Gender = Gender.Male,
-                    TokenType = ShopCurrencyType.Meret,
+                    TokenType = ShopCurrencyType.Meret
                 },
                 // female hairs      
                 new()
                 {
                     ItemId = 10200254,
                     Gender = Gender.Female,
-                    TokenType = ShopCurrencyType.Meret,
+                    TokenType = ShopCurrencyType.Meret
                 },
                 new()
                 {
                     ItemId = 10200232,
                     Gender = Gender.Female,
-                    TokenType = ShopCurrencyType.Meret,
+                    TokenType = ShopCurrencyType.Meret
                 },
                 new()
                 {
                     ItemId = 10200250,
                     Gender = Gender.Female,
-                    TokenType = ShopCurrencyType.Meret,
+                    TokenType = ShopCurrencyType.Meret
                 },
                 new()
                 {
                     ItemId = 10200156,
                     Gender = Gender.Female,
-                    TokenType = ShopCurrencyType.Meret,
+                    TokenType = ShopCurrencyType.Meret
                 },
                 new()
                 {
                     ItemId = 10200215,
                     Gender = Gender.Female,
-                    TokenType = ShopCurrencyType.Meret,
+                    TokenType = ShopCurrencyType.Meret
                 },
                 new()
                 {
                     ItemId = 10200219,
                     Gender = Gender.Female,
-                    TokenType = ShopCurrencyType.Meret,
+                    TokenType = ShopCurrencyType.Meret
                 },
                 new()
                 {
                     ItemId = 10200238,
                     Gender = Gender.Female,
-                    TokenType = ShopCurrencyType.Meret,
+                    TokenType = ShopCurrencyType.Meret
                 },
                 new()
                 {
                     ItemId = 10200134,
                     Gender = Gender.Female,
-                    TokenType = ShopCurrencyType.Meret,
+                    TokenType = ShopCurrencyType.Meret
                 },
                 new()
                 {
                     ItemId = 10200207,
                     Gender = Gender.Female,
-                    TokenType = ShopCurrencyType.Meret,
+                    TokenType = ShopCurrencyType.Meret
                 },
                 new()
                 {
                     ItemId = 10200217,
                     Gender = Gender.Female,
-                    TokenType = ShopCurrencyType.Meret,
+                    TokenType = ShopCurrencyType.Meret
                 }
             }
         };
@@ -1930,7 +1930,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                     ItemId = 10400000,
                     Gender = Gender.Neutral,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 0,
+                    TokenCost = 0
                 },
                 // male makeup
                 new()
@@ -1938,742 +1938,742 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                     ItemId = 10400001,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400002,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400003,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400004,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400005,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400006,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400007,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400008,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400009,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400021,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400022,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400027,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400028,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400029,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400030,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400035,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400037,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400039,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400041,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400043,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400045,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400049,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400051,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400053,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400055,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400057,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400059,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400061,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400063,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400065,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400067,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400068,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400071,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400073,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400079,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400081,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400083,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400084,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400085,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400086,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400087,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400089,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400091,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400093,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400095,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400096,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400097,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400101,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400103,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400105,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400107,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400109,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400111,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400113,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400115,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400117,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400119,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400121,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400123,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400125,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400127,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400129,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400131,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400133,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400135,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400137,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400139,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400141,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400143,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400145,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400147,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400149,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400151,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400153,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400155,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400157,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400159,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400161,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400163,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400165,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400167,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400169,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400171,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400173,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400175,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400177,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400179,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400181,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400183,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400184,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400185,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400186,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400188,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400189,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400190,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400191,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400192,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400203,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400205,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400207,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400209,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400211,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400213,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400215,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400221,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400223,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 // female makeup
                 new()
@@ -2681,750 +2681,750 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                     ItemId = 10400010,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400011,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400012,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400013,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400014,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400015,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400016,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400017,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400018,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400023,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400025,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400026,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400031,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400032,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400033,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400034,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400036,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400038,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400040,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400042,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400044,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400046,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400050,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400052,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400054,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400056,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400058,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400060,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400062,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400064,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400066,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400069,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400070,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400072,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400074,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400075,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400076,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400077,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400078,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400080,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400082,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400088,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400090,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400092,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400094,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400098,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400099,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400100,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400102,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400104,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400106,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400108,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400110,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400112,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400114,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400116,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400118,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400120,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400122,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400124,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400126,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400128,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400130,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400132,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400134,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400136,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400138,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400140,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400142,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400144,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400146,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400148,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400150,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400152,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400154,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400156,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400158,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400160,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400162,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400164,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400166,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400168,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400170,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400172,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400174,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400176,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400178,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400180,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400182,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400193,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400194,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400195,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400196,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400197,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400199,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400200,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400201,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400202,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400204,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400206,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400208,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400210,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400212,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400214,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400216,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400222,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
+                    TokenCost = 50
                 },
                 new()
                 {
                     ItemId = 10400224,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 50,
-                },
+                    TokenCost = 50
+                }
             }
         };
 
@@ -3449,644 +3449,644 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                     ItemId = 10300001,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300002,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300005,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300007,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300013,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300014,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300015,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300016,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300017,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300019,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300021,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300023,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300025,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300027,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300029,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300031,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300033,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300035,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300037,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300039,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300041,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300043,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300045,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300047,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300049,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300050,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300051,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300054,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300057,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300063,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300065,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300067,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300069,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300071,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300073,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300075,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300077,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300079,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300081,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300083,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300085,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300089,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300091,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300093,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300096,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300098,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300100,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300102,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300104,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300106,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300108,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300110,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300111,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300114,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300116,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300118,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300120,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300122,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300124,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300126,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300128,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300130,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300132,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300134,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300136,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300138,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300140,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300142,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300144,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300148,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300150,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300152,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300154,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300156,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300158,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300160,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300162,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300164,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300166,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300172,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300174,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300176,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300178,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300180,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300182,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300184,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300188,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300190,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300192,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300194,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300196,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300198,
                     Gender = Gender.Male,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 // female faces
                 new()
@@ -4094,623 +4094,623 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                     ItemId = 10300003,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300004,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300006,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300008,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300009,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300010,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300011,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300012,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300018,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300020,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300022,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300024,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300026,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300028,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300030,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300032,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300034,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300036,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300038,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300040,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300042,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300044,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300046,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300048,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300052,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300053,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300055,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300056,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300058,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300064,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300066,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300068,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300070,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300072,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300074,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300076,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300078,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300080,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300082,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300084,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300086,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300090,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300092,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300094,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300097,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300099,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300101,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300103,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300105,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300107,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300109,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300112,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300113,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300115,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300117,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300119,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300121,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300123,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300125,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300127,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300129,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300131,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300133,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300135,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300137,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300139,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300141,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300143,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300145,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300149,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300151,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300153,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300155,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300157,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300159,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300161,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300163,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300165,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300167,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300173,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300175,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300177,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300179,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300181,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300183,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300185,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300189,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300191,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300193,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
@@ -4718,15 +4718,15 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                     Gender = Gender.Female,
                     Flag = ShopItemFlag.None,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
+                    TokenCost = 330
                 },
                 new()
                 {
                     ItemId = 10300197,
                     Gender = Gender.Female,
                     TokenType = ShopCurrencyType.EventMeret,
-                    TokenCost = 330,
-                },
+                    TokenCost = 330
+                }
             }
         };
 
@@ -4742,7 +4742,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
             VoucherId = 20300042,
             TokenType = ShopCurrencyType.Meret,
             RequiredItemId = 0,
-            TokenCost = 270,
+            TokenCost = 270
         };
 
         shops.Add(zenko);
@@ -4754,7 +4754,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
             BeautyCategory = BeautyCategory.Save,
             BeautyType = BeautyShopType.Hair,
             TokenType = ShopCurrencyType.Meret,
-            SpecialCost = 10,
+            SpecialCost = 10
         };
 
         shops.Add(mino);
@@ -4784,7 +4784,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200103,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -4802,7 +4802,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200091,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -4820,7 +4820,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200096,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -4838,7 +4838,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200108,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -4856,7 +4856,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200109,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -4874,7 +4874,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200106,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -4892,7 +4892,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200086,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -4910,7 +4910,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200112,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -4928,7 +4928,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200116,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -4946,7 +4946,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200104,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -4964,7 +4964,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200113,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -4982,7 +4982,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200110,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5000,7 +5000,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200105,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5018,7 +5018,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200120,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5036,7 +5036,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200117,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5054,7 +5054,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200115,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5072,7 +5072,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200125,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5090,7 +5090,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200127,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5108,7 +5108,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200125,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5126,7 +5126,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200128,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5144,7 +5144,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200137,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5162,7 +5162,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200140,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5180,7 +5180,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200139,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5198,7 +5198,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200119,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5216,7 +5216,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200177,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5234,7 +5234,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200178,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5252,7 +5252,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200179,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5270,7 +5270,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200180,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5288,7 +5288,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200183,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5306,7 +5306,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200184,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5324,7 +5324,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200130,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5342,7 +5342,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200132,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5360,7 +5360,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200134,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5378,7 +5378,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200137,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5396,7 +5396,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200114,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5414,7 +5414,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200133,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5432,7 +5432,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200129,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5450,7 +5450,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200111,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5468,7 +5468,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200146,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5486,7 +5486,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200190,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5504,7 +5504,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200191,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5522,7 +5522,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200192,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5540,7 +5540,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200193,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5558,7 +5558,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200194,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5576,7 +5576,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200195,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5594,7 +5594,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200196,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5612,7 +5612,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200197,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5630,7 +5630,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200143,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5648,7 +5648,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200148,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5666,7 +5666,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200099,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5684,7 +5684,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200092,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5702,7 +5702,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200102,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5720,7 +5720,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200107,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5738,7 +5738,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200079,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5756,7 +5756,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200200,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5774,7 +5774,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200109,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5792,7 +5792,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200201,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5810,7 +5810,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200140,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5828,7 +5828,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200139,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5846,7 +5846,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200119,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5864,7 +5864,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200202,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5882,7 +5882,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200194,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5900,7 +5900,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200203,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5918,7 +5918,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200190,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5936,7 +5936,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200196,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5954,7 +5954,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200204,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5972,7 +5972,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200192,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -5990,7 +5990,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200205,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6008,7 +6008,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200206,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6026,7 +6026,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200208,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6044,7 +6044,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200209,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6062,7 +6062,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200211,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6080,7 +6080,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200138,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6098,7 +6098,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200156,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6116,7 +6116,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200148,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6134,7 +6134,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200157,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6152,7 +6152,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200098,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6170,7 +6170,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200165,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6188,7 +6188,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200164,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6206,7 +6206,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200131,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6224,7 +6224,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200136,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6242,7 +6242,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200135,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6260,7 +6260,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200207,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6278,7 +6278,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200147,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6296,7 +6296,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200142,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6314,7 +6314,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200210,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6332,7 +6332,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200223,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6350,7 +6350,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200201,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6368,7 +6368,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200205,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6386,7 +6386,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200207,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6404,7 +6404,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200209,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6422,7 +6422,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200211,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6440,7 +6440,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200224,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6458,7 +6458,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200200,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6476,7 +6476,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200204,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6494,7 +6494,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200206,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6512,7 +6512,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200208,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6530,7 +6530,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200210,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6548,7 +6548,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200220,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6566,7 +6566,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200222,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6584,7 +6584,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200157,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6602,7 +6602,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200202,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6620,7 +6620,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200203,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6638,7 +6638,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200222,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6656,7 +6656,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200214,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6674,7 +6674,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200218,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6692,7 +6692,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200223,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6710,7 +6710,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200215,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6728,7 +6728,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200219,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6746,7 +6746,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200154,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6764,7 +6764,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200138,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6782,7 +6782,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200099,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6800,7 +6800,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200116,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6818,7 +6818,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200143,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6836,7 +6836,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200141,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6854,7 +6854,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200144,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6872,7 +6872,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200167,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6890,7 +6890,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200153,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6908,7 +6908,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200168,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6926,7 +6926,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200108,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6944,7 +6944,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200109,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6962,7 +6962,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200159,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6980,7 +6980,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200163,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -6998,7 +6998,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200161,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -7016,7 +7016,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200198,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -7034,7 +7034,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200193,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -7052,7 +7052,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200145,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -7070,7 +7070,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10200242,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -7088,7 +7088,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10400192,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -7106,7 +7106,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10400193,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -7124,7 +7124,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10400183,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -7142,7 +7142,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10400194,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -7160,7 +7160,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10400203,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -7178,7 +7178,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10400204,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -7196,7 +7196,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10400223,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };
@@ -7214,7 +7214,7 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 new()
                 {
                     ItemId = 10400224,
-                    TokenType = ShopCurrencyType.EventMeret,
+                    TokenType = ShopCurrencyType.EventMeret
                 }
             }
         };

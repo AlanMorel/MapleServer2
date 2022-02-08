@@ -1,4 +1,5 @@
 ﻿using System.Xml.Serialization;
+using Maple2Storage.Enums;
 
 namespace Maple2Storage.Types.Metadata;
 
@@ -20,9 +21,9 @@ public class SkillMetadata
     [XmlElement(Order = 7)]
     public readonly byte DamageType;
     [XmlElement(Order = 8)]
-    public readonly byte Type;
+    public readonly SkillType Type;
     [XmlElement(Order = 9)]
-    public readonly byte SubType;
+    public readonly SkillSubType SubType;
     [XmlElement(Order = 10)]
     public readonly byte Element;
     [XmlElement(Order = 11)]
@@ -40,8 +41,8 @@ public class SkillMetadata
         SkillLevels = skillLevels;
     }
 
-    public SkillMetadata(int id, List<SkillLevel> skillLevels, string state, byte damageType, byte type, byte subType, byte element, byte superArmor,
-        bool isSpRecovery)
+    public SkillMetadata(int id, List<SkillLevel> skillLevels, string state, byte damageType, SkillType type, SkillSubType subType, byte element,
+        byte superArmor, bool isSpRecovery)
     {
         SkillId = id;
         SkillLevels = skillLevels;
@@ -70,48 +71,30 @@ public class SkillLevel
     [XmlElement(Order = 3)]
     public readonly int Stamina;
     [XmlElement(Order = 4)]
-    public readonly float DamageRate;
-    [XmlElement(Order = 5)]
     public readonly string Feature = "";
+    [XmlElement(Order = 5)]
+    public readonly List<SkillMotion> SkillMotions;
     [XmlElement(Order = 6)]
-    public readonly SkillMotion SkillMotions;
-    [XmlElement(Order = 7)]
-    public readonly List<SkillAttack> SkillAttacks = new();
-    [XmlElement(Order = 8)]
-    public readonly List<SkillCondition> SkillConditions = new();
-    [XmlElement(Order = 9)]
     public SkillAdditionalData SkillAdditionalData;
-    [XmlElement(Order = 10)]
+    [XmlElement(Order = 7)]
     public readonly SkillUpgrade SkillUpgrade;
 
     public SkillLevel() { }
 
-    public SkillLevel(int level, SkillAdditionalData data)
-    {
-        Level = level;
-        SkillAdditionalData = data;
-        SkillMotions = new();
-    }
-
-    public SkillLevel(int level, int spirit, int stamina, float damageRate, string feature,
-        SkillMotion skillMotions, List<SkillAttack> skillAttacks, List<SkillCondition> skillConditions, SkillUpgrade skillUpgrade)
+    public SkillLevel(int level, int spirit, int stamina, string feature, List<SkillMotion> skillMotions, SkillUpgrade skillUpgrade)
     {
         Level = level;
         Spirit = spirit;
         Stamina = stamina;
-        DamageRate = damageRate;
         Feature = feature;
         SkillMotions = skillMotions;
-        SkillAttacks = skillAttacks;
-        SkillConditions = skillConditions;
-        SkillAdditionalData = new();
         SkillUpgrade = skillUpgrade;
     }
 
     public override string ToString()
     {
-        return $"SkillLevel(Level:{Level},Spirit:{Spirit},Stamina:{Stamina},DamageRate:{DamageRate},Feature:{Feature}," +
-               $"SkillMotion:{SkillMotions},SkillAttacks:{SkillAttacks},SkillConditions: {SkillConditions})";
+        return $"SkillLevel(Level:{Level},Spirit:{Spirit},Stamina:{Stamina},Feature:{Feature}," +
+               $"SkillMotion:{SkillMotions})";
     }
 }
 
@@ -151,15 +134,26 @@ public class SkillAttack
     public readonly long MagicPathId;
     [XmlElement(Order = 4)]
     public readonly long CubeMagicPathId;
+    [XmlElement(Order = 5)]
+    public readonly RangeProperty RangeProperty;
+    [XmlElement(Order = 6)]
+    public readonly List<SkillCondition> SkillConditions;
+    [XmlElement(Order = 7)]
+    public readonly DamageProperty DamageProperty;
 
     public SkillAttack() { }
 
-    public SkillAttack(byte attackPoint, short targetCount, long magicPathId, long cubeMagicPathId)
+    public SkillAttack(byte attackPoint, short targetCount, long magicPathId, long cubeMagicPathId, RangeProperty rangeProperty,
+        List<SkillCondition> skillConditions,
+        DamageProperty damageProperty)
     {
         AttackPoint = attackPoint;
         TargetCount = targetCount;
         MagicPathId = magicPathId;
         CubeMagicPathId = cubeMagicPathId;
+        RangeProperty = rangeProperty;
+        SkillConditions = skillConditions;
+        DamageProperty = damageProperty;
     }
 
     public override string ToString()
@@ -169,19 +163,41 @@ public class SkillAttack
 }
 
 [XmlType]
+public class DamageProperty
+{
+    [XmlElement(Order = 1)]
+    public readonly float DamageRate;
+    [XmlElement(Order = 2)]
+    public readonly float HitSpeedRate;
+    // TODO: Parse push attributes.
+
+    public DamageProperty() { }
+
+    public DamageProperty(float damageRate, float hitSpeedRate)
+    {
+        DamageRate = damageRate;
+        HitSpeedRate = hitSpeedRate;
+    }
+}
+
+[XmlType]
 public class SkillMotion
 {
+    // TODO: Move sequence and effect to a separate class as MotionProperty.
     [XmlElement(Order = 1)]
     public string SequenceName = "";
     [XmlElement(Order = 2)]
     public string MotionEffect = "";
+    [XmlElement(Order = 3)]
+    public List<SkillAttack> SkillAttacks = new();
 
     public SkillMotion() { }
 
-    public SkillMotion(string sequenceName, string motionEffect)
+    public SkillMotion(string sequenceName, string motionEffect, List<SkillAttack> skillAttacks)
     {
         SequenceName = sequenceName;
         MotionEffect = motionEffect;
+        SkillAttacks = skillAttacks;
     }
 
     public override string ToString()
@@ -196,9 +212,9 @@ public class SkillAdditionalData
     [XmlElement(Order = 1)]
     public readonly int Duration;
     [XmlElement(Order = 2)]
-    public readonly int BuffType;
+    public readonly BuffType BuffType;
     [XmlElement(Order = 3)]
-    public readonly int BuffSubType;
+    public readonly BuffSubType BuffSubType;
     [XmlElement(Order = 4)]
     public readonly int BuffCategory;
     [XmlElement(Order = 5)]
@@ -210,7 +226,7 @@ public class SkillAdditionalData
 
     public SkillAdditionalData() { }
 
-    public SkillAdditionalData(int duration, int buffType, int buffSubType, int buffCategory, int maxStack, byte keepCondition)
+    public SkillAdditionalData(int duration, BuffType buffType, BuffSubType buffSubType, int buffCategory, int maxStack, byte keepCondition)
     {
         Duration = duration;
         BuffType = buffType;
@@ -230,29 +246,64 @@ public class SkillAdditionalData
 public class SkillCondition
 {
     [XmlElement(Order = 1)]
-    public readonly int Id;
+    public readonly int SkillId;
     [XmlElement(Order = 2)]
-    public readonly short Level;
+    public readonly short SkillLevel;
     [XmlElement(Order = 3)]
-    public readonly bool Splash;
+    public readonly bool IsSplash;
     [XmlElement(Order = 4)]
     public readonly byte Target;
     [XmlElement(Order = 5)]
     public readonly byte Owner;
+    [XmlElement(Order = 6)]
+    public readonly short FireCount;
+    [XmlElement(Order = 7)]
+    public readonly int Interval;
+    [XmlElement(Order = 8)]
+    public readonly bool ImmediateActive;
 
     public SkillCondition() { }
 
-    public SkillCondition(int id, short level, bool splash, byte target, byte owner)
+    public SkillCondition(int skillId, short skillLevel, bool isSplash, byte target, byte owner, short fireCount, int interval, bool immediateActive)
     {
-        Id = id;
-        Level = level;
-        Splash = splash;
+        SkillId = skillId;
+        SkillLevel = skillLevel;
+        IsSplash = isSplash;
         Target = target;
         Owner = owner;
+        FireCount = fireCount;
+        Interval = interval;
+        ImmediateActive = immediateActive;
     }
 
     public override string ToString()
     {
-        return $"Id: {Id}, Level:{Level}, Splash:{Splash}, Target:{Target}, Owner:{Owner}";
+        return $"Id: {SkillId}, Level:{SkillLevel}, Splash:{IsSplash}, Target:{Target}, Owner:{Owner}";
+    }
+}
+
+[XmlType]
+public class RangeProperty
+{
+    [XmlElement(Order = 1)]
+    public readonly bool IncludeCaster;
+    [XmlElement(Order = 2)]
+    public readonly string RangeType;
+    [XmlElement(Order = 3)]
+    public readonly int Distance;
+    [XmlElement(Order = 4)]
+    public readonly CoordF RangeAdd;
+    [XmlElement(Order = 5)]
+    public readonly CoordF RangeOffset;
+
+    public RangeProperty() { }
+
+    public RangeProperty(bool includeCaster, string rangeType, int distance, CoordF rangeAdd, CoordF rangeOffset)
+    {
+        IncludeCaster = includeCaster;
+        RangeType = rangeType;
+        Distance = distance;
+        RangeAdd = rangeAdd;
+        RangeOffset = rangeOffset;
     }
 }

@@ -49,7 +49,7 @@ public class UploadController : ControllerBase
             PostUGCMode.ProfileAvatar => HandleProfileAvatar(fileBytes, characterId),
             PostUGCMode.Item => HandleItem(fileBytes, itemId, itemUid),
             PostUGCMode.ItemIcon => HandleItemIcon(fileBytes, itemId, itemUid),
-            _ => HandleUnknownMode(mode),
+            _ => HandleUnknownMode(mode)
         };
     }
 

@@ -4,5 +4,5 @@ public enum MedalSlot : byte
 {
     Tail = 0,
     GroundMount = 1,
-    Glider = 2,
+    Glider = 2
 }

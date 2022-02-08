@@ -4,12 +4,17 @@ using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
+using MapleServer2.PacketHandlers.Game.Helpers;
+using MapleServer2.Packets;
+using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 
 namespace MapleServer2.Managers;
 
 public partial class FieldManager
 {
+    private static readonly Random Rand = RandomProvider.Get();
+
     private partial class Mob : FieldActor<NpcMetadata>, INpc
     {
         private readonly MobAI AI;
@@ -71,6 +76,7 @@ public partial class FieldManager
             {
                 Animation = AnimationStorage.GetSequenceIdBySequenceName(Value.Model, actionName);
             }
+
             Action = actionType;
             Movement = AI.GetMovementAction(this);
 
@@ -137,12 +143,76 @@ public partial class FieldManager
             SpawnDistance -= Velocity;
         }
 
+        public override void Damage(DamageHandler damage, GameSession session)
+        {
+            base.Damage(damage, session);
+
+            session.FieldManager.BroadcastPacket(StatPacket.UpdateMobStats(this));
+            if (IsDead)
+            {
+                HandleMobKill(session, this);
+            }
+        }
+
         public override void Perish()
         {
             IsDead = true;
             State = NpcState.Dead;
             int randAnim = RandomProvider.Get().Next(Value.StateActions[NpcState.Dead].Length);
             Animation = AnimationStorage.GetSequenceIdBySequenceName(Value.Model, Value.StateActions[NpcState.Dead][randAnim].Item1);
+        }
+
+        private static void HandleMobKill(GameSession session, IFieldObject<NpcMetadata> mob)
+        {
+            // TODO: Add trophy + item drops
+            // Drop Money
+            bool dropMeso = Rand.Next(2) == 0;
+            if (dropMeso)
+            {
+                // TODO: Calculate meso drop rate
+                Item meso = new(90000001, Rand.Next(2, 800));
+                session.FieldManager.AddResource(meso, mob, session.Player.FieldPlayer);
+            }
+
+            // Drop Meret
+            bool dropMeret = Rand.Next(40) == 0;
+            if (dropMeret)
+            {
+                Item meret = new(90000004, 20);
+                session.FieldManager.AddResource(meret, mob, session.Player.FieldPlayer);
+            }
+
+            // Drop SP
+            bool dropSP = Rand.Next(6) == 0;
+            if (dropSP)
+            {
+                Item spBall = new(90000009, 20);
+                session.FieldManager.AddResource(spBall, mob, session.Player.FieldPlayer);
+            }
+
+            // Drop EP
+            bool dropEP = Rand.Next(10) == 0;
+            if (dropEP)
+            {
+                Item epBall = new(90000010, 20);
+                session.FieldManager.AddResource(epBall, mob, session.Player.FieldPlayer);
+            }
+
+            // Drop Items
+            // Send achieves (?)
+            // Gain Mob EXP
+            session.Player.Levels.GainExp(mob.Value.Experience);
+            // Send achieves (2)
+
+            string mapId = session.Player.MapId.ToString();
+            // Prepend zero if map id is equal to 7 digits
+            if (mapId.Length == 7)
+            {
+                mapId = $"0{mapId}";
+            }
+
+            // Quest Check
+            QuestHelper.UpdateQuest(session, mob.Value.Id.ToString(), "npc", mapId);
         }
     }
 }

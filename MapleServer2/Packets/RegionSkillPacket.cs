@@ -13,21 +13,21 @@ public static class RegionSkillPacket
         Remove = 0x1
     }
 
-    public static PacketWriter Send(int sourceObjectId, SkillCast skill, byte tileCount, List<CoordF> effectCoords)
+    public static PacketWriter Send(SkillCast skill)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.REGION_SKILL);
 
         pWriter.Write(RegionSkillMode.Add);
-        pWriter.WriteInt(sourceObjectId);
-        pWriter.WriteInt(sourceObjectId);
-        pWriter.WriteInt();
-        pWriter.WriteByte(tileCount);
-        if (tileCount == 0)
+        pWriter.WriteInt(skill.SkillObjectId);
+        pWriter.WriteInt(skill.CasterObjectId);
+        pWriter.WriteInt(skill.ServerTick);
+        pWriter.WriteByte((byte) skill.EffectCoords.Count);
+        if (skill.EffectCoords.Count == 0)
         {
             return pWriter;
         }
 
-        foreach (CoordF effectCoord in effectCoords)
+        foreach (CoordF effectCoord in skill.EffectCoords)
         {
             pWriter.Write(effectCoord);
         }

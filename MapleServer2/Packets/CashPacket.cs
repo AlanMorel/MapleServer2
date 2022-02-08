@@ -7,7 +7,7 @@ public static class CashPacket
 {
     private enum CashMode : byte
     {
-        Mode09 = 0x09,
+        Mode09 = 0x09
     }
 
     public static PacketWriter Unknown09()

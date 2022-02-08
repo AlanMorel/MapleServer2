@@ -18,7 +18,7 @@ public class MushkingRoyaleSystemHandler : GamePacketHandler
     {
         EquipMedal = 0x8,
         PurchaseGoldPass = 0x22,
-        ClaimRewards = 0x23,
+        ClaimRewards = 0x23
     }
 
     public override void Handle(GameSession session, PacketReader packet)

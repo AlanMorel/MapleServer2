@@ -14,7 +14,7 @@ public static class StatPacket
         UpdateMobStats = 0x4
     }
 
-    public static PacketWriter UpdateStats(IFieldActor<Player> player, StatId statId, params StatId[] otherIds)
+    public static PacketWriter UpdateStats(IFieldActor player, StatId statId, params StatId[] otherIds)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.STAT);
         pWriter.WriteInt(player.ObjectId);

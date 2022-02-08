@@ -256,7 +256,7 @@ public class MapEntityParser : Exporter<List<MapEntityMetadata>>
                                 {
                                     IsGolden = boxSpawn.ModelName.Contains("rare", StringComparison.CurrentCultureIgnoreCase),
                                     Position = CoordF.FromVector3(boxSpawn.Position),
-                                    Rotation = CoordF.FromVector3(boxSpawn.Rotation),
+                                    Rotation = CoordF.FromVector3(boxSpawn.Rotation)
                                 });
                                 continue;
                             }

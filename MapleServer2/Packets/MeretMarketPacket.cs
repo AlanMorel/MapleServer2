@@ -25,7 +25,7 @@ public static class MeretMarketPacket
         Home = 0x65,
         OpenDesignShop = 0x66,
         LoadCart = 0x6B,
-        ModeC9 = 0xC9,
+        ModeC9 = 0xC9
     }
 
     public static PacketWriter LoadPersonalListings(List<UGCMarketItem> items)

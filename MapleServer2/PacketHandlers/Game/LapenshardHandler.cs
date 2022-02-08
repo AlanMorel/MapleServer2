@@ -18,14 +18,14 @@ public class LapenshardHandler : GamePacketHandler
         Unequip = 0x2,
         AddFusion = 0x3,
         AddCatalyst = 0x4,
-        Fusion = 0x5,
+        Fusion = 0x5
     }
 
     private enum LapenshardColor : byte
     {
         Red = 41,
         Blue = 42,
-        Green = 43,
+        Green = 43
     }
 
     public override void Handle(GameSession session, PacketReader packet)
@@ -190,7 +190,7 @@ public class LapenshardHandler : GamePacketHandler
             { 6, new(14, 102, 2000000) },
             { 7, new(20, 135, 2700000) },
             { 8, new(30, 190, 3800000) },
-            { 9, new(50, 305, 6100000) },
+            { 9, new(50, 305, 6100000) }
         };
 
         int crystalsTotalAmount = 0;

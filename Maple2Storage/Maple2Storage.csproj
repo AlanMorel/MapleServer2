@@ -9,17 +9,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Pastel" Version="3.0.0"/>
-    <PackageReference Include="protobuf-net" Version="3.0.101"/>
+    <PackageReference Include="Pastel" Version="3.0.0" />
+    <PackageReference Include="protobuf-net" Version="3.0.101" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Scripts\*"/>
+    <EmbeddedResource Include="Scripts\*" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Properties\"/>
-    <Folder Include="Resources"/>
+    <Folder Include="Properties\" />
+    <Folder Include="Resources" />
   </ItemGroup>
 
 </Project>

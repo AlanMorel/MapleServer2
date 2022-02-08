@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Types.Metadata;
+﻿using Maple2Storage.Enums;
+using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Enums;
@@ -56,12 +57,14 @@ public static class JobPacket
             {
                 pWriter.WriteByte(split); // Write that there are (split) skills left
             }
+
             pWriter.WriteByte();
             pWriter.WriteBool(skills[id] > 0); // Is it learned?
             pWriter.WriteInt(id); // Skill to display
             pWriter.WriteInt(Math.Clamp(skills[id], skillData[id].SkillLevels.Select(x => x.Level).FirstOrDefault(), int.MaxValue)); // Level to display
             pWriter.WriteByte();
         }
+
         pWriter.WriteShort(); // Ends with zero short
 
         return pWriter;
@@ -70,7 +73,8 @@ public static class JobPacket
     public static PacketWriter WritePassiveSkills(PacketWriter pWriter, IFieldObject<Player> character)
     {
         // The x.Value.Learned == 1 is to filter for now, the skills by level 1 until player can be save on db.
-        List<SkillMetadata> passiveSkillList = character.Value.SkillTabs[0].SkillJob.Where(x => x.Value.Type == 1 && x.Value.CurrentLevel == 1).Select(x => x.Value).ToList();
+        List<SkillMetadata> passiveSkillList = character.Value.SkillTabs[0].SkillJob.Where(x => x.Value.Type is SkillType.Attack && x.Value.CurrentLevel == 1)
+            .Select(x => x.Value).ToList();
 
         pWriter.WriteShort((short) passiveSkillList.Count); // Passive skills learned count, has to be retrieve from player db.
         // foreach passive skill learned, add it to the player
@@ -87,6 +91,7 @@ public static class JobPacket
             pWriter.WriteByte(1); // unk byte = 1
             pWriter.WriteLong();
         }
+
         return pWriter;
     }
 
