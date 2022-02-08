@@ -251,7 +251,7 @@ public partial class FieldManager
             SkillCast skillCast = new(70000018, 1)
             {
                 SkillObjectId = healingSpot.ObjectId,
-                CasterObjectId = healingSpot.ObjectId,
+                CasterObjectId = healingSpot.ObjectId
             };
             skillCast.EffectCoords.Add(healingSpot.Value.Coord.ToFloat());
             sender.Send(RegionSkillPacket.Send(skillCast));

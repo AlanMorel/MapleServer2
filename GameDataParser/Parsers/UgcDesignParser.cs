@@ -32,7 +32,7 @@ public class UgcDesignParser : Exporter<List<UgcDesignMetadata>>
             {
                 0 => CurrencyType.Meso,
                 1 => CurrencyType.Meret,
-                _ => throw new NotImplementedException(),
+                _ => throw new NotImplementedException()
             };
             long price = long.Parse(node.Attributes["price"].Value);
             long salePrice = long.Parse(node.Attributes["salePrice"].Value);

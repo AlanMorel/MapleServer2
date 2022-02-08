@@ -12,7 +12,7 @@ public static class LiftablePacket
         LoadLiftables = 0x00,
         UpdateEntity = 0x02,
         Drop = 0x03,
-        RemoveCube = 0x04,
+        RemoveCube = 0x04
     }
 
     public static PacketWriter LoadLiftables(List<LiftableObject> liftableObjects)

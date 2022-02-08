@@ -58,7 +58,7 @@ public class MapCommand : InGameCommand
         Description = "Move to map";
         Parameters = new()
         {
-            new Parameter<string[]>("map", "The map id or map name."),
+            new Parameter<string[]>("map", "The map id or map name.")
         };
         Usage = "/m [id / map name]";
     }

@@ -108,7 +108,7 @@ public class UGCMarketManager
     {
         MostPopular = 1,
         MostRecent = 4,
-        TopSeller = 6,
+        TopSeller = 6
     }
 
     public void AddSale(UGCMarketSale sale)

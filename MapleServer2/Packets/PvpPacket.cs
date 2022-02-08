@@ -9,7 +9,7 @@ public static class PvpPacket
     {
         Mode16 = 0x16,
         Mode17 = 0x17,
-        Mode0C = 0x0C,
+        Mode0C = 0x0C
     }
 
     public static PacketWriter Mode16()

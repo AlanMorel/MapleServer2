@@ -11,7 +11,7 @@ public class RequestWorldMapHandler : GamePacketHandler
 
     private enum WorldMapMode : byte
     {
-        Open = 0x00,
+        Open = 0x00
     }
 
     public override void Handle(GameSession session, PacketReader packet)

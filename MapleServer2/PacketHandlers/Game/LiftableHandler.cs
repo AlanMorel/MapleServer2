@@ -11,7 +11,7 @@ public class LiftableHandler : GamePacketHandler
 {
     private enum LiftableMode : byte
     {
-        PickUp = 1,
+        PickUp = 1
     }
 
     public override RecvOp OpCode => RecvOp.LIFTABLE;

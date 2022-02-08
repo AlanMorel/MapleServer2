@@ -19,7 +19,7 @@ public class DatabaseUGC : DatabaseTable
             character_name = ugc.CharacterName,
             account_id = ugc.AccountId,
             creation_time = ugc.CreationTime,
-            sale_price = ugc.SalePrice,
+            sale_price = ugc.SalePrice
         });
     }
 
@@ -54,7 +54,7 @@ public class DatabaseUGC : DatabaseTable
             CharacterName = result.character_name,
             AccountId = result.account_id,
             CreationTime = result.creation_time,
-            SalePrice = result.sale_price,
+            SalePrice = result.sale_price
         };
     }
 

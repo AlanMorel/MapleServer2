@@ -16,7 +16,7 @@ public static class MesoMarketPacket
         CreateListing = 0x5,
         CancelListing = 0x6,
         LoadListings = 0x7,
-        Purchase = 0x8,
+        Purchase = 0x8
     }
 
     public static PacketWriter Error(int errorCode)

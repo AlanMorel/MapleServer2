@@ -7,7 +7,7 @@ public static class ResponsePetPacket
 {
     private enum ResponsePetMode : byte
     {
-        Mode07 = 0x07,
+        Mode07 = 0x07
     }
 
     public static PacketWriter Mode07()
