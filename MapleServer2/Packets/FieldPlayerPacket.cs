@@ -17,9 +17,13 @@ public static class FieldPlayerPacket
 
         // Skills
         pWriter.Write(player.JobCode);
-        pWriter.WriteByte(1);
-        pWriter.Write(player.Job);
-        pWriter.WriteSkills(player);
+        bool flag = true;
+        pWriter.WriteBool(flag);
+        if (flag)
+        {
+            pWriter.Write(player.Job);
+            pWriter.WriteSkills(player);
+        }
 
         // Coords
         pWriter.Write(fieldPlayer.Coord);
@@ -71,6 +75,7 @@ public static class FieldPlayerPacket
                 pWriter.WriteByte();
             }
         }
+
         pWriter.WriteInt();
         pWriter.WriteLong(TimeInfo.Now()); // some timestamp
         pWriter.WriteInt();
