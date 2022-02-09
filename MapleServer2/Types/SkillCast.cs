@@ -104,11 +104,11 @@ public class SkillCast
 
     public int DurationTick()
     {
-        int? durationTick = GetCurrentLevel()?.SkillAdditionalData.Duration;
+        int? durationTick = GetAdditionalData()?.Duration;
         return durationTick ?? 5000;
     }
 
-    public int MaxStack() => GetCurrentLevel()?.SkillAdditionalData.MaxStack ?? 1;
+    public int MaxStack() => GetAdditionalData()?.MaxStack ?? 1;
 
     public bool IsRecovery() => VerifySkillTypeOf(SkillType.None, SkillSubType.Status, BuffType.Buff, BuffSubType.Recovery);
 
@@ -166,7 +166,7 @@ public class SkillCast
             return false;
         }
 
-        SkillAdditionalData skillAdditionalData = skillData.SkillLevels.Find(s => s.Level == SkillLevel)?.SkillAdditionalData;
+        SkillAdditionalData skillAdditionalData = GetAdditionalData();
         if (skillAdditionalData is null)
         {
             return false;
@@ -182,14 +182,7 @@ public class SkillCast
             return false;
         }
 
-        SkillAdditionalData skillAdditionalData = GetCurrentLevel()?.SkillAdditionalData;
-        if (skillAdditionalData is not null)
-        {
-            return skillAdditionalData.BuffType == buffType && skillAdditionalData.BuffSubType == buffSubType;
-        }
-
-        // Some skills don't have SkillAdditionalData for specific levels, try to use the first level
-        skillAdditionalData = GetSkillMetadata().SkillLevels.FirstOrDefault()?.SkillAdditionalData;
+        SkillAdditionalData skillAdditionalData = GetAdditionalData();
         if (skillAdditionalData is null)
         {
             return false;
@@ -201,4 +194,7 @@ public class SkillCast
     private SkillMetadata GetSkillMetadata() => SkillMetadataStorage.GetSkill(SkillId);
 
     private SkillLevel GetCurrentLevel() => GetSkillMetadata()?.SkillLevels.FirstOrDefault(s => s.Level == SkillLevel);
+
+    private SkillAdditionalData GetAdditionalData() =>
+        GetCurrentLevel()?.SkillAdditionalData ?? GetSkillMetadata().SkillLevels.FirstOrDefault()?.SkillAdditionalData;
 }
