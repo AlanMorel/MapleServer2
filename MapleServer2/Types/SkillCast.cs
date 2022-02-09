@@ -81,10 +81,10 @@ public class SkillCast
         AttackPoint = attackPoint;
         CasterObjectId = casterObjectId;
         ClientTick = clientTick;
-        SkillAttack = GetSkillMotions().First().SkillAttacks.First();
+        SkillAttack = GetSkillMotions().FirstOrDefault()?.SkillAttacks.FirstOrDefault();
     }
 
-    public float GetDamageRate() => SkillAttack.DamageProperty.DamageRate;
+    public float GetDamageRate() => SkillAttack?.DamageProperty.DamageRate ?? 0;
 
     public double GetCriticalDamage() => 2 * GetDamageRate();
 

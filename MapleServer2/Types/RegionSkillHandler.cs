@@ -18,6 +18,11 @@ public static class RegionSkillHandler
         Player player = session.Player;
         IFieldActor<Player> fieldPlayer = player.FieldPlayer;
 
+        if (skillCast.SkillAttack is null)
+        {
+            return;
+        }
+
         skillCast.EffectCoords = GetEffectCoords(skillCast.SkillAttack, fieldPlayer.Coord, player.MapId, fieldPlayer.LookDirection);
 
         session.FieldManager.AddRegionSkillEffect(skillCast);
