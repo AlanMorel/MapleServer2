@@ -13,12 +13,12 @@ public static class RegionSkillHandler
 {
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-    public static void HandleEffect(GameSession session, SkillCast skillCast)
+    public static void HandleEffect(GameSession session, SkillCast skillCast, int attackIndex)
     {
         Player player = session.Player;
         IFieldActor<Player> fieldPlayer = player.FieldPlayer;
 
-        skillCast.EffectCoords = GetEffectCoords(skillCast.SkillAttack, fieldPlayer.Coord, player.MapId, fieldPlayer.LookDirection);
+        skillCast.EffectCoords = GetEffectCoords(skillCast, fieldPlayer.Coord, player.MapId, fieldPlayer.LookDirection, attackIndex);
 
         session.FieldManager.AddRegionSkillEffect(skillCast);
 
@@ -61,20 +61,23 @@ public static class RegionSkillHandler
     /// Get the coordinates of the skill's effect, if needed change the offset to match the direction of the player.
     /// For skills that paint the ground, match the correct height.
     /// </summary>
-    private static List<CoordF> GetEffectCoords(SkillAttack skillAttack, CoordF effectCoord, int mapId, int lookDirection)
+    private static List<CoordF> GetEffectCoords(SkillCast skillCast, CoordF sourceCoord, int mapId, int lookDirection, int attackIndex)
     {
-        List<MagicPathMove> cubeSkillMoves = new();
+        SkillAttack skillAttack = skillCast.SkillAttack;
+        List<MagicPathMove> cubeMagicPathMoves = new();
+        List<MagicPathMove> magicPathMoves = new();
+
         if (skillAttack.CubeMagicPathId != 0)
         {
-            cubeSkillMoves.AddRange(MagicPathMetadataStorage.GetMagicPath(skillAttack.CubeMagicPathId)?.MagicPathMoves ?? new());
+            cubeMagicPathMoves.AddRange(MagicPathMetadataStorage.GetMagicPath(skillAttack.CubeMagicPathId)?.MagicPathMoves ?? new());
         }
 
         if (skillAttack.MagicPathId != 0)
         {
-            cubeSkillMoves.AddRange(MagicPathMetadataStorage.GetMagicPath(skillAttack.MagicPathId)?.MagicPathMoves ?? new());
+            magicPathMoves.AddRange(MagicPathMetadataStorage.GetMagicPath(skillAttack.MagicPathId)?.MagicPathMoves ?? new());
         }
 
-        int skillMovesCount = cubeSkillMoves.Count;
+        int skillMovesCount = cubeMagicPathMoves.Count + magicPathMoves.Count;
 
         List<CoordF> effectCoords = new();
         if (skillMovesCount <= 0)
@@ -82,23 +85,48 @@ public static class RegionSkillHandler
             return effectCoords;
         }
 
-        foreach (MagicPathMove magicPathMove in cubeSkillMoves)
+        // TODO: Handle case where magicPathMoves and cubeMagicPathMoves counts are > 0
+        // Basically do the next if, with the later for loop
+
+        if (magicPathMoves.Count > 0)
         {
-            CoordF offSetCoord = magicPathMove.FireOffsetPosition;
+            MagicPathMove magicPathMove = magicPathMoves[attackIndex];
+
+            IFieldActor<NpcMetadata> parentSkillTarget = skillCast.ParentSkill.Target;
+            if (parentSkillTarget is not null)
+            {
+                effectCoords.Add(parentSkillTarget.Coord);
+
+                return effectCoords;
+            }
+
+            // Rotate the offset coord and distance based on the look direction
+            CoordF rotatedOffset = CoordF.From(magicPathMove.FireOffsetPosition.Length(), lookDirection);
+            CoordF distance = CoordF.From(magicPathMove.Distance, lookDirection);
+
+            // Create new effect coord based on offset rotation and distance
+            effectCoords.Add(rotatedOffset + distance + sourceCoord);
+
+            return effectCoords;
+        }
+
+        // Adjust the effect on the destination/cube
+        foreach (MagicPathMove cubeMagicPathMove in cubeMagicPathMoves)
+        {
+            CoordF offSetCoord = cubeMagicPathMove.FireOffsetPosition;
 
             // If false, rotate the offset based on the look direction. Example: Wizard's Tornado
-            if (!magicPathMove.IgnoreAdjust)
+            if (!cubeMagicPathMove.IgnoreAdjust)
             {
                 // Rotate the offset coord based on the look direction
                 CoordF rotatedOffset = CoordF.From(offSetCoord.Length(), lookDirection);
 
-                // Add the effect coord to the rotated coord
-                offSetCoord = rotatedOffset + effectCoord;
-                effectCoords.Add(offSetCoord);
+                // Create new effect coord based on offset rotation and source coord
+                effectCoords.Add(rotatedOffset + sourceCoord);
                 continue;
             }
 
-            offSetCoord += Block.ClosestBlock(effectCoord);
+            offSetCoord += Block.ClosestBlock(sourceCoord);
 
             CoordS tempBlockCoord = offSetCoord.ToShort();
 
@@ -153,6 +181,10 @@ public static class RegionSkillHandler
                             EffectCoords = skillCast.EffectCoords,
                             SkillObjectId = skillCast.SkillObjectId
                         };
+                        if (!splashSkill.MetadataExists)
+                        {
+                            return;
+                        }
 
                         if (!skillCondition.ImmediateActive)
                         {
@@ -174,6 +206,11 @@ public static class RegionSkillHandler
                 }
 
                 skillCast.SkillAttack = skillAttack;
+
+                if (!skillCast.MetadataExists)
+                {
+                    return;
+                }
 
                 if (skillCast.IsRecoveryFromBuff())
                 {

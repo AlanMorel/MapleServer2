@@ -44,6 +44,10 @@ public class SkillCast
     public CoordF Direction;
     public CoordF Rotation;
 
+    public IFieldActor<NpcMetadata> Target;
+
+    public bool MetadataExists => GetSkillMetadata() is not null;
+
     public List<CoordF> EffectCoords = new();
 
     public SkillCast()
