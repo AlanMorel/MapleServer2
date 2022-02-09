@@ -252,6 +252,7 @@ public class SkillHandler : GamePacketHandler
             {
                 continue;
             }
+            skillCast.Target = mob;
 
             DamageHandler damage = DamageHandler.CalculateDamage(skillCast, fieldPlayer, mob, isCrit);
 
@@ -277,7 +278,7 @@ public class SkillHandler : GamePacketHandler
         long skillSn = packet.ReadLong();
         byte mode = packet.ReadByte();
         int unknown = packet.ReadInt();
-        int unknown2 = packet.ReadInt();
+        int attackIndex = packet.ReadInt();
         CoordF position = packet.Read<CoordF>();
         CoordF rotation = packet.Read<CoordF>();
         // What are these values used? Check client vs server?
@@ -292,31 +293,31 @@ public class SkillHandler : GamePacketHandler
             return;
         }
 
-        foreach (SkillMotion skillMotion in parentSkill.GetSkillMotions())
+        SkillAttack skillAttack = parentSkill.GetSkillMotions().FirstOrDefault()?.SkillAttacks.FirstOrDefault();
+        if (skillAttack is null)
         {
-            foreach (SkillAttack skillAttack in skillMotion.SkillAttacks)
-            {
-                if (skillAttack.CubeMagicPathId == 0 && skillAttack.MagicPathId == 0)
-                {
-                    continue;
-                }
-
-                SkillCondition skillCondition = skillAttack.SkillConditions.FirstOrDefault(x => x.IsSplash);
-                if (skillCondition is null)
-                {
-                    continue;
-                }
-
-                SkillCast skillCast = new(skillCondition.SkillId, skillCondition.SkillLevel, GuidGenerator.Long(), session.ServerTick, parentSkill)
-                {
-                    CasterObjectId = session.Player.FieldPlayer.ObjectId,
-                    SkillAttack = skillAttack,
-                    Duration = skillCondition.FireCount * 1000,
-                    Interval = skillCondition.Interval
-                };
-                RegionSkillHandler.HandleEffect(session, skillCast);
-            }
+            return;
         }
+
+        if (skillAttack.CubeMagicPathId == 0 && skillAttack.MagicPathId == 0)
+        {
+            return;
+        }
+
+        SkillCondition skillCondition = skillAttack.SkillConditions.FirstOrDefault(x => x.IsSplash);
+        if (skillCondition is null)
+        {
+            return;
+        }
+
+        SkillCast skillCast = new(skillCondition.SkillId, skillCondition.SkillLevel, GuidGenerator.Long(), session.ServerTick, parentSkill)
+        {
+            CasterObjectId = session.Player.FieldPlayer.ObjectId,
+            SkillAttack = skillAttack,
+            Duration = skillCondition.FireCount * 1000,
+            Interval = skillCondition.Interval
+        };
+        RegionSkillHandler.HandleEffect(session, skillCast, attackIndex);
     }
 
     #endregion

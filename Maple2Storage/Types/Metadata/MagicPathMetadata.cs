@@ -41,10 +41,13 @@ public class MagicPathMove
     public readonly bool IgnoreAdjust;
     [XmlElement(Order = 7)]
     public readonly bool TraceTargetOffsetPosition;
+    [XmlElement(Order = 8)]
+    public readonly float Distance;
 
     public MagicPathMove() { }
 
-    public MagicPathMove(int rotation, CoordF fireOffsetPosition, CoordF direction, CoordF controlValue0, CoordF controlValue1, bool ignoreAdjust, bool traceTargetOffsetPosition)
+    public MagicPathMove(int rotation, CoordF fireOffsetPosition, CoordF direction, CoordF controlValue0, CoordF controlValue1, bool ignoreAdjust,
+        bool traceTargetOffsetPosition, float distance)
     {
         Rotation = rotation;
         FireOffsetPosition = fireOffsetPosition;
@@ -53,6 +56,7 @@ public class MagicPathMove
         ControlValue1 = controlValue1;
         IgnoreAdjust = ignoreAdjust;
         TraceTargetOffsetPosition = traceTargetOffsetPosition;
+        Distance = distance;
     }
 
     public override string ToString()

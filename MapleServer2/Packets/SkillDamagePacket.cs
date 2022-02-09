@@ -48,14 +48,14 @@ public static class SkillDamagePacket
         return pWriter;
     }
 
-    public static PacketWriter Damage(SkillCast skillCast, int unkValue, CoordF position, CoordF rotation,
+    public static PacketWriter Damage(SkillCast skillCast, int attackCount, CoordF position, CoordF rotation,
         List<(int targetId, byte damageType, double damage)> damages)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_DAMAGE);
 
         pWriter.Write(SkillDamageMode.Damage);
         pWriter.WriteLong(skillCast.SkillSn);
-        pWriter.WriteInt(unkValue);
+        pWriter.WriteInt(attackCount);
         pWriter.WriteInt(skillCast.CasterObjectId);
         pWriter.WriteInt(skillCast.CasterObjectId);
         pWriter.WriteInt(skillCast.SkillId);
@@ -71,7 +71,7 @@ public static class SkillDamagePacket
         {
             pWriter.WriteInt(targetId);
 
-            bool flag = targetId != skillCast.CasterObjectId;
+            bool flag = damage > 0;
 
             pWriter.WriteBool(flag);
             if (!flag)
@@ -127,18 +127,20 @@ public static class SkillDamagePacket
 
         byte damageHandlersCount = (byte) damageHandlers.Count;
         pWriter.WriteByte(damageHandlersCount);
-        for (int i = 0; i < damageHandlersCount; i++)
+        foreach (DamageHandler damageHandler in damageHandlers)
         {
-            pWriter.WriteInt(damageHandlers[i].Target.ObjectId);
-            bool flag = true; // same as the one in Damage?
-            pWriter.WriteBool(flag); // unknown
-            if (flag)
+            pWriter.WriteInt(damageHandler.Target.ObjectId);
+            bool flag = damageHandler.Damage > 0;
+            pWriter.WriteBool(flag);
+            if (!flag)
             {
-                pWriter.Write(damageHandlers[i].Target.Coord.ToShort());
-                pWriter.Write(damageHandlers[i].Target.Velocity);
-                pWriter.WriteByte(); // 0 = normal, 1 = critical, 2 = miss
-                pWriter.WriteLong((long) (-1 * damageHandlers[i].Damage));
+                continue;
             }
+
+            pWriter.Write(damageHandler.Target.Coord.ToShort());
+            pWriter.Write(damageHandler.Target.Velocity);
+            pWriter.WriteByte(); // 0 = normal, 1 = critical, 2 = miss
+            pWriter.WriteLong((long) (-1 * damageHandler.Damage));
         }
 
         return pWriter;
