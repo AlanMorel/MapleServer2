@@ -48,7 +48,7 @@ public class Levels
         Level = level;
         Exp = 0;
         Session.Send(ExperiencePacket.ExpUp(0, Exp, 0));
-        Session.Send(LevelUpPacket.LevelUp(FieldPlayer.ObjectId, Level));
+        Session.FieldManager.BroadcastPacket(LevelUpPacket.LevelUp(FieldPlayer.ObjectId, Level));
         Session.FieldManager.BroadcastPacket(FieldObjectPacket.UpdateCharacterLevel(Player));
 
         QuestHelper.GetNewQuests(Player);
