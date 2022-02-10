@@ -195,6 +195,7 @@ public class SkillCast
 
     private SkillLevel GetCurrentLevel() => GetSkillMetadata()?.SkillLevels.FirstOrDefault(s => s.Level == SkillLevel);
 
+    // Some skills don't have SkillAdditionalData for specific levels, if its null try to use the first level
     private SkillAdditionalData GetAdditionalData() =>
         GetCurrentLevel()?.SkillAdditionalData ?? GetSkillMetadata().SkillLevels.FirstOrDefault()?.SkillAdditionalData;
 }
