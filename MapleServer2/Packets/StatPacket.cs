@@ -60,6 +60,17 @@ public static class StatPacket
         return pWriter;
     }
 
+    public static PacketWriter UpdateFieldStats(IFieldActor<Player> player)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.STAT);
+        pWriter.WriteInt(player.ObjectId);
+        pWriter.WriteByte(); // Unknown (0x00/0x01)
+        pWriter.Write(StatsMode.SendStats);
+        pWriter.WriteFieldStats(player.Stats);
+
+        return pWriter;
+    }
+
     public static PacketWriter UpdateMobStats(IFieldActor mob)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.STAT);

@@ -48,7 +48,8 @@ public class Levels
         Level = level;
         Exp = 0;
         Session.Send(ExperiencePacket.ExpUp(0, Exp, 0));
-        Session.Send(ExperiencePacket.LevelUp(FieldPlayer.ObjectId, Level));
+        Session.Send(LevelUpPacket.LevelUp(FieldPlayer.ObjectId, Level));
+        Session.FieldManager.BroadcastPacket(FieldObjectPacket.UpdateCharacterLevel(Player));
 
         QuestHelper.GetNewQuests(Player);
     }
@@ -62,14 +63,21 @@ public class Levels
 
         Level++;
 
-        TrophyManager.OnLevelUp(Player);
-
         Player.Stats.AddBaseStats(Player);
         Player.FieldPlayer.RecoverHp(FieldPlayer.Stats[StatId.Hp].Bonus);
 
-        Session.FieldManager.BroadcastPacket(ExperiencePacket.LevelUp(FieldPlayer.ObjectId, Level));
-        Session.Send(StatPacket.SetStats(FieldPlayer));
+        Session.FieldManager.BroadcastPacket(RevivalConfirmPacket.Send(FieldPlayer.ObjectId, 0));
+        Session.FieldManager.BroadcastPacket(LevelUpPacket.LevelUp(FieldPlayer.ObjectId, Level));
+        Session.FieldManager.BroadcastPacket(FieldObjectPacket.UpdateCharacterLevel(Player));
 
+        Session.FieldManager.BroadcastPacket(JobPacket.SendJob(FieldPlayer));
+
+        Session.Send(StatPacket.SetStats(FieldPlayer));
+        Session.FieldManager.BroadcastPacket(StatPacket.UpdateFieldStats(FieldPlayer), Session);
+
+        Session.Send(KeyTablePacket.SendFullOptions(Player.GameOptions));
+
+        TrophyManager.OnLevelUp(Player);
         QuestHelper.GetNewQuests(Player);
         return true;
     }
