@@ -430,12 +430,29 @@ public partial class FieldManager
 
     public void AddCube(IFieldObject<Cube> cube, int houseOwnerObjectId, int fieldPlayerObjectId)
     {
+        if (cube.Value.Item.HousingCategory is ItemHousingCategory.Ranching or ItemHousingCategory.Farming)
+        {
+            BroadcastPacket(FunctionCubePacket.UpdateFunctionCube(cube.Coord.ToByte(), 1, 0));
+            BroadcastPacket(FunctionCubePacket.UpdateFunctionCube(cube.Coord.ToByte(), 2, 1));
+        }
+
+        if (cube.Value.Item.Id == 50400158) // portal cube
+        {
+            BroadcastPacket(FunctionCubePacket.UpdateFunctionCube(cube.Coord.ToByte(), 0, 0));
+        }
+
         State.AddCube(cube);
         BroadcastPacket(ResponseCubePacket.PlaceFurnishing(cube, houseOwnerObjectId, fieldPlayerObjectId, false));
     }
 
     public void RemoveCube(IFieldObject<Cube> cube, int houseOwnerObjectId, int fieldPlayerObjectId)
     {
+        if (cube.Value.Item.Id == 50400158) // portal cube
+        {
+            State.Portals.TryGetValue(cube.Value.PortalSettings.PortalObjectId, out IFieldObject<Portal> fieldPortal);
+            RemovePortal(fieldPortal);
+        }
+
         State.RemoveCube(cube.ObjectId);
         BroadcastPacket(ResponseCubePacket.RemoveCube(houseOwnerObjectId, fieldPlayerObjectId, cube.Coord.ToByte()));
     }

@@ -232,7 +232,7 @@ public static class ItemPacketHelper
     }
 
     // Writes UGC template data
-    private static PacketWriter WriteTemplate(this PacketWriter pWriter, Ugc ugc)
+    private static void WriteTemplate(this PacketWriter pWriter, Ugc ugc)
     {
         pWriter.WriteUgcTemplate(ugc);
         pWriter.WriteLong();
@@ -244,8 +244,6 @@ public static class ItemPacketHelper
         pWriter.WriteLong();
         pWriter.WriteLong();
         pWriter.WriteUnicodeString();
-
-        return pWriter;
     }
 
     private static PacketWriter WritePet(this PacketWriter pWriter)

@@ -29,7 +29,11 @@ public static class FurnishingInventoryPacket
         pWriter.WriteInt(cube.Item.Id);
         pWriter.WriteLong(cube.Uid);
         pWriter.WriteLong(); // expire timestamp for ugc items
-        pWriter.WriteByte();
+        pWriter.WriteBool(cube.Item.Ugc is not null);
+        if (cube.Item.Ugc is not null)
+        {
+            pWriter.WriteUgcTemplate(cube.Item.Ugc);
+        }
 
         return pWriter;
     }

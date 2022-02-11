@@ -5,15 +5,15 @@ using MapleServer2.Types;
 
 namespace MapleServer2.Packets;
 
-public class ResponseLoadUgcMapPacket
+public static class ResponseLoadUgcMapPacket
 {
-    public static PacketWriter LoadUgcMap(bool isHome, Home home = null, bool inDecorPlanner = false)
+    public static PacketWriter LoadUgcMap(Home home = null, bool inDecorPlanner = false)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.LOAD_UGC_MAP);
         pWriter.WriteLong();
-        pWriter.WriteBool(isHome);
+        pWriter.WriteBool(home is not null);
 
-        if (!isHome)
+        if (home is null)
         {
             return pWriter;
         }

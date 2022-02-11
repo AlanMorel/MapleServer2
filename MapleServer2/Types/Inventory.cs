@@ -589,8 +589,13 @@ public class Inventory
             return;
         }
 
+        if (item.Ugc?.Type is UgcType.Furniture)
+        {
+            _ = home.AddWarehouseUgcItem(session, item);
+            return;
+        }
+
         _ = home.AddWarehouseItem(session, item.Id, item.Amount, item);
-        session.Send(WarehouseInventoryPacket.GainItemMessage(item, item.Amount));
     }
 
     private static void AddMoney(GameSession session, Item item)

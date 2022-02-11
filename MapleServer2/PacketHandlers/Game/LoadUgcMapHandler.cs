@@ -30,7 +30,7 @@ public class LoadUgcMapHandler : GamePacketHandler
             Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
             if (home == null)
             {
-                session.Send(ResponseLoadUgcMapPacket.LoadUgcMap(false));
+                session.Send(ResponseLoadUgcMapPacket.LoadUgcMap());
                 return;
             }
 
@@ -39,7 +39,7 @@ public class LoadUgcMapHandler : GamePacketHandler
                 home
             };
 
-            session.Send(ResponseLoadUgcMapPacket.LoadUgcMap(mapIsHome, home, session.Player.IsInDecorPlanner));
+            session.Send(ResponseLoadUgcMapPacket.LoadUgcMap(home, session.Player.IsInDecorPlanner));
 
             // Find spawning coords for home
             int cubePortalId = 50400190;
@@ -48,7 +48,7 @@ public class LoadUgcMapHandler : GamePacketHandler
             CoordF rotation;
             if (portals.Count > 0)
             {
-                Cube portal = portals.OrderBy(x => RandomProvider.Get().Next()).Take(1).First();
+                Cube portal = portals.OrderBy(_ => RandomProvider.Get().Next()).First();
                 coord = portal.CoordF;
                 coord.Z += 1;
                 rotation = portal.Rotation;
@@ -69,7 +69,7 @@ public class LoadUgcMapHandler : GamePacketHandler
         else
         {
             homes = GameServer.HomeManager.GetPlots(session.Player.MapId);
-            session.Send(ResponseLoadUgcMapPacket.LoadUgcMap(mapIsHome));
+            session.Send(ResponseLoadUgcMapPacket.LoadUgcMap());
         }
 
         List<Cube> cubes = new();

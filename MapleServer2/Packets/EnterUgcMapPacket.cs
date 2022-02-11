@@ -3,7 +3,7 @@ using MapleServer2.Constants;
 
 namespace MapleServer2.Packets;
 
-public class EnterUgcMapPacket
+public static class EnterUgcMapPacket
 {
     private enum EnterUgcMapMode : byte
     {

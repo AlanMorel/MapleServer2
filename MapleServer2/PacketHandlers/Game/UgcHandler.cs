@@ -44,7 +44,7 @@ public class UgcHandler : GamePacketHandler
     private static void HandleCreateUgcItem(GameSession session, PacketReader packet)
     {
         packet.ReadLong();
-        packet.ReadByte();
+        UgcType type = (UgcType) packet.ReadByte();
         packet.ReadByte();
         packet.ReadByte();
         packet.ReadInt();
@@ -75,6 +75,7 @@ public class UgcHandler : GamePacketHandler
             {
                 return;
             }
+
             session.Player.Inventory.ConsumeItem(session, voucher.Uid, 1);
         }
         else
@@ -90,19 +91,20 @@ public class UgcHandler : GamePacketHandler
             }
         }
 
-        Item item = new(itemId, 1)
+        Item item = new(itemId, amount)
         {
             Rarity = metadata.Rarity,
-            Ugc = new(itemName, characterId, session.Player.Name, accountId, metadata.SalePrice)
+            Ugc = new(itemName, characterId, session.Player.Name, accountId, metadata.SalePrice, type),
+            IsTemplate = true
         };
         DatabaseManager.Items.Update(item);
 
-        session.Send(UgcPacket.CreateUgc(true, item.Ugc));
+        session.Send(UgcPacket.CreateUgc(item));
     }
 
     private static void HandleAddUgcItem(GameSession session, PacketReader packet)
     {
-        packet.ReadByte();
+        UgcType type = (UgcType) packet.ReadByte();
         packet.ReadByte();
         packet.ReadByte();
         packet.ReadInt();
@@ -122,11 +124,21 @@ public class UgcHandler : GamePacketHandler
         {
             return;
         }
+
         item.SetMetadataValues();
 
         session.Player.Inventory.AddItem(session, item, true);
-        session.Send(UgcPacket.UpdateUgcItem(session.Player.FieldPlayer, item));
-        session.Send(UgcPacket.SetItemUrl(item.Ugc));
+        switch (item.Ugc.Type)
+        {
+            case UgcType.Furniture:
+                session.Send(UgcPacket.UpdateUgcFurnishing(session.Player.FieldPlayer, item));
+                break;
+            default:
+                session.Send(UgcPacket.UpdateUgcItem(session.Player.FieldPlayer, item));
+                break;
+        }
+
+        session.Send(UgcPacket.SetItemUrl(item));
     }
 
     private static void HandleProfilePicture(GameSession session, PacketReader packet)

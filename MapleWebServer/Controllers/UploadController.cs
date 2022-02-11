@@ -1,6 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using Maple2Storage.Types;
+using MaplePacketLib2.Tools;
 using MapleServer2.Database;
 using MapleServer2.Types;
 using MapleWebServer.Enums;
@@ -24,30 +25,23 @@ public class UploadController : ControllerBase
             return BadRequest();
         }
 
-        byte[] array = memoryStream.ToArray();
+        PacketReader pReader = new(memoryStream.ToArray());
 
-        byte[] flagA = array.Take(4).ToArray();
-        byte[] modeBytes = array.Skip(4).Take(4).ToArray();
+        int flagA = pReader.ReadInt();
+        PostUgcMode mode = (PostUgcMode) pReader.ReadInt();
+        long accountId = pReader.ReadLong();
+        long characterId = pReader.ReadLong();
+        long itemUid = pReader.ReadLong();
+        int itemId = pReader.ReadInt();
+        int flagB = pReader.ReadInt();
+        pReader.Skip(8);
 
-        byte[] accountIdBytes = array.Skip(8).Take(8).ToArray();
-        byte[] characterIdBytes = array.Skip(16).Take(8).ToArray();
-        byte[] itemUidBytes = array.Skip(24).Take(8).ToArray();
-        byte[] itemIdBytes = array.Skip(32).Take(4).ToArray();
-
-        byte[] unkFlagBytes = array.Skip(40).Take(4).ToArray();
-
-        byte[] fileBytes = array.Skip(48).ToArray();
-
-        long accountId = (long) BitConverter.ToUInt64(accountIdBytes, 0);
-        long characterId = (long) BitConverter.ToUInt64(characterIdBytes, 0);
-        int itemId = (int) BitConverter.ToUInt32(itemIdBytes, 0);
-        long itemUid = (long) BitConverter.ToUInt64(itemUidBytes, 0);
-        PostUgcMode mode = (PostUgcMode) BitConverter.ToUInt32(modeBytes, 0);
+        byte[]? fileBytes = pReader.ReadBytes(pReader.Available);
 
         return mode switch
         {
             PostUgcMode.ProfileAvatar => HandleProfileAvatar(fileBytes, characterId),
-            PostUgcMode.Item => HandleItem(fileBytes, itemId, itemUid),
+            PostUgcMode.Item or PostUgcMode.Furnishing => HandleItem(fileBytes, itemId, itemUid),
             PostUgcMode.ItemIcon => HandleItemIcon(fileBytes, itemId, itemUid),
             _ => HandleUnknownMode(mode)
         };
