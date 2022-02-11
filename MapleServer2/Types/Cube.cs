@@ -49,8 +49,8 @@ public class Cube
 public class CubePortalSettings
 {
     public string PortalName { get; set; }
-    public UGCPortalMethod Method { get; set; }
-    public UGCPortalDestination Destination { get; set; }
+    public UgcPortalMethod Method { get; set; }
+    public UgcPortalDestination Destination { get; set; }
     public string DestinationTarget { get; set; }
     public int PortalObjectId { get; set; }
 

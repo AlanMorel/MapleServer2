@@ -7,8 +7,8 @@ public class GameEvent
     public GameEventType Type;
     public List<MapleopolyEvent> Mapleopoly;
     public List<StringBoardEvent> StringBoard;
-    public UGCMapContractSaleEvent UGCMapContractSale;
-    public UGCMapExtensionSaleEvent UGCMapExtensionSale;
+    public UgcMapContractSaleEvent UgcMapContractSale;
+    public UgcMapExtensionSaleEvent UgcMapExtensionSale;
     public FieldPopupEvent FieldPopupEvent;
 }
 public enum GameEventType
@@ -22,8 +22,8 @@ public enum GameEventType
     SaleEnchant,
     ItemTradeRestriction,
     HotTime,
-    UGCMapContractSale,
-    UGCMapExtensionSale,
+    UgcMapContractSale,
+    UgcMapExtensionSale,
     DungeonBonusReward,
     EventFieldPopup
 }

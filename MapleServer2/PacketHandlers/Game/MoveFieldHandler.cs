@@ -149,7 +149,7 @@ public class MoveFieldHandler : GamePacketHandler
 
         switch (srcCube.Value.PortalSettings.Destination)
         {
-            case UGCPortalDestination.PortalInHome:
+            case UgcPortalDestination.PortalInHome:
                 IFieldObject<Cube> destinationCube = session.FieldManager.State.Cubes.Values
                     .FirstOrDefault(x => x.Value.PortalSettings is not null
                                         && x.Value.PortalSettings.PortalName == destinationTarget);
@@ -162,10 +162,10 @@ public class MoveFieldHandler : GamePacketHandler
                 coordF.Z += 25; // Without this the player falls through the ground.
                 session.Send(UserMoveByPortalPacket.Move(session.Player.FieldPlayer, coordF, session.Player.FieldPlayer.Rotation));
                 break;
-            case UGCPortalDestination.SelectedMap:
+            case UgcPortalDestination.SelectedMap:
                 session.Player.Warp(int.Parse(destinationTarget));
                 break;
-            case UGCPortalDestination.FriendHome:
+            case UgcPortalDestination.FriendHome:
                 long friendAccountId = long.Parse(destinationTarget);
                 Home home = GameServer.HomeManager.GetHomeById(friendAccountId);
                 if (home is null)
@@ -218,13 +218,13 @@ public class MoveFieldHandler : GamePacketHandler
         {
             if (password == "")
             {
-                session.Send(EnterUGCMapPacket.RequestPassword(accountId));
+                session.Send(EnterUgcMapPacket.RequestPassword(accountId));
                 return;
             }
 
             if (home.Password != password)
             {
-                session.Send(EnterUGCMapPacket.WrongPassword(accountId));
+                session.Send(EnterUgcMapPacket.WrongPassword(accountId));
                 return;
             }
         }

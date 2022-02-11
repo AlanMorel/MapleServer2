@@ -42,13 +42,13 @@ public class UploadController : ControllerBase
         long characterId = (long) BitConverter.ToUInt64(characterIdBytes, 0);
         int itemId = (int) BitConverter.ToUInt32(itemIdBytes, 0);
         long itemUid = (long) BitConverter.ToUInt64(itemUidBytes, 0);
-        PostUGCMode mode = (PostUGCMode) BitConverter.ToUInt32(modeBytes, 0);
+        PostUgcMode mode = (PostUgcMode) BitConverter.ToUInt32(modeBytes, 0);
 
         return mode switch
         {
-            PostUGCMode.ProfileAvatar => HandleProfileAvatar(fileBytes, characterId),
-            PostUGCMode.Item => HandleItem(fileBytes, itemId, itemUid),
-            PostUGCMode.ItemIcon => HandleItemIcon(fileBytes, itemId, itemUid),
+            PostUgcMode.ProfileAvatar => HandleProfileAvatar(fileBytes, characterId),
+            PostUgcMode.Item => HandleItem(fileBytes, itemId, itemUid),
+            PostUgcMode.ItemIcon => HandleItemIcon(fileBytes, itemId, itemUid),
             _ => HandleUnknownMode(mode)
         };
     }
@@ -58,14 +58,14 @@ public class UploadController : ControllerBase
         string filePath = $"{Paths.DATA_DIR}/itemicon/{itemId}/";
         Directory.CreateDirectory(filePath);
 
-        Item item = DatabaseManager.Items.FindByUGCUid(itemUid);
+        Item item = DatabaseManager.Items.FindByUgcUid(itemUid);
         if (item is null)
         {
             return BadRequest();
         }
 
-        System.IO.File.WriteAllBytes($"{filePath}/{item.UGC.Guid}-{itemUid}.png", fileBytes);
-        return Ok($"0,itemicon/ms2/01/{itemId}/{item.UGC.Guid}-{itemUid}.png");
+        System.IO.File.WriteAllBytes($"{filePath}/{item.Ugc.Guid}-{itemUid}.png", fileBytes);
+        return Ok($"0,itemicon/ms2/01/{itemId}/{item.Ugc.Guid}-{itemUid}.png");
     }
 
     private IActionResult HandleItem(byte[] fileBytes, int itemId, long itemUid)
@@ -73,17 +73,17 @@ public class UploadController : ControllerBase
         string filePath = $"{Paths.DATA_DIR}/item/{itemId}/";
         Directory.CreateDirectory(filePath);
 
-        Item item = DatabaseManager.Items.FindByUGCUid(itemUid);
+        Item item = DatabaseManager.Items.FindByUgcUid(itemUid);
         if (item is null)
         {
             return BadRequest();
         }
 
-        string url = $"item/ms2/01/{itemId}/{item.UGC.Guid}-{itemUid}.m2u";
-        item.UGC.Url = url;
-        DatabaseManager.UGC.Update(item.UGC);
+        string url = $"item/ms2/01/{itemId}/{item.Ugc.Guid}-{itemUid}.m2u";
+        item.Ugc.Url = url;
+        DatabaseManager.Ugc.Update(item.Ugc);
 
-        System.IO.File.WriteAllBytes($"{filePath}/{item.UGC.Guid}-{itemUid}.m2u", fileBytes);
+        System.IO.File.WriteAllBytes($"{filePath}/{item.Ugc.Guid}-{itemUid}.m2u", fileBytes);
         return Ok($"0,{url}");
     }
 
@@ -106,7 +106,7 @@ public class UploadController : ControllerBase
         return Ok($"0,data/profiles/avatar/{characterId}/{fileHash}.png");
     }
 
-    private IActionResult HandleUnknownMode(PostUGCMode mode)
+    private IActionResult HandleUnknownMode(PostUgcMode mode)
     {
         Logger.Info($"Unknown UGC post mode: {mode}");
         return BadRequest();

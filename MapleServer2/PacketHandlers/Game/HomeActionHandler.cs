@@ -113,8 +113,8 @@ public class HomeActionHandler : GamePacketHandler
         Cube cube = fieldCube.Value;
 
         cube.PortalSettings.PortalName = packet.ReadUnicodeString();
-        cube.PortalSettings.Method = (UGCPortalMethod) packet.ReadByte();
-        cube.PortalSettings.Destination = (UGCPortalDestination) packet.ReadByte();
+        cube.PortalSettings.Method = (UgcPortalMethod) packet.ReadByte();
+        cube.PortalSettings.Destination = (UgcPortalDestination) packet.ReadByte();
         cube.PortalSettings.DestinationTarget = packet.ReadUnicodeString();
 
         DatabaseManager.Cubes.Update(cube);
@@ -186,7 +186,7 @@ public class HomeActionHandler : GamePacketHandler
                 IsMinimapVisible = false,
                 Rotation = cubePortal.Rotation,
                 PortalType = PortalTypes.Home,
-                UGCPortalMethod = cubePortal.PortalSettings.Method
+                UgcPortalMethod = cubePortal.PortalSettings.Method
             };
 
             IFieldObject<Portal> fieldPortal = session.FieldManager.RequestFieldObject(portal);
@@ -195,13 +195,13 @@ public class HomeActionHandler : GamePacketHandler
             {
                 switch (cubePortal.PortalSettings.Destination)
                 {
-                    case UGCPortalDestination.PortalInHome:
+                    case UgcPortalDestination.PortalInHome:
                         fieldPortal.Value.TargetMapId = (int) Map.PrivateResidence;
                         break;
-                    case UGCPortalDestination.SelectedMap:
+                    case UgcPortalDestination.SelectedMap:
                         fieldPortal.Value.TargetMapId = int.Parse(cubePortal.PortalSettings.DestinationTarget);
                         break;
-                    case UGCPortalDestination.FriendHome:
+                    case UgcPortalDestination.FriendHome:
                         fieldPortal.Value.TargetHomeAccountId = long.Parse(cubePortal.PortalSettings.DestinationTarget);
                         break;
                 }

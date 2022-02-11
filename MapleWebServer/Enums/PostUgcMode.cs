@@ -1,6 +1,6 @@
 ﻿namespace MapleWebServer.Enums;
 
-public enum PostUGCMode
+public enum PostUgcMode
 {
     Item = 1,
     ProfileAvatar = 5,

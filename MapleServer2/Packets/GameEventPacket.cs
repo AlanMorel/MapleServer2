@@ -34,11 +34,11 @@ public static class GameEventPacket
                         pWriter.WriteInt(mapleopolyEvent.ItemAmount);
                     }
                     break;
-                case GameEventType.UGCMapContractSale:
-                    pWriter.WriteInt(gameEvent.UGCMapContractSale.DiscountAmount);
+                case GameEventType.UgcMapContractSale:
+                    pWriter.WriteInt(gameEvent.UgcMapContractSale.DiscountAmount);
                     break;
-                case GameEventType.UGCMapExtensionSale:
-                    pWriter.WriteInt(gameEvent.UGCMapExtensionSale.DiscountAmount);
+                case GameEventType.UgcMapExtensionSale:
+                    pWriter.WriteInt(gameEvent.UgcMapExtensionSale.DiscountAmount);
                     break;
                 case GameEventType.EventFieldPopup:
                     pWriter.WriteInt(gameEvent.FieldPopupEvent.MapId);

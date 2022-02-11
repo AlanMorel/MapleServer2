@@ -2,7 +2,7 @@
 
 namespace MapleServer2.Types;
 
-public class UGC
+public class Ugc
 {
     public long Uid;
 
@@ -18,9 +18,9 @@ public class UGC
     public long CreationTime;
     public long SalePrice;
 
-    public UGC() { }
+    public Ugc() { }
 
-    public UGC(string name, long characterId, string characterName, long accountId, long salePrice)
+    public Ugc(string name, long characterId, string characterName, long accountId, long salePrice)
     {
         Guid = Guid.NewGuid();
         Name = name;
@@ -30,6 +30,6 @@ public class UGC
         CreationTime = TimeInfo.Now();
         SalePrice = salePrice;
         Url = string.Empty;
-        Uid = DatabaseManager.UGC.Insert(this);
+        Uid = DatabaseManager.Ugc.Insert(this);
     }
 }

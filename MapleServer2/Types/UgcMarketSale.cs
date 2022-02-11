@@ -4,7 +4,7 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.Types;
 
-public class UGCMarketSale
+public class UgcMarketSale
 {
     public long Id;
     public long Price;
@@ -13,9 +13,9 @@ public class UGCMarketSale
     public long SoldTimestamp;
     public long SellerCharacterId;
 
-    public UGCMarketSale() { }
+    public UgcMarketSale() { }
 
-    public UGCMarketSale(long price, string itemName, long sellerCharacterId)
+    public UgcMarketSale(long price, string itemName, long sellerCharacterId)
     {
         Price = price;
         ItemName = itemName;
@@ -23,11 +23,11 @@ public class UGCMarketSale
         float fee = float.Parse(ConstantsMetadataStorage.GetConstant("UGCShopProfitFee")) * price;
         Profit = (long) (price - fee);
         SoldTimestamp = TimeInfo.Now();
-        Id = DatabaseManager.UGCMarketSales.Insert(this);
-        GameServer.UGCMarketManager.AddSale(this);
+        Id = DatabaseManager.UgcMarketSales.Insert(this);
+        GameServer.UgcMarketManager.AddSale(this);
     }
 
-    public UGCMarketSale(long id, long price, long profit, string itemName, long soldTimestamp, long sellerCharacterId)
+    public UgcMarketSale(long id, long price, long profit, string itemName, long soldTimestamp, long sellerCharacterId)
     {
         Id = id;
         Price = price;

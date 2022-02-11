@@ -44,7 +44,7 @@ public static class ItemPacketHelper
 
         if (item.IsTemplate)
         {
-            pWriter.WriteTemplate(item.UGC);
+            pWriter.WriteTemplate(item.Ugc);
         }
 
         if (item.InventoryTab == InventoryTab.Pets)
@@ -232,7 +232,7 @@ public static class ItemPacketHelper
     }
 
     // Writes UGC template data
-    private static PacketWriter WriteTemplate(this PacketWriter pWriter, UGC ugc)
+    private static PacketWriter WriteTemplate(this PacketWriter pWriter, Ugc ugc)
     {
         pWriter.WriteUgcTemplate(ugc);
         pWriter.WriteLong();

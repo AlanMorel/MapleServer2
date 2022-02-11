@@ -27,7 +27,7 @@ public class UgcHandler : GamePacketHandler
         switch (function)
         {
             case UgcMode.CreateUgcItem:
-                HandleCreateUGCItem(session, packet);
+                HandleCreateUgcItem(session, packet);
                 break;
             case UgcMode.AddUgcItem:
                 HandleAddUgcItem(session, packet);
@@ -41,7 +41,7 @@ public class UgcHandler : GamePacketHandler
         }
     }
 
-    private static void HandleCreateUGCItem(GameSession session, PacketReader packet)
+    private static void HandleCreateUgcItem(GameSession session, PacketReader packet)
     {
         packet.ReadLong();
         packet.ReadByte();
@@ -93,11 +93,11 @@ public class UgcHandler : GamePacketHandler
         Item item = new(itemId, 1)
         {
             Rarity = metadata.Rarity,
-            UGC = new(itemName, characterId, session.Player.Name, accountId, metadata.SalePrice)
+            Ugc = new(itemName, characterId, session.Player.Name, accountId, metadata.SalePrice)
         };
         DatabaseManager.Items.Update(item);
 
-        session.Send(UgcPacket.CreateUgc(true, item.UGC));
+        session.Send(UgcPacket.CreateUgc(true, item.Ugc));
     }
 
     private static void HandleAddUgcItem(GameSession session, PacketReader packet)
@@ -117,7 +117,7 @@ public class UgcHandler : GamePacketHandler
             return;
         }
 
-        Item item = DatabaseManager.Items.FindByUGCUid(ugcUid);
+        Item item = DatabaseManager.Items.FindByUgcUid(ugcUid);
         if (item is null)
         {
             return;
@@ -126,7 +126,7 @@ public class UgcHandler : GamePacketHandler
 
         session.Player.Inventory.AddItem(session, item, true);
         session.Send(UgcPacket.UpdateUgcItem(session.Player.FieldPlayer, item));
-        session.Send(UgcPacket.SetItemUrl(item.UGC));
+        session.Send(UgcPacket.SetItemUrl(item.Ugc));
     }
 
     private static void HandleProfilePicture(GameSession session, PacketReader packet)

@@ -19,7 +19,7 @@ public static class MountPacketHelper
             case RideType.UseItem:
                 pWriter.WriteInt(mount.Value.Id);
                 pWriter.WriteLong(mount.Value.Uid);
-                pWriter.WriteUgcTemplate(mount.Value.UGC); // For template mounts
+                pWriter.WriteUgcTemplate(mount.Value.Ugc); // For template mounts
                 break;
             case RideType.AdditionalEffect:
                 pWriter.WriteInt();

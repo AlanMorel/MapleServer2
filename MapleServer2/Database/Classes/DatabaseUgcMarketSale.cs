@@ -3,11 +3,11 @@ using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes;
 
-public class DatabaseUGCMarketSale : DatabaseTable
+public class DatabaseUgcMarketSale : DatabaseTable
 {
-    public DatabaseUGCMarketSale() : base("ugc_market_sales") { }
+    public DatabaseUgcMarketSale() : base("ugc_market_sales") { }
 
-    public long Insert(UGCMarketSale sale)
+    public long Insert(UgcMarketSale sale)
     {
         return QueryFactory.Query(TableName).InsertGetId<long>(new
         {
@@ -19,21 +19,21 @@ public class DatabaseUGCMarketSale : DatabaseTable
         });
     }
 
-    public List<UGCMarketSale> FindAll()
+    public List<UgcMarketSale> FindAll()
     {
         IEnumerable<dynamic> result = QueryFactory.Query(TableName).Get();
-        List<UGCMarketSale> listings = new();
+        List<UgcMarketSale> listings = new();
 
         foreach (dynamic data in result)
         {
-            listings.Add(ReadUGCMarketSale(data));
+            listings.Add(ReadUgcMarketSale(data));
         }
         return listings;
     }
 
-    public UGCMarketSale FindById(long id)
+    public UgcMarketSale FindById(long id)
     {
-        return ReadUGCMarketSale(QueryFactory.Query(TableName).Where("id", id).Get().FirstOrDefault());
+        return ReadUgcMarketSale(QueryFactory.Query(TableName).Where("id", id).Get().FirstOrDefault());
     }
 
     public bool Delete(long uid)
@@ -41,9 +41,9 @@ public class DatabaseUGCMarketSale : DatabaseTable
         return QueryFactory.Query(TableName).Where("id", uid).Delete() == 1;
     }
 
-    private static UGCMarketSale ReadUGCMarketSale(dynamic data)
+    private static UgcMarketSale ReadUgcMarketSale(dynamic data)
     {
-        return new UGCMarketSale(
+        return new UgcMarketSale(
             data.id,
             data.price,
             data.profit,

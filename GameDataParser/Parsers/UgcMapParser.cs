@@ -6,13 +6,13 @@ using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
-public class UGCMapParser : Exporter<List<UGCMapMetadata>>
+public class UgcMapParser : Exporter<List<UgcMapMetadata>>
 {
-    public UGCMapParser(MetadataResources resources) : base(resources, "ugc-map") { }
+    public UgcMapParser(MetadataResources resources) : base(resources, "ugc-map") { }
 
-    protected override List<UGCMapMetadata> Parse()
+    protected override List<UgcMapMetadata> Parse()
     {
-        List<UGCMapMetadata> ugcmap = new();
+        List<UgcMapMetadata> ugcmap = new();
         foreach (PackFileEntry entry in Resources.XmlReader.Files)
         {
             if (!entry.Name.StartsWith("ugcmap"))
@@ -20,7 +20,7 @@ public class UGCMapParser : Exporter<List<UGCMapMetadata>>
                 continue;
             }
 
-            UGCMapMetadata metadata = new();
+            UgcMapMetadata metadata = new();
             string filename = Path.GetFileNameWithoutExtension(entry.Name);
             metadata.MapId = int.Parse(filename);
 
@@ -29,7 +29,7 @@ public class UGCMapParser : Exporter<List<UGCMapMetadata>>
 
             foreach (XmlNode node in nodes)
             {
-                UGCMapGroup group = new()
+                UgcMapGroup group = new()
                 {
                     Id = byte.Parse(node.Attributes["no"].Value),
                     Price = int.Parse(node.Attributes["contractPrice"].Value),

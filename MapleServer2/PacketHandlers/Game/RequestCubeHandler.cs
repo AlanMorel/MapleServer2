@@ -176,7 +176,7 @@ public class RequestCubeHandler : GamePacketHandler
             return;
         }
 
-        UGCMapGroup land = UGCMapMetadataStorage.GetGroupMetadata(player.MapId, (byte) groupId);
+        UgcMapGroup land = UgcMapMetadataStorage.GetGroupMetadata(player.MapId, (byte) groupId);
         if (land == null)
         {
             return;
@@ -184,7 +184,7 @@ public class RequestCubeHandler : GamePacketHandler
 
         //Check if sale event is active
         int price = land.Price;
-        UGCMapContractSaleEvent ugcMapContractSale = DatabaseManager.Events.FindUGCMapContractSaleEvent();
+        UgcMapContractSaleEvent ugcMapContractSale = DatabaseManager.Events.FindUgcMapContractSaleEvent();
         if (ugcMapContractSale != null)
         {
             int markdown = land.Price * (ugcMapContractSale.DiscountAmount / 100 / 100);
@@ -292,7 +292,7 @@ public class RequestCubeHandler : GamePacketHandler
             return;
         }
 
-        UGCMapGroup plot = UGCMapMetadataStorage.GetGroupMetadata(player.MapId, (byte) plotNumber);
+        UgcMapGroup plot = UgcMapMetadataStorage.GetGroupMetadata(player.MapId, (byte) plotNumber);
         byte height = mapIsHome ? home.Height : plot.HeightLimit;
         int size = mapIsHome ? home.Size : plot.Area / 2;
         if (IsCoordOutsideHeightLimit(coord.ToShort(), player.MapId, height) || mapIsHome && IsCoordOutsideSizeLimit(coord, size))
@@ -472,7 +472,7 @@ public class RequestCubeHandler : GamePacketHandler
             return;
         }
 
-        UGCMapGroup plot = UGCMapMetadataStorage.GetGroupMetadata(player.MapId, (byte) plotNumber);
+        UgcMapGroup plot = UgcMapMetadataStorage.GetGroupMetadata(player.MapId, (byte) plotNumber);
         byte height = mapIsHome ? home.Height : plot.HeightLimit;
         int size = mapIsHome ? home.Size : plot.Area / 2;
         CoordB? groundHeight = GetGroundCoord(coord, player.MapId, height);
@@ -1037,7 +1037,7 @@ public class RequestCubeHandler : GamePacketHandler
             return;
         }
 
-        MasteryUGCHousingMetadata metadata = MasteryUGCHousingMetadataStorage.GetMetadata(rewardId);
+        MasteryUgcHousingMetadata metadata = MasteryUgcHousingMetadataStorage.GetMetadata(rewardId);
         if (metadata == null)
         {
             return;

@@ -5,9 +5,9 @@ using MapleServer2.Types;
 
 namespace MapleServer2.Packets;
 
-public class ResponseLoadUGCMapPacket
+public class ResponseLoadUgcMapPacket
 {
-    public static PacketWriter LoadUGCMap(bool isHome, Home home = null, bool inDecorPlanner = false)
+    public static PacketWriter LoadUgcMap(bool isHome, Home home = null, bool inDecorPlanner = false)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.LOAD_UGC_MAP);
         pWriter.WriteLong();

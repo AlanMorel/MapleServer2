@@ -19,7 +19,7 @@ public class Portal
     public bool IsPassEnabled;
     public string Passcode;
     public PortalTypes PortalType;
-    public UGCPortalMethod UGCPortalMethod;
+    public UgcPortalMethod UgcPortalMethod;
     public long TargetHomeAccountId;
 
     public Portal(int id)

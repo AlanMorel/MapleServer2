@@ -34,7 +34,7 @@ public static class UgcPacket
         return null;
     }
 
-    public static PacketWriter CreateUgc(bool success, UGC ugc)
+    public static PacketWriter CreateUgc(bool success, Ugc ugc)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
         pWriter.Write(UgcMode.CreateUgc);
@@ -50,7 +50,7 @@ public static class UgcPacket
         return pWriter;
     }
 
-    public static PacketWriter SetItemUrl(UGC ugc)
+    public static PacketWriter SetItemUrl(Ugc ugc)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
         pWriter.Write(UgcMode.SetItemUrl);
@@ -123,11 +123,11 @@ public static class UgcPacket
         pWriter.WriteLong(item.Uid);
         pWriter.WriteInt(item.Id);
         pWriter.WriteInt(item.Amount);
-        pWriter.WriteUnicodeString(item.UGC.Name);
+        pWriter.WriteUnicodeString(item.Ugc.Name);
         pWriter.WriteByte(1); // unknown
-        pWriter.WriteLong(item.UGC.SalePrice);
+        pWriter.WriteLong(item.Ugc.SalePrice);
         pWriter.WriteBool(false); // unknown
-        pWriter.WriteUgcTemplate(item.UGC);
+        pWriter.WriteUgcTemplate(item.Ugc);
 
         return pWriter;
     }
@@ -281,7 +281,7 @@ public static class UgcPacket
         return pWriter;
     }
 
-    public static void WriteUgcTemplate(this PacketWriter pWriter, UGC ugc)
+    public static void WriteUgcTemplate(this PacketWriter pWriter, Ugc ugc)
     {
         pWriter.WriteLong(ugc?.Uid ?? 0);
         pWriter.WriteUnicodeString(ugc?.Guid.ToString() ?? ""); // UUID (filename)
