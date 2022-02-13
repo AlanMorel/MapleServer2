@@ -4,15 +4,15 @@ using ProtoBuf;
 
 namespace MapleServer2.Data.Static;
 
-public static class UGCMapMetadataStorage
+public static class UgcMapMetadataStorage
 {
-    private static readonly Dictionary<int, UGCMapMetadata> UgcMap = new();
+    private static readonly Dictionary<int, UgcMapMetadata> UgcMap = new();
 
     public static void Init()
     {
         using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-ugc-map-metadata");
-        List<UGCMapMetadata> items = Serializer.Deserialize<List<UGCMapMetadata>>(stream);
-        foreach (UGCMapMetadata item in items)
+        List<UgcMapMetadata> items = Serializer.Deserialize<List<UgcMapMetadata>>(stream);
+        foreach (UgcMapMetadata item in items)
         {
             UgcMap[item.MapId] = item;
         }
@@ -23,12 +23,12 @@ public static class UGCMapMetadataStorage
         return UgcMap.ContainsKey(mapId);
     }
 
-    public static UGCMapGroup GetGroupMetadata(int mapId, byte groupId)
+    public static UgcMapGroup GetGroupMetadata(int mapId, byte groupId)
     {
         return GetMetadata(mapId).Groups.FirstOrDefault(x => x.Id == groupId);
     }
 
-    public static UGCMapMetadata GetMetadata(int mapId)
+    public static UgcMapMetadata GetMetadata(int mapId)
     {
         return UgcMap.GetValueOrDefault(mapId);
     }

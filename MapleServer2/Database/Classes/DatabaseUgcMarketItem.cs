@@ -5,11 +5,11 @@ using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes;
 
-public class DatabaseUGCMarketItem : DatabaseTable
+public class DatabaseUgcMarketItem : DatabaseTable
 {
-    public DatabaseUGCMarketItem() : base("ugc_market_items") { }
+    public DatabaseUgcMarketItem() : base("ugc_market_items") { }
 
-    public long Insert(UGCMarketItem item)
+    public long Insert(UgcMarketItem item)
     {
         return QueryFactory.Query(TableName).InsertGetId<long>(new
         {
@@ -29,7 +29,7 @@ public class DatabaseUGCMarketItem : DatabaseTable
         });
     }
 
-    public void Update(UGCMarketItem item)
+    public void Update(UgcMarketItem item)
     {
         QueryFactory.Query(TableName).Where("id", item.Id).Update(new
         {
@@ -43,21 +43,21 @@ public class DatabaseUGCMarketItem : DatabaseTable
         });
     }
 
-    public List<UGCMarketItem> FindAll()
+    public List<UgcMarketItem> FindAll()
     {
         IEnumerable<dynamic> result = QueryFactory.Query(TableName).Get();
-        List<UGCMarketItem> listings = new();
+        List<UgcMarketItem> listings = new();
 
         foreach (dynamic data in result)
         {
-            listings.Add(ReadUGCMarketItem(data));
+            listings.Add(ReadUgcMarketItem(data));
         }
         return listings;
     }
 
-    public UGCMarketItem FindById(long id)
+    public UgcMarketItem FindById(long id)
     {
-        return ReadUGCMarketItem(QueryFactory.Query(TableName).Where("id", id).Get().FirstOrDefault());
+        return ReadUgcMarketItem(QueryFactory.Query(TableName).Where("id", id).Get().FirstOrDefault());
     }
 
     public bool Delete(long uid)
@@ -65,13 +65,13 @@ public class DatabaseUGCMarketItem : DatabaseTable
         return QueryFactory.Query(TableName).Where("id", uid).Delete() == 1;
     }
 
-    private static UGCMarketItem ReadUGCMarketItem(dynamic data)
+    private static UgcMarketItem ReadUgcMarketItem(dynamic data)
     {
-        return new UGCMarketItem(
+        return new UgcMarketItem(
             data.id,
             data.price,
             DatabaseManager.Items.FindByUid(data.item_uid),
-            (UGCMarketListingStatus) data.status,
+            (UgcMarketListingStatus) data.status,
             data.creation_time,
             data.listing_expiration_time,
             data.promotion_expiration_time,

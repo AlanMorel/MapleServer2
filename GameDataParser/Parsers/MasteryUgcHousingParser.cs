@@ -5,13 +5,13 @@ using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
-public class MasteryUGCHousingParser : Exporter<List<MasteryUGCHousingMetadata>>
+public class MasteryUgcHousingParser : Exporter<List<MasteryUgcHousingMetadata>>
 {
-    public MasteryUGCHousingParser(MetadataResources resources) : base(resources, "mastery-ugc-housing") { }
+    public MasteryUgcHousingParser(MetadataResources resources) : base(resources, "mastery-ugc-housing") { }
 
-    protected override List<MasteryUGCHousingMetadata> Parse()
+    protected override List<MasteryUgcHousingMetadata> Parse()
     {
-        List<MasteryUGCHousingMetadata> metadataList = new();
+        List<MasteryUgcHousingMetadata> metadataList = new();
         foreach (PackFileEntry entry in Resources.XmlReader.Files)
         {
             if (!entry.Name.StartsWith("table/masteryugchousing"))
@@ -22,7 +22,7 @@ public class MasteryUGCHousingParser : Exporter<List<MasteryUGCHousingMetadata>>
             XmlNodeList document = Resources.XmlReader.GetXmlDocument(entry).GetElementsByTagName("v");
             foreach (XmlNode node in document)
             {
-                MasteryUGCHousingMetadata metadata = new()
+                MasteryUgcHousingMetadata metadata = new()
                 {
                     Grade = byte.Parse(node.Attributes["grade"].Value),
                     MasteryRequired = short.Parse(node.Attributes["value"].Value)

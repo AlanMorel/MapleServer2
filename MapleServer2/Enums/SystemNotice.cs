@@ -95,7 +95,7 @@ public enum SystemNotice
     TrophyFurnishingCannotBePlaced = 0x6C,
     AssistantStationsCannotBePlaced = 0x6D,
     MannequinsCannotBePlaced = 0x6E,
-    UGCItemsCannotBePlaced = 0x6F,
+    UgcItemsCannotBePlaced = 0x6F,
     CannotDropSummonedPet = 0x70,
     CannotDropPetWithItems = 0x71,
     XTabCannotBeAccessed = 0x72,

@@ -62,7 +62,7 @@ public class DatabaseItem : DatabaseTable
             transparency_badge_bools = JsonConvert.SerializeObject(item.TransparencyBadgeBools),
             unlock_time = item.UnlockTime,
             category = item.Category,
-            ugc_uid = item.UGC == null ? null : (int?) item.UGC.Uid
+            ugc_uid = item.Ugc == null ? null : (int?) item.Ugc.Uid
         });
     }
 
@@ -78,7 +78,7 @@ public class DatabaseItem : DatabaseTable
         return ReadItem(result);
     }
 
-    public Item FindByUGCUid(long ugcUid)
+    public Item FindByUgcUid(long ugcUid)
     {
         dynamic result = QueryFactory.Query(TableName).Where("ugc_uid", ugcUid).FirstOrDefault();
 
@@ -178,7 +178,7 @@ public class DatabaseItem : DatabaseTable
             transfer_flag = item.TransferFlag,
             transparency_badge_bools = JsonConvert.SerializeObject(item.TransparencyBadgeBools),
             unlock_time = item.UnlockTime,
-            ugc_uid = item.UGC == null ? null : (int?) item.UGC.Uid
+            ugc_uid = item.Ugc == null ? null : (int?) item.Ugc.Uid
         });
     }
 
@@ -234,7 +234,7 @@ public class DatabaseItem : DatabaseTable
             Category = data.category,
             MailId = data.mail_id ?? 0,
             HomeId = data.home_id ?? 0,
-            UGC = data.ugc_uid == null ? null : DatabaseManager.UGC.FindByUid(data.ugc_uid)
+            Ugc = data.ugc_uid == null ? null : DatabaseManager.Ugc.FindByUid(data.ugc_uid)
         };
     }
 }

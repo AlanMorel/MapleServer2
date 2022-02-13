@@ -1,6 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using Maple2Storage.Types;
+using MaplePacketLib2.Tools;
 using MapleServer2.Database;
 using MapleServer2.Types;
 using MapleWebServer.Enums;
@@ -22,31 +23,24 @@ public static class UploadEndpoint
             return Results.BadRequest();
         }
 
-        byte[] array = memoryStream.ToArray();
+        PacketReader pReader = new(memoryStream.ToArray());
 
-        byte[] flagA = array.Take(4).ToArray();
-        byte[] modeBytes = array.Skip(4).Take(4).ToArray();
+        int flagA = pReader.ReadInt();
+        PostUgcMode mode = (PostUgcMode) pReader.ReadInt();
+        long accountId = pReader.ReadLong();
+        long characterId = pReader.ReadLong();
+        long itemUid = pReader.ReadLong();
+        int itemId = pReader.ReadInt();
+        int flagB = pReader.ReadInt();
+        pReader.Skip(8);
 
-        byte[] accountIdBytes = array.Skip(8).Take(8).ToArray();
-        byte[] characterIdBytes = array.Skip(16).Take(8).ToArray();
-        byte[] itemUidBytes = array.Skip(24).Take(8).ToArray();
-        byte[] itemIdBytes = array.Skip(32).Take(4).ToArray();
-
-        byte[] unkFlagBytes = array.Skip(40).Take(4).ToArray();
-
-        byte[] fileBytes = array.Skip(48).ToArray();
-
-        long accountId = (long) BitConverter.ToUInt64(accountIdBytes, 0);
-        long characterId = (long) BitConverter.ToUInt64(characterIdBytes, 0);
-        int itemId = (int) BitConverter.ToUInt32(itemIdBytes, 0);
-        long itemUid = (long) BitConverter.ToUInt64(itemUidBytes, 0);
-        PostUGCMode mode = (PostUGCMode) BitConverter.ToUInt32(modeBytes, 0);
+        byte[]? fileBytes = pReader.ReadBytes(pReader.Available);
 
         return mode switch
         {
-            PostUGCMode.ProfileAvatar => HandleProfileAvatar(fileBytes, characterId),
-            PostUGCMode.Item => HandleItem(fileBytes, itemId, itemUid),
-            PostUGCMode.ItemIcon => HandleItemIcon(fileBytes, itemId, itemUid),
+            PostUgcMode.ProfileAvatar => HandleProfileAvatar(fileBytes, characterId),
+            PostUgcMode.Item or PostUgcMode.Furnishing => HandleItem(fileBytes, itemId, itemUid),
+            PostUgcMode.ItemIcon => HandleItemIcon(fileBytes, itemId, itemUid),
             _ => HandleUnknownMode(mode)
         };
     }
@@ -56,7 +50,7 @@ public static class UploadEndpoint
         string filePath = $"{Paths.DATA_DIR}/itemicon/{itemId}/";
         Directory.CreateDirectory(filePath);
 
-        Item item = DatabaseManager.Items.FindByUGCUid(itemUid);
+        Item item = DatabaseManager.Items.FindByUgcUid(itemUid);
         if (item is null)
         {
             return Results.BadRequest();
@@ -71,15 +65,15 @@ public static class UploadEndpoint
         string filePath = $"{Paths.DATA_DIR}/item/{itemId}/";
         Directory.CreateDirectory(filePath);
 
-        Item item = DatabaseManager.Items.FindByUGCUid(itemUid);
+        Item item = DatabaseManager.Items.FindByUgcUid(itemUid);
         if (item is null)
         {
             return Results.BadRequest();
         }
 
-        string url = $"item/ms2/01/{itemId}/{item.UGC.Guid}-{itemUid}.m2u";
-        item.UGC.Url = url;
-        DatabaseManager.UGC.Update(item.UGC);
+        string url = $"item/ms2/01/{itemId}/{item.Ugc.Guid}-{itemUid}.m2u";
+        item.Ugc.Url = url;
+        DatabaseManager.Ugc.Update(item.Ugc);
 
         File.WriteAllBytes($"{filePath}/{item.Ugc.Guid}-{itemUid}.m2u", fileBytes);
         return Results.Text($"0,{url}");

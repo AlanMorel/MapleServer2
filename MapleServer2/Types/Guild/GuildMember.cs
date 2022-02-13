@@ -5,7 +5,7 @@ namespace MapleServer2.Types;
 public class GuildMember
 {
     public long Id;
-    public Player Player { get; private set; }
+    public Player Player { get; set; }
     public string Motto;
     public byte Rank { get; set; } // by index of guild ranks
     public int DailyContribution { get; set; }
@@ -13,7 +13,7 @@ public class GuildMember
     public byte DailyDonationCount { get; set; }
     public long AttendanceTimestamp { get; set; }
     public long JoinTimestamp { get; set; }
-    public long LastLoginTimestamp { get; set; }
+    public long LastLogTimestamp { get; set; }
     public long GuildId;
 
     public GuildMember(long id, byte rank, int dailyContribution, int contributionTotal, byte dailyDonationCount, long attendanceTimestamp, long joinTimestamp, long lastLoginTimestamp, long guildId, string motto, Player player)
@@ -26,7 +26,7 @@ public class GuildMember
         DailyDonationCount = dailyDonationCount;
         AttendanceTimestamp = attendanceTimestamp;
         JoinTimestamp = joinTimestamp;
-        LastLoginTimestamp = lastLoginTimestamp;
+        LastLogTimestamp = lastLoginTimestamp;
         GuildId = guildId;
         Player = player;
     }
@@ -38,7 +38,7 @@ public class GuildMember
         Rank = rank;
         Motto = "";
         JoinTimestamp = TimeInfo.Now() + Environment.TickCount;
-        LastLoginTimestamp = player.LastLoginTime;
+        LastLogTimestamp = player.LastLogTime;
         GuildId = guildId;
         DatabaseManager.GuildMembers.Insert(this);
     }
