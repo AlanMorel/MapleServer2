@@ -4,7 +4,6 @@ using MapleServer2.Constants;
 using MapleServer2.Network;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Common;
 
