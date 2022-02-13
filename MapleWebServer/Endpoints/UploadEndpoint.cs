@@ -5,24 +5,22 @@ using MaplePacketLib2.Tools;
 using MapleServer2.Database;
 using MapleServer2.Types;
 using MapleWebServer.Enums;
-using Microsoft.AspNetCore.Mvc;
 using NLog;
 
-namespace MapleWebServer.Controllers;
+namespace MapleWebServer.Endpoints;
 
-public class UploadController : ControllerBase
+public static class UploadEndpoint
 {
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-    [HttpPost("urq.aspx")]
-    public async Task<IActionResult> PostAsync()
+    public static async Task<IResult> Post(HttpRequest request)
     {
-        Stream bodyStream = Request.Body;
+        Stream bodyStream = request.Body;
 
         MemoryStream memoryStream = await CopyStream(bodyStream);
         if (memoryStream.Length == 0)
         {
-            return BadRequest();
+            return Results.BadRequest();
         }
 
         PacketReader pReader = new(memoryStream.ToArray());
@@ -47,7 +45,7 @@ public class UploadController : ControllerBase
         };
     }
 
-    private IActionResult HandleItemIcon(byte[] fileBytes, int itemId, long itemUid)
+    private static IResult HandleItemIcon(byte[] fileBytes, int itemId, long itemUid)
     {
         string filePath = $"{Paths.DATA_DIR}/itemicon/{itemId}/";
         Directory.CreateDirectory(filePath);
@@ -55,14 +53,14 @@ public class UploadController : ControllerBase
         Item item = DatabaseManager.Items.FindByUgcUid(itemUid);
         if (item is null)
         {
-            return BadRequest();
+            return Results.BadRequest();
         }
 
-        System.IO.File.WriteAllBytes($"{filePath}/{item.Ugc.Guid}-{itemUid}.png", fileBytes);
-        return Ok($"0,itemicon/ms2/01/{itemId}/{item.Ugc.Guid}-{itemUid}.png");
+        File.WriteAllBytes($"{filePath}/{item.Ugc.Guid}-{itemUid}.png", fileBytes);
+        return Results.Text($"0,itemicon/ms2/01/{itemId}/{item.Ugc.Guid}-{itemUid}.png");
     }
 
-    private IActionResult HandleItem(byte[] fileBytes, int itemId, long itemUid)
+    private static IResult HandleItem(byte[] fileBytes, int itemId, long itemUid)
     {
         string filePath = $"{Paths.DATA_DIR}/item/{itemId}/";
         Directory.CreateDirectory(filePath);
@@ -70,18 +68,18 @@ public class UploadController : ControllerBase
         Item item = DatabaseManager.Items.FindByUgcUid(itemUid);
         if (item is null)
         {
-            return BadRequest();
+            return Results.BadRequest();
         }
 
         string url = $"item/ms2/01/{itemId}/{item.Ugc.Guid}-{itemUid}.m2u";
         item.Ugc.Url = url;
         DatabaseManager.Ugc.Update(item.Ugc);
 
-        System.IO.File.WriteAllBytes($"{filePath}/{item.Ugc.Guid}-{itemUid}.m2u", fileBytes);
-        return Ok($"0,{url}");
+        File.WriteAllBytes($"{filePath}/{item.Ugc.Guid}-{itemUid}.m2u", fileBytes);
+        return Results.Text($"0,{url}");
     }
 
-    private IActionResult HandleProfileAvatar(byte[] fileBytes, long characterId)
+    private static IResult HandleProfileAvatar(byte[] fileBytes, long characterId)
     {
         string filePath = $"{Paths.DATA_DIR}/profiles/{characterId}/";
         Directory.CreateDirectory(filePath);
@@ -96,14 +94,14 @@ public class UploadController : ControllerBase
             file.Delete();
         }
 
-        System.IO.File.WriteAllBytes($"{filePath}/{fileHash}.png", fileBytes);
-        return Ok($"0,data/profiles/avatar/{characterId}/{fileHash}.png");
+        File.WriteAllBytes($"{filePath}/{fileHash}.png", fileBytes);
+        return Results.Text($"0,data/profiles/avatar/{characterId}/{fileHash}.png");
     }
 
-    private IActionResult HandleUnknownMode(PostUgcMode mode)
+    private static IResult HandleUnknownMode(PostUgcMode mode)
     {
-        Logger.Info($"Unknown UGC post mode: {mode}");
-        return BadRequest();
+        Logger.Info($"Unknown upload mode: {mode}");
+        return Results.BadRequest();
     }
 
     private static async Task<MemoryStream> CopyStream(Stream input)

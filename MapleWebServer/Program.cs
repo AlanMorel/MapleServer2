@@ -1,30 +1,23 @@
 ﻿using Maple2Storage.Tools;
 using Maple2Storage.Types;
+using MapleWebServer.Endpoints;
 
-namespace MapleWebServer;
-
-public static class Program
+string dotenv = Path.Combine(Paths.SOLUTION_DIR, ".env");
+if (!File.Exists(dotenv))
 {
-    public static void Main(string[] args)
-    {
-        // Load .env file
-        string dotenv = Path.Combine(Paths.SOLUTION_DIR, ".env");
-
-        if (!File.Exists(dotenv))
-        {
-            throw new ArgumentException(".env file not found!");
-        }
-
-        DotEnv.Load(dotenv);
-
-        CreateHostBuilder(args).Build().Run();
-    }
-
-    private static IHostBuilder CreateHostBuilder(string[] args)
-    {
-        return Host.CreateDefaultBuilder(args).ConfigureWebHostDefaults(webBuilder =>
-        {
-            webBuilder.UseStartup<Startup>().UseUrls(urls: $"http://*:{Environment.GetEnvironmentVariable("WEB_PORT")}");
-        });
-    }
+    throw new ArgumentException(".env file not found!");
 }
+
+DotEnv.Load(dotenv);
+
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+WebApplication app = builder.Build();
+
+app.MapGet("/item/ms2/01/{itemId}/{uuid}.m2u", ItemEndpoint.Get);
+app.MapGet("/itemicon/ms2/01/{itemId}/{uuid}.png", ItemIconEndpoint.Get);
+app.MapGet("/data/profiles/avatar/{characterId}/{hash}.png", ProfileEndpoint.Get);
+
+app.MapPost("/urq.aspx", UploadEndpoint.Post);
+
+app.Run($"http://*:{Environment.GetEnvironmentVariable("WEB_PORT")}");
