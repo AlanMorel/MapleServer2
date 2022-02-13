@@ -75,7 +75,7 @@ public class Item
     public MusicScore Score;
     public ItemStats Stats;
 
-    public UGC UGC;
+    public Ugc Ugc;
 
     public long InventoryId;
     public long BankInventoryId;
@@ -169,7 +169,7 @@ public class Item
         HatData = other.HatData;
         Score = new();
         Stats = new(other.Stats);
-        UGC = other.UGC;
+        Ugc = other.Ugc;
     }
 
     public bool TrySplit(int splitAmount, out Item splitItem)

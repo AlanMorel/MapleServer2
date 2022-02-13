@@ -1,6 +1,6 @@
 ﻿namespace MapleServer2.Enums;
 
-public enum UGCMarketListingStatus : byte
+public enum UgcMarketListingStatus : byte
 {
     Unknown = 0,
     Hold = 1,
@@ -8,7 +8,7 @@ public enum UGCMarketListingStatus : byte
     Expired = 3
 }
 
-public enum UGCMarketItemHomeCategory : byte
+public enum UgcMarketItemHomeCategory : byte
 {
     None = 0,
     Promoted = 1,

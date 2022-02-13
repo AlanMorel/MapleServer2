@@ -710,6 +710,7 @@ CREATE TABLE `ugc`
     `account_id`     bigint       NOT NULL,
     `creation_time`  bigint       NOT NULL,
     `sale_price`     bigint       NOT NULL,
+    `type`           tinyint unsigned NOT NULL,
     PRIMARY KEY (`uid`),
     KEY `ix_ugc_account_id` (`account_id`),
     KEY `ix_ugc_character_id` (`character_id`),

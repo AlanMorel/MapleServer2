@@ -1,13 +1,13 @@
 ﻿namespace MapleServer2.Database.Types;
 
-public class UGCMapExtensionSaleEvent
+public class UgcMapContractSaleEvent
 {
     public int Id { get; set; }
     public int DiscountAmount { get; set; }
 
-    public UGCMapExtensionSaleEvent() { }
+    public UgcMapContractSaleEvent() { }
 
-    public UGCMapExtensionSaleEvent(int id, int discountAmount)
+    public UgcMapContractSaleEvent(dynamic id, dynamic discountAmount)
     {
         Id = id;
         DiscountAmount = discountAmount;

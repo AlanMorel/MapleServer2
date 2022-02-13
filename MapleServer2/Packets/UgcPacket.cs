@@ -11,7 +11,8 @@ public static class UgcPacket
         CreateUgc = 0x02,
         SetItemUrl = 0x04,
         ProfilePicture = 0x0B,
-        UpdateUgc = 0x0D,
+        UpdateUgcItem = 0x0D,
+        UpdateUgcFurnishing = 0x0E,
         SetEndpoint = 0x11,
         Mode12 = 0x12
     }
@@ -34,34 +35,24 @@ public static class UgcPacket
         return null;
     }
 
-    public static PacketWriter CreateUgc(bool success, UGC ugc)
+    public static PacketWriter CreateUgc(Item item)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
         pWriter.Write(UgcMode.CreateUgc);
-        pWriter.WriteBool(success);
-        if (!success)
-        {
-            return pWriter;
-        }
-
-        pWriter.WriteLong(ugc.Uid);
-        pWriter.WriteUnicodeString(ugc.Guid.ToString());
+        pWriter.Write(item.Ugc.Type);
+        pWriter.WriteLong(item.Ugc.Uid);
+        pWriter.WriteUnicodeString(item.Ugc.Guid.ToString());
 
         return pWriter;
     }
 
-    public static PacketWriter SetItemUrl(UGC ugc)
+    public static PacketWriter SetItemUrl(Item item)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
         pWriter.Write(UgcMode.SetItemUrl);
-        pWriter.WriteBool(ugc is not null);
-        if (ugc is null)
-        {
-            return pWriter;
-        }
-
-        pWriter.WriteLong(ugc.Uid);
-        pWriter.WriteUnicodeString(ugc.Url);
+        pWriter.Write(item.Ugc.Type);
+        pWriter.WriteLong(item.Ugc.Uid);
+        pWriter.WriteUnicodeString(item.Ugc.Url);
 
         return pWriter;
     }
@@ -114,39 +105,36 @@ public static class UgcPacket
         return pWriter;
     }
 
-    // not sure about the name
     public static PacketWriter UpdateUgcItem(IFieldObject<Player> fieldPlayer, Item item)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.Write(UgcMode.UpdateUgc);
+        pWriter.Write(UgcMode.UpdateUgcItem);
         pWriter.WriteInt(fieldPlayer.ObjectId);
         pWriter.WriteLong(item.Uid);
         pWriter.WriteInt(item.Id);
         pWriter.WriteInt(item.Amount);
-        pWriter.WriteUnicodeString(item.UGC.Name);
+        pWriter.WriteUnicodeString(item.Ugc.Name);
         pWriter.WriteByte(1); // unknown
-        pWriter.WriteLong(item.UGC.SalePrice);
+        pWriter.WriteLong(item.Ugc.SalePrice);
         pWriter.WriteBool(false); // unknown
-        pWriter.WriteUgcTemplate(item.UGC);
+        pWriter.WriteUgcTemplate(item.Ugc);
 
         return pWriter;
     }
 
-    public static PacketWriter Unknown13To15()
+    public static PacketWriter UpdateUgcFurnishing(IFieldObject<Player> fieldPlayer, Item item)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.WriteByte(0x0D); // Also 0x0E, 0x0F
-        pWriter.WriteInt();
-        // sub1
-        pWriter.WriteLong();
-        pWriter.WriteInt();
-        pWriter.WriteInt();
-        pWriter.WriteUnicodeString("StrW");
-        pWriter.WriteByte();
-        pWriter.WriteLong();
-        pWriter.WriteBool(false);
-        // sub2
-        pWriter.WriteUgcTemplate(null);
+        pWriter.Write(UgcMode.UpdateUgcFurnishing);
+        pWriter.WriteInt(fieldPlayer.ObjectId);
+        pWriter.WriteLong(item.Uid);
+        pWriter.WriteInt(item.Id);
+        pWriter.WriteInt(item.Amount);
+        pWriter.WriteUnicodeString(item.Ugc.Name);
+        pWriter.WriteByte(1); // unknown
+        pWriter.WriteLong(item.Ugc.SalePrice);
+        pWriter.WriteBool(false); // unknown
+        pWriter.WriteUgcTemplate(item.Ugc);
 
         return pWriter;
     }
@@ -281,7 +269,7 @@ public static class UgcPacket
         return pWriter;
     }
 
-    public static void WriteUgcTemplate(this PacketWriter pWriter, UGC ugc)
+    public static void WriteUgcTemplate(this PacketWriter pWriter, Ugc ugc)
     {
         pWriter.WriteLong(ugc?.Uid ?? 0);
         pWriter.WriteUnicodeString(ugc?.Guid.ToString() ?? ""); // UUID (filename)

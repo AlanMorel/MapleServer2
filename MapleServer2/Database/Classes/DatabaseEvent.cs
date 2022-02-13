@@ -51,32 +51,32 @@ public class DatabaseEvent : DatabaseTable
         return mapleopolyEvents;
     }
 
-    public UGCMapContractSaleEvent FindUGCMapContractSaleEvent()
+    public UgcMapContractSaleEvent FindUgcMapContractSaleEvent()
     {
         GameEvent gameEvent = QueryFactory.Query(TableName).Where(new
         {
-            type = GameEventType.UGCMapContractSale,
+            type = GameEventType.UgcMapContractSale,
             active = true
         }).Get<GameEvent>().FirstOrDefault();
         if (gameEvent == null)
         {
             return null;
         }
-        return ReadUGCMapContractSaleEvent(QueryFactory.Query("event_ugc_map_contract_sale").Where("game_event_id", gameEvent.Id).Get().FirstOrDefault());
+        return ReadUgcMapContractSaleEvent(QueryFactory.Query("event_ugc_map_contract_sale").Where("game_event_id", gameEvent.Id).Get().FirstOrDefault());
     }
 
-    public UGCMapExtensionSaleEvent FindUGCMapExtensionSaleEvent()
+    public UgcMapExtensionSaleEvent FindUgcMapExtensionSaleEvent()
     {
         GameEvent gameEvent = QueryFactory.Query(TableName).Where(new
         {
-            type = GameEventType.UGCMapExtensionSale,
+            type = GameEventType.UgcMapExtensionSale,
             active = true
         }).Get<GameEvent>().FirstOrDefault();
         if (gameEvent == null)
         {
             return null;
         }
-        return ReadUGCMapExtensionSaleEvent(QueryFactory.Query("event_ugc_map_extension_sale").Where("game_event_id", gameEvent.Id).Get().FirstOrDefault());
+        return ReadUgcMapExtensionSaleEvent(QueryFactory.Query("event_ugc_map_extension_sale").Where("game_event_id", gameEvent.Id).Get().FirstOrDefault());
     }
 
     public List<StringBoardEvent> FindAllStringBoardEvent()
@@ -112,11 +112,11 @@ public class DatabaseEvent : DatabaseTable
                 case GameEventType.BlueMarble:
                     gameEvent.Mapleopoly = FindAllMapleopolyEvents();
                     break;
-                case GameEventType.UGCMapContractSale:
-                    gameEvent.UGCMapContractSale = FindUGCMapContractSaleEvent();
+                case GameEventType.UgcMapContractSale:
+                    gameEvent.UgcMapContractSale = FindUgcMapContractSaleEvent();
                     break;
-                case GameEventType.UGCMapExtensionSale:
-                    gameEvent.UGCMapExtensionSale = FindUGCMapExtensionSaleEvent();
+                case GameEventType.UgcMapExtensionSale:
+                    gameEvent.UgcMapExtensionSale = FindUgcMapExtensionSaleEvent();
                     break;
                 case GameEventType.EventFieldPopup:
                     gameEvent.FieldPopupEvent = FindFieldPopupEvent();
@@ -141,14 +141,14 @@ public class DatabaseEvent : DatabaseTable
         return new MapleopolyEvent(data.id, data.trip_amount, data.item_id, data.item_rarity, data.item_amount);
     }
 
-    private static UGCMapContractSaleEvent ReadUGCMapContractSaleEvent(dynamic data)
+    private static UgcMapContractSaleEvent ReadUgcMapContractSaleEvent(dynamic data)
     {
-        return new UGCMapContractSaleEvent(data.id, data.discount_amount);
+        return new UgcMapContractSaleEvent(data.id, data.discount_amount);
     }
 
-    private static UGCMapExtensionSaleEvent ReadUGCMapExtensionSaleEvent(dynamic data)
+    private static UgcMapExtensionSaleEvent ReadUgcMapExtensionSaleEvent(dynamic data)
     {
-        return new UGCMapExtensionSaleEvent(data.id, data.discount_amount);
+        return new UgcMapExtensionSaleEvent(data.id, data.discount_amount);
     }
 
 

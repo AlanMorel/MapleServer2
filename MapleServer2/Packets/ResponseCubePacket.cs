@@ -52,7 +52,7 @@ public static class ResponseCubePacket
         UpdateSizeHeight = 0x3E
     }
 
-    public static PacketWriter LoadFurnishingItem(IFieldObject<Player> player, int itemId, long itemUid)
+    public static PacketWriter LoadFurnishingItem(IFieldObject<Player> player, int itemId, long itemUid, Item item = null)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
         pWriter.Write(ResponseCubePacketMode.LoadFurnishingItem);
@@ -60,7 +60,11 @@ public static class ResponseCubePacket
         pWriter.WriteInt(itemId);
         pWriter.WriteLong(itemUid);
         pWriter.WriteLong();
-        pWriter.WriteByte();
+        pWriter.WriteBool(item?.Ugc is not null);
+        if (item?.Ugc is not null)
+        {
+            pWriter.WriteUgcTemplate(item.Ugc);
+        }
 
         return pWriter;
     }
@@ -132,7 +136,12 @@ public static class ResponseCubePacket
         pWriter.WriteInt(cube.Value.Item.Id);
         pWriter.WriteLong(cube.Value.Item.Uid);
         pWriter.WriteLong();
-        pWriter.WriteByte();
+        pWriter.WriteBool(cube.Value.Item.Ugc is not null);
+        if (cube.Value.Item.Ugc is not null)
+        {
+            pWriter.WriteUgcTemplate(cube.Value.Item.Ugc);
+        }
+
         pWriter.WriteByte();
         pWriter.Write(cube.Rotation.Z);
         pWriter.WriteInt();
@@ -223,7 +232,12 @@ public static class ResponseCubePacket
         pWriter.WriteLong(newCube.Value.Item.Uid);
         pWriter.WriteLong(newCube.Value.Uid);
         pWriter.WriteLong();
-        pWriter.WriteByte();
+        pWriter.WriteBool(newCube.Value.Item.Ugc is not null);
+        if (newCube.Value.Item.Ugc is not null)
+        {
+            pWriter.WriteUgcTemplate(newCube.Value.Item.Ugc);
+        }
+
         pWriter.WriteByte();
         pWriter.WriteFloat(newCube.Rotation.Z);
         pWriter.WriteInt();

@@ -28,7 +28,11 @@ public static class SendCubesPacket
             pWriter.WriteInt(cube.Item.Id);
             pWriter.WriteLong(cube.Uid);
             pWriter.WriteLong();
-            pWriter.WriteByte(); // UGC bool ?
+            pWriter.WriteBool(cube.Item.Ugc is not null);
+            if (cube.Item.Ugc is not null)
+            {
+                pWriter.WriteUgcTemplate(cube.Item.Ugc);
+            }
             pWriter.WriteInt(cube.PlotNumber);
             pWriter.WriteInt();
             pWriter.WriteByte();

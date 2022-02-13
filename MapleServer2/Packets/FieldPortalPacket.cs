@@ -31,7 +31,7 @@ public static class FieldPortalPacket
         pWriter.WriteUnicodeString();
         pWriter.WriteInt(portal.TargetMapId);
         pWriter.WriteInt(fieldPortal.ObjectId);
-        pWriter.WriteInt((int) portal.UGCPortalMethod);
+        pWriter.WriteInt((int) portal.UgcPortalMethod);
         pWriter.WriteBool(portal.IsMinimapVisible);
         pWriter.WriteLong(portal.TargetHomeAccountId);
         pWriter.Write(portal.PortalType);

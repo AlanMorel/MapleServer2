@@ -8,65 +8,65 @@ using MapleServer2.Types;
 
 namespace MapleServer2.Managers;
 
-public class UGCMarketManager
+public class UgcMarketManager
 {
-    private readonly Dictionary<long, UGCMarketItem> Items;
-    private readonly Dictionary<long, UGCMarketSale> Sales;
+    private readonly Dictionary<long, UgcMarketItem> Items;
+    private readonly Dictionary<long, UgcMarketSale> Sales;
 
-    public UGCMarketManager()
+    public UgcMarketManager()
     {
         Items = new();
-        List<UGCMarketItem> items = DatabaseManager.UGCMarketItems.FindAll();
-        foreach (UGCMarketItem item in items)
+        List<UgcMarketItem> items = DatabaseManager.UgcMarketItems.FindAll();
+        foreach (UgcMarketItem item in items)
         {
             AddListing(item);
         }
 
         Sales = new();
-        List<UGCMarketSale> sales = DatabaseManager.UGCMarketSales.FindAll();
-        foreach (UGCMarketSale sale in sales)
+        List<UgcMarketSale> sales = DatabaseManager.UgcMarketSales.FindAll();
+        foreach (UgcMarketSale sale in sales)
         {
             AddSale(sale);
         }
     }
 
-    public void AddListing(UGCMarketItem item)
+    public void AddListing(UgcMarketItem item)
     {
         Items.Add(item.Id, item);
     }
 
-    public void RemoveListing(UGCMarketItem item)
+    public void RemoveListing(UgcMarketItem item)
     {
         Items.Remove(item.Id);
     }
 
-    public List<UGCMarketItem> GetItemsByCharacterId(long characterId)
+    public List<UgcMarketItem> GetItemsByCharacterId(long characterId)
     {
         return Items.Values.Where(b => b.SellerCharacterId == characterId).ToList();
     }
 
-    public List<UGCMarketItem> GetPromoItems()
+    public List<UgcMarketItem> GetPromoItems()
     {
-        return Items.Values.Where(x => x.PromotionExpirationTimestamp > TimeInfo.Now() && x.Status == UGCMarketListingStatus.Active)
+        return Items.Values.Where(x => x.PromotionExpirationTimestamp > TimeInfo.Now() && x.Status == UgcMarketListingStatus.Active)
             .OrderBy(_ => RandomProvider.Get().Next()).Take(12).ToList(); // 12 being the max the shop can display
     }
 
-    public List<UGCMarketItem> GetNewestItems()
+    public List<UgcMarketItem> GetNewestItems()
     {
-        return Items.Values.OrderBy(x => x.ListingExpirationTimestamp).Where(x => x.Status == UGCMarketListingStatus.Active).Take(6).ToList();
+        return Items.Values.OrderBy(x => x.ListingExpirationTimestamp).Where(x => x.Status == UgcMarketListingStatus.Active).Take(6).ToList();
     }
 
-    public UGCMarketItem FindItemById(long id)
+    public UgcMarketItem FindItemById(long id)
     {
         return Items.Values.FirstOrDefault(x => x.Id == id);
     }
 
-    public List<UGCMarketItem> FindItemsByCategory(List<string> categories, GenderFlag genderFlag, JobFlag job, short sort)
+    public List<UgcMarketItem> FindItemsByCategory(List<string> categories, GenderFlag genderFlag, JobFlag job, short sort)
     {
-        List<UGCMarketItem> items = new();
-        foreach (UGCMarketItem item in Items.Values)
+        List<UgcMarketItem> items = new();
+        foreach (UgcMarketItem item in Items.Values)
         {
-            if (!categories.Contains(item.Item.Category) || item.Status != UGCMarketListingStatus.Active)
+            if (!categories.Contains(item.Item.Category) || item.Status != UgcMarketListingStatus.Active)
             {
                 continue;
             }
@@ -87,16 +87,16 @@ public class UGCMarketManager
             items.Add(item);
         }
 
-        UGCMarketSort marketSort = (UGCMarketSort) sort;
+        UgcMarketSort marketSort = (UgcMarketSort) sort;
 
         switch (marketSort)
         {
             // TODO: Handle Most Popular sorting.
-            case UGCMarketSort.MostPopular:
-            case UGCMarketSort.TopSeller:
+            case UgcMarketSort.MostPopular:
+            case UgcMarketSort.TopSeller:
                 items = items.OrderByDescending(x => x.SalesCount).ToList();
                 break;
-            case UGCMarketSort.MostRecent:
+            case UgcMarketSort.MostRecent:
                 items = items.OrderByDescending(x => x.CreationTimestamp).ToList();
                 break;
         }
@@ -104,29 +104,29 @@ public class UGCMarketManager
         return items;
     }
 
-    private enum UGCMarketSort : short
+    private enum UgcMarketSort : short
     {
         MostPopular = 1,
         MostRecent = 4,
         TopSeller = 6
     }
 
-    public void AddSale(UGCMarketSale sale)
+    public void AddSale(UgcMarketSale sale)
     {
         Sales.Add(sale.Id, sale);
     }
 
-    public void RemoveSale(UGCMarketSale sale)
+    public void RemoveSale(UgcMarketSale sale)
     {
         Sales.Remove(sale.Id);
     }
 
-    public List<UGCMarketSale> GetSalesByCharacterId(long characterId)
+    public List<UgcMarketSale> GetSalesByCharacterId(long characterId)
     {
         return Sales.Values.Where(b => b.SellerCharacterId == characterId).ToList();
     }
 
-    public UGCMarketSale FindSaleById(long id)
+    public UgcMarketSale FindSaleById(long id)
     {
         return Sales.Values.FirstOrDefault(x => x.Id == id);
     }

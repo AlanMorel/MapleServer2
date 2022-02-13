@@ -17,7 +17,7 @@ public class LoadUgcMapHandler : GamePacketHandler
     public override void Handle(GameSession session, PacketReader packet)
     {
         bool mapIsHome = session.Player.MapId == (int) Map.PrivateResidence;
-        UGCMapMetadata ugcMapMetadata = UGCMapMetadataStorage.GetMetadata(session.Player.MapId);
+        UgcMapMetadata ugcMapMetadata = UgcMapMetadataStorage.GetMetadata(session.Player.MapId);
         List<byte> plots = new();
         if (ugcMapMetadata != null)
         {
@@ -30,7 +30,7 @@ public class LoadUgcMapHandler : GamePacketHandler
             Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
             if (home == null)
             {
-                session.Send(ResponseLoadUGCMapPacket.LoadUGCMap(false));
+                session.Send(ResponseLoadUgcMapPacket.LoadUgcMap());
                 return;
             }
 
@@ -39,7 +39,7 @@ public class LoadUgcMapHandler : GamePacketHandler
                 home
             };
 
-            session.Send(ResponseLoadUGCMapPacket.LoadUGCMap(mapIsHome, home, session.Player.IsInDecorPlanner));
+            session.Send(ResponseLoadUgcMapPacket.LoadUgcMap(home, session.Player.IsInDecorPlanner));
 
             // Find spawning coords for home
             int cubePortalId = 50400190;
@@ -48,7 +48,7 @@ public class LoadUgcMapHandler : GamePacketHandler
             CoordF rotation;
             if (portals.Count > 0)
             {
-                Cube portal = portals.OrderBy(x => RandomProvider.Get().Next()).Take(1).First();
+                Cube portal = portals.OrderBy(_ => RandomProvider.Get().Next()).First();
                 coord = portal.CoordF;
                 coord.Z += 1;
                 rotation = portal.Rotation;
@@ -69,7 +69,7 @@ public class LoadUgcMapHandler : GamePacketHandler
         else
         {
             homes = GameServer.HomeManager.GetPlots(session.Player.MapId);
-            session.Send(ResponseLoadUGCMapPacket.LoadUGCMap(mapIsHome));
+            session.Send(ResponseLoadUgcMapPacket.LoadUgcMap());
         }
 
         List<Cube> cubes = new();
