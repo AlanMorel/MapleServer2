@@ -37,6 +37,12 @@ public class ResponseKeyHandler : CommonPacketHandler
         GameServer.PlayerManager.AddPlayer(player);
         GameServer.BuddyManager.SetFriendSessions(player);
 
+        // Only send buddy login notification if player is not changing channels
+        if (!player.IsMigrating)
+        {
+            player.UpdateBuddies();
+        }
+
         if (player.GuildId != 0)
         {
             Guild guild = GameServer.GuildManager.GetGuildById(player.GuildId);
@@ -46,13 +52,10 @@ public class ResponseKeyHandler : CommonPacketHandler
             player.GuildMember = guildMember;
             session.Send(GuildPacket.UpdateGuild(guild));
             guild.BroadcastPacketGuild(GuildPacket.UpdatePlayer(player));
-        }
-
-        // Only send buddy login notification if player is not changing channels
-        if (!player.IsMigrating)
-        {
-            player.UpdateBuddies();
-            player.Guild?.BroadcastPacketGuild(GuildPacket.MemberLoggedIn(player), session);
+            if (!player.IsMigrating)
+            {
+                guild.BroadcastPacketGuild(GuildPacket.MemberLoggedIn(player), session);
+            }
         }
 
         // Get Clubs
