@@ -269,7 +269,7 @@ public class Player
     {
         Party?.BroadcastPacketParty(PartyPacket.UpdatePlayer(this));
         Guild?.BroadcastPacketGuild(GuildPacket.UpdatePlayer(this));
-        foreach(Club club in Clubs)
+        foreach (Club club in Clubs)
         {
             ClubMember membership = ClubMembers.First(x => x.ClubId == club.Id);
             club?.BroadcastPacketClub(ClubPacket.UpdatePlayer(membership, club));

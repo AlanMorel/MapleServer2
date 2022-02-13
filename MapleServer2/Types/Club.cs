@@ -52,7 +52,7 @@ public class Club
 
         if (inviteResponse == ClubInviteResponse.Reject)
         {
-            List<GameSession> memberSessions = GetMemberSessions();
+            List<GameSession> memberSessions = GetSessions();
             foreach (GameSession session in memberSessions)
             {
                 session.Send(ClubPacket.ClubProposalInviteResponse(Id, inviteResponse, player.Name));
@@ -104,8 +104,8 @@ public class Club
     public void Disband()
     {
         BroadcastPacketClub(ClubPacket.Disband(this));
-        List<GameSession> memberSessions = GetMemberSessions();
-        foreach(GameSession session in memberSessions)
+        List<GameSession> memberSessions = GetSessions();
+        foreach (GameSession session in memberSessions)
         {
             session.Player.Clubs.Remove(this);
             ClubMember membership = session.Player.ClubMembers.FirstOrDefault(x => x.ClubId == Id);
@@ -161,7 +161,7 @@ public class Club
             Disband();
             return;
         }
-        
+
         Player player = Members.OrderBy(x => x.JoinTimestamp)
             .First(x => x.Player != oldLeader).Player;
 
@@ -187,7 +187,7 @@ public class Club
 
     public void BroadcastClub(Action<GameSession> action)
     {
-        IEnumerable<GameSession> sessions = GetMemberSessions();
+        IEnumerable<GameSession> sessions = GetSessions();
         lock (sessions)
         {
             foreach (GameSession session in sessions)
@@ -197,7 +197,7 @@ public class Club
         }
     }
 
-    private List<GameSession> GetMemberSessions()
+    private List<GameSession> GetSessions()
     {
         List<GameSession> sessions = new();
         foreach (ClubMember clubMember in Members)

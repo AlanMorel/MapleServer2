@@ -93,12 +93,33 @@ public class ClubHandler : GamePacketHandler
         }
 
         string clubName = packet.ReadUnicodeString();
+        if (!ValidClubName(session, clubName))
+        {
+            return;
+        }
 
 
         Club club = new(party, clubName);
         GameServer.ClubManager.AddClub(club);
 
         party.BroadcastPacketParty(ClubPacket.Create(party, club));
+    }
+
+    private static bool ValidClubName(GameSession session, string clubName)
+    {
+        if (DatabaseManager.Clubs.NameExists(clubName))
+        {
+            session.Send(ClubPacket.ErrorNotice((int) ClubErrorNotice.ClubWithNameAlreadyExists));
+            return false;
+        }
+
+        if (clubName.Contains(' '))
+        {
+            session.Send(ClubPacket.ErrorNotice((int) ClubErrorNotice.NoSpacesInName));
+            return false;
+        }
+
+        return true;
     }
 
     private static void HandleNewClubInvite(GameSession session, PacketReader packet)
@@ -142,7 +163,6 @@ public class ClubHandler : GamePacketHandler
             session.Send(ClubPacket.ErrorNotice((int) ClubErrorNotice.PlayerCannotJoinMoreClubs));
             return;
         }
-
 
         Club club = GameServer.ClubManager.GetClubById(clubId);
         if (club == null)
@@ -253,21 +273,14 @@ public class ClubHandler : GamePacketHandler
             return;
         }
 
+        if (!ValidClubName(session, clubNewName))
+        {
+            return;
+        }
+
         if (clubNewName == club.Name)
         {
             session.Send(ClubPacket.ErrorNotice((int) ClubErrorNotice.NewNameIsCurrentName));
-            return;
-        }
-
-        if (clubNewName.Contains(' '))
-        {
-            session.Send(ClubPacket.ErrorNotice((int) ClubErrorNotice.NoSpacesInName));
-            return;
-        }
-
-        if (DatabaseManager.Clubs.NameExists(clubNewName))
-        {
-            session.Send(ClubPacket.ErrorNotice((int) ClubErrorNotice.ClubWithNameAlreadyExists));
             return;
         }
 

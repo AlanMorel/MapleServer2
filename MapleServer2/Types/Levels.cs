@@ -79,7 +79,6 @@ public class Levels
         Session.Send(KeyTablePacket.SendFullOptions(Player.GameOptions));
 
         Player.UpdateSocials();
-
         TrophyManager.OnLevelUp(Player);
         QuestHelper.GetNewQuests(Player);
         return true;

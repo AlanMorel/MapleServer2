@@ -199,8 +199,6 @@ public class ResponseKeyHandler : CommonPacketHandler
         if (party != null)
         {
             player.Party = party;
-            //Player partyPlayer = party.Members.First(x => x.CharacterId == player.CharacterId);
-            //partyPlayer = player;
             party.BroadcastPacketParty(PartyPacket.LoginNotice(player), session);
             session.Send(PartyPacket.Create(party, false));
             party.BroadcastPacketParty(PartyPacket.UpdatePlayer(player));

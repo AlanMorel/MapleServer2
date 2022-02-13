@@ -1,8 +1,4 @@
-﻿using MaplePacketLib2.Tools;
-using MapleServer2.Database;
-using MapleServer2.Packets;
-using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
+﻿using MapleServer2.Database;
 
 namespace MapleServer2.Types;
 

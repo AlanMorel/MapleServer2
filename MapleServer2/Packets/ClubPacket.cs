@@ -50,7 +50,7 @@ public static class ClubPacket
         pWriter.WriteByte((byte) club.Members.Count);
 
         foreach (ClubMember member in club.Members)
-        {            
+        {
             pWriter.WriteByte(0x2);
             pWriter.WriteLong(club.Id);
             WriteClubMember(pWriter, member);
