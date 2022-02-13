@@ -107,17 +107,13 @@ public class GameSession : Session
             DatabaseManager.AuthData.UpdateOnlineCharacterId(authData);
         }
 
-        DatabaseManager.Characters.Update(Player);
-    }
-
-    public void UpdateLogTime()
-    {
         Player.LastLogTime = TimeInfo.Now();
         Player.Account.LastLogTime = TimeInfo.Now();
         if (Player.GuildMember is not null)
         {
             Player.GuildMember.LastLogTimestamp = TimeInfo.Now();
-
         }
+
+        DatabaseManager.Characters.Update(Player);
     }
 }

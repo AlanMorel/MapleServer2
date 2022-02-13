@@ -37,12 +37,6 @@ public class ResponseKeyHandler : CommonPacketHandler
         GameServer.PlayerManager.AddPlayer(player);
         GameServer.BuddyManager.SetFriendSessions(player);
 
-        // Only send buddy login notification if player is not changing channels
-        if (!player.IsMigrating)
-        {
-            player.UpdateBuddies();
-        }
-
         if (player.GuildId != 0)
         {
             Guild guild = GameServer.GuildManager.GetGuildById(player.GuildId);
@@ -52,7 +46,13 @@ public class ResponseKeyHandler : CommonPacketHandler
             player.GuildMember = guildMember;
             session.Send(GuildPacket.UpdateGuild(guild));
             guild.BroadcastPacketGuild(GuildPacket.UpdatePlayer(player));
-            guild.BroadcastPacketGuild(GuildPacket.MemberLoggedIn(player), session);
+        }
+
+        // Only send buddy login notification if player is not changing channels
+        if (!player.IsMigrating)
+        {
+            player.UpdateBuddies();
+            player.Guild?.BroadcastPacketGuild(GuildPacket.MemberLoggedIn(player), session);
         }
 
         // Get Clubs
@@ -63,12 +63,13 @@ public class ResponseKeyHandler : CommonPacketHandler
             Club club = GameServer.ClubManager.GetClubById(member.ClubId);
             club.Members.First(x => x.Player.CharacterId == player.CharacterId).Player = player;
             club.BroadcastPacketClub(ClubPacket.UpdateClub(club));
-            club.BroadcastPacketClub(ClubPacket.LoginNotice(player, club), session);
+            if (!player.IsMigrating)
+            {
+                club.BroadcastPacketClub(ClubPacket.LoginNotice(player, club), session);
+            }
             player.Clubs.Add(club);
             member.Player = player;
         }
-
-        player.IsMigrating = false;
 
         //session.Send(0x27, 0x01); // Meret market related...?
         session.Send(MushkingRoyaleSystemPacket.LoadStats(player.Account.MushkingRoyaleStats));
@@ -199,11 +200,16 @@ public class ResponseKeyHandler : CommonPacketHandler
         if (party != null)
         {
             player.Party = party;
-            party.BroadcastPacketParty(PartyPacket.LoginNotice(player), session);
+            if (!player.IsMigrating)
+            {
+                party.BroadcastPacketParty(PartyPacket.LoginNotice(player), session);
+            }
             session.Send(PartyPacket.Create(party, false));
             party.BroadcastPacketParty(PartyPacket.UpdatePlayer(player));
             party.BroadcastPacketParty(PartyPacket.UpdateDungeonInfo(player));
         }
+
+        player.IsMigrating = false;
 
         // SendUgc: 15 01 00 00 00 00 00 00 00 00 00 00 00 4B 00 00 00
         // SendHomeCommand: 00 E1 0F 26 89 7F 98 3C 26 00 00 00 00 00 00 00 00
