@@ -53,7 +53,7 @@ public class QuitHandler : CommonPacketHandler
 
     private void HandleChangeCharacter(GameSession session)
     {
-        UpdateLogTime(session);
+        session.UpdateLogTime();
         session.FieldManager.RemovePlayer(session);
 
         session.SendFinal(MigrationPacket.GameToLogin(LoginEndpoint, session.Player.Account.AuthData), logoutNotice: true);
@@ -61,18 +61,7 @@ public class QuitHandler : CommonPacketHandler
 
     private static void HandleQuit(GameSession session)
     {
-        UpdateLogTime(session);
+        session.UpdateLogTime();
         session.Disconnect(logoutNotice: true);
-    }
-
-    private static void UpdateLogTime(GameSession session)
-    {
-        session.Player.LastLogTime = TimeInfo.Now();
-        session.Player.Account.LastLogTime = TimeInfo.Now();
-        if (session.Player.GuildMember is not null)
-        {
-            session.Player.GuildMember.LastLogTimestamp = TimeInfo.Now();
-
-        }
     }
 }

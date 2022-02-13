@@ -98,7 +98,7 @@ public static class ClubPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
         pWriter.Write(ClubPacketMode.DeleteUnestablishedClub);
         pWriter.WriteLong(clubId);
-        pWriter.WriteInt(0x4D);
+        pWriter.WriteInt(0x4D); // unk
         return pWriter;
     }
 

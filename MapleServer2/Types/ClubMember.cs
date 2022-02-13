@@ -26,6 +26,4 @@ public class ClubMember
         JoinTimestamp = joinTimestamp;
         ClubId = clubId;
     }
-
-
 }

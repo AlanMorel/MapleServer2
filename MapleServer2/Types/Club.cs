@@ -151,7 +151,6 @@ public class Club
         player.ClubMembers.Remove(member);
         DatabaseManager.ClubMembers.Delete(Id, player.CharacterId);
         DatabaseManager.Clubs.Update(this);
-
     }
 
     public void AssignNewLeader(Player oldLeader)

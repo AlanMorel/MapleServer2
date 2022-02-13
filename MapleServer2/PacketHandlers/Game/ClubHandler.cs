@@ -79,14 +79,14 @@ public class ClubHandler : GamePacketHandler
     private static void HandleCreate(GameSession session, PacketReader packet)
     {
         Party party = GameServer.PartyManager.GetPartyByLeader(session.Player);
-        if (party is null || party.Leader != session.Player)
+        if (party is null || party.Leader.CharacterId != session.Player.CharacterId)
         {
             return;
         }
 
+        int maxClubCount = int.Parse(ConstantsMetadataStorage.GetConstant("ClubMaxCount"));
         // Fail if a party member is offline or if member has joined max amount of clubs
-        if (party.Members.Count != party.Members.Count(x => x.Session.Connected()) ||
-            party.Members.Where(x => x.Clubs.Count >= int.Parse(ConstantsMetadataStorage.GetConstant("ClubMaxCount"))).Any())
+        if (party.Members.Any(x => !x.Session.Connected()) || party.Members.Any(x => x.Clubs.Count >= maxClubCount))
         {
             session.Send(ClubPacket.ErrorNotice((int) ClubErrorNotice.SomePartyMembersCannotBeInvited));
             return;
