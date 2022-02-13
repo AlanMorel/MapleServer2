@@ -92,6 +92,7 @@ public class DatabaseCharacter : DatabaseTable
         MushkingRoyaleStats royaleStats = DatabaseManager.MushkingRoyaleStats.FindById(data.mushking_royale_id);
         List<Medal> medals = DatabaseManager.MushkingRoyaleMedals.FindAllByAccountId(data.account_id);
         Dictionary<int, Trophy> trophies = DatabaseManager.Trophies.FindAllByCharacterId(data.character_id);
+        List<ClubMember> clubMemberships = DatabaseManager.ClubMembers.FindAllClubIdsByCharacterId(data.character_id);
         foreach (KeyValuePair<int, Trophy> trophy in DatabaseManager.Trophies.FindAllByAccountId(data.account_id))
         {
             trophies.Add(trophy.Key, trophy.Value);
@@ -134,6 +135,7 @@ public class DatabaseCharacter : DatabaseTable
             GroupChatId = JsonConvert.DeserializeObject<int[]>(data.group_chat_id),
             GuildApplications = JsonConvert.DeserializeObject<List<GuildApplication>>(data.guild_applications),
             GuildId = data.guild_id ?? 0,
+            ClubMembers = clubMemberships,
             IsDeleted = data.is_deleted,
             Mapleopoly = JsonConvert.DeserializeObject<Mapleopoly>(data.mapleopoly),
             Motto = data.motto,

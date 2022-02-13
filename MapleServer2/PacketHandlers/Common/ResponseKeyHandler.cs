@@ -59,9 +59,7 @@ public class ResponseKeyHandler : CommonPacketHandler
         }
 
         // Get Clubs
-        List<ClubMember> clubMembers = DatabaseManager.ClubMembers.FindAllClubIdsByCharacterId(player.CharacterId);
-        player.ClubMembers = clubMembers;
-        foreach (ClubMember member in clubMembers)
+        foreach (ClubMember member in player.ClubMembers)
         {
             Club club = GameServer.ClubManager.GetClubById(member.ClubId);
             club.Members.First(x => x.Player.CharacterId == player.CharacterId).Player = player;
