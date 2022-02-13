@@ -126,7 +126,7 @@ public static class CharacterListPacket
         pWriter.WriteInt(player.MapId); // Sometimes 0
         pWriter.WriteInt();
         pWriter.WriteShort(player.Levels.Level);
-        pWriter.WriteShort();
+        pWriter.WriteShort(player.ChannelId);
         pWriter.Write(player.Job);
         pWriter.Write(player.JobCode);
         pWriter.WriteInt(player.Stats[StatId.Hp].Total);

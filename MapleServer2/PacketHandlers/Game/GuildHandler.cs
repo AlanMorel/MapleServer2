@@ -207,7 +207,7 @@ public class GuildHandler : GamePacketHandler
         GuildMember member = newGuild.Members.FirstOrDefault(x => x.Player == session.Player);
         session.Send(GuildPacket.UpdateGuild(newGuild));
         session.Send(GuildPacket.MemberBroadcastJoinNotice(member, inviter, false));
-        session.Send(GuildPacket.MemberJoin(session.Player));
+        session.Send(GuildPacket.UpdatePlayer(session.Player));
 
         // Remove any applications
         foreach (GuildApplication application in session.Player.GuildApplications)
@@ -320,7 +320,7 @@ public class GuildHandler : GamePacketHandler
         session.Send(GuildPacket.InviteResponseConfirm(inviter, session.Player, guild, response));
         session.FieldManager.BroadcastPacket(GuildPacket.UpdateGuildTag2(session.Player, guildName));
         guild.BroadcastPacketGuild(GuildPacket.MemberBroadcastJoinNotice(member, inviterName, true));
-        guild.BroadcastPacketGuild(GuildPacket.MemberJoin(session.Player), session);
+        guild.BroadcastPacketGuild(GuildPacket.UpdatePlayer(session.Player), session);
         session.Send(GuildPacket.UpdateGuild(guild));
         TrophyManager.OnGuildJoin(session.Player);
     }
@@ -687,7 +687,7 @@ public class GuildHandler : GamePacketHandler
 
         GuildMember member = guild.Members.FirstOrDefault(x => x.Player == applier);
         guild.BroadcastPacketGuild(GuildPacket.MemberBroadcastJoinNotice(member, session.Player.Name, false));
-        guild.BroadcastPacketGuild(GuildPacket.MemberJoin(applier));
+        guild.BroadcastPacketGuild(GuildPacket.UpdatePlayer(applier));
         guild.BroadcastPacketGuild(GuildPacket.UpdateGuild(guild));
     }
 

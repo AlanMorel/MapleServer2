@@ -95,11 +95,23 @@ public class GameSession : Session
 
             Player.UpdateBuddies();
 
+            foreach (Club club in Player.Clubs)
+            {
+                club?.BroadcastPacketClub(ClubPacket.LogoutNotice(Player, club));
+            }
+
             Player.IsMigrating = false;
 
             AuthData authData = Player.Account.AuthData;
             authData.OnlineCharacterId = 0;
             DatabaseManager.AuthData.UpdateOnlineCharacterId(authData);
+        }
+
+        Player.LastLogTime = TimeInfo.Now();
+        Player.Account.LastLogTime = TimeInfo.Now();
+        if (Player.GuildMember is not null)
+        {
+            Player.GuildMember.LastLogTimestamp = TimeInfo.Now();
         }
 
         DatabaseManager.Characters.Update(Player);

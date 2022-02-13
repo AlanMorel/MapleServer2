@@ -36,6 +36,8 @@ public static class DatabaseManager
     public static DatabaseGuild Guilds { get; } = new();
     public static DatabaseGuildApplication GuildApplications { get; } = new();
     public static DatabaseGuildMember GuildMembers { get; } = new();
+    public static DatabaseClub Clubs { get; } = new();
+    public static DatabaseClubMember ClubMembers { get; } = new();
     public static DatabaseHome Homes { get; } = new();
     public static DatabaseHomeLayout HomeLayouts { get; } = new();
     public static DatabaseHotbar Hotbars { get; } = new();

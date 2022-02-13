@@ -79,7 +79,7 @@ public class LoginHandler : LoginPacketHandler
 
         Logger.Debug("Logging in with account ID: {account.Id}", account.Id);
         session.AccountId = account.Id;
-        account.LastLoginTime = TimeInfo.Now();
+        account.LastLogTime = TimeInfo.Now();
         DatabaseManager.Accounts.Update(account);
 
         switch (mode)

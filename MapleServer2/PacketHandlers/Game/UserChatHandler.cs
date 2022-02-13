@@ -59,7 +59,7 @@ public class UserChatHandler : GamePacketHandler
                 HandleWhisperChat(session, recipient, message, itemLinkPacket);
                 break;
             case ChatType.Club:
-                HandleClubChat( /*session, message, type, clubId, itemLinkPacket*/);
+                HandleClubChat(session, message, type, clubId, itemLinkPacket);
                 break;
             case ChatType.All:
                 HandleChat(session, message, type, itemLinkPacket);
@@ -219,9 +219,20 @@ public class UserChatHandler : GamePacketHandler
         session.Send(ChatPacket.Send(recipientPlayer, message, ChatType.WhisperTo));
     }
 
-    private static void HandleClubChat( /*GameSession session, string message, ChatType type, long clubId, ByteWriter itemLinkPacket*/)
+    private static void HandleClubChat(GameSession session, string message, ChatType type, long clubId, PacketWriter itemLinkPacket)
     {
-        // TODO
+        Club club = GameServer.ClubManager.GetClubById(clubId);
+        if (club is null || !session.Player.Clubs.Contains(club))
+        {
+            return;
+        }
+
+        if (itemLinkPacket is not null)
+        {
+            club.BroadcastPacketClub(itemLinkPacket);
+        }
+
+        club.BroadcastPacketClub(ChatPacket.Send(session.Player, message, type, clubId));
     }
 
     private static void HandleChat(GameSession session, string message, ChatType type, PacketWriter itemLinkPacket)

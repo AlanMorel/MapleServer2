@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "Key": "MaxCharacterSlots",
     "Value": "11"
@@ -58,5 +58,13 @@
   {
     "Key": "ChannelCount",
     "Value": "15"
+  },
+  {
+    "Key": "ClubMaxCount",
+    "Value": "3"
+  },
+  {
+    "Key": "ClubMaxMembers",
+    "Value": "10"
   }
 ]
