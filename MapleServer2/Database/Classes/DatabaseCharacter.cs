@@ -313,7 +313,7 @@ public class DatabaseCharacter : DatabaseTable
         {
             channel_id = channelId,
             instance_id = instanceId,
-            is_migrating = isMigrating,
+            is_migrating = isMigrating
         });
     }
 

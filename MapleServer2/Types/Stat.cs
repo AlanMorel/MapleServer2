@@ -55,7 +55,7 @@ public class Stat
     {
         0 => Bonus,
         1 => Base,
-        _ => Total,
+        _ => Total
     };
 
     public void IncreaseBonus(int amount)

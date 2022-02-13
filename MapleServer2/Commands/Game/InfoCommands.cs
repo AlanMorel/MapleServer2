@@ -159,7 +159,7 @@ public class FindCommand : InGameCommand
         "item",
         "map",
         "npc",
-        "mob",
+        "mob"
     };
 
     public FindCommand()
@@ -172,7 +172,7 @@ public class FindCommand : InGameCommand
         Parameters = new()
         {
             new Parameter<string>("type", "The search type."),
-            new Parameter<string[]>("name", "The search name."),
+            new Parameter<string[]>("name", "The search name.")
         };
         Usage = $"/find [{string.Join("/", Options)}] [name]";
     }

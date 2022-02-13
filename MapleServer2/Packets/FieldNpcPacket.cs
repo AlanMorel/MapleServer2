@@ -19,6 +19,7 @@ public static class FieldNpcPacket
         pWriter.DefaultStatsNpc();
 
         pWriter.WriteByte();
+
         short count = 0;
         pWriter.WriteShort(count); // branch
         for (int i = 0; i < count; i++)
@@ -62,8 +63,9 @@ public static class FieldNpcPacket
         pWriter.WriteLong();
         pWriter.WriteInt();
         pWriter.WriteByte();
-        int count = 0;
-        pWriter.WriteInt(count); // branch
+
+        short count = 0;
+        pWriter.WriteShort(count);
         for (int i = 0; i < count; i++)
         {
             pWriter.WriteInt();
@@ -71,7 +73,7 @@ public static class FieldNpcPacket
             pWriter.WriteInt();
             pWriter.WriteInt();
             pWriter.WriteInt();
-            pWriter.WriteInt();
+            pWriter.WriteInt(); // usually 90000814 (skill id)??
             pWriter.WriteShort();
             pWriter.WriteInt();
             pWriter.WriteByte();
@@ -99,9 +101,26 @@ public static class FieldNpcPacket
 
         pWriter.DefaultStatsMob(mob);
 
+        pWriter.WriteByte();
+        short count = 0;
+        pWriter.WriteShort(count);
+        for (int i = 0; i < count; i++)
+        {
+            pWriter.WriteInt();
+            pWriter.WriteInt();
+            pWriter.WriteInt();
+            pWriter.WriteInt();
+            pWriter.WriteInt();
+            pWriter.WriteInt(); // usually 90000814 (skill id)??
+            pWriter.WriteShort();
+            pWriter.WriteInt();
+            pWriter.WriteByte();
+            pWriter.WriteLong();
+        }
+
         pWriter.WriteLong();
-        pWriter.WriteInt();
-        pWriter.WriteInt(0x0E); // NPC level
+        pWriter.WriteByte();
+        pWriter.WriteInt(mob.Value.Level);
         pWriter.WriteInt();
         pWriter.WriteByte();
 

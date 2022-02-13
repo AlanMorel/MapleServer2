@@ -13,7 +13,7 @@ public static class UgcPacket
         ProfilePicture = 0x0B,
         UpdateUgc = 0x0D,
         SetEndpoint = 0x11,
-        Mode12 = 0x12,
+        Mode12 = 0x12
     }
 
     public static PacketWriter SetEndpoint(string uploadEndpoint, string resourceEndpoint, string locale = "na")

@@ -254,7 +254,7 @@ public class BuffCommand : InGameCommand
 
         SkillCast skillCast = new(id, level);
         if (skillCast.IsBuffToOwner() || skillCast.IsBuffToEntity() || skillCast.IsBuffShield() || skillCast.IsGM() || skillCast.IsGlobal() ||
-            skillCast.IsHealFromBuff())
+            skillCast.IsRecoveryFromBuff())
         {
             Status status = new(skillCast, trigger.Session.Player.FieldPlayer.ObjectId, trigger.Session.Player.FieldPlayer.ObjectId, stacks);
             StatusHandler.Handle(trigger.Session, status);

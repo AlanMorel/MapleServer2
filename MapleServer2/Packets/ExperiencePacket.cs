@@ -10,23 +10,12 @@ public static class ExperiencePacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.EXP_UP);
 
         pWriter.WriteByte();
-        pWriter.WriteInt(expGained);
-        pWriter.WriteInt();
-        pWriter.WriteShort();
+        pWriter.WriteLong(expGained);
+        pWriter.WriteShort(); // means something
         pWriter.WriteLong(expTotal);
         pWriter.WriteLong(restExp);
         pWriter.WriteInt(); // counter? increments after every exp_up
         pWriter.WriteByte();
-
-        return pWriter;
-    }
-
-    public static PacketWriter LevelUp(int playerObjectId, int level)
-    {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.LEVEL_UP);
-
-        pWriter.WriteInt(playerObjectId);
-        pWriter.WriteInt(level);
 
         return pWriter;
     }

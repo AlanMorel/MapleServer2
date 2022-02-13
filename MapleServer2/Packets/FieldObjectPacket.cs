@@ -70,31 +70,50 @@ public static class FieldObjectPacket
         {
             pWriter.WriteByte();
         }
+
         if (flag.HasFlag(FieldObjectUpdate.Move))
         {
             pWriter.Write(player.Coord);
         }
-        if (flag.HasFlag(FieldObjectUpdate.Type3))
+
+        if (flag.HasFlag(FieldObjectUpdate.Level))
         {
-            pWriter.WriteShort();
+            pWriter.WriteShort(player.Value.Levels.Level);
         }
+
         if (flag.HasFlag(FieldObjectUpdate.Type4))
         {
             pWriter.WriteShort();
             pWriter.WriteInt();
         }
+
         if (flag.HasFlag(FieldObjectUpdate.Type5))
         {
             pWriter.WriteUnicodeString("Unknown");
         }
+
         if (flag.HasFlag(FieldObjectUpdate.Type6))
         {
             pWriter.WriteInt();
         }
+
         if (flag.HasFlag(FieldObjectUpdate.Animate))
         {
             pWriter.WriteShort(player.Animation);
         }
+
+        return pWriter;
+    }
+
+    // Temporary packet, we should be using the packet above
+    public static PacketWriter UpdateCharacterLevel(Player player)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_OBJECT);
+
+        pWriter.Write(FieldObjectMode.UpdateEntity);
+        pWriter.WriteInt(player.FieldPlayer.ObjectId);
+        pWriter.Write(FieldObjectUpdate.Level);
+        pWriter.WriteShort(player.Levels.Level);
 
         return pWriter;
     }

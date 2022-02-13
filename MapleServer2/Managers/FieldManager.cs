@@ -248,7 +248,13 @@ public partial class FieldManager
 
         foreach (IFieldObject<HealingSpot> healingSpot in State.HealingSpots.Values)
         {
-            sender.Send(RegionSkillPacket.Send(healingSpot.ObjectId, new(70000018, 1, 0, 1), tileCount: 0, default));
+            SkillCast skillCast = new(70000018, 1)
+            {
+                SkillObjectId = healingSpot.ObjectId,
+                CasterObjectId = healingSpot.ObjectId
+            };
+            skillCast.EffectCoords.Add(healingSpot.Value.Coord.ToFloat());
+            sender.Send(RegionSkillPacket.Send(skillCast));
         }
 
         foreach (IFieldObject<Instrument> instrument in State.Instruments.Values)
@@ -517,6 +523,30 @@ public partial class FieldManager
     public Widget GetWidget(WidgetType type)
     {
         return Widgets.FirstOrDefault(x => x.Type == type);
+    }
+
+    public void AddSkillCast(SkillCast skillCast) => State.AddSkillCast(skillCast);
+
+    public bool RemoveSkillCast(long skillSn, out SkillCast skillCast) => State.RemoveSkillCast(skillSn, out skillCast);
+
+    public void AddRegionSkillEffect(SkillCast skillCast)
+    {
+        int objectId = Interlocked.Increment(ref Counter);
+        skillCast.SkillObjectId = objectId;
+
+        AddSkillCast(skillCast);
+        BroadcastPacket(RegionSkillPacket.Send(skillCast));
+    }
+
+    public bool RemoveRegionSkillEffect(SkillCast skillCast)
+    {
+        if (!RemoveSkillCast(skillCast.SkillSn, out skillCast))
+        {
+            return false;
+        }
+
+        BroadcastPacket(RegionSkillPacket.Remove(skillCast.SkillObjectId));
+        return true;
     }
 
     #endregion

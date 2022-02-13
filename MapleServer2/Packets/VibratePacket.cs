@@ -11,7 +11,7 @@ public static class VibratePacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.VIBRATE);
         pWriter.WriteByte(1);
         pWriter.WriteString(objectHash);
-        pWriter.WriteLong(skillCast.SkillSN);
+        pWriter.WriteLong(skillCast.SkillSn);
         pWriter.WriteInt(skillCast.SkillId);
         pWriter.WriteShort(skillCast.SkillLevel);
         pWriter.WriteByte(); // motion point?

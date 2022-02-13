@@ -15,7 +15,7 @@ public class ItemEnchantHandler : GamePacketHandler
         None = 0,
         BeginEnchant = 0x01,
         Ophelia = 0x04,
-        Peachy = 0x06,
+        Peachy = 0x06
     }
 
     public override void Handle(GameSession session, PacketReader packet)

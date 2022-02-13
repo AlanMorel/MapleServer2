@@ -32,7 +32,7 @@ public class HomeActionPacket
         Add = 0x00,
         Remove = 0x01,
         Update = 0x02,
-        Hit = 0x03,
+        Hit = 0x03
     }
 
     public static PacketWriter SendCubePortalSettings(Cube cube, List<Cube> otherPortals)

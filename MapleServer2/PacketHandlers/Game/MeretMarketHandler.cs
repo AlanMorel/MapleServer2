@@ -344,7 +344,7 @@ public class MeretMarketHandler : GamePacketHandler
 
         Item item = new(marketItem.Item)
         {
-            CreationTime = TimeInfo.Now(),
+            CreationTime = TimeInfo.Now()
         };
         item.Uid = DatabaseManager.Items.Insert(item);
 
@@ -404,7 +404,7 @@ public class MeretMarketHandler : GamePacketHandler
         {
             MeretMarketCurrencyType.Meret => session.Player.Account.RemoveMerets(price),
             MeretMarketCurrencyType.Meso => session.Player.Wallet.Meso.Modify(price),
-            _ => false,
+            _ => false
         };
     }
 

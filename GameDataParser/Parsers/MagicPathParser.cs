@@ -40,8 +40,10 @@ public class MagicPathParser : Exporter<List<MagicPathMetadata>>
                     CoordF controlValue1 = ParseCoordFromString(pathMove.Attributes["controlValue1"]?.Value ?? "0,0,0");
 
                     bool ignoreAdjust = pathMove.Attributes["ignoreAdjustCubePosition"] is null;
+                    bool traceTargetOffsetPos = pathMove.Attributes["traceTargetOffsetPos"]?.Value == "1";
+                    float distance = float.Parse(pathMove.Attributes["distance"]?.Value ?? "0");
 
-                    pathMoves.Add(new(rotation, fireOffsetPosition, direction, controlValue0, controlValue1, ignoreAdjust));
+                    pathMoves.Add(new(rotation, fireOffsetPosition, direction, controlValue0, controlValue1, ignoreAdjust, traceTargetOffsetPos, distance));
                 }
 
                 MagicPathMetadata newMagicPath = new(id, pathMoves);
@@ -52,7 +54,7 @@ public class MagicPathParser : Exporter<List<MagicPathMetadata>>
         return magicPathList;
     }
 
-    public static CoordF ParseCoordWithDuplicateDot(string input)
+    private static CoordF ParseCoordWithDuplicateDot(string input)
     {
         float[] floatArray = new float[input.Length];
 
@@ -64,7 +66,7 @@ public class MagicPathParser : Exporter<List<MagicPathMetadata>>
         return CoordF.From(floatArray[0], floatArray[1], floatArray[2]);
     }
 
-    public static CoordF ParseCoordWithoutLastChar(string input)
+    private static CoordF ParseCoordWithoutLastChar(string input)
     {
         if (input.EndsWith(','))
         {
@@ -74,17 +76,15 @@ public class MagicPathParser : Exporter<List<MagicPathMetadata>>
         return ParseCoordFromString(input);
     }
 
-    public static CoordF ParseCoordFromString(string input)
+    private static CoordF ParseCoordFromString(string input)
     {
         float[] floatArray = Array.ConvertAll(input.Split(","), float.Parse);
 
         if (floatArray.Length < 3)
         {
-            float[] tempFloat = new float[3]
-            {
+            floatArray = new[]{
                 floatArray[0], floatArray[1], 0
             };
-            floatArray = tempFloat;
         }
 
         return CoordF.From(floatArray[0], floatArray[1], floatArray[2]);

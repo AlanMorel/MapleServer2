@@ -7,16 +7,13 @@ namespace MapleServer2.Packets;
 
 public static class SkillUsePacket
 {
-    public static readonly Dictionary<long, SkillCast> SkillCastMap = new();
-
     public static PacketWriter SkillUse(SkillCast skillCast)
     {
-        SkillCastMap[skillCast.SkillSN] = skillCast;
         PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_USE);
 
-        pWriter.WriteLong(skillCast.SkillSN);
+        pWriter.WriteLong(skillCast.SkillSn);
         pWriter.WriteInt(skillCast.ServerTick);
-        pWriter.WriteInt(skillCast.EntityId);
+        pWriter.WriteInt(skillCast.CasterObjectId);
         pWriter.WriteInt(skillCast.SkillId);
         pWriter.WriteShort(skillCast.SkillLevel);
         pWriter.WriteByte();
