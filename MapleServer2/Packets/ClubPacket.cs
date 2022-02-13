@@ -11,22 +11,25 @@ public static class ClubPacket
         UpdateClub = 0x0,
         Establish = 0x1,
         Create = 0x2,
+        DeleteUnestablishedClub = 0x5, // maybe only for establishing?
         InviteSentReceipt = 0x6,
         Invite = 0x7,
         InviteResponse = 0x8,
         LeaderInviteResponse = 0x9,
         LeaveClub = 0xA,
         ChangeBuffReceipt = 0xD,
-        ConfirmCreate = 0xF,
+        ClubProposalInviteResponse = 0xF,
         Disband = 0x10,
         ConfirmInvite = 0x11,
         LeaveNotice = 0x12,
+        LoginNotice = 0x13,
         LogoutNotice = 0x14,
         AssignNewLeader = 0x15,
         ChangeBuff = 0x16,
-        UpdatePlayerClubList = 0x18,
-        LoginNotice = 0x19,
+        UpdateMemberLocation = 0x17,
+        UpdatePlayer = 0x18,
         Rename = 0x1A,
+        ErrorNotice = 0x1D,
         Join = 0x1E
     }
 
@@ -36,41 +39,21 @@ public static class ClubPacket
         pWriter.Write(ClubPacketMode.UpdateClub);
         pWriter.WriteLong(club.Id);
         pWriter.WriteUnicodeString(club.Name);
-        pWriter.WriteLong(club.Leader.AccountId);
-        pWriter.WriteLong(club.Leader.CharacterId);
-        pWriter.WriteUnicodeString(club.Leader.Name);
-        pWriter.WriteLong(); // timestamp
+        pWriter.WriteLong(club.LeaderAccountId);
+        pWriter.WriteLong(club.LeaderCharacterId);
+        pWriter.WriteUnicodeString(club.LeaderName);
+        pWriter.WriteLong(club.CreationTimestamp);
         pWriter.WriteByte(0x2); // 0x1 create, 0x2 update?
         pWriter.WriteInt();
         pWriter.WriteInt();
-        pWriter.WriteLong();
+        pWriter.WriteLong(club.LastNameChangeTimestamp);
         pWriter.WriteByte((byte) club.Members.Count);
 
-        foreach (Player member in club.Members)
-        {
-            // TODO convert this to a method to share with Create
+        foreach (ClubMember member in club.Members)
+        {            
             pWriter.WriteByte(0x2);
             pWriter.WriteLong(club.Id);
-            pWriter.WriteLong(member.AccountId);
-            pWriter.WriteLong(member.CharacterId);
-            pWriter.WriteUnicodeString(member.Name);
-            pWriter.WriteByte();
-            pWriter.Write(member.Job);
-            pWriter.Write(member.JobCode);
-            pWriter.WriteShort(member.Levels.Level);
-            pWriter.WriteInt(member.MapId);
-            pWriter.WriteShort(); // member.Channel
-            pWriter.WriteUnicodeString(member.ProfileUrl);
-            pWriter.WriteInt(); // member house mapId
-            pWriter.WriteInt();
-            pWriter.WriteInt();
-            pWriter.WriteLong(); // member house plot expiration timestamp
-            pWriter.WriteInt(); // combat trophy count
-            pWriter.WriteInt(); // adventure trophy count
-            pWriter.WriteInt(); // lifestyle trophy count
-            pWriter.WriteLong(); // joined timestamp
-            pWriter.WriteLong(); // current timestamp
-            pWriter.WriteByte();
+            WriteClubMember(pWriter, member);
         }
         pWriter.WriteByte(0x1);
         return pWriter;
@@ -94,39 +77,28 @@ public static class ClubPacket
         pWriter.WriteLong(party.Leader.AccountId);
         pWriter.WriteLong(party.Leader.CharacterId);
         pWriter.WriteUnicodeString(party.Leader.Name);
-        pWriter.WriteLong(); // timestamp
+        pWriter.WriteLong(club.CreationTimestamp);
         pWriter.WriteByte(0x1); // 0x1 create, 0x2 update?
         pWriter.WriteInt();
         pWriter.WriteInt();
-        pWriter.WriteLong();
-        pWriter.WriteByte((byte) party.Members.Count);
+        pWriter.WriteLong(club.LastNameChangeTimestamp);
+        pWriter.WriteByte((byte) club.Members.Count);
 
-        foreach (Player member in party.Members)
+        foreach (ClubMember member in club.Members) // originally was party members?
         {
-            // TODO convert this to a method to share with UpdateClub
             pWriter.WriteByte(0x2);
             pWriter.WriteLong(club.Id);
-            pWriter.WriteLong(member.AccountId);
-            pWriter.WriteLong(member.CharacterId);
-            pWriter.WriteUnicodeString(member.Name);
-            pWriter.WriteByte();
-            pWriter.Write(member.Job);
-            pWriter.Write(member.JobCode);
-            pWriter.WriteShort(member.Levels.Level);
-            pWriter.WriteInt(member.MapId);
-            pWriter.WriteShort(); // member.Channel
-            pWriter.WriteUnicodeString(member.ProfileUrl);
-            pWriter.WriteInt(); // player house mapId
-            pWriter.WriteInt();
-            pWriter.WriteInt();
-            pWriter.WriteLong(); // player house plot expiration timestamp
-            pWriter.WriteInt(); // combat trophy count
-            pWriter.WriteInt(); // adventure trophy count
-            pWriter.WriteInt(); // lifestyle trophy count
-            pWriter.WriteLong(); // joined timestamp
-            pWriter.WriteLong(); // current timestamp
-            pWriter.WriteByte();
+            WriteClubMember(pWriter, member);
         }
+        return pWriter;
+    }
+
+    public static PacketWriter DeleteUnestablishedClub(long clubId)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
+        pWriter.Write(ClubPacketMode.DeleteUnestablishedClub);
+        pWriter.WriteLong(clubId);
+        pWriter.WriteInt(0x4D);
         return pWriter;
     }
 
@@ -145,7 +117,7 @@ public static class ClubPacket
         pWriter.Write(ClubPacketMode.Invite);
         pWriter.WriteLong(club.Id);
         pWriter.WriteUnicodeString(club.Name);
-        pWriter.WriteUnicodeString(club.Leader.Name);
+        pWriter.WriteUnicodeString(club.LeaderName);
         pWriter.WriteUnicodeString(other.Name);
         return pWriter;
     }
@@ -156,19 +128,20 @@ public static class ClubPacket
         pWriter.Write(ClubPacketMode.InviteResponse);
         pWriter.WriteLong(club.Id);
         pWriter.WriteUnicodeString(club.Name);
-        pWriter.WriteUnicodeString(club.Leader.Name);
+        pWriter.WriteUnicodeString(club.LeaderName);
         pWriter.WriteUnicodeString(player.Name);
         pWriter.WriteInt(); //00 = accept
         return pWriter;
     }
 
-    public static PacketWriter LeaderInviteResponse(Club club, string invitee, byte response)
+    public static PacketWriter LeaderInviteResponse(Club club, string invitee, bool response)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
         pWriter.Write(ClubPacketMode.LeaderInviteResponse);
         pWriter.WriteLong(club.Id);
         pWriter.WriteUnicodeString(invitee);
-        pWriter.WriteShort(response);
+        pWriter.WriteBool(response);
+        pWriter.WriteByte();
         return pWriter;
     }
 
@@ -190,13 +163,13 @@ public static class ClubPacket
         return pWriter;
     }
 
-    public static PacketWriter ConfirmCreate(long clubId)
+    public static PacketWriter ClubProposalInviteResponse(long clubId, ClubInviteResponse response, string characterName)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
-        pWriter.Write(ClubPacketMode.ConfirmCreate);
+        pWriter.Write(ClubPacketMode.ClubProposalInviteResponse);
         pWriter.WriteLong(clubId);
-        pWriter.WriteInt();
-        pWriter.WriteShort();
+        pWriter.Write(response);
+        pWriter.WriteUnicodeString(characterName);
         return pWriter;
     }
 
@@ -205,40 +178,21 @@ public static class ClubPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
         pWriter.Write(ClubPacketMode.Disband);
         pWriter.WriteLong(club.Id);
-        pWriter.WriteUnicodeString(club.Leader.Name);
+        pWriter.WriteUnicodeString(club.LeaderName);
         pWriter.WriteInt(0xCF); //unk
         return pWriter;
     }
 
-    public static PacketWriter ConfirmInvite(Club club, Player other /*, byte response*/)
+    public static PacketWriter ConfirmInvite(Club club, ClubMember member /*, byte response*/)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
         pWriter.Write(ClubPacketMode.ConfirmInvite);
         pWriter.WriteLong(club.Id);
-        pWriter.WriteUnicodeString(club.Leader.Name);
-        // TODO use method used in the loop inside Create and UpdateClub
+        pWriter.WriteUnicodeString(club.LeaderName);
         pWriter.WriteByte(0x2); //unk
-        pWriter.WriteLong(); //unk
-        pWriter.WriteLong(other.AccountId);
-        pWriter.WriteLong(other.CharacterId);
-        pWriter.WriteUnicodeString(other.Name);
-        pWriter.WriteByte();
-        pWriter.Write(other.Job);
-        pWriter.Write(other.JobCode);
-        pWriter.WriteShort(other.Levels.Level);
-        pWriter.WriteInt(other.MapId);
-        pWriter.WriteShort(); // member.Channel
-        pWriter.WriteUnicodeString(other.ProfileUrl);
-        pWriter.WriteInt(); // player house mapId
-        pWriter.WriteInt();
-        pWriter.WriteInt();
-        pWriter.WriteLong(); // player house plot expiration timestamp
-        pWriter.WriteInt(); // combat trophy count
-        pWriter.WriteInt(); // adventure trophy count
-        pWriter.WriteInt(); // lifestyle trophy count
-        pWriter.WriteLong(); // joined timestamp
-        pWriter.WriteLong(); // current timestamp
-        pWriter.WriteByte();
+        pWriter.WriteLong(club.Id);
+        WriteClubMember(pWriter, member);
+
         return pWriter;
     }
 
@@ -257,17 +211,17 @@ public static class ClubPacket
         pWriter.Write(ClubPacketMode.LogoutNotice);
         pWriter.WriteLong(club.Id);
         pWriter.WriteUnicodeString(player.Name);
-        pWriter.WriteLong(); // current timestamp
+        pWriter.WriteLong(player.LastLogTime);
         return pWriter;
     }
 
-    public static PacketWriter AssignNewLeader(Player player, Club club)
+    public static PacketWriter AssignNewLeader(Player oldLeader, Club club)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
         pWriter.Write(ClubPacketMode.AssignNewLeader);
         pWriter.WriteLong(club.Id);
-        pWriter.WriteUnicodeString(player.Name);
-        pWriter.WriteUnicodeString(); // new leader
+        pWriter.WriteUnicodeString(oldLeader.Name);
+        pWriter.WriteUnicodeString(club.LeaderName);
         pWriter.WriteByte(0x1);
         return pWriter;
     }
@@ -278,33 +232,27 @@ public static class ClubPacket
         pWriter.Write(ClubPacketMode.ChangeBuff);
         pWriter.WriteLong(club.Id);
         pWriter.WriteInt(buffId);
-        pWriter.WriteInt(0x1);
+        pWriter.WriteInt(0x1); // buff level
         return pWriter;
     }
 
-    public static PacketWriter UpdatePlayerClubList(Player player, Club club)
+    public static PacketWriter UpdateMemberLocation(long clubId, string memberName, int mapId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
-        pWriter.Write(ClubPacketMode.UpdatePlayerClubList);
+        pWriter.Write(ClubPacketMode.ChangeBuff);
+        pWriter.WriteLong(clubId);
+        pWriter.WriteUnicodeString(memberName);
+        pWriter.WriteInt(mapId);
+        return pWriter;
+    }
+
+    public static PacketWriter UpdatePlayer(ClubMember member, Club club)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
+        pWriter.Write(ClubPacketMode.UpdatePlayer);
         pWriter.WriteLong(club.Id);
-        pWriter.WriteUnicodeString(player.Name);
-        pWriter.WriteLong(player.AccountId);
-        pWriter.WriteLong(player.CharacterId);
-        pWriter.WriteUnicodeString(player.Name);
-        pWriter.WriteByte();
-        pWriter.Write(player.Job);
-        pWriter.Write(player.JobCode);
-        pWriter.WriteShort(player.Levels.Level);
-        pWriter.WriteInt(player.MapId);
-        pWriter.WriteShort(); // player.Channel
-        pWriter.WriteUnicodeString(player.ProfileUrl);
-        pWriter.WriteInt(); // player house mapId
-        pWriter.WriteInt();
-        pWriter.WriteInt();
-        pWriter.WriteLong(); // player house plot expiration timestamp
-        pWriter.WriteInt(); // combat trophy count
-        pWriter.WriteInt(); // adventure trophy count
-        pWriter.WriteInt(); // lifestyle trophy count
+        pWriter.WriteUnicodeString(member.Player.Name);
+        WriteClubMember(pWriter, member);
         return pWriter;
     }
 
@@ -317,23 +265,57 @@ public static class ClubPacket
         return pWriter;
     }
 
-    public static PacketWriter Rename(Club club, string clubNewName)
+    public static PacketWriter Rename(Club club)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
         pWriter.Write(ClubPacketMode.Rename);
         pWriter.WriteLong(club.Id);
-        pWriter.WriteUnicodeString(clubNewName);
+        pWriter.WriteUnicodeString(club.Name);
         pWriter.WriteLong(); //unk
         return pWriter;
     }
 
-    public static PacketWriter Join(Player player, Club club)
+    public static PacketWriter ErrorNotice(int errorId)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
+        pWriter.Write(ClubPacketMode.ErrorNotice);
+        pWriter.WriteByte(1);
+        pWriter.WriteInt(errorId);
+        return pWriter;
+    }
+
+    public static PacketWriter Join(string memberName, Club club)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
         pWriter.Write(ClubPacketMode.Join);
         pWriter.WriteLong(club.Id);
-        pWriter.WriteUnicodeString(player.Name);
+        pWriter.WriteUnicodeString(memberName);
         pWriter.WriteUnicodeString(club.Name);
         return pWriter;
+    }
+
+    public static void WriteClubMember(PacketWriter pWriter, ClubMember member)
+    {
+        pWriter.WriteLong(member.Player.AccountId);
+        pWriter.WriteLong(member.Player.CharacterId);
+        pWriter.WriteUnicodeString(member.Player.Name);
+        pWriter.WriteByte();
+        pWriter.Write(member.Player.Job);
+        pWriter.Write(member.Player.JobCode);
+        pWriter.WriteShort(member.Player.Levels.Level);
+        pWriter.WriteInt(member.Player.MapId);
+        pWriter.WriteShort(member.Player.ChannelId);
+        pWriter.WriteUnicodeString(member.Player.ProfileUrl);
+        pWriter.WriteInt(member.Player.Account.Home?.PlotMapId ?? 0);
+        pWriter.WriteInt(member.Player.Account.Home?.PlotNumber ?? 0);
+        pWriter.WriteInt(member.Player.Account.Home?.ApartmentNumber ?? 0);
+        pWriter.WriteLong(member.Player.Account.Home?.Expiration ?? 0);
+        foreach (int trophyCategory in member.Player.TrophyCount)
+        {
+            pWriter.WriteInt(trophyCategory);
+        }
+        pWriter.WriteLong(member.JoinTimestamp);
+        pWriter.WriteLong(member.Player.LastLogTime);
+        pWriter.WriteBool(!member.Player.Session?.Connected() ?? true);
     }
 }

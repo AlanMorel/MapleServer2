@@ -18,7 +18,7 @@ public class DatabaseCharacter : DatabaseTable
         {
             account_id = player.AccountId,
             creation_time = player.CreationTime,
-            last_login_time = player.LastLoginTime,
+            last_log_time = player.LastLogTime,
             player.Name,
             gender = (byte) player.Gender,
             player.Awakened,
@@ -37,7 +37,6 @@ public class DatabaseCharacter : DatabaseTable
             game_options_id = player.GameOptions.Id,
             wallet_id = player.Wallet.Id,
             chat_sticker = JsonConvert.SerializeObject(player.ChatSticker),
-            club_id = player.ClubId,
             coord = JsonConvert.SerializeObject(player.SavedCoord),
             emotes = JsonConvert.SerializeObject(player.Emotes),
             favorite_stickers = JsonConvert.SerializeObject(player.FavoriteStickers),
@@ -79,7 +78,7 @@ public class DatabaseCharacter : DatabaseTable
             .Select(
                 "characters.{*}",
                 "levels.{level, exp, rest_exp, prestige_level, prestige_exp, mastery_exp}",
-                "accounts.{username, password_hash, creation_time, last_login_time, character_slots, meret, game_meret, event_meret, meso_token, bank_inventory_id, mushking_royale_id, vip_expiration, meso_market_daily_listings, meso_market_monthly_purchases}",
+                "accounts.{username, password_hash, creation_time, last_log_time, character_slots, meret, game_meret, event_meret, meso_token, bank_inventory_id, mushking_royale_id, vip_expiration, meso_market_daily_listings, meso_market_monthly_purchases}",
                 "game_options.{keybinds, active_hotbar_id}",
                 "wallets.{meso, valor_token, treva, rue, havi_fruit}",
                 "homes.id as home_id",
@@ -129,7 +128,6 @@ public class DatabaseCharacter : DatabaseTable
             Wallet = new Wallet(data.meso, data.valor_token, data.treva, data.rue, data.havi_fruit, session, data.wallet_id),
             Inventory = inventory,
             ChatSticker = JsonConvert.DeserializeObject<List<ChatSticker>>(data.chat_sticker),
-            ClubId = data.club_id,
             SavedCoord = JsonConvert.DeserializeObject<CoordF>(data.coord),
             Emotes = JsonConvert.DeserializeObject<List<int>>(data.emotes),
             FavoriteStickers = JsonConvert.DeserializeObject<List<int>>(data.favorite_stickers),
@@ -169,7 +167,7 @@ public class DatabaseCharacter : DatabaseTable
             .Select(
                 "characters.{*}",
                 "levels.{level, exp, rest_exp, prestige_level, prestige_exp, mastery_exp}",
-                "accounts.{username, password_hash, creation_time, last_login_time, character_slots, meret, game_meret, event_meret}",
+                "accounts.{username, password_hash, creation_time, last_log_time, character_slots, meret, game_meret, event_meret}",
                 "homes.{plot_map_id, plot_number, apartment_number, expiration, id as home_id}")
             .FirstOrDefault());
     }
@@ -187,7 +185,7 @@ public class DatabaseCharacter : DatabaseTable
             .Select(
                 "characters.{*}",
                 "levels.{level, exp, rest_exp, prestige_level, prestige_exp, mastery_exp}",
-                "accounts.{username, password_hash, creation_time, last_login_time, character_slots, meret, game_meret, event_meret}",
+                "accounts.{username, password_hash, creation_time, last_log_time, character_slots, meret, game_meret, event_meret}",
                 "homes.{plot_map_id, plot_number, apartment_number, expiration, id as home_id}")
             .FirstOrDefault());
     }
@@ -205,7 +203,7 @@ public class DatabaseCharacter : DatabaseTable
             .Select(
                 "characters.{*}",
                 "levels.{level, exp, rest_exp, prestige_level, prestige_exp, mastery_exp}",
-                "accounts.{username, password_hash, creation_time, last_login_time, character_slots, meret, game_meret, event_meret}",
+                "accounts.{username, password_hash, creation_time, last_log_time, character_slots, meret, game_meret, event_meret}",
                 "homes.{plotmap_id, plot_number, apartment_number, expiration, id as home_id}")
             .FirstOrDefault());
     }
@@ -269,7 +267,6 @@ public class DatabaseCharacter : DatabaseTable
             max_skill_tabs = player.MaxSkillTabs,
             active_skill_tab_id = player.ActiveSkillTabId,
             chat_sticker = JsonConvert.SerializeObject(player.ChatSticker),
-            club_id = player.ClubId,
             coord = JsonConvert.SerializeObject(player.SavedCoord),
             emotes = JsonConvert.SerializeObject(player.Emotes),
             favorite_stickers = JsonConvert.SerializeObject(player.FavoriteStickers),

@@ -20,6 +20,7 @@ public static class PartyPacket
         SetLeader = 0x8,
         Create = 0x9,
         Invite = 0xB,
+        UpdateMemberLocation = 0xC,
         UpdatePlayer = 0xD,
         UpdateDungeonInfo = 0xE,
         UpdateHitpoints = 0x13,
@@ -80,7 +81,7 @@ public static class PartyPacket
 
         foreach (Player member in party.Members)
         {
-            pWriter.WriteBool(!member.Session.Connected());
+            pWriter.WriteBool(!member.Session?.Connected() ?? false);
             CharacterListPacket.WriteCharacter(member, pWriter);
             WritePartyDungeonInfo(pWriter);
         }
@@ -134,6 +135,16 @@ public static class PartyPacket
         pWriter.Write(PartyPacketMode.Invite);
         pWriter.WriteUnicodeString(sender.Name);
         pWriter.WriteInt(party.Id);
+        return pWriter;
+    }
+
+    public static PacketWriter UpdateMemberLocation(Player player)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+        pWriter.Write(PartyPacketMode.UpdateMemberLocation);
+        pWriter.WriteLong(player.CharacterId);
+        CharacterListPacket.WriteCharacter(player, pWriter);
+        WritePartyDungeonInfo(pWriter);
         return pWriter;
     }
 

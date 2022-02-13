@@ -50,6 +50,7 @@ public class Levels
         Session.Send(ExperiencePacket.ExpUp(0, Exp, 0));
         Session.Send(ExperiencePacket.LevelUp(FieldPlayer.ObjectId, Level));
 
+        Player.UpdateSocials();
         QuestHelper.GetNewQuests(Player);
     }
 
@@ -69,6 +70,8 @@ public class Levels
 
         Session.FieldManager.BroadcastPacket(ExperiencePacket.LevelUp(FieldPlayer.ObjectId, Level));
         Session.Send(StatPacket.SetStats(FieldPlayer));
+
+        Player.UpdateSocials();
 
         QuestHelper.GetNewQuests(Player);
         return true;

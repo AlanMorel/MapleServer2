@@ -95,6 +95,11 @@ public class GameSession : Session
 
             Player.UpdateBuddies();
 
+            foreach (Club club in Player.Clubs)
+            {
+                club?.BroadcastPacketClub(ClubPacket.LogoutNotice(Player, club));
+            }
+
             Player.IsMigrating = false;
 
             AuthData authData = Player.Account.AuthData;

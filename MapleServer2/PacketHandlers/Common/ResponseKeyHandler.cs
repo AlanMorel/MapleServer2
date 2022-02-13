@@ -48,11 +48,24 @@ public class ResponseKeyHandler : CommonPacketHandler
             Guild guild = GameServer.GuildManager.GetGuildById(player.GuildId);
             player.Guild = guild;
             GuildMember guildMember = guild.Members.First(x => x.Id == player.CharacterId);
-            guildMember.Player.Session = session;
+            guildMember.Player = player;
             player.GuildMember = guildMember;
             session.Send(GuildPacket.UpdateGuild(guild));
-            guild.BroadcastPacketGuild(GuildPacket.MemberJoin(player));
+            guild.BroadcastPacketGuild(GuildPacket.UpdatePlayer(player));
             guild.BroadcastPacketGuild(GuildPacket.MemberLoggedIn(player), session);
+        }
+
+        // Get Clubs
+        List<ClubMember> clubMembers = DatabaseManager.ClubMembers.FindAllClubIdsByCharacterId(player.CharacterId);
+        player.ClubMembers = clubMembers;
+        foreach (ClubMember member in clubMembers)
+        {
+            Club club = GameServer.ClubManager.GetClubById(member.ClubId);
+            club.Members.First(x => x.Player.CharacterId == player.CharacterId).Player = player;
+            club.BroadcastPacketClub(ClubPacket.UpdateClub(club));
+            club.BroadcastPacketClub(ClubPacket.LoginNotice(player, club), session);
+            player.Clubs.Add(club);
+            member.Player = player;
         }
 
         player.IsMigrating = false;
@@ -186,8 +199,12 @@ public class ResponseKeyHandler : CommonPacketHandler
         if (party != null)
         {
             player.Party = party;
+            //Player partyPlayer = party.Members.First(x => x.CharacterId == player.CharacterId);
+            //partyPlayer = player;
             party.BroadcastPacketParty(PartyPacket.LoginNotice(player), session);
             session.Send(PartyPacket.Create(party, false));
+            party.BroadcastPacketParty(PartyPacket.UpdatePlayer(player));
+            party.BroadcastPacketParty(PartyPacket.UpdateDungeonInfo(player));
         }
 
         // SendUgc: 15 01 00 00 00 00 00 00 00 00 00 00 00 4B 00 00 00

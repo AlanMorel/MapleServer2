@@ -25,7 +25,7 @@ public class Player
     public long AccountId { get; set; }
     public long CharacterId { get; set; }
     public long CreationTime { get; set; }
-    public long LastLoginTime { get; set; }
+    public long LastLogTime { get; set; }
     private long OnlineTime { get; set; }
     public bool IsDeleted;
 
@@ -119,8 +119,8 @@ public class Player
 
     public Party Party;
 
-    public long ClubId;
-    // TODO make this as an array
+    public List<ClubMember> ClubMembers = new();
+    public List<Club> Clubs = new();
 
     public int[] GroupChatId;
 
@@ -183,7 +183,7 @@ public class Player
         Motto = "Motto";
         ProfileUrl = "";
         CreationTime = TimeInfo.Now();
-        LastLoginTime = TimeInfo.Now();
+        LastLogTime = TimeInfo.Now();
         TitleId = 0;
         InsigniaId = 0;
         Titles = new();
@@ -265,6 +265,17 @@ public class Player
         });
     }
 
+    public void UpdateSocials()
+    {
+        Party?.BroadcastPacketParty(PartyPacket.UpdatePlayer(this));
+        Guild?.BroadcastPacketGuild(GuildPacket.UpdatePlayer(this));
+        foreach(Club club in Clubs)
+        {
+            ClubMember membership = ClubMembers.First(x => x.ClubId == club.Id);
+            club?.BroadcastPacketClub(ClubPacket.UpdatePlayer(membership, club));
+        }
+    }
+
     public void Warp(int mapId, CoordF? coord = null, CoordF? rotation = null, long instanceId = 1)
     {
         UpdateCoords(mapId, instanceId, coord, rotation);
@@ -273,6 +284,12 @@ public class Player
 
         DatabaseManager.Characters.Update(this);
         Session.Send(RequestFieldEnterPacket.RequestEnter(FieldPlayer));
+        Party?.BroadcastPacketParty(PartyPacket.UpdateMemberLocation(this));
+        Guild?.BroadcastPacketGuild(GuildPacket.UpdateMemberLocation(Name, MapId));
+        foreach (Club club in Clubs)
+        {
+            club?.BroadcastPacketClub(ClubPacket.UpdateMemberLocation(club.Id, Name, MapId));
+        }
     }
 
     public void WarpGameToGame(int mapId, long instanceId, CoordF? coord = null, CoordF? rotation = null)
@@ -418,7 +435,7 @@ public class Player
             while (!OnlineCTS.IsCancellationRequested)
             {
                 OnlineTime += 1;
-                LastLoginTime = TimeInfo.Now();
+                LastLogTime = TimeInfo.Now();
                 TrophyManager.OnPlayTimeTick(this);
                 await Task.Delay(60000);
             }

@@ -4,6 +4,7 @@ using MapleServer2.Constants;
 using MapleServer2.Network;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Common;
 
@@ -52,6 +53,7 @@ public class QuitHandler : CommonPacketHandler
 
     private void HandleChangeCharacter(GameSession session)
     {
+        UpdateLogTime(session);
         session.FieldManager.RemovePlayer(session);
 
         session.SendFinal(MigrationPacket.GameToLogin(LoginEndpoint, session.Player.Account.AuthData), logoutNotice: true);
@@ -59,6 +61,18 @@ public class QuitHandler : CommonPacketHandler
 
     private static void HandleQuit(GameSession session)
     {
+        UpdateLogTime(session);
         session.Disconnect(logoutNotice: true);
+    }
+
+    private static void UpdateLogTime(GameSession session)
+    {
+        session.Player.LastLogTime = TimeInfo.Now();
+        session.Player.Account.LastLogTime = TimeInfo.Now();
+        if (session.Player.GuildMember is not null)
+        {
+            session.Player.GuildMember.LastLogTimestamp = TimeInfo.Now();
+
+        }
     }
 }

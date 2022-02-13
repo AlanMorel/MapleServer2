@@ -25,7 +25,7 @@ CREATE TABLE `accounts`
     `username`                      varchar(25)  NOT NULL,
     `password_hash`                 varchar(255) NOT NULL,
     `creation_time`                 bigint       NOT NULL,
-    `last_login_time`               bigint       NOT NULL,
+    `last_log_time`                 bigint       NOT NULL,
     `character_slots`               int          NOT NULL,
     `meret`                         bigint DEFAULT NULL,
     `game_meret`                    bigint DEFAULT NULL,
@@ -115,7 +115,7 @@ CREATE TABLE `characters`
     `character_id`             bigint           NOT NULL AUTO_INCREMENT,
     `account_id`               bigint           NOT NULL,
     `creation_time`            bigint           NOT NULL,
-    `last_login_time`          bigint           NOT NULL,
+    `last_log_time`            bigint           NOT NULL,
     `name`                     varchar(25)      NOT NULL,
     `gender`                   tinyint unsigned NOT NULL,
     `awakened`                 tinyint(1)       NOT NULL,
@@ -134,7 +134,6 @@ CREATE TABLE `characters`
     `game_options_id`          bigint                    DEFAULT NULL,
     `wallet_id`                bigint                    DEFAULT NULL,
     `chat_sticker`             text,
-    `club_id`                  bigint           NOT NULL,
     `coord`                    text             NOT NULL,
     `emotes`                   text,
     `favorite_stickers`        text,
@@ -252,7 +251,7 @@ CREATE TABLE `guild_members`
     `daily_donation_count` tinyint unsigned NOT NULL,
     `attendance_timestamp` bigint           NOT NULL,
     `join_timestamp`       bigint           NOT NULL,
-    `last_login_timestamp` bigint           NOT NULL,
+    `last_log_timestamp`   bigint           NOT NULL,
     `guild_id`             bigint      DEFAULT NULL,
     `motto`                varchar(50) DEFAULT '',
     PRIMARY KEY (`id`),
@@ -296,6 +295,47 @@ CREATE TABLE `guilds`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
+
+--
+-- Table structure for table `clubs`
+--
+
+DROP TABLE IF EXISTS `clubs`;
+CREATE TABLE `clubs`
+(
+    `id`                            bigint           NOT NULL AUTO_INCREMENT,
+    `name`                          varchar(25)      NOT NULL,
+    `creation_timestamp`            bigint           NOT NULL,
+    `last_name_change_timestamp`    bigint           NOT NULL,
+    `leader_account_id`             bigint           NOT NULL,
+    `leader_character_id`           bigint           NOT NULL,
+    `leader_name`                   varchar(50)      NOT NULL,
+    `is_established`                tinyint(1)       NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY `ix_clubs_leadercharacterid` (`leader_character_id`),
+    KEY `ix_clubs_leaderaccountid` (`leader_account_id`),
+    CONSTRAINT `fk_clubs_characters_leadercharacterid` FOREIGN KEY (`leader_character_id`) REFERENCES `characters` (`character_id`) ON DELETE RESTRICT,
+    CONSTRAINT `fk_clubs_characters_leaderaccountid` FOREIGN KEY (`leader_account_id`) REFERENCES `accounts` (`id`) ON DELETE RESTRICT
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci;
+
+--
+-- Table structure for table `clubs_members`
+--
+
+DROP TABLE IF EXISTS `club_members`;
+CREATE TABLE `club_members`
+(
+    `character_id`       bigint         NOT NULL,
+    `club_id`            bigint         NOT NULL,
+    `join_timestamp`     bigint         NOT NULL,
+    CONSTRAINT `club_ids_pk` PRIMARY KEY (`club_id`,`character_id`),
+    CONSTRAINT `club_ids_FK` FOREIGN KEY (`character_id`) REFERENCES `characters`(`character_id`)
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Table structure for table `homelayouts`
