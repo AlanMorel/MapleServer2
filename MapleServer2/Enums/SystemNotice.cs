@@ -2,6 +2,7 @@
 
 public enum SystemNotice
 {
+    None = 0x0,
     ChooseYourName = 0x1,
     Enter2Letters = 0xB,
     CharacterCannotBeCreated = 0xC,

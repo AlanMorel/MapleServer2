@@ -39,7 +39,6 @@ public class FieldEnterHandler : GamePacketHandler
         session.Send(EmotePacket.LoadEmotes(player));
         session.Send(ChatStickerPacket.LoadChatSticker(player));
 
-        session.Send(HomeCommandPacket.LoadHome(player));
         session.Send(ResponseCubePacket.DecorationScore(account.Home));
         session.Send(ResponseCubePacket.LoadHome(player.FieldPlayer.ObjectId, player.Account.Home));
         session.Send(ResponseCubePacket.ReturnMap(player.ReturnMapId));
