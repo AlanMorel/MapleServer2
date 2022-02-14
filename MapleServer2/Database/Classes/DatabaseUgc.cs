@@ -3,11 +3,11 @@ using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes;
 
-public class DatabaseUGC : DatabaseTable
+public class DatabaseUgc : DatabaseTable
 {
-    public DatabaseUGC() : base("ugc") { }
+    public DatabaseUgc() : base("ugc") { }
 
-    public long Insert(UGC ugc)
+    public long Insert(Ugc ugc)
     {
         return QueryFactory.Query(TableName).InsertGetId<long>(new
         {
@@ -19,11 +19,12 @@ public class DatabaseUGC : DatabaseTable
             character_name = ugc.CharacterName,
             account_id = ugc.AccountId,
             creation_time = ugc.CreationTime,
-            sale_price = ugc.SalePrice
+            sale_price = ugc.SalePrice,
+            type = ugc.Type
         });
     }
 
-    public void Update(UGC ugc)
+    public void Update(Ugc ugc)
     {
         QueryFactory.Query(TableName).Where("uid", ugc.Uid).Update(new
         {
@@ -36,7 +37,7 @@ public class DatabaseUGC : DatabaseTable
         });
     }
 
-    public UGC FindByUid(long uid)
+    public Ugc FindByUid(long uid)
     {
         dynamic result = QueryFactory.Query(TableName).Where("uid", uid).FirstOrDefault();
         if (result == null)
@@ -54,7 +55,8 @@ public class DatabaseUGC : DatabaseTable
             CharacterName = result.character_name,
             AccountId = result.account_id,
             CreationTime = result.creation_time,
-            SalePrice = result.sale_price
+            SalePrice = result.sale_price,
+            Type = (UgcType) result.type
         };
     }
 

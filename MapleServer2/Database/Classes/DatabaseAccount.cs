@@ -14,7 +14,7 @@ public class DatabaseAccount : DatabaseTable
             username = account.Username,
             password_hash = account.PasswordHash,
             creation_time = account.CreationTime,
-            last_login_time = account.LastLoginTime,
+            last_log_time = account.LastLogTime,
             character_slots = account.CharacterSlots,
             meret = account.Meret.Amount,
             game_meret = account.GameMeret.Amount,
@@ -64,7 +64,7 @@ public class DatabaseAccount : DatabaseTable
     {
         QueryFactory.Query(TableName).Where("id", account.Id).Update(new
         {
-            last_login_time = account.LastLoginTime,
+            last_log_time = account.LastLogTime,
             character_slots = account.CharacterSlots,
             meret = account.Meret.Amount,
             game_meret = account.GameMeret.Amount,

@@ -3,9 +3,9 @@ using MapleServer2.Constants;
 
 namespace MapleServer2.Packets;
 
-public class EnterUGCMapPacket
+public static class EnterUgcMapPacket
 {
-    private enum EnterUGCMapMode : byte
+    private enum EnterUgcMapMode : byte
     {
         RequestPassword = 0x03,
         WrongPassword = 0x04
@@ -14,7 +14,7 @@ public class EnterUGCMapPacket
     public static PacketWriter RequestPassword(long accountId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ENTER_UGC_MAP);
-        pWriter.Write(EnterUGCMapMode.RequestPassword);
+        pWriter.Write(EnterUgcMapMode.RequestPassword);
         pWriter.WriteInt();
         pWriter.WriteLong();
         pWriter.WriteLong(accountId);
@@ -27,7 +27,7 @@ public class EnterUGCMapPacket
     public static PacketWriter WrongPassword(long accountId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ENTER_UGC_MAP);
-        pWriter.Write(EnterUGCMapMode.WrongPassword);
+        pWriter.Write(EnterUgcMapMode.WrongPassword);
         pWriter.WriteInt();
         pWriter.WriteLong();
         pWriter.WriteLong(accountId);

@@ -31,7 +31,8 @@ public class Home
     public List<int> InteriorRewardsClaimed { get; set; }
     public List<HomeLayout> Layouts;
 
-    private readonly long[] DecorationExpTable = {
+    private readonly long[] DecorationExpTable =
+    {
         0, 100, 300, 1000, 2100, 5500, 7700, 9900, 13200, 16500
     };
 
@@ -117,15 +118,16 @@ public class Home
             exp -= DecorationExpTable[DecorationLevel];
             DecorationLevel++;
         }
+
         DecorationExp += exp;
     }
 
-    public Item AddWarehouseItem(GameSession session, int itemId, int amount, Item item = default)
+    public Item AddWarehouseItem(GameSession session, int itemId, int amount, Item item = null)
     {
         Item furnishingItem = WarehouseInventory.Values.FirstOrDefault(x => x.Id == itemId);
-        if (furnishingItem == default)
+        if (furnishingItem is null)
         {
-            furnishingItem = item == default ? new(itemId, amount) : item;
+            furnishingItem = item ?? new(itemId, amount);
             WarehouseInventory[furnishingItem.Uid] = furnishingItem;
             session.Send(WarehouseInventoryPacket.Load(furnishingItem, WarehouseInventory.Values.Count));
             session.Send(WarehouseInventoryPacket.Count(WarehouseInventory.Values.Count + 1));
@@ -135,6 +137,21 @@ public class Home
             WarehouseInventory[furnishingItem.Uid].Amount += amount;
             session.Send(WarehouseInventoryPacket.UpdateAmount(furnishingItem.Uid, furnishingItem.Amount));
         }
+
+        session.Send(WarehouseInventoryPacket.GainItemMessage(item, amount));
+
         return furnishingItem;
+    }
+
+    public Item AddWarehouseUgcItem(GameSession session, Item item)
+    {
+        WarehouseInventory.Add(item.Uid, item);
+        session.Send(WarehouseInventoryPacket.Load(item, WarehouseInventory.Values.Count));
+        session.Send(WarehouseInventoryPacket.Count(WarehouseInventory.Values.Count + 1));
+
+        // TODO: If inventory already contains the same design, don't send the message
+        session.Send(WarehouseInventoryPacket.GainItemMessage(item, 1));
+
+        return item;
     }
 }

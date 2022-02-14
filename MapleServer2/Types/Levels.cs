@@ -51,6 +51,7 @@ public class Levels
         Session.FieldManager.BroadcastPacket(LevelUpPacket.LevelUp(FieldPlayer.ObjectId, Level));
         Session.FieldManager.BroadcastPacket(FieldObjectPacket.UpdateCharacterLevel(Player));
 
+        Player.UpdateSocials();
         QuestHelper.GetNewQuests(Player);
     }
 
@@ -77,6 +78,7 @@ public class Levels
 
         Session.Send(KeyTablePacket.SendFullOptions(Player.GameOptions));
 
+        Player.UpdateSocials();
         TrophyManager.OnLevelUp(Player);
         QuestHelper.GetNewQuests(Player);
         return true;

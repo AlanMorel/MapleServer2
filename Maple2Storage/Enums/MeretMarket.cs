@@ -4,7 +4,7 @@ public enum MeretMarketSection
 {
     PremiumMarket = 100000,
     RedMeretMarket = 100001,
-    UGCMarket = 110000
+    UgcMarket = 110000
 }
 
 public enum MeretMarketCategory

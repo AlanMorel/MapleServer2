@@ -11,7 +11,7 @@ public class Account
     public string Username { get; set; }
     public string PasswordHash { get; set; }
     public long CreationTime { get; set; }
-    public long LastLoginTime { get; set; }
+    public long LastLogTime { get; set; }
     public int CharacterSlots { get; set; }
     public long VIPExpiration { get; set; }
 
@@ -40,7 +40,7 @@ public class Account
         Username = data.username;
         PasswordHash = data.password_hash;
         CreationTime = data.creation_time;
-        LastLoginTime = data.last_login_time;
+        LastLogTime = data.last_log_time;
         CharacterSlots = data.character_slots;
         Meret = new(CurrencyType.Meret, data.meret, gameSession);
         GameMeret = new(CurrencyType.GameMeret, data.game_meret, gameSession);
@@ -83,7 +83,7 @@ public class Account
         Username = username;
         PasswordHash = passwordHash;
         CreationTime = TimeInfo.Now() + Environment.TickCount;
-        LastLoginTime = TimeInfo.Now();
+        LastLogTime = TimeInfo.Now();
         CharacterSlots = 7;
         Meret = new(CurrencyType.Meret, 0);
         GameMeret = new(CurrencyType.GameMeret, 0);

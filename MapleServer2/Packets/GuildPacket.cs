@@ -32,7 +32,8 @@ public static class GuildPacket
         GuildNoticeChange = 0x1A,
         UpdateRankNotice = 0x1D,
         ListGuildUpdate = 0x1E,
-        MemberJoin = 0x20,
+        UpdateMemberLocation = 0x1F,
+        UpdatePlayer = 0x20,
         GuildNameChange = 0x22,
         FinishCheckIn = 0x24,
         BattleMatchmaking = 0x2A,
@@ -110,7 +111,7 @@ public static class GuildPacket
             WriteGuildMember(pWriter, member.Player);
             pWriter.WriteUnicodeString(member.Motto);
             pWriter.WriteLong(member.JoinTimestamp);
-            pWriter.WriteLong(member.LastLoginTimestamp); // last seen timestamp
+            pWriter.WriteLong(member.LastLogTimestamp);
             pWriter.WriteLong(member.AttendanceTimestamp);
             pWriter.WriteInt();
             pWriter.WriteInt();
@@ -405,10 +406,19 @@ public static class GuildPacket
         return pWriter;
     }
 
-    public static PacketWriter MemberJoin(Player player)
+    public static PacketWriter UpdateMemberLocation(string playerName, int mapId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
-        pWriter.Write(GuildPacketMode.MemberJoin);
+        pWriter.Write(GuildPacketMode.UpdateMemberLocation);
+        pWriter.WriteUnicodeString(playerName);
+        pWriter.WriteInt(mapId);
+        return pWriter;
+    }
+
+    public static PacketWriter UpdatePlayer(Player player)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
+        pWriter.Write(GuildPacketMode.UpdatePlayer);
         pWriter.WriteUnicodeString(player.Name);
         WriteGuildMember(pWriter, player);
         return pWriter;
