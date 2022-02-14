@@ -170,8 +170,8 @@ public class GotoCoordCommand : InGameCommand
         IFieldActor<Player> fieldPlayer = trigger.Session.Player.FieldPlayer;
         if (coordF == default)
         {
-            trigger.Session.SendNotice($"Coord: {fieldPlayer.Coord.ToString()}");
-            trigger.Session.SendNotice($"Closest Block: {Block.ClosestBlock(fieldPlayer.Coord).ToString()}");
+            trigger.Session.SendNotice($"Coord: {fieldPlayer.Coord}");
+            trigger.Session.SendNotice($"Closest Block: {Block.ClosestBlock(fieldPlayer.Coord)}");
             return;
         }
 
