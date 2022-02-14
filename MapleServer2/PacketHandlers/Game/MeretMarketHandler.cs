@@ -107,20 +107,31 @@ public class MeretMarketHandler : GamePacketHandler
         string description = packet.ReadUnicodeString();
         long listingFee = packet.ReadLong();
 
+        Item item = null;
+
         // TODO: Check if item is a ugc block and not an item. Find item from their block inventory
-        if (!session.Player.Inventory.Items.ContainsKey(itemUid))
+        if (session.Player.Inventory.Items.ContainsKey(itemUid))
+        {
+            item = session.Player.Inventory.Items[itemUid];
+        }
+        else if (session.Player.Account.Home.WarehouseInventory.ContainsKey(itemUid))
+        {
+            item = session.Player.Account.Home.WarehouseInventory[itemUid];
+        }
+
+        if (item is null)
         {
             return;
         }
 
-        Item item = session.Player.Inventory.Items[itemUid];
+        //Item item = session.Player.Inventory.Items[itemUid];
 
         if (item.Ugc is null || item.Ugc.CharacterId != session.Player.CharacterId)
         {
             return;
         }
 
-        if (salePrice < item.Ugc.SalePrice || salePrice > long.Parse(ConstantsMetadataStorage.GetConstant("UgcShopSellMaxPrice")))
+        if (salePrice < item.Ugc.SalePrice || salePrice > long.Parse(ConstantsMetadataStorage.GetConstant("UGCShopSellMaxPrice")))
         {
             return;
         }

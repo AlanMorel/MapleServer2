@@ -465,15 +465,15 @@ public class Player
 
     public void GetMeretMarketPersonalListings()
     {
-        List<UGCMarketItem> items = GameServer.UGCMarketManager.GetItemsByCharacterId(CharacterId);
+        List<UgcMarketItem> items = GameServer.UgcMarketManager.GetItemsByCharacterId(CharacterId);
 
         // TODO: Possibly a better way to implement updating item status?
-        foreach (UGCMarketItem item in items)
+        foreach (UgcMarketItem item in items)
         {
-            if (item.ListingExpirationTimestamp < TimeInfo.Now() && item.Status == UGCMarketListingStatus.Active)
+            if (item.ListingExpirationTimestamp < TimeInfo.Now() && item.Status == UgcMarketListingStatus.Active)
             {
-                item.Status = UGCMarketListingStatus.Expired;
-                DatabaseManager.UGCMarketItems.Update(item);
+                item.Status = UgcMarketListingStatus.Expired;
+                DatabaseManager.UgcMarketItems.Update(item);
             }
         }
         Session.Send(MeretMarketPacket.LoadPersonalListings(items));
@@ -481,7 +481,7 @@ public class Player
 
     public void GetMeretMarketSales()
     {
-        List<UGCMarketSale> sales = GameServer.UGCMarketManager.GetSalesByCharacterId(CharacterId);
+        List<UgcMarketSale> sales = GameServer.UgcMarketManager.GetSalesByCharacterId(CharacterId);
         Session.Send(MeretMarketPacket.LoadSales(sales));
     }
 }

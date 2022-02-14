@@ -50,7 +50,7 @@ public class DatabaseMeretMarket : DatabaseTable
         return item;
     }
 
-    private MeretMarketItem ReadAdditionalQuantityMarketItem(dynamic data)
+    private static MeretMarketItem ReadAdditionalQuantityMarketItem(dynamic data)
     {
         return new(data);
     }
