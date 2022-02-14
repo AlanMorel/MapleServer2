@@ -109,7 +109,6 @@ public class MeretMarketHandler : GamePacketHandler
 
         Item item = null;
 
-        // TODO: Check if item is a ugc block and not an item. Find item from their block inventory
         if (session.Player.Inventory.Items.ContainsKey(itemUid))
         {
             item = session.Player.Inventory.Items[itemUid];
@@ -123,8 +122,6 @@ public class MeretMarketHandler : GamePacketHandler
         {
             return;
         }
-
-        //Item item = session.Player.Inventory.Items[itemUid];
 
         if (item.Ugc is null || item.Ugc.CharacterId != session.Player.CharacterId)
         {
@@ -303,11 +300,6 @@ public class MeretMarketHandler : GamePacketHandler
         session.Send(MeretMarketPacket.LoadUgcShopCategory(items));
     }
 
-    private static void HandleOpenRedMeretMarket()
-    {
-
-    }
-
     private static void HandlePurchase(GameSession session, PacketReader packet)
     {
         byte quantity = packet.ReadByte();
@@ -447,7 +439,6 @@ public class MeretMarketHandler : GamePacketHandler
             case 2:
                 break;
         }
-
     }
 
     private static void HandleOpenDesignShop(GameSession session)
