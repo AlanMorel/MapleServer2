@@ -14,6 +14,10 @@ public class DatabaseMeretMarket : DatabaseTable
         IEnumerable<dynamic> results = QueryFactory.Query(TableName).Where("category", (int) category).Get();
         foreach (dynamic data in results)
         {
+            if (data.parent_market_id != 0)
+            {
+                continue;
+            }
             MeretMarketItem meretMarketItem = ReadMeretMarketItem(data);
             if (meretMarketItem.BannerId != 0)
             {
@@ -31,7 +35,22 @@ public class DatabaseMeretMarket : DatabaseTable
         return ReadMeretMarketItem(QueryFactory.Query(TableName).Where("market_id", id).Get().FirstOrDefault());
     }
 
-    private static MeretMarketItem ReadMeretMarketItem(dynamic data)
+    private MeretMarketItem ReadMeretMarketItem(dynamic data)
+    {
+        MeretMarketItem item = new(data);
+
+        //Find additional quantities
+        IEnumerable<dynamic> results = QueryFactory.Query(TableName).Where("parent_market_id", item.MarketId).Get();
+        foreach (dynamic result in results)
+        {
+            MeretMarketItem meretMarketItem = ReadAdditionalQuantityMarketItem(result);
+            item.AdditionalQuantities.Add(meretMarketItem);
+        }
+
+        return item;
+    }
+
+    private MeretMarketItem ReadAdditionalQuantityMarketItem(dynamic data)
     {
         return new(data);
     }

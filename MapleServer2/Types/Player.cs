@@ -462,4 +462,26 @@ public class Player
         Session.Send(StatPacket.UpdateStats(FieldPlayer, StatId.Hp));
         Session.Send(FallDamagePacket.FallDamage(FieldPlayer.ObjectId, fallDamage));
     }
+
+    public void GetMeretMarketPersonalListings()
+    {
+        List<UGCMarketItem> items = GameServer.UGCMarketManager.GetItemsByCharacterId(CharacterId);
+
+        // TODO: Possibly a better way to implement updating item status?
+        foreach (UGCMarketItem item in items)
+        {
+            if (item.ListingExpirationTimestamp < TimeInfo.Now() && item.Status == UGCMarketListingStatus.Active)
+            {
+                item.Status = UGCMarketListingStatus.Expired;
+                DatabaseManager.UGCMarketItems.Update(item);
+            }
+        }
+        Session.Send(MeretMarketPacket.LoadPersonalListings(items));
+    }
+
+    public void GetMeretMarketSales()
+    {
+        List<UGCMarketSale> sales = GameServer.UGCMarketManager.GetSalesByCharacterId(CharacterId);
+        Session.Send(MeretMarketPacket.LoadSales(sales));
+    }
 }

@@ -29,7 +29,7 @@ public class MeretMarketHandler : GamePacketHandler
         OpenShop = 0x1B,
         SendMarketRequest = 0x1D,
         Purchase = 0x1E,
-        Home = 0x65,
+        OpenFeatured = 0x65,
         OpenDesignShop = 0x66,
         LoadCart = 0x6B
     }
@@ -70,8 +70,8 @@ public class MeretMarketHandler : GamePacketHandler
             case MeretMarketMode.Purchase:
                 HandlePurchase(session, packet);
                 break;
-            case MeretMarketMode.Home:
-                HandleHome(session);
+            case MeretMarketMode.OpenFeatured:
+                HandleOpenFeatured(session, packet);
                 break;
             case MeretMarketMode.OpenDesignShop:
                 HandleOpenDesignShop(session);
@@ -90,24 +90,12 @@ public class MeretMarketHandler : GamePacketHandler
 
     private static void HandleLoadPersonalListings(GameSession session)
     {
-        List<UgcMarketItem> items = GameServer.UgcMarketManager.GetItemsByCharacterId(session.Player.CharacterId);
-
-        // TODO: Possibly a better way to implement updating item status?
-        foreach (UgcMarketItem item in items)
-        {
-            if (item.ListingExpirationTimestamp < TimeInfo.Now() && item.Status == UgcMarketListingStatus.Active)
-            {
-                item.Status = UgcMarketListingStatus.Expired;
-                DatabaseManager.UgcMarketItems.Update(item);
-            }
-        }
-        session.Send(MeretMarketPacket.LoadPersonalListings(items));
+        session.Player.GetMeretMarketPersonalListings();
     }
 
     private static void HandleLoadSales(GameSession session)
     {
-        List<UgcMarketSale> sales = GameServer.UgcMarketManager.GetSalesByCharacterId(session.Player.CharacterId);
-        session.Send(MeretMarketPacket.LoadSales(sales));
+        session.Player.GetMeretMarketSales();
     }
 
     private static void HandleListItem(GameSession session, PacketReader packet)
@@ -274,11 +262,9 @@ public class MeretMarketHandler : GamePacketHandler
 
         switch (metadata.Section)
         {
+            // TODO: Handle Red Meret Market (if enabled).
             case MeretMarketSection.PremiumMarket:
                 HandleOpenPremiumMarket(session, category);
-                break;
-            case MeretMarketSection.RedMeretMarket:
-                HandleOpenRedMeretMarket();
                 break;
             case MeretMarketSection.UgcMarket:
                 HandleOpenUgcMarket(session, packet, metadata);
@@ -308,7 +294,7 @@ public class MeretMarketHandler : GamePacketHandler
 
     private static void HandleOpenRedMeretMarket()
     {
-        // TODO: Red Meret Market
+
     }
 
     private static void HandlePurchase(GameSession session, PacketReader packet)
@@ -380,8 +366,29 @@ public class MeretMarketHandler : GamePacketHandler
             }
         }
 
-        if (!HandleMarketItemPay(session, marketItem.Price, marketItem.TokenType))
+        long itemPrice = marketItem.Price;
+
+        if (marketItem.SalePrice != 0)
         {
+            itemPrice = marketItem.SalePrice;
+        }
+        if (!HandleMarketItemPay(session, itemPrice, marketItem.TokenType))
+        {
+            SystemNotice noticeId = SystemNotice.None;
+            switch (marketItem.TokenType)
+            {
+                case MeretMarketCurrencyType.Meso:
+                    noticeId = SystemNotice.InsufficientMesos;
+                    break;
+                case MeretMarketCurrencyType.Meret:
+                    noticeId = SystemNotice.InsufficientMerets;
+                    break;
+                case MeretMarketCurrencyType.RedMeret:
+                    noticeId = SystemNotice.InsufficientRedMerets;
+                    break;
+            }
+
+            session.Send(NoticePacket.Notice(noticeId, NoticeType.Popup));
             return;
         }
 
@@ -408,14 +415,28 @@ public class MeretMarketHandler : GamePacketHandler
         };
     }
 
-    private static void HandleHome(GameSession session)
+    private static void HandleOpenFeatured(GameSession session, PacketReader reader)
     {
-        List<MeretMarketItem> marketItems = DatabaseManager.MeretMarket.FindAllByCategoryId(MeretMarketCategory.Promo);
-        if (marketItems is null)
+        byte section = reader.ReadByte();
+        byte tab = reader.ReadByte(); // 0A = Featured, 0B = New
+        switch (section)
         {
-            return;
+            // Front page
+            case 0:
+                List<MeretMarketItem> marketItems = DatabaseManager.MeretMarket.FindAllByCategoryId(MeretMarketCategory.Promo);
+                if (marketItems is null)
+                {
+                    return;
+                }
+                session.Send(MeretMarketPacket.Promos(marketItems));
+                break;
+            // Premium Featured (if implemented)
+            case 1:
+            // Red Market Featured (if implemented)
+            case 2:
+                break;
         }
-        session.Send(MeretMarketPacket.Promos(marketItems));
+
     }
 
     private static void HandleOpenDesignShop(GameSession session)
