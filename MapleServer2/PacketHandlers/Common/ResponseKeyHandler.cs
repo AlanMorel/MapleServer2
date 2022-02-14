@@ -82,8 +82,8 @@ public class ResponseKeyHandler : CommonPacketHandler
         session.Send(BuddyPacket.EndList(player.BuddyList.Count));
 
         // Meret market
-        //session.Send("6E 00 0B 00 00 00 00 00 00 00 00 00 00 00 00".ToByteArray());
-        //session.Send("6E 00 0C 00 00 00 00".ToByteArray());
+        session.Player.GetMeretMarketPersonalListings();
+        session.Player.GetMeretMarketSales();
         // UserConditionEvent
         //session.Send("BF 00 00 00 00 00 00".ToByteArray());
         // PCBangBonus
@@ -213,7 +213,7 @@ public class ResponseKeyHandler : CommonPacketHandler
         player.IsMigrating = false;
 
         // SendUgc: 15 01 00 00 00 00 00 00 00 00 00 00 00 4B 00 00 00
-        // SendHomeCommand: 00 E1 0F 26 89 7F 98 3C 26 00 00 00 00 00 00 00 00
+        session.Send(HomeCommandPacket.LoadHome(player));
 
         player.TimeSyncLoop();
         session.Send(TimeSyncPacket.SetSessionServerTick(0));

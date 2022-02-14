@@ -30,6 +30,12 @@ public class MeretMarketCategoryParser : Exporter<List<MeretMarketCategoryMetada
 
                 MeretMarketSection section = (MeretMarketSection) int.Parse(node.Attributes["id"].Value);
 
+                // Temporary solution to display regular Meret Market items
+                if (section == MeretMarketSection.RedMeretMarket)
+                {
+                    continue;
+                }
+
                 foreach (XmlNode tabNode in node)
                 {
                     MeretMarketCategoryMetadata metadata = new()

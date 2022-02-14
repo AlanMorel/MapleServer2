@@ -170,6 +170,7 @@ public class Item
         Score = new();
         Stats = new(other.Stats);
         Ugc = other.Ugc;
+        SetMetadataValues();
     }
 
     public bool TrySplit(int splitAmount, out Item splitItem)

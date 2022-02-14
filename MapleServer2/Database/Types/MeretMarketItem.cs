@@ -41,12 +41,12 @@ public class MeretMarketItem
         MarketId = data.market_id;
         BannerId = data.banner_id ?? 0;
         BonusQuantity = data.bonus_quantity;
-        Category = data.category;
+        Category = (MeretMarketCategory) data.category;
         Duration = data.duration;
         Flag = (MeretMarketItemFlag) data.flag;
         ItemId = data.item_id;
         ItemName = data.item_name;
-        JobRequirement = data.job_requirement;
+        JobRequirement = (JobFlag) data.job_requirement;
         MaxLevelRequirement = data.max_level_requirement;
         MinLevelRequirement = data.min_level_requirement;
         PCCafe = data.pc_cafe;
@@ -54,7 +54,7 @@ public class MeretMarketItem
         Price = data.price;
         PromoBannerBeginTime = data.promo_banner_begin_time;
         PromoBannerEndTime = data.promo_banner_end_time;
-        PromoFlag = data.promo_flag;
+        PromoFlag = (MeretMarketPromoFlag) data.promo_flag;
         PromoName = data.promo_name;
         Quantity = data.quantity;
         Rarity = data.rarity;
@@ -66,5 +66,6 @@ public class MeretMarketItem
         SellEndTime = data.sell_end_time;
         ShowSaleTime = data.show_sale_time;
         TokenType = (MeretMarketCurrencyType) data.token_type;
+        AdditionalQuantities = new();
     }
 }
