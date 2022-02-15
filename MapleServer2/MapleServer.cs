@@ -109,7 +109,7 @@ public static class MapleServer
                     {
                         break;
                     }
-                    GameSession first = _gameServer.GetSessions().Single();
+                    GameSession first = _gameServer.GetSessions().First();
                     resolver.Start(first);
                     break;
                 default:
