@@ -38,6 +38,7 @@ public static class MapleServer
         {
             throw new ArgumentException(".env file not found!");
         }
+
         DotEnv.Load(dotenv);
 
         DatabaseManager.Init();
@@ -90,6 +91,7 @@ public static class MapleServer
                     {
                         break;
                     }
+
                     string packet = input[1];
                     PacketWriter pWriter = new();
                     pWriter.WriteBytes(packet.ToByteArray());
@@ -109,7 +111,13 @@ public static class MapleServer
                     {
                         break;
                     }
-                    GameSession first = _gameServer.GetSessions().First();
+
+                    GameSession first = _gameServer.GetSessions().FirstOrDefault();
+                    if (first is null)
+                    {
+                        break;
+                    }
+
                     resolver.Start(first);
                     break;
                 default:
@@ -137,6 +145,7 @@ public static class MapleServer
             player.GatheringCount = new();
             DatabaseManager.Characters.Update(player);
         }
+
         DatabaseManager.RunQuery("UPDATE `characters` SET gathering_count = '[]'");
 
         DatabaseManager.ServerInfo.SetLastDailyReset(TimeInfo.CurrentDate());
@@ -150,6 +159,7 @@ public static class MapleServer
             {
                 return;
             }
+
             session.Send(packet);
         });
     }
