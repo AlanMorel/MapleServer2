@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.Text;
+﻿using System.Text;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Network;
