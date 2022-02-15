@@ -35,7 +35,7 @@ public class LogSendHandler : CommonPacketHandler
                     string debug = packet.ReadUnicodeString();
 
                     SockExceptionInfo exceptionInfo = ErrorParser.Parse(debug);
-                    Logger.Error($"[{message}] [SendOp: {(SendOp) exceptionInfo.Type}] [Offset: {exceptionInfo.Offset}] [Hint: {exceptionInfo.Hint}]");
+                    Logger.Error($"[{message}] [SendOp: {exceptionInfo.SendOp}] [Offset: {exceptionInfo.Offset}] [Hint: {exceptionInfo.Hint}]");
 
                     session.OnError?.Invoke(session, debug);
                     return;

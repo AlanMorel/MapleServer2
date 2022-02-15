@@ -107,10 +107,10 @@ public static class SockHintExtensions
             SockHint.Decode1 => "pWriter.WriteByte();",
             SockHint.Decode2 => "pWriter.WriteShort();",
             SockHint.Decode4 => "pWriter.WriteInt();",
-            SockHint.Decodef => "pWriter.WriteInt(-1);",
+            SockHint.Decodef => "pWriter.WriteFloat();",
             SockHint.Decode8 => "pWriter.WriteLong();",
-            SockHint.DecodeStr => "pWriter.WriteUnicodeString(\"\");",
-            SockHint.DecodeStrA => "pWriter.WriteString(\"\");",
+            SockHint.DecodeStr => "pWriter.WriteUnicodeString();",
+            SockHint.DecodeStrA => "pWriter.WriteString();",
             _ => throw new ArgumentException($"Unexpected hint: {hint}")
         };
     }

@@ -143,14 +143,14 @@ public class PacketStructureResolver
     private void AppendAndRetry(object session, string err)
     {
         SockExceptionInfo info = ErrorParser.Parse(err);
-        if (info.Type == 0)
+        if (info.SendOp == 0)
         {
             return;
         }
 
-        if (OpCode != info.Type)
+        if (OpCode != (ushort) info.SendOp)
         {
-            Logger.Warn($"Error for unexpected op code:{info.Type:X4}");
+            Logger.Warn($"Error for unexpected op code:{info.SendOp:X4}");
             return;
         }
 
@@ -161,17 +161,8 @@ public class PacketStructureResolver
         }
 
         new SockHintInfo(info.Hint, DefaultValue).Update(Packet);
-        string hint = info.Hint switch
-        {
-            SockHint.Decode1 => "pWriter.WriteByte();\r\n",
-            SockHint.Decode2 => "pWriter.WriteShort();\r\n",
-            SockHint.Decode4 => "pWriter.WriteInt();\r\n",
-            SockHint.Decodef => "pWriter.WriteFloat();\r\n",
-            SockHint.Decode8 => "pWriter.WriteLong();\r\n",
-            SockHint.DecodeStr => "pWriter.WriteUnicodeString();\r\n",
-            SockHint.DecodeStrA => "pWriter.WriteString();\r\n",
-            _ => "[]\r\n"
-        };
+        string hint = info.Hint.GetCode() + "\r\n";
+
         DirectoryInfo dir = Directory.CreateDirectory($"{Paths.SOLUTION_DIR}/MapleServer2/PacketStructures");
         StreamWriter file = File.AppendText($"{dir.FullName}/{OpCode:X4} - {PacketName}.txt");
         file.Write(hint);

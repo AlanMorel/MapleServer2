@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using MapleServer2.Constants;
 
 namespace MapleServer2.Tools;
 
@@ -15,7 +16,7 @@ public static class ErrorParser
         }
 
         SockExceptionInfo info;
-        info.Type = ushort.Parse(match.Groups[1].Value);
+        info.SendOp = (SendOp) ushort.Parse(match.Groups[1].Value);
         info.Offset = uint.Parse(match.Groups[2].Value);
         info.Hint = match.Groups[3].Value.ToSockHint();
 
@@ -25,7 +26,7 @@ public static class ErrorParser
 
 public struct SockExceptionInfo
 {
-    public ushort Type;
+    public SendOp SendOp;
     public uint Offset;
     public SockHint Hint;
 }
