@@ -155,7 +155,7 @@ public class OnlineCommand : InGameCommand
 
 public class FindCommand : InGameCommand
 {
-    readonly string[] Options = {
+    private readonly string[] Options = {
         "item",
         "map",
         "npc",
