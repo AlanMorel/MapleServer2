@@ -1,6 +1,5 @@
 ﻿using Maple2Storage.Enums;
 using Maple2Storage.Tools;
-using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.PacketHandlers.Game.Helpers;
@@ -19,6 +18,7 @@ public class UgcMarketManager
         List<UgcMarketItem> items = DatabaseManager.UgcMarketItems.FindAll();
         foreach (UgcMarketItem item in items)
         {
+            item.Item.SetMetadataValues();
             AddListing(item);
         }
 
@@ -32,12 +32,12 @@ public class UgcMarketManager
 
     public void AddListing(UgcMarketItem item)
     {
-        Items.Add(item.Id, item);
+        Items.Add(item.MarketId, item);
     }
 
     public void RemoveListing(UgcMarketItem item)
     {
-        Items.Remove(item.Id);
+        Items.Remove(item.MarketId);
     }
 
     public List<UgcMarketItem> GetItemsByCharacterId(long characterId)
@@ -58,15 +58,40 @@ public class UgcMarketManager
 
     public UgcMarketItem FindItemById(long id)
     {
-        return Items.Values.FirstOrDefault(x => x.Id == id);
+        return Items.Values.FirstOrDefault(x => x.MarketId == id);
     }
 
-    public List<UgcMarketItem> FindItemsByCategory(List<string> categories, GenderFlag genderFlag, JobFlag job, short sort)
+    public List<UgcMarketItem> FindItems(List<string> categories, GenderFlag genderFlag, JobFlag job, string searchString)
     {
         List<UgcMarketItem> items = new();
         foreach (UgcMarketItem item in Items.Values)
         {
-            if (!categories.Contains(item.Item.Category) || item.Status != UgcMarketListingStatus.Active)
+            if (!categories.Contains(item.Item.Category) && categories.Count > 0)
+            {
+                continue;
+            }
+
+            if (item.Status != UgcMarketListingStatus.Active)
+            {
+                continue;
+            }
+
+            if (!item.Item.Ugc.Name.ToLower().Contains(searchString) && !item.Tags.Contains(searchString))
+            {
+                continue;
+            }
+
+            // Check items tags if any tags have the searched string
+            bool validTag = false;
+            foreach (string tag in item.Tags)
+            {
+                if (tag.ToLower().Contains(searchString.ToLower()))
+                {
+                    validTag = true;
+                }
+            }
+
+            if (!validTag)
             {
                 continue;
             }
@@ -78,38 +103,18 @@ public class UgcMarketManager
             }
 
             // check gender
-            Gender itemGender = ItemMetadataStorage.GetGender(item.Item.Id);
-            if (!genderFlag.HasFlag(GenderFlag.Male) && !genderFlag.HasFlag(GenderFlag.Female))
+            if (!MeretMarketHelper.CheckGender(genderFlag, item.Item.Id))
             {
-                Gender gender = genderFlag.HasFlag(GenderFlag.Male) ? Gender.Male : Gender.Female;
+                continue;
             }
 
             items.Add(item);
         }
 
-        UgcMarketSort marketSort = (UgcMarketSort) sort;
-
-        switch (marketSort)
-        {
-            // TODO: Handle Most Popular sorting.
-            case UgcMarketSort.MostPopular:
-            case UgcMarketSort.TopSeller:
-                items = items.OrderByDescending(x => x.SalesCount).ToList();
-                break;
-            case UgcMarketSort.MostRecent:
-                items = items.OrderByDescending(x => x.CreationTimestamp).ToList();
-                break;
-        }
-
         return items;
     }
 
-    private enum UgcMarketSort : short
-    {
-        MostPopular = 1,
-        MostRecent = 4,
-        TopSeller = 6
-    }
+
 
     public void AddSale(UgcMarketSale sale)
     {
