@@ -74,9 +74,9 @@ public static class ItemMetadataStorage
 
     public static List<Job> GetRecommendJobs(int itemId)
     {
-        Converter<int, Job> converter = integer => (Job) integer;
+        static Job Converter(int integer) => (Job) integer;
 
-        return GetMetadata(itemId).RecommendJobs.ConvertAll(converter);
+        return GetMetadata(itemId).RecommendJobs.ConvertAll(Converter);
     }
 
     public static long GetSellPrice(int itemId)
