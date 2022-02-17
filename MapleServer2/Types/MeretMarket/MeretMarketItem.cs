@@ -13,30 +13,6 @@ public abstract class MeretMarketItem
     public long Price;
     public int SalesCount;
     public long CreationTimestamp;
-
-    public virtual void SortItemList(List<MeretMarketItem> items, MeretMarketSort marketSort)
-    {
-        switch (marketSort)
-        {
-            // TODO: Handle Most Popular sorting.
-            case MeretMarketSort.MostPopularUgc:
-            case MeretMarketSort.MostPopularPremium:
-            case MeretMarketSort.TopSeller:
-                items = items.OrderByDescending(x => x.SalesCount).ToList();
-                break;
-            case MeretMarketSort.PriceLowest:
-                items = items.OrderBy(x => x.Price).ToList();
-                break;
-
-            case MeretMarketSort.PriceHighest:
-                items = items.OrderByDescending(x => x.Price).ToList();
-                break;
-
-            case MeretMarketSort.MostRecent:
-                items = items.OrderByDescending(x => x.CreationTimestamp).ToList();
-                break;
-        }
-    }
 }
 
 public class PremiumMarketItem : MeretMarketItem
