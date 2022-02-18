@@ -6,7 +6,7 @@ public static class JobHelper
 {
     public static bool CheckJobFlagForJob(List<Job> jobs, JobFlag jobFlag)
     {
-        if (jobFlag != JobFlag.All)
+        if (!jobs.Contains(Job.None) && jobFlag != JobFlag.All)
         {
             // TODO: Handle more than one flag.
             Job job = jobFlag switch

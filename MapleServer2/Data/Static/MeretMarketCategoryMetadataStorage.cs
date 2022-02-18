@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Types;
+﻿using Maple2Storage.Enums;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using ProtoBuf;
 
@@ -14,12 +15,13 @@ public static class MeretMarketCategoryMetadataStorage
         List<MeretMarketCategoryMetadata> items = Serializer.Deserialize<List<MeretMarketCategoryMetadata>>(stream);
         foreach (MeretMarketCategoryMetadata item in items)
         {
-            MeretMarketCategoryMetadatas[item.CategoryId] = item;
+            MeretMarketCategoryMetadatas[(int) item.Section] = item;
         }
     }
 
-    public static MeretMarketCategoryMetadata GetMetadata(int categoryId)
+    public static MeretMarketTab GetTabMetadata(MeretMarketSection section, int categoryId)
     {
-        return MeretMarketCategoryMetadatas.GetValueOrDefault(categoryId);
+        MeretMarketCategoryMetadata metadata = MeretMarketCategoryMetadatas.GetValueOrDefault((int) section);
+        return metadata.Tabs.FirstOrDefault(x => x.Id == categoryId);
     }
 }

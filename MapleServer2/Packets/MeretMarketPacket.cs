@@ -1,6 +1,5 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Database.Types;
 using MapleServer2.Enums;
 using MapleServer2.Types;
 
@@ -110,8 +109,8 @@ public static class MeretMarketPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.MERET_MARKET);
         pWriter.Write(MeretMarketMode.UpdateExpiration);
         pWriter.WriteInt();
-        pWriter.WriteLong(item.Id);
-        pWriter.WriteLong(item.Id);
+        pWriter.WriteLong(item.MarketId);
+        pWriter.WriteLong(item.MarketId);
         pWriter.Write(item.Status);
         pWriter.WriteByte();
         pWriter.WriteLong(item.ListingExpirationTimestamp);
@@ -135,49 +134,14 @@ public static class MeretMarketPacket
         return pWriter;
     }
 
-    public static PacketWriter LoadPremiumShopCategory(List<MeretMarketItem> items)
+    public static PacketWriter LoadShopCategory(List<MeretMarketItem> items, int totalItems)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MERET_MARKET);
         pWriter.Write(MeretMarketMode.LoadShopCategory);
         pWriter.WriteInt(items.Count);
-        pWriter.WriteInt(items.Count);
+        pWriter.WriteInt(totalItems);
         pWriter.WriteInt(1);
-        foreach (MeretMarketItem item in items)
-        {
-            pWriter.WriteByte(1);
-            pWriter.WriteByte(); // bool for ugc item or not
-            pWriter.WriteInt(item.MarketId);
-            pWriter.WriteLong();
-            WriteMeretMarketItem(pWriter, item);
-            pWriter.WriteByte();
-            pWriter.WriteByte();
-            pWriter.WriteByte();
-            pWriter.WriteInt();
-            pWriter.WriteByte((byte) item.AdditionalQuantities.Count);
-            foreach (MeretMarketItem additionalItem in item.AdditionalQuantities)
-            {
-                pWriter.WriteByte(1);
-                WriteMeretMarketItem(pWriter, additionalItem);
-                pWriter.WriteByte();
-                pWriter.WriteByte();
-                pWriter.WriteByte();
-            }
-        }
-        return pWriter;
-    }
-
-    public static PacketWriter LoadUgcShopCategory(List<UgcMarketItem> items)
-    {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MERET_MARKET);
-        pWriter.Write(MeretMarketMode.LoadShopCategory);
-        pWriter.WriteInt(items.Count);
-        pWriter.WriteInt(items.Count);
-        pWriter.WriteInt(1);
-        foreach (UgcMarketItem item in items)
-        {
-            pWriter.WriteByte(1);
-            WriteUgcMarketItem(pWriter, item);
-        }
+        WriteMarketItemLoop(pWriter, items);
         return pWriter;
     }
 
@@ -195,8 +159,8 @@ public static class MeretMarketPacket
         pWriter.WriteInt(totalQuantity);
         pWriter.WriteInt();
         pWriter.WriteByte();
-        pWriter.WriteUnicodeString("");
-        pWriter.WriteUnicodeString("");
+        pWriter.WriteUnicodeString();
+        pWriter.WriteUnicodeString();
         pWriter.WriteLong(price);
         pWriter.WriteByte();
         pWriter.WriteByte();
@@ -218,31 +182,7 @@ public static class MeretMarketPacket
         pWriter.WriteByte();
         pWriter.WriteByte();
 
-        foreach (MeretMarketItem item in items)
-        {
-            pWriter.WriteByte(1);
-            pWriter.WriteByte();
-            pWriter.WriteInt(item.MarketId);
-            pWriter.WriteLong();
-            WriteMeretMarketItem(pWriter, item);
-
-            pWriter.WriteByte(1);
-            pWriter.WriteString(item.PromoName);
-            pWriter.WriteLong(item.PromoBannerBeginTime);
-            pWriter.WriteLong(item.PromoBannerEndTime);
-            pWriter.WriteByte();
-            pWriter.WriteBool(item.ShowSaleTime);
-            pWriter.WriteInt();
-            pWriter.WriteByte((byte) item.AdditionalQuantities.Count);
-            foreach (MeretMarketItem additionalItem in item.AdditionalQuantities)
-            {
-                pWriter.WriteByte(1);
-                WriteMeretMarketItem(pWriter, additionalItem);
-                pWriter.WriteByte();
-                pWriter.WriteByte();
-                pWriter.WriteByte();
-            }
-        }
+        WriteMarketItemLoop(pWriter, items);
 
         pWriter.WriteByte();
         pWriter.WriteByte();
@@ -296,15 +236,59 @@ public static class MeretMarketPacket
         return pWriter;
     }
 
-    private static void WriteMeretMarketItem(PacketWriter pWriter, MeretMarketItem item)
+    private static void WriteMarketItemLoop(PacketWriter pWriter, List<MeretMarketItem> items)
     {
-        pWriter.WriteInt(item.MarketId);
+        foreach (MeretMarketItem item in items)
+        {
+            if (item is PremiumMarketItem)
+            {
+                pWriter.WriteByte(1);
+            }
+            pWriter.WriteBool(item is UgcMarketItem);
+            switch (item)
+            {
+                case UgcMarketItem ugc:
+                    WriteUgcMarketItem(pWriter, ugc);
+                    break;
+                case PremiumMarketItem premium:
+                    {
+                        pWriter.WriteInt((int) premium.MarketId);
+                        pWriter.WriteLong();
+                        WriteMeretMarketItem(pWriter, premium);
+                        pWriter.WriteBool(premium.IsPromo);
+                        if (premium.IsPromo)
+                        {
+                            pWriter.WriteString(premium.PromoName);
+                            pWriter.WriteLong(premium.PromoBannerBeginTime);
+                            pWriter.WriteLong(premium.PromoBannerEndTime);
+                        }
+                        pWriter.WriteByte();
+                        pWriter.WriteBool(premium.ShowSaleTime);
+                        pWriter.WriteInt();
+                        pWriter.WriteByte((byte) premium.AdditionalQuantities.Count);
+                        foreach (PremiumMarketItem additionalItem in premium.AdditionalQuantities)
+                        {
+                            pWriter.WriteByte(1);
+                            WriteMeretMarketItem(pWriter, additionalItem);
+                            pWriter.WriteByte();
+                            pWriter.WriteByte();
+                            pWriter.WriteByte();
+                        }
+                        break;
+                    }
+            }
+        }
+    }
+
+    private static void WriteMeretMarketItem(PacketWriter pWriter, PremiumMarketItem item)
+    {
+        pWriter.WriteInt((int) item.MarketId);
         pWriter.WriteByte(2);
         pWriter.WriteUnicodeString(item.ItemName);
         pWriter.WriteByte(1);
         pWriter.WriteInt(item.ParentMarketId);
         pWriter.WriteInt(254);
-        pWriter.WriteInt(); // promo bool
+        pWriter.WriteInt();
         pWriter.WriteByte(2);
         pWriter.Write(item.Flag);
         pWriter.Write(item.TokenType);
@@ -330,12 +314,7 @@ public static class MeretMarketPacket
         pWriter.WriteInt();
         pWriter.WriteByte();
         pWriter.Write(item.PromoFlag);
-        string bannerName = "";
-        if (item.Banner != null)
-        {
-            bannerName = item.Banner.Name;
-        }
-        pWriter.WriteString(bannerName);
+        pWriter.WriteString(item.Banner?.Name ?? "");
         pWriter.WriteString();
         pWriter.WriteByte();
         pWriter.WriteByte();
@@ -353,9 +332,9 @@ public static class MeretMarketPacket
     {
         pWriter.WriteByte(1);
         pWriter.WriteInt();
-        pWriter.WriteLong(item.Id);
+        pWriter.WriteLong(item.MarketId);
         pWriter.WriteInt();
-        pWriter.WriteLong(item.Id);
+        pWriter.WriteLong(item.MarketId);
         pWriter.Write(item.Status);
         pWriter.WriteInt(item.Item.Id);
         pWriter.WriteInt(35);

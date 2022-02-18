@@ -748,7 +748,8 @@ CREATE TABLE `ugc_market_items`
     CONSTRAINT `fk_ugc_market_listing_account_id` FOREIGN KEY (`seller_account_id`) REFERENCES `characters` (`character_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci;
+  COLLATE = utf8mb4_0900_ai_ci
+  AUTO_INCREMENT = 100000;
 
 --
 -- Table structure for table `ugc_market_sales`

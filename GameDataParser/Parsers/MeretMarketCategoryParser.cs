@@ -30,43 +30,37 @@ public class MeretMarketCategoryParser : Exporter<List<MeretMarketCategoryMetada
 
                 MeretMarketSection section = (MeretMarketSection) int.Parse(node.Attributes["id"].Value);
 
-                // Temporary solution to display regular Meret Market items
-                if (section == MeretMarketSection.RedMeretMarket)
+                MeretMarketCategoryMetadata metadata = new()
                 {
-                    continue;
-                }
+                    Section = section,
+                };
 
                 foreach (XmlNode tabNode in node)
                 {
-                    MeretMarketCategoryMetadata metadata = new()
+                    MeretMarketTab tab = new()
                     {
-                        Section = section,
-                        CategoryId = int.Parse(tabNode.Attributes["id"].Value)
+                        Id = int.Parse(tabNode.Attributes["id"].Value),
                     };
 
                     foreach (XmlNode subTabNode in tabNode.ChildNodes)
                     {
-                        MeretMarketCategoryMetadata subTab = new()
-                        {
-                            Section = section,
-                            CategoryId = int.Parse(subTabNode.Attributes["id"].Value)
-                        };
                         if (subTabNode.Attributes["category"] is not null)
                         {
-                            List<string> itemCategories = new();
-                            itemCategories.AddRange(subTabNode.Attributes["category"].Value.Split(",").ToList());
-                            subTab.ItemCategories = itemCategories;
-                            metadata.ItemCategories.AddRange(itemCategories);
+                            List<string> categoryList = subTabNode.Attributes["category"].Value.Split(",").ToList();
+                            MeretMarketTab subTab = new()
+                            {
+                                Id = int.Parse(subTabNode.Attributes["id"].Value),
+                                ItemCategories = categoryList
+                            };
+                            tab.ItemCategories.AddRange(categoryList);
+                            metadata.Tabs.Add(subTab);
                         }
-
-                        categories.Add(subTab);
                     }
-
-                    categories.Add(metadata);
+                    metadata.Tabs.Add(tab);
                 }
+                categories.Add(metadata);
             }
         }
-
         return categories;
     }
 }
