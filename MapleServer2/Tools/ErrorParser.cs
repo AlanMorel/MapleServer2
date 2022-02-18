@@ -5,7 +5,7 @@ namespace MapleServer2.Tools;
 
 public static class ErrorParser
 {
-    private static readonly Regex InfoRegex = new(@"\[type=(\d+)\]\[offset=(\d+)\]\[hint=(\w+)\]");
+    private static readonly Regex InfoRegex = new(@"\[type=(\d+)\]\[offset=(\d+)\]\[hint=(\w+)\]", RegexOptions.Compiled);
 
     public static SockExceptionInfo Parse(string error)
     {
