@@ -271,13 +271,8 @@ public class MeretMarketHandler : GamePacketHandler
         string searchString = packet.ReadUnicodeString();
         int startPage = packet.ReadInt();
         packet.ReadInt(); // repeat page?
-        MeretMarketSection section = packet.ReadByte() switch
-        {
-            0 => MeretMarketSection.UgcMarket,
-            1 => MeretMarketSection.PremiumMarket,
-            2 => MeretMarketSection.RedMeretMarket,
-            _ => MeretMarketSection.PremiumMarket
-        };
+        MeretMarketSection section = ReadMarketSection(packet.ReadByte());
+
         packet.ReadByte();
         byte itemsPerPage = packet.ReadByte();
 
@@ -470,14 +465,7 @@ public class MeretMarketHandler : GamePacketHandler
         packet.ReadByte();
         packet.ReadByte();
         byte itemsPerPage = packet.ReadByte();
-        MeretMarketSection marketSection = packet.ReadByte() switch
-        {
-            0 => MeretMarketSection.All,
-            1 => MeretMarketSection.PremiumMarket,
-            2 => MeretMarketSection.RedMeretMarket,
-            3 => MeretMarketSection.UgcMarket,
-            _ => MeretMarketSection.All
-        };
+        MeretMarketSection marketSection = ReadMarketSection(packet.ReadByte());
 
         List<MeretMarketItem> items = new();
 
@@ -512,5 +500,17 @@ public class MeretMarketHandler : GamePacketHandler
             DatabaseManager.MeretMarket.FindById(meretMarketItemUid)
         };
         session.Send(MeretMarketPacket.LoadShopCategory(meretMarketItems, meretMarketItems.Count));
+    }
+
+    private static MeretMarketSection ReadMarketSection(byte section)
+    {
+        return section switch
+        {
+            0 => MeretMarketSection.All,
+            1 => MeretMarketSection.PremiumMarket,
+            2 => MeretMarketSection.RedMeretMarket,
+            3 => MeretMarketSection.UgcMarket,
+            _ => MeretMarketSection.All
+        };
     }
 }

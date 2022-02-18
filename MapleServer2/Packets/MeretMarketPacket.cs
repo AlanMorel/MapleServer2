@@ -245,34 +245,37 @@ public static class MeretMarketPacket
                 pWriter.WriteByte(1);
             }
             pWriter.WriteBool(item is UgcMarketItem);
-            if (item is UgcMarketItem ugc)
+            switch (item)
             {
-                WriteUgcMarketItem(pWriter, ugc);
-            }
-            else if (item is PremiumMarketItem premium)
-            {
-                pWriter.WriteInt((int) premium.MarketId);
-                pWriter.WriteLong();
-                WriteMeretMarketItem(pWriter, premium);
-                pWriter.WriteBool(premium.IsPromo);
-                if (premium.IsPromo)
-                {
-                    pWriter.WriteString(premium.PromoName);
-                    pWriter.WriteLong(premium.PromoBannerBeginTime);
-                    pWriter.WriteLong(premium.PromoBannerEndTime);
-                }
-                pWriter.WriteByte();
-                pWriter.WriteBool(premium.ShowSaleTime);
-                pWriter.WriteInt();
-                pWriter.WriteByte((byte) premium.AdditionalQuantities.Count);
-                foreach (PremiumMarketItem additionalItem in premium.AdditionalQuantities)
-                {
-                    pWriter.WriteByte(1);
-                    WriteMeretMarketItem(pWriter, additionalItem);
-                    pWriter.WriteByte();
-                    pWriter.WriteByte();
-                    pWriter.WriteByte();
-                }
+                case UgcMarketItem ugc:
+                    WriteUgcMarketItem(pWriter, ugc);
+                    break;
+                case PremiumMarketItem premium:
+                    {
+                        pWriter.WriteInt((int) premium.MarketId);
+                        pWriter.WriteLong();
+                        WriteMeretMarketItem(pWriter, premium);
+                        pWriter.WriteBool(premium.IsPromo);
+                        if (premium.IsPromo)
+                        {
+                            pWriter.WriteString(premium.PromoName);
+                            pWriter.WriteLong(premium.PromoBannerBeginTime);
+                            pWriter.WriteLong(premium.PromoBannerEndTime);
+                        }
+                        pWriter.WriteByte();
+                        pWriter.WriteBool(premium.ShowSaleTime);
+                        pWriter.WriteInt();
+                        pWriter.WriteByte((byte) premium.AdditionalQuantities.Count);
+                        foreach (PremiumMarketItem additionalItem in premium.AdditionalQuantities)
+                        {
+                            pWriter.WriteByte(1);
+                            WriteMeretMarketItem(pWriter, additionalItem);
+                            pWriter.WriteByte();
+                            pWriter.WriteByte();
+                            pWriter.WriteByte();
+                        }
+                        break;
+                    }
             }
         }
     }

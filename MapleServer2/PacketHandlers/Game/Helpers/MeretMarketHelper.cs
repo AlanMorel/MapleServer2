@@ -32,11 +32,13 @@ public static class MeretMarketHelper
 
     public static bool CheckGender(GenderFlag genderFlag, int itemId)
     {
-        Gender itemGender = ItemMetadataStorage.GetGender(itemId);
-        if (!genderFlag.HasFlag(GenderFlag.Male) && !genderFlag.HasFlag(GenderFlag.Female))
+        if (genderFlag.HasFlag(GenderFlag.Male) && genderFlag.HasFlag(GenderFlag.Female))
         {
-            return false;
+            return true;
         }
-        return true;
+
+        Gender itemGender = ItemMetadataStorage.GetGender(itemId);
+
+        return (itemGender == Gender.Male && genderFlag.HasFlag(GenderFlag.Male)) || (itemGender == Gender.Female && genderFlag.HasFlag(GenderFlag.Female));
     }
 }
