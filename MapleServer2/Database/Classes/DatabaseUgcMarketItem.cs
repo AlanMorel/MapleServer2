@@ -13,7 +13,7 @@ public class DatabaseUgcMarketItem : DatabaseTable
     {
         return QueryFactory.Query(TableName).InsertGetId<long>(new
         {
-            id = item.Id,
+            id = item.MarketId,
             price = item.Price,
             item_uid = item.Item.Uid,
             status = item.Status,
@@ -31,7 +31,7 @@ public class DatabaseUgcMarketItem : DatabaseTable
 
     public void Update(UgcMarketItem item)
     {
-        QueryFactory.Query(TableName).Where("id", item.Id).Update(new
+        QueryFactory.Query(TableName).Where("id", item.MarketId).Update(new
         {
             sales_count = item.SalesCount,
             status = (byte) item.Status,

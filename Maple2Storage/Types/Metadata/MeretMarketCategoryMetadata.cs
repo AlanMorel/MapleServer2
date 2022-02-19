@@ -7,9 +7,16 @@ namespace Maple2Storage.Types.Metadata;
 public class MeretMarketCategoryMetadata
 {
     [XmlElement(Order = 1)]
-    public int CategoryId;
-    [XmlElement(Order = 2)]
     public MeretMarketSection Section;
-    [XmlElement(Order = 3)]
+    [XmlElement(Order = 2)]
+    public List<MeretMarketTab> Tabs = new();
+}
+
+[XmlType]
+public class MeretMarketTab
+{
+    [XmlElement(Order = 1)]
+    public int Id;
+    [XmlElement(Order = 2)]
     public List<string> ItemCategories = new();
 }
