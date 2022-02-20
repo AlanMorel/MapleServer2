@@ -85,7 +85,7 @@ public static class CharacterListPacket
 
     private static void WriteCharacterEntry(this PacketWriter pWriter, Player player)
     {
-        WriteCharacter(player, pWriter);
+        pWriter.WriteCharacter(player);
 
         pWriter.WriteUnicodeString(player.ProfileUrl);
         pWriter.WriteLong();
@@ -112,7 +112,7 @@ public static class CharacterListPacket
         }
     }
 
-    public static void WriteCharacter(Player player, PacketWriter pWriter)
+    public static void WriteCharacter(this PacketWriter pWriter, Player player)
     {
         pWriter.WriteLong(player.AccountId);
         pWriter.WriteLong(player.CharacterId);

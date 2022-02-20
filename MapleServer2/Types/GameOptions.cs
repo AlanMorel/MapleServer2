@@ -25,6 +25,7 @@ public class GameOptions
                 Hotbars.Add(new(Id, job));
                 continue;
             }
+
             Hotbars.Add(new(Id));
         }
     }

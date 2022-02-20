@@ -44,57 +44,90 @@ public class JobHandler : GamePacketHandler
 
     private static void HandleCloseSkillTree(GameSession session)
     {
-        session.Send(JobPacket.Close());
+        session.Send(JobPacket.Close(session.Player.FieldPlayer));
     }
 
     private static void HandleSaveSkillTree(GameSession session, PacketReader packet)
     {
-        // Get skill tab to update
-        SkillTab skillTab = session.Player.SkillTabs.FirstOrDefault(x => x.TabId == session.Player.ActiveSkillTabId);
-
-        // Read skills
-        int count = packet.ReadInt(); // Number of skills
-        for (int i = 0; i < count; i++)
+        Player player = session.Player;
+        SkillTab skillTab = player.SkillTabs.FirstOrDefault(x => x.TabId == player.ActiveSkillTabId);
+        if (skillTab is null)
         {
-            // Read skill info
-            int id = packet.ReadInt(); // Skill id
-            short level = packet.ReadShort(); // Skill level
-            byte learned = packet.ReadByte(); // 00 if unlearned 01 if learned
-
-            // Update current character skill tree data with new skill
-            skillTab.AddOrUpdate(id, level, learned > 0);
+            return;
         }
 
-        // Send JOB packet that contains all skills then send KEY_TABLE packet to update hotbars
-        session.Send(JobPacket.Save(session.Player, session.Player.FieldPlayer.ObjectId));
-        session.Send(KeyTablePacket.SendHotbars(session.Player.GameOptions));
+        ReadSkills(packet, skillTab, out HashSet<int> newSkillIds);
+
+        player.RemoveSkillsFromHotbar();
+        player.AddNewSkillsToHotbar(newSkillIds);
+
+        session.Send(JobPacket.Save(player.FieldPlayer, newSkillIds));
         DatabaseManager.SkillTabs.Update(skillTab);
+
+        session.Send(KeyTablePacket.SendHotbars(player.GameOptions));
+        DatabaseManager.GameOptions.Update(player.GameOptions);
     }
 
     private static void HandleResetSkillTree(GameSession session, PacketReader packet)
     {
         int unknown = packet.ReadInt();
 
-        SkillTab skillTab = session.Player.SkillTabs.FirstOrDefault(x => x.TabId == session.Player.ActiveSkillTabId);
-        skillTab.ResetSkillTree(session.Player.Job);
-        session.Send(JobPacket.Save(session.Player, session.Player.FieldPlayer.ObjectId));
+        Player player = session.Player;
+        SkillTab skillTab = player.SkillTabs.FirstOrDefault(x => x.TabId == player.ActiveSkillTabId);
+        if (skillTab is null)
+        {
+            return;
+        }
+
+        skillTab.ResetSkillTree(player.Job);
+        player.RemoveSkillsFromHotbar();
+
+        session.Send(JobPacket.Save(player.FieldPlayer));
         DatabaseManager.SkillTabs.Update(skillTab);
+
+        session.Send(KeyTablePacket.SendHotbars(player.GameOptions));
+        DatabaseManager.GameOptions.Update(player.GameOptions);
     }
 
     private static void HandlePresetSkillTree(GameSession session, PacketReader packet)
     {
-        SkillTab skillTab = session.Player.SkillTabs.FirstOrDefault(x => x.TabId == session.Player.ActiveSkillTabId);
+        Player player = session.Player;
+        SkillTab skillTab = player.SkillTabs.FirstOrDefault(x => x.TabId == player.ActiveSkillTabId);
+        if (skillTab is null)
+        {
+            return;
+        }
+
+        skillTab.ResetSkillTree(player.Job);
+
+        ReadSkills(packet, skillTab, out HashSet<int> newSkillIds);
+
+        player.RemoveSkillsFromHotbar();
+        player.AddNewSkillsToHotbar(newSkillIds);
+
+        session.Send(JobPacket.Save(player.FieldPlayer, newSkillIds));
+        DatabaseManager.SkillTabs.Update(skillTab);
+
+        session.Send(KeyTablePacket.SendHotbars(player.GameOptions));
+        DatabaseManager.GameOptions.Update(player.GameOptions);
+    }
+
+    private static void ReadSkills(PacketReader packet, SkillTab skillTab, out HashSet<int> newSkillIds)
+    {
+        newSkillIds = new();
         int skillCount = packet.ReadInt();
         for (int i = 0; i < skillCount; i++)
         {
             int skillId = packet.ReadInt();
             short skillLevel = packet.ReadShort();
             bool learned = packet.ReadBool();
+
+            if (skillTab.SkillLevels[skillId] == 0 && learned)
+            {
+                newSkillIds.Add(skillId);
+            }
+
             skillTab.AddOrUpdate(skillId, skillLevel, learned);
         }
-
-        session.Send(JobPacket.Save(session.Player, session.Player.FieldPlayer.ObjectId));
-        session.Send(KeyTablePacket.SendHotbars(session.Player.GameOptions));
-        DatabaseManager.SkillTabs.Update(skillTab);
     }
 }

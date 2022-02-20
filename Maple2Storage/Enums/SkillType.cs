@@ -2,8 +2,8 @@
 
 public enum SkillType
 {
-    None = 0,
-    Attack = 1,
+    Active = 0,
+    Passive = 1,
     GM = 3
 }
 public enum SkillSubType

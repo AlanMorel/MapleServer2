@@ -17,6 +17,7 @@ public enum Job
     SoulBinder = 110,
     GameMaster = 999
 }
+
 public enum JobCode
 {
     None = 0,
@@ -45,23 +46,7 @@ public enum JobCode
     SoulBinder2 = 1101,
     GameMaster = 999
 }
-public enum JobSkillSplit : byte
-{
-    None = 0,
-    Knight = 9,
-    Berserker = 15,
-    Wizard = 17,
-    Priest = 10,
-    Archer = 14,
-    HeavyGunner = 13,
-    Thief = HeavyGunner,
-    Assassin = 8,
-    Runeblade = Assassin,
-    Striker = 12,
-    SoulBinder = 16,
-    GameMaster = 1,
-    Beginner = GameMaster
-}
+
 [Flags]
 public enum JobFlag
 {

@@ -44,11 +44,15 @@ public static class PartyPacket
 
     public static PacketWriter Join(Player player)
     {
+        SkillTab skillTab = player.SkillTabs.First(x => x.TabId == player.ActiveSkillTabId);
+
         PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
         pWriter.Write(PartyPacketMode.Join);
-        CharacterListPacket.WriteCharacter(player, pWriter);
+        pWriter.WriteCharacter(player);
         pWriter.WriteInt();
-        pWriter.WriteSkills(player);
+        pWriter.WriteSkills(skillTab, SkillType.Active);
+        pWriter.WriteSkills(skillTab, SkillType.Passive);
+        pWriter.WriteShort(); // more skills?
         pWriter.WriteLong();
         return pWriter;
     }
@@ -82,7 +86,7 @@ public static class PartyPacket
         foreach (Player member in party.Members)
         {
             pWriter.WriteBool(!member.Session?.Connected() ?? false);
-            CharacterListPacket.WriteCharacter(member, pWriter);
+            pWriter.WriteCharacter(member);
             WritePartyDungeonInfo(pWriter);
         }
 
@@ -98,7 +102,7 @@ public static class PartyPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
         pWriter.Write(PartyPacketMode.LoginNotice);
-        CharacterListPacket.WriteCharacter(player, pWriter);
+        pWriter.WriteCharacter(player);
         pWriter.WriteLong();
         pWriter.WriteInt();
         pWriter.WriteShort();
@@ -143,7 +147,7 @@ public static class PartyPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
         pWriter.Write(PartyPacketMode.UpdateMemberLocation);
         pWriter.WriteLong(player.CharacterId);
-        CharacterListPacket.WriteCharacter(player, pWriter);
+        pWriter.WriteCharacter(player);
         WritePartyDungeonInfo(pWriter);
         return pWriter;
     }
@@ -154,7 +158,7 @@ public static class PartyPacket
         pWriter.Write(PartyPacketMode.UpdatePlayer);
         pWriter.WriteLong(player.CharacterId);
 
-        CharacterListPacket.WriteCharacter(player, pWriter);
+        pWriter.WriteCharacter(player);
         WritePartyDungeonInfo(pWriter);
         return pWriter;
     }
