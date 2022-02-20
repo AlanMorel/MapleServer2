@@ -812,6 +812,24 @@ CREATE TABLE `medals`
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
 
+--
+-- Table structure for table `game_event_user_values`
+--
+
+DROP TABLE IF EXISTS `game_event_user_values`;
+CREATE TABLE `game_event_user_values`
+(
+    `character_id`                     bigint       NOT NULL,
+    `type`                             int          NOT NULL,
+    `event_id`                         int          NOT NULL,
+    `event_value`                      text DEFAULT '',
+    `expiration_timestamp`             bigint       NOT NULL,
+    CONSTRAINT `user_value_id_pk` PRIMARY KEY (`character_id`),
+    CONSTRAINT `user_value_id_FK` FOREIGN KEY (`character_id`) REFERENCES `characters`(`character_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci;
+
 /*!40103 SET TIME_ZONE = @OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE = @OLD_SQL_MODE */;

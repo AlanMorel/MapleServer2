@@ -1,4 +1,4 @@
---
+﻿--
 -- Table structure for table `events`
 --
 DROP TABLE IF EXISTS `events`;
@@ -8,6 +8,8 @@ CREATE TABLE `events`
     `id`     int      NOT NULL AUTO_INCREMENT,
     `active` tinyint(1) NOT NULL,
     `type`   smallint NOT NULL,
+    `begin_timestamp` bigint NOT NULL,
+    `end_timestamp` bigint NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -90,12 +92,12 @@ CREATE TABLE `event_ugc_map_extension_sale`
     CONSTRAINT `event_ugcmapextensionsale_fk` FOREIGN KEY (`game_event_id`) REFERENCES `events` (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
-INSERT INTO `events` (`id`, `active`, `type`)
-VALUES (1, 1, 0),
-       (2, 1, 1),
-       (3, 0, 9),
-       (4, 0, 10),
-       (5, 1, 12);
+INSERT INTO `events` (`id`, `active`, `type`, `begin_timestamp`, `end_timestamp`)
+VALUES (1, 1, 0,1590577200 ,2531386800),
+       (2, 1, 1,1590577200 ,2531386800),
+       (3, 0, 9,1590577200 ,2531386800),
+       (4, 0, 10,1590577200 ,2531386800),
+       (5, 1, 12,1590577200 ,2531386800);
 
 INSERT INTO `event_string_boards` (`message_id`, `message`, `game_event_id`)
 VALUES (0,

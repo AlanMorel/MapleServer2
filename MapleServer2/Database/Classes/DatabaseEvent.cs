@@ -13,7 +13,9 @@ public class DatabaseEvent : DatabaseTable
         {
             gameEvent.Id,
             gameEvent.Active,
-            gameEvent.Type
+            gameEvent.Type,
+            begin_timestamp = gameEvent.BeginTimestamp,
+            end_timestamp = gameEvent.EndTimestamp,
         });
     }
 

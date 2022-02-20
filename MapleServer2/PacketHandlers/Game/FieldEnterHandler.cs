@@ -59,9 +59,6 @@ public class FieldEnterHandler : GamePacketHandler
 
         session.Send(KeyTablePacket.SendHotbars(player.GameOptions));
 
-        List<GameEvent> gameEvents = DatabaseManager.Events.FindAll();
-        session.Send(GameEventPacket.Load(gameEvents));
-
         TrophyManager.OnMapEntered(player, player.MapId);
     }
 }

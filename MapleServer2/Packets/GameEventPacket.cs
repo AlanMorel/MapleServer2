@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using Maple2Storage.Enums;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Database.Types;
 
@@ -6,6 +7,53 @@ namespace MapleServer2.Packets;
 
 public static class GameEventPacket
 {
+    public static PacketWriter Loadv2(List<GameEvent> events)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.GAME_EVENT);
+        pWriter.WriteByte();
+        pWriter.WriteInt(events.Count);
+        foreach (GameEvent e in events)
+        {
+            pWriter.WriteUnicodeString(e.GetType().Name);
+            pWriter.WriteInt(e.Id);
+            Console.WriteLine(e.GetType().Name);
+            switch (e)
+            {
+                case AttendGift attend:
+                    pWriter.WriteLong(attend.BeginTimestamp);
+                    pWriter.WriteLong(attend.EndTimestamp);
+                    pWriter.WriteUnicodeString(attend.Name);
+                    pWriter.WriteString(attend.Url);
+                    pWriter.WriteByte();
+                    pWriter.WriteBool(attend.DisableClaimButton);
+                    pWriter.WriteInt(attend.TimeRequired);
+                    pWriter.WriteByte();
+                    pWriter.WriteInt();
+                    pWriter.Write(attend.SkipDayCurrencyType);
+                    if (attend.SkipDayCurrencyType != EventCurrencyType.None)
+                    {
+                        pWriter.WriteInt(attend.SkipDaysAllowed);
+                        pWriter.WriteLong(attend.SkipDayCost);
+                        pWriter.WriteInt();
+                    }
+                    pWriter.WriteInt(attend.Days.Count);
+                    foreach (AttendGiftDay day in attend.Days.OrderBy(x => x.Day))
+                    {
+                        pWriter.WriteInt(day.ItemId);
+                        pWriter.WriteShort(day.ItemRarity);
+                        pWriter.WriteInt(day.ItemAmount);
+                        pWriter.WriteByte();
+                        pWriter.WriteByte();
+                        pWriter.WriteByte();
+                        pWriter.WriteByte();
+                    }
+                    break;
+
+            }
+        }
+        return pWriter;
+    }
+
     public static PacketWriter Load(List<GameEvent> events)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.GAME_EVENT);
@@ -16,7 +64,7 @@ public static class GameEventPacket
         pWriter.WriteLong(1644447600);
         pWriter.WriteLong(1647471600);
         pWriter.WriteUnicodeString("Emulator Attendance");
-        pWriter.WriteString("https://mapleme.me/");
+        pWriter.WriteString("https://web.yeou.app/");
         pWriter.WriteByte(); // enable bool?
         pWriter.WriteByte(1); // disable claim reward button
         pWriter.WriteInt(1800);

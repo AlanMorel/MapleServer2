@@ -3,7 +3,9 @@ using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
+using MapleServer2.Database.Types;
 using MapleServer2.Network;
+using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
@@ -188,6 +190,10 @@ public class ResponseKeyHandler : CommonPacketHandler
         {
             session.Send(KeyTablePacket.AskKeyboardOrMouse());
         }
+
+        List<GameEvent> gameEvents = DatabaseManager.Events.FindAll();
+        //GameEventHelper.LoadEvents(session.Player, gameEvents);
+        session.Send(GameEventPacket.Load(gameEvents));
 
         // SendKeyTable f(0x00), SendGuideRecord f(0x03), GameEvent f(0x00)
         // SendBannerList f(0x19), SendRoomDungeon f(0x05, 0x14, 0x17)

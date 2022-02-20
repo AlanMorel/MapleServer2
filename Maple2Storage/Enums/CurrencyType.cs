@@ -16,3 +16,10 @@ public enum CurrencyType : byte
     MesoToken = 13,
     BankMesos
 }
+
+public enum EventCurrencyType : byte
+{
+    None = 0,
+    Meso = 1,
+    Meret = 2
+}
