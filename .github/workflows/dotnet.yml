@@ -17,7 +17,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: "6.0.x"
+          dotnet-version: "6.0.100"
           include-prerelease: true
 
       - name: Build
@@ -33,7 +33,7 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: "6.0.x"
+          dotnet-version: "6.0.100"
           include-prerelease: true
 
       - name: Check out code
