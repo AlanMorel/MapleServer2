@@ -131,13 +131,6 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                             subSkill.Job = jobCode;
                         }
                     }
-
-                    XmlNodeList learnSkills = job.SelectNodes("learn/skill");
-                    foreach (XmlNode learnSkill in learnSkills)
-                    {
-                        int id = int.Parse(learnSkill.Attributes["id"].Value);
-                        skillList.Find(x => x.SkillId == id).CurrentLevel = 1;
-                    }
                 }
             }
         }

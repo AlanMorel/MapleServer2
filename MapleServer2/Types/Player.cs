@@ -177,7 +177,7 @@ public class Player
             new(MasteryType.Cooking),
             new(MasteryType.PetTaming)
         }, gameSession: null);
-        MapId = JobMetadataStorage.GetStartMapId((int) job);
+        MapId = JobMetadataStorage.GetStartMapId(job);
         SavedCoord = MapEntityStorage.GetRandomPlayerSpawn(MapId).Coord.ToFloat();
         Stats = new(job);
         Motto = "Motto";
@@ -219,10 +219,7 @@ public class Player
         BuddyList = new();
         QuestData = new();
         GatheringCount = new();
-        TrophyCount = new[]
-        {
-            0, 0, 0
-        };
+        TrophyCount = new int[3];
         ReturnMapId = (int) Map.Tria;
         ReturnCoord = MapEntityStorage.GetRandomPlayerSpawn(ReturnMapId).Coord.ToFloat();
         GroupChatId = new int[3];
@@ -242,7 +239,7 @@ public class Player
             QuestData.Add(questMetadata.Basic.Id, new(this, questMetadata));
         }
 
-        // Get account trophies
+        // Get account trophies, only used for the OnLevelUp event
         foreach ((int key, Trophy value) in DatabaseManager.Trophies.FindAllByAccountId(account.Id))
         {
             TrophyData.Add(key, value);
@@ -476,6 +473,7 @@ public class Player
                 DatabaseManager.UgcMarketItems.Update(item);
             }
         }
+
         Session.Send(MeretMarketPacket.LoadPersonalListings(items));
     }
 
@@ -483,5 +481,39 @@ public class Player
     {
         List<UgcMarketSale> sales = GameServer.UgcMarketManager.GetSalesByCharacterId(CharacterId);
         Session.Send(MeretMarketPacket.LoadSales(sales));
+    }
+
+    /// <summary>
+    /// Remove all skills with level 0 from hotbar
+    /// </summary>
+    public void RemoveSkillsFromHotbar()
+    {
+        SkillTab skillTab = SkillTabs.First(x => x.TabId == ActiveSkillTabId);
+        Hotbar hotbar = GameOptions.Hotbars[GameOptions.ActiveHotbarId];
+        foreach (QuickSlot quickSlot in hotbar.Slots)
+        {
+            if (quickSlot.SkillId == 0)
+            {
+                continue;
+            }
+
+            if (skillTab.SkillLevels.Any(x => x.Key == quickSlot.SkillId && x.Value == 0))
+            {
+                hotbar.RemoveQuickSlot(quickSlot);
+            }
+        }
+    }
+
+    public void AddNewSkillsToHotbar(HashSet<int> newSkillIds)
+    {
+        foreach (int skillId in newSkillIds)
+        {
+            if (SkillMetadataStorage.IsPassive(skillId))
+            {
+                continue;
+            }
+
+            GameOptions.Hotbars[GameOptions.ActiveHotbarId].AddToFirstSlot(QuickSlot.From(skillId));
+        }
     }
 }

@@ -12,7 +12,7 @@ public class TutorialHandler : GamePacketHandler
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        JobMetadata metadata = JobMetadataStorage.GetJobMetadata((int) session.Player.Job);
+        JobMetadata metadata = JobMetadataStorage.GetJobMetadata(session.Player.Job);
         {
             foreach (int taxiMapId in metadata.OpenTaxis)
             {

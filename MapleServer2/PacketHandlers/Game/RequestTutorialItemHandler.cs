@@ -13,7 +13,7 @@ public class RequestTutorialItemHandler : GamePacketHandler
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        List<TutorialItemMetadata> metadata = JobMetadataStorage.GetTutorialItems((int) session.Player.Job);
+        List<TutorialItemMetadata> metadata = JobMetadataStorage.GetTutorialItems(session.Player.Job);
 
         foreach (TutorialItemMetadata tutorialItem in metadata)
         {

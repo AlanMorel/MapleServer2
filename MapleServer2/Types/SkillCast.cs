@@ -110,34 +110,34 @@ public class SkillCast
 
     public int MaxStack() => GetAdditionalData()?.MaxStack ?? 1;
 
-    public bool IsRecovery() => VerifySkillTypeOf(SkillType.None, SkillSubType.Status, BuffType.Buff, BuffSubType.Recovery);
+    public bool IsRecovery() => VerifySkillTypeOf(SkillType.Active, SkillSubType.Status, BuffType.Buff, BuffSubType.Recovery);
 
     public bool IsRecoveryFromBuff() => VerifySkillTypeOf(BuffType.Buff, BuffSubType.Recovery);
 
     public bool IsGM() => VerifySkillTypeOf(SkillType.GM, SkillSubType.GM, BuffType.Buff, BuffSubType.Recovery);
 
-    public bool IsGlobal() => VerifySkillTypeOf(SkillType.None, SkillSubType.Global);
+    public bool IsGlobal() => VerifySkillTypeOf(SkillType.Active, SkillSubType.Global);
 
-    public bool IsBuffToOwner() => VerifySkillTypeOf(SkillType.None, SkillSubType.Status, BuffType.Buff, BuffSubType.Owner);
+    public bool IsBuffToOwner() => VerifySkillTypeOf(SkillType.Active, SkillSubType.Status, BuffType.Buff, BuffSubType.Owner);
 
-    public bool IsBuffToEntity() => VerifySkillTypeOf(SkillType.None, SkillSubType.Status, BuffType.Buff, BuffSubType.Entity);
+    public bool IsBuffToEntity() => VerifySkillTypeOf(SkillType.Active, SkillSubType.Status, BuffType.Buff, BuffSubType.Entity);
 
     public bool IsDebuffToEntity()
     {
-        return VerifySkillTypeOf(SkillType.None, SkillSubType.Status, BuffType.Debuff, BuffSubType.Entity) ||
+        return VerifySkillTypeOf(SkillType.Active, SkillSubType.Status, BuffType.Debuff, BuffSubType.Entity) ||
                VerifySkillTypeOf(BuffType.Debuff, BuffSubType.Entity);
     }
 
     public bool IsDebuffToOwner() => VerifySkillTypeOf(BuffType.Debuff, BuffSubType.Owner);
 
-    public bool IsDebuffElement() => VerifySkillTypeOf(SkillType.None, SkillSubType.Status, BuffType.Debuff, BuffSubType.Element);
+    public bool IsDebuffElement() => VerifySkillTypeOf(SkillType.Active, SkillSubType.Status, BuffType.Debuff, BuffSubType.Element);
 
-    public bool IsBuffShield() => VerifySkillTypeOf(SkillType.None, SkillSubType.Status, BuffType.Buff, BuffSubType.Shield);
+    public bool IsBuffShield() => VerifySkillTypeOf(SkillType.Active, SkillSubType.Status, BuffType.Buff, BuffSubType.Shield);
 
     public bool IsChainSkill()
     {
         SkillMetadata skillData = GetSkillMetadata();
-        return skillData.Type == SkillType.None && skillData.SubType == SkillSubType.None;
+        return skillData.Type == SkillType.Active && skillData.SubType == SkillSubType.None;
     }
 
     public List<SkillMotion> GetSkillMotions() => GetCurrentLevel().SkillMotions;

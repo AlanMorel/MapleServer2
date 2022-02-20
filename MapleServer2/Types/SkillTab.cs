@@ -1,5 +1,5 @@
-﻿using Maple2Storage.Types.Metadata;
-using MapleServer2.Constants.Skills;
+﻿using Maple2Storage.Enums;
+using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
@@ -12,7 +12,6 @@ public class SkillTab
     public long TabId { get; set; }
     public string Name { get; set; }
 
-    public List<int> Order { get; private set; }
     public Dictionary<int, SkillMetadata> SkillJob { get; private set; }
     public Dictionary<int, short> SkillLevels { get; private set; }
 
@@ -31,19 +30,8 @@ public class SkillTab
         Name = name;
         TabId = tabId;
         Uid = uid;
-        GenerateSkills((Job) jobId);
+        SkillJob = GetSkillsMetadata((Job) jobId);
         SkillLevels = skillLevels;
-    }
-
-    public static Dictionary<int, SkillMetadata> AddOnDictionary(Job job)
-    {
-        Dictionary<int, SkillMetadata> skillJob = new();
-
-        foreach (SkillMetadata skill in SkillMetadataStorage.GetJobSkills(job))
-        {
-            skillJob[skill.SkillId] = skill;
-        }
-        return skillJob;
     }
 
     public void AddOrUpdate(int id, short level, bool isLearned)
@@ -60,25 +48,43 @@ public class SkillTab
         }
     }
 
-    public void GenerateSkills(Job job)
-    {
-        Order = SkillTreeOrdered.GetListOrdered(job);
-        SkillJob = AddOnDictionary(job);
-    }
-
     public void ResetSkillTree(Job job)
     {
-        GenerateSkills(job);
-        SkillLevels = SkillJob.ToDictionary(x => x.Key, x => x.Value.CurrentLevel);
+        SkillJob = GetSkillsMetadata(job);
+        if (job is Job.GameMaster)
+        {
+            SkillLevels = SkillJob.Keys.ToDictionary(skillId => skillId, _ => (short) 1);
+            return;
+        }
+
+        SkillLevels = SkillJob.Keys.ToDictionary(skillId => skillId, _ => (short) 0);
+        LearnDefaultSkills();
+
+        void LearnDefaultSkills()
+        {
+            JobMetadata jobMetadata = JobMetadataStorage.GetJobMetadata(job);
+            if (jobMetadata is null)
+            {
+                return;
+            }
+
+            List<int> skillIds = new();
+            jobMetadata.LearnedSkills.ForEach(x => skillIds.AddRange(x.SkillIds));
+
+            foreach (int skillId in skillIds)
+            {
+                AddOrUpdate(skillId, 1, true);
+            }
+        }
     }
 
-    public static List<SkillMetadata> GetJobFeatureSkills(Job job)
+    public List<int> GetSkillsByType(SkillType type)
     {
-        return SkillMetadataStorage.GetJobSkills(job);
+        return SkillJob.Where(x => x.Value.Type == type).Select(x => x.Key).ToList();
     }
 
-    public override string ToString()
+    private static Dictionary<int, SkillMetadata> GetSkillsMetadata(Job job)
     {
-        return $"SkillTab(Id:{Uid},Name:{Name},Skills:{string.Join(",", SkillJob)})";
+        return SkillMetadataStorage.GetJobSkills(job).ToDictionary(x => x.SkillId, x => x);
     }
 }

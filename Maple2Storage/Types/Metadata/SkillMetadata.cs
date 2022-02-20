@@ -15,22 +15,20 @@ public class SkillMetadata
     [XmlElement(Order = 4)]
     public int Job;
     [XmlElement(Order = 5)]
-    public short CurrentLevel;
-    [XmlElement(Order = 6)]
     public readonly string State;
-    [XmlElement(Order = 7)]
+    [XmlElement(Order = 6)]
     public readonly byte DamageType;
-    [XmlElement(Order = 8)]
+    [XmlElement(Order = 7)]
     public readonly SkillType Type;
-    [XmlElement(Order = 9)]
+    [XmlElement(Order = 8)]
     public readonly SkillSubType SubType;
-    [XmlElement(Order = 10)]
+    [XmlElement(Order = 9)]
     public readonly byte Element;
-    [XmlElement(Order = 11)]
+    [XmlElement(Order = 10)]
     public readonly byte SuperArmor;
-    [XmlElement(Order = 12)]
+    [XmlElement(Order = 11)]
     public readonly bool IsSpRecovery;
-    [XmlElement(Order = 13)]
+    [XmlElement(Order = 12)]
     public short MaxLevel;
 
     public SkillMetadata() { }
