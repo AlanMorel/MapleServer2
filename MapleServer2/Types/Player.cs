@@ -253,12 +253,14 @@ public class Player
     {
         BuddyList.ForEach(buddy =>
         {
-            if (buddy.Friend?.Session?.Connected() ?? false)
+            if (!buddy.Friend?.Session?.Connected() ?? true)
             {
-                Buddy myBuddy = GameServer.BuddyManager.GetBuddyByPlayerAndId(buddy.Friend, buddy.SharedId);
-                buddy.Friend.Session.Send(BuddyPacket.LoginLogoutNotification(myBuddy));
-                buddy.Friend.Session.Send(BuddyPacket.UpdateBuddy(myBuddy));
+                return;
             }
+
+            Buddy myBuddy = GameServer.BuddyManager.GetBuddyByPlayerAndId(buddy.Friend, buddy.SharedId);
+            buddy.Friend.Session.Send(BuddyPacket.LoginLogoutNotification(myBuddy));
+            buddy.Friend.Session.Send(BuddyPacket.UpdateBuddy(myBuddy));
         });
     }
 
@@ -301,64 +303,6 @@ public class Player
         Session.SendFinal(MigrationPacket.GameToGame(endpoint, this), logoutNotice: false);
     }
 
-    private void SetCoords(int mapId, CoordF? coord, CoordF? rotation)
-    {
-        if (coord is not null && rotation is not null)
-        {
-            return;
-        }
-
-        MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(mapId);
-        if (spawn is null)
-        {
-            Session.SendNotice($"Could not find a spawn for map {mapId}");
-            return;
-        }
-
-        if (coord is null)
-        {
-            SavedCoord = spawn.Coord.ToFloat();
-            SafeBlock = spawn.Coord.ToFloat();
-        }
-
-        if (rotation is null)
-        {
-            SavedRotation = spawn.Rotation.ToFloat();
-        }
-    }
-
-    private void UpdateCoords(int mapId, long instanceId, CoordF? coord = null, CoordF? rotation = null)
-    {
-        if (MapEntityStorage.HasSafePortal(MapId))
-        {
-            ReturnCoord = FieldPlayer.Coord;
-            ReturnMapId = MapId;
-        }
-
-        if (coord is not null)
-        {
-            SavedCoord = (CoordF) coord;
-            SafeBlock = (CoordF) coord;
-        }
-
-        if (rotation is not null)
-        {
-            SavedRotation = (CoordF) rotation;
-        }
-
-        MapId = mapId;
-
-        if (instanceId != 0)
-        {
-            InstanceId = instanceId;
-        }
-
-        if (!UnlockedMaps.Contains(MapId))
-        {
-            UnlockedMaps.Add(MapId);
-        }
-    }
-
     public Dictionary<ItemSlot, Item> GetEquippedInventory(InventoryTab tab)
     {
         return tab switch
@@ -387,7 +331,7 @@ public class Player
             while (Session != null)
             {
                 Session.Send(TimeSyncPacket.Request());
-                await Task.Delay(1000);
+                await Task.Delay(TimeSpan.FromSeconds(1));
             }
         });
     }
@@ -399,7 +343,7 @@ public class Player
             while (Session != null)
             {
                 Session.Send(RequestPacket.TickSync());
-                await Task.Delay(300 * 1000); // every 5 minutes
+                await Task.Delay(TimeSpan.FromMinutes(5));
             }
         });
     }
@@ -514,6 +458,64 @@ public class Player
             }
 
             GameOptions.Hotbars[GameOptions.ActiveHotbarId].AddToFirstSlot(QuickSlot.From(skillId));
+        }
+    }
+
+    private void SetCoords(int mapId, CoordF? coord, CoordF? rotation)
+    {
+        if (coord is not null && rotation is not null)
+        {
+            return;
+        }
+
+        MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(mapId);
+        if (spawn is null)
+        {
+            Session.SendNotice($"Could not find a spawn for map {mapId}");
+            return;
+        }
+
+        if (coord is null)
+        {
+            SavedCoord = spawn.Coord.ToFloat();
+            SafeBlock = spawn.Coord.ToFloat();
+        }
+
+        if (rotation is null)
+        {
+            SavedRotation = spawn.Rotation.ToFloat();
+        }
+    }
+
+    private void UpdateCoords(int mapId, long instanceId, CoordF? coord = null, CoordF? rotation = null)
+    {
+        if (MapEntityStorage.HasSafePortal(MapId))
+        {
+            ReturnCoord = FieldPlayer.Coord;
+            ReturnMapId = MapId;
+        }
+
+        if (coord is not null)
+        {
+            SavedCoord = (CoordF) coord;
+            SafeBlock = (CoordF) coord;
+        }
+
+        if (rotation is not null)
+        {
+            SavedRotation = (CoordF) rotation;
+        }
+
+        MapId = mapId;
+
+        if (instanceId != 0)
+        {
+            InstanceId = instanceId;
+        }
+
+        if (!UnlockedMaps.Contains(MapId))
+        {
+            UnlockedMaps.Add(MapId);
         }
     }
 }

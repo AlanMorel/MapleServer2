@@ -5,12 +5,15 @@ using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using NLog;
 
 // TODO: make this class thread safe?
 namespace MapleServer2.Types;
 
 public class Inventory
 {
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
     public readonly long Id;
 
     // This contains ALL inventory Items regardless of tab
@@ -102,7 +105,10 @@ public class Inventory
                 switch (item.InventoryTab)
                 {
                     case InventoryTab.Outfit:
-                        Cosmetics.Add(item.ItemSlot, item);
+                        if (!Cosmetics.TryAdd(item.ItemSlot, item))
+                        {
+                            Logger.Error($"Failed to add item {item.Id} to inventory {Id}, slot {item.ItemSlot} was already taken.");
+                        }
                         continue;
                     case InventoryTab.Badge:
                         Badges[badgeIndex++] = item;
@@ -111,7 +117,10 @@ public class Inventory
                         LapenshardStorage[item.Slot] = item;
                         continue;
                     case InventoryTab.Gear:
-                        Equips.Add(item.ItemSlot, item);
+                        if (!Equips.TryAdd(item.ItemSlot, item))
+                        {
+                            Logger.Error($"Failed to add item {item.Id} to inventory {Id}, slot {item.ItemSlot} was already taken.");
+                        }
                         continue;
                 }
             }
