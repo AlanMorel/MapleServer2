@@ -165,5 +165,9 @@ public partial class FieldManager
         {
             IsDead = true;
         }
+
+        public virtual void Animate(string sequenceName)
+        {
+        }
     }
 }

@@ -85,9 +85,11 @@ public partial class TriggerContext
             IFieldObject<Portal> portal = Field.State.Portals.Values.First(p => p.Value.Id == triggerId);
             foreach (IFieldObject<Player> player in players)
             {
-                player.Coord = portal.Coord;
+                CoordF tempCoord = portal.Coord;
+                tempCoord.Z += 25;
+                player.Coord = tempCoord;
                 player.Rotation = portal.Rotation;
-                player.Value.Session.Send(UserMoveByPortalPacket.Move(player, portal.Coord, portal.Rotation));
+                Field.BroadcastPacket(UserMoveByPortalPacket.Move(player, tempCoord, portal.Rotation, isTrigger: true));
             }
 
             return;
@@ -130,7 +132,8 @@ public partial class TriggerContext
     {
     }
 
-    public void RandomAdditionalEffect(string target, int triggerBoxId, int spawnPointId, byte targetCount, int tick, int waitTick, string targetEffect, int additionalEffectId)
+    public void RandomAdditionalEffect(string target, int triggerBoxId, int spawnPointId, byte targetCount, int tick, int waitTick, string targetEffect,
+        int additionalEffectId)
     {
     }
 
@@ -177,6 +180,18 @@ public partial class TriggerContext
 
     public void SetConversation(byte arg1, int npcId, string script, int delay, byte arg5, Align align)
     {
+        if (npcId == 0)
+        {
+            IFieldActor<Player> player = Field.State.Players.Values.FirstOrDefault();
+            if (player is null)
+            {
+                return;
+            }
+
+            Field.BroadcastPacket(CinematicPacket.BalloonTalk(player.ObjectId, false, script, delay * 1000, 0));
+            return;
+        }
+
         Field.BroadcastPacket(CinematicPacket.Conversation(npcId, script, delay * 1000, align));
     }
 
@@ -203,7 +218,11 @@ public partial class TriggerContext
 
     public void SetUserValue(int triggerId, string key, int value)
     {
-        PlayerTrigger playerTrigger = new(key) { TriggerId = triggerId, Value = value };
+        PlayerTrigger playerTrigger = new(key)
+        {
+            TriggerId = triggerId,
+            Value = value
+        };
         foreach (IFieldObject<Player> player in Field.State.Players.Values)
         {
             player.Value.Triggers.Add(playerTrigger);

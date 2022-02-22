@@ -23,5 +23,10 @@ public partial class FieldManager
             State = NpcState.Normal;
             Action = NpcAction.Idle;
         }
+
+        public override void Animate(string sequenceName)
+        {
+            Animation = AnimationStorage.GetSequenceIdBySequenceName(Value.Model, sequenceName);
+        }
     }
 }

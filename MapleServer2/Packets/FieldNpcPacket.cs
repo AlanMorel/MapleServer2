@@ -45,50 +45,6 @@ public static class FieldNpcPacket
         return pWriter;
     }
 
-    public static PacketWriter AddBoss(IFieldActor<NpcMetadata> mob)
-    {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_ADD_NPC);
-
-        pWriter.WriteInt(mob.ObjectId);
-        pWriter.WriteInt(mob.Value.Id);
-        pWriter.Write(mob.Coord);
-        pWriter.Write(mob.Rotation);
-        pWriter.WriteString(mob.Value.Model); // StrA - kfm model string
-        // If NPC is not valid, the packet seems to stop here
-
-        pWriter.DefaultStatsMob(mob);
-
-        pWriter.WriteByte();
-        pWriter.WriteLong();
-        pWriter.WriteLong();
-        pWriter.WriteInt();
-        pWriter.WriteByte();
-
-        short count = 0;
-        pWriter.WriteShort(count);
-        for (int i = 0; i < count; i++)
-        {
-            pWriter.WriteInt();
-            pWriter.WriteInt();
-            pWriter.WriteInt();
-            pWriter.WriteInt();
-            pWriter.WriteInt();
-            pWriter.WriteInt(); // usually 90000814 (skill id)??
-            pWriter.WriteShort();
-            pWriter.WriteInt();
-            pWriter.WriteByte();
-            pWriter.WriteLong();
-        }
-
-        pWriter.WriteLong();
-        pWriter.WriteByte();
-        pWriter.WriteInt(1);
-        pWriter.WriteInt();
-        pWriter.WriteByte();
-
-        return pWriter;
-    }
-
     public static PacketWriter AddMob(IFieldActor<NpcMetadata> mob)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_ADD_NPC);
@@ -97,6 +53,10 @@ public static class FieldNpcPacket
         pWriter.WriteInt(mob.Value.Id);
         pWriter.Write(mob.Coord);
         pWriter.Write(mob.Rotation);
+        if (mob.Value.IsBoss())
+        {
+            pWriter.WriteString(mob.Value.Model); // StrA - kfm model string
+        }
         // If NPC is not valid, the packet seems to stop here
 
         pWriter.DefaultStatsMob(mob);
@@ -121,6 +81,20 @@ public static class FieldNpcPacket
         pWriter.WriteLong();
         pWriter.WriteByte();
         pWriter.WriteInt(mob.Value.Level);
+        if (mob.Value.IsBoss())
+        {
+            pWriter.WriteInt();
+            pWriter.WriteUnicodeString();
+
+            int skillCount = 0;
+            pWriter.WriteInt(skillCount);
+            for (int i = 0; i < skillCount; i++)
+            {
+                pWriter.WriteInt(); // skill id
+                pWriter.WriteShort(); // skill level
+            }
+        }
+
         pWriter.WriteInt();
         pWriter.WriteByte();
 

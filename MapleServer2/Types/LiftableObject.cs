@@ -1,24 +1,21 @@
 ﻿using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 
 namespace MapleServer2.Types;
 
 public class LiftableObject
 {
     public string EntityId;
-    public int ItemId;
-    public string EffectQuestId;
-    public string EffectQuestState;
+    public MapLiftableObject Metadata;
     public CoordF Position;
     public CoordF Rotation;
     public LiftableState State;
     public bool Enabled;
 
-    public LiftableObject(string entityId, int itemId, string effectQuestId, string effectQuestState)
+    public LiftableObject(string entityId, MapLiftableObject metadata)
     {
         EntityId = entityId;
-        ItemId = itemId;
-        EffectQuestId = effectQuestId;
-        EffectQuestState = effectQuestState;
+        Metadata = metadata;
         State = LiftableState.Active;
         Enabled = true;
     }
