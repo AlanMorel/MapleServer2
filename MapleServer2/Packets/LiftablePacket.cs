@@ -1,5 +1,4 @@
-﻿using Maple2Storage.Types;
-using MaplePacketLib2.Tools;
+﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
 
@@ -52,7 +51,7 @@ public static class LiftablePacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.LIFTABLE);
         pWriter.Write(LiftableMode.UpdateEntity);
-        pWriter.WriteString($"4_{CoordB.AsHexadecimal(liftableObject.Position.ToByte())}");
+        pWriter.WriteString($"4_{liftableObject.Position.ToByte().AsHexadecimal()}");
         pWriter.WriteByte();
         pWriter.WriteInt(liftableObject.Enabled ? 1 : 0); // 1 = enable, 0 = disable
         pWriter.Write(liftableObject.State);
@@ -64,7 +63,7 @@ public static class LiftablePacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.LIFTABLE);
         pWriter.Write(LiftableMode.Drop);
-        pWriter.WriteString($"4_{CoordB.AsHexadecimal(liftableObject.Position.ToByte())}");
+        pWriter.WriteString($"4_{liftableObject.Position.ToByte().AsHexadecimal()}");
         pWriter.WriteInt(1);
         pWriter.WriteUnicodeString(liftableObject.EffectQuestId);
         pWriter.WriteUnicodeString(liftableObject.EffectQuestState);
@@ -79,7 +78,7 @@ public static class LiftablePacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.LIFTABLE);
         pWriter.Write(LiftableMode.RemoveCube);
-        pWriter.WriteString($"4_{CoordB.AsHexadecimal(liftableObject.Position.ToByte())}");
+        pWriter.WriteString($"4_{liftableObject.Position.ToByte().AsHexadecimal()}");
 
         return pWriter;
     }
