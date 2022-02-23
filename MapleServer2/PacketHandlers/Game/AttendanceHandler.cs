@@ -108,8 +108,8 @@ public class AttendanceHandler : GamePacketHandler
         }
 
         GameEventUserValue skipDay = GameEventHelper.GetUserValue(session.Player, attendanceEvent.Id, attendanceEvent.EndTimestamp, GameEventUserValueType.EarlyParticipationRemaining);
-        int skipsRemaining = int.Parse(skipDay.EventValue);
-        if (skipsRemaining >= attendanceEvent.SkipDaysAllowed)
+        int skipsTotal = int.Parse(skipDay.EventValue);
+        if (skipsTotal >= attendanceEvent.SkipDaysAllowed)
         {
             return;
         }
@@ -142,8 +142,8 @@ public class AttendanceHandler : GamePacketHandler
                 return;
         }
 
-        skipsRemaining++;
-        skipDay.EventValue = skipsRemaining.ToString();
+        skipsTotal++;
+        skipDay.EventValue = skipsTotal.ToString();
         DatabaseManager.GameEventUserValue.Update(skipDay);
         session.Send(GameEventUserValuePacket.UpdateValue(skipDay));
 
@@ -152,7 +152,6 @@ public class AttendanceHandler : GamePacketHandler
 
     private static void GiveAttendanceReward(GameSession session, AttendGift attendanceEvent, int day)
     {
-        // TODO: Change to mail award
         AttendGiftDay attendGift = attendanceEvent.Days.FirstOrDefault(x => x.Day == day);
         if (attendGift is null)
         {
