@@ -13,17 +13,10 @@ public static class FieldPlayerPacket
         Player player = fieldPlayer.Value;
         PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_ADD_PLAYER);
         pWriter.WriteInt(fieldPlayer.ObjectId);
-        CharacterListPacket.WriteCharacter(player, pWriter);
+        pWriter.WriteCharacter(player);
 
         // Skills
-        pWriter.Write(player.JobCode);
-        bool flag = true;
-        pWriter.WriteBool(flag);
-        if (flag)
-        {
-            pWriter.Write(player.Job);
-            pWriter.WriteSkills(player);
-        }
+        pWriter.WriteJobInfo(player);
 
         // Coords
         pWriter.Write(fieldPlayer.Coord);
@@ -124,7 +117,7 @@ public static class FieldPlayerPacket
             pWriter.WriteDeflated(new byte[1], 0, 1); // Empty buffer
         }
 
-        JobPacket.WritePassiveSkills(pWriter, fieldPlayer);
+        pWriter.WritePassiveSkills(fieldPlayer);
 
         pWriter.WriteInt();
         pWriter.WriteInt();

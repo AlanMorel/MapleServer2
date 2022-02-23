@@ -9,12 +9,14 @@ public static class CinematicPacket
     private enum CinematicPacketMode : byte
     {
         HideUi = 0x1,
+        Mode02 = 0x2,
         View = 0x3,
         SetSceneSkip = 0x4,
         StartSceneSkip = 0x5,
         Conversation = 0x6,
         BalloonTalk = 0x8,
-        Caption = 0xA
+        Caption = 0xA,
+        SystemMsg = 0xB
     }
 
     public static PacketWriter HideUi(bool hide)
@@ -22,6 +24,13 @@ public static class CinematicPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.CINEMATIC);
         pWriter.Write(CinematicPacketMode.HideUi);
         pWriter.WriteBool(hide);
+        return pWriter;
+    }
+
+    public static PacketWriter Mode02()
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.CINEMATIC);
+        pWriter.Write(CinematicPacketMode.Mode02);
         return pWriter;
     }
 
@@ -35,11 +44,11 @@ public static class CinematicPacket
         return pWriter;
     }
 
-    public static PacketWriter SetSceneSkip(string skipState)
+    public static PacketWriter SetSceneSkip(string skipState = "")
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.CINEMATIC);
         pWriter.Write(CinematicPacketMode.SetSceneSkip);
-        pWriter.WriteByte(1); //??
+        pWriter.WriteBool(skipState.Length != 0);
         pWriter.WriteString(skipState);
         return pWriter;
     }
@@ -75,7 +84,8 @@ public static class CinematicPacket
         return pWriter;
     }
 
-    public static PacketWriter Caption(CaptionType type, string title, string script, string align, float offsetRateX, float offsetRateY, int duration, float scale)
+    public static PacketWriter Caption(CaptionType type, string title, string script, string align, float offsetRateX, float offsetRateY, int duration,
+        float scale)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.CINEMATIC);
         pWriter.Write(CinematicPacketMode.Caption);
@@ -87,6 +97,16 @@ public static class CinematicPacket
         pWriter.WriteFloat(offsetRateX);
         pWriter.WriteFloat(offsetRateY);
         pWriter.WriteFloat(scale);
+        return pWriter;
+    }
+
+    public static PacketWriter SystemMessage(string script)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.CINEMATIC);
+        pWriter.Write(CinematicPacketMode.SystemMsg);
+        pWriter.WriteUnicodeString(script);
+        pWriter.WriteByte();
+
         return pWriter;
     }
 }

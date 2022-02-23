@@ -71,7 +71,11 @@ public class Levels
         Session.FieldManager.BroadcastPacket(LevelUpPacket.LevelUp(FieldPlayer.ObjectId, Level));
         Session.FieldManager.BroadcastPacket(FieldObjectPacket.UpdateCharacterLevel(Player));
 
-        Session.FieldManager.BroadcastPacket(JobPacket.SendJob(FieldPlayer));
+        // Find all new skills for current level
+        HashSet<int> newSkillIds = SkillMetadataStorage.GetJobSkills(Player.Job)
+            .Where(x => x.SkillLevels.First().SkillUpgrade.LevelRequired == Level)
+            .Select(x => x.SkillId).ToHashSet();
+        Session.FieldManager.BroadcastPacket(JobPacket.UpdateSkillTab(FieldPlayer, newSkillIds));
 
         Session.Send(StatPacket.SetStats(FieldPlayer));
         Session.FieldManager.BroadcastPacket(StatPacket.UpdateFieldStats(FieldPlayer), Session);
@@ -81,6 +85,8 @@ public class Levels
         Player.UpdateSocials();
         TrophyManager.OnLevelUp(Player);
         QuestHelper.GetNewQuests(Player);
+
+        DatabaseManager.Characters.Update(Player);
         return true;
     }
 

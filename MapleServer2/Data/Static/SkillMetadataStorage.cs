@@ -1,6 +1,6 @@
-﻿using Maple2Storage.Types;
+﻿using Maple2Storage.Enums;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
-using MapleServer2.Constants.Skills;
 using MapleServer2.Enums;
 using ProtoBuf;
 
@@ -25,44 +25,48 @@ public static class SkillMetadataStorage
     public static List<int> GetEmotes() => Skills.Values.Where(x => x.SkillId / 100000 == 902).Select(x => x.SkillId).ToList();
 
     // Get a List of Skills corresponding to the Job
-    public static List<SkillMetadata> GetJobSkills(Job job = Job.None)
+    public static IEnumerable<SkillMetadata> GetJobSkills(Job job)
     {
-        List<SkillMetadata> jobSkill = new();
-        List<int> gmSkills = SkillTreeOrdered.GetListOrdered(Job.GameMaster);
+        List<SkillMetadata> skillMetadatas = new();
 
         if (Job.GameMaster == job)
         {
-            foreach (int skillId in gmSkills)
-            {
-                jobSkill.Add(Skills[skillId]);
-                jobSkill.First(skill => skill.SkillId == skillId).CurrentLevel = 1;
-            }
-            return jobSkill;
+            return GameMasterSkills.Select(skillId => Skills[skillId]);
         }
 
-        foreach ((int _, SkillMetadata metadata) in Skills)
+        List<JobSkillMetadata> jobSkills = JobMetadataStorage.GetJobSkills(job);
+        if (jobSkills is null)
         {
-            if (metadata.Job == (int) job)
-            {
-                jobSkill.Add(metadata);
-            }
-            else
-            {
-                switch (metadata.SkillId)
-                {
-                    // Swiming
-                    case 20000001:
-                        jobSkill.Add(metadata);
-                        metadata.CurrentLevel = 1;
-                        break;
-                    // Climbing walls
-                    case 20000011:
-                        jobSkill.Add(metadata);
-                        metadata.CurrentLevel = 1;
-                        break;
-                }
-            }
+            return skillMetadatas;
         }
-        return jobSkill;
+
+        foreach (JobSkillMetadata jobSkill in jobSkills)
+        {
+            SkillMetadata skillMetadata = GetSkill(jobSkill.SkillId);
+            if (skillMetadata is null)
+            {
+                continue;
+            }
+
+            skillMetadatas.Add(skillMetadata);
+        }
+
+        return skillMetadatas;
     }
+
+    public static bool IsPassive(int skillId) => GetSkill(skillId)?.Type == SkillType.Passive;
+
+    private static readonly List<int> GameMasterSkills = new()
+    {
+        20000001,
+        20000011,
+        19900001,
+        19900011,
+        19900021,
+        19900032,
+        19900042,
+        19900052,
+        19900061,
+        19999991
+    };
 }

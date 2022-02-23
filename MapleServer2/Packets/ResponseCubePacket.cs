@@ -161,8 +161,8 @@ public static class ResponseCubePacket
         pWriter.WriteInt();
         pWriter.Write(liftable.Position.ToByte());
         pWriter.WriteByte();
-        pWriter.WriteLong();
-        pWriter.WriteInt(liftable.ItemId);
+        pWriter.WriteLong(GuidGenerator.Long());
+        pWriter.WriteInt(liftable.Metadata.ItemId);
         pWriter.WriteLong();
         pWriter.WriteLong();
         pWriter.WriteByte();
