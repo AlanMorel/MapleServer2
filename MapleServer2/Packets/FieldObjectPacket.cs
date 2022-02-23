@@ -169,11 +169,14 @@ public static class FieldObjectPacket
         npcBuffer.WriteInt(mob.ObjectId);
         npcBuffer.WriteByte();
         npcBuffer.Write(mob.Coord.ToShort());
-        // TODO: figure out if it's *10 or *1
         npcBuffer.WriteShort(mob.LookDirection);
         npcBuffer.Write(mob.Velocity.ToShort()); // Target Position's Displacement
         npcBuffer.WriteShort(100); // Unknown
-        //npcBuffer.WriteInt(); // Unknown but is required for Boss, but not for normal mobs.
+        if (mob.Value.IsBoss())
+        {
+            npcBuffer.WriteInt(); // Unknown but is required for Boss, but not for normal mobs.
+        }
+
         npcBuffer.WriteByte(1); // Flag ?
         npcBuffer.WriteShort(mob.Animation);
         npcBuffer.WriteShort(1); // counter (increments every packet)

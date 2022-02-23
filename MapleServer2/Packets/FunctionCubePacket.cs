@@ -25,7 +25,7 @@ public class FunctionCubePacket
         packetWriter.WriteInt(cubes.Count);
         foreach (Cube cube in cubes)
         {
-            packetWriter.WriteUnicodeString($"4_{CoordB.AsHexadecimal(cube.CoordF.ToByte())}");
+            packetWriter.WriteUnicodeString($"4_{cube.CoordF.ToByte().AsHexadecimal()}");
             switch (cube.Item.HousingCategory)
             {
                 case ItemHousingCategory.Farming:
@@ -48,7 +48,7 @@ public class FunctionCubePacket
         PacketWriter packetWriter = PacketWriter.Of(SendOp.FUNCTION_CUBE);
 
         packetWriter.Write(FunctionCubeMode.Add);
-        packetWriter.WriteUnicodeString($"4_{CoordB.AsHexadecimal(coordB)}");
+        packetWriter.WriteUnicodeString($"4_{coordB.AsHexadecimal()}");
         packetWriter.WriteInt(status);
         packetWriter.WriteByte(unkByte);
 
@@ -61,7 +61,7 @@ public class FunctionCubePacket
 
         packetWriter.Write(FunctionCubeMode.Furniture);
         packetWriter.WriteLong(characterId);
-        packetWriter.WriteUnicodeString($"4_{CoordB.AsHexadecimal(coordB)}");
+        packetWriter.WriteUnicodeString($"4_{coordB.AsHexadecimal()}");
         packetWriter.WriteBool(inUse);
 
         return packetWriter;
@@ -73,7 +73,7 @@ public class FunctionCubePacket
 
         packetWriter.Write(FunctionCubeMode.SuccessLifeSkill);
         packetWriter.WriteLong(characterId);
-        packetWriter.WriteUnicodeString($"4_{CoordB.AsHexadecimal(coordB)}");
+        packetWriter.WriteUnicodeString($"4_{coordB.AsHexadecimal()}");
         packetWriter.WriteLong(TimeInfo.Now());
         packetWriter.WriteInt(status);
 
@@ -86,7 +86,7 @@ public class FunctionCubePacket
 
         packetWriter.Write(FunctionCubeMode.FailLifeSkill);
         packetWriter.WriteLong(characterId);
-        packetWriter.WriteUnicodeString($"4_{CoordB.AsHexadecimal(coordB)}");
+        packetWriter.WriteUnicodeString($"4_{coordB.AsHexadecimal()}");
         packetWriter.WriteLong(TimeInfo.Now());
 
         return packetWriter;

@@ -40,7 +40,7 @@ public partial class TriggerContext
         foreach (int spawnPointId in spawnPointIds)
         {
             MapEventNpcSpawnPoint spawnPoint = MapEntityStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnPointId);
-            if (spawnPoint == null)
+            if (spawnPoint is null)
             {
                 continue;
             }
@@ -80,12 +80,17 @@ public partial class TriggerContext
                 }
 
                 IFieldActor<NpcMetadata> fieldNpc = Field.State.Npcs.Values.FirstOrDefault(x => x.Value.Id == id);
-                if (fieldNpc is null)
+                if (fieldNpc is not null)
                 {
+                    Field.RemoveNpc(fieldNpc);
                     continue;
                 }
 
-                Field.RemoveNpc(fieldNpc);
+                IFieldActor<NpcMetadata> fieldMob = Field.State.Mobs.Values.FirstOrDefault(x => x.Value.Id == id);
+                if (fieldMob is not null)
+                {
+                    Field.RemoveMob(fieldMob);
+                }
             }
         }
     }
@@ -147,12 +152,46 @@ public partial class TriggerContext
     {
     }
 
-    public void SetNpcEmotionLoop(int arg1, string arg2, float arg3)
+    public void SetNpcEmotionLoop(int spawnTriggerId, string sequenceName, float duration)
     {
+        MapEventNpcSpawnPoint spawnPoint = MapEntityStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnTriggerId);
+        if (spawnPoint is null)
+        {
+            return;
+        }
+
+        foreach (string npcId in spawnPoint.NpcIds)
+        {
+            if (!int.TryParse(npcId, out int id))
+            {
+                continue;
+            }
+
+            IFieldActor<NpcMetadata> fieldNpc = Field.State.Npcs.Values.FirstOrDefault(x => x.Value.Id == id);
+
+            fieldNpc?.Animate(sequenceName);
+        }
     }
 
-    public void SetNpcEmotionSequence(int arg1, string arg2, int arg3)
+    public void SetNpcEmotionSequence(int spawnTriggerId, string sequenceName, int arg3)
     {
+        MapEventNpcSpawnPoint spawnPoint = MapEntityStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnTriggerId);
+        if (spawnPoint is null)
+        {
+            return;
+        }
+
+        foreach (string npcId in spawnPoint.NpcIds)
+        {
+            if (!int.TryParse(npcId, out int id))
+            {
+                continue;
+            }
+
+            IFieldActor<NpcMetadata> fieldNpc = Field.State.Npcs.Values.FirstOrDefault(x => x.Value.Id == id);
+
+            fieldNpc?.Animate(sequenceName);
+        }
     }
 
     public void SetNpcRotation(int arg1, int arg2)

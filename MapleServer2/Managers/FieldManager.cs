@@ -354,7 +354,7 @@ public partial class FieldManager
     }
 
     // Spawned NPCs will not appear until controlled
-    public void AddNpc(IFieldActor<NpcMetadata> fieldNpc)
+    private void AddNpc(IFieldActor<NpcMetadata> fieldNpc)
     {
         State.AddNpc(fieldNpc);
 
@@ -388,6 +388,7 @@ public partial class FieldManager
         Broadcast(session =>
         {
             session.Send(FieldNpcPacket.AddMob(fieldMob));
+
             session.Send(FieldObjectPacket.LoadMob(fieldMob));
             for (int i = 0; i < fieldMob.Value.NpcMetadataEffect.EffectIds.Length; i++)
             {
@@ -397,17 +398,20 @@ public partial class FieldManager
         });
     }
 
-    private bool RemoveMob(Mob mob)
+    public bool RemoveMob(IFieldActor<NpcMetadata> mob)
     {
         if (!State.RemoveMob(mob.ObjectId))
         {
             return false;
         }
 
-        IFieldObject<MobSpawn> originSpawn = mob.OriginSpawn;
-        if (originSpawn != null && originSpawn.Value.Mobs.Remove(mob) && originSpawn.Value.Mobs.Count == 0)
+        if (mob is Mob fieldMob)
         {
-            StartSpawnTimer(originSpawn);
+            IFieldObject<MobSpawn> originSpawn = fieldMob.OriginSpawn;
+            if (originSpawn != null && originSpawn.Value.Mobs.Remove(mob) && originSpawn.Value.Mobs.Count == 0)
+            {
+                StartSpawnTimer(originSpawn);
+            }
         }
 
         Broadcast(session =>
@@ -899,7 +903,7 @@ public partial class FieldManager
                 continue;
             }
 
-            State.AddLiftableObject(new(liftable.EntityId, liftable.ItemId, liftable.EffectQuestID, liftable.EffectQuestState));
+            State.AddLiftableObject(new(liftable.EntityId, liftable));
         }
 
         foreach (MapChestMetadata mapChest in MapEntityStorage.GetMapChests(MapId))

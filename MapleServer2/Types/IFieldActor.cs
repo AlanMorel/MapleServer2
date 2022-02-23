@@ -29,6 +29,8 @@ public interface IFieldActor : IFieldObject
     public void ConsumeStamina(int amount);
 
     public void Perish();
+
+    public void Animate(string sequenceName);
 }
 
 public interface IFieldActor<out T> : IFieldActor, IFieldObject<T> { }

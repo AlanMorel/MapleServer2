@@ -283,7 +283,7 @@ public class RequestCubeHandler : GamePacketHandler
         CoordF coordF = coord.ToFloat();
         Player player = session.Player;
 
-        LiftableObject liftable = session.FieldManager.State.LiftableObjects.Values.FirstOrDefault(x => x.ItemId == itemId);
+        LiftableObject liftable = session.FieldManager.State.LiftableObjects.Values.FirstOrDefault(x => x.Metadata.ItemId == itemId);
         if (liftable is not null)
         {
             HandleAddLiftable(player, session.FieldManager, liftable, coord, rotation);
@@ -390,13 +390,23 @@ public class RequestCubeHandler : GamePacketHandler
         if (target is not null)
         {
             liftable.State = LiftableState.Disabled;
-            QuestHelper.UpdateQuest(player.Session, liftable.ItemId.ToString(), "item_move", target.Target.ToString());
+            QuestHelper.UpdateQuest(player.Session, liftable.Metadata.ItemId.ToString(), "item_move", target.Target.ToString());
         }
 
         fieldManager.BroadcastPacket(LiftablePacket.Drop(liftable));
         fieldManager.BroadcastPacket(ResponseCubePacket.PlaceLiftable(liftable, player.FieldPlayer.ObjectId));
         fieldManager.BroadcastPacket(BuildModePacket.Use(player.FieldPlayer, BuildModeHandler.BuildModeType.Stop));
-        fieldManager.BroadcastPacket(LiftablePacket.UpdateEntityByCoord(liftable));
+
+        Task.Run(async () =>
+        {
+            await Task.Delay(liftable.Metadata.ItemLifeTime);
+            fieldManager.BroadcastPacket(LiftablePacket.UpdateEntityByCoord(liftable));
+            fieldManager.BroadcastPacket(ResponseCubePacket.RemoveCube(0, 0, liftable.Position.ToByte()));
+            fieldManager.BroadcastPacket(LiftablePacket.RemoveCube(liftable));
+            liftable.State = LiftableState.Removed;
+            liftable.Enabled = false;
+            // TODO: regen task
+        });
     }
 
     private static void HandleRemoveCube(GameSession session, PacketReader packet)

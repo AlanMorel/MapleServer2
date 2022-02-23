@@ -77,6 +77,9 @@ public class NpcMetadata
     public bool IsDye() => Kind == 34;
 
     public bool IsMirror() => Kind == 35;
+
+    // This might not be the correct way to do this, but it works for now.
+    public bool IsBoss() => NpcMetadataBasic.MinimapIconName == "boss";
 }
 
 [XmlType]
@@ -120,6 +123,8 @@ public class NpcMetadataBasic
     public string[] EventTags = Array.Empty<string>(); // field_elite, 
     [XmlElement(Order = 19)]
     public string Race; // (plane|animal|"|spirit|fairy|combine|bug|devil)
+    [XmlElement(Order = 20)]
+    public string MinimapIconName;
 
     public override string ToString()
     {
