@@ -40,6 +40,7 @@ public class GameSession : Session
         Player = player;
         FieldManager = FieldManagerFactory.GetManager(player);
         player.FieldPlayer = FieldManager.RequestCharacter(player);
+        player.LastLogTime = TimeInfo.Now();
     }
 
     public void EnterField(Player player)
@@ -105,6 +106,15 @@ public class GameSession : Session
             AuthData authData = Player.Account.AuthData;
             authData.OnlineCharacterId = 0;
             DatabaseManager.AuthData.UpdateOnlineCharacterId(authData);
+        }
+
+        List<GameEventUserValue> userTimeValues = Player.EventUserValues.Where(x => x.EventType == GameEventUserValueType.AccumulatedTime).ToList();
+        foreach (GameEventUserValue userValue in userTimeValues)
+        {
+            long timeAccumulated = long.Parse(userValue.EventValue);
+            timeAccumulated += TimeInfo.Now() - Player.LastLogTime;
+            userValue.EventValue = timeAccumulated.ToString();
+            DatabaseManager.GameEventUserValue.Update(userValue);
         }
 
         Player.LastLogTime = TimeInfo.Now();

@@ -17,7 +17,7 @@ public enum CurrencyType : byte
     BankMesos
 }
 
-public enum EventCurrencyType : byte
+public enum GameEventCurrencyType : byte
 {
     None = 0,
     Meso = 1,

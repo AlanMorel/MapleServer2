@@ -1,7 +1,5 @@
-﻿using Maple2Storage.Types.Metadata;
-using MaplePacketLib2.Tools;
+﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Enums;
 using MapleServer2.Types;
 
 namespace MapleServer2.Packets;
@@ -12,6 +10,7 @@ public static class GameEventUserValuePacket
     {
         LoadValues = 0x0,
         UpdateValue = 0x1,
+        Notice = 0x9,
     }
 
     public static PacketWriter LoadValues(List<GameEventUserValue> userValues)
@@ -19,16 +18,30 @@ public static class GameEventUserValuePacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.GAME_EVENT_USER_VALUE);
         pWriter.Write(GameEventUserValuePacketMode.LoadValues);
         pWriter.WriteByte();
-        pWriter.WriteInt(userValues.Count); // loop count
+        pWriter.WriteInt(userValues.Count);
 
         foreach (GameEventUserValue userValue in userValues)
         {
-            pWriter.Write(userValue.Type);
-            pWriter.WriteInt(userValue.EventId);
-            pWriter.WriteUnicodeString(userValue.EventValue);
-            pWriter.WriteLong(userValue.ExpirationTimestamp);
+            WriteUserValue(pWriter, userValue);
         }
-
         return pWriter;
+    }
+
+    public static PacketWriter UpdateValue(GameEventUserValue userValue)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.GAME_EVENT_USER_VALUE);
+        pWriter.Write(GameEventUserValuePacketMode.UpdateValue);
+        pWriter.WriteByte();
+        WriteUserValue(pWriter, userValue);
+        return pWriter;
+
+    }
+
+    private static void WriteUserValue(PacketWriter pWriter, GameEventUserValue userValue)
+    {
+        pWriter.Write(userValue.EventType);
+        pWriter.WriteInt(userValue.EventId);
+        pWriter.WriteUnicodeString(userValue.EventValue);
+        pWriter.WriteLong(userValue.ExpirationTimestamp);
     }
 }

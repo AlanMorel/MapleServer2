@@ -192,7 +192,7 @@ public class RequestCubeHandler : GamePacketHandler
 
         //Check if sale event is active
         int price = land.Price;
-        UgcMapContractSaleEvent ugcMapContractSale = DatabaseManager.Events.FindUgcMapContractSaleEvent();
+        UgcMapContractSale ugcMapContractSale = DatabaseManager.Events.FindUgcMapContractSaleEvent();
         if (ugcMapContractSale is not null)
         {
             int markdown = land.Price * (ugcMapContractSale.DiscountAmount / 100 / 100);

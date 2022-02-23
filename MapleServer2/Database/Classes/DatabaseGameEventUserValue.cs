@@ -13,7 +13,7 @@ public class DatabaseGameEventUserValue : DatabaseTable
         return QueryFactory.Query(TableName).InsertGetId<long>(new
         {
             character_id = value.CharacterId,
-            type = value.Type,
+            type = value.EventType,
             event_value = value.EventValue,
             event_id = value.EventId,
             expiration_timestamp = value.ExpirationTimestamp,
@@ -26,22 +26,33 @@ public class DatabaseGameEventUserValue : DatabaseTable
         List<GameEventUserValue> values = new();
         foreach (dynamic entry in result)
         {
-            values.Add(ReadGameEventUserValue(entry));
+            // TODO: Move this to SQL task?
+            GameEventUserValue value = ReadGameEventUserValue(entry);
+            if (value.ExpirationTimestamp < TimeInfo.Now())
+            {
+                Delete(value);
+                continue;
+            }
+            values.Add(value);
         }
         return values;
     }
 
-    public bool Delete(long characterId, int eventId)
+    public void Update(GameEventUserValue userValue)
     {
-        return QueryFactory.Query(TableName).Where(new
+        QueryFactory.Query(TableName).Where("id", userValue.Id).Update(new
         {
-            character_id = characterId,
-            event_id = eventId
-        }).Delete() == 1;
+            event_value = userValue.EventValue,
+        });
+    }
+
+    public bool Delete(GameEventUserValue userValue)
+    {
+        return QueryFactory.Query(TableName).Where("id", userValue.Id).Delete() == 1;
     }
 
     private static GameEventUserValue ReadGameEventUserValue(dynamic data)
     {
-        return new GameEventUserValue(data.character_id, (GameEventUserValueType) data.type, data.event_value, data.event_id, data.expiration_timestamp);
+        return new GameEventUserValue(data.id, data.character_id, (GameEventUserValueType) data.type, data.event_value, data.event_id, data.expiration_timestamp);
     }
 }

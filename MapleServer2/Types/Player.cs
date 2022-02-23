@@ -98,6 +98,7 @@ public class Player
     public long VisitingHomeId;
     public bool IsInDecorPlanner;
 
+    public List<GameEventUserValue> EventUserValues = new();
     public Mapleopoly Mapleopoly = new();
 
     public int MaxSkillTabs { get; set; }
@@ -435,7 +436,6 @@ public class Player
             while (!OnlineCTS.IsCancellationRequested)
             {
                 OnlineTime += 1;
-                LastLogTime = TimeInfo.Now();
                 TrophyManager.OnPlayTimeTick(this);
                 await Task.Delay(60000);
             }
@@ -448,9 +448,14 @@ public class Player
         Session.Send(StatPointPacket.WriteTotalStatPoints(this));
     }
 
-    public void GetUnreadMailCount()
+    public void GetUnreadMailCount(bool sendExpiryNotification = false)
     {
         int unreadCount = Mailbox.Count(x => x.ReadTimestamp == 0);
+        if (sendExpiryNotification)
+        {
+            Session.Send(MailPacket.ExpireNotification());
+        }
+
         Session.Send(MailPacket.Notify(unreadCount, true));
     }
 

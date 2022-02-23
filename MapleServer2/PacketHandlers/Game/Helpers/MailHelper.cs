@@ -138,7 +138,20 @@ public class MailHelper
         SendNotification(mail);
     }
 
-    private static void SendNotification(Mail mail)
+    public static void SendAttendanceMail(Item item, long recipientCharacterId)
+    {
+        // TODO: Change where this is to a more dynamic location
+        string senderName = "MapleStory2";
+        string title = "[Emulator Attendance] Attendance Reward";
+        string body = "Thanks for testing out the emulator. Here is a token of appreciation. " +
+            "P.S. did you know you can use /commands to spawn in items?";
+
+        Mail mail = new(MailType.System, recipientCharacterId, 0, senderName, title, body, "", "", new() { item }, 0, 0);
+        GameServer.MailManager.AddMail(mail);
+        SendNotification(mail, true);
+    }
+
+    private static void SendNotification(Mail mail, bool sendExpiryNotification = false)
     {
         Player recipient = GameServer.PlayerManager.GetPlayerById(mail.RecipientCharacterId);
         if (recipient == null)
@@ -147,6 +160,6 @@ public class MailHelper
         }
 
         recipient.Mailbox.Add(mail);
-        recipient.GetUnreadMailCount();
+        recipient.GetUnreadMailCount(sendExpiryNotification);
     }
 }

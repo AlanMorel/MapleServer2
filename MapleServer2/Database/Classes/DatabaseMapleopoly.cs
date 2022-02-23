@@ -26,6 +26,14 @@ public class DatabaseMapleopoly : DatabaseTable
 
     private static MapleopolyTile ReadMapleopolyTile(dynamic data)
     {
-        return new MapleopolyTile(data.tile_position, data.item_amount, data.item_id, data.item_rarity, data.tile_parameter, data.type);
+        return new MapleopolyTile()
+        {
+            TilePosition = data.tile_position,
+            ItemAmount = data.item_amount,
+            ItemId = data.item_id,
+            ItemRarity = data.item_rarity,
+            TileParameter = data.tile_parameter,
+            Type = (MapleopolyTileType) data.type
+        };
     }
 }

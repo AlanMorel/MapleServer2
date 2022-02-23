@@ -192,7 +192,7 @@ public class ResponseKeyHandler : CommonPacketHandler
         }
 
         List<GameEvent> gameEvents = DatabaseManager.Events.FindAll();
-        //GameEventHelper.LoadEvents(session.Player, gameEvents);
+        GameEventHelper.LoadEvents(session.Player);
         session.Send(GameEventPacket.Load(gameEvents));
 
         // SendKeyTable f(0x00), SendGuideRecord f(0x03), GameEvent f(0x00)

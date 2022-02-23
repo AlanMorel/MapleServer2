@@ -241,7 +241,6 @@ public class UserChatHandler : GamePacketHandler
         {
             session.FieldManager.BroadcastPacket(itemLinkPacket);
         }
-        session.FieldManager.SendChat(session.Player, message, type);
     }
 
     private static PacketWriter GetItemLink(string message)
