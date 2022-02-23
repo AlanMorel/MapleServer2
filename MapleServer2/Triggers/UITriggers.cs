@@ -230,9 +230,14 @@ public partial class TriggerContext
                 Field.BroadcastPacket(CinematicPacket.HideUi(true));
                 break;
             case 2:
+                Field.BroadcastPacket(CinematicPacket.Mode02());
+                break;
             case 3:
             case 4:
                 Field.BroadcastPacket(CinematicPacket.View(type));
+                break;
+            case 9:
+                Field.BroadcastPacket(CinematicPacket.SystemMessage(script));
                 break;
         }
     }
