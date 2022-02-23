@@ -166,8 +166,8 @@ VALUES (6,
 {
 	"Day": 3,
 	"ItemId": 20800015,
-	"ItemRarity": 1,
-	"ItemAmount": 1
+	"ItemRarity": 2,
+	"ItemAmount": 20
 },
 {
 	"Day": 4,
@@ -201,7 +201,7 @@ VALUES (6,
 },
 {
 	"Day": 9,
-	"ItemId": 32000037,
+	"ItemId": 70600011,
 	"ItemRarity": 4,
 	"ItemAmount": 1
 },
