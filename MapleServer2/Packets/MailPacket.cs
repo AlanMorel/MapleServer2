@@ -16,6 +16,7 @@ public static class MailPacket
         UpdateReadTime = 0xB,
         Delete = 0xD,
         Notify = 0xE,
+        ExpireNotification = 0xF,
         StartOpen = 0x10,
         EndOpen = 0x11,
         Error = 0x14
@@ -85,6 +86,13 @@ public static class MailPacket
         pWriter.WriteInt(unreadCount);
         pWriter.WriteBool(alert);
         pWriter.WriteInt(); // Unknown maybe repeat of count?
+        return pWriter;
+    }
+
+    public static PacketWriter ExpireNotification()
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
+        pWriter.Write(MailPacketMode.ExpireNotification);
         return pWriter;
     }
 

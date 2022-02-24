@@ -51,6 +51,11 @@ public class MapleopolyHandler : GamePacketHandler
     private static void HandleOpen(GameSession session)
     {
         List<MapleopolyTile> tiles = DatabaseManager.Mapleopoly.FindAllTiles();
+        if (tiles.Count == 0)
+        {
+            // TODO: Find an error packet to send if event is not active
+            return;
+        }
 
         int tokenAmount = 0;
         Item token = session.Player.Inventory.Items.FirstOrDefault(x => x.Value.Id == Mapleopoly.TOKEN_ITEM_ID).Value;
@@ -146,13 +151,13 @@ public class MapleopolyHandler : GamePacketHandler
 
         int difference = newTotalTrips - session.Player.Mapleopoly.TotalTrips;
 
-        List<MapleopolyEvent> items = DatabaseManager.Events.FindAllMapleopolyEvents();
+        List<BlueMarbleReward> items = DatabaseManager.Events.FindMapleopolyEvent().Rewards;
         for (int i = 0; i < difference; i++)
         {
             session.Player.Mapleopoly.TotalTrips++;
 
             // Check if there's any item to give for every 1 trip
-            MapleopolyEvent mapleopolyItem1 = items.FirstOrDefault(x => x.TripAmount == 0);
+            BlueMarbleReward mapleopolyItem1 = items.FirstOrDefault(x => x.TripAmount == 0);
             if (mapleopolyItem1 != null)
             {
                 Item item1 = new(mapleopolyItem1.ItemId)
@@ -164,7 +169,7 @@ public class MapleopolyHandler : GamePacketHandler
             }
 
             // Check if there's any other item to give for hitting a specific number of trips
-            MapleopolyEvent mapleopolyItem2 = items.FirstOrDefault(x => x.TripAmount == session.Player.Mapleopoly.TotalTrips);
+            BlueMarbleReward mapleopolyItem2 = items.FirstOrDefault(x => x.TripAmount == session.Player.Mapleopoly.TotalTrips);
             if (mapleopolyItem2 == null)
             {
                 continue;

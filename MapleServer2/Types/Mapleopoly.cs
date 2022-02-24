@@ -21,16 +21,6 @@ public class MapleopolyTile
     public int ItemAmount;
 
     public MapleopolyTile() { }
-
-    public MapleopolyTile(int tilePosition, int itemAmount, int itemId, byte itemRarity, int tileParameter, byte type)
-    {
-        TilePosition = tilePosition;
-        ItemAmount = itemAmount;
-        ItemId = itemId;
-        ItemRarity = itemRarity;
-        TileParameter = tileParameter;
-        Type = (MapleopolyTileType) type;
-    }
 }
 public enum MapleopolyTileType : short
 {
