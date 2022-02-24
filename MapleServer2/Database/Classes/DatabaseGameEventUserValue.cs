@@ -43,6 +43,7 @@ public class DatabaseGameEventUserValue : DatabaseTable
         QueryFactory.Query(TableName).Where("id", userValue.Id).Update(new
         {
             event_value = userValue.EventValue,
+            expiration_timestamp = userValue.ExpirationTimestamp
         });
     }
 

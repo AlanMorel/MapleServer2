@@ -95,7 +95,13 @@ public class AttendanceHandler : GamePacketHandler
             return;
         }
 
-        _ = GameEventHelper.GetUserValue(session.Player, attendanceEvent.Id, attendanceEvent.EndTimestamp, GameEventUserValueType.AccumulatedTime);
+        GameEventUserValue accumulatedTime = GameEventHelper.GetUserValue(session.Player, attendanceEvent.Id, TimeInfo.Tomorrow(), GameEventUserValueType.AccumulatedTime);
+        if (accumulatedTime.ExpirationTimestamp < TimeInfo.Now())
+        {
+            accumulatedTime.ExpirationTimestamp = TimeInfo.Tomorrow();
+            accumulatedTime.EventValue = "0";
+            DatabaseManager.GameEventUserValue.Update(accumulatedTime);
+        }
     }
 
     private static void HandleEarlyParticipation(GameSession session, PacketReader packet)

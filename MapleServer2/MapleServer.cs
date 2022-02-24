@@ -144,6 +144,13 @@ public static class MapleServer
         {
             player.GatheringCount = new();
             DatabaseManager.Characters.Update(player);
+
+            List<GameEventUserValue> expiredValues = player.EventUserValues.Where(x => x.ExpirationTimestamp <= TimeInfo.Now()).ToList();
+            foreach (GameEventUserValue userValue in expiredValues)
+            {
+                DatabaseManager.GameEventUserValue.Delete(userValue);
+                player.EventUserValues.Remove(userValue);
+            }
         }
 
         DatabaseManager.RunQuery("UPDATE `characters` SET gathering_count = '[]'");
