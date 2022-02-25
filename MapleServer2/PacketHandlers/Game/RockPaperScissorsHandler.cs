@@ -18,7 +18,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private enum MicroGameMode : short
         {
-            Open = 0x00,
+            OpenMatch = 0x00,
             RequestMatch = 0x01,
             ConfirmMatch = 0x02,
             DenyMatch = 0x03,
@@ -41,8 +41,8 @@ namespace MapleServer2.PacketHandlers.Game
 
             switch (mode)
             {
-                case MicroGameMode.Open:
-                    HandleOpen(session);
+                case MicroGameMode.OpenMatch:
+                    HandlOpenMatch(session);
                     break;
                 case MicroGameMode.RequestMatch:
                     HandleRequestMatch(session, packet);
@@ -71,7 +71,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private static void HandleOpen(GameSession session)
+        private static void HandlOpenMatch(GameSession session)
         {
             RPS rpsEvent = DatabaseManager.Events.FindRockPaperScissorsEvent();
             if (rpsEvent is null)
@@ -79,8 +79,10 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            if (!session.Player.Inventory.Items.ContainsKey(rpsEvent.VoucherId))
+            if (!session.Player.Inventory.Items.Values.Any(x => x.Id == rpsEvent.VoucherId))
             {
+                // TODO: Find correct packet to let player know they don't have a voucher
+                session.Send(NoticePacket.Notice("You must have a Rock Papers Scissors Play Ticket", NoticeType.ChatAndFastText));
                 return;
             }
 
@@ -94,6 +96,19 @@ namespace MapleServer2.PacketHandlers.Game
             Player otherPlayer = session.FieldManager.State.Players.FirstOrDefault(x => x.Value.Value.CharacterId == characterId).Value.Value;
             if (otherPlayer == null)
             {
+                return;
+            }
+
+            RPS rpsEvent = DatabaseManager.Events.FindRockPaperScissorsEvent();
+            if (rpsEvent is null)
+            {
+                return;
+            }
+
+            if (!session.Player.Inventory.Items.Values.Any(x => x.Id == rpsEvent.VoucherId))
+            {
+                // TODO: Find correct packet to let player know they don't have a voucher
+                session.Send(NoticePacket.Notice("You must have a Rock Papers Scissors Play Ticket", NoticeType.ChatAndFastText));
                 return;
             }
 
@@ -215,11 +230,20 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
+            Item voucher = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Id == rpsEvent.VoucherId);
+            if (voucher is null)
+            {
+                return;
+            }
+
+            session.Player.Inventory.ConsumeItem(session, voucher.Uid, 1);
+
             GameEventUserValue dailyMatches = GameEventHelper.GetUserValue(session.Player, rpsEvent.Id, TimeInfo.Tomorrow(), GameEventUserValueType.RPSDailyMatches);
             if (!int.TryParse(dailyMatches.EventValue, out int dailyMatchCount))
             {
                 dailyMatchCount = 0;
             }
+
             dailyMatchCount++;
 
             dailyMatches.EventValue = dailyMatchCount.ToString();
