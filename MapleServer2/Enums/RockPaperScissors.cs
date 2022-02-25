@@ -1,13 +1,13 @@
 ﻿namespace MapleServer2.Enums;
 
-public enum RockPaperScissorsChoice
+public enum RpsChoice
 {
     Rock = 0,
     Paper = 1,
     Scissors = 2
 }
 
-public enum RPSResult : byte
+public enum RpsResult : byte
 {
     Draw = 0,
     Win = 1,

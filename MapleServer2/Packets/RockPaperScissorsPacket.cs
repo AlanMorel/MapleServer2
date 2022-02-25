@@ -6,7 +6,7 @@ namespace MapleServer2.Packets;
 
 public static class RockPaperScissorsPacket
 {
-    private enum MicroGamePacketMode : short
+    private enum RpsPacketMode : short
     {
         Open = 0x0,
         RequestMatch = 0x1,
@@ -22,14 +22,14 @@ public static class RockPaperScissorsPacket
     public static PacketWriter Open()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ROCK_PAPER_SCISSORS);
-        pWriter.Write(MicroGamePacketMode.Open);
+        pWriter.Write(RpsPacketMode.Open);
         return pWriter;
     }
 
     public static PacketWriter RequestMatch(long characterId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ROCK_PAPER_SCISSORS);
-        pWriter.Write(MicroGamePacketMode.RequestMatch);
+        pWriter.Write(RpsPacketMode.RequestMatch);
         pWriter.WriteLong(characterId);
         return pWriter;
     }
@@ -37,7 +37,7 @@ public static class RockPaperScissorsPacket
     public static PacketWriter ConfirmMatch(long characterId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ROCK_PAPER_SCISSORS);
-        pWriter.Write(MicroGamePacketMode.ConfirmMatch);
+        pWriter.Write(RpsPacketMode.ConfirmMatch);
         pWriter.WriteLong(characterId);
         return pWriter;
     }
@@ -45,7 +45,7 @@ public static class RockPaperScissorsPacket
     public static PacketWriter DenyMatch(long characterId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ROCK_PAPER_SCISSORS);
-        pWriter.Write(MicroGamePacketMode.DenyMatch);
+        pWriter.Write(RpsPacketMode.DenyMatch);
         pWriter.WriteLong(characterId);
         return pWriter;
     }
@@ -53,14 +53,14 @@ public static class RockPaperScissorsPacket
     public static PacketWriter BeginMatch()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ROCK_PAPER_SCISSORS);
-        pWriter.Write(MicroGamePacketMode.BeginMatch);
+        pWriter.Write(RpsPacketMode.BeginMatch);
         return pWriter;
     }
 
     public static PacketWriter CancelRequestMatch(long characterId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ROCK_PAPER_SCISSORS);
-        pWriter.Write(MicroGamePacketMode.CancelRequestMatch);
+        pWriter.Write(RpsPacketMode.CancelRequestMatch);
         pWriter.WriteLong(characterId);
         return pWriter;
     }
@@ -68,16 +68,16 @@ public static class RockPaperScissorsPacket
     public static PacketWriter Notice(byte noticeId, long characterId = 0)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ROCK_PAPER_SCISSORS);
-        pWriter.Write(MicroGamePacketMode.CancelRequestMatch);
+        pWriter.Write(RpsPacketMode.CancelRequestMatch);
         pWriter.WriteLong(characterId);
         pWriter.WriteByte(noticeId);
         return pWriter;
     }
 
-    public static PacketWriter MatchResults(RPSResult result, RockPaperScissorsChoice playerChoice, RockPaperScissorsChoice opponentChoice)
+    public static PacketWriter MatchResults(RpsResult result, RpsChoice playerChoice, RpsChoice opponentChoice)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ROCK_PAPER_SCISSORS);
-        pWriter.Write(MicroGamePacketMode.MatchResults);
+        pWriter.Write(RpsPacketMode.MatchResults);
         pWriter.Write(result);
         pWriter.Write(playerChoice);
         pWriter.Write(opponentChoice);
@@ -87,7 +87,7 @@ public static class RockPaperScissorsPacket
     public static PacketWriter ConfirmMatch2(long characterId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ROCK_PAPER_SCISSORS);
-        pWriter.Write(MicroGamePacketMode.ConfirmMatch2);
+        pWriter.Write(RpsPacketMode.ConfirmMatch2);
         pWriter.WriteLong(characterId);
         return pWriter;
     }

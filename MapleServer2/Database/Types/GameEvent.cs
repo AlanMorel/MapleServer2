@@ -159,10 +159,8 @@ public class AttendGiftDay
 public class RPS : GameEvent
 {
     public int VoucherId;
-    public List<RPSTier> Tiers = new List<RPSTier>();
-
-    public RPS() { }
-
+    public List<RPSTier> Tiers = new();
+    
     public RPS(int id, int voucherId, long beginTimestamp, long endTimestamp, List<RPSTier> tiers) : base(id, beginTimestamp, endTimestamp)
     {
         Id = id;
@@ -175,9 +173,7 @@ public class RPS : GameEvent
 public class RPSTier
 {
     public int PlayAmount;
-    public List<RPSReward> Rewards = new List<RPSReward> { };
-
-    public RPSTier() { }
+    public List<RPSReward> Rewards = new();
 
     public RPSTier(int playAmount, List<RPSReward> rewards)
     {
@@ -191,8 +187,6 @@ public class RPSReward
     public int ItemId;
     public int ItemAmount;
     public short ItemRarity;
-
-    public RPSReward() { }
 
     public RPSReward(int itemId, int amount, short rarity)
     {
