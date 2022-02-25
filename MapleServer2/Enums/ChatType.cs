@@ -16,8 +16,8 @@ public enum ChatType
     NoticeAlert2 = 14,
     ItemEnchant = 15,
     Super = 16,
-    NoticeAlert3 = 17,
     GuildAlert = 18,
     Unknown = 19, // Guild chat color without [Guild] prefix
-    Club = 20
+    Club = 20,
+    ChatBubble = 23,
 }

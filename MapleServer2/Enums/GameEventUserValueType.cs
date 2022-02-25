@@ -2,9 +2,15 @@
 
 public enum GameEventUserValueType
 {
-    Active = 100, //?? maybe. String is "True"
-    CompletedTimestamp = 101,
-    RewardsClaimed = 102,
-    EarlyParticipationRemaining = 103,
-    AccumulatedTime = 106,
+    // Attendance Event
+    AttendanceActive = 100, //?? maybe. String is "True"
+    AttendanceCompletedTimestamp = 101,
+    AttendanceRewardsClaimed = 102,
+    AttendanceEarlyParticipationRemaining = 103,
+    AttendanceAccumulatedTime = 106,
+
+    // Rock Paper Scissors Event
+    RPSDailyMatches = 1800,
+    RPSRewardsClaimed = 1801,
+
 }

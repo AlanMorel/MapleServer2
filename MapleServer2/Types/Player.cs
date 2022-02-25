@@ -100,6 +100,8 @@ public class Player
 
     public List<GameEventUserValue> EventUserValues = new();
     public Mapleopoly Mapleopoly = new();
+    public long RPSOpponentId;
+    public RpsChoice RPSSelection;
 
     public int MaxSkillTabs { get; set; }
     public long ActiveSkillTabId { get; set; }

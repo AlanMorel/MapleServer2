@@ -61,15 +61,21 @@ public class AttendanceHandler : GamePacketHandler
             return;
         }
 
-        GameEventUserValue timeValue = GameEventHelper.GetUserValue(session.Player, attendanceEvent.Id, TimeInfo.Tomorrow(), GameEventUserValueType.AccumulatedTime);
+        GameEventUserValue timeValue = GameEventHelper.GetUserValue(session.Player, attendanceEvent.Id,
+            TimeInfo.Tomorrow(), GameEventUserValueType.AttendanceAccumulatedTime);
 
-        if (TimeInfo.Now() - session.Player.LastLogTime + int.Parse(timeValue.EventValue) < attendanceEvent.TimeRequired)
+        if (TimeInfo.Now() - session.Player.LastLogTime + int.Parse(timeValue.EventValue) <
+            attendanceEvent.TimeRequired)
         {
             return;
         }
 
-        GameEventUserValue completeTimestampValue = GameEventHelper.GetUserValue(session.Player, attendanceEvent.Id, attendanceEvent.EndTimestamp, GameEventUserValueType.CompletedTimestamp);
-        DateTimeOffset savedTime = DateTimeOffset.FromUnixTimeSeconds(long.Parse(completeTimestampValue.EventValue));
+        GameEventUserValue completeTimestampValue = GameEventHelper.GetUserValue(session.Player, attendanceEvent.Id,
+            attendanceEvent.EndTimestamp, GameEventUserValueType.AttendanceCompletedTimestamp);
+
+        long.TryParse(completeTimestampValue.EventValue, out long completedTimestamp);
+
+        DateTimeOffset savedTime = DateTimeOffset.FromUnixTimeSeconds(completedTimestamp);
         if (DateTimeOffset.Now.Day < savedTime.Day)
         {
             session.Send(AttendancePacket.Notice((int) AttendanceNotice.EventHasAlreadyBeenCompleted));
@@ -95,7 +101,8 @@ public class AttendanceHandler : GamePacketHandler
             return;
         }
 
-        GameEventUserValue accumulatedTime = GameEventHelper.GetUserValue(session.Player, attendanceEvent.Id, TimeInfo.Tomorrow(), GameEventUserValueType.AccumulatedTime);
+        GameEventUserValue accumulatedTime = GameEventHelper.GetUserValue(session.Player, attendanceEvent.Id,
+            TimeInfo.Tomorrow(), GameEventUserValueType.AttendanceAccumulatedTime);
         if (accumulatedTime.ExpirationTimestamp < TimeInfo.Now())
         {
             accumulatedTime.ExpirationTimestamp = TimeInfo.Tomorrow();
@@ -113,8 +120,11 @@ public class AttendanceHandler : GamePacketHandler
             return;
         }
 
-        GameEventUserValue skipDay = GameEventHelper.GetUserValue(session.Player, attendanceEvent.Id, attendanceEvent.EndTimestamp, GameEventUserValueType.EarlyParticipationRemaining);
-        int skipsTotal = int.Parse(skipDay.EventValue);
+        GameEventUserValue skipDay = GameEventHelper.GetUserValue(session.Player, attendanceEvent.Id,
+            attendanceEvent.EndTimestamp, GameEventUserValueType.AttendanceEarlyParticipationRemaining);
+
+        int.TryParse(skipDay.EventValue, out int skipsTotal);
+
         if (skipsTotal >= attendanceEvent.SkipDaysAllowed)
         {
             return;
@@ -136,6 +146,7 @@ public class AttendanceHandler : GamePacketHandler
                     session.Send(AttendancePacket.Notice((int) AttendanceNotice.NotEnoughMesos));
                     return;
                 }
+
                 break;
             case CurrencyType.Meret:
                 if (!session.Player.Account.Meret.Modify(-attendanceEvent.SkipDayCost))
@@ -143,6 +154,7 @@ public class AttendanceHandler : GamePacketHandler
                     session.Send(AttendancePacket.Notice((int) AttendanceNotice.NotEnoughMerets));
                     return;
                 }
+
                 break;
             default:
                 return;
@@ -175,8 +187,11 @@ public class AttendanceHandler : GamePacketHandler
 
     private static void UpdateRewardsClaimed(GameSession session, AttendGift attendanceEvent)
     {
-        GameEventUserValue rewardsClaimValue = GameEventHelper.GetUserValue(session.Player, attendanceEvent.Id, attendanceEvent.EndTimestamp, GameEventUserValueType.RewardsClaimed);
-        int convertedValue = int.Parse(rewardsClaimValue.EventValue);
+        GameEventUserValue rewardsClaimValue = GameEventHelper.GetUserValue(session.Player, attendanceEvent.Id,
+            attendanceEvent.EndTimestamp, GameEventUserValueType.AttendanceRewardsClaimed);
+
+        int.TryParse(rewardsClaimValue.EventValue, out int convertedValue);
+
         convertedValue++;
         GiveAttendanceReward(session, attendanceEvent, convertedValue);
         rewardsClaimValue.EventValue = convertedValue.ToString();

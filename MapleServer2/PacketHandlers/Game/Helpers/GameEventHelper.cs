@@ -20,17 +20,7 @@ public static class GameEventHelper
         GameEventUserValue userValue = player.EventUserValues.FirstOrDefault(x => x.EventId == eventId && x.EventType == type);
         if (userValue is null)
         {
-            string defaultValue = type switch
-            {
-                GameEventUserValueType.AccumulatedTime or
-                GameEventUserValueType.RewardsClaimed or
-                GameEventUserValueType.EarlyParticipationRemaining or
-                GameEventUserValueType.CompletedTimestamp => "0",
-                GameEventUserValueType.Active => "True",
-                _ => "0"
-            };
-
-            userValue = new(player.CharacterId, type, defaultValue, eventId, expirationTimestamp);
+            userValue = new(player.CharacterId, type, "", eventId, expirationTimestamp);
             player.EventUserValues.Add(userValue);
         }
         return userValue;

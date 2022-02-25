@@ -62,6 +62,7 @@ public class UserChatHandler : GamePacketHandler
                 HandleClubChat(session, message, type, clubId, itemLinkPacket);
                 break;
             case ChatType.All:
+            case ChatType.ChatBubble:
                 HandleChat(session, message, type, itemLinkPacket);
                 break;
             default:

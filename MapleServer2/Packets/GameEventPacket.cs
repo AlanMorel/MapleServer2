@@ -70,6 +70,72 @@ public static class GameEventPacket
                 case UgcMapExtensionSale extensionSale:
                     pWriter.WriteInt(extensionSale.DiscountAmount);
                     break;
+                case RPS rps:
+                    pWriter.WriteUnicodeString("<ms2>" +
+                        "<rps_game>" +
+                        "<play><actions rock=\"rock_A\" paper=\"paper_A\" scissors=\"scissors_A\" />" +
+                        "<messages>" +
+                        "<message value=\"s_microgame_rps_game_message_0\" />" +
+                        "<message value=\"s_microgame_rps_game_message_1\" />" +
+                        "<message value=\"s_microgame_rps_game_message_2\" />" +
+                        "</messages>" +
+                        "</play>" +
+                        "<result>" +
+                        "<draw>" +
+                        "<actions>" +
+                        "<action value=\"troubled\" />" +
+                        "</actions>" +
+                        "<messages>" +
+                        "<message value=\"s_microgame_rps_game_message_draw_0\" />" +
+                        "<message value=\"s_microgame_rps_game_message_draw_1\" />" +
+                        "<message value=\"s_microgame_rps_game_message_draw_2\" />" +
+                        "</messages>" +
+                        "</draw>" +
+                        "<win>" +
+                        "<actions>" +
+                        "<action value=\"happy\" />" +
+                        "<action value=\"dance_L\" />" +
+                        "</actions>" +
+                        "<messages>" +
+                        "<message value=\"s_microgame_rps_game_message_win_0\" />" +
+                        "<message value=\"s_microgame_rps_game_message_win_1\" />" +
+                        "<message value=\"s_microgame_rps_game_message_win_2\" />" +
+                        "</messages>" +
+                        "</win>" +
+                        "<lose>" +
+                        "<actions>" +
+                        "<action value=\"fuss\" />" +
+                        "<action value=\"Point_A\" />" +
+                        "</actions>" +
+                        "<messages>" +
+                        "<message value=\"s_microgame_rps_game_message_lose_0\" />" +
+                        "<message value=\"s_microgame_rps_game_message_lose_1\" />" +
+                        "<message value=\"s_microgame_rps_game_message_lose_2\" />" +
+                        "</messages>" +
+                        "</lose>" +
+                        "</result>" +
+                        "</rps_game>" +
+                        "</ms2>");
+                    pWriter.WriteInt(rps.Tiers.Count);
+                    foreach (RPSTier tier in rps.Tiers)
+                    {
+                        pWriter.WriteInt(tier.PlayAmount);
+                        pWriter.WriteInt(tier.Rewards.Count);
+                        foreach (RPSReward reward in tier.Rewards)
+                        {
+                            pWriter.WriteInt(reward.ItemId);
+                            pWriter.WriteShort(reward.ItemRarity);
+                            pWriter.WriteInt(reward.ItemAmount);
+                            pWriter.WriteByte();
+                            pWriter.WriteByte();
+                            pWriter.WriteByte();
+                            pWriter.WriteByte();
+                        }
+                    }
+                    pWriter.WriteInt(rps.VoucherId);
+                    pWriter.WriteInt(rps.Id);
+                    pWriter.WriteLong(rps.EndTimestamp);
+                    break;
             }
         }
         return pWriter;
