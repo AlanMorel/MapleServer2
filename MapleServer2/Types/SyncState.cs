@@ -5,12 +5,12 @@ namespace MapleServer2.Types;
 
 public class SyncState
 {
-    public byte Animation1;
+    public byte BoreAnimation;
     public byte Animation2;
     public SyncStateFlag Flag = SyncStateFlag.None;
     public CoordS Coord;
     public short Rotation;
-    public byte Animation3;
+    public byte JumpAnimation;
     public float UnknownFloat1;
     public float UnknownFloat2;
     public CoordS Speed;
@@ -44,4 +44,10 @@ public class SyncState
     public byte Flag6Unknown3;
     public CoordF Flag6Unknown4;
     public CoordF Flag6Unknown5;
+
+    // Rock Paper Scissors
+    public int OpponentObjectId;
+    public byte RPSUnk1;
+    public byte RPSUnk2;
+    public string RPSUnk3;
 }

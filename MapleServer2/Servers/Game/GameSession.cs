@@ -108,10 +108,13 @@ public class GameSession : Session
             DatabaseManager.AuthData.UpdateOnlineCharacterId(authData);
         }
 
-        List<GameEventUserValue> userTimeValues = Player.EventUserValues.Where(x => x.EventType == GameEventUserValueType.AccumulatedTime).ToList();
+        List<GameEventUserValue> userTimeValues = Player.EventUserValues.Where(x => x.EventType == GameEventUserValueType.AttendanceAccumulatedTime).ToList();
         foreach (GameEventUserValue userValue in userTimeValues)
         {
-            long timeAccumulated = long.Parse(userValue.EventValue);
+            if (!long.TryParse(userValue.EventValue, out long timeAccumulated))
+            {
+                timeAccumulated = 0;
+            }
             timeAccumulated += TimeInfo.Now() - Player.LastLogTime;
             userValue.EventValue = timeAccumulated.ToString();
             DatabaseManager.GameEventUserValue.Update(userValue);

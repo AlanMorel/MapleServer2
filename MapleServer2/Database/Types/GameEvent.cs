@@ -32,6 +32,7 @@ public abstract class GameEvent
     DungeonBonusReward,
     EventFieldPopup,
     AttendGift // attendance
+    RPS // Rock Paper Scissors
 */
 
 public class StringBoard : GameEvent
@@ -152,5 +153,51 @@ public class AttendGiftDay
         ItemId = itemId;
         ItemRarity = itemRarity;
         ItemAmount = itemAmount;
+    }
+}
+
+public class RPS : GameEvent
+{
+    public int VoucherId;
+    public List<RPSTier> Tiers = new List<RPSTier>();
+
+    public RPS() { }
+
+    public RPS(int id, int voucherId, long beginTimestamp, long endTimestamp, List<RPSTier> tiers) : base(id, beginTimestamp, endTimestamp)
+    {
+        Id = id;
+        VoucherId = voucherId;
+        EndTimestamp = endTimestamp;
+        Tiers = tiers;
+    }
+}
+
+public class RPSTier
+{
+    public int PlayAmount;
+    public List<RPSReward> Rewards = new List<RPSReward> { };
+
+    public RPSTier() { }
+
+    public RPSTier(int playAmount, List<RPSReward> rewards)
+    {
+        PlayAmount = playAmount;
+        Rewards = rewards;
+    }
+}
+
+public class RPSReward
+{
+    public int ItemId;
+    public int ItemAmount;
+    public short ItemRarity;
+
+    public RPSReward() { }
+
+    public RPSReward(int itemId, int amount, short rarity)
+    {
+        ItemId = itemId;
+        ItemAmount = amount;
+        ItemRarity = rarity;
     }
 }

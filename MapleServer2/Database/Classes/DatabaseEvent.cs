@@ -59,7 +59,12 @@ public class DatabaseEvent : DatabaseTable
     {
         dynamic result = QueryFactory.Query("event_attend_gift").FirstOrDefault();
         return ReadAttendGiftEvent(result);
+    }
 
+    public RPS FindRockPaperScissorsEvent()
+    {
+        dynamic result = QueryFactory.Query("event_rockpaperscissors").FirstOrDefault();
+        return ReadRockPaperScissorsEvent(result);
     }
 
     public List<GameEvent> FindAll()
@@ -72,6 +77,7 @@ public class DatabaseEvent : DatabaseTable
         gameEvents.Add(FindUgcMapExtensionSaleEvent());
         gameEvents.Add(FindUgcMapContractSaleEvent());
         gameEvents.Add(FindAttendGiftEvent());
+        gameEvents.Add(FindRockPaperScissorsEvent());
 
         return gameEvents;
     }
@@ -122,5 +128,11 @@ public class DatabaseEvent : DatabaseTable
         dynamic baseEvent = ReadBaseGameEvent((int) data.game_event_id);
         return new AttendGift(data.game_event_id, baseEvent.begin_timestamp, baseEvent.end_timestamp, data.name, data.url, data.disable_claim_button, data.time_required,
             (GameEventCurrencyType) data.skip_day_currency_type, data.skip_days_allowed, data.skip_day_cost, JsonConvert.DeserializeObject<List<AttendGiftDay>>(data.days));
+    }
+
+    private static RPS ReadRockPaperScissorsEvent(dynamic data)
+    {
+        dynamic baseEvent = ReadBaseGameEvent((int) data.game_event_id);
+        return new RPS(data.game_event_id, data.voucher_id, baseEvent.begin_timestamp, baseEvent.end_timestamp, JsonConvert.DeserializeObject<List<RPSTier>>(data.rewards));
     }
 }

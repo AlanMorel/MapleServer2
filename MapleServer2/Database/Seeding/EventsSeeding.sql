@@ -107,13 +107,29 @@ CREATE TABLE `event_attend_gift`
     CONSTRAINT `event_attend_gift_fk` FOREIGN KEY (`game_event_id`) REFERENCES `events` (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
+--
+-- Table structure for table `event_rockpaperscissors`
+--
+DROP TABLE IF EXISTS `event_rockpaperscissors`;
+
+CREATE TABLE `event_rockpaperscissors` 
+(
+    `game_event_id` int NOT NULL,
+    `voucher_id`    int NOT NULL,
+    `rewards`       text,
+    PRIMARY KEY (`game_event_id`),
+    KEY             `event_rockpaperscissors_fk` (`game_event_id`),
+    CONSTRAINT `event_rockpaperscissors_fk` FOREIGN KEY (`game_event_id`) REFERENCES `events` (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+
 INSERT INTO `events` (`id`, `begin_timestamp`, `end_timestamp`)
 VALUES (1, 1590577200 ,2531386800),
        (2, 1590577200 ,2531386800),
        (3, 1590577200 ,2531386800),
        (4, 1590577200 ,2531386800),
        (5, 1590577200 ,2531386800),
-       (6, 1590577200 ,2531386800);
+       (6, 1590577200 ,2531386800),
+       (7, 1590577200 ,2531386800);
 
 INSERT INTO `event_string_boards` (`message_id`, `message`, `game_event_id`)
 VALUES (0,
@@ -236,3 +252,42 @@ VALUES (6,
 	"ItemAmount": 1
 }
 ]');
+
+INSERT INTO `event_rockpaperscissors` (`voucher_id`, `rewards`, `game_event_id`)
+VALUES
+  (
+    20302432,
+    '[
+    {
+        "PlayAmount": 3,
+        "Rewards": [
+            {
+                "ItemId": 30001445,
+                "ItemAmount": 10,
+                "ItemRarity": 1
+            }
+        ]
+    },
+    {
+        "PlayAmount": 9,
+        "Rewards": [
+            {
+                "ItemId": 30001445,
+                "ItemAmount": 20,
+                "ItemRarity": 1
+            }
+        ]
+    },
+    {
+        "PlayAmount": 15,
+        "Rewards": [
+            {
+                "ItemId": 30001445,
+                "ItemAmount": 40,
+                "ItemRarity": 1
+            }
+        ]
+    }
+    ]',
+    7
+  ); 
