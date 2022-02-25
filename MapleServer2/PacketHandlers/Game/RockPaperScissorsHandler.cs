@@ -294,7 +294,6 @@ namespace MapleServer2.PacketHandlers.Game
                 };
 
                 session.Player.Inventory.AddItem(session, item, true);
-
             }
 
             // update event value
@@ -316,7 +315,6 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             otherPlayer.Session.Send(RockPaperScissorsPacket.ConfirmMatch2(session.Player.CharacterId));
-
         }
     }
 }
