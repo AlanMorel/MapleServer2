@@ -250,12 +250,14 @@ public class RockPaperScissorsHandler : GamePacketHandler
             return;
         }
 
-        foreach (Item item in tier.Rewards.Select(reward => new Item(reward.ItemId)
-                 {
-                     Rarity = reward.ItemRarity,
-                     Amount = reward.ItemAmount
-                 }))
+        foreach (RPSReward reward in tier.Rewards)
         {
+            Item item = new(reward.ItemId)
+            {
+                Rarity = reward.ItemRarity,
+                Amount = reward.ItemAmount
+            };
+            
             session.Player.Inventory.AddItem(session, item, true);
         }
 
