@@ -231,7 +231,7 @@ public class Player
         CharacterId = DatabaseManager.Characters.Insert(this);
         SkillTabs = new()
         {
-            new(CharacterId, job, id: 1, name: "Build 1")
+            new(CharacterId, job, JobCode, id: 1, name: "Build 1")
         };
 
         // Add initial quests
