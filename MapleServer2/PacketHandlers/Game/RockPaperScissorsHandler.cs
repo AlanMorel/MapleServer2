@@ -154,7 +154,7 @@ public class RockPaperScissorsHandler : GamePacketHandler
         long characterId = packet.ReadLong();
         Player otherPlayer = session.FieldManager.State.Players
             .FirstOrDefault(x => x.Value.Value.CharacterId == characterId).Value?.Value;
-        if (otherPlayer == null)
+        if (otherPlayer is null)
         {
             return;
         }

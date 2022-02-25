@@ -9,6 +9,7 @@ public abstract class GameEvent
     public long EndTimestamp;
 
     public GameEvent() { }
+
     public GameEvent(int id, long beginTimestamp, long endTimestamp)
     {
         Id = id;
@@ -43,7 +44,8 @@ public class StringBoard : GameEvent
     // if stringId = 0, a string is required to display custom text. Otherwise the id needs to match one in /table/stringboardtext.xml
     public StringBoard() { }
 
-    public StringBoard(int id, int stringId, string text, long beginTimestamp, long endTimestamp) : base(id, beginTimestamp, endTimestamp)
+    public StringBoard(int id, int stringId, string text, long beginTimestamp, long endTimestamp) : base(id,
+        beginTimestamp, endTimestamp)
     {
         StringId = stringId;
         String = text;
@@ -56,7 +58,8 @@ public class EventFieldPopup : GameEvent
 
     public EventFieldPopup() { }
 
-    public EventFieldPopup(int id, int mapId, long beginTimestamp, long endTimestamp) : base(id, beginTimestamp, endTimestamp)
+    public EventFieldPopup(int id, int mapId, long beginTimestamp, long endTimestamp) : base(id, beginTimestamp,
+        endTimestamp)
     {
         Id = id;
         MapId = mapId;
@@ -69,7 +72,8 @@ public class BlueMarble : GameEvent
 
     public BlueMarble() { }
 
-    public BlueMarble(int id, List<BlueMarbleReward> rewards, long beginTimestamp, long endTimestamp) : base(id, beginTimestamp, endTimestamp)
+    public BlueMarble(int id, List<BlueMarbleReward> rewards, long beginTimestamp, long endTimestamp) : base(id,
+        beginTimestamp, endTimestamp)
     {
         Rewards = rewards;
     }
@@ -97,7 +101,8 @@ public class UgcMapContractSale : GameEvent
 
     public UgcMapContractSale() { }
 
-    public UgcMapContractSale(int id, int discountAmount, long beginTimestamp, long endTimestamp) : base(id, beginTimestamp, endTimestamp)
+    public UgcMapContractSale(int id, int discountAmount, long beginTimestamp, long endTimestamp) : base(id,
+        beginTimestamp, endTimestamp)
     {
         DiscountAmount = discountAmount;
     }
@@ -109,7 +114,8 @@ public class UgcMapExtensionSale : GameEvent
 
     public UgcMapExtensionSale() { }
 
-    public UgcMapExtensionSale(int id, int discountAmount, long beginTimestamp, long endTimestamp) : base(id, beginTimestamp, endTimestamp)
+    public UgcMapExtensionSale(int id, int discountAmount, long beginTimestamp, long endTimestamp) : base(id,
+        beginTimestamp, endTimestamp)
     {
         DiscountAmount = discountAmount;
     }
@@ -126,7 +132,8 @@ public class AttendGift : GameEvent
     public long SkipDayCost;
     public List<AttendGiftDay> Days;
 
-    public AttendGift(int id, long beginTimestamp, long endTimestamp, string name, string url, bool disableClaimButton, int timeRequired, GameEventCurrencyType skipdayCurrencyType,
+    public AttendGift(int id, long beginTimestamp, long endTimestamp, string name, string url, bool disableClaimButton,
+        int timeRequired, GameEventCurrencyType skipdayCurrencyType,
         int skipDaysAllowed, long skipDayCost, List<AttendGiftDay> giftDays) : base(id, beginTimestamp, endTimestamp)
     {
         Name = name;
@@ -160,8 +167,9 @@ public class RPS : GameEvent
 {
     public int VoucherId;
     public List<RPSTier> Tiers = new();
-    
-    public RPS(int id, int voucherId, long beginTimestamp, long endTimestamp, List<RPSTier> tiers) : base(id, beginTimestamp, endTimestamp)
+
+    public RPS(int id, int voucherId, long beginTimestamp, long endTimestamp, List<RPSTier> tiers) : base(id,
+        beginTimestamp, endTimestamp)
     {
         Id = id;
         VoucherId = voucherId;
