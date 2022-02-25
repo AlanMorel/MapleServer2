@@ -49,6 +49,8 @@ public class SkillBookTreeHandler : GamePacketHandler
 
     private static void HandleSave(GameSession session, PacketReader packet)
     {
+        Player player = session.Player;
+
         long activeTabId = packet.ReadLong();
         long selectedTab = packet.ReadLong(); // if 0 player used activate tab
         int unknown = packet.ReadInt();
@@ -58,15 +60,15 @@ public class SkillBookTreeHandler : GamePacketHandler
             long tabId = packet.ReadLong();
             string tabName = packet.ReadUnicodeString();
 
-            SkillTab skillTab = session.Player.SkillTabs.FirstOrDefault(x => x.TabId == tabId);
+            SkillTab skillTab = player.SkillTabs.FirstOrDefault(x => x.TabId == tabId);
             if (skillTab is null)
             {
-                skillTab = new(session.Player.CharacterId, session.Player.Job, tabId, tabName);
-                session.Player.SkillTabs.Add(skillTab);
+                skillTab = new(player.CharacterId, player.Job, player.JobCode, tabId, tabName);
+                player.SkillTabs.Add(skillTab);
             }
             else
             {
-                skillTab = session.Player.SkillTabs[i];
+                skillTab = player.SkillTabs[i];
                 skillTab.TabId = tabId;
                 skillTab.Name = tabName;
             }

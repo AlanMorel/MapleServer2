@@ -17,10 +17,10 @@ public class SkillTab
 
     public SkillTab() { }
 
-    public SkillTab(long characterId, Job job, long id, string name)
+    public SkillTab(long characterId, Job job, JobCode jobCode, long id, string name)
     {
         Name = name;
-        ResetSkillTree(job);
+        ResetSkillTree(job, jobCode);
         TabId = id;
         Uid = DatabaseManager.SkillTabs.Insert(this, characterId);
     }
@@ -48,7 +48,7 @@ public class SkillTab
         }
     }
 
-    public void ResetSkillTree(Job job)
+    public void ResetSkillTree(Job job, JobCode jobCode)
     {
         SkillJob = GetSkillsMetadata(job);
         if (job is Job.GameMaster)
@@ -73,6 +73,12 @@ public class SkillTab
 
             foreach (int skillId in skillIds)
             {
+                JobSkillMetadata jobSkillMetadata = jobMetadata.Skills.First(x => x.SkillId == skillId);
+                if (jobSkillMetadata.SubJobCode != (int) jobCode && jobSkillMetadata.SubJobCode != 0)
+                {
+                    continue;
+                }
+
                 AddOrUpdate(skillId, 1, true);
             }
         }
