@@ -13,7 +13,7 @@ namespace MapleServer2.PacketHandlers.Game;
 public class RockPaperScissorsHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.ROCK_PAPER_SCISSORS;
-    
+
     private enum RpsMode : short
     {
         OpenMatch = 0x00,
@@ -179,14 +179,21 @@ public class RockPaperScissorsHandler : GamePacketHandler
         {
             return;
         }
-        
+
         // handle choices
-        RpsResult[,] resultMatrix = {
-            { RpsResult.Draw, RpsResult.Lose, RpsResult.Win },
-            { RpsResult.Win, RpsResult.Draw, RpsResult.Lose },
-            { RpsResult.Lose, RpsResult.Win, RpsResult.Draw }
+        RpsResult[,] resultMatrix =
+        {
+            {
+                RpsResult.Draw, RpsResult.Lose, RpsResult.Win
+            },
+            {
+                RpsResult.Win, RpsResult.Draw, RpsResult.Lose
+            },
+            {
+                RpsResult.Lose, RpsResult.Win, RpsResult.Draw
+            }
         };
-        
+
         RpsResult result = resultMatrix[(int) session.Player.RPSSelection, (int) opponent.RPSSelection];
 
         RPS rpsEvent = DatabaseManager.Events.FindRockPaperScissorsEvent();
@@ -257,7 +264,7 @@ public class RockPaperScissorsHandler : GamePacketHandler
                 Rarity = reward.ItemRarity,
                 Amount = reward.ItemAmount
             };
-            
+
             session.Player.Inventory.AddItem(session, item, true);
         }
 
