@@ -179,55 +179,15 @@ public class RockPaperScissorsHandler : GamePacketHandler
         {
             return;
         }
-
-        RpsResult result;
-
+        
         // handle choices
-        if (session.Player.RPSSelection == RpsChoice.Rock)
-        {
-            if (opponent.RPSSelection == RpsChoice.Rock)
-            {
-                result = RpsResult.Draw;
-            }
-            else if (opponent.RPSSelection == RpsChoice.Paper)
-            {
-                result = RpsResult.Lose;
-            }
-            else
-            {
-                result = RpsResult.Win;
-            }
-        }
-        else if (session.Player.RPSSelection == RpsChoice.Paper)
-        {
-            if (opponent.RPSSelection == RpsChoice.Rock)
-            {
-                result = RpsResult.Win;
-            }
-            else if (opponent.RPSSelection == RpsChoice.Paper)
-            {
-                result = RpsResult.Draw;
-            }
-            else
-            {
-                result = RpsResult.Lose;
-            }
-        }
-        else
-        {
-            if (opponent.RPSSelection == RpsChoice.Rock)
-            {
-                result = RpsResult.Lose;
-            }
-            else if (opponent.RPSSelection == RpsChoice.Paper)
-            {
-                result = RpsResult.Win;
-            }
-            else
-            {
-                result = RpsResult.Draw;
-            }
-        }
+        RpsResult[,] resultMatrix = {
+            { RpsResult.Draw, RpsResult.Lose, RpsResult.Win },
+            { RpsResult.Win, RpsResult.Draw, RpsResult.Lose },
+            { RpsResult.Lose, RpsResult.Win, RpsResult.Draw }
+        };
+        
+        RpsResult result = resultMatrix[(int) session.Player.RPSSelection, (int) opponent.RPSSelection];
 
         RPS rpsEvent = DatabaseManager.Events.FindRockPaperScissorsEvent();
         if (rpsEvent is null)
@@ -290,14 +250,12 @@ public class RockPaperScissorsHandler : GamePacketHandler
             return;
         }
 
-        foreach (RPSReward reward in tier.Rewards)
+        foreach (Item item in tier.Rewards.Select(reward => new Item(reward.ItemId)
+                 {
+                     Rarity = reward.ItemRarity,
+                     Amount = reward.ItemAmount
+                 }))
         {
-            Item item = new(reward.ItemId)
-            {
-                Rarity = reward.ItemRarity,
-                Amount = reward.ItemAmount
-            };
-
             session.Player.Inventory.AddItem(session, item, true);
         }
 

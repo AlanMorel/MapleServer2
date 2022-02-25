@@ -5,7 +5,7 @@ namespace MapleServer2.Database.Types;
 public abstract class GameEvent
 {
     public int Id;
-    public long BeginTimestamp;
+    public readonly long BeginTimestamp;
     public long EndTimestamp;
 
     public GameEvent() { }
@@ -123,14 +123,14 @@ public class UgcMapExtensionSale : GameEvent
 
 public class AttendGift : GameEvent
 {
-    public string Name;
-    public string Url;
-    public bool DisableClaimButton;
-    public int TimeRequired;
-    public GameEventCurrencyType SkipDayCurrencyType;
-    public int SkipDaysAllowed;
-    public long SkipDayCost;
-    public List<AttendGiftDay> Days;
+    public readonly string Name;
+    public readonly string Url;
+    public readonly bool DisableClaimButton;
+    public readonly int TimeRequired;
+    public readonly GameEventCurrencyType SkipDayCurrencyType;
+    public readonly int SkipDaysAllowed;
+    public readonly long SkipDayCost;
+    public readonly List<AttendGiftDay> Days;
 
     public AttendGift(int id, long beginTimestamp, long endTimestamp, string name, string url, bool disableClaimButton,
         int timeRequired, GameEventCurrencyType skipdayCurrencyType,
@@ -149,10 +149,10 @@ public class AttendGift : GameEvent
 
 public class AttendGiftDay
 {
-    public int Day;
-    public int ItemId;
-    public short ItemRarity;
-    public int ItemAmount;
+    public readonly int Day;
+    public readonly int ItemId;
+    public readonly short ItemRarity;
+    public readonly int ItemAmount;
 
     public AttendGiftDay(int day, int itemId, short itemRarity, int itemAmount)
     {
@@ -165,8 +165,8 @@ public class AttendGiftDay
 
 public class RPS : GameEvent
 {
-    public int VoucherId;
-    public List<RPSTier> Tiers = new();
+    public readonly int VoucherId;
+    public readonly List<RPSTier> Tiers = new();
 
     public RPS(int id, int voucherId, long beginTimestamp, long endTimestamp, List<RPSTier> tiers) : base(id,
         beginTimestamp, endTimestamp)
@@ -180,8 +180,8 @@ public class RPS : GameEvent
 
 public class RPSTier
 {
-    public int PlayAmount;
-    public List<RPSReward> Rewards = new();
+    public readonly int PlayAmount;
+    public readonly List<RPSReward> Rewards = new();
 
     public RPSTier(int playAmount, List<RPSReward> rewards)
     {
@@ -192,9 +192,9 @@ public class RPSTier
 
 public class RPSReward
 {
-    public int ItemId;
-    public int ItemAmount;
-    public short ItemRarity;
+    public readonly int ItemId;
+    public readonly int ItemAmount;
+    public readonly short ItemRarity;
 
     public RPSReward(int itemId, int amount, short rarity)
     {
