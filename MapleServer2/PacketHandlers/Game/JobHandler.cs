@@ -79,7 +79,7 @@ public class JobHandler : GamePacketHandler
             return;
         }
 
-        skillTab.ResetSkillTree(player.Job);
+        skillTab.ResetSkillTree(player.Job, player.JobCode);
         player.RemoveSkillsFromHotbar();
 
         session.Send(JobPacket.Save(player.FieldPlayer));
@@ -98,7 +98,7 @@ public class JobHandler : GamePacketHandler
             return;
         }
 
-        skillTab.ResetSkillTree(player.Job);
+        skillTab.ResetSkillTree(player.Job, player.JobCode);
 
         ReadSkills(packet, skillTab, out HashSet<int> newSkillIds);
 
