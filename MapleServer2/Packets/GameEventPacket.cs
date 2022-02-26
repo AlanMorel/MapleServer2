@@ -19,6 +19,7 @@ public static class GameEventPacket
             {
                 pWriter.WriteInt(e.Id);
             }
+
             switch (e)
             {
                 case AttendGift attend:
@@ -38,6 +39,7 @@ public static class GameEventPacket
                         pWriter.WriteLong(attend.SkipDayCost);
                         pWriter.WriteInt();
                     }
+
                     pWriter.WriteInt(attend.Days.Count);
                     foreach (AttendGiftDay day in attend.Days.OrderBy(x => x.Day))
                     {
@@ -49,6 +51,7 @@ public static class GameEventPacket
                         pWriter.WriteByte();
                         pWriter.WriteByte();
                     }
+
                     break;
                 case StringBoard stringBoard:
                     pWriter.WriteInt(stringBoard.StringId);
@@ -73,6 +76,7 @@ public static class GameEventPacket
                         pWriter.WriteByte(reward.ItemRarity);
                         pWriter.WriteInt(reward.ItemAmount);
                     }
+
                     break;
                 case UgcMapContractSale contractSale:
                     pWriter.WriteInt(contractSale.DiscountAmount);
@@ -142,6 +146,7 @@ public static class GameEventPacket
                             pWriter.WriteByte();
                         }
                     }
+
                     pWriter.WriteInt(rps.VoucherId);
                     pWriter.WriteInt(rps.Id);
                     pWriter.WriteLong(rps.EndTimestamp);

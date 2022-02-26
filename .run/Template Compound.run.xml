@@ -1,7 +1,0 @@
-﻿<component name="ProjectRunConfigurationManager">
-  <configuration default="true" type="CompoundRunConfigurationType">
-    <toRun name="MapleWebServer" type="LaunchSettings" />
-    <toRun name="MapleServer2" type="DotNetProject" />
-    <method v="2" />
-  </configuration>
-</component>
