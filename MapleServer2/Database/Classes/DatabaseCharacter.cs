@@ -216,7 +216,7 @@ public class DatabaseCharacter : DatabaseTable
             {
                 account_id = accountId,
                 is_deleted = false
-            })
+            }) 
             .Join("levels", "levels.id", "characters.levels_id")
             .Select(
                 "characters.{*}",
