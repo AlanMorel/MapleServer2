@@ -31,6 +31,7 @@ public class UserChatHandler : GamePacketHandler
             {
                 session.SendNotice($"No command were found with alias: {args[0]}");
             }
+
             return;
         }
 
@@ -75,16 +76,16 @@ public class UserChatHandler : GamePacketHandler
     private static void HandleChannelChat(GameSession session, string message, ChatType type, PacketWriter itemLinkPacket)
     {
         Player player = session.Player;
-        
+
         int meretCost = int.Parse(ConstantsMetadataStorage.GetConstant("MeratConsumeChannelChat"));
-        
+
         // check if event is in progress
         SaleChat saleEvent = DatabaseManager.Events.FindSaleChatEvent();
         if (saleEvent is not null)
         {
-            meretCost  = (int) (meretCost - (meretCost * Convert.ToSingle(saleEvent.ChannelChatDiscountAmount) / 100 / 100));
+            meretCost = (int) (meretCost - (meretCost * Convert.ToSingle(saleEvent.ChannelChatDiscountAmount) / 100 / 100));
         }
-        
+
         Item voucher = player.Inventory.Items.Values.FirstOrDefault(x => x.Tag == "FreeChannelChatCoupon");
         if (voucher is not null)
         {
@@ -104,6 +105,7 @@ public class UserChatHandler : GamePacketHandler
             {
                 i.Session.Send(itemLinkPacket);
             }
+
             i.Session.Send(ChatPacket.Send(i, message, type));
         }
     }
@@ -128,6 +130,7 @@ public class UserChatHandler : GamePacketHandler
         {
             MapleServer.BroadcastPacketAll(itemLinkPacket);
         }
+
         MapleServer.BroadcastPacketAll(ChatPacket.Send(session.Player, message, type));
         session.Player.Inventory.ConsumeItem(session, superChatItem.Uid, 1);
         session.Send(SuperChatPacket.Deselect(session.Player.FieldPlayer));
@@ -137,14 +140,14 @@ public class UserChatHandler : GamePacketHandler
     private static void HandleWorldChat(GameSession session, string message, ChatType type, PacketWriter itemLinkPacket)
     {
         int meretCost = int.Parse(ConstantsMetadataStorage.GetConstant("MeratConsumeWorldChat"));
-        
+
         // check if event is in progress
         SaleChat saleEvent = DatabaseManager.Events.FindSaleChatEvent();
         if (saleEvent is not null)
         {
-            meretCost  = (int) (meretCost - (meretCost * Convert.ToSingle(saleEvent.WorldChatDiscountAmount) / 100 / 100));
+            meretCost = (int) (meretCost - (meretCost * Convert.ToSingle(saleEvent.WorldChatDiscountAmount) / 100 / 100));
         }
-        
+
         Item voucher = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Tag == "FreeWorldChatCoupon");
         if (voucher is not null)
         {
@@ -161,6 +164,7 @@ public class UserChatHandler : GamePacketHandler
         {
             MapleServer.BroadcastPacketAll(itemLinkPacket);
         }
+
         MapleServer.BroadcastPacketAll(ChatPacket.Send(session.Player, message, type));
     }
 
@@ -183,6 +187,7 @@ public class UserChatHandler : GamePacketHandler
         {
             guild.BroadcastPacketGuild(itemLinkPacket);
         }
+
         guild.BroadcastPacketGuild(ChatPacket.Send(session.Player, message, type));
     }
 
@@ -198,6 +203,7 @@ public class UserChatHandler : GamePacketHandler
         {
             guild.BroadcastPacketGuild(itemLinkPacket);
         }
+
         guild.BroadcastPacketGuild(ChatPacket.Send(session.Player, message, type));
     }
 
@@ -213,6 +219,7 @@ public class UserChatHandler : GamePacketHandler
         {
             party.BroadcastPacketParty(itemLinkPacket);
         }
+
         party.BroadcastPacketParty(ChatPacket.Send(session.Player, message, type));
     }
 
@@ -236,6 +243,7 @@ public class UserChatHandler : GamePacketHandler
             recipientPlayer.Session.Send(itemLinkPacket);
             session.Send(itemLinkPacket);
         }
+
         recipientPlayer.Session.Send(ChatPacket.Send(session.Player, message, ChatType.WhisperFrom));
         session.Send(ChatPacket.Send(recipientPlayer, message, ChatType.WhisperTo));
     }
@@ -262,6 +270,7 @@ public class UserChatHandler : GamePacketHandler
         {
             session.FieldManager.BroadcastPacket(itemLinkPacket);
         }
+
         session.FieldManager.SendChat(session.Player, message, type);
     }
 
@@ -272,6 +281,7 @@ public class UserChatHandler : GamePacketHandler
         {
             return null;
         }
+
         PacketWriter itemLinkPacket = null;
 
         XmlDocument itemLinkMessages = new();
@@ -317,6 +327,7 @@ public class UserChatHandler : GamePacketHandler
         {
             itemLinkPacket = ItemLinkPacket.SendLinkItem(items);
         }
+
         return itemLinkPacket;
     }
 }

@@ -213,10 +213,10 @@ public class DatabaseCharacter : DatabaseTable
         List<Player> characters = new();
 
         IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where(new
-        {
-            account_id = accountId,
-            is_deleted = false
-        })
+            {
+                account_id = accountId,
+                is_deleted = false
+            })
             .Join("levels", "levels.id", "characters.levels_id")
             .Select(
                 "characters.{*}",

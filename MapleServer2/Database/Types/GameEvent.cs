@@ -58,7 +58,7 @@ public class StringBoard : GameEvent
 public class StringBoardLink : GameEvent
 {
     public string Link;
-    
+
     public StringBoardLink(int id, string link, long beginTimestamp, long endTimestamp) : base(id,
         beginTimestamp, endTimestamp)
     {
@@ -69,7 +69,7 @@ public class StringBoardLink : GameEvent
 public class MeratMarketNotice : GameEvent
 {
     public string Message;
-    
+
     public MeratMarketNotice(int id, string message, long beginTimestamp, long endTimestamp) : base(id,
         beginTimestamp, endTimestamp)
     {
@@ -123,7 +123,7 @@ public class BlueMarbleReward
 public class UgcMapContractSale : GameEvent
 {
     public int DiscountAmount { get; set; }
-    
+
     public UgcMapContractSale(int id, int discountAmount, long beginTimestamp, long endTimestamp) : base(id,
         beginTimestamp, endTimestamp)
     {
@@ -134,7 +134,7 @@ public class UgcMapContractSale : GameEvent
 public class UgcMapExtensionSale : GameEvent
 {
     public int DiscountAmount { get; set; }
-    
+
     public UgcMapExtensionSale(int id, int discountAmount, long beginTimestamp, long endTimestamp) : base(id,
         beginTimestamp, endTimestamp)
     {
@@ -229,7 +229,7 @@ public class SaleChat : GameEvent
 {
     public readonly int WorldChatDiscountAmount; // ex 1000 = 10% discount
     public readonly int ChannelChatDiscountAmount;
-    
+
     public SaleChat(int id, long beginTimestamp, long endTimestamp, int worldChatDiscountAmount, int channelChatDiscountAmount) : base(id,
         beginTimestamp, endTimestamp)
     {
