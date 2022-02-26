@@ -74,7 +74,7 @@ public class GroupChatHandler : GamePacketHandler
             session.Send(GroupChatPacket.Error(session.Player, targetPlayer, (int) GroupChatError.OfflinePlayer));
             return;
         }
-        
+
         if (other.GroupChats.Count >= 3) // 3 is the max group chats a user can be at
         {
             session.Send(GroupChatPacket.Error(session.Player, targetPlayer, (int) GroupChatError.MaxGroups));

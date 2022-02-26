@@ -41,7 +41,7 @@ public class GroupChat
 
         GameServer.GroupChatManager.RemoveGroupChat(this);
     }
-    
+
     public void CheckOfflineGroupChat()
     {
         List<GameSession> sessions = GetSessions();
@@ -88,6 +88,7 @@ public class GroupChat
                 sessions.Add(playerSession);
             }
         }
+
         return sessions;
     }
 }

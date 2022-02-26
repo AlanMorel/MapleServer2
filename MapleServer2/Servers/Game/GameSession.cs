@@ -56,7 +56,7 @@ public class GameSession : Session
                 DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSessionByInstanceId(FieldManager.InstanceId);
                 //check if the destroyed map was a dungeon map
                 if (dungeonSession != null && FieldManager.InstanceId == dungeonSession.DungeonInstanceId
-                    && dungeonSession.IsDungeonSessionMap(FieldManager.MapId))
+                                           && dungeonSession.IsDungeonSessionMap(FieldManager.MapId))
                 {
                     GameServer.DungeonManager.ResetDungeonSession(player, dungeonSession);
                 }
@@ -100,7 +100,7 @@ public class GameSession : Session
             {
                 club?.BroadcastPacketClub(ClubPacket.LogoutNotice(Player, club));
             }
-            
+
             foreach (GroupChat groupChat in Player.GroupChats)
             {
                 groupChat?.BroadcastPacketGroupChat(GroupChatPacket.LogoutNotice(groupChat, Player));
@@ -121,6 +121,7 @@ public class GameSession : Session
             {
                 timeAccumulated = 0;
             }
+
             timeAccumulated += TimeInfo.Now() - Player.LastLogTime;
             userValue.EventValue = timeAccumulated.ToString();
             DatabaseManager.GameEventUserValue.Update(userValue);
