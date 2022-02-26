@@ -22,4 +22,6 @@ public static class TrophyMetadataStorage
         => Trophies.Values.Where(m => m.Grades.Any(g => g.ConditionType == type));
 
     public static TrophyMetadata GetMetadata(int id) => Trophies.GetValueOrDefault(id);
+    
+    public static IEnumerable<TrophyMetadata> GetAll() => Trophies.Values;
 }
