@@ -99,7 +99,6 @@ public class Player
     public bool IsInDecorPlanner;
 
     public List<GameEventUserValue> EventUserValues = new();
-    public Mapleopoly Mapleopoly = new();
     public long RPSOpponentId;
     public RpsChoice RPSSelection;
 

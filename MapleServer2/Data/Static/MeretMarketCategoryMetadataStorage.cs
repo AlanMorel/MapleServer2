@@ -22,6 +22,6 @@ public static class MeretMarketCategoryMetadataStorage
     public static MeretMarketTab GetTabMetadata(MeretMarketSection section, int categoryId)
     {
         MeretMarketCategoryMetadata metadata = MeretMarketCategoryMetadatas.GetValueOrDefault((int) section);
-        return metadata.Tabs.FirstOrDefault(x => x.Id == categoryId);
+        return metadata?.Tabs.FirstOrDefault(x => x.Id == categoryId);
     }
 }

@@ -9,6 +9,11 @@ public enum GameEventUserValueType
     AttendanceEarlyParticipationRemaining = 103,
     AttendanceAccumulatedTime = 106,
 
+    // Blue Marble / Mapleopoly
+    MapleopolyTotalTileCount = 800,
+    MapleopolyFreeRollAmount = 801,
+    MapleopolyTotalTrips = 802, // unsure
+    
     // Rock Paper Scissors Event
     RPSDailyMatches = 1800,
     RPSRewardsClaimed = 1801,

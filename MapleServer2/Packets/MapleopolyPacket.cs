@@ -14,13 +14,13 @@ public static class MapleopolyPacket
         Notice = 0x6
     }
 
-    public static PacketWriter Open(Mapleopoly game, List<MapleopolyTile> tiles, int playerTokenAmount)
+    public static PacketWriter Open(int totalTileCount, int freeRollAmount, List<MapleopolyTile> tiles, int tokenItemId, int playerTokenAmount)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MAPLEOPOLY);
         pWriter.Write(MapleopolyPacketMode.Open);
-        pWriter.WriteInt(game.TotalTileCount);
-        pWriter.WriteInt(game.FreeRollAmount);
-        pWriter.WriteInt(Mapleopoly.TOKEN_ITEM_ID);
+        pWriter.WriteInt(totalTileCount);
+        pWriter.WriteInt(freeRollAmount);
+        pWriter.WriteInt(tokenItemId);
         pWriter.WriteInt(playerTokenAmount);
         pWriter.WriteInt(tiles.Count);
 
@@ -47,14 +47,14 @@ public static class MapleopolyPacket
         return pWriter;
     }
 
-    public static PacketWriter ProcessTile(Mapleopoly playerGame, MapleopolyTile tile)
+    public static PacketWriter ProcessTile(int totalTileCount, int freeRollAmount, MapleopolyTile tile)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MAPLEOPOLY);
         pWriter.Write(MapleopolyPacketMode.ProcessTile);
         pWriter.Write(tile.Type);
         pWriter.WriteInt(tile.TileParameter);
-        pWriter.WriteInt(playerGame.TotalTileCount);
-        pWriter.WriteInt(playerGame.FreeRollAmount);
+        pWriter.WriteInt(totalTileCount);
+        pWriter.WriteInt(freeRollAmount);
         pWriter.WriteInt(tile.ItemId);
         pWriter.WriteByte(tile.ItemRarity);
         pWriter.WriteInt(tile.ItemAmount);

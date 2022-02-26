@@ -1,5 +1,7 @@
 ﻿using MapleServer2.Database;
 using MapleServer2.Enums;
+using MapleServer2.Packets;
+using MapleServer2.Servers.Game;
 
 namespace MapleServer2.Types;
 
@@ -30,5 +32,12 @@ public class GameEventUserValue
         EventValue = eventValue;
         EventId = eventId;
         ExpirationTimestamp = expirationTimestamp;
+    }
+
+    public void UpdateValue(GameSession session, dynamic newValue)
+    {
+        EventValue = newValue.ToString();
+        session.Send(GameEventUserValuePacket.UpdateValue(this));
+        DatabaseManager.GameEventUserValue.Update(this);
     }
 }

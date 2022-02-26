@@ -59,6 +59,34 @@ CREATE TABLE `event_string_boards`
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 --
+-- Table structure for table `event_stringboard_links`
+--
+DROP TABLE IF EXISTS `event_string_board_links`;
+
+CREATE TABLE `event_string_board_links`
+(
+    `game_event_id` int NOT NULL,
+    `link`          text,
+    PRIMARY KEY (`game_event_id`),
+    KEY             `ix_event_stringboard_links_gameeventid` (`game_event_id`),
+    CONSTRAINT `fk_event_stringboards_event_links_gameeventid` FOREIGN KEY (`game_event_id`) REFERENCES `events` (`id`) ON DELETE RESTRICT
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+
+--
+-- Table structure for table `event_meret_market_notices`
+--
+DROP TABLE IF EXISTS `event_meret_market_notices`;
+
+CREATE TABLE `event_meret_market_notices`
+(
+    `game_event_id` int NOT NULL,
+    `message`          text,
+    PRIMARY KEY (`game_event_id`),
+    KEY             `ix_event_meret_market_notices_gameeventid` (`game_event_id`),
+    CONSTRAINT `fk_event_meret_market_notices_gameeventid` FOREIGN KEY (`game_event_id`) REFERENCES `events` (`id`) ON DELETE RESTRICT
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+
+--
 -- Table structure for table `event_ugcmapcontractsale`
 --
 DROP TABLE IF EXISTS `event_ugc_map_contract_sale`;
@@ -122,6 +150,21 @@ CREATE TABLE `event_rockpaperscissors`
     CONSTRAINT `event_rockpaperscissors_fk` FOREIGN KEY (`game_event_id`) REFERENCES `events` (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
+--
+-- Table structure for table `event_sale_chat`
+--
+DROP TABLE IF EXISTS `event_sale_chat`;
+
+CREATE TABLE `event_sale_chat`
+(
+    `game_event_id`   int NOT NULL,
+    `world_chat_discount_amount` int NOT NULL,
+    `channel_chat_discount_amount` int NOT NULL,
+    PRIMARY KEY (`game_event_id`),
+    KEY               `event_sale_chat_fk` (`game_event_id`),
+    CONSTRAINT `event_sale_chat_fk` FOREIGN KEY (`game_event_id`) REFERENCES `events` (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+
 INSERT INTO `events` (`id`, `begin_timestamp`, `end_timestamp`)
 VALUES (1, 1590577200 ,2531386800),
        (2, 1590577200 ,2531386800),
@@ -129,12 +172,21 @@ VALUES (1, 1590577200 ,2531386800),
        (4, 1590577200 ,2531386800),
        (5, 1590577200 ,2531386800),
        (6, 1590577200 ,2531386800),
-       (7, 1590577200 ,2531386800);
+       (7, 1590577200 ,2531386800),
+       (8, 1590577200, 2531386800),
+       (9, 1590577200, 2531386800),
+       (10, 1590577200, 2531386800);
 
 INSERT INTO `event_string_boards` (`message_id`, `message`, `game_event_id`)
 VALUES (0,
-        'Welcome! Please see our Github or Discord for updates and to report any bugs. discord.gg/fVZRdBN7Nd',
+        'Welcome! Please see our Github or Discord for updates and to report any bugs. Click here. discord.gg/fVZRdBN7Nd',
         1);
+
+INSERT INTO `event_string_board_links` (`game_event_id`, `link`)
+VALUES (8, 'https://github.com/AlanMorel/MapleServer2');
+
+INSERT INTO `event_meret_market_notices` (`game_event_id`, `message`)
+VALUES (9, 'Welcome to the emulator''s Meret Market! Enjoy the wide variety of items available!');
 
 INSERT INTO `event_mapleopoly` (`trip_amount`,
                                 `item_id`,
@@ -290,4 +342,7 @@ VALUES
     }
     ]',
     7
-  ); 
+  );
+
+INSERT INTO `event_sale_chat` (`game_event_id`, `world_chat_discount_amount`, `channel_chat_discount_amount`)
+VALUES (10, 9000, 9000)

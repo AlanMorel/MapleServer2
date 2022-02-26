@@ -66,5 +66,13 @@
   {
     "Key": "ClubMaxMembers",
     "Value": "10"
+  },
+  {
+    "Key": "MapleopolyTokenItemId",
+    "Value": "30001445"
+  },
+  {
+    "Key": "MapleopolyTokenCost",
+    "Value": "2"
   }
 ]
