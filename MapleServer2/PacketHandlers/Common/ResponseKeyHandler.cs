@@ -75,9 +75,8 @@ public class ResponseKeyHandler : CommonPacketHandler
         }
         
         // Get Group Chats
-        List<GroupChat> groupChats = GameServer.GroupChatManager.GetGroupChatsByMember(player.CharacterId);
-        player.GroupChats = groupChats;
-        foreach (GroupChat groupChat in groupChats)
+        player.GroupChats = GameServer.GroupChatManager.GetGroupChatsByMember(player.CharacterId);
+        foreach (GroupChat groupChat in player.GroupChats)
         {
             session.Send(GroupChatPacket.Update(groupChat));
             if (!player.IsMigrating)
