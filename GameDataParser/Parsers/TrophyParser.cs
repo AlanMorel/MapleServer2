@@ -13,7 +13,7 @@ internal class TrophyParser : Exporter<List<TrophyMetadata>>
     protected override List<TrophyMetadata> Parse()
     {
         List<TrophyMetadata> trophyList = new();
-        
+
         // Parse map names
         Dictionary<int, string> trophyNames = new();
         PackFileEntry file = Resources.XmlReader.Files.FirstOrDefault(x => x.Name.StartsWith("string/en/achievename.xml"));
