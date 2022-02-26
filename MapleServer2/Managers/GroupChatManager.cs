@@ -20,6 +20,11 @@ public class GroupChatManager
     {
         GroupChatList.Remove(groupChat.Id);
     }
+    
+    public List<GroupChat> GetGroupChatsByMember(long characterId)
+    {
+        return GroupChatList.Values.Where(x => x.Members.FirstOrDefault(z => z.CharacterId == characterId) != null).ToList();
+    }
 
     public GroupChat GetGroupChatById(int id)
     {

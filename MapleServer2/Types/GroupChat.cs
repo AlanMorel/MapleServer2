@@ -22,18 +22,13 @@ public class GroupChat
     public void AddMember(Player player)
     {
         Members.Add(player);
-
-        int index = Array.FindIndex(player.GroupChatId, 0, player.GroupChatId.Length, x => x == 0);
-        player.GroupChatId[index] = Id;
+        player.GroupChats.Add(this);
     }
 
     public void RemoveMember(Player player)
     {
         Members.Remove(player);
-
-        int index = Array.FindIndex(player.GroupChatId, 0, player.GroupChatId.Length, x => x == Id);
-        player.GroupChatId[index] = 0;
-
+        player.GroupChats.Remove(this);
         CheckDisband();
     }
 
@@ -45,6 +40,16 @@ public class GroupChat
         }
 
         GameServer.GroupChatManager.RemoveGroupChat(this);
+    }
+    
+    public void CheckOfflineGroupChat()
+    {
+        List<GameSession> sessions = GetSessions();
+        if (sessions.Count == 0)
+        {
+            GameServer.GroupChatManager.RemoveGroupChat(this);
+            return;
+        }
     }
 
     public void BroadcastPacketGroupChat(PacketWriter packet, GameSession sender = null)
@@ -72,8 +77,17 @@ public class GroupChat
         }
     }
 
-    private List<GameSession> GetSessions()
+    public List<GameSession> GetSessions()
     {
-        return Members.Where(member => member.Session.Connected()).Select(member => member.Session).ToList();
+        List<GameSession> sessions = new();
+        foreach (Player member in Members)
+        {
+            GameSession playerSession = GameServer.PlayerManager.GetPlayerById(member.CharacterId)?.Session;
+            if (playerSession != null)
+            {
+                sessions.Add(playerSession);
+            }
+        }
+        return sessions;
     }
 }

@@ -73,6 +73,18 @@ public class ResponseKeyHandler : CommonPacketHandler
             player.Clubs.Add(club);
             member.Player = player;
         }
+        
+        // Get Group Chats
+        List<GroupChat> groupChats = GameServer.GroupChatManager.GetGroupChatsByMember(player.CharacterId);
+        player.GroupChats = groupChats;
+        foreach (GroupChat groupChat in groupChats)
+        {
+            session.Send(GroupChatPacket.Update(groupChat));
+            if (!player.IsMigrating)
+            {
+                groupChat.BroadcastPacketGroupChat(GroupChatPacket.LoginNotice(groupChat, player));
+            }
+        }
 
         //session.Send(0x27, 0x01); // Meret market related...?
         session.Send(MushkingRoyaleSystemPacket.LoadStats(player.Account.MushkingRoyaleStats));

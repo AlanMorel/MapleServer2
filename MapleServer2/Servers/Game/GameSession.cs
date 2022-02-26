@@ -100,6 +100,12 @@ public class GameSession : Session
             {
                 club?.BroadcastPacketClub(ClubPacket.LogoutNotice(Player, club));
             }
+            
+            foreach (GroupChat groupChat in Player.GroupChats)
+            {
+                groupChat?.BroadcastPacketGroupChat(GroupChatPacket.LogoutNotice(groupChat, Player));
+                groupChat?.CheckOfflineGroupChat();
+            }
 
             Player.IsMigrating = false;
 

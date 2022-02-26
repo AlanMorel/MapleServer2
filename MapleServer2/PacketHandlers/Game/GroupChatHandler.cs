@@ -63,21 +63,19 @@ public class GroupChatHandler : GamePacketHandler
         int groupChatId = packet.ReadInt();
 
         GroupChat groupChat = GameServer.GroupChatManager.GetGroupChatById(groupChatId);
-        if (groupChat == null)
+        if (groupChat is null)
         {
             return;
         }
 
         Player other = GameServer.PlayerManager.GetPlayerByName(targetPlayer);
-        if (other == null)
+        if (other is null)
         {
             session.Send(GroupChatPacket.Error(session.Player, targetPlayer, (int) GroupChatError.OfflinePlayer));
             return;
         }
-
-        int count = other.GroupChatId.Count(x => x != 0);
-
-        if (count >= 3) // 3 is the max group chats a user can be at
+        
+        if (other.GroupChats.Count >= 3) // 3 is the max group chats a user can be at
         {
             session.Send(GroupChatPacket.Error(session.Player, targetPlayer, (int) GroupChatError.MaxGroups));
 
@@ -98,7 +96,7 @@ public class GroupChatHandler : GamePacketHandler
         int groupChatId = packet.ReadInt();
 
         GroupChat groupChat = GameServer.GroupChatManager.GetGroupChatById(groupChatId);
-        if (groupChat == null)
+        if (groupChat is null)
         {
             return;
         }
@@ -114,7 +112,7 @@ public class GroupChatHandler : GamePacketHandler
         int groupChatId = packet.ReadInt();
 
         GroupChat groupChat = GameServer.GroupChatManager.GetGroupChatById(groupChatId);
-        if (groupChat == null)
+        if (groupChat is null)
         {
             return;
         }
