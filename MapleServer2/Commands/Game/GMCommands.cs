@@ -99,3 +99,33 @@ public class SetJobCommand : InGameCommand
         trigger.Session.Send(JobPacket.SendJob(fieldPlayer));
     }
 }
+
+public class NoticeCommand : InGameCommand
+{
+    public NoticeCommand()
+    {
+        Aliases = new()
+        {
+            "testnotice"
+        };
+        Parameters = new()
+        {
+            new Parameter<int>("amount", "amount")
+        };
+    }
+
+    public override void Execute(GameCommandTrigger trigger)
+    {
+        int amount = trigger.Get<int>("amount");
+        trigger.Session.SendNotice($"Start ################ ");
+        for (int i = amount; i < amount + 10; i++)
+        {
+            trigger.Session.SendNotice($"Message {i:x8}:");
+            trigger.Session.Send(NoticePacket.Notice((SystemNotice) i, NoticeType.Chat));
+
+            trigger.Session.SendNotice($" ----------- ");
+        }
+
+        trigger.Session.SendNotice($"End ################ ");
+    }
+}
