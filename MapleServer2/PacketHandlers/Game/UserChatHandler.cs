@@ -284,6 +284,7 @@ public class UserChatHandler : GamePacketHandler
 
         PacketWriter itemLinkPacket = null;
 
+        message = message.Replace("&nbsp;", " ");
         XmlDocument itemLinkMessages = new();
         itemLinkMessages.LoadXml("<xml>" + message + "</xml>");
 
