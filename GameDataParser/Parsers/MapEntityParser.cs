@@ -128,6 +128,28 @@ public class MapEntityParser : Exporter<List<MapEntityMetadata>>
         {
             switch (entity)
             {
+                case IMS2PhysXProp physXProp:
+                    switch (physXProp)
+                    {
+                        case IMS2CubeProp prop:
+                            if (!prop.IsObjectWeapon)
+                            {
+                                break;
+                            }
+
+                            List<int> weaponIds = prop.ObjectWeaponItemCode.Split(",").Select(int.Parse).ToList();
+                            metadata.WeaponObjects.Add(new(CoordB.FromVector3(prop.Position), weaponIds));
+                            break;
+                        case IMS2Liftable liftable:
+                            metadata.LiftableObjects.Add(new(liftable.EntityId, (int) liftable.ItemID, liftable.EffectQuestID, liftable.EffectQuestState,
+                                liftable.ItemLifeTime, liftable.LiftableRegenCheckTime));
+                            break;
+                        case IMS2Vibrate vibrate:
+                            metadata.VibrateObjects.Add(new(vibrate.EntityId, CoordF.FromVector3(physXProp.Position)));
+                            break;
+                    }
+
+                    break;
                 case IMS2Bounding bounding:
                     if (bounding.EntityName.EndsWith("0") && metadata.BoundingBox0.Equals(CoordS.From(0, 0, 0)))
                     {
@@ -265,8 +287,8 @@ public class MapEntityParser : Exporter<List<MapEntityMetadata>>
                             break;
                         case IMS2RegionSpawn regionSpawn:
                             SpawnMetadata mobSpawnData = SpawnTagMap.ContainsKey(mapId) && SpawnTagMap[mapId].ContainsKey(regionSpawn.SpawnPointID)
-                                    ? SpawnTagMap[mapId][regionSpawn.SpawnPointID]
-                                    : null;
+                                ? SpawnTagMap[mapId][regionSpawn.SpawnPointID]
+                                : null;
 
                             int mobNpcCount = mobSpawnData?.Population ?? 6;
 
@@ -343,24 +365,9 @@ public class MapEntityParser : Exporter<List<MapEntityMetadata>>
                     }
 
                     break;
-                case IMS2Liftable liftable:
-                    metadata.LiftableObjects.Add(new(liftable.EntityId, (int) liftable.ItemID, liftable.EffectQuestID, liftable.EffectQuestState,
-                        liftable.ItemLifeTime, liftable.LiftableRegenCheckTime));
-                    break;
                 case IMS2LiftableTargetBox liftableTargetBox:
                     metadata.LiftableTargets.Add(new(liftableTargetBox.liftableTarget, CoordF.FromVector3(liftableTargetBox.Position),
                         CoordF.FromVector3(liftableTargetBox.ShapeDimensions)));
-                    break;
-                case IMS2CubeProp prop:
-                    if (prop.IsObjectWeapon)
-                    {
-                        List<int> weaponIds = prop.ObjectWeaponItemCode.Split(",").Select(int.Parse).ToList();
-                        metadata.WeaponObjects.Add(new(CoordB.FromVector3(prop.Position), weaponIds));
-                    }
-
-                    break;
-                case IMS2Vibrate vibrate:
-                    metadata.VibrateObjects.Add(new(vibrate.EntityId));
                     break;
             }
 

@@ -84,12 +84,14 @@ public partial class TriggerContext
 
             foreach (string npcId in spawnPoint.NpcIds)
             {
-                if (int.TryParse(npcId, out int id))
+                if (!int.TryParse(npcId, out int id))
                 {
-                    if (Field.State.Mobs.Values.Where(x => x.Value.Id == id).Any())
-                    {
-                        return false;
-                    }
+                    continue;
+                }
+
+                if (Field.State.Mobs.Values.Any(x => x.Value.Id == id && !x.IsDead))
+                {
+                    return false;
                 }
             }
         }
@@ -164,7 +166,7 @@ public partial class TriggerContext
                         case QuestState.Started:
                             return quest.State is QuestState.Started;
                         case QuestState.ConditionCompleted:
-                            return quest.Condition.All(condition => condition.Completed);
+                            return quest.State is not QuestState.None && quest.Condition.All(condition => condition.Completed);
                         case QuestState.Finished:
                             return quest.State is QuestState.Finished;
                     }

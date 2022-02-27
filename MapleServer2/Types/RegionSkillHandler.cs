@@ -2,8 +2,8 @@
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
+using MapleServer2.Managers;
 using MapleServer2.Packets;
-using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using NLog;
 
@@ -13,21 +13,18 @@ public static class RegionSkillHandler
 {
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-    public static void HandleEffect(GameSession session, SkillCast skillCast, int attackIndex)
+    public static void HandleEffect(FieldManager field, SkillCast skillCast, int attackIndex)
     {
-        Player player = session.Player;
-        IFieldActor<Player> fieldPlayer = player.FieldPlayer;
+        skillCast.EffectCoords = GetEffectCoords(skillCast, field.MapId, attackIndex);
 
-        skillCast.EffectCoords = GetEffectCoords(skillCast, fieldPlayer.Coord, player.MapId, fieldPlayer.LookDirection, attackIndex);
+        field.AddRegionSkillEffect(skillCast);
 
-        session.FieldManager.AddRegionSkillEffect(skillCast);
+        Task removeEffectTask = RemoveEffects(field, skillCast);
 
-        Task removeEffectTask = RemoveEffects(session, skillCast);
-
-        // TODO: Vibrate objects around skill
         if (skillCast.Interval <= 0)
         {
-            HandleRegionSkill(session, skillCast);
+            HandleRegionSkill(field, skillCast);
+            VibrateObjects(field, skillCast);
             return;
         }
 
@@ -36,7 +33,8 @@ public static class RegionSkillHandler
         {
             while (!removeEffectTask.IsCompleted)
             {
-                HandleRegionSkill(session, skillCast);
+                HandleRegionSkill(field, skillCast);
+                VibrateObjects(field, skillCast);
 
                 // TODO: Find the correct delay for the skill
                 await Task.Delay(skillCast.Interval);
@@ -44,13 +42,13 @@ public static class RegionSkillHandler
         });
     }
 
-    private static Task RemoveEffects(GameSession session, SkillCast skillCast)
+    private static Task RemoveEffects(FieldManager field, SkillCast skillCast)
     {
         return Task.Run(async () =>
         {
             // TODO: Get the correct Region Skill Duration when calling chain Skills
             await Task.Delay(skillCast.Duration);
-            if (!session.FieldManager.RemoveRegionSkillEffect(skillCast))
+            if (!field.RemoveRegionSkillEffect(skillCast))
             {
                 Logger.Error("Failed to remove Region Skill");
             }
@@ -61,7 +59,7 @@ public static class RegionSkillHandler
     /// Get the coordinates of the skill's effect, if needed change the offset to match the direction of the player.
     /// For skills that paint the ground, match the correct height.
     /// </summary>
-    private static List<CoordF> GetEffectCoords(SkillCast skillCast, CoordF sourceCoord, int mapId, int lookDirection, int attackIndex)
+    private static List<CoordF> GetEffectCoords(SkillCast skillCast, int mapId, int attackIndex)
     {
         SkillAttack skillAttack = skillCast.SkillAttack;
         List<MagicPathMove> cubeMagicPathMoves = new();
@@ -82,6 +80,7 @@ public static class RegionSkillHandler
         List<CoordF> effectCoords = new();
         if (skillMovesCount <= 0)
         {
+            effectCoords.Add(skillCast.Position);
             return effectCoords;
         }
 
@@ -101,11 +100,11 @@ public static class RegionSkillHandler
             }
 
             // Rotate the offset coord and distance based on the look direction
-            CoordF rotatedOffset = CoordF.From(magicPathMove.FireOffsetPosition.Length(), lookDirection);
-            CoordF distance = CoordF.From(magicPathMove.Distance, lookDirection);
+            CoordF rotatedOffset = CoordF.From(magicPathMove.FireOffsetPosition.Length(), skillCast.LookDirection);
+            CoordF distance = CoordF.From(magicPathMove.Distance, skillCast.LookDirection);
 
             // Create new effect coord based on offset rotation and distance
-            effectCoords.Add(rotatedOffset + distance + sourceCoord);
+            effectCoords.Add(rotatedOffset + distance + skillCast.Position);
 
             return effectCoords;
         }
@@ -119,14 +118,14 @@ public static class RegionSkillHandler
             if (!cubeMagicPathMove.IgnoreAdjust)
             {
                 // Rotate the offset coord based on the look direction
-                CoordF rotatedOffset = CoordF.From(offSetCoord.Length(), lookDirection);
+                CoordF rotatedOffset = CoordF.From(offSetCoord.Length(), skillCast.LookDirection);
 
                 // Create new effect coord based on offset rotation and source coord
-                effectCoords.Add(rotatedOffset + sourceCoord);
+                effectCoords.Add(rotatedOffset + skillCast.Position);
                 continue;
             }
 
-            offSetCoord += Block.ClosestBlock(sourceCoord);
+            offSetCoord += Block.ClosestBlock(skillCast.Position);
 
             CoordS tempBlockCoord = offSetCoord.ToShort();
 
@@ -164,7 +163,7 @@ public static class RegionSkillHandler
         return effectCoords;
     }
 
-    private static void HandleRegionSkill(GameSession session, SkillCast skillCast)
+    private static void HandleRegionSkill(FieldManager field, SkillCast skillCast)
     {
         foreach (SkillMotion skillMotion in skillCast.GetSkillMotions())
         {
@@ -174,9 +173,8 @@ public static class RegionSkillHandler
                 {
                     foreach (SkillCondition skillCondition in skillAttack.SkillConditions)
                     {
-                        SkillCast splashSkill = new(skillCondition.SkillId, skillCondition.SkillLevel, GuidGenerator.Long(), session.ServerTick, skillCast)
+                        SkillCast splashSkill = new(skillCondition.SkillId, skillCondition.SkillLevel, GuidGenerator.Long(), skillCast.ServerTick, skillCast)
                         {
-                            CasterObjectId = session.Player.FieldPlayer.ObjectId,
                             SkillAttack = skillAttack,
                             EffectCoords = skillCast.EffectCoords,
                             SkillObjectId = skillCast.SkillObjectId
@@ -190,11 +188,11 @@ public static class RegionSkillHandler
                         {
                             if (splashSkill.IsRecoveryFromBuff())
                             {
-                                HandleRegionHeal(session, splashSkill);
+                                HandleRegionHeal(field, splashSkill);
                                 continue;
                             }
 
-                            HandleRegionDamage(session, splashSkill);
+                            HandleRegionDamage(field, splashSkill);
                             continue;
                         }
 
@@ -214,18 +212,18 @@ public static class RegionSkillHandler
 
                 if (skillCast.IsRecoveryFromBuff())
                 {
-                    HandleRegionHeal(session, skillCast);
+                    HandleRegionHeal(field, skillCast);
                     continue;
                 }
 
-                HandleRegionDamage(session, skillCast);
+                HandleRegionDamage(field, skillCast);
             }
         }
     }
 
-    private static void HandleRegionHeal(GameSession session, SkillCast skillCast)
+    private static void HandleRegionHeal(FieldManager field, SkillCast skillCast)
     {
-        foreach (IFieldActor<Player> player in session.FieldManager.State.Players.Values)
+        foreach (IFieldActor<Player> player in field.State.Players.Values)
         {
             foreach (CoordF effectCoord in skillCast.EffectCoords)
             {
@@ -235,18 +233,24 @@ public static class RegionSkillHandler
                 }
 
                 // Use RecoveryRate from skillcast.SkillAttack
-                Status status = new(skillCast, player.ObjectId, session.Player.FieldPlayer.ObjectId, 1);
+                Status status = new(skillCast, player.ObjectId, skillCast.CasterObjectId, 1);
                 player.Heal(player.Value.Session, status, 50);
             }
         }
     }
 
-    private static void HandleRegionDamage(GameSession session, SkillCast skillCast)
+    private static void HandleRegionDamage(FieldManager field, SkillCast skillCast)
     {
-        List<DamageHandler> damages = new();
-        bool isCrit = DamageHandler.RollCrit(session.Player.Stats[StatId.CritRate].Total);
+        if (!field.State.Players.TryGetValue(skillCast.CasterObjectId, out IFieldActor<Player> caster))
+        {
+            // Handle NPCs/Triggers sending skills
+            return;
+        }
 
-        foreach (IFieldActor<NpcMetadata> mob in session.FieldManager.State.Mobs.Values)
+        List<DamageHandler> damages = new();
+        bool isCrit = DamageHandler.RollCrit(caster.Value.Stats[StatId.CritRate].Total);
+
+        foreach (IFieldActor<NpcMetadata> mob in field.State.Mobs.Values)
         {
             foreach (CoordF effectCoord in skillCast.EffectCoords)
             {
@@ -255,8 +259,8 @@ public static class RegionSkillHandler
                     continue;
                 }
 
-                DamageHandler damage = DamageHandler.CalculateDamage(skillCast, session.Player.FieldPlayer, mob, isCrit);
-                mob.Damage(damage, session);
+                DamageHandler damage = DamageHandler.CalculateDamage(skillCast, caster, mob, isCrit);
+                mob.Damage(damage, caster.Value.Session);
 
                 damages.Add(damage);
             }
@@ -267,6 +271,21 @@ public static class RegionSkillHandler
             return;
         }
 
-        session.FieldManager.BroadcastPacket(SkillDamagePacket.RegionDamage(skillCast, damages));
+        field.BroadcastPacket(SkillDamagePacket.RegionDamage(skillCast, damages));
+    }
+
+    private static void VibrateObjects(FieldManager field, SkillCast skillCast)
+    {
+        foreach ((string objectId, MapVibrateObject metadata) in field.State.VibrateObjects)
+        {
+            foreach (CoordF effectCoord in skillCast.EffectCoords)
+            {
+                if ((metadata.Position - effectCoord).Length() > skillCast.SkillAttack.RangeProperty.Distance)
+                {
+                    continue;
+                }
+                field.BroadcastPacket(VibratePacket.Vibrate(objectId, skillCast));
+            }
+        }
     }
 }

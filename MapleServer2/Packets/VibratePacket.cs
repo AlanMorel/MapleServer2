@@ -6,7 +6,7 @@ namespace MapleServer2.Packets;
 
 public static class VibratePacket
 {
-    public static PacketWriter Vibrate(string objectHash, SkillCast skillCast, IFieldObject<Player> player)
+    public static PacketWriter Vibrate(string objectHash, SkillCast skillCast)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.VIBRATE);
         pWriter.WriteByte(1);
@@ -16,8 +16,8 @@ public static class VibratePacket
         pWriter.WriteShort(skillCast.SkillLevel);
         pWriter.WriteByte(); // motion point?
         pWriter.WriteByte();
-        pWriter.Write(player.Coord.ToShort());
-        pWriter.Write(player.Value.Session.ServerTick);
+        pWriter.Write(skillCast.Position.ToShort());
+        pWriter.Write(skillCast.ServerTick);
         pWriter.WriteString();
         pWriter.WriteByte();
 

@@ -935,6 +935,11 @@ public partial class FieldManager
         {
             State.AddHealingSpot(RequestFieldObject(new HealingSpot(GuidGenerator.Int(), coord)));
         }
+
+        foreach (MapVibrateObject mapVibrateObject in MapEntityStorage.GetVibrateObjects(MapId))
+        {
+            State.AddVibrateObject(mapVibrateObject);
+        }
     }
 
     #region Map loop
@@ -1068,7 +1073,19 @@ public partial class FieldManager
             {
                 foreach (TriggerScript trigger in Triggers)
                 {
-                    trigger.Next();
+                    try
+                    {
+                        trigger.Next();
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error(e);
+                        // Disconnect everyone in the field if a trigger has an exception
+                        foreach (IFieldActor<Player> fieldPlayers in State.Players.Values)
+                        {
+                            fieldPlayers.Value.Session.Disconnect(logoutNotice: true);
+                        }
+                    }
                 }
 
                 await Task.Delay(200);

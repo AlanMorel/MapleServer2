@@ -34,7 +34,8 @@ public static class RegionSkillPacket
 
         pWriter.WriteInt(skill.SkillId);
         pWriter.WriteShort(skill.SkillLevel);
-        pWriter.WriteLong();
+        pWriter.WriteFloat();
+        pWriter.WriteFloat();
 
         return pWriter;
     }

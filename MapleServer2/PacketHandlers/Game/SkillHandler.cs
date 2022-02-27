@@ -78,7 +78,8 @@ public class SkillHandler : GamePacketHandler
         {
             Position = position,
             Direction = direction,
-            Rotation = rotation
+            Rotation = rotation,
+            LookDirection = fieldPlayer.LookDirection
         };
 
         /* HOW TO HANDLE ADDITIONAL EFFECTS BY MAYGI:
@@ -312,12 +313,11 @@ public class SkillHandler : GamePacketHandler
 
         SkillCast skillCast = new(skillCondition.SkillId, skillCondition.SkillLevel, GuidGenerator.Long(), session.ServerTick, parentSkill)
         {
-            CasterObjectId = session.Player.FieldPlayer.ObjectId,
             SkillAttack = skillAttack,
             Duration = skillCondition.FireCount * 1000,
             Interval = skillCondition.Interval
         };
-        RegionSkillHandler.HandleEffect(session, skillCast, attackIndex);
+        RegionSkillHandler.HandleEffect(session.FieldManager, skillCast, attackIndex);
     }
 
     #endregion

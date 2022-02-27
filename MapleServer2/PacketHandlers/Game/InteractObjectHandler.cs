@@ -5,6 +5,7 @@ using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
+using MapleServer2.Managers;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -54,6 +55,8 @@ internal class InteractObjectHandler : GamePacketHandler
 
     private static void HandleInteract(GameSession session, PacketReader packet)
     {
+        Player player = session.Player;
+
         string id = packet.ReadString();
         session.FieldManager.State.InteractObjects.TryGetValue(id, out InteractObject interactObject);
         if (interactObject == null)
@@ -83,73 +86,28 @@ internal class InteractObjectHandler : GamePacketHandler
                 session.Send(InteractObjectPacket.Use(interactObject, (short) (numDrop > 0 ? 0 : 1), numDrop));
                 break;
             case InteractObjectType.Common:
-                foreach ((int questId, QuestState state) in metadata.Quests)
-                {
-                    if (!session.Player.QuestData.TryGetValue(questId, out QuestStatus questStatus) || questStatus.State != state)
-                    {
-                        continue;
-                    }
-
-                    QuestHelper.UpdateQuest(session, interactObject.InteractId.ToString(), "interact_object");
-                }
-
                 // Unsure if all interact objects need to be set as disabled.
                 interactObject.State = InteractObjectState.Disable;
 
                 session.Send(InteractObjectPacket.Update(interactObject));
                 session.Send(InteractObjectPacket.Interact(interactObject));
 
-                foreach (int boxId in metadata.Drop.IndividualDropBoxId)
+                foreach ((int questId, QuestState state) in metadata.Quests)
                 {
-                    ItemDropMetadata itemDropMetadataStorage = ItemDropMetadataStorage.GetItemDropMetadata(boxId);
-                    if (itemDropMetadataStorage is null)
+                    if (!player.QuestData.TryGetValue(questId, out QuestStatus questStatus) || questStatus.State != state)
                     {
                         continue;
                     }
 
-                    foreach (DropGroup dropGroup in itemDropMetadataStorage.DropGroups)
-                    {
-                        foreach (DropGroupContent dropGroupContent in dropGroup.Contents)
-                        {
-                            foreach (int itemId in dropGroupContent.ItemIds)
-                            {
-                                Item item = new(itemId)
-                                {
-                                    Amount = RandomProvider.Get().Next((int) dropGroupContent.MinAmount, (int) dropGroupContent.MaxAmount),
-                                    Rarity = dropGroupContent.Rarity
-                                };
+                    QuestHelper.UpdateQuest(session, interactObject.InteractId.ToString(), "interact_object");
 
-                                session.FieldManager.AddItem(session, item);
-                            }
-                        }
-                    }
+                    interactObject.State = InteractObjectState.Activated;
+                    session.Send(InteractObjectPacket.Update(interactObject));
                 }
 
-                foreach (int boxId in metadata.Drop.GlobalDropBoxId)
-                {
-                    ItemDropMetadata itemDropMetadataStorage = ItemDropMetadataStorage.GetItemDropMetadata(boxId);
-                    if (itemDropMetadataStorage is null)
-                    {
-                        continue;
-                    }
+                DropItems();
 
-                    foreach (DropGroup dropGroup in itemDropMetadataStorage.DropGroups)
-                    {
-                        foreach (DropGroupContent dropGroupContent in dropGroup.Contents)
-                        {
-                            foreach (int itemId in dropGroupContent.ItemIds)
-                            {
-                                Item item = new(itemId)
-                                {
-                                    Amount = RandomProvider.Get().Next((int) dropGroupContent.MinAmount, (int) dropGroupContent.MaxAmount),
-                                    Rarity = dropGroupContent.Rarity
-                                };
-
-                                session.FieldManager.AddItem(session, item);
-                            }
-                        }
-                    }
-                }
+                TrophyManager.OnObjectInteract(player, interactObject.InteractId);
 
                 if (interactObject is MapChest)
                 {
@@ -166,9 +124,65 @@ internal class InteractObjectHandler : GamePacketHandler
                         session.FieldManager.BroadcastPacket(InteractObjectPacket.Remove(interactObject));
                     });
                 }
+
                 return;
         }
 
         session.Send(InteractObjectPacket.Interact(interactObject));
+
+        void DropItems()
+        {
+            foreach (int boxId in metadata.Drop.IndividualDropBoxId)
+            {
+                ItemDropMetadata itemDropMetadataStorage = ItemDropMetadataStorage.GetItemDropMetadata(boxId);
+                if (itemDropMetadataStorage is null)
+                {
+                    continue;
+                }
+
+                foreach (DropGroup dropGroup in itemDropMetadataStorage.DropGroups)
+                {
+                    foreach (DropGroupContent dropGroupContent in dropGroup.Contents)
+                    {
+                        foreach (int itemId in dropGroupContent.ItemIds)
+                        {
+                            Item item = new(itemId)
+                            {
+                                Amount = RandomProvider.Get().Next((int) dropGroupContent.MinAmount, (int) dropGroupContent.MaxAmount),
+                                Rarity = dropGroupContent.Rarity
+                            };
+
+                            session.FieldManager.AddItem(session, item);
+                        }
+                    }
+                }
+            }
+
+            foreach (int boxId in metadata.Drop.GlobalDropBoxId)
+            {
+                ItemDropMetadata itemDropMetadataStorage = ItemDropMetadataStorage.GetItemDropMetadata(boxId);
+                if (itemDropMetadataStorage is null)
+                {
+                    continue;
+                }
+
+                foreach (DropGroup dropGroup in itemDropMetadataStorage.DropGroups)
+                {
+                    foreach (DropGroupContent dropGroupContent in dropGroup.Contents)
+                    {
+                        foreach (int itemId in dropGroupContent.ItemIds)
+                        {
+                            Item item = new(itemId)
+                            {
+                                Amount = RandomProvider.Get().Next((int) dropGroupContent.MinAmount, (int) dropGroupContent.MaxAmount),
+                                Rarity = dropGroupContent.Rarity
+                            };
+
+                            session.FieldManager.AddItem(session, item);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

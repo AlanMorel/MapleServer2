@@ -111,7 +111,8 @@ public class StartQuestCommand : InGameCommand
             return;
         }
 
-        trigger.Session.Player.QuestData.Add(questId, new(trigger.Session.Player, quest, QuestState.Started, TimeInfo.Now()));
-        trigger.Session.Send(QuestPacket.AcceptQuest(questId));
+        QuestStatus questStatus = new(trigger.Session.Player, quest, QuestState.Started, TimeInfo.Now());
+        trigger.Session.Player.QuestData.Add(questId, questStatus);
+        trigger.Session.Send(QuestPacket.AcceptQuest(questStatus));
     }
 }

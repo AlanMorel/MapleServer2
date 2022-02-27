@@ -30,6 +30,7 @@ public class FieldState
     public readonly ConcurrentDictionary<string, InteractObject> InteractObjects = new();
     public readonly ConcurrentDictionary<string, LiftableObject> LiftableObjects = new();
     public readonly ConcurrentDictionary<long, SkillCast> SkillCasts = new();
+    public readonly ConcurrentDictionary<string, MapVibrateObject> VibrateObjects = new();
 
     public bool TryGetItem(int objectId, out IFieldObject<Item> item)
     {
@@ -222,5 +223,10 @@ public class FieldState
     public bool RemoveSkillCast(long skillSn, out SkillCast skillCast)
     {
         return SkillCasts.Remove(skillSn, out skillCast);
+    }
+
+    public void AddVibrateObject(MapVibrateObject vibrateObject)
+    {
+        VibrateObjects[vibrateObject.EntityId] = vibrateObject;
     }
 }

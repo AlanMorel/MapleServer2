@@ -9,6 +9,8 @@ public static class UserMoveByPortalPacket
 {
     public static PacketWriter Move(IFieldObject<Player> fieldPlayer, CoordF coords, CoordF rotation, bool isTrigger = false)
     {
+        coords.Z += 25; // make sure coord is above ground
+
         PacketWriter pWriter = PacketWriter.Of(SendOp.USER_MOVE_BY_PORTAL);
         pWriter.WriteInt(fieldPlayer.ObjectId);
         pWriter.Write(coords);
