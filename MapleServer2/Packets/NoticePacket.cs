@@ -37,6 +37,7 @@ public static class NoticePacket
         {
             pWriter.WriteUnicodeString(parameter);
         }
+        pWriter.WriteShort();
         return pWriter;
     }
 }
