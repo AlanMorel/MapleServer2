@@ -87,10 +87,7 @@ public class AttendanceHandler : GamePacketHandler
 
         // update completed timestamp
         long convertedValue2 = TimeInfo.Now();
-        completeTimestampValue.EventValue = convertedValue2.ToString();
-        DatabaseManager.GameEventUserValue.Update(completeTimestampValue);
-
-        session.Send(GameEventUserValuePacket.UpdateValue(completeTimestampValue));
+        completeTimestampValue.UpdateValue(session, convertedValue2);
     }
 
     private static void HandleBeginTimer(GameSession session)
@@ -161,9 +158,7 @@ public class AttendanceHandler : GamePacketHandler
         }
 
         skipsTotal++;
-        skipDay.EventValue = skipsTotal.ToString();
-        DatabaseManager.GameEventUserValue.Update(skipDay);
-        session.Send(GameEventUserValuePacket.UpdateValue(skipDay));
+        skipDay.UpdateValue(session, skipsTotal);
 
         UpdateRewardsClaimed(session, attendanceEvent);
     }
@@ -194,8 +189,6 @@ public class AttendanceHandler : GamePacketHandler
 
         convertedValue++;
         GiveAttendanceReward(session, attendanceEvent, convertedValue);
-        rewardsClaimValue.EventValue = convertedValue.ToString();
-        DatabaseManager.GameEventUserValue.Update(rewardsClaimValue);
-        session.Send(GameEventUserValuePacket.UpdateValue(rewardsClaimValue));
+        rewardsClaimValue.UpdateValue(session, convertedValue);
     }
 }

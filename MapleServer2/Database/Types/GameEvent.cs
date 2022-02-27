@@ -20,6 +20,8 @@ public abstract class GameEvent
 
 /* LIST OF KNOWN EVENTS
     StringBoard, // Marquee text
+    StringBoardLink // Clickable marquee
+    MeratMarketNotice // Changes the Meret Market marquee
     BlueMarble, // Mapleopoly
     ExchangeScrollSale,
     TrafficOptimizer,
@@ -34,6 +36,7 @@ public abstract class GameEvent
     EventFieldPopup,
     AttendGift // attendance
     RPS // Rock Paper Scissors
+    Snowman // Snowman event
 */
 
 public class StringBoard : GameEvent
@@ -49,6 +52,28 @@ public class StringBoard : GameEvent
     {
         StringId = stringId;
         String = text;
+    }
+}
+
+public class StringBoardLink : GameEvent
+{
+    public string Link;
+
+    public StringBoardLink(int id, string link, long beginTimestamp, long endTimestamp) : base(id,
+        beginTimestamp, endTimestamp)
+    {
+        Link = link;
+    }
+}
+
+public class MeratMarketNotice : GameEvent
+{
+    public string Message;
+
+    public MeratMarketNotice(int id, string message, long beginTimestamp, long endTimestamp) : base(id,
+        beginTimestamp, endTimestamp)
+    {
+        Message = message;
     }
 }
 
@@ -99,8 +124,6 @@ public class UgcMapContractSale : GameEvent
 {
     public int DiscountAmount { get; set; }
 
-    public UgcMapContractSale() { }
-
     public UgcMapContractSale(int id, int discountAmount, long beginTimestamp, long endTimestamp) : base(id,
         beginTimestamp, endTimestamp)
     {
@@ -111,8 +134,6 @@ public class UgcMapContractSale : GameEvent
 public class UgcMapExtensionSale : GameEvent
 {
     public int DiscountAmount { get; set; }
-
-    public UgcMapExtensionSale() { }
 
     public UgcMapExtensionSale(int id, int discountAmount, long beginTimestamp, long endTimestamp) : base(id,
         beginTimestamp, endTimestamp)
@@ -201,5 +222,18 @@ public class RPSReward
         ItemId = itemId;
         ItemAmount = amount;
         ItemRarity = rarity;
+    }
+}
+
+public class SaleChat : GameEvent
+{
+    public readonly int WorldChatDiscountAmount; // ex 1000 = 10% discount
+    public readonly int ChannelChatDiscountAmount;
+
+    public SaleChat(int id, long beginTimestamp, long endTimestamp, int worldChatDiscountAmount, int channelChatDiscountAmount) : base(id,
+        beginTimestamp, endTimestamp)
+    {
+        WorldChatDiscountAmount = worldChatDiscountAmount;
+        ChannelChatDiscountAmount = channelChatDiscountAmount;
     }
 }

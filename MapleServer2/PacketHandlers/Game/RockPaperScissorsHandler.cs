@@ -216,12 +216,8 @@ public class RockPaperScissorsHandler : GamePacketHandler
 
         dailyMatchCount++;
 
-        dailyMatches.EventValue = dailyMatchCount.ToString();
-
-        DatabaseManager.GameEventUserValue.Update(dailyMatches);
-        session.Send(GameEventUserValuePacket.UpdateValue(dailyMatches));
-        session.Send(
-            RockPaperScissorsPacket.MatchResults(result, session.Player.RPSSelection, opponent.RPSSelection));
+        dailyMatches.UpdateValue(session, dailyMatchCount);
+        session.Send(RockPaperScissorsPacket.MatchResults(result, session.Player.RPSSelection, opponent.RPSSelection));
     }
 
     private static void HandleClaimReward(GameSession session, PacketReader packet)
@@ -270,10 +266,7 @@ public class RockPaperScissorsHandler : GamePacketHandler
 
         // update event value
         rewardsClaimedStrings.Add(rewardTier.ToString());
-        rewardsAccumulatedValue.EventValue = string.Join(",", rewardsClaimedStrings);
-        DatabaseManager.GameEventUserValue.Update(rewardsAccumulatedValue);
-
-        session.Send(GameEventUserValuePacket.UpdateValue(rewardsAccumulatedValue));
+        rewardsAccumulatedValue.UpdateValue(session, string.Join(",", rewardsClaimedStrings));
     }
 
     private static void HandleConfirmMatch2(GameSession session, PacketReader packet)

@@ -143,7 +143,6 @@ CREATE TABLE `characters`
     `guild_member_id`          bigint                    DEFAULT NULL,
     `inventory_id`             bigint                    DEFAULT NULL,
     `is_deleted`               tinyint(1)       NOT NULL DEFAULT '0',
-    `mapleopoly`               text,
     `motto`                    varchar(25)               DEFAULT '',
     `profile_url`              text             NOT NULL,
     `return_coord`             text             NOT NULL,

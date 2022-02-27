@@ -52,7 +52,20 @@ public class DatabaseEvent : DatabaseTable
         {
             stringBoardEvents.Add(ReadStringBoardEvent(data));
         }
+
         return stringBoardEvents;
+    }
+
+    public StringBoardLink FindStringBoardLinkEvent()
+    {
+        dynamic result = QueryFactory.Query("event_string_board_links").FirstOrDefault();
+        return ReadStringBoardLinkEvent(result);
+    }
+
+    public MeratMarketNotice FindMeratMarketNotice()
+    {
+        dynamic result = QueryFactory.Query("event_meret_market_notices").FirstOrDefault();
+        return ReadMeratMarketNoticeEvent(result);
     }
 
     public AttendGift FindAttendGiftEvent()
@@ -67,17 +80,26 @@ public class DatabaseEvent : DatabaseTable
         return ReadRockPaperScissorsEvent(result);
     }
 
+    public SaleChat FindSaleChatEvent()
+    {
+        dynamic result = QueryFactory.Query("event_sale_chat").FirstOrDefault();
+        return ReadSaleChatEvent(result);
+    }
+
     public List<GameEvent> FindAll()
     {
         List<GameEvent> gameEvents = new();
 
         gameEvents.AddRange(FindAllStringBoardEvent());
+        gameEvents.Add(FindStringBoardLinkEvent());
         gameEvents.Add(FindFieldPopupEvent());
         gameEvents.Add(FindMapleopolyEvent());
         gameEvents.Add(FindUgcMapExtensionSaleEvent());
         gameEvents.Add(FindUgcMapContractSaleEvent());
         gameEvents.Add(FindAttendGiftEvent());
         gameEvents.Add(FindRockPaperScissorsEvent());
+        gameEvents.Add(FindMeratMarketNotice());
+        gameEvents.Add(FindSaleChatEvent());
 
         return gameEvents;
     }
@@ -91,6 +113,18 @@ public class DatabaseEvent : DatabaseTable
     {
         dynamic baseEvent = ReadBaseGameEvent((int) data.game_event_id);
         return new StringBoard(data.game_event_id, data.message_id, data.message, baseEvent.begin_timestamp, baseEvent.end_timestamp);
+    }
+
+    private static StringBoardLink ReadStringBoardLinkEvent(dynamic data)
+    {
+        dynamic baseEvent = ReadBaseGameEvent((int) data.game_event_id);
+        return new StringBoardLink(data.game_event_id, data.link, baseEvent.begin_timestamp, baseEvent.end_timestamp);
+    }
+
+    private static MeratMarketNotice ReadMeratMarketNoticeEvent(dynamic data)
+    {
+        dynamic baseEvent = ReadBaseGameEvent((int) data.game_event_id);
+        return new MeratMarketNotice(data.game_event_id, data.message, baseEvent.begin_timestamp, baseEvent.end_timestamp);
     }
 
     private static EventFieldPopup ReadFieldPopupEvent(dynamic data)
@@ -108,6 +142,7 @@ public class DatabaseEvent : DatabaseTable
             BlueMarbleReward reward = new(item.trip_amount, item.item_id, item.item_rarity, item.item_amount);
             rewards.Add(reward);
         }
+
         return new BlueMarble(baseEvent.id, rewards, baseEvent.begin_timestamp, baseEvent.end_timestamp);
     }
 
@@ -126,13 +161,23 @@ public class DatabaseEvent : DatabaseTable
     private static AttendGift ReadAttendGiftEvent(dynamic data)
     {
         dynamic baseEvent = ReadBaseGameEvent((int) data.game_event_id);
-        return new AttendGift(data.game_event_id, baseEvent.begin_timestamp, baseEvent.end_timestamp, data.name, data.url, data.disable_claim_button, data.time_required,
-            (GameEventCurrencyType) data.skip_day_currency_type, data.skip_days_allowed, data.skip_day_cost, JsonConvert.DeserializeObject<List<AttendGiftDay>>(data.days));
+        return new AttendGift(data.game_event_id, baseEvent.begin_timestamp, baseEvent.end_timestamp, data.name, data.url, data.disable_claim_button,
+            data.time_required,
+            (GameEventCurrencyType) data.skip_day_currency_type, data.skip_days_allowed, data.skip_day_cost,
+            JsonConvert.DeserializeObject<List<AttendGiftDay>>(data.days));
     }
 
     private static RPS ReadRockPaperScissorsEvent(dynamic data)
     {
         dynamic baseEvent = ReadBaseGameEvent((int) data.game_event_id);
-        return new RPS(data.game_event_id, data.voucher_id, baseEvent.begin_timestamp, baseEvent.end_timestamp, JsonConvert.DeserializeObject<List<RPSTier>>(data.rewards));
+        return new RPS(data.game_event_id, data.voucher_id, baseEvent.begin_timestamp, baseEvent.end_timestamp,
+            JsonConvert.DeserializeObject<List<RPSTier>>(data.rewards));
+    }
+
+    private static SaleChat ReadSaleChatEvent(dynamic data)
+    {
+        dynamic baseEvent = ReadBaseGameEvent((int) data.game_event_id);
+        return new SaleChat(data.game_event_id, baseEvent.begin_timestamp, baseEvent.end_timestamp, data.world_chat_discount_amount,
+            data.channel_chat_discount_amount);
     }
 }

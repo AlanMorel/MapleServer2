@@ -1,18 +1,8 @@
 ﻿namespace MapleServer2.Types;
 
-public class Mapleopoly
-{
-    public int FreeRollAmount;
-    public int TotalTileCount;
-    public int TotalTrips;
-
-    public const int TILE_AMOUNT = 28;
-    // Temporarily hardcoding the item and cost
-    public const int TOKEN_ITEM_ID = 30001445; // Aetherine Coin
-    public const int TOKEN_COST = 2;
-}
 public class MapleopolyTile
 {
+    public const int TILE_AMOUNT = 28;
     public int TilePosition;
     public MapleopolyTileType Type;
     public int TileParameter;

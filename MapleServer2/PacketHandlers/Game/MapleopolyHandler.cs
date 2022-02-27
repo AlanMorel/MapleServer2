@@ -1,8 +1,11 @@
 ﻿using Maple2Storage.Tools;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Database.Types;
+using MapleServer2.Enums;
+using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -31,16 +34,30 @@ public class MapleopolyHandler : GamePacketHandler
     {
         MapleopolyMode mode = (MapleopolyMode) packet.ReadByte();
 
+        BlueMarble mapleopolyEvent = DatabaseManager.Events.FindMapleopolyEvent();
+        if (mapleopolyEvent is null)
+        {
+            // TODO: Find an error packet to send if event is not active
+            return;
+        }
+
+        GameEventUserValue totalTileValue = GameEventHelper.GetUserValue(session.Player, mapleopolyEvent.Id, mapleopolyEvent.EndTimestamp,
+            GameEventUserValueType.MapleopolyTotalTileCount);
+        GameEventUserValue freeRollValue = GameEventHelper.GetUserValue(session.Player, mapleopolyEvent.Id, mapleopolyEvent.EndTimestamp,
+            GameEventUserValueType.MapleopolyFreeRollAmount);
+        GameEventUserValue totalTripValue = GameEventHelper.GetUserValue(session.Player, mapleopolyEvent.Id, mapleopolyEvent.EndTimestamp,
+            GameEventUserValueType.MapleopolyTotalTrips);
+
         switch (mode)
         {
             case MapleopolyMode.Open:
-                HandleOpen(session);
+                HandleOpen(session, totalTileValue, freeRollValue);
                 break;
             case MapleopolyMode.Roll:
-                HandleRoll(session);
+                HandleRoll(session, totalTileValue, freeRollValue);
                 break;
             case MapleopolyMode.ProcessTile:
-                HandleProcessTile(session);
+                HandleProcessTile(session, totalTileValue, freeRollValue, totalTripValue);
                 break;
             default:
                 IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -48,36 +65,44 @@ public class MapleopolyHandler : GamePacketHandler
         }
     }
 
-    private static void HandleOpen(GameSession session)
+    private static void HandleOpen(GameSession session, GameEventUserValue totalTileValue, GameEventUserValue freeRollValue)
     {
         List<MapleopolyTile> tiles = DatabaseManager.Mapleopoly.FindAllTiles();
         if (tiles.Count == 0)
         {
-            // TODO: Find an error packet to send if event is not active
             return;
         }
 
         int tokenAmount = 0;
-        Item token = session.Player.Inventory.Items.FirstOrDefault(x => x.Value.Id == Mapleopoly.TOKEN_ITEM_ID).Value;
+        int tokenItemId = int.Parse(ConstantsMetadataStorage.GetConstant("MapleopolyTokenItemId"));
+        Item token = session.Player.Inventory.Items.FirstOrDefault(x => x.Value.Id == tokenItemId).Value;
         if (token != null)
         {
             tokenAmount = token.Amount;
         }
-        session.Send(MapleopolyPacket.Open(session.Player.Mapleopoly, tiles, tokenAmount));
+
+        int.TryParse(totalTileValue.EventValue, out int totalTiles);
+        int.TryParse(freeRollValue.EventValue, out int freeRolls);
+        session.Send(MapleopolyPacket.Open(totalTiles, freeRolls, tiles, tokenItemId, tokenAmount));
     }
 
-    private static void HandleRoll(GameSession session)
+    private static void HandleRoll(GameSession session, GameEventUserValue totalTileValue, GameEventUserValue freeRollValue)
     {
         // Check if player can roll
-        Item token = session.Player.Inventory.Items.FirstOrDefault(x => x.Value.Id == Mapleopoly.TOKEN_ITEM_ID).Value;
+        int tokenItemId = int.Parse(ConstantsMetadataStorage.GetConstant("MapleopolyTokenItemId"));
+        int tokenCost = int.Parse(ConstantsMetadataStorage.GetConstant("MapleopolyTokenCost"));
 
-        if (session.Player.Mapleopoly.FreeRollAmount > 0)
+        Item token = session.Player.Inventory.Items.FirstOrDefault(x => x.Value.Id == tokenItemId).Value;
+
+        int.TryParse(freeRollValue.EventValue, out int freeRolls);
+
+        if (freeRolls > 0)
         {
-            session.Player.Mapleopoly.FreeRollAmount--;
+            freeRolls--;
         }
-        else if (token != null && token.Amount >= Mapleopoly.TOKEN_COST)
+        else if (token != null && token.Amount >= tokenCost)
         {
-            session.Player.Inventory.ConsumeItem(session, token.Uid, Mapleopoly.TOKEN_COST);
+            session.Player.Inventory.ConsumeItem(session, token.Uid, tokenCost);
         }
         else
         {
@@ -92,17 +117,26 @@ public class MapleopolyHandler : GamePacketHandler
         int roll2 = rnd.Next(1, 6);
         int totalRoll = roll1 + roll2;
 
-        session.Player.Mapleopoly.TotalTileCount += totalRoll;
+        int.TryParse(totalTileValue.EventValue, out int totalTiles);
+        totalTiles += totalRoll;
         if (roll1 == roll2)
         {
-            session.Player.Mapleopoly.FreeRollAmount++;
+            freeRolls++;
         }
-        session.Send(MapleopolyPacket.Roll(session.Player.Mapleopoly.TotalTileCount, roll1, roll2));
+
+        // update user event values
+        freeRollValue.UpdateValue(session, freeRolls);
+        totalTileValue.UpdateValue(session, totalTiles);
+
+        session.Send(MapleopolyPacket.Roll(totalTiles, roll1, roll2));
     }
 
-    private static void HandleProcessTile(GameSession session)
+    private static void HandleProcessTile(GameSession session, GameEventUserValue totalTileValue, GameEventUserValue freeRollValue,
+        GameEventUserValue totalTripValue)
     {
-        int currentTilePosition = session.Player.Mapleopoly.TotalTileCount % Mapleopoly.TILE_AMOUNT;
+        int.TryParse(freeRollValue.EventValue, out int freeRolls);
+        int.TryParse(totalTileValue.EventValue, out int totalTiles);
+        int currentTilePosition = totalTiles % MapleopolyTile.TILE_AMOUNT;
 
         MapleopolyTile currentTile = DatabaseManager.Mapleopoly.FindTileByPosition(currentTilePosition + 1);
 
@@ -118,17 +152,17 @@ public class MapleopolyHandler : GamePacketHandler
                 session.Player.Inventory.AddItem(session, item, true);
                 break;
             case MapleopolyTileType.Backtrack:
-                session.Player.Mapleopoly.TotalTileCount -= currentTile.TileParameter;
+                totalTiles -= currentTile.TileParameter;
                 break;
             case MapleopolyTileType.MoveForward:
-                session.Player.Mapleopoly.TotalTileCount += currentTile.TileParameter;
+                totalTiles += currentTile.TileParameter;
                 break;
             case MapleopolyTileType.RoundTrip:
-                session.Player.Mapleopoly.TotalTileCount += Mapleopoly.TILE_AMOUNT;
+                totalTiles += MapleopolyTile.TILE_AMOUNT;
                 break;
             case MapleopolyTileType.GoToStart:
-                int tileToStart = Mapleopoly.TILE_AMOUNT - currentTilePosition;
-                session.Player.Mapleopoly.TotalTileCount += tileToStart;
+                int tileToStart = MapleopolyTile.TILE_AMOUNT - currentTilePosition;
+                totalTiles += tileToStart;
                 break;
             case MapleopolyTileType.Start:
                 break;
@@ -137,24 +171,26 @@ public class MapleopolyHandler : GamePacketHandler
                 break;
         }
 
-        ProcessTrip(session); // Check if player passed Start
-        session.Send(MapleopolyPacket.ProcessTile(session.Player.Mapleopoly, currentTile));
+        ProcessTrip(session, totalTripValue, totalTiles); // Check if player passed Start
+        totalTileValue.UpdateValue(session, totalTiles);
+        session.Send(MapleopolyPacket.ProcessTile(totalTiles, freeRolls, currentTile));
     }
 
-    private static void ProcessTrip(GameSession session)
+    private static void ProcessTrip(GameSession session, GameEventUserValue totalTripValue, int totalTiles)
     {
-        int newTotalTrips = session.Player.Mapleopoly.TotalTileCount / Mapleopoly.TILE_AMOUNT;
-        if (newTotalTrips <= session.Player.Mapleopoly.TotalTrips)
+        int.TryParse(totalTripValue.EventValue, out int totalTrips);
+        int newTotalTrips = totalTiles / MapleopolyTile.TILE_AMOUNT;
+        if (newTotalTrips <= totalTrips)
         {
             return;
         }
 
-        int difference = newTotalTrips - session.Player.Mapleopoly.TotalTrips;
+        int difference = newTotalTrips - totalTrips;
 
         List<BlueMarbleReward> items = DatabaseManager.Events.FindMapleopolyEvent().Rewards;
         for (int i = 0; i < difference; i++)
         {
-            session.Player.Mapleopoly.TotalTrips++;
+            totalTrips++;
 
             // Check if there's any item to give for every 1 trip
             BlueMarbleReward mapleopolyItem1 = items.FirstOrDefault(x => x.TripAmount == 0);
@@ -169,11 +205,12 @@ public class MapleopolyHandler : GamePacketHandler
             }
 
             // Check if there's any other item to give for hitting a specific number of trips
-            BlueMarbleReward mapleopolyItem2 = items.FirstOrDefault(x => x.TripAmount == session.Player.Mapleopoly.TotalTrips);
+            BlueMarbleReward mapleopolyItem2 = items.FirstOrDefault(x => x.TripAmount == totalTrips);
             if (mapleopolyItem2 == null)
             {
                 continue;
             }
+
             Item item2 = new(mapleopolyItem2.ItemId)
             {
                 Amount = mapleopolyItem2.ItemAmount,
@@ -181,5 +218,7 @@ public class MapleopolyHandler : GamePacketHandler
             };
             session.Player.Inventory.AddItem(session, item2, true);
         }
+
+        totalTripValue.UpdateValue(session, totalTrips);
     }
 }

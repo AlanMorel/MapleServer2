@@ -191,9 +191,13 @@ public class ResponseKeyHandler : CommonPacketHandler
             session.Send(KeyTablePacket.AskKeyboardOrMouse());
         }
 
-        List<GameEvent> gameEvents = DatabaseManager.Events.FindAll();
         GameEventHelper.LoadEvents(session.Player);
-        session.Send(GameEventPacket.Load(gameEvents));
+        List<GameEvent> gameEvents = DatabaseManager.Events.FindAll();
+        IEnumerable<List<GameEvent>> gameEventPackets = gameEvents.SplitList(5);
+        foreach (List<GameEvent> gameEvent in gameEventPackets)
+        {
+            session.Send(GameEventPacket.Load(gameEvent));
+        }
 
         // SendKeyTable f(0x00), SendGuideRecord f(0x03), GameEvent f(0x00)
         // SendBannerList f(0x19), SendRoomDungeon f(0x05, 0x14, 0x17)

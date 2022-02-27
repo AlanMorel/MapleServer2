@@ -15,7 +15,11 @@ public static class GameEventPacket
         foreach (GameEvent e in events)
         {
             pWriter.WriteUnicodeString(e.GetType().Name);
-            pWriter.WriteInt(e.Id);
+            if (e is not MeratMarketNotice)
+            {
+                pWriter.WriteInt(e.Id);
+            }
+
             switch (e)
             {
                 case AttendGift attend:
@@ -35,6 +39,7 @@ public static class GameEventPacket
                         pWriter.WriteLong(attend.SkipDayCost);
                         pWriter.WriteInt();
                     }
+
                     pWriter.WriteInt(attend.Days.Count);
                     foreach (AttendGiftDay day in attend.Days.OrderBy(x => x.Day))
                     {
@@ -46,10 +51,18 @@ public static class GameEventPacket
                         pWriter.WriteByte();
                         pWriter.WriteByte();
                     }
+
                     break;
                 case StringBoard stringBoard:
                     pWriter.WriteInt(stringBoard.StringId);
                     pWriter.WriteUnicodeString(stringBoard.String);
+                    break;
+                case StringBoardLink stringBoardLink:
+                    pWriter.WriteUnicodeString(stringBoardLink.Link);
+                    break;
+                case MeratMarketNotice notice:
+                    pWriter.WriteUnicodeString(notice.Message);
+                    Console.WriteLine(notice.Message);
                     break;
                 case EventFieldPopup field:
                     pWriter.WriteInt(field.MapId);
@@ -63,6 +76,7 @@ public static class GameEventPacket
                         pWriter.WriteByte(reward.ItemRarity);
                         pWriter.WriteInt(reward.ItemAmount);
                     }
+
                     break;
                 case UgcMapContractSale contractSale:
                     pWriter.WriteInt(contractSale.DiscountAmount);
@@ -72,50 +86,50 @@ public static class GameEventPacket
                     break;
                 case RPS rps:
                     pWriter.WriteUnicodeString("<ms2>" +
-                        "<rps_game>" +
-                        "<play><actions rock=\"rock_A\" paper=\"paper_A\" scissors=\"scissors_A\" />" +
-                        "<messages>" +
-                        "<message value=\"s_microgame_rps_game_message_0\" />" +
-                        "<message value=\"s_microgame_rps_game_message_1\" />" +
-                        "<message value=\"s_microgame_rps_game_message_2\" />" +
-                        "</messages>" +
-                        "</play>" +
-                        "<result>" +
-                        "<draw>" +
-                        "<actions>" +
-                        "<action value=\"troubled\" />" +
-                        "</actions>" +
-                        "<messages>" +
-                        "<message value=\"s_microgame_rps_game_message_draw_0\" />" +
-                        "<message value=\"s_microgame_rps_game_message_draw_1\" />" +
-                        "<message value=\"s_microgame_rps_game_message_draw_2\" />" +
-                        "</messages>" +
-                        "</draw>" +
-                        "<win>" +
-                        "<actions>" +
-                        "<action value=\"happy\" />" +
-                        "<action value=\"dance_L\" />" +
-                        "</actions>" +
-                        "<messages>" +
-                        "<message value=\"s_microgame_rps_game_message_win_0\" />" +
-                        "<message value=\"s_microgame_rps_game_message_win_1\" />" +
-                        "<message value=\"s_microgame_rps_game_message_win_2\" />" +
-                        "</messages>" +
-                        "</win>" +
-                        "<lose>" +
-                        "<actions>" +
-                        "<action value=\"fuss\" />" +
-                        "<action value=\"Point_A\" />" +
-                        "</actions>" +
-                        "<messages>" +
-                        "<message value=\"s_microgame_rps_game_message_lose_0\" />" +
-                        "<message value=\"s_microgame_rps_game_message_lose_1\" />" +
-                        "<message value=\"s_microgame_rps_game_message_lose_2\" />" +
-                        "</messages>" +
-                        "</lose>" +
-                        "</result>" +
-                        "</rps_game>" +
-                        "</ms2>");
+                                               "<rps_game>" +
+                                               "<play><actions rock=\"rock_A\" paper=\"paper_A\" scissors=\"scissors_A\" />" +
+                                               "<messages>" +
+                                               "<message value=\"s_microgame_rps_game_message_0\" />" +
+                                               "<message value=\"s_microgame_rps_game_message_1\" />" +
+                                               "<message value=\"s_microgame_rps_game_message_2\" />" +
+                                               "</messages>" +
+                                               "</play>" +
+                                               "<result>" +
+                                               "<draw>" +
+                                               "<actions>" +
+                                               "<action value=\"troubled\" />" +
+                                               "</actions>" +
+                                               "<messages>" +
+                                               "<message value=\"s_microgame_rps_game_message_draw_0\" />" +
+                                               "<message value=\"s_microgame_rps_game_message_draw_1\" />" +
+                                               "<message value=\"s_microgame_rps_game_message_draw_2\" />" +
+                                               "</messages>" +
+                                               "</draw>" +
+                                               "<win>" +
+                                               "<actions>" +
+                                               "<action value=\"happy\" />" +
+                                               "<action value=\"dance_L\" />" +
+                                               "</actions>" +
+                                               "<messages>" +
+                                               "<message value=\"s_microgame_rps_game_message_win_0\" />" +
+                                               "<message value=\"s_microgame_rps_game_message_win_1\" />" +
+                                               "<message value=\"s_microgame_rps_game_message_win_2\" />" +
+                                               "</messages>" +
+                                               "</win>" +
+                                               "<lose>" +
+                                               "<actions>" +
+                                               "<action value=\"fuss\" />" +
+                                               "<action value=\"Point_A\" />" +
+                                               "</actions>" +
+                                               "<messages>" +
+                                               "<message value=\"s_microgame_rps_game_message_lose_0\" />" +
+                                               "<message value=\"s_microgame_rps_game_message_lose_1\" />" +
+                                               "<message value=\"s_microgame_rps_game_message_lose_2\" />" +
+                                               "</messages>" +
+                                               "</lose>" +
+                                               "</result>" +
+                                               "</rps_game>" +
+                                               "</ms2>");
                     pWriter.WriteInt(rps.Tiers.Count);
                     foreach (RPSTier tier in rps.Tiers)
                     {
@@ -132,12 +146,18 @@ public static class GameEventPacket
                             pWriter.WriteByte();
                         }
                     }
+
                     pWriter.WriteInt(rps.VoucherId);
                     pWriter.WriteInt(rps.Id);
                     pWriter.WriteLong(rps.EndTimestamp);
                     break;
+                case SaleChat saleChat:
+                    pWriter.WriteInt(saleChat.WorldChatDiscountAmount);
+                    pWriter.WriteInt(saleChat.ChannelChatDiscountAmount);
+                    break;
             }
         }
+
         return pWriter;
     }
 }

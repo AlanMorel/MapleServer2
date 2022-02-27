@@ -40,6 +40,7 @@ public static class GameEventUserValuePacket
     private static void WriteUserValue(PacketWriter pWriter, GameEventUserValue userValue)
     {
         pWriter.Write(userValue.EventType);
+        Console.WriteLine(userValue.EventType);
         pWriter.WriteInt(userValue.EventId);
         pWriter.WriteUnicodeString(userValue.EventValue);
         pWriter.WriteLong(userValue.ExpirationTimestamp);
