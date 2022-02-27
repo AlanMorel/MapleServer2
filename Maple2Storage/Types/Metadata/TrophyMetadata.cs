@@ -9,10 +9,12 @@ public class TrophyMetadata
     [XmlElement(Order = 1)]
     public int Id;
     [XmlElement(Order = 2)]
-    public string[] Categories;
+    public string Name = "";
     [XmlElement(Order = 3)]
-    public bool AccountWide;
+    public string[] Categories;
     [XmlElement(Order = 4)]
+    public bool AccountWide;
+    [XmlElement(Order = 5)]
     public List<TrophyGradeMetadata> Grades = new();
 
     public override string ToString()
