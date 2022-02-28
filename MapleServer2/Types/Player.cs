@@ -216,7 +216,7 @@ public class Player
             90200021
         };
         StatPointDistribution = new();
-        Inventory = new(true);
+        Inventory = new Inventory(true);
         Mailbox = new();
         BuddyList = new();
         QuestData = new();

@@ -9,7 +9,7 @@ public class DatabaseInventory : DatabaseTable
 {
     public DatabaseInventory() : base("inventories") { }
 
-    public long Insert(Inventory inventory)
+    public long Insert(IInventory inventory)
     {
         return QueryFactory.Query(TableName).InsertGetId<long>(new
         {
@@ -17,12 +17,12 @@ public class DatabaseInventory : DatabaseTable
         });
     }
 
-    public Inventory FindById(long id)
+    public IInventory FindById(long id)
     {
         return ReadInventory(QueryFactory.Query(TableName).Where("id", id).FirstOrDefault());
     }
 
-    public void Update(Inventory inventory)
+    public void Update(IInventory inventory)
     {
         QueryFactory.Query(TableName).Where("id", inventory.Id).Update(new
         {
@@ -50,7 +50,7 @@ public class DatabaseInventory : DatabaseTable
         return QueryFactory.Query(TableName).Where("id", id).Delete() == 1;
     }
 
-    private static Inventory ReadInventory(dynamic data)
+    private static IInventory ReadInventory(dynamic data)
     {
         return new Inventory(data.id, JsonConvert.DeserializeObject<Dictionary<InventoryTab, short>>(data.extra_size), DatabaseManager.Items.FindAllByInventoryId(data.id));
     }

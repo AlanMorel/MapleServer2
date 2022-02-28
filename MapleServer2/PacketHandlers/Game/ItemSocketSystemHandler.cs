@@ -71,7 +71,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
             fodderUids.Add(fodderUid);
         }
 
-        Inventory inventory = session.Player.Inventory;
+        IInventory inventory = session.Player.Inventory;
         if (!inventory.Items.ContainsKey(itemUid))
         {
             session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.ItemIsNotInYourInventory));
@@ -171,7 +171,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
 
         ItemGemstoneUpgradeMetadata metadata;
 
-        Inventory inventory = session.Player.Inventory;
+        IInventory inventory = session.Player.Inventory;
         if (equipUid == 0) // this is a gemstone in the player's inventory
         {
             if (!inventory.Items.ContainsKey(itemUid))
@@ -261,7 +261,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
         session.Send(ItemSocketSystemPacket.UpgradeGem(equipUid, slot, newGem));
     }
 
-    private static bool CheckGemUpgradeIngredients(Inventory inventory, ItemGemstoneUpgradeMetadata metadata)
+    private static bool CheckGemUpgradeIngredients(IInventory inventory, ItemGemstoneUpgradeMetadata metadata)
     {
         for (int i = 0; i < metadata.IngredientItems.Count; i++)
         {

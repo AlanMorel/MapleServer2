@@ -47,7 +47,7 @@ public class ChangeAttributesScrollHandler : GamePacketHandler
             lockStatId = packet.ReadShort();
         }
 
-        Inventory inventory = session.Player.Inventory;
+        IInventory inventory = session.Player.Inventory;
         Item scroll = inventory.Items.FirstOrDefault(x => x.Key == scrollUid).Value;
         Item gear = inventory.Items.FirstOrDefault(x => x.Key == gearUid).Value;
         Item scrollLock = null;
@@ -106,7 +106,7 @@ public class ChangeAttributesScrollHandler : GamePacketHandler
     {
         long gearUid = packet.ReadLong();
 
-        Inventory inventory = session.Player.Inventory;
+        IInventory inventory = session.Player.Inventory;
         Item gear = inventory.TemporaryStorage.FirstOrDefault(x => x.Key == gearUid).Value;
         if (gear == null)
         {

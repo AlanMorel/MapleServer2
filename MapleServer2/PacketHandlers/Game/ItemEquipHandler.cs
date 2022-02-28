@@ -46,7 +46,7 @@ public class ItemEquipHandler : GamePacketHandler
         }
 
         // Remove the item from the users inventory
-        Inventory inventory = session.Player.Inventory;
+        IInventory inventory = session.Player.Inventory;
         inventory.RemoveItem(session, itemUid, out Item item);
         if (item == null)
         {
@@ -128,7 +128,7 @@ public class ItemEquipHandler : GamePacketHandler
     private static void HandleUnequipItem(GameSession session, PacketReader packet)
     {
         long itemUid = packet.ReadLong();
-        Inventory inventory = session.Player.Inventory;
+        IInventory inventory = session.Player.Inventory;
 
         // Unequip gear
         (ItemSlot itemSlot, Item item) = inventory.Equips.FirstOrDefault(x => x.Value.Uid == itemUid);

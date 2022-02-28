@@ -49,7 +49,7 @@ public class ChangeAttributesHandler : GamePacketHandler
             lockStatId = packet.ReadShort();
         }
 
-        Inventory inventory = session.Player.Inventory;
+        IInventory inventory = session.Player.Inventory;
 
         int greenCrystalTotalAmount = 0;
         int metacellTotalAmount = 0;
@@ -176,7 +176,7 @@ public class ChangeAttributesHandler : GamePacketHandler
     {
         long itemUid = packet.ReadLong();
 
-        Inventory inventory = session.Player.Inventory;
+        IInventory inventory = session.Player.Inventory;
         Item gear = inventory.TemporaryStorage.FirstOrDefault(x => x.Key == itemUid).Value;
         if (gear == null)
         {
@@ -190,7 +190,7 @@ public class ChangeAttributesHandler : GamePacketHandler
 
     private static void ConsumeMaterials(GameSession session, int greenCrystalCost, int metacellCosts, int crystalFragmentsCosts, List<KeyValuePair<long, Item>> greenCrystals, List<KeyValuePair<long, Item>> metacells, List<KeyValuePair<long, Item>> crystalFragments)
     {
-        Inventory inventory = session.Player.Inventory;
+        IInventory inventory = session.Player.Inventory;
         foreach ((long uid, Item item) in greenCrystals)
         {
             if (item.Amount >= greenCrystalCost)

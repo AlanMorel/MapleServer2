@@ -111,7 +111,7 @@ public class LapenshardHandler : GamePacketHandler
         long itemUid = packet.ReadLong();
         int itemId = packet.ReadInt();
         packet.ReadInt();
-        Inventory inventory = session.Player.Inventory;
+        IInventory inventory = session.Player.Inventory;
 
         if (!inventory.Items.TryGetValue(itemUid, out Item item))
         {
@@ -127,7 +127,7 @@ public class LapenshardHandler : GamePacketHandler
         int itemId = packet.ReadInt();
         packet.ReadInt();
         int amount = packet.ReadInt();
-        Inventory inventory = session.Player.Inventory;
+        IInventory inventory = session.Player.Inventory;
 
         if (!inventory.Items.TryGetValue(itemUid, out Item item) || item.Amount < amount)
         {
@@ -144,7 +144,7 @@ public class LapenshardHandler : GamePacketHandler
         int itemId = packet.ReadInt();
         packet.ReadInt();
         int catalystCount = packet.ReadInt();
-        Inventory inventory = session.Player.Inventory;
+        IInventory inventory = session.Player.Inventory;
 
         List<(long Uid, int Amount)> items = new();
         for (int i = 0; i < catalystCount; i++)

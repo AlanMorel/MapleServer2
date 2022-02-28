@@ -52,7 +52,7 @@ public static class ItemBoxHelper
             return;
         }
 
-        Inventory inventory = session.Player.Inventory;
+        IInventory inventory = session.Player.Inventory;
         inventory.ConsumeItem(session, sourceItem.Uid, 1);
 
         // Select boxes disregards group ID. Adding these all to a filtered list
@@ -106,7 +106,7 @@ public static class ItemBoxHelper
             return;
         }
 
-        Inventory inventory = session.Player.Inventory;
+        IInventory inventory = session.Player.Inventory;
         if (box.RequiredItemId > 0)
         {
             Item requiredItem = inventory.Items[box.RequiredItemId];
