@@ -110,7 +110,7 @@ public class Player
 
     public GameOptions GameOptions { get; set; }
 
-    public Inventory Inventory;
+    public IInventory Inventory;
     public DismantleInventory DismantleInventory = new();
     public LockInventory LockInventory = new();
     public HairInventory HairInventory = new();
