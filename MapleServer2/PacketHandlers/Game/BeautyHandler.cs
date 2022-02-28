@@ -606,7 +606,7 @@ public class BeautyHandler : GamePacketHandler
             case ShopCurrencyType.EventMeret:
                 return session.Player.Account.RemoveMerets(tokenCost);
             case ShopCurrencyType.Item:
-                Item itemCost = session.Player.Inventory.GetByUid(requiredItemId);
+                Item itemCost = session.Player.Inventory.GetById(requiredItemId);
                 if (itemCost == null)
                 {
                     return false;
