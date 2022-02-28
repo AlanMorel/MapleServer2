@@ -323,10 +323,15 @@ public sealed class Inventory : IInventory
         session.Send(ItemInventoryPacket.Move(dstUid, srcSlot, uid, dstSlot));
     }
 
+    public bool HasItem(long uid)
+    {
+        return Items.ContainsKey(uid);
+    }
+
     // Replaces an existing item with an updated copy of itself
     public bool Replace(Item item)
     {
-        if (!Items.ContainsKey(item.Uid))
+        if (!HasItem(item.Uid))
         {
             return false;
         }
@@ -534,7 +539,7 @@ public sealed class Inventory : IInventory
     // This REQUIRES item.Slot to be set appropriately
     private void AddInternal(Item item)
     {
-        Debug.Assert(!Items.ContainsKey(item.Uid), "Error adding an item that already exists");
+        Debug.Assert(!HasItem(item.Uid), "Error adding an item that already exists");
         Items[item.Uid] = item;
 
         Debug.Assert(!GetSlots(item.InventoryTab).ContainsKey(item.Slot), "Error adding item to slot that is already taken.");

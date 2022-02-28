@@ -72,7 +72,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
         }
 
         IInventory inventory = session.Player.Inventory;
-        if (!inventory.Items.ContainsKey(itemUid))
+        if (!inventory.HasItem(itemUid))
         {
             session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.ItemIsNotInYourInventory));
             return;
@@ -82,7 +82,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
 
         foreach (long uid in fodderUids)
         {
-            if (!inventory.Items.ContainsKey(uid))
+            if (!inventory.HasItem(uid))
             {
                 session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.ItemIsNotInYourInventory));
                 return;
@@ -154,7 +154,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
         byte slot = packet.ReadByte();
         long itemUid = packet.ReadLong();
 
-        if (!session.Player.Inventory.Items.ContainsKey(itemUid))
+        if (!session.Player.Inventory.HasItem(itemUid))
         {
             session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.ItemIsNotInYourInventory));
             return;
@@ -174,7 +174,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
         IInventory inventory = session.Player.Inventory;
         if (equipUid == 0) // this is a gemstone in the player's inventory
         {
-            if (!inventory.Items.ContainsKey(itemUid))
+            if (!inventory.HasItem(itemUid))
             {
                 session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.ItemIsNotInYourInventory));
                 return;
@@ -210,7 +210,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
         }
 
         // upgrade gem mounted on a equipment
-        if (!inventory.Items.ContainsKey(equipUid))
+        if (!inventory.HasItem(equipUid))
         {
             session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.ItemIsNotInYourInventory));
             return;
@@ -305,7 +305,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
 
         if (equipUid == 0) // this is a gemstone in the player's inventory
         {
-            if (!session.Player.Inventory.Items.ContainsKey(itemUid))
+            if (!session.Player.Inventory.HasItem(itemUid))
             {
                 session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.ItemIsNotInYourInventory));
                 return;
@@ -316,7 +316,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
         }
 
         // select gem mounted on a equipment
-        if (!session.Player.Inventory.Items.ContainsKey(equipUid))
+        if (!session.Player.Inventory.HasItem(equipUid))
         {
             session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.ItemIsNotInYourInventory));
             return;
@@ -337,13 +337,13 @@ public class ItemSocketSystemHandler : GamePacketHandler
         long gemItemUid = packet.ReadLong();
         byte slot = packet.ReadByte();
 
-        if (!session.Player.Inventory.Items.ContainsKey(equipItemUid))
+        if (!session.Player.Inventory.HasItem(equipItemUid))
         {
             session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.TargetIsNotInYourInventory));
             return;
         }
 
-        if (!session.Player.Inventory.Items.ContainsKey(gemItemUid))
+        if (!session.Player.Inventory.HasItem(gemItemUid))
         {
             session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.ItemIsNotInYourInventory));
             return;
@@ -385,7 +385,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
         long equipItemUid = packet.ReadLong();
         byte slot = packet.ReadByte();
 
-        if (!session.Player.Inventory.Items.ContainsKey(equipItemUid))
+        if (!session.Player.Inventory.HasItem(equipItemUid))
         {
             session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.ItemIsNotInYourInventory));
             return;

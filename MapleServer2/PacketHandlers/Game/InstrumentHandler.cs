@@ -73,7 +73,7 @@ public class InstrumentHandler : GamePacketHandler
     {
         long itemUid = packet.ReadLong();
 
-        if (!session.Player.Inventory.Items.ContainsKey(itemUid))
+        if (!session.Player.Inventory.HasItem(itemUid))
         {
             return;
         }
@@ -118,7 +118,7 @@ public class InstrumentHandler : GamePacketHandler
         long instrumentItemUid = packet.ReadLong();
         long scoreItemUid = packet.ReadLong();
 
-        if (!session.Player.Inventory.Items.ContainsKey(scoreItemUid) || !session.Player.Inventory.Items.ContainsKey(instrumentItemUid))
+        if (!session.Player.Inventory.HasItem(scoreItemUid) || !session.Player.Inventory.HasItem(instrumentItemUid))
         {
             return;
         }
@@ -168,7 +168,7 @@ public class InstrumentHandler : GamePacketHandler
         string scoreName = packet.ReadUnicodeString();
         string scoreNotes = packet.ReadString();
 
-        if (!session.Player.Inventory.Items.ContainsKey(itemUid))
+        if (!session.Player.Inventory.HasItem(itemUid))
         {
             return;
         }
@@ -196,7 +196,7 @@ public class InstrumentHandler : GamePacketHandler
             return;
         }
 
-        if (!session.Player.Inventory.Items.ContainsKey(scoreItemUid) || !session.Player.Inventory.Items.ContainsKey(instrumentItemUid))
+        if (!session.Player.Inventory.HasItem(scoreItemUid) || !session.Player.Inventory.HasItem(instrumentItemUid))
         {
             return;
         }

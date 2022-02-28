@@ -17,7 +17,7 @@ public class ItemExtractionHandler : GamePacketHandler
         long anvilItemUid = packet.ReadLong();
         long sourceItemUid = packet.ReadLong();
 
-        if (!session.Player.Inventory.Items.ContainsKey(sourceItemUid) || !session.Player.Inventory.Items.ContainsKey(anvilItemUid))
+        if (!session.Player.Inventory.HasItem(sourceItemUid) || !session.Player.Inventory.HasItem(anvilItemUid))
         {
             return;
         }

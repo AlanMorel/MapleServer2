@@ -103,7 +103,7 @@ public class BlackMarketHandler : GamePacketHandler
         long price = packet.ReadLong();
         int quantity = packet.ReadInt();
 
-        if (!session.Player.Inventory.Items.ContainsKey(itemUid))
+        if (!session.Player.Inventory.HasItem(itemUid))
         {
             session.Send(BlackMarketPacket.Error((int) BlackMarketError.ItemNotInInventory));
             return;

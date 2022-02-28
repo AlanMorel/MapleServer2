@@ -50,7 +50,7 @@ public class ItemExchangeHandler : GamePacketHandler
         long unk = packet.ReadLong();
         int quantity = packet.ReadInt();
 
-        if (!session.Player.Inventory.Items.ContainsKey(itemUid))
+        if (!session.Player.Inventory.HasItem(itemUid))
         {
             return;
         }

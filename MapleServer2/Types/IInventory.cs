@@ -10,6 +10,7 @@ public interface IInventory
     bool RemoveItem(GameSession session, long uid, out Item item);
     void DropItem(GameSession session, long uid, int amount, bool isBound);
     void MoveItem(GameSession session, long uid, short dstSlot);
+    bool HasItem(long uid);
     bool Replace(Item item);
     void SortInventory(GameSession session, InventoryTab tab);
     void LoadInventoryTab(GameSession session, InventoryTab tab);

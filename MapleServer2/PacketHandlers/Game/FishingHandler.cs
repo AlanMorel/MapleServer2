@@ -72,7 +72,7 @@ public class FishingHandler : GamePacketHandler
             return;
         }
 
-        if (!session.Player.Inventory.Items.ContainsKey(fishingRodUid))
+        if (!session.Player.Inventory.HasItem(fishingRodUid))
         {
             session.Send(FishingPacket.Notice((short) FishingNotice.InvalidFishingRod));
             return;

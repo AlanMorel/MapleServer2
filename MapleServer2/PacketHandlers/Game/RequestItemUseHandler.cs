@@ -23,7 +23,7 @@ public class RequestItemUseHandler : GamePacketHandler
     {
         long itemUid = packet.ReadLong();
 
-        if (!session.Player.Inventory.Items.ContainsKey(itemUid))
+        if (!session.Player.Inventory.HasItem(itemUid))
         {
             return;
         }
@@ -350,7 +350,7 @@ public class RequestItemUseHandler : GamePacketHandler
     public static void HandlePetExtraction(GameSession session, PacketReader packet, Item item)
     {
         long petUid = long.Parse(packet.ReadUnicodeString());
-        if (!session.Player.Inventory.Items.ContainsKey(petUid))
+        if (!session.Player.Inventory.HasItem(petUid))
         {
             return;
         }
