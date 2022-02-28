@@ -85,11 +85,9 @@ public partial class TriggerContext
             IFieldObject<Portal> portal = Field.State.Portals.Values.First(p => p.Value.Id == triggerId);
             foreach (IFieldObject<Player> player in players)
             {
-                CoordF tempCoord = portal.Coord;
-                tempCoord.Z += 25;
-                player.Coord = tempCoord;
+                player.Coord = portal.Coord;
                 player.Rotation = portal.Rotation;
-                Field.BroadcastPacket(UserMoveByPortalPacket.Move(player, tempCoord, portal.Rotation, isTrigger: true));
+                Field.BroadcastPacket(UserMoveByPortalPacket.Move(player, portal.Coord, portal.Rotation, isTrigger: true));
             }
 
             return;
@@ -202,6 +200,7 @@ public partial class TriggerContext
 
     public void SetTimeScale(bool enable, float startScale, float endScale, float duration, byte interpolator)
     {
+        Field.BroadcastPacket(TimeScalePacket.SetTimeScale(enable, startScale, endScale, duration, interpolator));
     }
 
     public void AddBuff(int[] arg1, int arg2, byte arg3, bool arg4, bool arg5, string feature)

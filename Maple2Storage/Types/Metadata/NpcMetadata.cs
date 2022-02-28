@@ -78,8 +78,7 @@ public class NpcMetadata
 
     public bool IsMirror() => Kind == 35;
 
-    // This might not be the correct way to do this, but it works for now.
-    public bool IsBoss() => NpcMetadataBasic.MinimapIconName == "boss";
+    public bool IsBoss() => NpcMetadataBasic.Class >= 3 && Friendly != 2;
 }
 
 [XmlType]

@@ -1,6 +1,7 @@
 ﻿using Maple2Storage.Tools;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
+using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.Triggers;
@@ -138,10 +139,14 @@ public partial class TriggerContext
             IFieldObject<TriggerSkill> triggerSkill = Field.State.GetTriggerSkill(triggerId);
             if (triggerSkill != null)
             {
-                //TODO: Do skillcast once skill manager can cast skills by id
-                //eventually we want to be able to do something like:
-                //SkillManager.SkillCast(id) and the skillcast function takes care 
-                //of sending the correct skill type / packet
+                // this is 100% not perfect.
+                SkillCast skillCast = new(triggerSkill.Value.SkillId, triggerSkill.Value.SkillLevel, GuidGenerator.Long(), Environment.TickCount)
+                {
+                    SkillObjectId = triggerSkill.ObjectId,
+                    CasterObjectId = triggerSkill.ObjectId,
+                    Position = triggerSkill.Coord
+                };
+                RegionSkillHandler.HandleEffect(Field, skillCast, 0);
             }
         }
     }

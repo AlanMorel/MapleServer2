@@ -22,12 +22,12 @@ public class VibrateHandler : GamePacketHandler
         int unkInt = packet.ReadInt();
         CoordF playerCoords = packet.Read<CoordF>();
 
-        if (!MapEntityStorage.IsVibrateObject(session.Player.MapId, entityId))
+        Player player = session.Player;
+        if (!MapEntityStorage.IsVibrateObject(player.MapId, entityId))
         {
             return;
         }
 
-        SkillCast skillCast = new(skillId, skillLevel, skillSN, session.ServerTick);
-        session.FieldManager.BroadcastPacket(VibratePacket.Vibrate(entityId, skillCast, session.Player.FieldPlayer));
+        session.FieldManager.BroadcastPacket(VibratePacket.Vibrate(entityId, player.FieldPlayer.SkillCast));
     }
 }

@@ -35,13 +35,13 @@ public static class QuestPacket
         return pWriter;
     }
 
-    public static PacketWriter AcceptQuest(int questId)
+    public static PacketWriter AcceptQuest(QuestStatus quest)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
         pWriter.Write(QuestType.AcceptQuest);
-        pWriter.WriteInt(questId);
+        pWriter.WriteInt(quest.Id);
         pWriter.WriteLong(TimeInfo.Now());
-        pWriter.WriteByte(1);
+        pWriter.WriteByte(1); //TODO: decode properly this
         pWriter.WriteInt();
 
         return pWriter;

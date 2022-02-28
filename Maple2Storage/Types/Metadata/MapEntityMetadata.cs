@@ -623,12 +623,15 @@ public class MapVibrateObject
 {
     [XmlElement(Order = 1)]
     public string EntityId;
+    [XmlElement(Order = 2)]
+    public CoordF Position;
 
     public MapVibrateObject() { }
 
-    public MapVibrateObject(string id)
+    public MapVibrateObject(string id, CoordF position)
     {
         EntityId = id;
+        Position = position;
     }
 }
 
