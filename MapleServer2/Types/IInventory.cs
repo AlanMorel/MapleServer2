@@ -17,13 +17,57 @@ public interface IInventory
     bool RemoveItem(GameSession session, long uid, out Item item);
     void DropItem(GameSession session, long uid, int amount, bool isBound);
     void MoveItem(GameSession session, long uid, short dstSlot);
+
+    /// <summary>
+    /// Determines whether the inventory contains an item with given Unique ID (UID)
+    /// </summary>
+    /// <param name="uid">The UID of the item</param>
     bool HasItem(long uid);
+
+    /// <summary>
+    /// Determins whether the inventory contains an item with given Item ID
+    /// </summary>
+    /// <param name="id">The Item ID of the item</param>
     bool HasItem(int id);
+
+    /// <summary>
+    /// Gets the first item matching the given Unique ID (UID)
+    /// </summary>
+    /// <param name="uid">The UID of the item</param>
+    /// <remarks>Can return null</remarks>
     Item GetByUid(long uid);
+
+    /// <summary>
+    /// Gets the first item matching the given Item ID
+    /// </summary>
+    /// <param name="id">The Item ID of the item</param>
+    /// <remarks>Can return null</remarks>
     Item GetById(int id);
+
+    /// <summary>
+    /// Gets all non-null items in the inventory
+    /// </summary>
     IReadOnlyCollection<Item> GetItemsNotNull();
+
+    /// <summary>
+    /// Gets all items matching the given Item ID
+    /// </summary>
+    /// <param name="id">The Item ID of the item</param>
+    /// <remarks>Never returns null, can return empty</remarks>
     IReadOnlyCollection<Item> GetAllById(int id);
+
+    /// <summary>
+    /// Gets all items matching the given tag
+    /// </summary>
+    /// <param name="tag">The tag of the item</param>
+    /// <remarks>Never returns null, can return empty</remarks>
     IReadOnlyCollection<Item> GetAllByTag(string tag);
+
+    /// <summary>
+    /// Gets all items matching the given Function ID
+    /// </summary>
+    /// <param name="functionId">The Function ID of the item</param>
+    /// <remarks>Never returns null, can return empty</remarks>
     IReadOnlyCollection<Item> GetAllByFunctionId(int functionId);
     bool Replace(Item item);
     void SortInventory(GameSession session, InventoryTab tab);
