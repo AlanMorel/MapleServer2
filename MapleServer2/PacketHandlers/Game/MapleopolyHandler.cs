@@ -75,7 +75,7 @@ public class MapleopolyHandler : GamePacketHandler
 
         int tokenAmount = 0;
         int tokenItemId = int.Parse(ConstantsMetadataStorage.GetConstant("MapleopolyTokenItemId"));
-        Item token = session.Player.Inventory.Items.FirstOrDefault(x => x.Value.Id == tokenItemId).Value;
+        Item token = session.Player.Inventory.GetById(tokenItemId);
         if (token != null)
         {
             tokenAmount = token.Amount;
@@ -92,7 +92,7 @@ public class MapleopolyHandler : GamePacketHandler
         int tokenItemId = int.Parse(ConstantsMetadataStorage.GetConstant("MapleopolyTokenItemId"));
         int tokenCost = int.Parse(ConstantsMetadataStorage.GetConstant("MapleopolyTokenCost"));
 
-        Item token = session.Player.Inventory.Items.FirstOrDefault(x => x.Value.Id == tokenItemId).Value;
+        Item token = session.Player.Inventory.GetById(tokenItemId);
 
         int.TryParse(freeRollValue.EventValue, out int freeRolls);
 

@@ -68,7 +68,7 @@ public static class ItemInventoryPacket
         return pWriter;
     }
 
-    public static PacketWriter LoadItem(ICollection<Item> items)
+    public static PacketWriter LoadItem(IReadOnlyCollection<Item> items)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY);
         pWriter.Write(InventoryMode.LoadItem);
@@ -98,7 +98,7 @@ public static class ItemInventoryPacket
         return pWriter;
     }
 
-    public static PacketWriter LoadItemsToTab(InventoryTab tab, ICollection<Item> items)
+    public static PacketWriter LoadItemsToTab(InventoryTab tab, IReadOnlyCollection<Item> items)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY);
         pWriter.Write(InventoryMode.LoadItemsToTab);

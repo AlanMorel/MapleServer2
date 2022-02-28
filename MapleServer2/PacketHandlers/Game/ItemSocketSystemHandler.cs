@@ -117,25 +117,24 @@ public class ItemSocketSystemHandler : GamePacketHandler
             crystalFragmentCost = 600;
         }
 
-        int crystalFragmentsTotalAmount = 0;
-        List<KeyValuePair<long, Item>> crystalFragments = inventory.Items.Where(x => x.Value.Tag == "CrystalPiece").ToList();
-        crystalFragments.ForEach(x => crystalFragmentsTotalAmount += x.Value.Amount);
+        IReadOnlyCollection<Item> crystalFragments = inventory.GetAllByTag("CrystalPiece");
+        int crystalFragmentsTotalAmount = crystalFragments.Sum(x => x.Amount);
 
         if (crystalFragmentsTotalAmount < crystalFragmentCost)
         {
             return;
         }
 
-        foreach ((long uid, Item item) in crystalFragments)
+        foreach (Item item in crystalFragments)
         {
             if (item.Amount >= crystalFragmentCost)
             {
-                inventory.ConsumeItem(session, uid, crystalFragmentCost);
+                inventory.ConsumeItem(session, item.Uid, crystalFragmentCost);
                 break;
             }
 
             crystalFragmentCost -= item.Amount;
-            inventory.ConsumeItem(session, uid, item.Amount);
+            inventory.ConsumeItem(session, item.Uid, item.Amount);
         }
         foreach (long uid in fodderUids)
         {
@@ -265,9 +264,8 @@ public class ItemSocketSystemHandler : GamePacketHandler
     {
         for (int i = 0; i < metadata.IngredientItems.Count; i++)
         {
-            int inventoryItemCount = 0;
-            List<KeyValuePair<long, Item>> ingredients = inventory.Items.Where(x => x.Value.Tag == metadata.IngredientItems[i]).ToList();
-            ingredients.ForEach(x => inventoryItemCount += x.Value.Amount);
+            IReadOnlyCollection<Item> ingredients = inventory.GetAllByTag(metadata.IngredientItems[i]);
+            int inventoryItemCount = ingredients.Sum(x => x.Amount);
 
             if (inventoryItemCount < metadata.IngredientAmounts[i])
             {
@@ -281,18 +279,18 @@ public class ItemSocketSystemHandler : GamePacketHandler
     {
         for (int i = 0; i < metadata.IngredientItems.Count; i++)
         {
-            List<KeyValuePair<long, Item>> ingredients = session.Player.Inventory.Items.Where(x => x.Value.Tag == metadata.IngredientItems[i]).ToList();
+            IReadOnlyCollection<Item> ingredients = session.Player.Inventory.GetAllByTag(metadata.IngredientItems[i]);
 
-            foreach ((long uid, Item item) in ingredients)
+            foreach (Item item in ingredients)
             {
                 if (item.Amount >= metadata.IngredientAmounts[i])
                 {
-                    session.Player.Inventory.ConsumeItem(session, uid, metadata.IngredientAmounts[i]);
+                    session.Player.Inventory.ConsumeItem(session, item.Uid, metadata.IngredientAmounts[i]);
                     break;
                 }
 
                 metadata.IngredientAmounts[i] -= item.Amount;
-                session.Player.Inventory.ConsumeItem(session, uid, item.Amount);
+                session.Player.Inventory.ConsumeItem(session, item.Uid, item.Amount);
             }
         }
     }

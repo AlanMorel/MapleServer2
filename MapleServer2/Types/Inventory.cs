@@ -14,14 +14,14 @@ public sealed class Inventory : IInventory
 {
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-    public readonly long Id;
+    public long Id { get; }
 
     // This contains ALL inventory Items regardless of tab
     public readonly Dictionary<long, Item> Items;
-    public readonly Dictionary<ItemSlot, Item> Equips;
-    public readonly Dictionary<ItemSlot, Item> Cosmetics;
-    public readonly Item[] Badges;
-    public readonly Item[] LapenshardStorage;
+    public Dictionary<ItemSlot, Item> Equips { get; }
+    public Dictionary<ItemSlot, Item> Cosmetics { get; }
+    public Item[] Badges { get; }
+    public Item[] LapenshardStorage { get; }
 
     // Map of Slot to Uid for each inventory
     private readonly Dictionary<short, long>[] SlotMaps;
@@ -45,7 +45,7 @@ public sealed class Inventory : IInventory
         { InventoryTab.Fragment, 48 }
     };
 
-    public readonly Dictionary<InventoryTab, short> ExtraSize = new()
+    public Dictionary<InventoryTab, short> ExtraSize { get; } = new()
     {
         { InventoryTab.Gear, 0 },
         { InventoryTab.Outfit, 0 },
@@ -65,7 +65,7 @@ public sealed class Inventory : IInventory
     };
 
     // Only use to share information between handler functions. Should always be empty
-    public readonly Dictionary<long, Item> TemporaryStorage = new();
+    public Dictionary<long, Item> TemporaryStorage { get; } = new();
 
     #region Constructors
 
@@ -262,7 +262,7 @@ public sealed class Inventory : IInventory
         }
 
         // Drops bound item
-        if (session.Player.Inventory.Remove(uid, out Item removedItem) != 0)
+        if (session.Player.Inventory.RemoveItem(session, uid, out Item removedItem))
         {
             return; // Removal from inventory failed
         }
@@ -328,9 +328,41 @@ public sealed class Inventory : IInventory
         return Items.ContainsKey(uid);
     }
 
+    public bool HasItem(int id)
+    {
+        return Items.Values.Any(i => i.Id == id);
+    }
+
     public Item GetByUid(long uid)
     {
         return Items[uid];
+    }
+
+    public Item GetById(int id)
+    {
+        return Items.Values.FirstOrDefault(x => x.Id == id);
+    }
+
+    public IReadOnlyCollection<Item> GetItemsNotNull()
+    {
+        return Items.Values.Where(x => x != null).ToArray();
+    }
+
+    public IReadOnlyCollection<Item> GetAllById(int id)
+    {
+        return Items.Values.Where(x => x.Id == id).ToArray();
+    }
+
+    public IReadOnlyCollection<Item> GetAllByTag(string tag)
+    {
+        return Items.Values.Where(i => i.Tag == tag)
+            .ToArray();
+    }
+
+    public IReadOnlyCollection<Item> GetAllByFunctionId(int functionId)
+    {
+        return Items.Values.Where(x => x.Function.Id == functionId)
+            .ToArray();
     }
 
     // Replaces an existing item with an updated copy of itself
@@ -475,9 +507,9 @@ public sealed class Inventory : IInventory
         return GetSlots(item.InventoryTab).ContainsKey(slot < 0 ? item.Slot : slot);
     }
 
-    public ICollection<Item> GetItems(InventoryTab tab)
+    public IReadOnlyCollection<Item> GetItems(InventoryTab tab)
     {
-        return GetSlots(tab).Select(kvp => Items[kvp.Value]).ToImmutableList();
+        return GetSlots(tab).Select(kvp => Items[kvp.Value]).ToArray();
     }
 
     #endregion

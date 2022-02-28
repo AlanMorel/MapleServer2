@@ -45,8 +45,8 @@ public class ItemRepackageHandler : GamePacketHandler
         long ribbonUid = packet.ReadLong();
         long repackingItemUid = packet.ReadLong();
 
-        Item ribbon = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Uid == ribbonUid);
-        Item repackingItem = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Uid == repackingItemUid);
+        Item ribbon = session.Player.Inventory.GetByUid(ribbonUid);
+        Item repackingItem = session.Player.Inventory.GetByUid(repackingItemUid);
         if (repackingItem == null || ribbon == null)
         {
             session.Send(ItemRepackagePacket.Notice((int) ItemRepackageNotice.ItemInvalid));

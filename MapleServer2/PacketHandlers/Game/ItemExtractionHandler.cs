@@ -30,9 +30,8 @@ public class ItemExtractionHandler : GamePacketHandler
             return;
         }
 
-        int anvilAmount = 0;
-        List<KeyValuePair<long, Item>> anvils = session.Player.Inventory.Items.Where(x => x.Value.Tag == "ItemExtraction").ToList();
-        anvils.ForEach(x => anvilAmount += x.Value.Amount);
+        IReadOnlyCollection<Item> anvils = session.Player.Inventory.GetAllByTag("ItemExtraction");
+        int anvilAmount = anvils.Sum(x => x.Amount);
 
         if (anvilAmount < metadata.ScrollCount)
         {

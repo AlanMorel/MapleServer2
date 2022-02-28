@@ -81,7 +81,8 @@ public class BlackMarketHandler : GamePacketHandler
         int itemId = packet.ReadInt();
         int rarity = packet.ReadInt();
 
-        if (!session.Player.Inventory.Items.Any(x => x.Value.Id == itemId && x.Value.Rarity == rarity))
+        IReadOnlyCollection<Item> items = session.Player.Inventory.GetAllById(itemId);
+        if (items.All(x => x.Rarity != rarity))
         {
             return;
         }

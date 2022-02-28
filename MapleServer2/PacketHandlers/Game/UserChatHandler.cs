@@ -86,7 +86,9 @@ public class UserChatHandler : GamePacketHandler
             meretCost = (int) (meretCost - (meretCost * Convert.ToSingle(saleEvent.ChannelChatDiscountAmount) / 100 / 100));
         }
 
-        Item voucher = player.Inventory.Items.Values.FirstOrDefault(x => x.Tag == "FreeChannelChatCoupon");
+        Item voucher = player.Inventory.GetAllByTag("FreeChannelChatCoupon")
+            .FirstOrDefault();
+        
         if (voucher is not null)
         {
             session.Send(NoticePacket.Notice(SystemNotice.UsedChannelChatVoucher, NoticeType.ChatAndFastText));
@@ -117,7 +119,7 @@ public class UserChatHandler : GamePacketHandler
             return;
         }
 
-        Item superChatItem = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Function.Id == session.Player.SuperChat);
+        Item superChatItem = session.Player.Inventory.GetAllByFunctionId(session.Player.SuperChat).FirstOrDefault();
         if (superChatItem is null)
         {
             session.Player.SuperChat = 0;
@@ -148,7 +150,7 @@ public class UserChatHandler : GamePacketHandler
             meretCost = (int) (meretCost - (meretCost * Convert.ToSingle(saleEvent.WorldChatDiscountAmount) / 100 / 100));
         }
 
-        Item voucher = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Tag == "FreeWorldChatCoupon");
+        Item voucher = session.Player.Inventory.GetAllByTag("FreeWorldChatCoupon").FirstOrDefault();
         if (voucher is not null)
         {
             session.Send(NoticePacket.Notice(SystemNotice.UsedWorldChatVoucher, NoticeType.ChatAndFastText));

@@ -59,7 +59,7 @@ public class LapenshardHandler : GamePacketHandler
         int slotId = packet.ReadInt();
         long itemUid = packet.ReadLong();
 
-        session.Player.Inventory.Items.TryGetValue(itemUid, out Item item);
+        Item item = session.Player.Inventory.GetByUid(itemUid);
         if (item is null)
         {
             return;
@@ -112,8 +112,8 @@ public class LapenshardHandler : GamePacketHandler
         int itemId = packet.ReadInt();
         packet.ReadInt();
         IInventory inventory = session.Player.Inventory;
-
-        if (!inventory.Items.TryGetValue(itemUid, out Item item))
+        
+        if (!inventory.HasItem(itemUid))
         {
             return;
         }
@@ -129,7 +129,8 @@ public class LapenshardHandler : GamePacketHandler
         int amount = packet.ReadInt();
         IInventory inventory = session.Player.Inventory;
 
-        if (!inventory.Items.TryGetValue(itemUid, out Item item) || item.Amount < amount)
+        Item item = inventory.GetByUid(itemUid);
+        if (item == null || item.Amount < amount)
         {
             return;
         }
@@ -158,7 +159,8 @@ public class LapenshardHandler : GamePacketHandler
         // Check if items are in inventory
         foreach ((long uid, int amount) in items)
         {
-            if (!inventory.Items.TryGetValue(uid, out Item item) || item.Amount < amount)
+            Item item = inventory.GetByUid(uid);
+            if (item == null || item.Amount < amount)
             {
                 return;
             }
@@ -193,12 +195,12 @@ public class LapenshardHandler : GamePacketHandler
             { 9, new(50, 305, 6100000) }
         };
 
-        int crystalsTotalAmount = 0;
 
         // There are multiple ids for each type of material
         // Count all items with the same tag in inventory
-        List<KeyValuePair<long, Item>> crystals = inventory.Items.Where(x => x.Value.Tag == crystal).ToList();
-        crystals.ForEach(x => crystalsTotalAmount += x.Value.Amount);
+        IReadOnlyCollection<Item> crystals = inventory.GetAllByTag(crystal).ToList();
+        int crystalsTotalAmount = crystals.Sum(x => x.Amount);
+        
         byte tier = (byte) (itemId % 10);
 
         if (costs[tier].CrystalsAmount > crystalsTotalAmount || !session.Player.Wallet.Meso.Modify(-costs[tier].Mesos))
@@ -209,15 +211,15 @@ public class LapenshardHandler : GamePacketHandler
         int crystalCost = costs[tier].CrystalsAmount;
 
         // Consume all Crystals
-        foreach ((long uid, Item item) in crystals)
+        foreach (Item item in crystals)
         {
             if (item.Amount >= crystalCost)
             {
-                session.Player.Inventory.ConsumeItem(session, uid, crystalCost);
+                session.Player.Inventory.ConsumeItem(session, item.Uid, crystalCost);
                 break;
             }
             crystalCost -= item.Amount;
-            session.Player.Inventory.ConsumeItem(session, uid, item.Amount);
+            session.Player.Inventory.ConsumeItem(session, item.Uid, item.Amount);
         }
 
         // Consume all Lapenshards

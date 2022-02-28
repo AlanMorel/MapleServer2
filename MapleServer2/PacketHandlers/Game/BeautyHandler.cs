@@ -557,7 +557,7 @@ public class BeautyHandler : GamePacketHandler
                 return false;
         }
 
-        Item voucher = session.Player.Inventory.Items.FirstOrDefault(x => x.Value.Tag == voucherTag).Value;
+        Item voucher = session.Player.Inventory.GetAllByTag(voucherTag).FirstOrDefault();
         if (voucher == null)
         {
             session.Send(NoticePacket.Notice(SystemNotice.ItemNotFound, NoticeType.FastText));
@@ -606,7 +606,7 @@ public class BeautyHandler : GamePacketHandler
             case ShopCurrencyType.EventMeret:
                 return session.Player.Account.RemoveMerets(tokenCost);
             case ShopCurrencyType.Item:
-                Item itemCost = session.Player.Inventory.Items.FirstOrDefault(x => x.Value.Id == requiredItemId).Value;
+                Item itemCost = session.Player.Inventory.GetByUid(requiredItemId);
                 if (itemCost == null)
                 {
                     return false;

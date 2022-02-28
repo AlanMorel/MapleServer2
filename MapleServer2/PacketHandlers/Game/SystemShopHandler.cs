@@ -51,7 +51,7 @@ public class SystemShopHandler : GamePacketHandler
 
         int itemId = packet.ReadInt();
 
-        Item item = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Id == itemId);
+        Item item = session.Player.Inventory.GetById(itemId);
         if (item == null)
         {
             return;

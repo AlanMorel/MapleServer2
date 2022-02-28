@@ -90,12 +90,10 @@ public class ItemExchangeHandler : GamePacketHandler
     {
         // TODO: Check if rarity matches
 
-        List<Item> playerInventoryItems = new(session.Player.Inventory.Items.Values);
-
         for (int i = 0; i < exchange.ItemCost.Count; i++)
         {
             ItemRequirementMetadata exchangeItem = exchange.ItemCost.ElementAt(i);
-            Item item = playerInventoryItems.FirstOrDefault(x => x.Id == exchangeItem.Id);
+            Item item = session.Player.Inventory.GetById(exchangeItem.Id);
 
             if (item == null)
             {
@@ -110,14 +108,12 @@ public class ItemExchangeHandler : GamePacketHandler
 
     private static bool RemoveRequiredItemsFromInventory(GameSession session, ItemExchangeScrollMetadata exchange, Item originItem, int quantity)
     {
-        List<Item> playerInventoryItems = new(session.Player.Inventory.Items.Values);
-
         if (exchange.ItemCost.Count != 0)
         {
             for (int i = 0; i < exchange.ItemCost.Count; i++)
             {
                 ItemRequirementMetadata exchangeItem = exchange.ItemCost.ElementAt(i);
-                Item item = playerInventoryItems.FirstOrDefault(x => x.Id == exchangeItem.Id);
+                Item item = session.Player.Inventory.GetById(exchangeItem.Id);
                 if (item == null)
                 {
                     continue;
