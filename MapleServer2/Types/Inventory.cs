@@ -10,7 +10,7 @@ using NLog;
 // TODO: make this class thread safe?
 namespace MapleServer2.Types;
 
-public class Inventory
+public sealed class Inventory : IInventory
 {
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
