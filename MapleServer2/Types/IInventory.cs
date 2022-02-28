@@ -25,7 +25,7 @@ public interface IInventory
     bool HasItem(long uid);
 
     /// <summary>
-    /// Determins whether the inventory contains an item with given Item ID
+    /// Determines whether the inventory contains an item with given Item ID
     /// </summary>
     /// <param name="id">The Item ID of the item</param>
     bool HasItem(int id);
