@@ -11,6 +11,7 @@ public interface IInventory
     void DropItem(GameSession session, long uid, int amount, bool isBound);
     void MoveItem(GameSession session, long uid, short dstSlot);
     bool HasItem(long uid);
+    Item GetByUid(long uid);
     bool Replace(Item item);
     void SortInventory(GameSession session, InventoryTab tab);
     void LoadInventoryTab(GameSession session, InventoryTab tab);

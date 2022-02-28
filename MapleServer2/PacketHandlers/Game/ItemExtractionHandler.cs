@@ -22,7 +22,7 @@ public class ItemExtractionHandler : GamePacketHandler
             return;
         }
 
-        Item sourceItem = session.Player.Inventory.Items[sourceItemUid];
+        Item sourceItem = session.Player.Inventory.GetByUid(sourceItemUid);
 
         ItemExtractionMetadata metadata = ItemExtractionMetadataStorage.GetMetadata(sourceItem.Id);
         if (metadata == null)

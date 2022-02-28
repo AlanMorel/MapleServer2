@@ -78,7 +78,7 @@ public class FishingHandler : GamePacketHandler
             return;
         }
 
-        Item fishingRod = session.Player.Inventory.Items[fishingRodUid];
+        Item fishingRod = session.Player.Inventory.GetByUid(fishingRodUid);
         FishingRodMetadata rodMetadata = FishingRodMetadataStorage.GetMetadata(fishingRod.Function.Id);
 
         if (rodMetadata.MasteryLimit < masteryExp.CurrentExp)

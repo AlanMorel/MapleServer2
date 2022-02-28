@@ -452,7 +452,7 @@ public class BeautyHandler : GamePacketHandler
         long itemUid = packet.ReadLong();
 
         Player player = session.Player;
-        Item voucher = player.Inventory.Items[itemUid];
+        Item voucher = player.Inventory.GetByUid(itemUid);
         if (voucher == null || voucher.Function.Name != "ItemChangeBeauty")
         {
             return;

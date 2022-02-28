@@ -28,7 +28,7 @@ public class RequestItemUseHandler : GamePacketHandler
             return;
         }
 
-        Item item = session.Player.Inventory.Items[itemUid];
+        Item item = session.Player.Inventory.GetByUid(itemUid);
 
         switch (item.Function.Name)
         {
@@ -355,7 +355,7 @@ public class RequestItemUseHandler : GamePacketHandler
             return;
         }
 
-        Item pet = session.Player.Inventory.Items[petUid];
+        Item pet = session.Player.Inventory.GetByUid(petUid);
 
         Item badge = new(70100000)
         {

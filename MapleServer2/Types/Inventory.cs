@@ -328,6 +328,11 @@ public sealed class Inventory : IInventory
         return Items.ContainsKey(uid);
     }
 
+    public Item GetByUid(long uid)
+    {
+        return Items[uid];
+    }
+
     // Replaces an existing item with an updated copy of itself
     public bool Replace(Item item)
     {
