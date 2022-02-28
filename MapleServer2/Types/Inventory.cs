@@ -322,47 +322,22 @@ public sealed class Inventory : IInventory
         session.Send(ItemInventoryPacket.Move(dstUid, srcSlot, uid, dstSlot));
     }
 
-    public bool HasItem(long uid)
-    {
-        return Items.ContainsKey(uid);
-    }
+    public bool HasItem(long uid) => Items.ContainsKey(uid);
 
-    public bool HasItem(int id)
-    {
-        return Items.Values.Any(i => i.Id == id);
-    }
+    public bool HasItem(int id) => Items.Values.Any(i => i.Id == id);
 
-    public Item GetByUid(long uid)
-    {
-        return Items[uid];
-    }
+    public Item GetByUid(long uid) => Items[uid];
 
-    public Item GetById(int id)
-    {
-        return Items.Values.FirstOrDefault(x => x.Id == id);
-    }
+    public Item GetById(int id) => Items.Values.FirstOrDefault(x => x.Id == id);
 
-    public IReadOnlyCollection<Item> GetItemsNotNull()
-    {
-        return Items.Values.Where(x => x != null).ToArray();
-    }
+    public IReadOnlyCollection<Item> GetItemsNotNull() => Items.Values.Where(x => x != null).ToArray();
 
-    public IReadOnlyCollection<Item> GetAllById(int id)
-    {
-        return Items.Values.Where(x => x.Id == id).ToArray();
-    }
+    public IReadOnlyCollection<Item> GetAllById(int id) => Items.Values.Where(x => x.Id == id).ToArray();
 
-    public IReadOnlyCollection<Item> GetAllByTag(string tag)
-    {
-        return Items.Values.Where(i => i.Tag == tag)
-            .ToArray();
-    }
+    public IReadOnlyCollection<Item> GetAllByTag(string tag) => Items.Values.Where(i => i.Tag == tag).ToArray();
 
-    public IReadOnlyCollection<Item> GetAllByFunctionId(int functionId)
-    {
-        return Items.Values.Where(x => x.Function.Id == functionId)
-            .ToArray();
-    }
+    public IReadOnlyCollection<Item> GetAllByFunctionId(int functionId) =>
+        Items.Values.Where(x => x.Function.Id == functionId).ToArray();
 
     // Replaces an existing item with an updated copy of itself
     public bool Replace(Item item)
