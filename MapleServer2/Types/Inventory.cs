@@ -16,7 +16,7 @@ public sealed class Inventory : IInventory
     public long Id { get; }
 
     // This contains ALL inventory Items regardless of tab
-    public readonly Dictionary<long, Item> Items;
+    private readonly Dictionary<long, Item> Items;
     public Dictionary<ItemSlot, Item> Equips { get; }
     public Dictionary<ItemSlot, Item> Cosmetics { get; }
     public Item[] Badges { get; }
