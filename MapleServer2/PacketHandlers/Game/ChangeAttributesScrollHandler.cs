@@ -80,7 +80,7 @@ public class ChangeAttributesScrollHandler : GamePacketHandler
         {
             scrollLock = inventory.GetAllByTag(tag)
                 .FirstOrDefault(x => x.Rarity == gear.Rarity);
-            
+
             // Check if scroll lock exists in inventory
             if (scrollLock == null)
             {

@@ -1,5 +1,4 @@
-﻿using System.Collections.Immutable;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Maple2Storage.Enums;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;

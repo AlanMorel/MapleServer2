@@ -112,7 +112,7 @@ public class LapenshardHandler : GamePacketHandler
         int itemId = packet.ReadInt();
         packet.ReadInt();
         IInventory inventory = session.Player.Inventory;
-        
+
         if (!inventory.HasItem(itemUid))
         {
             return;
@@ -200,7 +200,7 @@ public class LapenshardHandler : GamePacketHandler
         // Count all items with the same tag in inventory
         IReadOnlyCollection<Item> crystals = inventory.GetAllByTag(crystal).ToList();
         int crystalsTotalAmount = crystals.Sum(x => x.Amount);
-        
+
         byte tier = (byte) (itemId % 10);
 
         if (costs[tier].CrystalsAmount > crystalsTotalAmount || !session.Player.Wallet.Meso.Modify(-costs[tier].Mesos))

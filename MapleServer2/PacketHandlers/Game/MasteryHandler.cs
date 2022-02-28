@@ -135,7 +135,7 @@ public class MasteryHandler : GamePacketHandler
         {
             Item item = session.Player.Inventory.GetAllById(ingredient.ItemId)
                 .FirstOrDefault(x => x.Rarity == ingredient.Rarity);
-            
+
             if (item == null || item.Amount < ingredient.Amount)
             {
                 return false;
@@ -191,7 +191,7 @@ public class MasteryHandler : GamePacketHandler
         {
             Item item = session.Player.Inventory.GetAllById(ingredient.ItemId)
                 .FirstOrDefault(x => x.Rarity == ingredient.Rarity);
-            
+
             if (item == null || item.Amount < ingredient.Amount)
             {
                 return false;

@@ -12,7 +12,6 @@ public interface IInventory
     Item[] Badges { get; }
     Item[] LapenshardStorage { get; }
     Dictionary<long, Item> TemporaryStorage { get; }
-    
     void AddItem(GameSession session, Item item, bool isNew);
     void ConsumeItem(GameSession session, long uid, int amount);
     bool RemoveItem(GameSession session, long uid, out Item item);

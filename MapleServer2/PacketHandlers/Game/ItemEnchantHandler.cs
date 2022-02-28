@@ -77,7 +77,7 @@ public class ItemEnchantHandler : GamePacketHandler
         long itemUid = packet.ReadLong();
 
         Item item = session.Player.Inventory.GetByUid(itemUid);
-        
+
         if (item == null)
         {
             return;

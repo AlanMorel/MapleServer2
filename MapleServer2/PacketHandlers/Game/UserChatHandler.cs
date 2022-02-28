@@ -88,7 +88,7 @@ public class UserChatHandler : GamePacketHandler
 
         Item voucher = player.Inventory.GetAllByTag("FreeChannelChatCoupon")
             .FirstOrDefault();
-        
+
         if (voucher is not null)
         {
             session.Send(NoticePacket.Notice(SystemNotice.UsedChannelChatVoucher, NoticeType.ChatAndFastText));
