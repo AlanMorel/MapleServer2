@@ -70,8 +70,20 @@ public class ResponseKeyHandler : CommonPacketHandler
             {
                 club.BroadcastPacketClub(ClubPacket.LoginNotice(player, club), session);
             }
+
             player.Clubs.Add(club);
             member.Player = player;
+        }
+
+        // Get Group Chats
+        player.GroupChats = GameServer.GroupChatManager.GetGroupChatsByMember(player.CharacterId);
+        foreach (GroupChat groupChat in player.GroupChats)
+        {
+            session.Send(GroupChatPacket.Update(groupChat));
+            if (!player.IsMigrating)
+            {
+                groupChat.BroadcastPacketGroupChat(GroupChatPacket.LoginNotice(groupChat, player));
+            }
         }
 
         //session.Send(0x27, 0x01); // Meret market related...?
@@ -215,6 +227,7 @@ public class ResponseKeyHandler : CommonPacketHandler
             {
                 party.BroadcastPacketParty(PartyPacket.LoginNotice(player), session);
             }
+
             session.Send(PartyPacket.Create(party, false));
             party.BroadcastPacketParty(PartyPacket.UpdatePlayer(player));
             party.BroadcastPacketParty(PartyPacket.UpdateDungeonInfo(player));

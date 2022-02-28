@@ -137,7 +137,6 @@ CREATE TABLE `characters`
     `coord`                    text             NOT NULL,
     `emotes`                   text,
     `favorite_stickers`        text,
-    `group_chat_id`            text,
     `guild_applications`       text,
     `guild_id`                 bigint                    DEFAULT NULL,
     `guild_member_id`          bigint                    DEFAULT NULL,

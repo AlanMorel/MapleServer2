@@ -124,7 +124,7 @@ public class Player
     public List<ClubMember> ClubMembers = new();
     public List<Club> Clubs = new();
 
-    public int[] GroupChatId;
+    public List<GroupChat> GroupChats = new();
 
     public long GuildId;
     public Guild Guild;
@@ -224,7 +224,6 @@ public class Player
         TrophyCount = new int[3];
         ReturnMapId = (int) Map.Tria;
         ReturnCoord = MapEntityStorage.GetRandomPlayerSpawn(ReturnMapId).Coord.ToFloat();
-        GroupChatId = new int[3];
         SkinColor = skinColor;
         UnlockedTaxis = new();
         UnlockedMaps = new();
