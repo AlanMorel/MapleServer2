@@ -70,7 +70,7 @@ public class UgcHandler : GamePacketHandler
 
         if (useVoucher)
         {
-            Item voucher = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Tag == "FreeDesignCoupon");
+            Item voucher = session.Player.Inventory.GetAllByTag("FreeDesignCoupon").FirstOrDefault();
             if (voucher is null)
             {
                 return;

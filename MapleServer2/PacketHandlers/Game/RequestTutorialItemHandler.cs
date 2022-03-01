@@ -17,7 +17,7 @@ public class RequestTutorialItemHandler : GamePacketHandler
 
         foreach (TutorialItemMetadata tutorialItem in metadata)
         {
-            int tutorialItemsCount = session.Player.Inventory.Items.Count(x => x.Value.Id == tutorialItem.ItemId);
+            int tutorialItemsCount = session.Player.Inventory.GetAllById(tutorialItem.ItemId).Count;
             tutorialItemsCount += session.Player.Inventory.Cosmetics.Count(x => x.Value.Id == tutorialItem.ItemId);
             tutorialItemsCount += session.Player.Inventory.Equips.Count(x => x.Value.Id == tutorialItem.ItemId);
 

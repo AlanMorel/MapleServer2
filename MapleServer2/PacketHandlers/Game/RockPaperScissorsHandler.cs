@@ -77,7 +77,7 @@ public class RockPaperScissorsHandler : GamePacketHandler
             return;
         }
 
-        if (!session.Player.Inventory.Items.Values.Any(x => x.Id == rpsEvent.VoucherId))
+        if (!session.Player.Inventory.HasItem(rpsEvent.VoucherId))
         {
             // TODO: Find correct packet to let player know they don't have a voucher
             session.Send(NoticePacket.Notice("You must have a Rock Papers Scissors Play Ticket",
@@ -105,7 +105,7 @@ public class RockPaperScissorsHandler : GamePacketHandler
             return;
         }
 
-        if (!session.Player.Inventory.Items.Values.Any(x => x.Id == rpsEvent.VoucherId))
+        if (!session.Player.Inventory.HasItem(rpsEvent.VoucherId))
         {
             // TODO: Find correct packet to let player know they don't have a voucher
             session.Send(NoticePacket.Notice("You must have a Rock Papers Scissors Play Ticket",
@@ -202,7 +202,7 @@ public class RockPaperScissorsHandler : GamePacketHandler
             return;
         }
 
-        Item voucher = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Id == rpsEvent.VoucherId);
+        Item voucher = session.Player.Inventory.GetById(rpsEvent.VoucherId);
         if (voucher is null)
         {
             return;

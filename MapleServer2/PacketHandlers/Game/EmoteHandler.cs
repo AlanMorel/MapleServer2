@@ -38,12 +38,12 @@ public class EmoteHandler : GamePacketHandler
     {
         long itemUid = packet.ReadLong();
 
-        if (!session.Player.Inventory.Items.ContainsKey(itemUid))
+        if (!session.Player.Inventory.HasItem(itemUid))
         {
             return;
         }
 
-        Item item = session.Player.Inventory.Items[itemUid];
+        Item item = session.Player.Inventory.GetByUid(itemUid);
 
         if (session.Player.Emotes.Contains(item.SkillId))
         {

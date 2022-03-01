@@ -1,5 +1,4 @@
-﻿using System.Collections.Immutable;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Maple2Storage.Enums;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
@@ -10,18 +9,18 @@ using NLog;
 // TODO: make this class thread safe?
 namespace MapleServer2.Types;
 
-public class Inventory
+public sealed class Inventory : IInventory
 {
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-    public readonly long Id;
+    public long Id { get; }
 
     // This contains ALL inventory Items regardless of tab
-    public readonly Dictionary<long, Item> Items;
-    public readonly Dictionary<ItemSlot, Item> Equips;
-    public readonly Dictionary<ItemSlot, Item> Cosmetics;
-    public readonly Item[] Badges;
-    public readonly Item[] LapenshardStorage;
+    private readonly Dictionary<long, Item> Items;
+    public Dictionary<ItemSlot, Item> Equips { get; }
+    public Dictionary<ItemSlot, Item> Cosmetics { get; }
+    public Item[] Badges { get; }
+    public Item[] LapenshardStorage { get; }
 
     // Map of Slot to Uid for each inventory
     private readonly Dictionary<short, long>[] SlotMaps;
@@ -45,7 +44,7 @@ public class Inventory
         { InventoryTab.Fragment, 48 }
     };
 
-    public readonly Dictionary<InventoryTab, short> ExtraSize = new()
+    public Dictionary<InventoryTab, short> ExtraSize { get; } = new()
     {
         { InventoryTab.Gear, 0 },
         { InventoryTab.Outfit, 0 },
@@ -65,7 +64,7 @@ public class Inventory
     };
 
     // Only use to share information between handler functions. Should always be empty
-    public readonly Dictionary<long, Item> TemporaryStorage = new();
+    public Dictionary<long, Item> TemporaryStorage { get; } = new();
 
     #region Constructors
 
@@ -262,7 +261,7 @@ public class Inventory
         }
 
         // Drops bound item
-        if (session.Player.Inventory.Remove(uid, out Item removedItem) != 0)
+        if (session.Player.Inventory.RemoveItem(session, uid, out Item removedItem))
         {
             return; // Removal from inventory failed
         }
@@ -323,10 +322,27 @@ public class Inventory
         session.Send(ItemInventoryPacket.Move(dstUid, srcSlot, uid, dstSlot));
     }
 
+    public bool HasItem(long uid) => Items.ContainsKey(uid);
+
+    public bool HasItem(int id) => Items.Values.Any(i => i.Id == id);
+
+    public Item GetByUid(long uid) => Items[uid];
+
+    public Item GetById(int id) => Items.Values.FirstOrDefault(x => x.Id == id);
+
+    public IReadOnlyCollection<Item> GetItemsNotNull() => Items.Values.Where(x => x != null).ToArray();
+
+    public IReadOnlyCollection<Item> GetAllById(int id) => Items.Values.Where(x => x.Id == id).ToArray();
+
+    public IReadOnlyCollection<Item> GetAllByTag(string tag) => Items.Values.Where(i => i.Tag == tag).ToArray();
+
+    public IReadOnlyCollection<Item> GetAllByFunctionId(int functionId) =>
+        Items.Values.Where(x => x.Function.Id == functionId).ToArray();
+
     // Replaces an existing item with an updated copy of itself
     public bool Replace(Item item)
     {
-        if (!Items.ContainsKey(item.Uid))
+        if (!HasItem(item.Uid))
         {
             return false;
         }
@@ -465,9 +481,9 @@ public class Inventory
         return GetSlots(item.InventoryTab).ContainsKey(slot < 0 ? item.Slot : slot);
     }
 
-    public ICollection<Item> GetItems(InventoryTab tab)
+    public IReadOnlyCollection<Item> GetItems(InventoryTab tab)
     {
-        return GetSlots(tab).Select(kvp => Items[kvp.Value]).ToImmutableList();
+        return GetSlots(tab).Select(kvp => Items[kvp.Value]).ToArray();
     }
 
     #endregion
@@ -534,7 +550,7 @@ public class Inventory
     // This REQUIRES item.Slot to be set appropriately
     private void AddInternal(Item item)
     {
-        Debug.Assert(!Items.ContainsKey(item.Uid), "Error adding an item that already exists");
+        Debug.Assert(!HasItem(item.Uid), "Error adding an item that already exists");
         Items[item.Uid] = item;
 
         Debug.Assert(!GetSlots(item.InventoryTab).ContainsKey(item.Slot), "Error adding item to slot that is already taken.");

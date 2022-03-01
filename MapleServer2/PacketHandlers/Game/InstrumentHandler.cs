@@ -73,12 +73,12 @@ public class InstrumentHandler : GamePacketHandler
     {
         long itemUid = packet.ReadLong();
 
-        if (!session.Player.Inventory.Items.ContainsKey(itemUid))
+        if (!session.Player.Inventory.HasItem(itemUid))
         {
             return;
         }
 
-        Item item = session.Player.Inventory.Items[itemUid];
+        Item item = session.Player.Inventory.GetByUid(itemUid);
 
         InstrumentInfoMetadata instrumentInfo = InstrumentInfoMetadataStorage.GetMetadata(item.Function.Id);
         InstrumentCategoryInfoMetadata instrumentCategory = InstrumentCategoryInfoMetadataStorage.GetMetadata(instrumentInfo.Category);
@@ -118,17 +118,17 @@ public class InstrumentHandler : GamePacketHandler
         long instrumentItemUid = packet.ReadLong();
         long scoreItemUid = packet.ReadLong();
 
-        if (!session.Player.Inventory.Items.ContainsKey(scoreItemUid) || !session.Player.Inventory.Items.ContainsKey(instrumentItemUid))
+        if (!session.Player.Inventory.HasItem(scoreItemUid) || !session.Player.Inventory.HasItem(instrumentItemUid))
         {
             return;
         }
 
-        Item instrumentItem = session.Player.Inventory.Items[instrumentItemUid];
+        Item instrumentItem = session.Player.Inventory.GetByUid(instrumentItemUid);
 
         InstrumentInfoMetadata instrumentInfo = InstrumentInfoMetadataStorage.GetMetadata(instrumentItem.Function.Id);
         InstrumentCategoryInfoMetadata instrumentCategory = InstrumentCategoryInfoMetadataStorage.GetMetadata(instrumentInfo.Category);
 
-        Item score = session.Player.Inventory.Items[scoreItemUid];
+        Item score = session.Player.Inventory.GetByUid(scoreItemUid);
 
         if (score.PlayCount <= 0)
         {
@@ -168,12 +168,12 @@ public class InstrumentHandler : GamePacketHandler
         string scoreName = packet.ReadUnicodeString();
         string scoreNotes = packet.ReadString();
 
-        if (!session.Player.Inventory.Items.ContainsKey(itemUid))
+        if (!session.Player.Inventory.HasItem(itemUid))
         {
             return;
         }
 
-        Item item = session.Player.Inventory.Items[itemUid];
+        Item item = session.Player.Inventory.GetByUid(itemUid);
 
         item.Score.Length = length;
         item.Score.Type = instrumentType;
@@ -196,20 +196,20 @@ public class InstrumentHandler : GamePacketHandler
             return;
         }
 
-        if (!session.Player.Inventory.Items.ContainsKey(scoreItemUid) || !session.Player.Inventory.Items.ContainsKey(instrumentItemUid))
+        if (!session.Player.Inventory.HasItem(scoreItemUid) || !session.Player.Inventory.HasItem(instrumentItemUid))
         {
             return;
         }
 
 
-        Item score = session.Player.Inventory.Items[scoreItemUid];
+        Item score = session.Player.Inventory.GetByUid(scoreItemUid);
 
         if (score.PlayCount <= 0)
         {
             return;
         }
 
-        Item instrumentItem = session.Player.Inventory.Items[instrumentItemUid];
+        Item instrumentItem = session.Player.Inventory.GetByUid(instrumentItemUid);
         InstrumentInfoMetadata instrumentInfo = InstrumentInfoMetadataStorage.GetMetadata(instrumentItem.Function.Id);
         InstrumentCategoryInfoMetadata instrumentCategory = InstrumentCategoryInfoMetadataStorage.GetMetadata(instrumentInfo.Category);
         Instrument instrument = new(instrumentCategory.GMId, instrumentCategory.PercussionId, score.IsCustomScore, session.Player.FieldPlayer.ObjectId)

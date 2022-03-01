@@ -85,7 +85,7 @@ public class DatabaseCharacter : DatabaseTable
 
         List<Hotbar> hotbars = DatabaseManager.Hotbars.FindAllByGameOptionsId(data.game_options_id);
         List<SkillTab> skillTabs = DatabaseManager.SkillTabs.FindAllByCharacterId(data.character_id, data.job);
-        Inventory inventory = DatabaseManager.Inventories.FindById(data.inventory_id);
+        IInventory inventory = DatabaseManager.Inventories.FindById(data.inventory_id);
         BankInventory bankInventory = DatabaseManager.BankInventories.FindById(data.bank_inventory_id);
         MushkingRoyaleStats royaleStats = DatabaseManager.MushkingRoyaleStats.FindById(data.mushking_royale_id);
         List<Medal> medals = DatabaseManager.MushkingRoyaleMedals.FindAllByAccountId(data.account_id);

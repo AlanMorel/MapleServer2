@@ -110,7 +110,7 @@ public class Player
 
     public GameOptions GameOptions { get; set; }
 
-    public Inventory Inventory;
+    public IInventory Inventory;
     public DismantleInventory DismantleInventory = new();
     public LockInventory LockInventory = new();
     public HairInventory HairInventory = new();
@@ -216,7 +216,7 @@ public class Player
             90200021
         };
         StatPointDistribution = new();
-        Inventory = new(true);
+        Inventory = new Inventory(true);
         Mailbox = new();
         BuddyList = new();
         QuestData = new();

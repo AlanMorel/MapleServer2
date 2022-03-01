@@ -80,7 +80,8 @@ public class ShopHandler : GamePacketHandler
         long itemUid = packet.ReadLong();
         int quantity = packet.ReadInt();
 
-        if (!session.Player.Inventory.Items.TryGetValue(itemUid, out Item item))
+        Item item = session.Player.Inventory.GetByUid(itemUid);
+        if (item == null)
         {
             return;
         }
@@ -123,7 +124,7 @@ public class ShopHandler : GamePacketHandler
                 session.Player.Account.RemoveMerets(shopItem.Price * quantity);
                 break;
             case ShopCurrencyType.Item:
-                Item itemCost = session.Player.Inventory.Items.FirstOrDefault(x => x.Value.Id == shopItem.RequiredItemId).Value;
+                Item itemCost = session.Player.Inventory.GetById(shopItem.RequiredItemId);
                 if (itemCost.Amount < shopItem.Price)
                 {
                     return;
@@ -152,9 +153,8 @@ public class ShopHandler : GamePacketHandler
         byte unk = packet.ReadByte();
         int itemId = packet.ReadInt();
 
-        List<Item> playerInventory = new(session.Player.Inventory.Items.Values);
-
-        Item item = playerInventory.FirstOrDefault(x => x.Id == itemId);
+        IInventory inventory = session.Player.Inventory;
+        Item item = inventory.GetById(itemId);
         if (item == null)
         {
             return;

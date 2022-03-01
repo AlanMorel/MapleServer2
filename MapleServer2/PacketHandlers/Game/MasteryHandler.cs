@@ -133,7 +133,9 @@ public class MasteryHandler : GamePacketHandler
 
         foreach (RecipeItem ingredient in ingredients)
         {
-            Item item = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Id == ingredient.ItemId && x.Rarity == ingredient.Rarity);
+            Item item = session.Player.Inventory.GetAllById(ingredient.ItemId)
+                .FirstOrDefault(x => x.Rarity == ingredient.Rarity);
+
             if (item == null || item.Amount < ingredient.Amount)
             {
                 return false;
@@ -187,7 +189,9 @@ public class MasteryHandler : GamePacketHandler
 
         foreach (RecipeItem ingredient in ingredients)
         {
-            Item item = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Id == ingredient.ItemId && x.Rarity == ingredient.Rarity);
+            Item item = session.Player.Inventory.GetAllById(ingredient.ItemId)
+                .FirstOrDefault(x => x.Rarity == ingredient.Rarity);
+
             if (item == null || item.Amount < ingredient.Amount)
             {
                 return false;

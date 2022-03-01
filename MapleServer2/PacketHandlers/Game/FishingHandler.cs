@@ -72,13 +72,13 @@ public class FishingHandler : GamePacketHandler
             return;
         }
 
-        if (!session.Player.Inventory.Items.ContainsKey(fishingRodUid))
+        if (!session.Player.Inventory.HasItem(fishingRodUid))
         {
             session.Send(FishingPacket.Notice((short) FishingNotice.InvalidFishingRod));
             return;
         }
 
-        Item fishingRod = session.Player.Inventory.Items[fishingRodUid];
+        Item fishingRod = session.Player.Inventory.GetByUid(fishingRodUid);
         FishingRodMetadata rodMetadata = FishingRodMetadataStorage.GetMetadata(fishingRod.Function.Id);
 
         if (rodMetadata.MasteryLimit < masteryExp.CurrentExp)
