@@ -85,20 +85,20 @@ internal static class TrophyManager
 
     public static void OnFall(Player player, float fallDistance)
     {
-        // 23100013 "Living off the Edge", "Fall 9m X times"
-        IEnumerable<TrophyMetadata> fallSurviveTrophies = GetRelevantTrophies(TrophyTypes.FallSurvive);
-
         // 22100005 "Icarus", "Fall X meter"
         IEnumerable<TrophyMetadata> fallTrophies = GetRelevantTrophies(TrophyTypes.Fall);
-
-        if (fallDistance >= 900.0f)
-        {
-            UpdateMatchingTrophies(player, fallSurviveTrophies, 1);
-        }
 
         int meters = (int) Math.Floor(fallDistance / 100f);
 
         UpdateMatchingTrophies(player, fallTrophies, meters);
+    }
+
+    public static void OnFallDamage(Player player)
+    {
+        // 23100013 "Living off the Edge", "Fall 9m X times"
+        IEnumerable<TrophyMetadata> fallSurviveTrophies = GetRelevantTrophies(TrophyTypes.FallSurvive);
+
+        UpdateMatchingTrophies(player, fallSurviveTrophies, 1);
     }
 
     #region Helper Methods
