@@ -85,7 +85,6 @@ internal static class TrophyManager
 
     public static void OnFall(Player player, float fallDistance)
     {
-        // 22100005 "Icarus", "Fall X meter"
         IEnumerable<TrophyMetadata> fallTrophies = GetRelevantTrophies(TrophyTypes.Fall);
 
         int meters = (int) Math.Floor(fallDistance / 100f);
@@ -95,7 +94,6 @@ internal static class TrophyManager
 
     public static void OnFallDamage(Player player)
     {
-        // 23100013 "Living off the Edge", "Fall 9m X times"
         IEnumerable<TrophyMetadata> fallSurviveTrophies = GetRelevantTrophies(TrophyTypes.FallSurvive);
 
         UpdateMatchingTrophies(player, fallSurviveTrophies, 1);
