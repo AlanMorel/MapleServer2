@@ -83,6 +83,22 @@ internal static class TrophyManager
         UpdateMatchingTrophies(player, triggerTrophies, 1);
     }
 
+    public static void OnFall(Player player, float fallDistance)
+    {
+        IEnumerable<TrophyMetadata> fallTrophies = GetRelevantTrophies(TrophyTypes.Fall);
+
+        int meters = (int) Math.Floor(fallDistance / 100f);
+
+        UpdateMatchingTrophies(player, fallTrophies, meters);
+    }
+
+    public static void OnFallDamage(Player player)
+    {
+        IEnumerable<TrophyMetadata> fallSurviveTrophies = GetRelevantTrophies(TrophyTypes.FallSurvive);
+
+        UpdateMatchingTrophies(player, fallSurviveTrophies, 1);
+    }
+
     #region Helper Methods
 
     private static IEnumerable<TrophyMetadata> GetRelevantTrophies(string category) => TrophyMetadataStorage.GetTrophiesByType(category);
