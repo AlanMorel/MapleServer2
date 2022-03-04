@@ -12,7 +12,11 @@ public class MapMetadata
     [XmlElement(Order = 3)]
     public string XBlockName = "";
     [XmlElement(Order = 4)]
+    public MapProperty Property;
+    [XmlElement(Order = 5)]
     public Dictionary<CoordS, MapBlock> Blocks = new();
+    [XmlElement(Order = 6)]
+    public MapEntityMetadata Entities = new();
 }
 
 [XmlType]
@@ -26,4 +30,15 @@ public class MapBlock
     public string Type;
     [XmlElement(Order = 4)]
     public int SaleableGroup;
+}
+
+[XmlType]
+public class MapProperty
+{
+    [XmlElement(Order = 1)]
+    public int RevivalReturnMapId;
+    [XmlElement(Order = 2)]
+    public string EnterReturnMapId;
+    [XmlElement(Order = 3)]
+    public short Capacity;
 }

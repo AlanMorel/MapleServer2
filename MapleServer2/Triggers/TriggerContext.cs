@@ -100,7 +100,7 @@ public partial class TriggerContext : ITriggerContext
         if (boxId != 0)
         {
             List<IFieldActor<Player>> players = Field.State.Players.Values.ToList();
-            MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
+            MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
             int userCount = 0;
 
             foreach (IFieldActor<Player> player in players)

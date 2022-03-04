@@ -90,7 +90,7 @@ public class GlobalPortalHandler : GamePacketHandler
         }
 
         session.Player.Mount = null;
-        MapPortal portal = MapEntityStorage.GetPortals((int) map).FirstOrDefault(portal => portal.Id == 1);
+        MapPortal portal = MapEntityMetadataStorage.GetPortals((int) map).FirstOrDefault(portal => portal.Id == 1);
         session.Player.Warp((int) map, portal.Coord.ToFloat(), portal.Rotation.ToFloat());
     }
 }

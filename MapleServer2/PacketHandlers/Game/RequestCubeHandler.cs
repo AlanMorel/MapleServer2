@@ -386,7 +386,7 @@ public class RequestCubeHandler : GamePacketHandler
         liftable.State = LiftableState.Active;
         liftable.Enabled = true;
 
-        MapLiftableTarget target = MapEntityStorage.GetLiftablesTargets(player.MapId)?.FirstOrDefault(x => x.Position == liftable.Position);
+        MapLiftableTarget target = MapEntityMetadataStorage.GetLiftablesTargets(player.MapId)?.FirstOrDefault(x => x.Position == liftable.Position);
         if (target is not null)
         {
             liftable.State = LiftableState.Disabled;
@@ -612,7 +612,7 @@ public class RequestCubeHandler : GamePacketHandler
     {
         CoordB coords = packet.Read<CoordB>();
 
-        int weaponId = MapEntityStorage.GetWeaponObjectItemId(session.Player.MapId, coords);
+        int weaponId = MapEntityMetadataStorage.GetWeaponObjectItemId(session.Player.MapId, coords);
         if (weaponId == 0)
         {
             return;

@@ -23,7 +23,7 @@ public class VibrateHandler : GamePacketHandler
         CoordF playerCoords = packet.Read<CoordF>();
 
         Player player = session.Player;
-        if (!MapEntityStorage.IsVibrateObject(player.MapId, entityId))
+        if (!MapEntityMetadataStorage.IsVibrateObject(player.MapId, entityId))
         {
             return;
         }

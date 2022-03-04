@@ -254,7 +254,7 @@ public class NpcTalkHandler : GamePacketHandler
 
     private static void HandleBeauty(GameSession session)
     {
-        MapPortal portal = MapEntityStorage.GetPortals(session.Player.MapId).FirstOrDefault(portal => portal.Id == 99); // unsure how the portalId is determined
+        MapPortal portal = MapEntityMetadataStorage.GetPortals(session.Player.MapId).FirstOrDefault(portal => portal.Id == 99); // unsure how the portalId is determined
         if (portal is null)
         {
             return;
