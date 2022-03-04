@@ -63,8 +63,8 @@ public class AttendanceHandler : GamePacketHandler
 
         GameEventUserValue timeValue = GameEventHelper.GetUserValue(session.Player, attendanceEvent.Id,
             TimeInfo.Tomorrow(), GameEventUserValueType.AttendanceAccumulatedTime);
-
-        if (TimeInfo.Now() - session.Player.LastLogTime + int.Parse(timeValue.EventValue) <
+        long.TryParse(timeValue.EventValue, out long accumuatedTime);
+        if (TimeInfo.Now() - session.Player.LastLogTime + accumuatedTime <
             attendanceEvent.TimeRequired)
         {
             return;
@@ -76,7 +76,7 @@ public class AttendanceHandler : GamePacketHandler
         long.TryParse(completeTimestampValue.EventValue, out long completedTimestamp);
 
         DateTimeOffset savedTime = DateTimeOffset.FromUnixTimeSeconds(completedTimestamp);
-        if (DateTimeOffset.Now.Day < savedTime.Day)
+        if (DateTimeOffset.Now.UtcDateTime < savedTime.UtcDateTime && DateTimeOffset.Now.Date != savedTime.Date)
         {
             session.Send(AttendancePacket.Notice((int) AttendanceNotice.EventHasAlreadyBeenCompleted));
             return;
