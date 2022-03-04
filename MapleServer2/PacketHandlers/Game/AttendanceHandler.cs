@@ -63,8 +63,8 @@ public class AttendanceHandler : GamePacketHandler
 
         GameEventUserValue timeValue = GameEventHelper.GetUserValue(session.Player, attendanceEvent.Id,
             TimeInfo.Tomorrow(), GameEventUserValueType.AttendanceAccumulatedTime);
-        long.TryParse(timeValue.EventValue, out long accumuatedTime);
-        if (TimeInfo.Now() - session.Player.LastLogTime + accumuatedTime <
+        long.TryParse(timeValue.EventValue, out long accumulatedTime);
+        if (TimeInfo.Now() - session.Player.LastLogTime + accumulatedTime <
             attendanceEvent.TimeRequired)
         {
             return;
