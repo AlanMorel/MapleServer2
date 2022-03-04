@@ -26,41 +26,7 @@ public class MapParser : Exporter<List<MapMetadata>>
         ParseMapNames();
         ParseInteractObjectTable();
         ParseMapSpawnTagTable();
-
-        foreach (PackFileEntry map in Resources.XmlReader.Files.Where(x => x.Name.StartsWith("map/")))
-        {
-            XmlDocument mapXml = Resources.XmlReader.GetXmlDocument(map);
-            foreach (XmlNode node in mapXml.DocumentElement.ChildNodes)
-            {
-                if (node.Attributes["locale"].Value is "KR" or "CN" or "JP")
-                {
-                    continue;
-                }
-
-                // map.Name: map/00000001.xml
-                int id = int.Parse(map.Name.Split('/')[1].Split('.')[0]);
-                string xblock = node.SelectSingleNode("xblock").Attributes["name"].Value;
-
-                XmlNode propertyNode = node.SelectSingleNode("property");
-                MapProperty mapProperty = new()
-                {
-                    RevivalReturnMapId = int.Parse(propertyNode.Attributes["revivalreturnid"]?.Value ?? "0"),
-                    EnterReturnMapId = propertyNode.Attributes["enterreturnid"]?.Value ?? "",
-                    Capacity = short.Parse(propertyNode.Attributes["capacity"]?.Value ?? "0"),
-                };
-
-                MapMetadata mapMetadata = new()
-                {
-                    Id = id,
-                    XBlockName = xblock.ToLower(),
-                    Property = mapProperty
-                };
-                MapNames.TryGetValue(id, out mapMetadata.Name);
-
-                MapMetadatas.Add(mapMetadata);
-                break; // only use first environment
-            }
-        }
+        ParseMapMetadata();
 
         // Parse every block for each map
         FlatTypeIndex index = new(Resources.ExportedReader);
@@ -418,6 +384,44 @@ public class MapParser : Exporter<List<MapMetadata>>
             int id = int.Parse(node.Attributes["id"].Value);
             string name = node.Attributes["name"].Value;
             MapNames[id] = name;
+        }
+    }
+
+    private void ParseMapMetadata()
+    {
+        foreach (PackFileEntry map in Resources.XmlReader.Files.Where(x => x.Name.StartsWith("map/")))
+        {
+            XmlDocument mapXml = Resources.XmlReader.GetXmlDocument(map);
+            foreach (XmlNode node in mapXml.DocumentElement.ChildNodes)
+            {
+                if (node.Attributes["locale"].Value is "KR" or "CN" or "JP")
+                {
+                    continue;
+                }
+
+                // map.Name: map/00000001.xml
+                int id = int.Parse(map.Name.Split('/')[1].Split('.')[0]);
+                string xblock = node.SelectSingleNode("xblock").Attributes["name"].Value;
+
+                XmlNode propertyNode = node.SelectSingleNode("property");
+                MapProperty mapProperty = new()
+                {
+                    RevivalReturnMapId = int.Parse(propertyNode.Attributes["revivalreturnid"]?.Value ?? "0"),
+                    EnterReturnMapId = propertyNode.Attributes["enterreturnid"]?.Value ?? "",
+                    Capacity = short.Parse(propertyNode.Attributes["capacity"]?.Value ?? "0"),
+                };
+
+                MapMetadata mapMetadata = new()
+                {
+                    Id = id,
+                    XBlockName = xblock.ToLower(),
+                    Property = mapProperty
+                };
+                MapNames.TryGetValue(id, out mapMetadata.Name);
+
+                MapMetadatas.Add(mapMetadata);
+                break; // only use first environment
+            }
         }
     }
 }
