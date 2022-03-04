@@ -5,7 +5,7 @@ using ProtoBuf;
 
 namespace MapleServer2.Data.Static;
 
-public static class MapEntityStorage
+public static class MapEntityMetadataStorage
 {
     private static readonly Dictionary<int, List<MapNpc>> Npcs = new();
     private static readonly Dictionary<int, List<MapPortal>> Portals = new();
@@ -36,43 +36,38 @@ public static class MapEntityStorage
     private static readonly Dictionary<int, List<MapLiftableTarget>> LiftableTargets = new();
     private static readonly Dictionary<int, List<MapChestMetadata>> MapChests = new();
 
-    public static void Init()
+    public static void AddToStorage(int mapId, MapEntityMetadata entity)
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-map-entity-metadata");
-        List<MapEntityMetadata> entities = Serializer.Deserialize<List<MapEntityMetadata>>(stream);
-        foreach (MapEntityMetadata entity in entities)
+        Npcs.Add(mapId, entity.Npcs);
+        Portals.Add(mapId, entity.Portals);
+        PlayerSpawns.Add(mapId, entity.PlayerSpawns);
+        MobSpawns.Add(mapId, entity.MobSpawns);
+        BoundingBox.Add(mapId, new[]
         {
-            Npcs.Add(entity.MapId, entity.Npcs);
-            Portals.Add(entity.MapId, entity.Portals);
-            PlayerSpawns.Add(entity.MapId, entity.PlayerSpawns);
-            MobSpawns.Add(entity.MapId, entity.MobSpawns);
-            BoundingBox.Add(entity.MapId, new[]
-            {
-                entity.BoundingBox0, entity.BoundingBox1
-            });
-            HealthSpot.Add(entity.MapId, entity.HealingSpot);
-            PatrolDatas.Add(entity.MapId, entity.PatrolDatas);
-            WayPoints.Add(entity.MapId, entity.WayPoints);
-            EventNpcSpawnPoints.Add(entity.MapId, entity.EventNpcSpawnPoints);
-            TriggerMeshes.Add(entity.MapId, entity.TriggerMeshes);
-            TriggerEffects.Add(entity.MapId, entity.TriggerEffects);
-            TriggerCameras.Add(entity.MapId, entity.TriggerCameras);
-            TriggerBoxes.Add(entity.MapId, entity.TriggerBoxes);
-            TriggerActors.Add(entity.MapId, entity.TriggerActors);
-            TriggerCubes.Add(entity.MapId, entity.TriggerCubes);
-            TriggerLadders.Add(entity.MapId, entity.TriggerLadders);
-            TriggerRopes.Add(entity.MapId, entity.TriggerRopes);
-            TriggerSounds.Add(entity.MapId, entity.TriggerSounds);
-            BreakableActors.Add(entity.MapId, entity.BreakableActors);
-            BreakableNifs.Add(entity.MapId, entity.BreakableNifs);
-            VibrateObjects.Add(entity.MapId, entity.VibrateObjects);
-            TriggerSkills.Add(entity.MapId, entity.TriggerSkills);
-            InteractObjects.Add(entity.MapId, entity.InteractObjects);
-            WeaponObjects.Add(entity.MapId, entity.WeaponObjects);
-            LiftableObjects.Add(entity.MapId, entity.LiftableObjects);
-            LiftableTargets.Add(entity.MapId, entity.LiftableTargets);
-            MapChests.Add(entity.MapId, entity.MapChests);
-        }
+            entity.BoundingBox0, entity.BoundingBox1
+        });
+        HealthSpot.Add(mapId, entity.HealingSpot);
+        PatrolDatas.Add(mapId, entity.PatrolDatas);
+        WayPoints.Add(mapId, entity.WayPoints);
+        EventNpcSpawnPoints.Add(mapId, entity.EventNpcSpawnPoints);
+        TriggerMeshes.Add(mapId, entity.TriggerMeshes);
+        TriggerEffects.Add(mapId, entity.TriggerEffects);
+        TriggerCameras.Add(mapId, entity.TriggerCameras);
+        TriggerBoxes.Add(mapId, entity.TriggerBoxes);
+        TriggerActors.Add(mapId, entity.TriggerActors);
+        TriggerCubes.Add(mapId, entity.TriggerCubes);
+        TriggerLadders.Add(mapId, entity.TriggerLadders);
+        TriggerRopes.Add(mapId, entity.TriggerRopes);
+        TriggerSounds.Add(mapId, entity.TriggerSounds);
+        BreakableActors.Add(mapId, entity.BreakableActors);
+        BreakableNifs.Add(mapId, entity.BreakableNifs);
+        VibrateObjects.Add(mapId, entity.VibrateObjects);
+        TriggerSkills.Add(mapId, entity.TriggerSkills);
+        InteractObjects.Add(mapId, entity.InteractObjects);
+        WeaponObjects.Add(mapId, entity.WeaponObjects);
+        LiftableObjects.Add(mapId, entity.LiftableObjects);
+        LiftableTargets.Add(mapId, entity.LiftableTargets);
+        MapChests.Add(mapId, entity.MapChests);
     }
 
     public static IEnumerable<MapNpc> GetNpcs(int mapId) => Npcs.GetValueOrDefault(mapId);

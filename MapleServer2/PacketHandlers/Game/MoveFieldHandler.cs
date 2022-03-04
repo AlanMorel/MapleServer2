@@ -92,13 +92,13 @@ public class MoveFieldHandler : GamePacketHandler
                 break;
         }
 
-        if (!MapEntityStorage.HasSafePortal(srcMapId) || srcPortal.TargetMapId == 0) // map is instance only
+        if (!MapEntityMetadataStorage.HasSafePortal(srcMapId) || srcPortal.TargetMapId == 0) // map is instance only
         {
             HandleLeaveInstance(session);
             return;
         }
 
-        MapPortal dstPortal = MapEntityStorage.GetPortals(srcPortal.TargetMapId)
+        MapPortal dstPortal = MapEntityMetadataStorage.GetPortals(srcPortal.TargetMapId)
             .FirstOrDefault(portal => portal.Id == srcPortal.TargetPortalId); // target map's portal id == source portal's targetPortalId
         if (dstPortal == default)
         {

@@ -8,76 +8,63 @@ namespace Maple2Storage.Types.Metadata;
 public class MapEntityMetadata
 {
     [XmlElement(Order = 1)]
-    public readonly int MapId;
-    [XmlElement(Order = 2)]
     public readonly List<MapNpc> Npcs = new();
-    [XmlElement(Order = 3)]
+    [XmlElement(Order = 2)]
     public readonly List<MapPortal> Portals = new();
-    [XmlElement(Order = 4)]
+    [XmlElement(Order = 3)]
     public readonly List<MapPlayerSpawn> PlayerSpawns = new();
-    [XmlElement(Order = 5)]
+    [XmlElement(Order = 4)]
     public readonly List<MapMobSpawn> MobSpawns = new();
-    [XmlElement(Order = 6)]
+    [XmlElement(Order = 5)]
     public readonly List<MapWeaponObject> WeaponObjects = new();
-    [XmlElement(Order = 7)]
+    [XmlElement(Order = 6)]
     public CoordS BoundingBox0;
-    [XmlElement(Order = 8)]
+    [XmlElement(Order = 7)]
     public CoordS BoundingBox1;
-    [XmlElement(Order = 9)]
+    [XmlElement(Order = 8)]
     public List<CoordS> HealingSpot = new();
-    [XmlElement(Order = 10)]
+    [XmlElement(Order = 9)]
     public List<PatrolData> PatrolDatas = new();
-    [XmlElement(Order = 11)]
+    [XmlElement(Order = 10)]
     public List<WayPoint> WayPoints = new();
-    [XmlElement(Order = 12)]
+    [XmlElement(Order = 11)]
     public readonly List<MapTriggerMesh> TriggerMeshes = new();
-    [XmlElement(Order = 13)]
+    [XmlElement(Order = 12)]
     public readonly List<MapTriggerEffect> TriggerEffects = new();
-    [XmlElement(Order = 14)]
+    [XmlElement(Order = 13)]
     public readonly List<MapTriggerCamera> TriggerCameras = new();
-    [XmlElement(Order = 15)]
+    [XmlElement(Order = 14)]
     public readonly List<MapTriggerBox> TriggerBoxes = new();
-    [XmlElement(Order = 16)]
+    [XmlElement(Order = 15)]
     public readonly List<MapTriggerLadder> TriggerLadders = new();
-    [XmlElement(Order = 17)]
+    [XmlElement(Order = 16)]
     public readonly List<MapEventNpcSpawnPoint> EventNpcSpawnPoints = new();
-    [XmlElement(Order = 18)]
+    [XmlElement(Order = 17)]
     public readonly List<MapTriggerActor> TriggerActors = new();
-    [XmlElement(Order = 19)]
+    [XmlElement(Order = 18)]
     public readonly List<MapTriggerCube> TriggerCubes = new();
-    [XmlElement(Order = 20)]
+    [XmlElement(Order = 19)]
     public readonly List<MapTriggerSound> TriggerSounds = new();
-    [XmlElement(Order = 21)]
+    [XmlElement(Order = 20)]
     public readonly List<MapTriggerRope> TriggerRopes = new();
-    [XmlElement(Order = 22)]
+    [XmlElement(Order = 21)]
     public readonly List<MapBreakableActorObject> BreakableActors = new();
-    [XmlElement(Order = 23)]
+    [XmlElement(Order = 22)]
     public readonly List<MapBreakableNifObject> BreakableNifs = new();
-    [XmlElement(Order = 24)]
+    [XmlElement(Order = 23)]
     public readonly List<MapVibrateObject> VibrateObjects = new();
-    [XmlElement(Order = 25)]
+    [XmlElement(Order = 24)]
     public readonly List<MapTriggerSkill> TriggerSkills = new();
-    [XmlElement(Order = 26)]
+    [XmlElement(Order = 25)]
     public readonly List<MapInteractObject> InteractObjects = new();
-    [XmlElement(Order = 27)]
+    [XmlElement(Order = 26)]
     public readonly List<MapLiftableObject> LiftableObjects = new();
-    [XmlElement(Order = 28)]
+    [XmlElement(Order = 27)]
     public readonly List<MapLiftableTarget> LiftableTargets = new();
-    [XmlElement(Order = 29)]
+    [XmlElement(Order = 28)]
     public readonly List<MapChestMetadata> MapChests = new();
 
     public MapEntityMetadata() { }
-
-    public MapEntityMetadata(int mapId)
-    {
-        MapId = mapId;
-    }
-
-    public override string ToString()
-    {
-        return $"MapEntityMetadata(Id:{MapId},PlayerSpawns:{string.Join(",", PlayerSpawns)},MobSpawns:{string.Join(",", MobSpawns)}," +
-               $"Npcs:{string.Join(",", Npcs)},Portals:{string.Join(",", Portals)},Objects:{string.Join(",", WeaponObjects)})";
-    }
 }
 
 [XmlType]

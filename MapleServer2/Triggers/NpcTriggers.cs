@@ -39,7 +39,7 @@ public partial class TriggerContext
     {
         foreach (int spawnPointId in spawnPointIds)
         {
-            MapEventNpcSpawnPoint spawnPoint = MapEntityStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnPointId);
+            MapEventNpcSpawnPoint spawnPoint = MapEntityMetadataStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnPointId);
             if (spawnPoint is null)
             {
                 continue;
@@ -66,7 +66,7 @@ public partial class TriggerContext
     {
         foreach (int spawnPointId in rangeId)
         {
-            MapEventNpcSpawnPoint spawnPoint = MapEntityStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnPointId);
+            MapEventNpcSpawnPoint spawnPoint = MapEntityMetadataStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnPointId);
             if (spawnPoint is null)
             {
                 continue;
@@ -109,9 +109,9 @@ public partial class TriggerContext
 
     public void MoveNpc(int spawnTriggerId, string patrolDataName)
     {
-        (PatrolData, List<WayPoint>) patrolData = MapEntityStorage.GetPatrolData(Field.MapId, patrolDataName);
+        (PatrolData, List<WayPoint>) patrolData = MapEntityMetadataStorage.GetPatrolData(Field.MapId, patrolDataName);
 
-        MapEventNpcSpawnPoint spawnPoint = MapEntityStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnTriggerId);
+        MapEventNpcSpawnPoint spawnPoint = MapEntityMetadataStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnTriggerId);
         if (spawnPoint is null)
         {
             return;
@@ -154,7 +154,7 @@ public partial class TriggerContext
 
     public void SetNpcEmotionLoop(int spawnTriggerId, string sequenceName, float duration)
     {
-        MapEventNpcSpawnPoint spawnPoint = MapEntityStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnTriggerId);
+        MapEventNpcSpawnPoint spawnPoint = MapEntityMetadataStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnTriggerId);
         if (spawnPoint is null)
         {
             return;
@@ -175,7 +175,7 @@ public partial class TriggerContext
 
     public void SetNpcEmotionSequence(int spawnTriggerId, string sequenceName, int arg3)
     {
-        MapEventNpcSpawnPoint spawnPoint = MapEntityStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnTriggerId);
+        MapEventNpcSpawnPoint spawnPoint = MapEntityMetadataStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnTriggerId);
         if (spawnPoint is null)
         {
             return;
@@ -202,7 +202,7 @@ public partial class TriggerContext
     {
         foreach (int spawnPointId in rangeId)
         {
-            MapEventNpcSpawnPoint spawnPoint = MapEntityStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnPointId);
+            MapEventNpcSpawnPoint spawnPoint = MapEntityMetadataStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnPointId);
             if (spawnPoint == null)
             {
                 continue;

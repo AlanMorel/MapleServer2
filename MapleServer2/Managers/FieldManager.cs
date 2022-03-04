@@ -26,6 +26,7 @@ public partial class FieldManager
 
     public readonly int MapId;
     public readonly long InstanceId;
+    public readonly short Capacity;
     public readonly FieldState State = new();
     public readonly CoordS[] BoundingBox;
     public readonly TriggerScript[] Triggers;
@@ -44,10 +45,22 @@ public partial class FieldManager
     public FieldManager(Player player)
     {
         MapId = player.MapId;
-        InstanceId = player.InstanceId;
-        BoundingBox = MapEntityStorage.GetBoundingBox(MapId);
+        Capacity = MapMetadataStorage.GetMetadata(MapId).Property.Capacity;
 
-        // TOOD: generate navmeshes for all maps
+        // Capacity 0 means solo instances
+        if (Capacity == 0)
+        {
+            InstanceId = player.CharacterId;
+            player.InstanceId = player.CharacterId;
+        }
+        else
+        {
+            InstanceId = player.InstanceId;
+        }
+
+        BoundingBox = MapEntityMetadataStorage.GetBoundingBox(MapId);
+
+        // TODO: generate navmeshes for all maps
 
         // Load triggers
         MapMetadata mapMetadata = MapMetadataStorage.GetMetadata(MapId);
@@ -174,8 +187,18 @@ public partial class FieldManager
         Debug.Assert(player.FieldPlayer.ObjectId > 0, "Player was added to field without initialized objectId.");
 
         player.MapId = MapId;
-        player.FieldPlayer.Coord = player.SavedCoord;
-        player.FieldPlayer.Rotation = player.SavedRotation;
+        if (Capacity == 0)
+        {
+            MapPlayerSpawn spawn = MapEntityMetadataStorage.GetRandomPlayerSpawn(MapId);
+            player.FieldPlayer.Coord = spawn.Coord.ToFloat();
+            player.FieldPlayer.Rotation = spawn.Rotation.ToFloat();
+        }
+        else
+        {
+            player.FieldPlayer.Coord = player.SavedCoord;
+            player.FieldPlayer.Rotation = player.SavedRotation;
+        }
+
         player.SafeBlock = player.SavedCoord;
 
         lock (Sessions)
@@ -728,13 +751,13 @@ public partial class FieldManager
     private void AddEntitiesToState()
     {
         // Load default npcs for map from config
-        foreach (MapNpc npc in MapEntityStorage.GetNpcs(MapId))
+        foreach (MapNpc npc in MapEntityMetadataStorage.GetNpcs(MapId))
         {
             RequestNpc(npc.Id, npc.Coord.ToFloat(), npc.Rotation.ToFloat());
         }
 
         // Spawn map's mobs at the mob spawners
-        foreach (MapMobSpawn mobSpawn in MapEntityStorage.GetMobSpawns(MapId))
+        foreach (MapMobSpawn mobSpawn in MapEntityMetadataStorage.GetMobSpawns(MapId))
         {
             if (mobSpawn.SpawnData is null)
             {
@@ -749,7 +772,7 @@ public partial class FieldManager
         }
 
         // Load default portals for map from config
-        foreach (MapPortal portal in MapEntityStorage.GetPortals(MapId))
+        foreach (MapPortal portal in MapEntityMetadataStorage.GetPortals(MapId))
         {
             IFieldObject<Portal> fieldPortal = RequestFieldObject(new Portal(portal.Id)
             {
@@ -766,7 +789,7 @@ public partial class FieldManager
             AddPortal(fieldPortal);
         }
 
-        foreach (MapTriggerMesh mapTriggerMesh in MapEntityStorage.GetTriggerMeshes(MapId))
+        foreach (MapTriggerMesh mapTriggerMesh in MapEntityMetadataStorage.GetTriggerMeshes(MapId))
         {
             if (mapTriggerMesh is null)
             {
@@ -776,7 +799,7 @@ public partial class FieldManager
             State.AddTriggerObject(new TriggerMesh(mapTriggerMesh.Id, mapTriggerMesh.IsVisible));
         }
 
-        foreach (MapTriggerEffect mapTriggerEffect in MapEntityStorage.GetTriggerEffects(MapId))
+        foreach (MapTriggerEffect mapTriggerEffect in MapEntityMetadataStorage.GetTriggerEffects(MapId))
         {
             if (mapTriggerEffect is null)
             {
@@ -786,7 +809,7 @@ public partial class FieldManager
             State.AddTriggerObject(new TriggerEffect(mapTriggerEffect.Id, mapTriggerEffect.IsVisible));
         }
 
-        foreach (MapTriggerActor mapTriggerActor in MapEntityStorage.GetTriggerActors(MapId))
+        foreach (MapTriggerActor mapTriggerActor in MapEntityMetadataStorage.GetTriggerActors(MapId))
         {
             if (mapTriggerActor is null)
             {
@@ -796,7 +819,7 @@ public partial class FieldManager
             State.AddTriggerObject(new TriggerActor(mapTriggerActor.Id, mapTriggerActor.IsVisible, mapTriggerActor.InitialSequence));
         }
 
-        foreach (MapTriggerCamera mapTriggerCamera in MapEntityStorage.GetTriggerCameras(MapId))
+        foreach (MapTriggerCamera mapTriggerCamera in MapEntityMetadataStorage.GetTriggerCameras(MapId))
         {
             if (mapTriggerCamera is null)
             {
@@ -806,7 +829,7 @@ public partial class FieldManager
             State.AddTriggerObject(new TriggerCamera(mapTriggerCamera.Id, mapTriggerCamera.IsEnabled));
         }
 
-        foreach (MapTriggerCube mapTriggerCube in MapEntityStorage.GetTriggerCubes(MapId))
+        foreach (MapTriggerCube mapTriggerCube in MapEntityMetadataStorage.GetTriggerCubes(MapId))
         {
             if (mapTriggerCube is null)
             {
@@ -816,7 +839,7 @@ public partial class FieldManager
             State.AddTriggerObject(new TriggerCube(mapTriggerCube.Id, mapTriggerCube.IsVisible));
         }
 
-        foreach (MapTriggerLadder mapTriggerLadder in MapEntityStorage.GetTriggerLadders(MapId))
+        foreach (MapTriggerLadder mapTriggerLadder in MapEntityMetadataStorage.GetTriggerLadders(MapId))
         {
             if (mapTriggerLadder is null)
             {
@@ -826,7 +849,7 @@ public partial class FieldManager
             State.AddTriggerObject(new TriggerLadder(mapTriggerLadder.Id, mapTriggerLadder.IsVisible));
         }
 
-        foreach (MapTriggerRope mapTriggerRope in MapEntityStorage.GetTriggerRopes(MapId))
+        foreach (MapTriggerRope mapTriggerRope in MapEntityMetadataStorage.GetTriggerRopes(MapId))
         {
             if (mapTriggerRope is null)
             {
@@ -836,7 +859,7 @@ public partial class FieldManager
             State.AddTriggerObject(new TriggerRope(mapTriggerRope.Id, mapTriggerRope.IsVisible));
         }
 
-        foreach (MapTriggerSound mapTriggerSound in MapEntityStorage.GetTriggerSounds(MapId))
+        foreach (MapTriggerSound mapTriggerSound in MapEntityMetadataStorage.GetTriggerSounds(MapId))
         {
             if (mapTriggerSound is null)
             {
@@ -846,7 +869,7 @@ public partial class FieldManager
             State.AddTriggerObject(new TriggerSound(mapTriggerSound.Id, mapTriggerSound.IsEnabled));
         }
 
-        foreach (MapTriggerSkill mapTriggerSkill in MapEntityStorage.GetTriggerSkills(MapId))
+        foreach (MapTriggerSkill mapTriggerSkill in MapEntityMetadataStorage.GetTriggerSkills(MapId))
         {
             if (mapTriggerSkill is null)
             {
@@ -865,7 +888,7 @@ public partial class FieldManager
         }
 
         // Load breakables
-        foreach (MapBreakableActorObject mapActor in MapEntityStorage.GetBreakableActors(MapId))
+        foreach (MapBreakableActorObject mapActor in MapEntityMetadataStorage.GetBreakableActors(MapId))
         {
             if (mapActor is null)
             {
@@ -875,7 +898,7 @@ public partial class FieldManager
             State.AddBreakable(new(mapActor.EntityId, mapActor.IsEnabled, mapActor.HideDuration, mapActor.ResetDuration));
         }
 
-        foreach (MapBreakableNifObject mapNif in MapEntityStorage.GetBreakableNifs(MapId))
+        foreach (MapBreakableNifObject mapNif in MapEntityMetadataStorage.GetBreakableNifs(MapId))
         {
             if (mapNif is null)
             {
@@ -886,7 +909,7 @@ public partial class FieldManager
         }
 
         // Load interact objects
-        foreach (MapInteractObject mapInteract in MapEntityStorage.GetInteractObjects(MapId))
+        foreach (MapInteractObject mapInteract in MapEntityMetadataStorage.GetInteractObjects(MapId))
         {
             if (mapInteract is null)
             {
@@ -896,7 +919,7 @@ public partial class FieldManager
             State.AddInteractObject(new(mapInteract.EntityId, mapInteract.InteractId, mapInteract.Type, InteractObjectState.Default));
         }
 
-        foreach (MapLiftableObject liftable in MapEntityStorage.GetLiftablesObjects(MapId))
+        foreach (MapLiftableObject liftable in MapEntityMetadataStorage.GetLiftablesObjects(MapId))
         {
             if (liftable is null)
             {
@@ -906,7 +929,7 @@ public partial class FieldManager
             State.AddLiftableObject(new(liftable.EntityId, liftable));
         }
 
-        foreach (MapChestMetadata mapChest in MapEntityStorage.GetMapChests(MapId))
+        foreach (MapChestMetadata mapChest in MapEntityMetadataStorage.GetMapChests(MapId))
         {
             if (mapChest is null)
             {
@@ -931,12 +954,12 @@ public partial class FieldManager
             );
         }
 
-        foreach (CoordS coord in MapEntityStorage.GetHealingSpot(MapId))
+        foreach (CoordS coord in MapEntityMetadataStorage.GetHealingSpot(MapId))
         {
             State.AddHealingSpot(RequestFieldObject(new HealingSpot(GuidGenerator.Int(), coord)));
         }
 
-        foreach (MapVibrateObject mapVibrateObject in MapEntityStorage.GetVibrateObjects(MapId))
+        foreach (MapVibrateObject mapVibrateObject in MapEntityMetadataStorage.GetVibrateObjects(MapId))
         {
             State.AddVibrateObject(mapVibrateObject);
         }

@@ -15,6 +15,7 @@ public static class MapMetadataStorage
         foreach (MapMetadata item in items)
         {
             Maps[item.Id] = item;
+            MapEntityMetadataStorage.AddToStorage(item.Id, item.Entities);
         }
     }
 
