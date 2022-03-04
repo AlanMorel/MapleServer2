@@ -36,7 +36,7 @@ public static class MapleServer
 
         if (!File.Exists(dotenv))
         {
-            throw new ArgumentException(".env file not found!");
+            throw new FileNotFoundException(".env file not found!");
         }
 
         DotEnv.Load(dotenv);
