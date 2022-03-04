@@ -93,7 +93,7 @@ public partial class TriggerContext
         {
             foreach (int boxId in boxIds)
             {
-                MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
+                MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
 
                 foreach (IFieldObject<Player> player in Field.State.Players.Values)
                 {
@@ -164,7 +164,7 @@ public partial class TriggerContext
         {
             box = box[1..];
             boxId = int.Parse(box);
-            triggerBox = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
+            triggerBox = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
             foreach (IFieldObject<Player> player in Field.State.Players.Values)
             {
                 if (!FieldManager.IsPlayerInBox(triggerBox, player))
@@ -176,7 +176,7 @@ public partial class TriggerContext
         }
 
         boxId = int.Parse(box);
-        triggerBox = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
+        triggerBox = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
         foreach (IFieldObject<Player> player in Field.State.Players.Values)
         {
             if (FieldManager.IsPlayerInBox(triggerBox, player))
