@@ -190,7 +190,7 @@ public partial class TriggerContext
             return;
         }
 
-        Field.BroadcastPacket(CinematicPacket.Conversation(npcId, script, delay * 1000, align));
+        Field.BroadcastPacket(CinematicPacket.Conversation(npcId, npcId.ToString(), script, delay * 1000, align));
     }
 
     public void SetOnetimeEffect(int id, bool enable, string path)

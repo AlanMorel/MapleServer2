@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using Maple2.Trigger.Enum;
+using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Packets;
@@ -32,10 +33,10 @@ public partial class TriggerContext
 
     public void AddCinematicTalk(int npcId, string illustId, string script, int duration, Align align, int delayTick)
     {
-        Field.BroadcastPacket(CinematicPacket.Conversation(npcId, script, duration, align));
+        Field.BroadcastPacket(CinematicPacket.Conversation(npcId, illustId, script, duration, align));
     }
 
-    public void CreateMonster(int[] spawnPointIds, bool arg2, int arg3)
+    public void CreateMonster(int[] spawnPointIds, bool spawnAnimation, int arg3)
     {
         foreach (int spawnPointId in spawnPointIds)
         {
@@ -49,10 +50,29 @@ public partial class TriggerContext
             {
                 foreach (string npcId in spawnPoint.NpcIds)
                 {
-                    if (int.TryParse(npcId, out int id))
+                    if (!int.TryParse(npcId, out int id))
                     {
-                        Field.RequestNpc(id, spawnPoint.Position, spawnPoint.Rotation);
+                        continue;
                     }
+
+                    short animation = default;
+                    if (spawnAnimation)
+                    {
+                        NpcMetadata npcMetadata = NpcMetadataStorage.GetNpcMetadata(id);
+                        if (npcMetadata is null || !npcMetadata.StateActions.TryGetValue(NpcState.Normal, out (string, NpcAction, short)[] stateAction))
+                        {
+                            continue;
+                        }
+
+                        if (stateAction.Length == 0)
+                        {
+                            continue;
+                        }
+
+                        animation = AnimationStorage.GetSequenceIdBySequenceName(npcMetadata.Model, stateAction[0].Item1);
+                    }
+
+                    Field.RequestNpc(id, spawnPoint.Position, spawnPoint.Rotation, animation);
                 }
             }
         }
