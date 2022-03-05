@@ -9,13 +9,13 @@ public class TaskScheduler
 
     public static TaskScheduler Instance => _instance ??= new();
 
-    public void ScheduleTask(int hour, int min, double intervalInHour, Action task)
+    public void ScheduleTask(int hour, int min, double intervalInHour, int minutesToRunPerDay, Action task)
     {
         DateTime now = DateTime.Now;
         DateTime firstRun = new(now.Year, now.Month, now.Day, hour, min, 0, 0);
         if (now > firstRun)
         {
-            firstRun = firstRun.AddDays(1);
+            firstRun = firstRun.AddHours(minutesToRunPerDay);
         }
 
         TimeSpan timeToGo = firstRun - now;

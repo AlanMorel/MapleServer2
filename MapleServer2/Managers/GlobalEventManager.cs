@@ -1,4 +1,7 @@
-﻿using MapleServer2.Types;
+﻿using MapleServer2.Data.Static;
+using MapleServer2.Types;
+using MapleServer2.Tools;
+using TaskScheduler = MapleServer2.Tools.TaskScheduler;
 
 namespace MapleServer2.Managers;
 
@@ -29,5 +32,20 @@ public class GlobalEventManager
     public GlobalEvent GetEventById(int id)
     {
         return GlobalEventList.GetValueOrDefault(id);
+    }
+    
+    public GlobalEvent GetCurrentEvent()
+    {
+        return GlobalEventList.Values.FirstOrDefault();
+    }
+
+    public static void RunScheduledEvents()
+    {
+        List<GlobalEvent> events = GlobalEventsMetadataStorage.GetAllAutoGlobalEvents();
+        
+        foreach (GlobalEvent globalEvent in events)
+        {
+            TaskScheduler.Instance.ScheduleTask(DateTime.Now.Hour, globalEvent.StartAtMinutesOnHour, 1, globalEvent.MinutesToRunPerDay, globalEvent.Start());
+        }
     }
 }

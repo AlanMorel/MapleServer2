@@ -54,7 +54,8 @@ public static class MapleServer
         }
 
         // Schedule daily reset and repeat every 24 hours
-        TaskScheduler.Instance.ScheduleTask(0, 0, 24, DailyReset);
+        TaskScheduler.Instance.ScheduleTask(0, 0, 24, 24 * 60, DailyReset);
+        TaskScheduler.Instance.ScheduleTask(DateTime.Now.Hour,53,1, 1, EventAt35Min);
 
         // Load Mob AI files
         string mobAiSchema = Path.Combine(Paths.AI_DIR, "mob-ai.xsd");
@@ -156,6 +157,34 @@ public static class MapleServer
         DatabaseManager.RunQuery("UPDATE `characters` SET gathering_count = '[]'");
 
         DatabaseManager.ServerInfo.SetLastDailyReset(TimeInfo.CurrentDate());
+    }
+
+    private static void EventAt35Min()
+    {
+        GlobalEvent globalEvent = new()
+        {
+            Events = new()
+            {
+                GlobalEventType.blood_mine,
+                GlobalEventType.spring_beach,
+                GlobalEventType.crazy_runner,
+            }
+        };
+        globalEvent.Start();
+    }
+
+    private static void EventAt05Min()
+    {
+        GlobalEvent globalEvent = new()
+        {
+            Events = new()
+            {
+                GlobalEventType.red_arena,
+                GlobalEventType.dancedance_stop,
+                GlobalEventType.trap_master,
+            }
+        };
+        globalEvent.Start();
     }
 
     public static void BroadcastPacketAll(PacketWriter packet, GameSession sender = null)

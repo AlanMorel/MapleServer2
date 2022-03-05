@@ -1,0 +1,38 @@
+[
+  {
+    "Id": 1,
+    "MinutesToRunPerDay": 90,
+    "Events": [
+      12,
+      6,
+      1
+    ]
+  },
+  {
+    "Id": 2,
+    "MinutesToRunPerDay": 90,
+    "Events": [
+      11,
+      3,
+      4
+    ]
+  },
+  {
+    "Id": 3,
+    "MinutesToRunPerDay": 180,
+    "Events": [
+      10,
+      13,
+      2
+    ]
+  },
+  {
+    "Id": 4,
+    "MinutesToRunPerDay": 180,
+    "Events": [
+      10,
+      13,
+      5
+    ]
+  }
+]

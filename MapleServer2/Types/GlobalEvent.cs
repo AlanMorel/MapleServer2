@@ -7,6 +7,8 @@ namespace MapleServer2.Types;
 public class GlobalEvent
 {
     public readonly int Id;
+    public readonly int StartAtMinutesOnHour;
+    public readonly int MinutesToRunPerDay;
     public List<GlobalEventType> Events = new();
 
     public GlobalEvent()
