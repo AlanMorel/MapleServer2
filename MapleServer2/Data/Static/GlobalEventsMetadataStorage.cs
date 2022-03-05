@@ -18,8 +18,5 @@ public static class GlobalEventsMetadataStorage
         }
     }
 
-    public static List<GlobalEvent> GetAllAutoGlobalEvents()
-    {
-        return GlobalEvents.Values.ToList();
-    }
+    public static List<GlobalEvent> GetAllAutoGlobalEvents() => GlobalEvents.Values.ToList();
 }
