@@ -23,7 +23,6 @@ public static class GlobalPortalPacket
         foreach (GlobalEventType eventType in globalEvent.Events)
         {
             pWriter.WriteUnicodeString(eventType == GlobalEventType.none ? "" : eventType.ToString());
-
         }
         return pWriter;
     }

@@ -28,8 +28,7 @@ public class GlobalEvent
 
     public async Task BroadcastEvent()
     {
-        List<Player> onlinePlayers = GameServer.PlayerManager.GetAllPlayers();
-        onlinePlayers = onlinePlayers.Where(x => !MapMetadataStorage.MapIsInstancedOnly(x.MapId)).ToList();
+        List<Player> onlinePlayers = GameServer.PlayerManager.GetAllPlayers().Where(x => !MapMetadataStorage.MapIsInstancedOnly(x.MapId)).ToList();
         foreach (Player player in onlinePlayers)
         {
             player.Session?.Send(GlobalPortalPacket.Notice(this));
