@@ -149,4 +149,15 @@ public static class MapMetadataStorage
 
         return mapMetadata.Property.Capacity == 0;
     }
+
+    public static bool MapIsTutorial(int mapId)
+    {
+        MapMetadata mapMetadata = GetMetadata(mapId);
+        if (mapMetadata is null)
+        {
+            return false;
+        }
+
+        return mapMetadata.Property.IsTutorialMap;
+    }
 }
