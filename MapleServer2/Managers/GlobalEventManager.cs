@@ -33,7 +33,7 @@ public class GlobalEventManager
     {
         return GlobalEventList.GetValueOrDefault(id);
     }
-    
+
     public GlobalEvent GetCurrentEvent()
     {
         return GlobalEventList.Values.FirstOrDefault();
@@ -42,7 +42,7 @@ public class GlobalEventManager
     public static void ScheduleEvents()
     {
         List<GlobalEvent> events = GlobalEventsMetadataStorage.GetAllAutoGlobalEvents();
-        
+
         foreach (GlobalEvent globalEvent in events)
         {
             TaskScheduler.Instance.ScheduleTask(globalEvent.FirstHour, globalEvent.FirstMinutesOnHour, 1, globalEvent.MinutesToRunPerDay, globalEvent.Start);
