@@ -65,7 +65,7 @@ public static class MapleServer
 
         // Run global events
         GlobalEventManager.ScheduleEvents();
-        
+
         IContainer loginContainer = LoginContainerConfig.Configure();
         using ILifetimeScope loginScope = loginContainer.BeginLifetimeScope();
         _loginServer = loginScope.Resolve<LoginServer>();
