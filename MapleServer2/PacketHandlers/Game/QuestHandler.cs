@@ -64,7 +64,7 @@ public class QuestHandler : GamePacketHandler
         questStatus.State = QuestState.Started;
         questStatus.StartTimestamp = TimeInfo.Now();
         DatabaseManager.Quests.Update(questStatus);
-        session.Send(QuestPacket.AcceptQuest(questId));
+        session.Send(QuestPacket.AcceptQuest(questStatus));
         TrophyManager.OnAcceptQuest(session.Player, questId);
     }
 
@@ -151,14 +151,16 @@ public class QuestHandler : GamePacketHandler
             int questId = packet.ReadInt();
             session.Player.QuestData.TryGetValue(questId, out QuestStatus questStatus);
 
-            session.Send(QuestPacket.AcceptQuest(questId));
             if (questStatus is null)
             {
                 QuestMetadata metadata = QuestMetadataStorage.GetMetadata(questId);
-                session.Player.QuestData.Add(questId, new(session.Player, metadata, QuestState.Started, TimeInfo.Now()));
+                questStatus = new(session.Player, metadata, QuestState.Started, TimeInfo.Now());
+                session.Player.QuestData.Add(questId, questStatus);
+                session.Send(QuestPacket.AcceptQuest(questStatus));
                 continue;
             }
 
+            session.Send(QuestPacket.AcceptQuest(questStatus));
             questStatus.State = QuestState.Started;
             DatabaseManager.Quests.Update(questStatus);
         }

@@ -43,6 +43,7 @@ public class SkillCast
     public CoordF Position;
     public CoordF Direction;
     public CoordF Rotation;
+    public short LookDirection;
 
     public IFieldActor<NpcMetadata> Target;
 
@@ -60,6 +61,7 @@ public class SkillCast
     {
         SkillId = id;
         SkillLevel = level;
+        SkillAttack = GetSkillMotions()?.FirstOrDefault()?.SkillAttacks.FirstOrDefault();
     }
 
     public SkillCast(int id, short level, long skillSn, int serverTick) : this(id, level)
@@ -71,6 +73,10 @@ public class SkillCast
     public SkillCast(int id, short level, long skillSn, int serverTick, SkillCast parentSkill) : this(id, level, skillSn, serverTick)
     {
         ParentSkill = parentSkill;
+        CasterObjectId = parentSkill.CasterObjectId;
+        Position = parentSkill.Position;
+        Rotation = parentSkill.Rotation;
+        LookDirection = parentSkill.LookDirection;
     }
 
     public SkillCast(int id, short level, long skillSn, int serverTick, int casterObjectId, int clientTick) : this(id, level, skillSn, serverTick)
@@ -85,7 +91,6 @@ public class SkillCast
         AttackPoint = attackPoint;
         CasterObjectId = casterObjectId;
         ClientTick = clientTick;
-        SkillAttack = GetSkillMotions().FirstOrDefault()?.SkillAttacks.FirstOrDefault();
     }
 
     public float GetDamageRate() => SkillAttack?.DamageProperty.DamageRate ?? 0;
@@ -140,7 +145,7 @@ public class SkillCast
         return skillData.Type == SkillType.Active && skillData.SubType == SkillSubType.None;
     }
 
-    public List<SkillMotion> GetSkillMotions() => GetCurrentLevel().SkillMotions;
+    public List<SkillMotion> GetSkillMotions() => GetCurrentLevel()?.SkillMotions;
 
     private bool VerifySkillTypeOf(SkillType type, SkillSubType subType)
     {

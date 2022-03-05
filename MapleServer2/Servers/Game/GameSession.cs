@@ -40,6 +40,7 @@ public class GameSession : Session
         Player = player;
         FieldManager = FieldManagerFactory.GetManager(player);
         player.FieldPlayer = FieldManager.RequestCharacter(player);
+        player.LastLogTime = TimeInfo.Now();
     }
 
     public void EnterField(Player player)
@@ -55,7 +56,7 @@ public class GameSession : Session
                 DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSessionByInstanceId(FieldManager.InstanceId);
                 //check if the destroyed map was a dungeon map
                 if (dungeonSession != null && FieldManager.InstanceId == dungeonSession.DungeonInstanceId
-                    && dungeonSession.IsDungeonSessionMap(FieldManager.MapId))
+                                           && dungeonSession.IsDungeonSessionMap(FieldManager.MapId))
                 {
                     GameServer.DungeonManager.ResetDungeonSession(player, dungeonSession);
                 }
@@ -100,11 +101,30 @@ public class GameSession : Session
                 club?.BroadcastPacketClub(ClubPacket.LogoutNotice(Player, club));
             }
 
+            foreach (GroupChat groupChat in Player.GroupChats)
+            {
+                groupChat?.BroadcastPacketGroupChat(GroupChatPacket.LogoutNotice(groupChat, Player));
+                groupChat?.CheckOfflineGroupChat();
+            }
+
             Player.IsMigrating = false;
 
             AuthData authData = Player.Account.AuthData;
             authData.OnlineCharacterId = 0;
             DatabaseManager.AuthData.UpdateOnlineCharacterId(authData);
+        }
+
+        List<GameEventUserValue> userTimeValues = Player.EventUserValues.Where(x => x.EventType == GameEventUserValueType.AttendanceAccumulatedTime).ToList();
+        foreach (GameEventUserValue userValue in userTimeValues)
+        {
+            if (!long.TryParse(userValue.EventValue, out long timeAccumulated))
+            {
+                timeAccumulated = 0;
+            }
+
+            timeAccumulated += TimeInfo.Now() - Player.LastLogTime;
+            userValue.EventValue = timeAccumulated.ToString();
+            DatabaseManager.GameEventUserValue.Update(userValue);
         }
 
         Player.LastLogTime = TimeInfo.Now();

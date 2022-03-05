@@ -3,7 +3,9 @@ using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
+using MapleServer2.Database.Types;
 using MapleServer2.Network;
+using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
@@ -68,8 +70,20 @@ public class ResponseKeyHandler : CommonPacketHandler
             {
                 club.BroadcastPacketClub(ClubPacket.LoginNotice(player, club), session);
             }
+
             player.Clubs.Add(club);
             member.Player = player;
+        }
+
+        // Get Group Chats
+        player.GroupChats = GameServer.GroupChatManager.GetGroupChatsByMember(player.CharacterId);
+        foreach (GroupChat groupChat in player.GroupChats)
+        {
+            session.Send(GroupChatPacket.Update(groupChat));
+            if (!player.IsMigrating)
+            {
+                groupChat.BroadcastPacketGroupChat(GroupChatPacket.LoginNotice(groupChat, player));
+            }
         }
 
         //session.Send(0x27, 0x01); // Meret market related...?
@@ -189,6 +203,14 @@ public class ResponseKeyHandler : CommonPacketHandler
             session.Send(KeyTablePacket.AskKeyboardOrMouse());
         }
 
+        GameEventHelper.LoadEvents(session.Player);
+        List<GameEvent> gameEvents = DatabaseManager.Events.FindAll();
+        IEnumerable<List<GameEvent>> gameEventPackets = gameEvents.SplitList(5);
+        foreach (List<GameEvent> gameEvent in gameEventPackets)
+        {
+            session.Send(GameEventPacket.Load(gameEvent));
+        }
+
         // SendKeyTable f(0x00), SendGuideRecord f(0x03), GameEvent f(0x00)
         // SendBannerList f(0x19), SendRoomDungeon f(0x05, 0x14, 0x17)
         session.Send(DungeonListPacket.DungeonList());
@@ -205,6 +227,7 @@ public class ResponseKeyHandler : CommonPacketHandler
             {
                 party.BroadcastPacketParty(PartyPacket.LoginNotice(player), session);
             }
+
             session.Send(PartyPacket.Create(party, false));
             party.BroadcastPacketParty(PartyPacket.UpdatePlayer(player));
             party.BroadcastPacketParty(PartyPacket.UpdateDungeonInfo(player));

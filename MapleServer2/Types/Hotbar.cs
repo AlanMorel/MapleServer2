@@ -51,7 +51,7 @@ public class Hotbar
             foreach (int skillId in skillIds)
             {
                 JobSkillMetadata jobSkillMetadata = jobMetadata.Skills.First(x => x.SkillId == skillId);
-                if (jobSkillMetadata.QuickSlotPriority != 99)
+                if (jobSkillMetadata.QuickSlotPriority != 99 && jobSkillMetadata.SubJobCode == 0)
                 {
                     hotbarSkills.Add((skillId, jobSkillMetadata.QuickSlotPriority));
                 }

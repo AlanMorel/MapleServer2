@@ -11,7 +11,7 @@ public static class SyncStateHelper
     {
         SyncState state = new();
 
-        state.Animation1 = packet.ReadByte();
+        state.BoreAnimation = packet.ReadByte();
         state.Animation2 = packet.ReadByte();
         state.Flag = (SyncStateFlag) packet.ReadByte();
         if (state.Flag.HasFlag(SyncStateFlag.Flag1))
@@ -22,8 +22,8 @@ public static class SyncStateHelper
 
         state.Coord = packet.Read<CoordS>();
         state.Rotation = packet.ReadShort(); // CoordS / 10 (Rotation?)
-        state.Animation3 = packet.ReadByte();
-        if (state.Animation3 > 127)
+        state.JumpAnimation = packet.ReadByte();
+        if (state.JumpAnimation > 127)
         { // if animation < 0 (signed)
             state.UnknownFloat1 = packet.ReadFloat();
             state.UnknownFloat2 = packet.ReadFloat();
@@ -62,12 +62,21 @@ public static class SyncStateHelper
         }
 
         state.Unknown4 = packet.ReadInt();
+
+        if (state.BoreAnimation == 60) // RPS
+        {
+            state.OpponentObjectId = packet.ReadInt();
+            state.RPSUnk1 = packet.ReadByte();
+            state.RPSUnk2 = packet.ReadByte();
+            state.RPSUnk3 = packet.ReadUnicodeString();
+        }
+
         return state;
     }
 
     public static PacketWriter WriteSyncState(this PacketWriter pWriter, SyncState entry)
     {
-        pWriter.WriteByte(entry.Animation1);
+        pWriter.WriteByte(entry.BoreAnimation);
         pWriter.WriteByte(entry.Animation2);
         pWriter.WriteByte((byte) entry.Flag);
         if (entry.Flag.HasFlag(SyncStateFlag.Flag1))
@@ -78,9 +87,9 @@ public static class SyncStateHelper
 
         pWriter.Write(entry.Coord);
         pWriter.WriteShort(entry.Rotation);
-        pWriter.WriteByte(entry.Animation3);
+        pWriter.WriteByte(entry.JumpAnimation);
 
-        if (entry.Animation3 > 127)
+        if (entry.JumpAnimation > 127)
         {
             pWriter.WriteFloat(entry.UnknownFloat1);
             pWriter.WriteFloat(entry.UnknownFloat2);
@@ -118,6 +127,15 @@ public static class SyncStateHelper
             pWriter.Write(entry.Flag6Unknown5);
         }
         pWriter.WriteInt(entry.Unknown4);
+
+        if (entry.BoreAnimation == 60) // RPS
+        {
+            pWriter.WriteInt(entry.OpponentObjectId);
+            pWriter.WriteByte(entry.RPSUnk1);
+            pWriter.WriteByte(entry.RPSUnk2);
+            pWriter.WriteUnicodeString(entry.RPSUnk3);
+        }
+
         return pWriter;
     }
 

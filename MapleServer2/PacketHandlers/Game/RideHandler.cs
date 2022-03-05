@@ -56,7 +56,7 @@ public class RideHandler : GamePacketHandler
         long mountUid = packet.ReadLong();
         // [46-0s] (UgcPacketHelper.Ugc()) but client doesn't set this data?
 
-        if (type == RideType.UseItem && !session.Player.Inventory.Items.ContainsKey(mountUid))
+        if (type == RideType.UseItem && !session.Player.Inventory.HasItem(mountUid))
         {
             return;
         }
@@ -91,7 +91,7 @@ public class RideHandler : GamePacketHandler
         int mountId = packet.ReadInt();
         long mountUid = packet.ReadLong();
 
-        if (!session.Player.Inventory.Items.ContainsKey(mountUid))
+        if (!session.Player.Inventory.HasItem(mountUid))
         {
             return;
         }

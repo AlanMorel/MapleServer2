@@ -36,10 +36,12 @@ public class InfoCommands : InGameCommand
             {
                 aliases = $" [{string.Join(", ", commandBase.Aliases.Skip(1))}]";
             }
+
             stringBuilder.Append((commandBase.Aliases.First() + aliases).Color(Color.DarkOrange).Bold() + " ");
 
             stringBuilder.Append($"{commandBase.Usage.Color(Color.Wheat)}\n");
         }
+
         trigger.Session.Send(NoticePacket.Notice(stringBuilder.ToString(), NoticeType.Chat));
     }
 }
@@ -82,6 +84,7 @@ public class InfoCommand : InGameCommand
         {
             aliases = $" [{string.Join(", ", commandBase.Aliases.Skip(1))}]";
         }
+
         stringBuilder.Append((commandBase.Aliases.First() + aliases).Color(Color.DarkOrange).Bold() + " ");
 
         stringBuilder.Append($"{commandBase.Description.Color(Color.Wheat)}\n");
@@ -95,6 +98,7 @@ public class InfoCommand : InGameCommand
                 stringBuilder.Append('\n');
             }
         }
+
         trigger.Session.Send(NoticePacket.Notice(stringBuilder.ToString(), NoticeType.Chat));
     }
 }
@@ -155,11 +159,9 @@ public class OnlineCommand : InGameCommand
 
 public class FindCommand : InGameCommand
 {
-    private readonly string[] Options = {
-        "item",
-        "map",
-        "npc",
-        "mob"
+    private readonly string[] Options =
+    {
+        "item", "map", "npc", "mob", "trophy"
     };
 
     public FindCommand()
@@ -223,6 +225,7 @@ public class FindCommand : InGameCommand
                 {
                     stringBuilder.Append($"{item.Name} - {item.Id}\n".Color(Color.Wheat));
                 }
+
                 break;
             case "map":
                 IEnumerable<MapMetadata> mapMetadatas = MapMetadataStorage.GetAll().Where(x => x.Name.ToLower().Contains(name));
@@ -243,6 +246,7 @@ public class FindCommand : InGameCommand
                 {
                     stringBuilder.Append($"{map.Name} - {map.Id}\n".Color(Color.Wheat));
                 }
+
                 break;
             case "mob":
             case "npc":
@@ -264,8 +268,31 @@ public class FindCommand : InGameCommand
                 {
                     stringBuilder.Append($"{npc.Name} - {npc.Id}\n".Color(Color.Wheat));
                 }
+
+                break;
+            case "trophy":
+                IEnumerable<TrophyMetadata> trophyMetadatas = TrophyMetadataStorage.GetAll().Where(trophy => trophy.Name.ToLower().Contains(name));
+                if (trophyMetadatas is null || !trophyMetadatas.Any())
+                {
+                    trigger.Session.SendNotice($"Trophy '{name}' not found.");
+                    return;
+                }
+
+                if (trophyMetadatas.Count() > 50)
+                {
+                    trigger.Session.SendNotice($"Too many results for '{name}'");
+                    return;
+                }
+
+                stringBuilder.Append($"Found {trophyMetadatas.Count()} trophies with name {name}:".Color(Color.DarkOrange).Bold() + "\n");
+                foreach (TrophyMetadata trophy in trophyMetadatas)
+                {
+                    stringBuilder.Append($"{trophy.Name} - {trophy.Id}\n".Color(Color.Wheat));
+                }
+
                 break;
         }
+
         trigger.Session.Send(NoticePacket.Notice(stringBuilder.ToString(), NoticeType.Chat));
     }
 }

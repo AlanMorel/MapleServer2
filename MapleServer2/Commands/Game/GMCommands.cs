@@ -32,6 +32,7 @@ public class OneShotCommand : InGameCommand
         trigger.Session.SendNotice("Oneshot mode enabled.");
     }
 }
+
 public class SetJobCommand : InGameCommand
 {
     public SetJobCommand()
@@ -65,16 +66,15 @@ public class SetJobCommand : InGameCommand
         {
             string[] classes = Enum.GetNames(typeof(Job));
 
-            player.Session.Send(NoticePacket.Notice("You have to give a classname and specifiy awakening (1 or 0)\nAvailable classes:\n".Bold().Color(Color.DarkOrange) +
-                                                    $"{string.Join(", ", classes).Color(Color.Aquamarine)}", NoticeType.Chat));
+            player.Session.Send(NoticePacket.Notice(
+                "You have to give a classname and specifiy awakening (1 or 0)\nAvailable classes:\n".Bold().Color(Color.DarkOrange) +
+                $"{string.Join(", ", classes).Color(Color.Aquamarine)}", NoticeType.Chat));
 
             return;
         }
 
-        Job job = Job.None;
-        if (!Enum.TryParse(jobName, true, out job))
+        if (!Enum.TryParse(jobName, true, out Job job))
         {
-
             player.Session.SendNotice($"{jobName} is not a valid class name");
             return;
         }
@@ -85,17 +85,47 @@ public class SetJobCommand : InGameCommand
             return;
         }
 
-        if (job != player.Job)
-        {
-            DatabaseManager.SkillTabs.Delete(skillTab.Uid);
-            SkillTab newSkillTab = new(player.CharacterId, job, skillTab.TabId, skillTab.Name);
-
-            player.SkillTabs[player.SkillTabs.IndexOf(skillTab)] = newSkillTab;
-            player.Job = job;
-        }
-
         player.Awakened = awakened == 1;
 
+        if (job != player.Job)
+        {
+            player.Job = job;
+            DatabaseManager.SkillTabs.Delete(skillTab.Uid);
+
+            SkillTab newSkillTab = new(player.CharacterId, job, player.JobCode, skillTab.TabId, skillTab.Name);
+            player.SkillTabs[player.SkillTabs.IndexOf(skillTab)] = newSkillTab;
+        }
+
         trigger.Session.Send(JobPacket.SendJob(fieldPlayer));
+    }
+}
+
+public class NoticeCommand : InGameCommand
+{
+    public NoticeCommand()
+    {
+        Aliases = new()
+        {
+            "testnotice"
+        };
+        Parameters = new()
+        {
+            new Parameter<int>("amount", "amount")
+        };
+    }
+
+    public override void Execute(GameCommandTrigger trigger)
+    {
+        int amount = trigger.Get<int>("amount");
+        trigger.Session.SendNotice($"Start ################ ");
+        for (int i = amount; i < amount + 10; i++)
+        {
+            trigger.Session.SendNotice($"Message {i:x8}:");
+            trigger.Session.Send(NoticePacket.Notice((SystemNotice) i, NoticeType.Chat));
+
+            trigger.Session.SendNotice($" ----------- ");
+        }
+
+        trigger.Session.SendNotice($"End ################ ");
     }
 }

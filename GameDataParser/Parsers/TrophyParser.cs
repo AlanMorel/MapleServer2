@@ -13,6 +13,18 @@ internal class TrophyParser : Exporter<List<TrophyMetadata>>
     protected override List<TrophyMetadata> Parse()
     {
         List<TrophyMetadata> trophyList = new();
+
+        // Parse trophy names
+        Dictionary<int, string> trophyNames = new();
+        PackFileEntry file = Resources.XmlReader.Files.FirstOrDefault(x => x.Name.StartsWith("string/en/achievename.xml"));
+        XmlDocument stringDoc = Resources.XmlReader.GetXmlDocument(file);
+        foreach (XmlNode node in stringDoc.DocumentElement.ChildNodes)
+        {
+            int id = int.Parse(node.Attributes["id"].Value);
+            string name = node.Attributes["name"].Value;
+            trophyNames[id] = name;
+        }
+
         foreach (PackFileEntry entry in Resources.XmlReader.Files)
         {
             if (!entry.Name.StartsWith("achieve/"))
@@ -23,12 +35,14 @@ internal class TrophyParser : Exporter<List<TrophyMetadata>>
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
             XmlNode trophy = document.SelectSingleNode("/ms2/achieves");
 
+            int id = int.Parse(trophy.Attributes["id"].Value);
             TrophyMetadata newTrophy = new()
             {
-                Id = int.Parse(trophy.Attributes["id"].Value),
+                Id = id,
                 Categories = trophy.Attributes["categoryTag"]?.Value.Split(","),
                 AccountWide = trophy.Attributes["account"].Value == "1"
             };
+            trophyNames.TryGetValue(id, out newTrophy.Name);
 
             XmlNodeList grades = trophy.SelectNodes("grade");
 

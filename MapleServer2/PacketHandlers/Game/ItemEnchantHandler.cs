@@ -46,39 +46,51 @@ public class ItemEnchantHandler : GamePacketHandler
         byte type = packet.ReadByte();
         long itemUid = packet.ReadLong();
 
-        if (session.Player.Inventory.Items.TryGetValue(itemUid, out Item item))
+        Item item = session.Player.Inventory.GetByUid(itemUid);
+
+        if (item == null)
         {
-            session.Send(ItemEnchantPacket.BeginEnchant(type, item));
+            return;
         }
+
+        session.Send(ItemEnchantPacket.BeginEnchant(type, item));
     }
 
     private static void HandleOpheliaEnchant(GameSession session, PacketReader packet)
     {
         long itemUid = packet.ReadLong();
 
-        if (session.Player.Inventory.Items.TryGetValue(itemUid, out Item item))
+        Item item = session.Player.Inventory.GetByUid(itemUid);
+
+        if (item == null)
         {
-            item.Enchants += 5;
-            item.Charges += 10;
-            session.Send(ItemEnchantPacket.EnchantResult(item));
+            return;
         }
+
+        item.Enchants += 5;
+        item.Charges += 10;
+        session.Send(ItemEnchantPacket.EnchantResult(item));
     }
 
     private static void HandlePeachyEnchant(GameSession session, PacketReader packet)
     {
         long itemUid = packet.ReadLong();
 
-        if (session.Player.Inventory.Items.TryGetValue(itemUid, out Item item))
-        {
-            item.EnchantExp += 5000;
-            if (item.EnchantExp >= 10000)
-            {
-                item.EnchantExp %= 10000;
-                item.Enchants++;
-            }
+        Item item = session.Player.Inventory.GetByUid(itemUid);
 
-            session.Send(ItemEnchantPacket.EnchantResult(item));
-            session.Send(ItemEnchantPacket.UpdateCharges(item));
+        if (item == null)
+        {
+            return;
         }
+
+        item.EnchantExp += 5000;
+        if (item.EnchantExp >= 10000)
+        {
+            item.EnchantExp %= 10000;
+            item.Enchants++;
+        }
+
+        session.Send(ItemEnchantPacket.EnchantResult(item));
+        session.Send(ItemEnchantPacket.UpdateCharges(item));
     }
 }

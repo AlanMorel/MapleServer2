@@ -3,6 +3,7 @@ using MapleServer2.Commands.Core;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
+using MapleServer2.PacketHandlers.Game;
 using MapleServer2.Packets;
 using MapleServer2.Types;
 
@@ -28,6 +29,8 @@ public class UnlockAll : InGameCommand
         player.Levels.SetPrestigeLevel(100);
         player.Wallet.Meso.SetAmount(10000000000); // 10B
         player.Account.Meret.SetAmount(10000000000); // 10B
+
+        PremiumClubHandler.ActivatePremium(trigger.Session, 2592000); // 30 days in seconds
 
         // Stickers
         for (int i = 1; i < 7; i++)

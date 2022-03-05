@@ -40,13 +40,11 @@ public class DatabaseCharacter : DatabaseTable
             coord = JsonConvert.SerializeObject(player.SavedCoord),
             emotes = JsonConvert.SerializeObject(player.Emotes),
             favorite_stickers = JsonConvert.SerializeObject(player.FavoriteStickers),
-            group_chat_id = JsonConvert.SerializeObject(player.GroupChatId),
             guild_applications = JsonConvert.SerializeObject(player.GuildApplications),
             guild_id = player.Guild?.Id,
             guild_member_id = player.GuildMember?.Id,
             inventory_id = player.Inventory.Id,
             is_deleted = player.IsDeleted,
-            mapleopoly = JsonConvert.SerializeObject(player.Mapleopoly),
             player.Motto,
             profile_url = player.ProfileUrl,
             return_coord = JsonConvert.SerializeObject(player.ReturnCoord),
@@ -87,7 +85,7 @@ public class DatabaseCharacter : DatabaseTable
 
         List<Hotbar> hotbars = DatabaseManager.Hotbars.FindAllByGameOptionsId(data.game_options_id);
         List<SkillTab> skillTabs = DatabaseManager.SkillTabs.FindAllByCharacterId(data.character_id, data.job);
-        Inventory inventory = DatabaseManager.Inventories.FindById(data.inventory_id);
+        IInventory inventory = DatabaseManager.Inventories.FindById(data.inventory_id);
         BankInventory bankInventory = DatabaseManager.BankInventories.FindById(data.bank_inventory_id);
         MushkingRoyaleStats royaleStats = DatabaseManager.MushkingRoyaleStats.FindById(data.mushking_royale_id);
         List<Medal> medals = DatabaseManager.MushkingRoyaleMedals.FindAllByAccountId(data.account_id);
@@ -132,12 +130,10 @@ public class DatabaseCharacter : DatabaseTable
             SavedCoord = JsonConvert.DeserializeObject<CoordF>(data.coord),
             Emotes = JsonConvert.DeserializeObject<List<int>>(data.emotes),
             FavoriteStickers = JsonConvert.DeserializeObject<List<int>>(data.favorite_stickers),
-            GroupChatId = JsonConvert.DeserializeObject<int[]>(data.group_chat_id),
             GuildApplications = JsonConvert.DeserializeObject<List<GuildApplication>>(data.guild_applications),
             GuildId = data.guild_id ?? 0,
             ClubMembers = clubMemberships,
             IsDeleted = data.is_deleted,
-            Mapleopoly = JsonConvert.DeserializeObject<Mapleopoly>(data.mapleopoly),
             Motto = data.motto,
             ProfileUrl = data.profile_url,
             ReturnCoord = JsonConvert.DeserializeObject<CoordF>(data.return_coord),
@@ -272,12 +268,10 @@ public class DatabaseCharacter : DatabaseTable
             coord = JsonConvert.SerializeObject(player.SavedCoord),
             emotes = JsonConvert.SerializeObject(player.Emotes),
             favorite_stickers = JsonConvert.SerializeObject(player.FavoriteStickers),
-            group_chat_id = JsonConvert.SerializeObject(player.GroupChatId),
             guild_applications = JsonConvert.SerializeObject(player.GuildApplications),
             guild_id = player.Guild?.Id,
             guild_member_id = player.GuildMember?.Id,
             is_deleted = player.IsDeleted,
-            mapleopoly = JsonConvert.SerializeObject(player.Mapleopoly),
             player.Motto,
             profile_url = player.ProfileUrl,
             return_coord = JsonConvert.SerializeObject(player.ReturnCoord),

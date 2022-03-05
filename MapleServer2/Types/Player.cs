@@ -98,7 +98,9 @@ public class Player
     public long VisitingHomeId;
     public bool IsInDecorPlanner;
 
-    public Mapleopoly Mapleopoly = new();
+    public List<GameEventUserValue> EventUserValues = new();
+    public long RPSOpponentId;
+    public RpsChoice RPSSelection;
 
     public int MaxSkillTabs { get; set; }
     public long ActiveSkillTabId { get; set; }
@@ -108,7 +110,7 @@ public class Player
 
     public GameOptions GameOptions { get; set; }
 
-    public Inventory Inventory;
+    public IInventory Inventory;
     public DismantleInventory DismantleInventory = new();
     public LockInventory LockInventory = new();
     public HairInventory HairInventory = new();
@@ -122,7 +124,7 @@ public class Player
     public List<ClubMember> ClubMembers = new();
     public List<Club> Clubs = new();
 
-    public int[] GroupChatId;
+    public List<GroupChat> GroupChats = new();
 
     public long GuildId;
     public Guild Guild;
@@ -214,7 +216,7 @@ public class Player
             90200021
         };
         StatPointDistribution = new();
-        Inventory = new(true);
+        Inventory = new Inventory(true);
         Mailbox = new();
         BuddyList = new();
         QuestData = new();
@@ -222,7 +224,6 @@ public class Player
         TrophyCount = new int[3];
         ReturnMapId = (int) Map.Tria;
         ReturnCoord = MapEntityStorage.GetRandomPlayerSpawn(ReturnMapId).Coord.ToFloat();
-        GroupChatId = new int[3];
         SkinColor = skinColor;
         UnlockedTaxis = new();
         UnlockedMaps = new();
@@ -230,7 +231,7 @@ public class Player
         CharacterId = DatabaseManager.Characters.Insert(this);
         SkillTabs = new()
         {
-            new(CharacterId, job, id: 1, name: "Build 1")
+            new(CharacterId, job, JobCode, id: 1, name: "Build 1")
         };
 
         // Add initial quests
@@ -376,7 +377,6 @@ public class Player
             while (!OnlineCTS.IsCancellationRequested)
             {
                 OnlineTime += 1;
-                LastLogTime = TimeInfo.Now();
                 TrophyManager.OnPlayTimeTick(this);
                 await Task.Delay(60000);
             }
@@ -389,9 +389,14 @@ public class Player
         Session.Send(StatPointPacket.WriteTotalStatPoints(this));
     }
 
-    public void GetUnreadMailCount()
+    public void GetUnreadMailCount(bool sendExpiryNotification = false)
     {
         int unreadCount = Mailbox.Count(x => x.ReadTimestamp == 0);
+        if (sendExpiryNotification)
+        {
+            Session.Send(MailPacket.ExpireNotification());
+        }
+
         Session.Send(MailPacket.Notify(unreadCount, true));
     }
 

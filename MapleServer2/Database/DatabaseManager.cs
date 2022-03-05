@@ -45,6 +45,7 @@ public static class DatabaseManager
     public static DatabaseItem Items { get; } = new();
     public static DatabaseLevels Levels { get; } = new();
     public static DatabaseMapleopoly Mapleopoly { get; } = new();
+    public static DatabaseGameEventUserValue GameEventUserValue { get; } = new();
     public static DatabaseMeretMarket MeretMarket { get; } = new();
     public static DatabaseQuest Quests { get; } = new();
     public static DatabaseShop Shops { get; } = new();

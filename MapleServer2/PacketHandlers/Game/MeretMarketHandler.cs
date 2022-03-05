@@ -113,9 +113,9 @@ public class MeretMarketHandler : GamePacketHandler
 
         Item item = null;
 
-        if (session.Player.Inventory.Items.ContainsKey(itemUid))
+        if (session.Player.Inventory.HasItem(itemUid))
         {
-            item = session.Player.Inventory.Items[itemUid];
+            item = session.Player.Inventory.GetByUid(itemUid);
         }
         else if (session.Player.Account.Home.WarehouseInventory.ContainsKey(itemUid))
         {

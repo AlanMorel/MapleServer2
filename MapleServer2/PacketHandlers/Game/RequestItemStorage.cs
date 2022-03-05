@@ -65,7 +65,7 @@ public class RequestItemStorage : GamePacketHandler
         short slot = packet.ReadShort();
         int amount = packet.ReadInt();
 
-        if (!session.Player.Inventory.Items.ContainsKey(uid))
+        if (!session.Player.Inventory.HasItem(uid))
         {
             return;
         }
