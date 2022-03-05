@@ -44,6 +44,8 @@ public class QuestMetadata
     public List<QuestCondition> Condition = new();
     [XmlElement(Order = 19)]
     public List<QuestNavigation> Navigation = new();
+    [XmlElement(Order = 20)]
+    public QuestDispatch Dispatch = new();
 
     public override string ToString()
     {
@@ -342,4 +344,17 @@ public class QuestNavigation
     {
         return $"\r\ntype: {Type}, code: {Code}, value: {Map}";
     }
+}
+
+[XmlType]
+public class QuestDispatch
+{
+    [XmlElement(Order = 1)]
+    public string Type;
+    [XmlElement(Order = 2)]
+    public int FieldId;
+    [XmlElement(Order = 3)]
+    public short PortalId;
+    [XmlElement(Order = 4)]
+    public int ScriptId;
 }
