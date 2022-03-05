@@ -54,8 +54,18 @@ public class EventCommands : InGameCommand
                 globalEvent.Events.Add((GlobalEventType) eventId);
             }
         }
-        GameServer.GlobalEventManager.AddEvent(globalEvent);
 
-        _ = globalEvent.Start();
+        if (globalEvent.Events.Count == 1)
+        {
+            globalEvent.Events.Insert(0, GlobalEventType.none);
+            globalEvent.Events.Insert(2, GlobalEventType.none);
+
+        }
+        else if (globalEvent.Events.Count == 2)
+        {
+            globalEvent.Events.Insert(2, GlobalEventType.none);
+        }
+
+        globalEvent.Start();
     }
 }

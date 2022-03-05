@@ -1,6 +1,8 @@
 [
   {
     "Id": 1,
+    "FirstHour": 0,
+    "FirstMinutesOnHour": 5,
     "MinutesToRunPerDay": 90,
     "Events": [
       12,
@@ -10,6 +12,8 @@
   },
   {
     "Id": 2,
+    "FirstHour": 0,
+    "FirstMinutesOnHour": 35,
     "MinutesToRunPerDay": 90,
     "Events": [
       11,
@@ -19,19 +23,23 @@
   },
   {
     "Id": 3,
+    "FirstHour": 1,
+    "FirstMinutesOnHour": 5,
     "MinutesToRunPerDay": 180,
     "Events": [
       10,
-      13,
+      7,
       2
     ]
   },
   {
     "Id": 4,
+    "FirstHour": 2,
+    "FirstMinutesOnHour": 35,
     "MinutesToRunPerDay": 180,
     "Events": [
       10,
-      13,
+      7,
       5
     ]
   }

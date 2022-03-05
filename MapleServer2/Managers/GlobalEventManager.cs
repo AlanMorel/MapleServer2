@@ -39,13 +39,13 @@ public class GlobalEventManager
         return GlobalEventList.Values.FirstOrDefault();
     }
 
-    public static void RunScheduledEvents()
+    public static void ScheduleEvents()
     {
         List<GlobalEvent> events = GlobalEventsMetadataStorage.GetAllAutoGlobalEvents();
         
         foreach (GlobalEvent globalEvent in events)
         {
-            TaskScheduler.Instance.ScheduleTask(DateTime.Now.Hour, globalEvent.StartAtMinutesOnHour, 1, globalEvent.MinutesToRunPerDay, globalEvent.Start());
+            TaskScheduler.Instance.ScheduleTask(globalEvent.FirstHour, globalEvent.FirstMinutesOnHour, 1, globalEvent.MinutesToRunPerDay, globalEvent.Start);
         }
     }
 }

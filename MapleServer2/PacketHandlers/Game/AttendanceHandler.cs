@@ -140,7 +140,6 @@ public class AttendanceHandler : GamePacketHandler
             case CurrencyType.Meso:
                 if (!session.Player.Wallet.Meso.Modify(-attendanceEvent.SkipDayCost))
                 {
-                    session.Send(AttendancePacket.Notice((int) AttendanceNotice.NotEnoughMesos));
                     return;
                 }
 
@@ -148,7 +147,6 @@ public class AttendanceHandler : GamePacketHandler
             case CurrencyType.Meret:
                 if (!session.Player.Account.Meret.Modify(-attendanceEvent.SkipDayCost))
                 {
-                    session.Send(AttendancePacket.Notice((int) AttendanceNotice.NotEnoughMerets));
                     return;
                 }
 

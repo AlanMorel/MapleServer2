@@ -45,43 +45,43 @@ public class GlobalPortalHandler : GamePacketHandler
         Map map = Map.Tria;
         switch (globalEvent.Events[selectionIndex])
         {
-            case GlobalEventType.oxquiz:
+            case GlobalEventType.s_massive_event_name_oxquiz:
                 map = Map.MapleOXQuiz;
                 break;
-            case GlobalEventType.trap_master:
+            case GlobalEventType.s_massive_event_name_trap_master:
                 map = Map.TrapMaster;
                 break;
-            case GlobalEventType.spring_beach:
+            case GlobalEventType.s_massive_event_name_spring_beach:
                 map = Map.SpringBeach;
                 break;
-            case GlobalEventType.crazy_runner:
+            case GlobalEventType.s_massive_event_name_crazy_runner:
                 map = Map.CrazyRunners;
                 break;
-            case GlobalEventType.final_surviver:
+            case GlobalEventType.s_massive_event_name_final_surviver:
                 map = Map.SoleSurvivor;
                 break;
-            case GlobalEventType.great_escape:
+            case GlobalEventType.s_massive_event_name_great_escape:
                 map = Map.LudibriumEscape;
                 break;
-            case GlobalEventType.dancedance_stop:
+            case GlobalEventType.s_massive_event_name_dancedance_stop:
                 map = Map.DanceDanceStop;
                 break;
-            case GlobalEventType.crazy_runner_shanghai:
+            case GlobalEventType.s_massive_event_name_crazy_runner_shanghai:
                 map = Map.ShanghaiCrazyRunners;
                 break;
-            case GlobalEventType.hideandseek:
+            case GlobalEventType.s_massive_event_name_hideandseek:
                 map = Map.HideAndSeek;
                 break;
-            case GlobalEventType.red_arena:
+            case GlobalEventType.s_massive_event_name_red_arena:
                 map = Map.RedArena;
                 break;
-            case GlobalEventType.blood_mine:
+            case GlobalEventType.s_massive_event_name_blood_mine:
                 map = Map.CrimsonTearMine;
                 break;
-            case GlobalEventType.treasure_island:
+            case GlobalEventType.s_massive_event_name_treasure_island:
                 map = Map.TreasureIsland;
                 break;
-            case GlobalEventType.christmas_dancedance_stop:
+            case GlobalEventType.s_massive_event_name_christmas_dancedance_stop:
                 map = Map.HolidayDanceDanceStop;
                 break;
             default:

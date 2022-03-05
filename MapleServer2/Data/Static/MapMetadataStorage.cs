@@ -138,4 +138,15 @@ public static class MapMetadataStorage
         block = null;
         return 99;
     }
+
+    public static bool MapIsInstancedOnly(int mapId)
+    {
+        MapMetadata mapMetadata = GetMetadata(mapId);
+        if (mapMetadata is null)
+        {
+            return false;
+        }
+
+        return mapMetadata.Property.Capacity == 0;
+    }
 }

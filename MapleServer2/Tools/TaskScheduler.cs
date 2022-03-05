@@ -13,9 +13,9 @@ public class TaskScheduler
     {
         DateTime now = DateTime.Now;
         DateTime firstRun = new(now.Year, now.Month, now.Day, hour, min, 0, 0);
-        if (now > firstRun)
+        while (now > firstRun)
         {
-            firstRun = firstRun.AddHours(minutesToRunPerDay);
+            firstRun = firstRun.AddMinutes(minutesToRunPerDay);
         }
 
         TimeSpan timeToGo = firstRun - now;
