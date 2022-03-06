@@ -20,14 +20,15 @@ public class GlobalEvent
 
     public void Start()
     {
-        // Assign new ID
-        Id = GuidGenerator.Int();
-        GameServer.GlobalEventManager.AddEvent(this);
         BroadcastEvent();
     }
 
     public async Task BroadcastEvent()
     {
+        // Assign new ID
+        Id = GuidGenerator.Int();
+        GameServer.GlobalEventManager.AddEvent(this);
+
         List<Player> onlinePlayers = GameServer.PlayerManager.GetAllPlayers().Where(x => !MapMetadataStorage.MapIsInstancedOnly(x.MapId)).ToList();
         foreach (Player player in onlinePlayers)
         {
@@ -39,22 +40,24 @@ public class GlobalEvent
         MapleServer.BroadcastPacketAll(GlobalPortalPacket.Clear(this));
         GameServer.GlobalEventManager.RemoveEvent(this);
     }
+
+    public static string GetEventStringName(GlobalEventType type) => "s_massive_event_name_" + type;
 }
 
 public enum GlobalEventType : byte
 {
     none = 0,
-    s_massive_event_name_oxquiz = 1,
-    s_massive_event_name_trap_master = 2,
-    s_massive_event_name_spring_beach = 3,
-    s_massive_event_name_crazy_runner = 4,
-    s_massive_event_name_final_surviver = 5,
-    s_massive_event_name_great_escape = 6,
-    s_massive_event_name_dancedance_stop = 7,
-    s_massive_event_name_crazy_runner_shanghai = 8,
-    s_massive_event_name_hideandseek = 9,
-    s_massive_event_name_red_arena = 10,
-    s_massive_event_name_blood_mine = 11,
-    s_massive_event_name_treasure_island = 12,
-    s_massive_event_name_christmas_dancedance_stop = 13
+    oxquiz = 1,
+    trap_master = 2,
+    spring_beach = 3,
+    crazy_runner = 4,
+    final_surviver = 5,
+    great_escape = 6,
+    dancedance_stop = 7,
+    crazy_runner_shanghai = 8,
+    hideandseek = 9,
+    red_arena = 10,
+    blood_mine = 11,
+    treasure_island = 12,
+    christmas_dancedance_stop = 13
 }

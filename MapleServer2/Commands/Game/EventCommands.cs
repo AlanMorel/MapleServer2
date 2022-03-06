@@ -27,7 +27,8 @@ public class EventCommands : InGameCommand
 
         if (args == null || args.Length <= 1)
         {
-            trigger.Session.Send(NoticePacket.Notice("No events provided. Choose 3 events. 1 = OX Quiz \n" +
+            trigger.Session.Send(NoticePacket.Notice("No events provided. Choose one through three events. \n" +
+                                                     "1 = OX Quiz \n" +
                                                      "2 = Trap Master \n" +
                                                      "3 = Spring Beach \n" +
                                                      "4 = Crazy Runner \n" +
@@ -46,6 +47,12 @@ public class EventCommands : InGameCommand
         GlobalEvent globalEvent = new();
 
         byte[] eventIds = Array.ConvertAll(args[1].Split(","), byte.Parse);
+        if (eventIds.Length > 3)
+        {
+            trigger.Session.Send(NoticePacket.Notice("Too many events chosen. Please choose only between one and three.", NoticeType.Chat));
+            return;
+        }
+        
         foreach (byte eventId in eventIds)
         {
             if (Enum.IsDefined(typeof(GlobalEventType), eventId))
