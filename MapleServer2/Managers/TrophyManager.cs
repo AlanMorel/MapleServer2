@@ -2,6 +2,7 @@
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Packets;
+using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.Managers;
@@ -11,7 +12,7 @@ internal static class TrophyManager
     public static void OnAcceptQuest(Player player, int questId)
     {
         IEnumerable<TrophyMetadata> questAcceptTrophies = GetRelevantTrophies(TrophyTypes.QuestAccept)
-            .Where(t => IsMatching(t.Grades.First().ConditionCodes, questId));
+            .Where(t => ConditionHelper.IsMatching(t.Grades.First().ConditionCodes, questId));
 
         UpdateMatchingTrophies(player, questAcceptTrophies, 1);
     }
@@ -19,7 +20,7 @@ internal static class TrophyManager
     public static void OnMapEntered(Player player, long mapId)
     {
         IEnumerable<TrophyMetadata> mapTrophies = GetRelevantTrophies(TrophyTypes.Map)
-            .Where(t => IsMatching(t.Grades.First().ConditionCodes, mapId));
+            .Where(t => ConditionHelper.IsMatching(t.Grades.First().ConditionCodes, mapId));
 
         UpdateMatchingTrophies(player, mapTrophies, 1);
     }
@@ -43,7 +44,8 @@ internal static class TrophyManager
         int jobId = (int) player.Job;
         int level = player.Levels.Level;
         IEnumerable<TrophyMetadata> jobSpecificLevelTrophies = GetRelevantTrophies(TrophyTypes.LevelUp)
-            .Where(t => IsMatching(t.Grades.First().ConditionCodes, jobId) && IsMatching(t.Grades.First().ConditionTargets, level));
+            .Where(t => ConditionHelper.IsMatching(t.Grades.First().ConditionCodes, jobId) &&
+                        ConditionHelper.IsMatching(t.Grades.First().ConditionTargets, level));
 
         IEnumerable<TrophyMetadata> levelTrophies = GetRelevantTrophies(TrophyTypes.Level);
 
@@ -55,7 +57,7 @@ internal static class TrophyManager
     {
         IEnumerable<TrophyMetadata> interactTrophies = GetRelevantTrophies(TrophyTypes.InteractObject)
             .Concat(GetRelevantTrophies(TrophyTypes.Controller))
-            .Where(t => IsMatching(t.Grades.First().ConditionCodes, objectId));
+            .Where(t => ConditionHelper.IsMatching(t.Grades.First().ConditionCodes, objectId));
 
         UpdateMatchingTrophies(player, interactTrophies, 1);
     }
@@ -78,7 +80,7 @@ internal static class TrophyManager
     public static void OnTrigger(Player player, string trigger)
     {
         IEnumerable<TrophyMetadata> triggerTrophies = GetRelevantTrophies(TrophyTypes.Trigger)
-            .Where(t => IsMatching(t.Grades.First().ConditionCodes, trigger));
+            .Where(t => ConditionHelper.IsMatching(t.Grades.First().ConditionCodes, trigger));
 
         UpdateMatchingTrophies(player, triggerTrophies, 1);
     }
@@ -102,68 +104,6 @@ internal static class TrophyManager
     #region Helper Methods
 
     private static IEnumerable<TrophyMetadata> GetRelevantTrophies(string category) => TrophyMetadataStorage.GetTrophiesByType(category);
-
-    /// <summary>
-    /// Checks if the given condition code or target match the given string value.
-    /// </summary>
-    /// <param name="trophyCondition">Trophy code or target</param>
-    /// <param name="value">Value to try match</param>
-    private static bool IsMatching(string trophyCondition, string value)
-    {
-        return trophyCondition.Equals(value, StringComparison.OrdinalIgnoreCase);
-    }
-
-    /// <summary>
-    /// Checks if the given condition codes or targets match the given long value.
-    /// </summary>
-    /// <param name="trophyCondition">Trophy codes or targets</param>
-    /// <param name="value">Value to try match</param>
-    private static bool IsMatching(string trophyCondition, long value)
-    {
-        // Check if the value is in the range
-        if (trophyCondition.Contains('-') && IsInRange(trophyCondition, value))
-        {
-            return true;
-        }
-
-        // Check if the value is in the list
-        if (trophyCondition.Contains(',') && IsInList(trophyCondition, value))
-        {
-            return true;
-        }
-
-        return long.TryParse(trophyCondition, out long parsedCondition) && parsedCondition == value;
-    }
-
-    private static bool IsInList(string trophyCondition, long value)
-    {
-        string[] conditions = trophyCondition.Split(',');
-        foreach (string c in conditions)
-        {
-            if (long.TryParse(c, out long listItem) && value == listItem)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private static bool IsInRange(string trophyCondition, long value)
-    {
-        string[] parts = trophyCondition.Split('-');
-        if (!long.TryParse(parts[0], out long lowerBound))
-        {
-            return false;
-        }
-
-        if (!long.TryParse(parts[1], out long upperBound))
-        {
-            return false;
-        }
-
-        return value >= lowerBound && value <= upperBound;
-    }
 
     private static void UpdateMatchingTrophies(Player player, IEnumerable<TrophyMetadata> trophies, int progress)
     {

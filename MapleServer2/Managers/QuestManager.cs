@@ -2,6 +2,7 @@
 using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.Managers;
@@ -56,9 +57,9 @@ public static class QuestManager
     {
         foreach (QuestStatus quest in relevantQuests)
         {
-            quest.Condition.Where(condition => IsMatching(condition.Type, conditionType)
-                                               && IsMatching(condition.Code, code)
-                                               && IsMatching(condition.Target, target)
+            quest.Condition.Where(condition => ConditionHelper.IsMatching(condition.Type, conditionType)
+                                               && ConditionHelper.IsMatching(condition.Code, code)
+                                               && ConditionHelper.IsMatching(condition.Target, target)
                                                && !condition.Completed)
                 .UpdateConditions(session, quest);
 
@@ -79,9 +80,9 @@ public static class QuestManager
     {
         foreach (QuestStatus quest in relevantQuests)
         {
-            quest.Condition.Where(condition => IsMatching(condition.Type, conditionType)
-                                               && IsMatching(condition.Code, code)
-                                               && IsMatching(condition.Target, target)
+            quest.Condition.Where(condition => ConditionHelper.IsMatching(condition.Type, conditionType)
+                                               && ConditionHelper.IsMatching(condition.Code, code)
+                                               && ConditionHelper.IsMatching(condition.Target, target)
                                                && !condition.Completed)
                 .UpdateConditions(session, quest);
 
@@ -134,86 +135,7 @@ public static class QuestManager
     {
         return player.QuestData.Values.Where(quest => quest.State is QuestState.Started
                                                       && quest.Condition is not null
-                                                      && quest.Condition.Any(condition => IsMatching(condition.Type, conditionType)));
-    }
-
-    /// <summary>
-    /// Checks if the given condition code or target match the given string value.
-    /// </summary>
-    /// <param name="conditionType">Trophy code or target</param>
-    /// <param name="value">Value to try match</param>
-    private static bool IsMatching(string conditionType, string value)
-    {
-        return conditionType.Equals(value, StringComparison.OrdinalIgnoreCase);
-    }
-
-    /// <summary>
-    /// Checks if the given condition codes or targets match the given long value.
-    /// </summary>
-    /// <param name="conditionType">Trophy codes or targets</param>
-    /// <param name="value">Value to try match</param>
-    private static bool IsMatching(string conditionType, long value)
-    {
-        if (conditionType.Contains('-') && conditionType.Contains(','))
-        {
-            string[] conditionsValues = conditionType.Split(',');
-            foreach (string conditionValue in conditionsValues)
-            {
-                if (conditionValue.Contains('-') && IsInRange(conditionValue, value))
-                {
-                    return true;
-                }
-
-                if (IsMatching(conditionValue, value))
-                {
-                    return true;
-                }
-            }
-        }
-
-        // Check if the value is in the range
-        if (conditionType.Contains('-') && IsInRange(conditionType, value))
-        {
-            return true;
-        }
-
-        // Check if the value is in the list
-        if (conditionType.Contains(',') && IsInList(conditionType, value))
-        {
-            return true;
-        }
-
-        return long.TryParse(conditionType, out long parsedCondition) && parsedCondition == value;
-    }
-
-    private static bool IsInList(string trophyCondition, long value)
-    {
-        string[] conditions = trophyCondition.Split(',');
-        foreach (string c in conditions)
-        {
-            if (long.TryParse(c, out long listItem) && value == listItem)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private static bool IsInRange(string trophyCondition, long value)
-    {
-        string[] parts = trophyCondition.Split('-');
-        if (!long.TryParse(parts[0], out long lowerBound))
-        {
-            return false;
-        }
-
-        if (!long.TryParse(parts[1], out long upperBound))
-        {
-            return false;
-        }
-
-        return value >= lowerBound && value <= upperBound;
+                                                      && quest.Condition.Any(condition => ConditionHelper.IsMatching(condition.Type, conditionType)));
     }
 
     #endregion
