@@ -25,6 +25,38 @@ public partial class TriggerContext
 
     public void FaceEmotion(int spawnPointId, string emotionName)
     {
+        if (spawnPointId == 0)
+        {
+            IFieldActor<Player> firstPlayer = Field.State.Players.FirstOrDefault().Value;
+            Field.BroadcastPacket(TriggerPacket.SetFaceEmotion(firstPlayer.ObjectId, emotionName));
+            return;
+        }
+
+        MapEventNpcSpawnPoint spawnPoint = MapEntityMetadataStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnPointId);
+        if (spawnPoint is null)
+        {
+            return;
+        }
+
+        foreach (string npcId in spawnPoint.NpcIds)
+        {
+            if (!int.TryParse(npcId, out int id))
+            {
+                continue;
+            }
+
+            if (Field.State.Npcs.TryGetValue(id, out IFieldActor<NpcMetadata> npc))
+            {
+                Field.BroadcastPacket(TriggerPacket.SetFaceEmotion(npc.ObjectId, emotionName));
+                return;
+            }
+
+            if (Field.State.Mobs.TryGetValue(id, out IFieldActor<NpcMetadata> mob))
+            {
+                Field.BroadcastPacket(TriggerPacket.SetFaceEmotion(mob.ObjectId, emotionName));
+                return;
+            }
+        }
     }
 
     public void GiveExp(byte arg1, byte arg2)
@@ -190,7 +222,7 @@ public partial class TriggerContext
             return;
         }
 
-        Field.BroadcastPacket(CinematicPacket.Conversation(npcId, script, delay * 1000, align));
+        Field.BroadcastPacket(CinematicPacket.Conversation(npcId, npcId.ToString(), script, delay * 1000, align));
     }
 
     public void SetOnetimeEffect(int id, bool enable, string path)

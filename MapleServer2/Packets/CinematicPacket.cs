@@ -60,12 +60,12 @@ public static class CinematicPacket
         return pWriter;
     }
 
-    public static PacketWriter Conversation(int npcId, string stringId, int delay, Align align)
+    public static PacketWriter Conversation(int npcId, string illustrationId, string stringId, int delay, Align align)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.CINEMATIC);
         pWriter.Write(CinematicPacketMode.Conversation);
         pWriter.WriteInt(npcId);
-        pWriter.WriteString(npcId.ToString());
+        pWriter.WriteString(illustrationId);
         pWriter.WriteUnicodeString(stringId);
         pWriter.WriteInt(delay);
         pWriter.Write(align);

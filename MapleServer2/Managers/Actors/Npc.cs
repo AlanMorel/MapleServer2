@@ -27,6 +27,7 @@ public partial class FieldManager
         public override void Animate(string sequenceName)
         {
             Animation = AnimationStorage.GetSequenceIdBySequenceName(Value.Model, sequenceName);
+            // TODO implement stopping animation
         }
     }
 }
