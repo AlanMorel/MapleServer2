@@ -52,7 +52,7 @@ public static class ConditionHelper
         return long.TryParse(conditionType, out long parsedCondition) && parsedCondition == value;
     }
 
-    public static bool IsInList(string conditionList, long value)
+    private static bool IsInList(string conditionList, long value)
     {
         string[] conditions = conditionList.Split(',');
         foreach (string c in conditions)
@@ -66,7 +66,7 @@ public static class ConditionHelper
         return false;
     }
 
-    public static bool IsInRange(string conditionRange, long value)
+    private static bool IsInRange(string conditionRange, long value)
     {
         string[] parts = conditionRange.Split('-');
         if (!long.TryParse(parts[0], out long lowerBound))
