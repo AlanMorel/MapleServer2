@@ -44,6 +44,8 @@ public class QuestMetadata
     public List<QuestCondition> Condition = new();
     [XmlElement(Order = 19)]
     public List<QuestNavigation> Navigation = new();
+    [XmlElement(Order = 20)]
+    public QuestDispatch Dispatch = new();
 
     public override string ToString()
     {
@@ -297,25 +299,25 @@ public class QuestCondition
     [XmlElement(Order = 1)]
     public string Type;
     [XmlElement(Order = 2)]
-    public string[] Codes;
+    public string Code;
     [XmlElement(Order = 3)]
     public int Goal;
     [XmlElement(Order = 4)]
-    public List<string> Target = new();
+    public string Target;
 
     public QuestCondition() { }
 
-    public QuestCondition(string type, string[] codes, int goal, List<string> target)
+    public QuestCondition(string type, string code, int goal, string target)
     {
         Type = type;
-        Codes = codes;
+        Code = code;
         Goal = goal;
         Target = target;
     }
 
     public override string ToString()
     {
-        return $"\r\ntype: {Type}, codes: {Codes}, Goal: {Goal}, Targets: {string.Join(",", Target)}";
+        return $"\r\ntype: {Type}, codes: {Code}, Goal: {Goal}, Targets: {string.Join(",", Target)}";
     }
 }
 
@@ -342,4 +344,17 @@ public class QuestNavigation
     {
         return $"\r\ntype: {Type}, code: {Code}, value: {Map}";
     }
+}
+
+[XmlType]
+public class QuestDispatch
+{
+    [XmlElement(Order = 1)]
+    public string Type;
+    [XmlElement(Order = 2)]
+    public int FieldId;
+    [XmlElement(Order = 3)]
+    public short PortalId;
+    [XmlElement(Order = 4)]
+    public int ScriptId;
 }

@@ -41,8 +41,12 @@ public static class QuestPacket
         pWriter.Write(QuestType.AcceptQuest);
         pWriter.WriteInt(quest.Id);
         pWriter.WriteLong(TimeInfo.Now());
-        pWriter.WriteByte(1); //TODO: decode properly this
-        pWriter.WriteInt();
+        pWriter.WriteBool(quest.Tracked);
+        pWriter.WriteInt(quest.Condition.Count);
+        foreach (Condition condition in quest.Condition)
+        {
+            pWriter.WriteInt(condition.Current);
+        }
 
         return pWriter;
     }

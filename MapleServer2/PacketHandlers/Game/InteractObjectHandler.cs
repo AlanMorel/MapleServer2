@@ -65,12 +65,12 @@ internal class InteractObjectHandler : GamePacketHandler
         }
 
         InteractObjectMetadata metadata = InteractObjectMetadataStorage.GetInteractObjectMetadata(interactObject.InteractId);
+        QuestManager.OnInteractObject(player, interactObject.InteractId);
 
         switch (interactObject.Type)
         {
             case InteractObjectType.Binoculars:
                 session.Send(InteractObjectPacket.Use(interactObject));
-                QuestHelper.UpdateExplorationQuest(session, interactObject.InteractId.ToString(), "interact_object_rep");
                 break;
             case InteractObjectType.Ui:
                 session.Send(InteractObjectPacket.Use(interactObject));
@@ -98,8 +98,6 @@ internal class InteractObjectHandler : GamePacketHandler
                     {
                         continue;
                     }
-
-                    QuestHelper.UpdateQuest(session, interactObject.InteractId.ToString(), "interact_object");
 
                     interactObject.State = InteractObjectState.Activated;
                     session.Send(InteractObjectPacket.Update(interactObject));

@@ -4,7 +4,6 @@ using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
-using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -204,15 +203,8 @@ public partial class FieldManager
             session.Player.Levels.GainExp(mob.Value.Experience);
             // Send achieves (2)
 
-            string mapId = session.Player.MapId.ToString();
-            // Prepend zero if map id is equal to 7 digits
-            if (mapId.Length == 7)
-            {
-                mapId = $"0{mapId}";
-            }
-
             // Quest Check
-            QuestHelper.UpdateQuest(session, mob.Value.Id.ToString(), "npc", mapId);
+            QuestManager.OnNpcKill(session.Player, mob.Value.Id, session.Player.MapId);
         }
     }
 }
