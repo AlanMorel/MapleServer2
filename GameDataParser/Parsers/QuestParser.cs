@@ -156,15 +156,11 @@ public class QuestParser : Exporter<List<QuestMetadata>>
                             break;
                         case "condition":
                             string type = node.Attributes["type"].Value;
-                            string[] codes = node.Attributes["code"]?.Value.Split(",");
+                            string code = node.Attributes["code"]?.Value ?? "0";
                             int value = int.Parse(node.Attributes["value"]?.Value ?? "0");
-                            List<string> targets = null;
-                            if (!string.IsNullOrEmpty(node.Attributes["target"]?.Value))
-                            {
-                                targets = new(node.Attributes["target"].Value.Split(","));
-                            }
+                            string target = node.Attributes["target"]?.Value ?? "0";
 
-                            metadata.Condition.Add(new(type, codes, value, targets));
+                            metadata.Condition.Add(new(type, code, value, target));
                             break;
                         case "navi":
                             string naviType = node.Attributes["type"].Value;

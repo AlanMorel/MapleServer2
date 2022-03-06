@@ -58,5 +58,7 @@ public class FieldEnterHandler : GamePacketHandler
         session.Send(KeyTablePacket.SendHotbars(player.GameOptions));
 
         TrophyManager.OnMapEntered(player, player.MapId);
+
+        QuestManager.OnMapEnter(player, player.MapId);
     }
 }
