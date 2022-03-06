@@ -5,9 +5,9 @@
     "FirstMinutesOnHour": 5,
     "MinutesToRunPerDay": 90,
     "Events": [
-      12,
-      6,
-      1
+      "treasure_island",
+      "great_escape",
+      "oxquiz"
     ]
   },
   {
@@ -16,9 +16,9 @@
     "FirstMinutesOnHour": 35,
     "MinutesToRunPerDay": 90,
     "Events": [
-      11,
-      3,
-      4
+      "blood_mine",
+      "spring_beach",
+      "crazy_runner"
     ]
   },
   {
@@ -27,9 +27,9 @@
     "FirstMinutesOnHour": 5,
     "MinutesToRunPerDay": 180,
     "Events": [
-      10,
-      7,
-      2
+      "red_arena",
+      "dancedance_stop",
+      "trap_master"
     ]
   },
   {
@@ -38,9 +38,9 @@
     "FirstMinutesOnHour": 35,
     "MinutesToRunPerDay": 180,
     "Events": [
-      10,
-      7,
-      5
+      "red_arena",
+      "dancedance_stop",
+      "final_surviver"
     ]
   }
 ]

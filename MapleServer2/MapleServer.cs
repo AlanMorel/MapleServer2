@@ -54,7 +54,7 @@ public static class MapleServer
         }
 
         // Schedule daily reset and repeat every 24 hours
-        TaskScheduler.Instance.ScheduleTask(0, 0, 24, 24 * 60, DailyReset);
+        TaskScheduler.Instance.ScheduleTask(0, 0, 24 * 60, DailyReset);
 
         // Load Mob AI files
         string mobAiSchema = Path.Combine(Paths.AI_DIR, "mob-ai.xsd");
