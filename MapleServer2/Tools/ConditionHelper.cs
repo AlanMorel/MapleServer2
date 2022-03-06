@@ -5,7 +5,7 @@ public static class ConditionHelper
     /// <summary>
     /// Checks if the given condition code or target match the given string value.
     /// </summary>
-    /// <param name="conditionType">Trophy code or target</param>
+    /// <param name="conditionType">Condition code or target</param>
     /// <param name="value">Value to try match</param>
     public static bool IsMatching(string conditionType, string value)
     {
@@ -15,7 +15,7 @@ public static class ConditionHelper
     /// <summary>
     /// Checks if the given condition codes or targets match the given long value.
     /// </summary>
-    /// <param name="conditionType">Trophy codes or targets</param>
+    /// <param name="conditionType">Conditions codes or targets</param>
     /// <param name="value">Value to try match</param>
     public static bool IsMatching(string conditionType, long value)
     {
