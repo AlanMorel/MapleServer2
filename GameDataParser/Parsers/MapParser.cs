@@ -409,6 +409,7 @@ public class MapParser : Exporter<List<MapMetadata>>
                     RevivalReturnMapId = int.Parse(propertyNode.Attributes["revivalreturnid"]?.Value ?? "0"),
                     EnterReturnMapId = propertyNode.Attributes["enterreturnid"]?.Value ?? "",
                     Capacity = short.Parse(propertyNode.Attributes["capacity"]?.Value ?? "0"),
+                    IsTutorialMap = propertyNode.Attributes["tutorialType"]?.Value == "1"
                 };
 
                 MapMetadata mapMetadata = new()

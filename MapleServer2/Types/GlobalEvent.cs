@@ -1,4 +1,5 @@
-﻿using MapleServer2.Packets;
+﻿using MapleServer2.Data.Static;
+using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 
@@ -6,7 +7,10 @@ namespace MapleServer2.Types;
 
 public class GlobalEvent
 {
-    public readonly int Id;
+    public int Id;
+    public int FirstHour;
+    public int FirstMinutesOnHour;
+    public int MinutesToRunPerDay;
     public List<GlobalEventType> Events = new();
 
     public GlobalEvent()
@@ -14,18 +18,35 @@ public class GlobalEvent
         Id = GuidGenerator.Int();
     }
 
-    public async Task Start()
+    public void Start()
     {
-        MapleServer.BroadcastPacketAll(GlobalPortalPacket.Notice(this));
+        BroadcastEvent();
+    }
+
+    public async Task BroadcastEvent()
+    {
+        // Assign new ID
+        Id = GuidGenerator.Int();
+        GameServer.GlobalEventManager.AddEvent(this);
+
+        List<Player> onlinePlayers = GameServer.PlayerManager.GetAllPlayers().Where(x => !MapMetadataStorage.MapIsInstancedOnly(x.MapId)).ToList();
+        foreach (Player player in onlinePlayers)
+        {
+            player.Session?.Send(GlobalPortalPacket.Notice(this));
+        }
 
         await Task.Delay(60000);
 
         MapleServer.BroadcastPacketAll(GlobalPortalPacket.Clear(this));
         GameServer.GlobalEventManager.RemoveEvent(this);
     }
+
+    public static string GetEventStringName(GlobalEventType type) => "s_massive_event_name_" + type;
 }
+
 public enum GlobalEventType : byte
 {
+    none = 0,
     oxquiz = 1,
     trap_master = 2,
     spring_beach = 3,

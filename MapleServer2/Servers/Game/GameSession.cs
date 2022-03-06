@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Maple2Storage.Types;
+using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Managers;
@@ -108,6 +109,12 @@ public class GameSession : Session
             }
 
             Player.IsMigrating = false;
+
+            if (MapMetadataStorage.MapIsInstancedOnly(Player.MapId) && !MapMetadataStorage.MapIsTutorial(Player.MapId))
+            {
+                Player.SavedCoord = Player.ReturnCoord;
+                Player.MapId = Player.ReturnMapId;
+            }
 
             AuthData authData = Player.Account.AuthData;
             authData.OnlineCharacterId = 0;

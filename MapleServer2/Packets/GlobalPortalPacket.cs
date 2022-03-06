@@ -20,9 +20,9 @@ public static class GlobalPortalPacket
         pWriter.WriteInt(144); // unk. seems to either be 144 or 145
         pWriter.WriteUnicodeString("s_massive_event_message");
         pWriter.WriteUnicodeString("System_Quiz_Global_Portal"); // SystemSound key
-        foreach (GlobalEventType eventMap in globalEvent.Events)
+        foreach (GlobalEventType eventType in globalEvent.Events)
         {
-            pWriter.WriteUnicodeString("s_massive_event_name_" + eventMap);
+            pWriter.WriteUnicodeString(eventType == GlobalEventType.none ? "" : GlobalEvent.GetEventStringName(eventType));
         }
         return pWriter;
     }

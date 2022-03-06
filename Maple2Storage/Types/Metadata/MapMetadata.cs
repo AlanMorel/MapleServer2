@@ -41,4 +41,6 @@ public class MapProperty
     public string EnterReturnMapId;
     [XmlElement(Order = 3)]
     public short Capacity;
+    [XmlElement(Order = 4)]
+    public bool IsTutorialMap;
 }
