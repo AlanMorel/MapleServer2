@@ -98,9 +98,9 @@ public static class QuestManager
     {
         foreach (Condition condition in relevantConditions)
         {
-            if (condition.Goal != 0 && condition.Goal >= condition.Current)
+            if (condition.Goal != 0 && condition.Goal == condition.Current)
             {
-                return;
+                continue;
             }
 
             condition.Current++;
@@ -111,9 +111,9 @@ public static class QuestManager
 
             session.Send(QuestPacket.UpdateCondition(quest.Basic.Id, quest.Condition));
 
-            if (quest.Basic.QuestType is not QuestType.Exploration && !condition.Completed)
+            if (!condition.Completed || quest.Basic.QuestType is not QuestType.Exploration)
             {
-                return;
+                continue;
             }
 
             quest.State = QuestState.Finished;

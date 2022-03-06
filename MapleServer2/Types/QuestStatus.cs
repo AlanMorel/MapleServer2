@@ -52,7 +52,7 @@ public class QuestStatus
         RewardItems = metadata.RewardItem;
         State = state;
         StartTimestamp = startTimestamp;
-        Tracked = true;
+        Tracked = metadata.Basic.UseNavigation;
         Uid = DatabaseManager.Quests.Insert(this);
     }
 
