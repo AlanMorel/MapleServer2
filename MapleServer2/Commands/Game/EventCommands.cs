@@ -52,7 +52,7 @@ public class EventCommands : InGameCommand
             trigger.Session.Send(NoticePacket.Notice("Too many events chosen. Please choose only between one and three.", NoticeType.Chat));
             return;
         }
-        
+
         foreach (byte eventId in eventIds)
         {
             if (Enum.IsDefined(typeof(GlobalEventType), eventId))
