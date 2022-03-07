@@ -20,7 +20,7 @@ public class GlobalEvent
 
     public void Start()
     {
-        BroadcastEvent();
+        _ = BroadcastEvent();
     }
 
     public async Task BroadcastEvent()
