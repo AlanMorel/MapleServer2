@@ -42,10 +42,9 @@ jobs:
       - name: Run dotnet format
         run: dotnet format --verify-no-changes
         
-  unit-tests:
+  tests:
+    name: Unit Testing
     runs-on: windows-latest
-    
     steps:
-      - name: Run Unit Tests
-        uses: actions/checkout@v2
-        run: dotnet test
+      - uses: actions/checkout@v2.1.0
+      - run: dotnet test
