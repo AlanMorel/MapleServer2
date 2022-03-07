@@ -31,6 +31,6 @@ public class GravityCommand : InGameCommand
         }
 
         trigger.Session.FieldManager.BroadcastPacket(FieldPropertyPacket.ChangeGravity(gravity * -1));
-        trigger.Session.FieldManager.BroadcastPacket(NoticePacket.Notice(SystemNotice.GravityChanged, NoticeType.Chat));
+        trigger.Session.FieldManager.BroadcastPacket(NoticePacket.Notice(SystemNotice.UgcMapFunHostGravityChange, NoticeType.Chat));
     }
 }

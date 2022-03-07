@@ -180,7 +180,7 @@ public class Player
             new(MasteryType.PetTaming)
         }, gameSession: null);
         MapId = JobMetadataStorage.GetStartMapId(job);
-        SavedCoord = MapEntityStorage.GetRandomPlayerSpawn(MapId).Coord.ToFloat();
+        SavedCoord = MapEntityMetadataStorage.GetRandomPlayerSpawn(MapId).Coord.ToFloat();
         Stats = new(job);
         Motto = "Motto";
         ProfileUrl = "";
@@ -223,7 +223,7 @@ public class Player
         GatheringCount = new();
         TrophyCount = new int[3];
         ReturnMapId = (int) Map.Tria;
-        ReturnCoord = MapEntityStorage.GetRandomPlayerSpawn(ReturnMapId).Coord.ToFloat();
+        ReturnCoord = MapEntityMetadataStorage.GetRandomPlayerSpawn(ReturnMapId).Coord.ToFloat();
         SkinColor = skinColor;
         UnlockedTaxis = new();
         UnlockedMaps = new();
@@ -280,7 +280,10 @@ public class Player
     {
         UpdateCoords(mapId, instanceId, coord, rotation);
 
-        SetCoords(mapId, coord, rotation);
+        if (coord is null && rotation is null)
+        {
+            GetSpawnCoords(mapId);
+        }
 
         DatabaseManager.Characters.Update(this);
         Session.Send(RequestFieldEnterPacket.RequestEnter(FieldPlayer));
@@ -295,6 +298,7 @@ public class Player
     public void WarpGameToGame(int mapId, long instanceId, CoordF? coord = null, CoordF? rotation = null)
     {
         UpdateCoords(mapId, instanceId, coord, rotation);
+
         string ipAddress = Environment.GetEnvironmentVariable("IP");
         int port = int.Parse(Environment.GetEnvironmentVariable("GAME_PORT"));
         IPEndPoint endpoint = new(IPAddress.Parse(ipAddress), port);
@@ -466,35 +470,23 @@ public class Player
         }
     }
 
-    private void SetCoords(int mapId, CoordF? coord, CoordF? rotation)
+    private void GetSpawnCoords(int mapId)
     {
-        if (coord is not null && rotation is not null)
-        {
-            return;
-        }
-
-        MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(mapId);
+        MapPlayerSpawn spawn = MapEntityMetadataStorage.GetRandomPlayerSpawn(mapId);
         if (spawn is null)
         {
             Session.SendNotice($"Could not find a spawn for map {mapId}");
             return;
         }
 
-        if (coord is null)
-        {
-            SavedCoord = spawn.Coord.ToFloat();
-            SafeBlock = spawn.Coord.ToFloat();
-        }
-
-        if (rotation is null)
-        {
-            SavedRotation = spawn.Rotation.ToFloat();
-        }
+        SavedCoord = spawn.Coord.ToFloat();
+        SafeBlock = spawn.Coord.ToFloat();
+        SavedRotation = spawn.Rotation.ToFloat();
     }
 
     private void UpdateCoords(int mapId, long instanceId, CoordF? coord = null, CoordF? rotation = null)
     {
-        if (MapEntityStorage.HasSafePortal(MapId))
+        if (MapEntityMetadataStorage.HasSafePortal(MapId))
         {
             ReturnCoord = FieldPlayer.Coord;
             ReturnMapId = MapId;
@@ -512,11 +504,7 @@ public class Player
         }
 
         MapId = mapId;
-
-        if (instanceId != 0)
-        {
-            InstanceId = instanceId;
-        }
+        InstanceId = instanceId;
 
         if (!UnlockedMaps.Contains(MapId))
         {

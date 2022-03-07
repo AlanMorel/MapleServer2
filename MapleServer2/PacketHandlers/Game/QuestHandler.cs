@@ -21,6 +21,8 @@ public class QuestHandler : GamePacketHandler
         CompleteQuest = 0x04,
         ExplorationQuests = 0x08,
         ToggleTracking = 0x09,
+        ResumeDungeon = 0x13,
+        DispatchMode = 0x14,
         CompleteNavigator = 0x18
     }
 
@@ -41,6 +43,12 @@ public class QuestHandler : GamePacketHandler
                 break;
             case QuestMode.CompleteNavigator:
                 HandleCompleteNavigator(session, packet);
+                break;
+            case QuestMode.ResumeDungeon:
+                HandleResumeDungeon(session, packet);
+                break;
+            case QuestMode.DispatchMode:
+                HandleDispatchMode(session, packet);
                 break;
             case QuestMode.ToggleTracking:
                 HandleToggleTracking(session, packet);
@@ -164,6 +172,33 @@ public class QuestHandler : GamePacketHandler
             questStatus.State = QuestState.Started;
             DatabaseManager.Quests.Update(questStatus);
         }
+    }
+
+    private static void HandleResumeDungeon(GameSession session, PacketReader packet)
+    {
+        int questId = packet.ReadInt();
+
+        if (!session.Player.QuestData.TryGetValue(questId, out QuestStatus questStatus) || questStatus.State is QuestState.Finished)
+        {
+            return;
+        }
+
+        QuestMetadata questMetadata = QuestMetadataStorage.GetMetadata(questId);
+        session.Player.Warp(questMetadata.ProgressMap.First());
+    }
+
+    private static void HandleDispatchMode(GameSession session, PacketReader packet)
+    {
+        int questId = packet.ReadInt();
+        short mode = packet.ReadShort();
+
+        if (!session.Player.QuestData.TryGetValue(questId, out QuestStatus questStatus) || questStatus.State is QuestState.Finished)
+        {
+            return;
+        }
+
+        QuestMetadata questMetadata = QuestMetadataStorage.GetMetadata(questId);
+        session.Player.Warp(questMetadata.Dispatch.FieldId);
     }
 
     private static void HandleToggleTracking(GameSession session, PacketReader packet)

@@ -21,7 +21,7 @@ public partial class TriggerContext
 
     public void EndMiniGame(int winnerBoxId, MiniGame type, bool isOnlyWinner)
     {
-        MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, winnerBoxId);
+        MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, winnerBoxId);
         List<IFieldObject<Player>> players = new();
         foreach (IFieldObject<Player> player in Field.State.Players.Values)
         {
@@ -43,7 +43,7 @@ public partial class TriggerContext
 
     public void EndMiniGameRound(int winnerBoxId, float expRate, bool isOnlyWinner, bool isGainLoserBonus, bool meso, MiniGame type)
     {
-        MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, winnerBoxId);
+        MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, winnerBoxId);
         foreach (IFieldObject<Player> player in Field.State.Players.Values)
         {
             if (FieldManager.IsPlayerInBox(box, player))
@@ -56,7 +56,7 @@ public partial class TriggerContext
 
     public void MiniGameCameraDirection(int boxId, int cameraId)
     {
-        MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
+        MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
         List<IFieldObject<Player>> boxPlayers = new();
         foreach (IFieldObject<Player> player in Field.State.Players.Values)
         {
@@ -78,7 +78,7 @@ public partial class TriggerContext
 
     public void MiniGameGiveReward(int winnerBoxId, string contentType, MiniGame type)
     {
-        MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, winnerBoxId);
+        MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, winnerBoxId);
         List<IFieldObject<Player>> players = new();
         foreach (IFieldObject<Player> player in Field.State.Players.Values)
         {

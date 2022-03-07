@@ -560,7 +560,7 @@ public class BeautyHandler : GamePacketHandler
         Item voucher = session.Player.Inventory.GetAllByTag(voucherTag).FirstOrDefault();
         if (voucher == null)
         {
-            session.Send(NoticePacket.Notice(SystemNotice.ItemNotFound, NoticeType.FastText));
+            session.Send(NoticePacket.Notice(SystemNotice.ErrorItemNotFound, NoticeType.FastText));
             return false;
         }
 

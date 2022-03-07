@@ -35,7 +35,7 @@ public class RandomUserCommand : InGameCommand
             return;
         }
 
-        trigger.Session.FieldManager.BroadcastPacket(NoticePacket.Notice(SystemNotice.RandomSelection, NoticeType.Chat, new()
+        trigger.Session.FieldManager.BroadcastPacket(NoticePacket.Notice(SystemNotice.PickRandomCharacterName, NoticeType.Chat, new()
         {
             trigger.Session.Player.Name,
             randomPlayer
@@ -54,6 +54,7 @@ public class RandomNumberCommand : InGameCommand
         Description = "Rolls a random number between 1 and 100.";
         Usage = "roll";
     }
+
     public override void Execute(GameCommandTrigger trigger)
     {
         // TODO: Check if the command is being executed in party chat.

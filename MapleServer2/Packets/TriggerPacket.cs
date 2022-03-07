@@ -24,7 +24,8 @@ public static class TriggerPacket
         StartCutscene = 0x4,
         StopCutscene = 0x5,
         SetAnimationSequence = 0x7,
-        SetAnimationLoop = 0x8
+        SetAnimationLoop = 0x8,
+        FaceEmotion = 0x9
     }
 
     public static PacketWriter LoadTriggers(List<TriggerObject> triggerObjects)
@@ -153,6 +154,16 @@ public static class TriggerPacket
         pWriter.WriteBool(loop);
         pWriter.WriteInt(duration);
         pWriter.WriteUnicodeString(animationState);
+        return pWriter;
+    }
+
+    public static PacketWriter SetFaceEmotion(int objectId, string animationString)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
+        pWriter.Write(TriggerPacketMode.UI);
+        pWriter.Write(TriggerUIMode.FaceEmotion);
+        pWriter.WriteInt(objectId);
+        pWriter.WriteString(animationString);
         return pWriter;
     }
 

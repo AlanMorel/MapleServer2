@@ -3,7 +3,7 @@ using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
-using MapleServer2.PacketHandlers.Game.Helpers;
+using MapleServer2.Managers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
@@ -111,7 +111,7 @@ public class NpcTalkHandler : GamePacketHandler
         }
 
         // Check if npc has an exploration quest
-        QuestHelper.UpdateExplorationQuest(session, npc.Value.Id.ToString(), "talk_in");
+        QuestManager.OnTalkNpc(session.Player, npc.Value.Id, 0);
 
         // If npc has quests, send quests and talk option
         if (npcQuests.Count != 0)
@@ -185,8 +185,7 @@ public class NpcTalkHandler : GamePacketHandler
         {
             Option option = scriptMetadata.Options.First(x => x.Id == npcTalk.ScriptId);
 
-            // Find if player has quest condition for type "talk_in" and option id
-            QuestHelper.UpdateQuest(session, npcTalk.Npc.Id.ToString(), "talk_in", option.Id.ToString());
+            QuestManager.OnTalkNpc(session.Player, npcTalk.Npc.Id, npcTalk.ScriptId);
 
             // If npc has no more options, close dialog
             if (option.Contents.Count <= npcTalk.ContentIndex + 1 && option.Contents[npcTalk.ContentIndex].Distractor is null)
@@ -254,7 +253,7 @@ public class NpcTalkHandler : GamePacketHandler
 
     private static void HandleBeauty(GameSession session)
     {
-        MapPortal portal = MapEntityStorage.GetPortals(session.Player.MapId).FirstOrDefault(portal => portal.Id == 99); // unsure how the portalId is determined
+        MapPortal portal = MapEntityMetadataStorage.GetPortals(session.Player.MapId).FirstOrDefault(portal => portal.Id == 99); // unsure how the portalId is determined
         if (portal is null)
         {
             return;

@@ -36,7 +36,7 @@ public static class MapleServer
 
         if (!File.Exists(dotenv))
         {
-            throw new ArgumentException(".env file not found!");
+            throw new FileNotFoundException(".env file not found!");
         }
 
         DotEnv.Load(dotenv);
@@ -54,7 +54,7 @@ public static class MapleServer
         }
 
         // Schedule daily reset and repeat every 24 hours
-        TaskScheduler.Instance.ScheduleTask(0, 0, 24, DailyReset);
+        TaskScheduler.Instance.ScheduleTask(0, 0, 24 * 60, DailyReset);
 
         // Load Mob AI files
         string mobAiSchema = Path.Combine(Paths.AI_DIR, "mob-ai.xsd");
@@ -62,6 +62,9 @@ public static class MapleServer
 
         // Initialize all metadata.
         await MetadataHelper.InitializeAll();
+
+        // Run global events
+        GlobalEventManager.ScheduleEvents();
 
         IContainer loginContainer = LoginContainerConfig.Configure();
         using ILifetimeScope loginScope = loginContainer.BeginLifetimeScope();

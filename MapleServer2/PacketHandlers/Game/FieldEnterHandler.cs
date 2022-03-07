@@ -1,6 +1,7 @@
 ﻿using Maple2Storage.Enums;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Data.Static;
 using MapleServer2.Managers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -55,8 +56,16 @@ public class FieldEnterHandler : GamePacketHandler
             session.Send(PartyPacket.UpdatePlayer(player));
         }
 
+        GlobalEvent globalEvent = GameServer.GlobalEventManager.GetCurrentEvent();
+        if (globalEvent is not null && !MapMetadataStorage.MapIsInstancedOnly(player.MapId))
+        {
+            session.Send(GlobalPortalPacket.Notice(globalEvent));
+        }
+
         session.Send(KeyTablePacket.SendHotbars(player.GameOptions));
 
         TrophyManager.OnMapEntered(player, player.MapId);
+
+        QuestManager.OnMapEnter(player, player.MapId);
     }
 }

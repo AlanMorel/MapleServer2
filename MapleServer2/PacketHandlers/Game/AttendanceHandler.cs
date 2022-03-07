@@ -63,8 +63,8 @@ public class AttendanceHandler : GamePacketHandler
 
         GameEventUserValue timeValue = GameEventHelper.GetUserValue(session.Player, attendanceEvent.Id,
             TimeInfo.Tomorrow(), GameEventUserValueType.AttendanceAccumulatedTime);
-
-        if (TimeInfo.Now() - session.Player.LastLogTime + int.Parse(timeValue.EventValue) <
+        long.TryParse(timeValue.EventValue, out long accumulatedTime);
+        if (TimeInfo.Now() - session.Player.LastLogTime + accumulatedTime <
             attendanceEvent.TimeRequired)
         {
             return;
@@ -76,7 +76,7 @@ public class AttendanceHandler : GamePacketHandler
         long.TryParse(completeTimestampValue.EventValue, out long completedTimestamp);
 
         DateTimeOffset savedTime = DateTimeOffset.FromUnixTimeSeconds(completedTimestamp);
-        if (DateTimeOffset.Now.Day < savedTime.Day)
+        if (DateTimeOffset.Now.UtcDateTime < savedTime.UtcDateTime && DateTimeOffset.Now.Date != savedTime.Date)
         {
             session.Send(AttendancePacket.Notice((int) AttendanceNotice.EventHasAlreadyBeenCompleted));
             return;
@@ -140,7 +140,6 @@ public class AttendanceHandler : GamePacketHandler
             case CurrencyType.Meso:
                 if (!session.Player.Wallet.Meso.Modify(-attendanceEvent.SkipDayCost))
                 {
-                    session.Send(AttendancePacket.Notice((int) AttendanceNotice.NotEnoughMesos));
                     return;
                 }
 
@@ -148,7 +147,6 @@ public class AttendanceHandler : GamePacketHandler
             case CurrencyType.Meret:
                 if (!session.Player.Account.Meret.Modify(-attendanceEvent.SkipDayCost))
                 {
-                    session.Send(AttendancePacket.Notice((int) AttendanceNotice.NotEnoughMerets));
                     return;
                 }
 

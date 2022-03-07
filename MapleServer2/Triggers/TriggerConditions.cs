@@ -76,7 +76,7 @@ public partial class TriggerContext
         // TODO: Needs a better check for multiple mob spawns
         foreach (int spawnPointId in spawnPointIds)
         {
-            MapEventNpcSpawnPoint spawnPoint = MapEntityStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnPointId);
+            MapEventNpcSpawnPoint spawnPoint = MapEntityMetadataStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnPointId);
             if (spawnPoint == null)
             {
                 continue;
@@ -144,7 +144,7 @@ public partial class TriggerContext
         QuestState mode = (QuestState) modes[0];
         foreach (int boxId in boxes)
         {
-            MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
+            MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
             List<IFieldActor<Player>> players = Field.State.Players.Values.ToList();
 
             foreach (IFieldObject<Player> player in players)
@@ -196,7 +196,7 @@ public partial class TriggerContext
 
         foreach (int boxId in boxIds)
         {
-            MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
+            MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
             if (box == null)
             {
                 return false;

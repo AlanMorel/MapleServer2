@@ -9,7 +9,6 @@ using MapleServer2.Database;
 using MapleServer2.Database.Types;
 using MapleServer2.Enums;
 using MapleServer2.Managers;
-using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -386,11 +385,11 @@ public class RequestCubeHandler : GamePacketHandler
         liftable.State = LiftableState.Active;
         liftable.Enabled = true;
 
-        MapLiftableTarget target = MapEntityStorage.GetLiftablesTargets(player.MapId)?.FirstOrDefault(x => x.Position == liftable.Position);
+        MapLiftableTarget target = MapEntityMetadataStorage.GetLiftablesTargets(player.MapId)?.FirstOrDefault(x => x.Position == liftable.Position);
         if (target is not null)
         {
             liftable.State = LiftableState.Disabled;
-            QuestHelper.UpdateQuest(player.Session, liftable.Metadata.ItemId.ToString(), "item_move", target.Target.ToString());
+            QuestManager.OnItemMove(player, liftable.Metadata.ItemId, target.Target);
         }
 
         fieldManager.BroadcastPacket(LiftablePacket.Drop(liftable));
@@ -612,7 +611,7 @@ public class RequestCubeHandler : GamePacketHandler
     {
         CoordB coords = packet.Read<CoordB>();
 
-        int weaponId = MapEntityStorage.GetWeaponObjectItemId(session.Player.MapId, coords);
+        int weaponId = MapEntityMetadataStorage.GetWeaponObjectItemId(session.Player.MapId, coords);
         if (weaponId == 0)
         {
             return;

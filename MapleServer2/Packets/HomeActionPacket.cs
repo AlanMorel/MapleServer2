@@ -228,7 +228,7 @@ public class HomeActionPacket
         pWriter.WriteByte();
         pWriter.WriteByte(1);
         pWriter.WriteInt(1);
-        pWriter.Write(SystemNotice.RandomNumberSelection);
+        pWriter.Write(SystemNotice.RollDice);
         pWriter.WriteInt(2); // number of strings
         pWriter.WriteUnicodeString(player.Name);
         pWriter.WriteUnicodeString(randomNumber.ToString());

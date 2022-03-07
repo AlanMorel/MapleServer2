@@ -45,14 +45,14 @@ public class QuestStatus
         Condition = new();
         foreach (QuestCondition condition in metadata.Condition)
         {
-            Condition.Add(new(condition.Type, condition.Codes, condition.Goal, 0, condition.Target));
+            Condition.Add(new(condition.Type, condition.Code, condition.Goal, 0, condition.Target));
         }
 
         Reward = metadata.Reward;
         RewardItems = metadata.RewardItem;
         State = state;
         StartTimestamp = startTimestamp;
-        Tracked = true;
+        Tracked = metadata.Basic.UseNavigation;
         Uid = DatabaseManager.Quests.Insert(this);
     }
 
@@ -70,16 +70,16 @@ public class QuestStatus
 public class Condition
 {
     public string Type { get; set; }
-    public string[] Codes { get; set; }
+    public string Code { get; set; }
     public int Goal { get; set; }
     public int Current { get; set; }
     public bool Completed { get; set; }
-    public readonly List<string> Target;
+    public readonly string Target;
 
-    public Condition(string type, string[] codes, int goal, int current, List<string> target)
+    public Condition(string type, string code, int goal, int current, string target)
     {
         Type = type;
-        Codes = codes;
+        Code = code;
         Goal = goal;
         Current = current;
         Target = target;

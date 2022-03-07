@@ -25,6 +25,38 @@ public partial class TriggerContext
 
     public void FaceEmotion(int spawnPointId, string emotionName)
     {
+        if (spawnPointId == 0)
+        {
+            IFieldActor<Player> firstPlayer = Field.State.Players.FirstOrDefault().Value;
+            Field.BroadcastPacket(TriggerPacket.SetFaceEmotion(firstPlayer.ObjectId, emotionName));
+            return;
+        }
+
+        MapEventNpcSpawnPoint spawnPoint = MapEntityMetadataStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnPointId);
+        if (spawnPoint is null)
+        {
+            return;
+        }
+
+        foreach (string npcId in spawnPoint.NpcIds)
+        {
+            if (!int.TryParse(npcId, out int id))
+            {
+                continue;
+            }
+
+            if (Field.State.Npcs.TryGetValue(id, out IFieldActor<NpcMetadata> npc))
+            {
+                Field.BroadcastPacket(TriggerPacket.SetFaceEmotion(npc.ObjectId, emotionName));
+                return;
+            }
+
+            if (Field.State.Mobs.TryGetValue(id, out IFieldActor<NpcMetadata> mob))
+            {
+                Field.BroadcastPacket(TriggerPacket.SetFaceEmotion(mob.ObjectId, emotionName));
+                return;
+            }
+        }
     }
 
     public void GiveExp(byte arg1, byte arg2)
@@ -56,7 +88,7 @@ public partial class TriggerContext
         List<IFieldActor<Player>> players = Field.State.Players.Values.ToList();
         if (boxId != 0)
         {
-            MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
+            MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
             List<IFieldActor<Player>> boxedPlayers = new();
             foreach (IFieldActor<Player> player in players)
             {
@@ -95,10 +127,10 @@ public partial class TriggerContext
 
         CoordF moveCoord;
         CoordF moveRotation;
-        MapPortal dstPortal = MapEntityStorage.GetPortals(mapId).FirstOrDefault(portal => portal.Id == triggerId);
+        MapPortal dstPortal = MapEntityMetadataStorage.GetPortals(mapId).FirstOrDefault(portal => portal.Id == triggerId);
         if (dstPortal == null)
         {
-            MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(mapId);
+            MapPlayerSpawn spawn = MapEntityMetadataStorage.GetRandomPlayerSpawn(mapId);
             moveCoord = spawn.Coord.ToFloat();
             moveRotation = spawn.Rotation.ToFloat();
         }
@@ -110,7 +142,7 @@ public partial class TriggerContext
 
         foreach (IFieldObject<Player> player in players)
         {
-            player.Value.Warp(mapId, moveCoord, moveRotation);
+            player.Value.Warp(mapId, moveCoord, moveRotation, instanceId: 1);
         }
     }
 
@@ -154,7 +186,7 @@ public partial class TriggerContext
         List<IFieldActor<Player>> players = Field.State.Players.Values.ToList();
         if (boxId != 0)
         {
-            MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
+            MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
             List<IFieldActor<Player>> boxedPlayers = new();
             foreach (IFieldActor<Player> player in players)
             {
@@ -190,7 +222,7 @@ public partial class TriggerContext
             return;
         }
 
-        Field.BroadcastPacket(CinematicPacket.Conversation(npcId, script, delay * 1000, align));
+        Field.BroadcastPacket(CinematicPacket.Conversation(npcId, npcId.ToString(), script, delay * 1000, align));
     }
 
     public void SetOnetimeEffect(int id, bool enable, string path)
