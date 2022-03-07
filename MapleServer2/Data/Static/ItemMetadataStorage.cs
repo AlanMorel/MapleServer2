@@ -64,6 +64,8 @@ public static class ItemMetadataStorage
 
     public static TransferType GetTransferType(int itemId) => GetMetadata(itemId).TransferType;
 
+    public static ItemTransferFlag GetTransferFlag(int itemId) => GetMetadata(itemId).TransferFlag;
+
     public static int GetTradeableCount(int itemId) => GetMetadata(itemId).TradeableCount;
 
     public static int GetRepackageCount(int itemId) => GetMetadata(itemId).RepackageCount;

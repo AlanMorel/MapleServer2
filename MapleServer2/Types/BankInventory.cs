@@ -42,7 +42,7 @@ public class BankInventory
         if (amount < item.Amount)
         {
             item.TrySplit(amount, out Item splitItem);
-            session.Send(ItemInventoryPacket.Update(uid, item.Amount));
+            session.Send(ItemInventoryPacket.UpdateAmount(uid, item.Amount));
             item = splitItem;
         }
         else

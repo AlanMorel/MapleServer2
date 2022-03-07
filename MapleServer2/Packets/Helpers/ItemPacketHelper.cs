@@ -33,7 +33,7 @@ public static class ItemPacketHelper
         pWriter.WriteLong();
         pWriter.WriteInt();
         pWriter.WriteInt();
-        pWriter.WriteByte((byte) item.RepackageCount);
+        pWriter.WriteBool(item.TransferFlag.HasFlag(ItemTransferFlag.Tradeable) || item.RemainingTrades > 0);
         pWriter.WriteInt(item.Charges);
         pWriter.WriteStatDiff( /*item.Stats, item.Stats*/);
 
@@ -70,10 +70,10 @@ public static class ItemPacketHelper
         }
 
         // Item Transfer Data 0x058AD00
-        pWriter.WriteInt(6); // Transfer Flag. Temporarily changing it to 6 to make items tradeable
+        pWriter.WriteInt((int) item.TransferFlag);
         pWriter.WriteByte();
         pWriter.WriteInt(item.RemainingTrades);
-        pWriter.WriteInt();
+        pWriter.WriteInt(1 - item.RemainingRepackageCount);
         pWriter.WriteByte();
         pWriter.WriteByte(); // 2nd flag, use to skip charbound
 

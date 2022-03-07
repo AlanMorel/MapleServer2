@@ -99,6 +99,11 @@ public class RequestItemUseHandler : GamePacketHandler
                 Logger.Warn($"Unhandled item function: {item.Function.Name}");
                 break;
         }
+
+        if (item.TransferType == TransferType.BindOnUse & !item.IsBound())
+        {
+            item.BindItem(session.Player);
+        }
     }
 
     private static void HandleItemRemakeScroll(GameSession session, long itemUid)
@@ -185,6 +190,7 @@ public class RequestItemUseHandler : GamePacketHandler
     {
         if (!InstrumentCategoryInfoMetadataStorage.IsValid(item.Function.Id))
         {
+            return;
         }
     }
 
@@ -309,18 +315,14 @@ public class RequestItemUseHandler : GamePacketHandler
         {
             Rarity = item.Function.OpenCoupleEffectBox.Rarity,
             PairedCharacterId = otherPlayer.CharacterId,
-            PairedCharacterName = otherPlayer.Name,
-            OwnerCharacterId = session.Player.CharacterId,
-            OwnerCharacterName = session.Player.Name
+            PairedCharacterName = otherPlayer.Name
         };
 
         Item otherUserBadge = new(item.Function.OpenCoupleEffectBox.Id)
         {
             Rarity = item.Function.OpenCoupleEffectBox.Rarity,
             PairedCharacterId = session.Player.CharacterId,
-            PairedCharacterName = session.Player.Name,
-            OwnerCharacterId = otherPlayer.CharacterId,
-            OwnerCharacterName = otherPlayer.Name
+            PairedCharacterName = session.Player.Name
         };
 
         List<Item> items = new()
@@ -423,12 +425,35 @@ public class RequestItemUseHandler : GamePacketHandler
 
     public static void HandleNameVoucher(GameSession session, PacketReader packet, Item item)
     {
-        string characterName = packet.ReadUnicodeString();
-        session.Player.Name = characterName;
+        string newName = packet.ReadUnicodeString();
+        string oldName = session.Player.Name;
+        session.Player.Name = newName;
 
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
 
-        session.Send(CharacterListPacket.NameChanged(session.Player.CharacterId, characterName));
+        session.Send(CharacterListPacket.NameChanged(session.Player.CharacterId, newName));
+        
+        // Update name on socials
+        foreach (Club club in session.Player.Clubs)
+        {
+            club.BroadcastPacketClub(ClubPacket.UpdateMemberName(oldName, newName, session.Player.CharacterId));
+            if (club.LeaderCharacterId == session.Player.CharacterId)
+            {
+                club.LeaderName = newName;
+            }
+        }
+
+        if (session.Player.Guild is not null)
+        {
+            session.Player.Guild?.BroadcastPacketGuild(GuildPacket.UpdateMemberName(oldName, newName));
+            if (session.Player.Guild.LeaderCharacterId == session.Player.CharacterId)
+            {
+                session.Player.Guild.LeaderName = newName;
+            }
+        }
+        
+        session.Player.Party?.BroadcastPacketParty(PartyPacket.UpdatePlayer(session.Player));
+        
         // TODO: Needs to redirect player to character selection screen after pop-up
     }
 

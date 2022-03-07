@@ -70,7 +70,7 @@ public enum RecvOp : ushort
     TROPHY = 0x0047,
     REQUEST_GEM_EQUIPMENT = 0x0048,
     REQUEST_TAXI = 0x0049,
-    TRADE_EX = 0x004A,
+    TRADE = 0x004A,
     REQUEST_WORLD_MAP = 0x004B,
     GUILD = 0x004C,
     GROUP_CHAT = 0x004D,

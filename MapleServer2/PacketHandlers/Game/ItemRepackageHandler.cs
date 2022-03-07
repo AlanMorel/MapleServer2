@@ -71,7 +71,7 @@ public class ItemRepackageHandler : GamePacketHandler
             return;
         }
 
-        repackingItem.RepackageCount -= 1;
+        repackingItem.RemainingRepackageCount -= 1;
         repackingItem.RemainingTrades++;
 
         session.Player.Inventory.ConsumeItem(session, ribbon.Uid, ribbonRequirementAmount);

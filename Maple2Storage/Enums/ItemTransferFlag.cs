@@ -1,14 +1,14 @@
-﻿namespace MapleServer2.Enums;
+﻿namespace Maple2Storage.Enums;
 
 [Flags]
-public enum TransferFlag : byte
+public enum ItemTransferFlag : byte
 {
-    None = 0,
+    Untradeable = 0,
     Unknown1 = 1,
     Splitable = 2,
     Tradeable = 4,
     Binds = 8,
-    Unknown2 = 16,
+    LimitedTradeCount = 16,
     Unknown4 = 24,
     Unknown3 = 32
 }

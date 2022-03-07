@@ -4,6 +4,7 @@ using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
+using MapleServer2.Packets;
 
 namespace MapleServer2.Types;
 
@@ -53,9 +54,9 @@ public class Item
 
     // EnchantExp (10000 = 100%) for Peachy
     public int EnchantExp;
-    public int RepackageCount;
+    public int RemainingRepackageCount;
     public int Charges;
-    public TransferFlag TransferFlag;
+    public ItemTransferFlag TransferFlag;
     public TransferType TransferType;
     public int RemainingTrades;
 
@@ -149,7 +150,7 @@ public class Item
         GachaDismantleId = other.GachaDismantleId;
         Enchants = other.Enchants;
         EnchantExp = other.EnchantExp;
-        RepackageCount = other.RepackageCount;
+        RemainingRepackageCount = other.RemainingRepackageCount;
         Charges = other.Charges;
         TransferFlag = other.TransferFlag;
         RemainingTrades = other.RemainingTrades;
@@ -214,6 +215,37 @@ public class Item
         return itemId is >= 60000001 and < 61000000;
     }
 
+    public bool BindItem(Player player)
+    {
+        if (OwnerCharacterId != 0 && OwnerCharacterId != player.CharacterId)
+        {
+            return false;
+        }
+
+        if (OwnerCharacterId == player.CharacterId)
+        {
+            return true;
+        }
+
+        OwnerAccountId = player.AccountId;
+        OwnerCharacterId = player.CharacterId;
+        OwnerCharacterName = player.Name;
+        RemainingTrades = 0;
+
+        player.Session.Send(ItemInventoryPacket.UpdateBind(this));
+        return true;
+    }
+
+    public bool IsBound()
+    {
+        return OwnerCharacterId != 0;
+    }
+
+    public bool IsSelfBound(long characterId)
+    {
+        return OwnerAccountId == characterId;
+    }
+
     public void SetMetadataValues()
     {
         InventoryTab = ItemMetadataStorage.GetTab(Id);
@@ -232,7 +264,8 @@ public class Item
         ShopID = ItemMetadataStorage.GetShopID(Id);
         RemainingTrades = ItemMetadataStorage.GetTradeableCount(Id);
         TransferType = ItemMetadataStorage.GetTransferType(Id);
-        RepackageCount = ItemMetadataStorage.GetRepackageCount(Id);
+        TransferFlag = ItemMetadataStorage.GetTransferFlag(Id);
+        RemainingRepackageCount = ItemMetadataStorage.GetRepackageCount(Id);
         HousingCategory = ItemMetadataStorage.GetHousingCategory(Id);
         BlackMarketCategory = ItemMetadataStorage.GetBlackMarketCategory(Id);
         Category = ItemMetadataStorage.GetCategory(Id);

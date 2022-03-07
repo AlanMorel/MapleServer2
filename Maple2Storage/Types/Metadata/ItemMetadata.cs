@@ -30,66 +30,68 @@ public class ItemMetadata
     [XmlElement(Order = 11)]
     public TransferType TransferType;
     [XmlElement(Order = 12)]
-    public byte TradeableCount;
+    public ItemTransferFlag TransferFlag;
     [XmlElement(Order = 13)]
-    public byte RepackageCount;
+    public byte TradeableCount;
     [XmlElement(Order = 14)]
-    public byte RepackageItemConsumeCount;
+    public byte RepackageCount;
     [XmlElement(Order = 15)]
-    public bool IsTwoHand;
+    public byte RepackageItemConsumeCount;
     [XmlElement(Order = 16)]
-    public bool IsDress;
+    public bool IsTwoHand;
     [XmlElement(Order = 17)]
-    public bool IsTemplate;
+    public bool IsDress;
     [XmlElement(Order = 18)]
-    public Gender Gender;
+    public bool IsTemplate;
     [XmlElement(Order = 19)]
-    public int PlayCount;
+    public Gender Gender;
     [XmlElement(Order = 20)]
-    public bool IsCustomScore;
+    public int PlayCount;
     [XmlElement(Order = 21)]
-    public List<long> SellPrice = new();
+    public bool IsCustomScore;
     [XmlElement(Order = 22)]
-    public List<long> SellPriceCustom = new();
+    public List<long> SellPrice = new();
     [XmlElement(Order = 23)]
-    public string FileName;
+    public List<long> SellPriceCustom = new();
     [XmlElement(Order = 24)]
-    public int SkillID;
+    public string FileName;
     [XmlElement(Order = 25)]
-    public List<int> RecommendJobs = new();
+    public int SkillID;
     [XmlElement(Order = 26)]
-    public List<ItemBreakReward> BreakRewards = new();
+    public List<int> RecommendJobs = new();
     [XmlElement(Order = 27)]
-    public ItemFunction FunctionData = new();
+    public List<ItemBreakReward> BreakRewards = new();
     [XmlElement(Order = 28)]
-    public string Tag;
+    public ItemFunction FunctionData = new();
     [XmlElement(Order = 29)]
-    public int ShopID;
+    public string Tag;
     [XmlElement(Order = 30)]
-    public int Level;
+    public int ShopID;
     [XmlElement(Order = 31)]
-    public List<HairPresets> HairPresets = new();
+    public int Level;
     [XmlElement(Order = 32)]
-    public int ColorIndex;
+    public List<HairPresets> HairPresets = new();
     [XmlElement(Order = 33)]
-    public int ColorPalette;
+    public int ColorIndex;
     [XmlElement(Order = 34)]
-    public int OptionStatic;
+    public int ColorPalette;
     [XmlElement(Order = 35)]
-    public int OptionRandom;
+    public int OptionStatic;
     [XmlElement(Order = 36)]
-    public int OptionConstant;
+    public int OptionRandom;
     [XmlElement(Order = 37)]
-    public float OptionLevelFactor;
+    public int OptionConstant;
     [XmlElement(Order = 38)]
-    public bool IsCubeSolid;
+    public float OptionLevelFactor;
     [XmlElement(Order = 39)]
-    public ItemHousingCategory HousingCategory;
+    public bool IsCubeSolid;
     [XmlElement(Order = 40)]
-    public int ObjectId;
+    public ItemHousingCategory HousingCategory;
     [XmlElement(Order = 41)]
-    public string BlackMarketCategory;
+    public int ObjectId;
     [XmlElement(Order = 42)]
+    public string BlackMarketCategory;
+    [XmlElement(Order = 43)]
     public string Category;
 
     public override string ToString()

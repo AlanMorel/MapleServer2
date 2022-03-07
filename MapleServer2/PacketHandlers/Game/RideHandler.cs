@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using Maple2Storage.Enums;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Enums;
 using MapleServer2.Managers;
@@ -60,7 +61,7 @@ public class RideHandler : GamePacketHandler
         {
             return;
         }
-
+        
         IFieldObject<Mount> fieldMount =
             session.FieldManager.RequestFieldObject(new Mount
             {
@@ -73,6 +74,12 @@ public class RideHandler : GamePacketHandler
         session.Player.Mount = fieldMount;
 
         PacketWriter startPacket = MountPacket.StartRide(session.Player.FieldPlayer);
+
+        Item item = session.Player.Inventory.GetByUid(mountUid);
+        if (item.TransferFlag.HasFlag(ItemTransferFlag.Binds) && !item.IsBound())
+        {
+            item.BindItem(session.Player);
+        }
         session.FieldManager.BroadcastPacket(startPacket);
     }
 

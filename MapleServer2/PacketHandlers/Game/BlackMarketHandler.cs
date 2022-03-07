@@ -109,6 +109,17 @@ public class BlackMarketHandler : GamePacketHandler
             session.Send(BlackMarketPacket.Error((int) BlackMarketError.ItemNotInInventory));
             return;
         }
+        
+        Item item = session.Player.Inventory.GetByUid(itemUid);
+        if (item.Amount < quantity)
+        {
+            return;
+        }
+
+        if (item.IsBound())
+        {
+            return;
+        }
 
         double depositRate = 0.01; // 1% deposit rate
         int maxDeposit = 100000;
@@ -121,16 +132,10 @@ public class BlackMarketHandler : GamePacketHandler
             return;
         }
 
-        Item item = session.Player.Inventory.GetByUid(itemUid);
-        if (item.Amount < quantity)
-        {
-            return;
-        }
-
         if (item.Amount > quantity)
         {
             item.TrySplit(quantity, out Item newStack);
-            session.Send(ItemInventoryPacket.Update(item.Uid, item.Amount));
+            session.Send(ItemInventoryPacket.UpdateAmount(item.Uid, item.Amount));
             item = newStack;
         }
         else
