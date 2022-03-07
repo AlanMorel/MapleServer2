@@ -121,6 +121,7 @@ public class NoticeCommand : InGameCommand
 
         if (!Enum.IsDefined(typeof(SystemNotice), noticeId))
         {
+            trigger.Session.SendNotice("Invalid notice id.");
             return;
         }
 
