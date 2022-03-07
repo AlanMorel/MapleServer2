@@ -295,7 +295,7 @@ public class RequestItemUseHandler : GamePacketHandler
 
         if (!DatabaseManager.Characters.NameExists(targetUser))
         {
-            session.Send(NoticePacket.Notice(SystemNotice.CharacterNotFound, NoticeType.Popup));
+            session.Send(NoticePacket.Notice(SystemNotice.SpecifiedCharacterCouldNotBeFound, NoticeType.Popup));
             return;
         }
 
@@ -344,7 +344,7 @@ public class RequestItemUseHandler : GamePacketHandler
             otherPlayer.Name
         };
 
-        session.Send(NoticePacket.Notice(SystemNotice.BuddyBadgeMailedToUser, NoticeType.ChatAndFastText, noticeParameters));
+        session.Send(NoticePacket.Notice(SystemNotice.YouMailedBuddyBadgeToOtherPlayer, NoticeType.ChatAndFastText, noticeParameters));
     }
 
     public static void HandlePetExtraction(GameSession session, PacketReader packet, Item item)
