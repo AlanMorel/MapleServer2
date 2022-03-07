@@ -108,24 +108,23 @@ public class NoticeCommand : InGameCommand
         {
             "testnotice"
         };
+        Description = "Sends a notice to the player for testing purposes.";
         Parameters = new()
         {
-            new Parameter<int>("amount", "amount")
+            new Parameter<int>("noticeId", "The notice id")
         };
     }
 
     public override void Execute(GameCommandTrigger trigger)
     {
-        int amount = trigger.Get<int>("amount");
-        trigger.Session.SendNotice($"Start ################ ");
-        for (int i = amount; i < amount + 10; i++)
-        {
-            trigger.Session.SendNotice($"Message {i:x8}:");
-            trigger.Session.Send(NoticePacket.Notice((SystemNotice) i, NoticeType.Chat));
+        int noticeId = trigger.Get<int>("noticeId");
 
-            trigger.Session.SendNotice($" ----------- ");
+        if (!Enum.IsDefined(typeof(SystemNotice), noticeId))
+        {
+            trigger.Session.SendNotice("Invalid notice id.");
+            return;
         }
 
-        trigger.Session.SendNotice($"End ################ ");
+        trigger.Session.Send(NoticePacket.Notice((SystemNotice) noticeId, NoticeType.Chat));
     }
 }

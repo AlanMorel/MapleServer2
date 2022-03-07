@@ -91,12 +91,12 @@ public class UserChatHandler : GamePacketHandler
 
         if (voucher is not null)
         {
-            session.Send(NoticePacket.Notice(SystemNotice.UsedChannelChatVoucher, NoticeType.ChatAndFastText));
+            session.Send(NoticePacket.Notice(SystemNotice.ChannelChatUseCoupon, NoticeType.ChatAndFastText));
             player.Inventory.ConsumeItem(session, voucher.Uid, 1);
         }
         else if (!player.Account.RemoveMerets(meretCost))
         {
-            session.Send(ChatPacket.Error(player, SystemNotice.InsufficientMerets, ChatType.NoticeAlert));
+            session.Send(ChatPacket.Error(player, SystemNotice.ErrorInsufficientMeret, ChatType.NoticeAlert));
             return;
         }
 
@@ -124,7 +124,7 @@ public class UserChatHandler : GamePacketHandler
         {
             session.Player.SuperChat = 0;
             session.Send(SuperChatPacket.Deselect(session.Player.FieldPlayer));
-            session.Send(ChatPacket.Error(session.Player, SystemNotice.InsufficientSuperChatThemes, ChatType.NoticeAlert));
+            session.Send(ChatPacket.Error(session.Player, SystemNotice.ErrorInsufficientSuperChatThemes, ChatType.NoticeAlert));
             return;
         }
 
@@ -153,12 +153,12 @@ public class UserChatHandler : GamePacketHandler
         Item voucher = session.Player.Inventory.GetAllByTag("FreeWorldChatCoupon").FirstOrDefault();
         if (voucher is not null)
         {
-            session.Send(NoticePacket.Notice(SystemNotice.UsedWorldChatVoucher, NoticeType.ChatAndFastText));
+            session.Send(NoticePacket.Notice(SystemNotice.WorldChatUseCoupon, NoticeType.ChatAndFastText));
             session.Player.Inventory.ConsumeItem(session, voucher.Uid, 1);
         }
         else if (!session.Player.Account.RemoveMerets(meretCost))
         {
-            session.Send(ChatPacket.Error(session.Player, SystemNotice.InsufficientMerets, ChatType.NoticeAlert));
+            session.Send(ChatPacket.Error(session.Player, SystemNotice.ErrorInsufficientMeret, ChatType.NoticeAlert));
             return;
         }
 
@@ -230,13 +230,13 @@ public class UserChatHandler : GamePacketHandler
         Player recipientPlayer = GameServer.PlayerManager.GetPlayerByName(recipient);
         if (recipientPlayer is null)
         {
-            session.Send(ChatPacket.Error(session.Player, SystemNotice.UnableToWhisper, ChatType.WhisperFail));
+            session.Send(ChatPacket.Error(session.Player, SystemNotice.ErrorUnableToSendWhisper, ChatType.WhisperFail));
             return;
         }
 
         if (BuddyManager.IsBlocked(session.Player, recipientPlayer))
         {
-            session.Send(ChatPacket.Error(session.Player, SystemNotice.UnableToWhisper, ChatType.WhisperFail));
+            session.Send(ChatPacket.Error(session.Player, SystemNotice.ErrorUnableToSendWhisper, ChatType.WhisperFail));
             return;
         }
 

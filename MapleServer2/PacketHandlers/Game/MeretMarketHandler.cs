@@ -380,17 +380,17 @@ public class MeretMarketHandler : GamePacketHandler
         }
         if (!HandleMarketItemPay(session, itemPrice, marketItem.TokenType))
         {
-            SystemNotice noticeId = SystemNotice.None;
+            SystemNotice noticeId = SystemNotice.EmptyString;
             switch (marketItem.TokenType)
             {
                 case MeretMarketCurrencyType.Meso:
-                    noticeId = SystemNotice.InsufficientMesos;
+                    noticeId = SystemNotice.ErrorInsufficientMeso;
                     break;
                 case MeretMarketCurrencyType.Meret:
-                    noticeId = SystemNotice.InsufficientMerets;
+                    noticeId = SystemNotice.ErrorInsufficientMeret;
                     break;
                 case MeretMarketCurrencyType.RedMeret:
-                    noticeId = SystemNotice.InsufficientRedMerets;
+                    noticeId = SystemNotice.ErrorInsufficientMeretRed;
                     break;
             }
 
