@@ -12,10 +12,10 @@ public interface IInventory
     Item[] Badges { get; }
     Item[] LapenshardStorage { get; }
     Dictionary<long, Item> TemporaryStorage { get; }
-    void AddItem(GameSession session, Item item, bool isNew);
+    void AddItem(GameSession session, Item item, bool isNew, bool notify = true);
     void ConsumeItem(GameSession session, long uid, int amount);
     bool RemoveItem(GameSession session, long uid, out Item item);
-    void DropItem(GameSession session, long uid, int amount, bool isBound);
+    void DropItem(GameSession session, Item item, int amount);
     void MoveItem(GameSession session, long uid, short dstSlot);
 
     /// <summary>

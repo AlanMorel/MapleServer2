@@ -263,6 +263,8 @@ public class BlackMarketHandler : GamePacketHandler
             purchasedItem = newItem;
         }
 
+        purchasedItem.DecreaseTradeCount();
+
         MailHelper.BlackMarketTransaction(purchasedItem, listing, session.Player.CharacterId, listing.Price, removeListing);
         session.Send(BlackMarketPacket.Purchase(listingId, amount));
     }

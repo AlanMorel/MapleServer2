@@ -2,6 +2,7 @@
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Servers.Game;
+using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
@@ -54,16 +55,27 @@ public class RequestItemInventoryHandler : GamePacketHandler
 
     private static void HandleDrop(GameSession session, PacketReader packet)
     {
-        // TODO: Make sure items are tradable?
         long uid = packet.ReadLong();
         int amount = packet.ReadInt(); // Grabs incoming item packet amount
-        session.Player.Inventory.DropItem(session, uid, amount, false);
+        if (!session.Player.Inventory.HasItem(uid))
+        {
+            return;
+        }
+        
+        Item item = session.Player.Inventory.GetByUid(uid);
+        session.Player.Inventory.DropItem(session, item, amount);
     }
 
     private static void HandleDropBound(GameSession session, PacketReader packet)
     {
         long uid = packet.ReadLong();
-        session.Player.Inventory.DropItem(session, uid, 0, true);
+        if (!session.Player.Inventory.HasItem(uid))
+        {
+            return;
+        }
+        
+        Item item = session.Player.Inventory.GetByUid(uid);
+        session.Player.Inventory.DropItem(session, item, item.Amount);
     }
 
     private static void HandleSort(GameSession session, PacketReader packet)

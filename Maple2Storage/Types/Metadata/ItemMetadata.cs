@@ -30,68 +30,72 @@ public class ItemMetadata
     [XmlElement(Order = 11)]
     public TransferType TransferType;
     [XmlElement(Order = 12)]
-    public ItemTransferFlag TransferFlag;
+    public int TradeLimitByRarity;
     [XmlElement(Order = 13)]
     public byte TradeableCount;
     [XmlElement(Order = 14)]
-    public byte RepackageCount;
+    public bool DisableTradeWithinAccount;
     [XmlElement(Order = 15)]
-    public byte RepackageItemConsumeCount;
+    public byte RepackageCount;
     [XmlElement(Order = 16)]
-    public bool IsTwoHand;
+    public byte RepackageItemConsumeCount;
     [XmlElement(Order = 17)]
-    public bool IsDress;
+    public bool IsTwoHand;
     [XmlElement(Order = 18)]
-    public bool IsTemplate;
+    public bool IsDress;
     [XmlElement(Order = 19)]
-    public Gender Gender;
+    public bool IsTemplate;
     [XmlElement(Order = 20)]
-    public int PlayCount;
+    public Gender Gender;
     [XmlElement(Order = 21)]
-    public bool IsCustomScore;
+    public int PlayCount;
     [XmlElement(Order = 22)]
-    public List<long> SellPrice = new();
+    public bool IsCustomScore;
     [XmlElement(Order = 23)]
-    public List<long> SellPriceCustom = new();
+    public List<long> SellPrice = new();
     [XmlElement(Order = 24)]
-    public string FileName;
+    public List<long> SellPriceCustom = new();
     [XmlElement(Order = 25)]
-    public int SkillID;
+    public string FileName;
     [XmlElement(Order = 26)]
-    public List<int> RecommendJobs = new();
+    public int SkillID;
     [XmlElement(Order = 27)]
-    public List<ItemBreakReward> BreakRewards = new();
+    public List<int> RecommendJobs = new();
     [XmlElement(Order = 28)]
-    public ItemFunction FunctionData = new();
+    public List<ItemBreakReward> BreakRewards = new();
     [XmlElement(Order = 29)]
-    public string Tag;
+    public ItemFunction FunctionData = new();
     [XmlElement(Order = 30)]
-    public int ShopID;
+    public string Tag;
     [XmlElement(Order = 31)]
-    public int Level;
+    public int ShopID;
     [XmlElement(Order = 32)]
-    public List<HairPresets> HairPresets = new();
+    public int PetId;
     [XmlElement(Order = 33)]
-    public int ColorIndex;
+    public int Level;
     [XmlElement(Order = 34)]
-    public int ColorPalette;
+    public List<HairPresets> HairPresets = new();
     [XmlElement(Order = 35)]
-    public int OptionStatic;
+    public int ColorIndex;
     [XmlElement(Order = 36)]
-    public int OptionRandom;
+    public int ColorPalette;
     [XmlElement(Order = 37)]
-    public int OptionConstant;
+    public int OptionStatic;
     [XmlElement(Order = 38)]
-    public float OptionLevelFactor;
+    public int OptionRandom;
     [XmlElement(Order = 39)]
-    public bool IsCubeSolid;
+    public int OptionConstant;
     [XmlElement(Order = 40)]
-    public ItemHousingCategory HousingCategory;
+    public float OptionLevelFactor;
     [XmlElement(Order = 41)]
-    public int ObjectId;
+    public bool IsCubeSolid;
     [XmlElement(Order = 42)]
-    public string BlackMarketCategory;
+    public ItemHousingCategory HousingCategory;
     [XmlElement(Order = 43)]
+    public int ObjectId;
+    [XmlElement(Order = 44)]
+    public string BlackMarketCategory;
+    [XmlElement(Order = 45)]
     public string Category;
 
     public override string ToString()

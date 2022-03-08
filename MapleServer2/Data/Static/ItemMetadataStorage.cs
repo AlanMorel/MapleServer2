@@ -61,10 +61,70 @@ public static class ItemMetadataStorage
     public static int GetShopID(int itemId) => GetMetadata(itemId).ShopID;
 
     public static bool IsSellablle(int itemId) => GetMetadata(itemId).Sellable;
+    
+    public static bool IsTradeDisabledWithinAccount(int itemId) => GetMetadata(itemId).DisableTradeWithinAccount;
 
     public static TransferType GetTransferType(int itemId) => GetMetadata(itemId).TransferType;
 
-    public static ItemTransferFlag GetTransferFlag(int itemId) => GetMetadata(itemId).TransferFlag;
+    public static ItemTransferFlag GetTransferFlag(int itemId, int rarity)
+    {
+        TransferType transferType = GetTransferType(itemId);
+        ItemTransferFlag transferFlag = ItemTransferFlag.Untradeable;
+        int tradeLimitByRarity = GetMetadata(itemId).TradeLimitByRarity;
+        int tradeCount = GetTradeableCount(itemId);
+        bool tradeable = tradeCount > 0 || transferType == TransferType.Tradeable;
+
+        switch (transferType)
+        {
+            case TransferType.Tradeable:
+                if (rarity >= tradeLimitByRarity)
+                {
+                    transferFlag = tradeable ? ItemTransferFlag.Untradeable : ItemTransferFlag.LimitedTradeCount;
+                    break;
+                }
+
+                transferFlag = ItemTransferFlag.Tradeable;
+                break;
+            case TransferType.Untradeable:
+                transferFlag = tradeable ? ItemTransferFlag.Untradeable : ItemTransferFlag.LimitedTradeCount;
+                break;
+            case TransferType.BindOnLoot:
+            case TransferType.BindOnEquip:
+            case TransferType.BindOnUse:
+            case TransferType.BindOnTrade:
+            case TransferType.BindOnSummonEnchantOrReroll:
+                transferFlag = ItemTransferFlag.Binds;
+                if (tradeCount <= 0)
+                {
+                    if (rarity >= tradeLimitByRarity)
+                    {
+                        break;
+                    }
+
+                    transferFlag = ItemTransferFlag.Binds | ItemTransferFlag.Tradeable;
+                    break;
+                }
+
+                transferFlag = ItemTransferFlag.Binds | ItemTransferFlag.LimitedTradeCount;
+                break;
+            case TransferType.TradeableOnBlackMarket:
+                if (tradeCount > 0 && rarity >= tradeLimitByRarity)
+                {
+                    transferFlag = tradeable ? ItemTransferFlag.Untradeable : ItemTransferFlag.LimitedTradeCount;
+                    break;
+                }
+
+                transferFlag = ItemTransferFlag.Tradeable;
+                break;
+        }
+        
+        if (rarity < tradeLimitByRarity && (transferFlag & ItemTransferFlag.Tradeable) != 0)
+        {
+            transferFlag |= ItemTransferFlag.Splitable;
+        }   
+
+        return transferFlag;
+    }
 
     public static int GetTradeableCount(int itemId) => GetMetadata(itemId).TradeableCount;
 

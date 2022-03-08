@@ -29,6 +29,7 @@ public class Item
     public ItemFunction Function { get; set; }
     public string Tag { get; set; }
     public int ShopID { get; set; }
+    public int PetId { get; set; }
     public ItemHousingCategory HousingCategory;
     public string BlackMarketCategory;
     public string Category;
@@ -102,6 +103,8 @@ public class Item
         PlayCount = ItemMetadataStorage.GetPlayCount(id);
         Color = ItemMetadataStorage.GetEquipColor(id);
         CreationTime = TimeInfo.Now();
+        RemainingTrades = ItemMetadataStorage.GetTradeableCount(Id);
+        RemainingRepackageCount = ItemMetadataStorage.GetRepackageCount(Id);
         RemainingGlamorForges = ItemExtractionMetadataStorage.GetExtractionCount(id);
         Slot = -1;
         Amount = 1;
@@ -210,9 +213,9 @@ public class Item
         return slot is ItemSlot.CP or ItemSlot.CL or ItemSlot.PA or ItemSlot.GL or ItemSlot.SH or ItemSlot.MT;
     }
 
-    public static bool IsPet(int itemId)
+    public bool IsPet()
     {
-        return itemId is >= 60000001 and < 61000000;
+        return PetId != 0;
     }
 
     public bool BindItem(Player player)
@@ -232,7 +235,7 @@ public class Item
         OwnerCharacterName = player.Name;
         RemainingTrades = 0;
 
-        player.Session.Send(ItemInventoryPacket.UpdateBind(this));
+        player.Session?.Send(ItemInventoryPacket.UpdateBind(this));
         return true;
     }
 
@@ -244,6 +247,16 @@ public class Item
     public bool IsSelfBound(long characterId)
     {
         return OwnerAccountId == characterId;
+    }
+
+    public void DecreaseTradeCount()
+    {
+        if (!TransferFlag.HasFlag(ItemTransferFlag.LimitedTradeCount))
+        {
+            return;
+        }
+        
+        RemainingTrades--;
     }
 
     public void SetMetadataValues()
@@ -262,10 +275,8 @@ public class Item
         Function = ItemMetadataStorage.GetFunction(Id);
         Tag = ItemMetadataStorage.GetTag(Id);
         ShopID = ItemMetadataStorage.GetShopID(Id);
-        RemainingTrades = ItemMetadataStorage.GetTradeableCount(Id);
         TransferType = ItemMetadataStorage.GetTransferType(Id);
-        TransferFlag = ItemMetadataStorage.GetTransferFlag(Id);
-        RemainingRepackageCount = ItemMetadataStorage.GetRepackageCount(Id);
+        TransferFlag = ItemMetadataStorage.GetTransferFlag(Id, Rarity);
         HousingCategory = ItemMetadataStorage.GetHousingCategory(Id);
         BlackMarketCategory = ItemMetadataStorage.GetBlackMarketCategory(Id);
         Category = ItemMetadataStorage.GetCategory(Id);

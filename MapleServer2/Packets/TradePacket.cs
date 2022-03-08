@@ -71,7 +71,7 @@ public static class TradePacket
         pWriter.WriteInt(item.Id);
         pWriter.WriteLong(item.Uid);
         pWriter.WriteInt(item.Rarity);
-        pWriter.WriteInt();
+        pWriter.WriteInt(index);
         pWriter.WriteInt(item.Amount);
         pWriter.WriteInt(index);
         pWriter.WriteItem(item);

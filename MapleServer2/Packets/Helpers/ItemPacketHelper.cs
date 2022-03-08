@@ -33,7 +33,7 @@ public static class ItemPacketHelper
         pWriter.WriteLong();
         pWriter.WriteInt();
         pWriter.WriteInt();
-        pWriter.WriteBool(item.TransferFlag.HasFlag(ItemTransferFlag.Tradeable) || item.RemainingTrades > 0);
+        pWriter.WriteBool(item.TransferFlag.HasFlag(ItemTransferFlag.Tradeable) || item.RemainingTrades > 0 || item.RemainingRepackageCount > 0);
         pWriter.WriteInt(item.Charges);
         pWriter.WriteStatDiff( /*item.Stats, item.Stats*/);
 

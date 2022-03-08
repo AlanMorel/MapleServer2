@@ -1,4 +1,5 @@
 ﻿using Maple2Storage.Enums;
+using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -38,6 +39,11 @@ public class BankInventory
     public void Add(GameSession session, long uid, int amount, short slot)
     {
         Item item = session.Player.Inventory.GetByUid(uid);
+
+        if (ItemMetadataStorage.IsTradeDisabledWithinAccount(item.Id))
+        {
+            return;
+        }
 
         if (amount < item.Amount)
         {

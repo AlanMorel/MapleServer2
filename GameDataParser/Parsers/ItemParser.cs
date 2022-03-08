@@ -46,6 +46,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                 Tab = GetTab(property.type, property.subtype, property.skin != 0),
                 IsTemplate = property.skinType == 99,
                 TradeableCount = (byte) property.tradableCount,
+                DisableTradeWithinAccount = property.moveDisable == 1,
                 RepackageCount = (byte) property.rePackingLimitCount,
                 RepackageItemConsumeCount = (byte) property.rePackingItemConsumeCount,
                 BlackMarketCategory = property.blackMarketCategory,
@@ -65,17 +66,30 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                 FileName = musicScore.fileName,
                 IsCustomScore = musicScore.isCustomNote,
                 ShopID = data.Shop?.systemShopID ?? 0,
+                PetId =  data.pet?.petID ?? 0,
                 SkillID = data.skill.skillID,
                 EnableBreak = limit.enableBreak != 0,
                 Level = limit.levelLimit,
                 TransferType = (TransferType) limit.transferType,
-                TransferFlag = GetTransferFlag((TransferType) limit.transferType, property.slotMax, property.tradableCount, id),
+                TradeLimitByRarity = limit.tradeLimitRank,
                 Sellable = limit.shopSell != 0,
                 RecommendJobs = limit.recommendJobs.ToList(),
                 Gender = (Gender) limit.genderLimit,
                 IsCubeSolid = install.cubeProp != 0,
                 ObjectId = install.objCode
             };
+            
+            // if globalTransferType is present, override with these values
+            if (limit.globalTransferType is not null)
+            {
+                metadata.TransferType = (TransferType) limit.globalTransferType;
+            }
+            
+            // if globalTransferTypeNA is present, override with these values
+            if (limit.globalTransferTypeNA is not null)
+            {
+                metadata.TransferType = (TransferType) limit.globalTransferTypeNA;
+            }
 
             // if globalRePackingLimit is present, override repacking with these values
             if (property.globalRePackingLimitCount is not null)
@@ -520,38 +534,6 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                     break;
                 }
         }
-    }
-
-    private static ItemTransferFlag GetTransferFlag(TransferType transferType, int stackLimit, int tradeCount, int id)
-    {
-        ItemTransferFlag transferFlag = ItemTransferFlag.Untradeable;
-
-        switch (transferType)
-        {
-            case TransferType.BindOnUse or
-                TransferType.BindOnEquip or
-                TransferType.BindOnLoot or
-                TransferType.BindOnTrade:
-                transferFlag |= ItemTransferFlag.Binds;
-                break;
-            case TransferType.Tradeable:
-                transferFlag |= ItemTransferFlag.Tradeable;
-                break;
-            case TransferType.TradeableOnBlackMarket:
-                transferFlag |= ItemTransferFlag.Untradeable; // unsure if this is correct, but it follows the sniffs 
-                break;
-        }
-
-        if (tradeCount > 0)
-        {
-            transferFlag |= ItemTransferFlag.LimitedTradeCount;
-        }
-
-        if (stackLimit > 1)
-        {
-            transferFlag |= ItemTransferFlag.Splitable;
-        }
-        return transferFlag;
     }
 
     // This is an approximation and may not be 100% correct

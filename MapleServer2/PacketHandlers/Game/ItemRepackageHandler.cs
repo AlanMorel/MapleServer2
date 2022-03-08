@@ -53,7 +53,7 @@ public class ItemRepackageHandler : GamePacketHandler
             return;
         }
 
-        if (repackingItem.RemainingTrades != 0)
+        if (repackingItem.RemainingTrades != 0 || repackingItem.IsBound())
         {
             session.Send(ItemRepackagePacket.Notice((int) ItemRepackageNotice.CannotBePackaged));
         }
