@@ -34,12 +34,14 @@ public class TradeInventory
 
     public void AlterTrade(GameSession session)
     {
-        if (OtherPlayer.TradeInventory.IsLocked)
+        if (!OtherPlayer.TradeInventory.IsLocked)
         {
-            IsLocked = false;
-            OtherPlayer.Session?.Send(TradePacket.OfferedAltered(true));
-            session.Send(TradePacket.OfferedAltered(false));
+            return;
         }
+
+        IsLocked = false;
+        OtherPlayer.Session?.Send(TradePacket.OfferedAltered(true));
+        session.Send(TradePacket.OfferedAltered(false));
     }
 
     public void SendItems(Player player, bool isSuccessfulTrade)
@@ -72,7 +74,7 @@ public class TradeInventory
         AlterTrade(session);
         session.Send(TradePacket.RemoveItemToTrade(item, index, true));
         OtherPlayer.Session?.Send(TradePacket.RemoveItemToTrade(item, index, false));
-        session.Player.Inventory.AddItem(session, item, false, false);
+        session.Player.Inventory.AddItem(session, item, false);
         return true;
     }
 }

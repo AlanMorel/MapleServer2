@@ -120,8 +120,8 @@ public class TradeHandler : GamePacketHandler
         Player otherPlayer = tradeInventory.OtherPlayer;
 
         // Return items back to player's inventory
-        session.Player.TradeInventory.SendItems(session.Player, false);
-        session.Player.TradeInventory = null;
+        tradeInventory.SendItems(session.Player, false);
+        tradeInventory = null;
 
         if (otherPlayer?.TradeInventory is null)
         {
@@ -187,13 +187,13 @@ public class TradeHandler : GamePacketHandler
             return;
         }
 
-        Player player = session.Player.TradeInventory.OtherPlayer;
+        Player otherPlayer = session.Player.TradeInventory.OtherPlayer;
         session.Player.TradeInventory.AlterTrade(session);
 
         session.Player.TradeInventory.Mesos = mesoAmount;
 
         session.Send(TradePacket.AddMesosToTrade(mesoAmount, true));
-        player.Session?.Send(TradePacket.AddMesosToTrade(mesoAmount, false));
+        otherPlayer.Session?.Send(TradePacket.AddMesosToTrade(mesoAmount, false));
     }
 
     private static void HandleLockOffer(GameSession session)

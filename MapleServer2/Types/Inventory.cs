@@ -135,7 +135,7 @@ public sealed class Inventory : IInventory
 
     #region Public Methods
 
-    public void AddItem(GameSession session, Item item, bool isNew, bool notify = true)
+    public void AddItem(GameSession session, Item item, bool isNew)
     {
         switch (item.Type)
         {
@@ -181,7 +181,7 @@ public sealed class Inventory : IInventory
                     DatabaseManager.Items.Delete(item.Uid);
 
                     session.Send(ItemInventoryPacket.UpdateAmount(existingItem.Uid, existingItem.Amount));
-                    if (notify)
+                    if (isNew)
                     {
                         session.Send(ItemInventoryPacket.MarkItemNew(existingItem, item.Amount));
                     }
@@ -194,7 +194,7 @@ public sealed class Inventory : IInventory
                 existingItem.Amount = existingItem.StackLimit;
 
                 session.Send(ItemInventoryPacket.UpdateAmount(existingItem.Uid, existingItem.Amount));
-                if (notify)
+                if (isNew)
                 {
                     session.Send(ItemInventoryPacket.MarkItemNew(existingItem, added));
                 }
