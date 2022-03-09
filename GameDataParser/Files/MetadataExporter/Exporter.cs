@@ -2,9 +2,9 @@
 
 public abstract class Exporter<Metadata> : MetadataExporter
 {
-    protected MetadataResources Resources;
+    protected readonly MetadataResources Resources;
 
-    public Exporter(MetadataResources resources, string slug) : base(slug)
+    protected Exporter(MetadataResources resources, string slug) : base(slug)
     {
         Resources = resources;
     }

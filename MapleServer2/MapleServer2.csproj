@@ -33,5 +33,10 @@
         <ProjectReference Include="..\Maple2Storage\Maple2Storage.csproj" />
         <ProjectReference Include="..\MaplePacketLib2\MaplePacketLib2.csproj" />
     </ItemGroup>
-
+  
+    <ItemGroup>
+      <Reference Include="SharpNav">
+        <HintPath>..\SharpNav.dll</HintPath>
+      </Reference>
+    </ItemGroup>
 </Project>

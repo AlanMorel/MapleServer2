@@ -19,7 +19,7 @@ internal static class Program
         Directory.CreateDirectory(Paths.RESOURCES_DIR);
         Stopwatch runtime = Stopwatch.StartNew();
 
-        object resources = Activator.CreateInstance(typeof(MetadataResources));
+        MetadataResources resources = new();
         List<Task> tasks = new();
         List<Type> parserClassList = Assembly.GetExecutingAssembly().GetTypes().Where(t => !t.IsAbstract && !t.IsNested && t.IsClass && t.Namespace == "GameDataParser.Parsers").ToList();
 
@@ -42,7 +42,7 @@ internal static class Program
                 exporter = (MetadataExporter) Activator.CreateInstance(parserClass);
             }
 
-            tasks.Add(Task.Run(() => exporter.Export()).ContinueWith(t =>
+            tasks.Add(Task.Run(() => exporter!.Export()).ContinueWith(t =>
             {
                 if (t.IsFaulted)
                 {

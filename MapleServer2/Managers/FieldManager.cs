@@ -40,12 +40,15 @@ public partial class FieldManager
     private Task TriggerTask;
     private static readonly TriggerLoader TriggerLoader = new();
 
+    private readonly FieldNavigator Navigator;
+
     #region Constructors
 
     public FieldManager(Player player)
     {
         MapId = player.MapId;
-        Capacity = MapMetadataStorage.GetMetadata(MapId).Property.Capacity;
+        MapMetadata metadata = MapMetadataStorage.GetMetadata(MapId);
+        Capacity = metadata.Property.Capacity;
 
         // Capacity 0 means solo instances
         if (Capacity == 0)
@@ -60,20 +63,20 @@ public partial class FieldManager
 
         BoundingBox = MapEntityMetadataStorage.GetBoundingBox(MapId);
 
-        // TODO: generate navmeshes for all maps
+        string path = $"{Paths.NAVMESH_DIR}/{metadata.XBlockName}.snj";
+        if (File.Exists(path))
+        {
+            Navigator = new();
+            Navigator.LoadNavMeshFromFile(path);
+        }
 
         // Load triggers
-        MapMetadata mapMetadata = MapMetadataStorage.GetMetadata(MapId);
-        if (mapMetadata != null)
+        Triggers = TriggerLoader.GetTriggers(metadata.XBlockName).Select(initializer =>
         {
-            string xBlockName = mapMetadata.XBlockName;
-            Triggers = TriggerLoader.GetTriggers(xBlockName).Select(initializer =>
-            {
-                TriggerContext context = new(this, Logger);
-                TriggerState startState = initializer.Invoke(context);
-                return new TriggerScript(context, startState);
-            }).ToArray();
-        }
+            TriggerContext context = new(this, Logger);
+            TriggerState startState = initializer.Invoke(context);
+            return new TriggerScript(context, startState);
+        }).ToArray();
 
         // Add entities to state from MapEntityStorage
         AddEntitiesToState();
@@ -148,6 +151,7 @@ public partial class FieldManager
         Mob mob = WrapMob(mobId);
         mob.Coord = coord;
         mob.Rotation = rotation;
+        mob.Navigator = Navigator;
         if (animation != default)
         {
             mob.Animation = animation;
@@ -164,6 +168,7 @@ public partial class FieldManager
         mob.OriginSpawn = spawnPoint;
         mob.Coord = coord;
         mob.Rotation = rotation;
+        mob.Navigator = Navigator;
         if (animation != default)
         {
             mob.Animation = animation;
@@ -1010,13 +1015,16 @@ public partial class FieldManager
             updates.Add(FieldObjectPacket.UpdatePlayer(player));
         }
 
+        // TODO: When mob is moving, the packet ControlMob should be sent every ~300ms.
         foreach (Mob mob in State.Mobs.Values)
         {
-            updates.Add(FieldObjectPacket.ControlMob(mob));
             if (mob.IsDead)
             {
                 RemoveMob(mob);
+                continue;
             }
+
+            updates.Add(FieldObjectPacket.ControlMob(mob));
         }
 
         return updates;

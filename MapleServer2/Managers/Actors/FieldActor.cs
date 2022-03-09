@@ -20,6 +20,8 @@ public partial class FieldManager
         public SkillCast SkillCast { get; set; }
         public bool OnCooldown { get; set; }
 
+        public FieldNavigator Navigator;
+
         public FieldActor(int objectId, T value) : base(objectId, value) { }
 
         public virtual void UpdateFixed() { }
@@ -28,13 +30,11 @@ public partial class FieldManager
 
         public virtual void MoveBy(CoordF displacement)
         {
-            // TODO: Break displacement into segments, then set path.
             Velocity = displacement;
         }
 
         public virtual void MoveTo(CoordF target)
         {
-            // TODO: Perform pathfinding, then set path.
             Velocity = target - Coord;
         }
 

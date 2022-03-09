@@ -6,9 +6,9 @@ namespace GameDataParser.Files;
 
 public abstract class MetadataExporter
 {
-    protected string Filename;
+    private readonly string Filename;
 
-    public MetadataExporter(string slug)
+    protected MetadataExporter(string slug)
     {
         Filename = $"ms2-{slug}-metadata";
     }
@@ -27,18 +27,17 @@ public abstract class MetadataExporter
         Console.WriteLine($"\rSuccessfully exported {Filename}");
     }
 
-    private bool CheckHash()
-    {
-        return Hash.HasValidHash(Filename);
-    }
+    private bool CheckHash() => Hash.HasValidHash(Filename);
 
-    private void WriteHash()
-    {
-        Hash.WriteHash(Filename);
-    }
+    private void WriteHash() => Hash.WriteHash(Filename);
 
-    public void Write<Entities>(Entities entities)
+    protected void Write<Entities>(Entities entities)
     {
+        if (entities is null)
+        {
+            return;
+        }
+
         using (FileStream writeStream = File.Create($"{Paths.RESOURCES_DIR}/{Filename}"))
         {
             Serializer.Serialize(writeStream, entities);
@@ -59,5 +58,6 @@ public abstract class MetadataExporter
         }
 #endif
     }
+
     protected abstract void Serialize();
 }

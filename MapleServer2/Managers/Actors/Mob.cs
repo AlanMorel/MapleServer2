@@ -38,7 +38,7 @@ public partial class FieldManager
 
         public void Attack()
         {
-            int roll = RandomProvider.Get().Next(100);
+            int roll = Rand.Next(100);
             for (int i = 0; i < Value.NpcMetadataSkill.SkillIds.Length; i++)
             {
                 if (roll < Value.NpcMetadataSkill.SkillProbs[i])
@@ -64,14 +64,14 @@ public partial class FieldManager
 
         public void Act()
         {
-            if (AI == null)
+            if (AI is null)
             {
                 return;
             }
 
             (string actionName, NpcAction actionType) = AI.GetAction(this);
 
-            if (actionName != null)
+            if (actionName is not null)
             {
                 Animation = AnimationStorage.GetSequenceIdBySequenceName(Value.Model, actionName);
             }
@@ -106,29 +106,86 @@ public partial class FieldManager
             }
         }
 
-        public void Move(MobMovement moveType)
+        private void Move(MobMovement moveType)
         {
-            Random rand = RandomProvider.Get();
-
             switch (moveType)
             {
                 case MobMovement.Patrol:
-                    // Fallback Dummy Movement
-                    int moveDistance = rand.Next(0, Value.MoveRange);
-                    short moveDir = (short) rand.Next(-1800, 1800);
-
-                    Velocity = CoordF.From(moveDistance, moveDir);
-                    // Keep near spawn
-                    if ((SpawnDistance - Velocity).Length() >= Block.BLOCK_SIZE * 2)
+                    if (Navigator is null)
                     {
-                        moveDir = (short) SpawnDistance.XYAngle();
-                        Velocity = CoordF.From(Block.BLOCK_SIZE, moveDir);
+                        // Fallback Dummy Movement
+                        int moveDistance = Rand.Next(0, Value.MoveRange);
+                        short moveDir = (short) Rand.Next(-1800, 1800);
+
+                        Velocity = CoordF.From(moveDistance, moveDir);
+                        // Keep near spawn
+                        if ((SpawnDistance - Velocity).Length() >= Block.BLOCK_SIZE * 2)
+                        {
+                            moveDir = (short) SpawnDistance.XYAngle();
+                            Velocity = CoordF.From(Block.BLOCK_SIZE, moveDir);
+                        }
+
+                        LookDirection = moveDir; // looking direction of the monster
+                        break;
                     }
 
-                    LookDirection = moveDir; // looking direction of the monster
+                    try
+                    {
+                        int moveDistance = Rand.Next(0, Value.MoveRange);
+
+                        CoordF originSpawnCoord = OriginSpawn?.Coord ?? Coord;
+                        List<CoordF> path = Navigator.GenerateRandomPath(center: originSpawnCoord, range: moveDistance).ToList();
+                        CoordF from = path[0];
+                        CoordF to = CoordF.From(0, 0, 0);
+                        foreach (CoordF coord in path)
+                        {
+                            if ((coord - from).Length() > Value.NpcMetadataSpeed.WalkSpeed)
+                            {
+                                break;
+                            }
+
+                            to = coord;
+                        }
+
+                        MoveTo(to);
+                        LookDirection = (short) Velocity.XYAngle(); // looking direction of the monster
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Patrol: {ex.Message}");
+                    }
+
                     break;
                 case MobMovement.Follow: // move towards target
-                    Velocity = CoordF.From(0, 0, 0);
+                    if (Navigator is null)
+                    {
+                        Velocity = CoordF.From(0, 0, 0);
+                        break;
+                    }
+
+                    try
+                    {
+                        List<CoordF> path = Navigator.GenerateMoveToPath(from: Coord, to: Target.Coord).ToList();
+                        CoordF from = path[0];
+                        CoordF to = CoordF.From(0, 0, 0);
+                        foreach (CoordF pathCoord in path)
+                        {
+                            if ((pathCoord - from).Length() > Value.NpcMetadataSpeed.RunSpeed)
+                            {
+                                break;
+                            }
+
+                            to = pathCoord;
+                        }
+
+                        MoveTo(to);
+                        LookDirection = (short) Velocity.XYAngle(); // looking direction of the monster
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Follow: {ex.Message}");
+                    }
+
                     break;
                 case MobMovement.Strafe: // move around target
                 case MobMovement.Run: // move away from target
@@ -157,7 +214,7 @@ public partial class FieldManager
         {
             IsDead = true;
             State = NpcState.Dead;
-            int randAnim = RandomProvider.Get().Next(Value.StateActions[NpcState.Dead].Length);
+            int randAnim = Rand.Next(Value.StateActions[NpcState.Dead].Length);
             Animation = AnimationStorage.GetSequenceIdBySequenceName(Value.Model, Value.StateActions[NpcState.Dead][randAnim].Item1);
         }
 

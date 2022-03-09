@@ -10,10 +10,17 @@
   <ItemGroup>
     <PackageReference Include="DotNetZip" Version="1.16.0" />
     <PackageReference Include="Maple2.File.Parser" Version="2.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="SharpZipLib" Version="1.3.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Maple2Storage\Maple2Storage.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="SharpNav">
+      <HintPath>..\SharpNav.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>
