@@ -84,6 +84,7 @@ public class DatabaseCharacter : DatabaseTable
             .FirstOrDefault();
 
         List<Hotbar> hotbars = DatabaseManager.Hotbars.FindAllByGameOptionsId(data.game_options_id);
+        List<SkillCompactControl> compactControls = DatabaseManager.SkillCompactControls.FindAllByCharacterId(data.character_id);
         List<SkillTab> skillTabs = DatabaseManager.SkillTabs.FindAllByCharacterId(data.character_id, data.job);
         IInventory inventory = DatabaseManager.Inventories.FindById(data.inventory_id);
         BankInventory bankInventory = DatabaseManager.BankInventories.FindById(data.bank_inventory_id);
@@ -124,6 +125,7 @@ public class DatabaseCharacter : DatabaseTable
             ActiveSkillTabId = data.active_skill_tab_id,
             GameOptions = new GameOptions(JsonConvert.DeserializeObject<Dictionary<int, KeyBind>>(data.keybinds),
                 hotbars, data.active_hotbar_id, data.game_options_id),
+            SkillCompactControls = compactControls,
             Wallet = new Wallet(data.meso, data.valor_token, data.treva, data.rue, data.havi_fruit, session, data.wallet_id),
             Inventory = inventory,
             ChatSticker = JsonConvert.DeserializeObject<List<ChatSticker>>(data.chat_sticker),

@@ -109,6 +109,7 @@ public class Player
     public StatDistribution StatPointDistribution;
 
     public GameOptions GameOptions { get; set; }
+    public List<SkillCompactControl> SkillCompactControls { get; set; }
 
     public IInventory Inventory;
     public DismantleInventory DismantleInventory = new();
@@ -164,6 +165,7 @@ public class Player
         Gender = gender;
         Job = job;
         GameOptions = new(job);
+        SkillCompactControls = new();
         Wallet = new(meso: 0, valorToken: 0, treva: 0, rue: 0, haviFruit: 0, gameSession: null);
         Levels = new(playerLevel: 1, exp: 0, restExp: 0, prestigeLevel: 1, prestigeExp: 0, masteryExp: new()
         {

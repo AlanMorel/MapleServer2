@@ -12,6 +12,7 @@ public class KeyTableHandler : GamePacketHandler
 
     private enum KeyTableEnum : byte
     {
+        SetCompactControlKeybind = 0x01,
         SetKeyBind = 0x02,
         MoveQuickSlot = 0x03,
         AddToFirstSlot = 0x04,
@@ -25,6 +26,7 @@ public class KeyTableHandler : GamePacketHandler
 
         switch (requestType)
         {
+            case KeyTableEnum.SetCompactControlKeybind:
             case KeyTableEnum.SetKeyBind:
                 SetKeyBinds(session, packet);
                 break;
@@ -73,7 +75,7 @@ public class KeyTableHandler : GamePacketHandler
             session.Player.GameOptions.SetKeyBind(ref keyBind);
         }
     }
-
+    
     private static void MoveQuickSlot(GameSession session, PacketReader packet)
     {
         short hotbarId = packet.ReadShort();
