@@ -160,6 +160,7 @@ public static class GuildPacket
             pWriter.WriteInt(service.Id);
             pWriter.WriteInt(service.Level);
         }
+
         pWriter.WriteByte();
         pWriter.WriteShort();
 
@@ -280,7 +281,7 @@ public static class GuildPacket
         pWriter.WriteByte(rank);
         return pWriter;
     }
-    
+
     public static PacketWriter UpdateMemberName(string oldName, string newName)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
@@ -492,9 +493,11 @@ public static class GuildPacket
         {
             pWriter.WriteInt(trophyCategory);
         }
+
         pWriter.WriteLong(TimeInfo.Now() + Environment.TickCount);
         return pWriter;
     }
+
     public static PacketWriter WithdrawApplicationGuildUpdate(long applicationId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
@@ -523,6 +526,7 @@ public static class GuildPacket
         pWriter.WriteByte(response);
         return pWriter;
     }
+
     public static PacketWriter UpdateGuildExp(int guildExp)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
@@ -723,6 +727,7 @@ public static class GuildPacket
             pWriter.WriteLong(player.CharacterId);
             pWriter.WriteLong(application.CreationTimestamp);
         }
+
         return pWriter;
     }
 
@@ -748,6 +753,7 @@ public static class GuildPacket
             pWriter.WriteLong(guild.LeaderCharacterId);
             pWriter.WriteUnicodeString(guild.LeaderName);
         }
+
         return pWriter;
     }
 

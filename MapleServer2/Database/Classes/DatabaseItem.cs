@@ -1,6 +1,5 @@
 ﻿using Maple2Storage.Enums;
 using Maple2Storage.Types;
-using MapleServer2.Enums;
 using MapleServer2.Types;
 using Newtonsoft.Json;
 using SqlKata.Execution;
@@ -98,6 +97,7 @@ public class DatabaseItem : DatabaseTable
         {
             items.Add((Item) ReadItem(data));
         }
+
         return items;
     }
 
@@ -109,6 +109,7 @@ public class DatabaseItem : DatabaseTable
         {
             items.Add((Item) ReadItem(data));
         }
+
         return items;
     }
 
@@ -121,6 +122,7 @@ public class DatabaseItem : DatabaseTable
             Item item = (Item) ReadItem(data);
             items.Add(item.Uid, item);
         }
+
         return items;
     }
 
@@ -132,6 +134,7 @@ public class DatabaseItem : DatabaseTable
         {
             items.Add((Item) ReadItem(data));
         }
+
         return items;
     }
 

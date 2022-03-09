@@ -56,6 +56,7 @@ public static class ClubPacket
             pWriter.WriteLong(club.Id);
             WriteClubMember(pWriter, member);
         }
+
         pWriter.WriteByte(0x1);
         return pWriter;
     }
@@ -91,6 +92,7 @@ public static class ClubPacket
             pWriter.WriteLong(club.Id);
             WriteClubMember(pWriter, member);
         }
+
         return pWriter;
     }
 
@@ -275,7 +277,7 @@ public static class ClubPacket
         pWriter.WriteLong(); //unk
         return pWriter;
     }
-    
+
     public static PacketWriter UpdateMemberName(string oldName, string newName, long characterId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
@@ -325,6 +327,7 @@ public static class ClubPacket
         {
             pWriter.WriteInt(trophyCategory);
         }
+
         pWriter.WriteLong(member.JoinTimestamp);
         pWriter.WriteLong(member.Player.LastLogTime);
         pWriter.WriteBool(!member.Player.Session?.Connected() ?? true);

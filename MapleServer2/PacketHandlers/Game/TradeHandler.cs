@@ -1,5 +1,4 @@
-﻿using Maple2Storage.Tools;
-using MaplePacketLib2.Tools;
+﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Packets;
@@ -35,7 +34,7 @@ public class TradeHandler : GamePacketHandler
                 HandleSendRequest(session, packet);
                 break;
             case TradeModeType.RequestRespond:
-                HandleRequestRespond(session, packet);
+                HandleRequestRespond(packet);
                 break;
             case TradeModeType.AcceptRequest:
                 HandleAcceptRequest(session, packet);
@@ -80,7 +79,7 @@ public class TradeHandler : GamePacketHandler
         player.Session?.Send(TradePacket.TradeRequest(session.Player.Name, session.Player.CharacterId));
     }
 
-    private static void HandleRequestRespond(GameSession session, PacketReader packet)
+    private static void HandleRequestRespond(PacketReader packet)
     {
         long otherCharacterId = packet.ReadLong();
         // no idea what this does

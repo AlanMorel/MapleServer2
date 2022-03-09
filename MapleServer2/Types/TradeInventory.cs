@@ -1,5 +1,4 @@
-﻿using Maple2Storage.Enums;
-using MapleServer2.Packets;
+﻿using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 
 namespace MapleServer2.Types;
