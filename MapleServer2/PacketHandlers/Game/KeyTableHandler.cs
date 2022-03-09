@@ -12,7 +12,7 @@ public class KeyTableHandler : GamePacketHandler
 
     private enum KeyTableEnum : byte
     {
-        SetCompactControlKeybind = 0x01,
+        SetMacroKeybind = 0x01,
         SetKeyBind = 0x02,
         MoveQuickSlot = 0x03,
         AddToFirstSlot = 0x04,
@@ -26,7 +26,7 @@ public class KeyTableHandler : GamePacketHandler
 
         switch (requestType)
         {
-            case KeyTableEnum.SetCompactControlKeybind:
+            case KeyTableEnum.SetMacroKeybind:
             case KeyTableEnum.SetKeyBind:
                 SetKeyBinds(session, packet);
                 break;

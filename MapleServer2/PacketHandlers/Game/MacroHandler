@@ -9,9 +9,9 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class SkillCompactControlHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.SKILL_COMPACT_CONTROL;
+    public override RecvOp OpCode => RecvOp.MACRO;
 
-    private enum SkillCompactControlMode : byte
+    private enum MacroMode : byte
     {
         OpenSettings = 0x0,
         CloseSettings = 0x1,
@@ -19,14 +19,14 @@ public class SkillCompactControlHandler : GamePacketHandler
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        SkillCompactControlMode mode = (SkillCompactControlMode) packet.ReadByte();
+        MacroMode mode = (MacroMode) packet.ReadByte();
 
         switch (mode)
         {
-            case SkillCompactControlMode.OpenSettings:
+            case MacroMode.OpenSettings:
                 HandleOpenSettings(session);
                 break;
-            case SkillCompactControlMode.CloseSettings:
+            case MacroMode.CloseSettings:
                 HandleCloseSettings(session, packet);
                 break;
             default:
@@ -37,12 +37,12 @@ public class SkillCompactControlHandler : GamePacketHandler
     
     private static void HandleOpenSettings(GameSession session)
     {
-        session.Send(SkillCompactControlPacket.OpenSettings(session.Player.SkillCompactControls));
+        session.Send(MacroPacket.OpenSettings(session.Player.Macros));
     }
     
     private static void HandleCloseSettings(GameSession session, PacketReader packet)
     {
-        List<SkillCompactControl> skillCompactControls = session.Player.SkillCompactControls;
+        List<Macro> macros = session.Player.Macros;
         int compactControlCount = packet.ReadInt();
         for (int i = 0; i < compactControlCount; i++)
         {
@@ -56,18 +56,18 @@ public class SkillCompactControlHandler : GamePacketHandler
                 skillIds.Add(skillId);
             }
 
-            SkillCompactControl skillCompactControl = skillCompactControls.ElementAtOrDefault(i);
-            if (skillCompactControl is null)
+            Macro macro = macros.ElementAtOrDefault(i);
+            if (macro is null)
             {
-                skillCompactControl = new(session.Player.CharacterId, name, shortcutKeyCode, skillIds);
-                skillCompactControls.Add(skillCompactControl);
+                macro = new(session.Player.CharacterId, name, shortcutKeyCode, skillIds);
+                macros.Add(macro);
                 continue;
             }
             
-            skillCompactControl.Name = name;
-            skillCompactControl.ShortcutKeyCode = shortcutKeyCode;
-            skillCompactControl.SkillIds = skillIds;
-            DatabaseManager.SkillCompactControls.Update(skillCompactControl);
+            macro.Name = name;
+            macro.ShortcutKeyCode = shortcutKeyCode;
+            macro.SkillIds = skillIds;
+            DatabaseManager.Macros.Update(macro);
         }
     }
 }

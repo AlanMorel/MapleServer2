@@ -218,11 +218,11 @@ CREATE TABLE `game_options`
   COLLATE = utf8mb4_0900_ai_ci;
 
 --
--- Table structure for table `skill_compact_controls`
+-- Table structure for table `macros`
 --
 
-DROP TABLE IF EXISTS `skill_compact_controls`;
-CREATE TABLE `skill_compact_controls`
+DROP TABLE IF EXISTS `macros`;
+CREATE TABLE `macros`
 (
     `id`                bigint   NOT NULL AUTO_INCREMENT,
     `character_id`      bigint   NOT NULL,
@@ -230,8 +230,8 @@ CREATE TABLE `skill_compact_controls`
     `shortcut_keycode`  int      NOT NULL, 
     `skill_ids`         text,
     PRIMARY KEY (`id`),
-    KEY `ix_compactcontrols_characterid` (`character_id`),
-    CONSTRAINT `fk_compactcontrols_characters_id` FOREIGN KEY (`character_id`) REFERENCES `characters` (`character_id`) ON DELETE RESTRICT
+    KEY `ix_macros_characterid` (`character_id`),
+    CONSTRAINT fk_macros_characters_id FOREIGN KEY (`character_id`) REFERENCES `characters` (`character_id`) ON DELETE RESTRICT
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
