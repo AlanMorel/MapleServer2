@@ -7,7 +7,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class SkillCompactControlHandler : GamePacketHandler
+public class MacroHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.MACRO;
 
@@ -43,8 +43,8 @@ public class SkillCompactControlHandler : GamePacketHandler
     private static void HandleCloseSettings(GameSession session, PacketReader packet)
     {
         List<Macro> macros = session.Player.Macros;
-        int compactControlCount = packet.ReadInt();
-        for (int i = 0; i < compactControlCount; i++)
+        int macroCount = packet.ReadInt();
+        for (int i = 0; i < macroCount; i++)
         {
             string name = packet.ReadUnicodeString();
             long shortcutKeyCode = packet.ReadLong();
