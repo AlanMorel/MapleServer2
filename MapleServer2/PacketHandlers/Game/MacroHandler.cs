@@ -34,12 +34,12 @@ public class MacroHandler : GamePacketHandler
                 break;
         }
     }
-    
+
     private static void HandleOpenSettings(GameSession session)
     {
         session.Send(MacroPacket.OpenSettings(session.Player.Macros));
     }
-    
+
     private static void HandleCloseSettings(GameSession session, PacketReader packet)
     {
         List<Macro> macros = session.Player.Macros;
@@ -63,7 +63,7 @@ public class MacroHandler : GamePacketHandler
                 macros.Add(macro);
                 continue;
             }
-            
+
             macro.Name = name;
             macro.ShortcutKeyCode = shortcutKeyCode;
             macro.SkillIds = skillIds;
