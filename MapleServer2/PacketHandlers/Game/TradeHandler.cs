@@ -1,6 +1,7 @@
 ﻿using Maple2Storage.Tools;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -127,10 +128,9 @@ public class TradeHandler : GamePacketHandler
         {
             return;
         }
-        
+
         session.Send(TradePacket.TradeStatus(false));
         otherPlayer.Session?.Send(TradePacket.TradeStatus(false));
-
     }
 
     private static void HandleAddItemToTrade(GameSession session, PacketReader packet)
@@ -192,7 +192,7 @@ public class TradeHandler : GamePacketHandler
         session.Player.TradeInventory.AlterTrade(session);
 
         session.Player.TradeInventory.Mesos = mesoAmount;
-        
+
         session.Send(TradePacket.AddMesosToTrade(mesoAmount, true));
         player.Session?.Send(TradePacket.AddMesosToTrade(mesoAmount, false));
     }
@@ -232,20 +232,9 @@ public class TradeHandler : GamePacketHandler
         otherPlayer.Session.Send(TradePacket.FinalizeTrade(false));
 
         // Trade items
-        long sumMesos = -(tradeInventory.Mesos) + otherPlayerTradeInventory.Mesos;
-        if (sumMesos != 0)
-        {
-            session.Player.Wallet.Meso.Modify(sumMesos);
-        }
-
+        GetSumMesos(session.Player, -tradeInventory.Mesos, otherPlayerTradeInventory.Mesos);
         otherPlayerTradeInventory.SendItems(session.Player, true);
-
-        long otherPlayerSumMesos = -(otherPlayerTradeInventory.Mesos) + tradeInventory.Mesos;
-        if (sumMesos != 0)
-        {
-            otherPlayer.Wallet.Meso.Modify(otherPlayerSumMesos);
-        }
-
+        GetSumMesos(otherPlayer, -otherPlayerTradeInventory.Mesos, tradeInventory.Mesos);
         tradeInventory.SendItems(otherPlayer, true);
 
         session.Send(TradePacket.TradeStatus(true));
@@ -253,5 +242,21 @@ public class TradeHandler : GamePacketHandler
 
         session.Player.TradeInventory = null;
         otherPlayer.TradeInventory = null;
+    }
+
+    private static void GetSumMesos(Player player, long incomingMesos, long outgoingMesos)
+    {
+        long sumMesos = incomingMesos + outgoingMesos;
+        if (sumMesos > 0)
+        {
+            float feeRate = int.Parse(ConstantsMetadataStorage.GetConstant("TradeFeePercent")) / 100f;
+            long tax = (long) (feeRate * sumMesos);
+            sumMesos -= tax;
+        }
+
+        if (sumMesos != 0)
+        {
+            player.Wallet.Meso.Modify(sumMesos);
+        }
     }
 }
