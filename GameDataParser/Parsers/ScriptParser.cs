@@ -72,7 +72,7 @@ public class ScriptParser : Exporter<List<ScriptMetadata>>
         return scripts;
     }
 
-    private static List<ScriptMetadata> ParseQuest(MetadataResources resources)
+    private static IEnumerable<ScriptMetadata> ParseQuest(MetadataResources resources)
     {
         List<ScriptMetadata> scripts = new();
         foreach (PackFileEntry entry in resources.XmlReader.Files)

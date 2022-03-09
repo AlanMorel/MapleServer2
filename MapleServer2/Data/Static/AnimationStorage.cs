@@ -18,14 +18,14 @@ public static class AnimationStorage
         }
     }
 
-    public static List<SequenceMetadata> GetSequencesByActorId(string actorId)
+    public static IEnumerable<SequenceMetadata> GetSequencesByActorId(string actorId)
     {
         return Animations.GetValueOrDefault(actorId.ToLower()).Sequence;
     }
 
     public static short GetSequenceIdBySequenceName(string actorId, string sequenceName)
     {
-        List<SequenceMetadata> sequences = GetSequencesByActorId(actorId);
+        IEnumerable<SequenceMetadata> sequences = GetSequencesByActorId(actorId);
         SequenceMetadata metadata = sequences.FirstOrDefault(s => s.SequenceName == sequenceName);
 
         if (metadata != default)

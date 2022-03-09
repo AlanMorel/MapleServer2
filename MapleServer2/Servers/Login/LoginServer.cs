@@ -31,7 +31,7 @@ public class LoginServer : Server<LoginSession>
         Logger.Info($"Login client disconnected: {session}");
     }
 
-    public List<LoginSession> GetSessions()
+    public IEnumerable<LoginSession> GetSessions()
     {
         return Sessions;
     }

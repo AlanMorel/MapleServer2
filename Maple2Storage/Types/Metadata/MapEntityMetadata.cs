@@ -366,7 +366,7 @@ public class MapEventNpcSpawnPoint
 
     public MapEventNpcSpawnPoint() { }
 
-    public MapEventNpcSpawnPoint(int id, uint count, List<string> npcIds, string spawnAnimation, float spawnRadius, CoordF position, CoordF rotation)
+    public MapEventNpcSpawnPoint(int id, uint count, IEnumerable<string> npcIds, string spawnAnimation, float spawnRadius, CoordF position, CoordF rotation)
     {
         Id = id;
         Count = count;

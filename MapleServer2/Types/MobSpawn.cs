@@ -50,7 +50,7 @@ public class MobSpawn
         return SelectPoints(spawnRadius).Take(count).ToList();
     }
 
-    public static List<NpcMetadata> SelectMobs(int difficulty, int minDifficulty, string[] tags)
+    public static List<NpcMetadata> SelectMobs(int difficulty, int minDifficulty, IEnumerable<string> tags)
     {
         // Look into optimizing this.
         HashSet<NpcMetadata> matchedNpcs = new();

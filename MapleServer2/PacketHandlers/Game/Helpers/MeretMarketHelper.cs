@@ -21,7 +21,7 @@ public static class MeretMarketHelper
         };
     }
 
-    public static List<MeretMarketItem> TakeLimit(List<MeretMarketItem> items, int startPage, byte itemsPerPage)
+    public static List<MeretMarketItem> TakeLimit(IEnumerable<MeretMarketItem> items, int startPage, byte itemsPerPage)
     {
         int count = startPage * itemsPerPage - itemsPerPage;
         int offset = count;

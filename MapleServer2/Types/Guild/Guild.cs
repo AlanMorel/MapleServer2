@@ -165,7 +165,7 @@ public class Guild
         }
     }
 
-    private List<GameSession> GetSessions()
+    private IEnumerable<GameSession> GetSessions()
     {
         List<GameSession> sessions = new();
         foreach (GuildMember guildMember in Members)

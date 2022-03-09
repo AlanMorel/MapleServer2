@@ -61,7 +61,7 @@ public class UgcMarketManager
         return Items.Values.FirstOrDefault(x => x.MarketId == id);
     }
 
-    public List<UgcMarketItem> FindItems(List<string> categories, GenderFlag genderFlag, JobFlag job, string searchString)
+    public IEnumerable<UgcMarketItem> FindItems(List<string> categories, GenderFlag genderFlag, JobFlag job, string searchString)
     {
         List<UgcMarketItem> items = new();
         foreach (UgcMarketItem item in Items.Values)
