@@ -75,7 +75,7 @@ public class KeyTableHandler : GamePacketHandler
             session.Player.GameOptions.SetKeyBind(ref keyBind);
         }
     }
-    
+
     private static void MoveQuickSlot(GameSession session, PacketReader packet)
     {
         short hotbarId = packet.ReadShort();
