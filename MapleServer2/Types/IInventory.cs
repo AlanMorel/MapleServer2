@@ -47,7 +47,7 @@ public interface IInventory
     /// <summary>
     /// Gets all non-null items in the inventory
     /// </summary>
-    IReadOnlyCollection<Item> GetItemsNotNull();
+    IEnumerable<Item> GetItemsNotNull();
 
     /// <summary>
     /// Gets all items matching the given Item ID
@@ -68,7 +68,7 @@ public interface IInventory
     /// </summary>
     /// <param name="functionId">The Function ID of the item</param>
     /// <remarks>Never returns null, can return empty</remarks>
-    IReadOnlyCollection<Item> GetAllByFunctionId(int functionId);
+    IEnumerable<Item> GetAllByFunctionId(int functionId);
     bool Replace(Item item);
     void SortInventory(GameSession session, InventoryTab tab);
     void LoadInventoryTab(GameSession session, InventoryTab tab);

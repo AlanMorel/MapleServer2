@@ -44,7 +44,7 @@ public class DatabaseEvent : DatabaseTable
         return ReadUgcMapExtensionSaleEvent(result);
     }
 
-    public List<StringBoard> FindAllStringBoardEvent()
+    public IEnumerable<StringBoard> FindAllStringBoardEvent()
     {
         List<StringBoard> stringBoardEvents = new();
         IEnumerable<dynamic> results = QueryFactory.Query("event_string_boards").Get();

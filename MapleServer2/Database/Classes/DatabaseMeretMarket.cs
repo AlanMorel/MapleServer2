@@ -11,7 +11,7 @@ public class DatabaseMeretMarket : DatabaseTable
 {
     public DatabaseMeretMarket() : base("meret_market_items") { }
 
-    public List<PremiumMarketItem> FindAllByCategory(MeretMarketSection section, MeretMarketCategory category, GenderFlag gender, JobFlag jobFlag, string searchString)
+    public IEnumerable<PremiumMarketItem> FindAllByCategory(MeretMarketSection section, MeretMarketCategory category, GenderFlag gender, JobFlag jobFlag, string searchString)
     {
         List<PremiumMarketItem> items = new();
         IEnumerable<dynamic> results = QueryFactory.Query(TableName).Get();

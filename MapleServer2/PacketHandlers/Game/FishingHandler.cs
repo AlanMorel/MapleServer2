@@ -111,7 +111,7 @@ public class FishingHandler : GamePacketHandler
         session.Send(FishingPacket.PrepareFishing(fishingRodUid));
     }
 
-    private static CoordF GetObjectBlock(List<MapBlock> blocks, CoordF playerCoord)
+    private static CoordF GetObjectBlock(IEnumerable<MapBlock> blocks, CoordF playerCoord)
     {
         MapBlock guideBlock = blocks.OrderBy(o => Math.Sqrt(Math.Pow(playerCoord.X - o.Coord.X, 2) + Math.Pow(playerCoord.Y - o.Coord.Y, 2))).First();
         return guideBlock.Coord.ToFloat();

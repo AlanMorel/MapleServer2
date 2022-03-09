@@ -21,7 +21,7 @@ public static class MapMetadataStorage
 
     public static MapMetadata GetMetadata(int mapId) => Maps.GetValueOrDefault(mapId);
 
-    public static List<MapMetadata> GetAll() => Maps.Values.ToList();
+    public static IEnumerable<MapMetadata> GetAll() => Maps.Values.ToList();
 
     public static bool BlockExists(int mapId, CoordS coord)
     {
