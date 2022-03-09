@@ -66,7 +66,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                 FileName = musicScore.fileName,
                 IsCustomScore = musicScore.isCustomNote,
                 ShopID = data.Shop?.systemShopID ?? 0,
-                PetId =  data.pet?.petID ?? 0,
+                PetId = data.pet?.petID ?? 0,
                 SkillID = data.skill.skillID,
                 EnableBreak = limit.enableBreak != 0,
                 Level = limit.levelLimit,
@@ -78,13 +78,13 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                 IsCubeSolid = install.cubeProp != 0,
                 ObjectId = install.objCode
             };
-            
+
             // if globalTransferType is present, override with these values
             if (limit.globalTransferType is not null)
             {
                 metadata.TransferType = (TransferType) limit.globalTransferType;
             }
-            
+
             // if globalTransferTypeNA is present, override with these values
             if (limit.globalTransferTypeNA is not null)
             {

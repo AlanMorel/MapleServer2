@@ -61,7 +61,7 @@ public static class ItemMetadataStorage
     public static int GetShopID(int itemId) => GetMetadata(itemId).ShopID;
 
     public static bool IsSellablle(int itemId) => GetMetadata(itemId).Sellable;
-    
+
     public static bool IsTradeDisabledWithinAccount(int itemId) => GetMetadata(itemId).DisableTradeWithinAccount;
 
     public static TransferType GetTransferType(int itemId) => GetMetadata(itemId).TransferType;
@@ -117,11 +117,11 @@ public static class ItemMetadataStorage
                 transferFlag = ItemTransferFlag.Tradeable;
                 break;
         }
-        
+
         if (rarity < tradeLimitByRarity && (transferFlag & ItemTransferFlag.Tradeable) != 0)
         {
             transferFlag |= ItemTransferFlag.Splitable;
-        }   
+        }
 
         return transferFlag;
     }

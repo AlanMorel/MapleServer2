@@ -209,7 +209,8 @@ public class RequestItemUseHandler : GamePacketHandler
 
     private static void HandleHongBao(GameSession session, Item item)
     {
-        HongBao newHongBao = new(session.Player, item.Function.HongBao.TotalUsers, item.Id, item.Function.HongBao.Id, item.Function.HongBao.Count, item.Function.HongBao.Duration);
+        HongBao newHongBao = new(session.Player, item.Function.HongBao.TotalUsers, item.Id, item.Function.HongBao.Id, item.Function.HongBao.Count,
+            item.Function.HongBao.Duration);
         GameServer.HongBaoManager.AddHongBao(newHongBao);
 
         session.FieldManager.BroadcastPacket(PlayerHostPacket.OpenHongbao(session.Player, newHongBao));
@@ -286,6 +287,7 @@ public class RequestItemUseHandler : GamePacketHandler
                 }
             } while (!sameGender);
         }
+
         return contents;
     }
 
@@ -331,13 +333,13 @@ public class RequestItemUseHandler : GamePacketHandler
         };
 
         MailHelper.SendMail(MailType.System, otherPlayer.CharacterId, session.Player.CharacterId,
-                            "<ms2><v key=\"s_couple_effect_mail_sender\" /></ms2>",
-                            "<ms2><v key=\"s_couple_effect_mail_title_receiver\" /></ms2>",
-                            "<ms2><v key=\"s_couple_effect_mail_content_receiver\" /></ms2>",
-                            "",
-                            $"<ms2><v str=\"{session.Player.Name}\" ></v></ms2>",
-                            items,
-                            0, 0, out Mail mail);
+            "<ms2><v key=\"s_couple_effect_mail_sender\" /></ms2>",
+            "<ms2><v key=\"s_couple_effect_mail_title_receiver\" /></ms2>",
+            "<ms2><v key=\"s_couple_effect_mail_content_receiver\" /></ms2>",
+            "",
+            $"<ms2><v str=\"{session.Player.Name}\" ></v></ms2>",
+            items,
+            0, 0, out Mail mail);
 
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
         session.Player.Inventory.AddItem(session, badge, true);
@@ -386,7 +388,8 @@ public class RequestItemUseHandler : GamePacketHandler
 
         int balloonUid = GuidGenerator.Int();
         string id = "AdBalloon_" + balloonUid;
-        AdBalloon balloon = new(id, item.Function.InstallBillboard.InteractId, InteractObjectState.Default, InteractObjectType.AdBalloon, session.Player.FieldPlayer, item.Function.InstallBillboard, title, description, publicHouse);
+        AdBalloon balloon = new(id, item.Function.InstallBillboard.InteractId, InteractObjectState.Default, InteractObjectType.AdBalloon,
+            session.Player.FieldPlayer, item.Function.InstallBillboard, title, description, publicHouse);
         session.FieldManager.State.AddInteractObject(balloon);
         session.FieldManager.BroadcastPacket(InteractObjectPacket.Add(balloon));
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
@@ -432,7 +435,7 @@ public class RequestItemUseHandler : GamePacketHandler
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
 
         session.Send(CharacterListPacket.NameChanged(session.Player.CharacterId, newName));
-        
+
         // Update name on socials
         foreach (Club club in session.Player.Clubs)
         {
@@ -451,9 +454,9 @@ public class RequestItemUseHandler : GamePacketHandler
                 session.Player.Guild.LeaderName = newName;
             }
         }
-        
+
         session.Player.Party?.BroadcastPacketParty(PartyPacket.UpdatePlayer(session.Player));
-        
+
         // TODO: Needs to redirect player to character selection screen after pop-up
     }
 

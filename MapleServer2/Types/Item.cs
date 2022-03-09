@@ -255,7 +255,7 @@ public class Item
         {
             return;
         }
-        
+
         RemainingTrades--;
     }
 

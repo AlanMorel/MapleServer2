@@ -109,14 +109,9 @@ public class BlackMarketHandler : GamePacketHandler
             session.Send(BlackMarketPacket.Error((int) BlackMarketError.ItemNotInInventory));
             return;
         }
-        
-        Item item = session.Player.Inventory.GetByUid(itemUid);
-        if (item.Amount < quantity)
-        {
-            return;
-        }
 
-        if (item.IsBound())
+        Item item = session.Player.Inventory.GetByUid(itemUid);
+        if (item.Amount < quantity || item.IsBound())
         {
             return;
         }
@@ -204,6 +199,7 @@ public class BlackMarketHandler : GamePacketHandler
                 {
                     continue;
                 }
+
                 stats.Add(stat);
             }
         }

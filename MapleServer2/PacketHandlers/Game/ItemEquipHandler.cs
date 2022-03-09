@@ -94,6 +94,7 @@ public class ItemEquipHandler : GamePacketHandler
                 {
                     prevItem2.Slot = item.Slot;
                 }
+
                 prevItem2.IsEquipped = false;
                 inventory.AddItem(session, prevItem2, false);
                 session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.Player.FieldPlayer, prevItem2));

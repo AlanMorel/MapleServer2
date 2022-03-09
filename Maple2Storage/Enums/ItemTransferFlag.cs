@@ -9,6 +9,5 @@ public enum ItemTransferFlag : byte
     Tradeable = 4,
     Binds = 8,
     LimitedTradeCount = 16,
-    //Unknown4 = 24,
     Unknown3 = 32
 }

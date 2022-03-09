@@ -61,7 +61,7 @@ public class RideHandler : GamePacketHandler
         {
             return;
         }
-        
+
         IFieldObject<Mount> fieldMount =
             session.FieldManager.RequestFieldObject(new Mount
             {
@@ -80,6 +80,7 @@ public class RideHandler : GamePacketHandler
         {
             item.BindItem(session.Player);
         }
+
         session.FieldManager.BroadcastPacket(startPacket);
     }
 
@@ -146,7 +147,8 @@ public class RideHandler : GamePacketHandler
         session.Player.Mount = null;
         if (otherPlayer.Value.Mount != null)
         {
-            int index = Array.FindIndex(otherPlayer.Value.Mount.Value.Players, 0, otherPlayer.Value.Mount.Value.Players.Length, x => x.ObjectId == session.Player.FieldPlayer.ObjectId);
+            int index = Array.FindIndex(otherPlayer.Value.Mount.Value.Players, 0, otherPlayer.Value.Mount.Value.Players.Length,
+                x => x.ObjectId == session.Player.FieldPlayer.ObjectId);
             otherPlayer.Value.Mount.Value.Players[index] = null;
         }
     }

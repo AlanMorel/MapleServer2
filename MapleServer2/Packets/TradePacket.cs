@@ -20,7 +20,7 @@ public static class TradePacket
         AddMesosToTrade = 0xA,
         FinalizeOffer = 0xB,
         OfferedAltered = 0xC,
-        FinalizeTrade = 0xD,
+        FinalizeTrade = 0xD
     }
 
     public static PacketWriter TradeRequest(string playerName, long playerCharacterId)
@@ -31,14 +31,14 @@ public static class TradePacket
         pWriter.WriteLong(playerCharacterId);
         return pWriter;
     }
-    
+
     public static PacketWriter RequestSent()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.TRADE);
         pWriter.Write(TradePacketMode.RequestSent);
         return pWriter;
     }
-    
+
     public static PacketWriter RequestDeclined(string characterName)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.TRADE);
@@ -46,7 +46,7 @@ public static class TradePacket
         pWriter.WriteUnicodeString(characterName);
         return pWriter;
     }
-    
+
     public static PacketWriter RequestAccepted(long playerCharacterId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.TRADE);
@@ -54,7 +54,7 @@ public static class TradePacket
         pWriter.WriteLong(playerCharacterId);
         return pWriter;
     }
-    
+
     public static PacketWriter TradeStatus(bool tradeIsComplete)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.TRADE);

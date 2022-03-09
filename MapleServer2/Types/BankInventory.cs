@@ -145,6 +145,7 @@ public class BankInventory
             Items[dstSlot] = Items.FirstOrDefault(x => x is not null && x.Uid == dstUid);
             Items[oldSlot] = null;
         }
+
         session.Send(StorageInventoryPacket.Move(srcUid, srcSlot, dstUid, dstSlot));
     }
 
@@ -204,6 +205,7 @@ public class BankInventory
         {
             return;
         }
+
         ExtraSize += expansionAmount;
         session.Send(StorageInventoryPacket.Expand(ExtraSize));
         session.Send(StorageInventoryPacket.ExpandAnim());
@@ -229,6 +231,7 @@ public class BankInventory
             {
                 continue;
             }
+
             Items[i] = temp[i];
         }
     }

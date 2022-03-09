@@ -61,7 +61,7 @@ public class RequestItemInventoryHandler : GamePacketHandler
         {
             return;
         }
-        
+
         Item item = session.Player.Inventory.GetByUid(uid);
         session.Player.Inventory.DropItem(session, item, amount);
     }
@@ -73,7 +73,7 @@ public class RequestItemInventoryHandler : GamePacketHandler
         {
             return;
         }
-        
+
         Item item = session.Player.Inventory.GetByUid(uid);
         session.Player.Inventory.DropItem(session, item, item.Amount);
     }
