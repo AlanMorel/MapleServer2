@@ -36,6 +36,7 @@ public class FieldEnterHandler : GamePacketHandler
         }
 
         session.Send(EmotePacket.LoadEmotes(player));
+        session.Send(MacroPacket.LoadControls(player.Macros));
         session.Send(ChatStickerPacket.LoadChatSticker(player));
 
         session.Send(ResponseCubePacket.DecorationScore(account.Home));

@@ -194,7 +194,6 @@ public class ResponseKeyHandler : CommonPacketHandler
         // CharacterAbility
         // E1 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 
-        // Key bindings and skill slots would normally be loaded from a database
         // If the character is not a new character, this is what we would send
         session.Send(KeyTablePacket.SendFullOptions(player.GameOptions));
 
