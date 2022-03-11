@@ -1,4 +1,5 @@
 ﻿using Maple2Storage.Enums;
+using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -39,10 +40,15 @@ public class BankInventory
     {
         Item item = session.Player.Inventory.GetByUid(uid);
 
+        if (ItemMetadataStorage.IsTradeDisabledWithinAccount(item.Id))
+        {
+            return;
+        }
+
         if (amount < item.Amount)
         {
             item.TrySplit(amount, out Item splitItem);
-            session.Send(ItemInventoryPacket.Update(uid, item.Amount));
+            session.Send(ItemInventoryPacket.UpdateAmount(uid, item.Amount));
             item = splitItem;
         }
         else
@@ -139,6 +145,7 @@ public class BankInventory
             Items[dstSlot] = Items.FirstOrDefault(x => x is not null && x.Uid == dstUid);
             Items[oldSlot] = null;
         }
+
         session.Send(StorageInventoryPacket.Move(srcUid, srcSlot, dstUid, dstSlot));
     }
 
@@ -198,6 +205,7 @@ public class BankInventory
         {
             return;
         }
+
         ExtraSize += expansionAmount;
         session.Send(StorageInventoryPacket.Expand(ExtraSize));
         session.Send(StorageInventoryPacket.ExpandAnim());
@@ -223,6 +231,7 @@ public class BankInventory
             {
                 continue;
             }
+
             Items[i] = temp[i];
         }
     }

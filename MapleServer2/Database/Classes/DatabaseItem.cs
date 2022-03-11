@@ -1,6 +1,5 @@
 ﻿using Maple2Storage.Enums;
 using Maple2Storage.Types;
-using MapleServer2.Enums;
 using MapleServer2.Types;
 using Newtonsoft.Json;
 using SqlKata.Execution;
@@ -29,7 +28,7 @@ public class DatabaseItem : DatabaseTable
             item.Amount,
             bank_inventory_id = item.BankInventoryId == 0 ? null : (int?) item.BankInventoryId,
             mail_id = item.MailId == 0 ? null : (int?) item.MailId,
-            repackage_count = item.RepackageCount,
+            repackage_count = item.RemainingRepackageCount,
             item.Charges,
             color = JsonConvert.SerializeObject(item.Color),
             creation_time = item.CreationTime,
@@ -98,6 +97,7 @@ public class DatabaseItem : DatabaseTable
         {
             items.Add((Item) ReadItem(data));
         }
+
         return items;
     }
 
@@ -109,6 +109,7 @@ public class DatabaseItem : DatabaseTable
         {
             items.Add((Item) ReadItem(data));
         }
+
         return items;
     }
 
@@ -121,6 +122,7 @@ public class DatabaseItem : DatabaseTable
             Item item = (Item) ReadItem(data);
             items.Add(item.Uid, item);
         }
+
         return items;
     }
 
@@ -132,6 +134,7 @@ public class DatabaseItem : DatabaseTable
         {
             items.Add((Item) ReadItem(data));
         }
+
         return items;
     }
 
@@ -147,7 +150,7 @@ public class DatabaseItem : DatabaseTable
             item.Amount,
             bank_inventory_id = item.BankInventoryId == 0 ? null : (int?) item.BankInventoryId,
             mail_id = item.MailId == 0 ? null : (int?) item.MailId,
-            repackage_count = item.RepackageCount,
+            repackage_count = item.RemainingRepackageCount,
             item.Charges,
             color = JsonConvert.SerializeObject(item.Color),
             creation_time = item.CreationTime,
@@ -199,7 +202,7 @@ public class DatabaseItem : DatabaseTable
             Rarity = data.rarity,
             PlayCount = data.play_count,
             Amount = data.amount,
-            RepackageCount = data.repackage_count,
+            RemainingRepackageCount = data.repackage_count,
             Charges = data.charges,
             Color = JsonConvert.DeserializeObject<EquipColor>(data.color),
             CreationTime = data.creation_time,
@@ -225,7 +228,7 @@ public class DatabaseItem : DatabaseTable
             Slot = data.slot,
             Stats = JsonConvert.DeserializeObject<ItemStats>(data.stats, Settings),
             TimesAttributesChanged = data.times_attributes_changed,
-            TransferFlag = (TransferFlag) data.transfer_flag,
+            TransferFlag = (ItemTransferFlag) data.transfer_flag,
             TransparencyBadgeBools = JsonConvert.DeserializeObject<byte[]>(data.transparency_badge_bools),
             UnlockTime = data.unlock_time,
             InventoryId = data.inventory_id ?? 0,

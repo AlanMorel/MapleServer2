@@ -127,7 +127,7 @@ public enum SendOp : ushort
     GEM = 0x0081,
     TAXI = 0x0082,
     FIND_FIELDS = 0x0083,
-    TRADE_EX = 0x0084,
+    TRADE = 0x0084,
     INVINCIBLE_EFFECT = 0x0085,
     WORLD_MAP = 0x0086,
     MOVE_EVENTFIELD = 0x0087,

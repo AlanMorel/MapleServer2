@@ -83,7 +83,7 @@ public class ChangeAttributesHandler : GamePacketHandler
         {
             tag = "LockItemOptionWeapon";
         }
-        else if (Item.IsPet(gear.Id))
+        else if (gear.IsPet())
         {
             tag = "LockItemOptionPet";
         }

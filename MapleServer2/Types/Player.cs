@@ -114,6 +114,7 @@ public class Player
     public DismantleInventory DismantleInventory = new();
     public LockInventory LockInventory = new();
     public HairInventory HairInventory = new();
+    public TradeInventory TradeInventory;
 
     public List<Mail> Mailbox = new();
 

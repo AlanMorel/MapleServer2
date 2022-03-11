@@ -2,6 +2,7 @@
 using Maple2Storage.Enums;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
+using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using NLog;
@@ -108,6 +109,7 @@ public sealed class Inventory : IInventory
                         {
                             Logger.Error($"Failed to add item {item.Id} to inventory {Id}, slot {item.ItemSlot} was already taken.");
                         }
+
                         continue;
                     case InventoryTab.Badge:
                         Badges[badgeIndex++] = item;
@@ -120,6 +122,7 @@ public sealed class Inventory : IInventory
                         {
                             Logger.Error($"Failed to add item {item.Id} to inventory {Id}, slot {item.ItemSlot} was already taken.");
                         }
+
                         continue;
                 }
             }
@@ -147,6 +150,14 @@ public sealed class Inventory : IInventory
                 return;
         }
 
+        if (item.TransferFlag.HasFlag(ItemTransferFlag.Binds) &&
+            (item.TransferType is TransferType.BindOnLoot or TransferType.BindOnTrade))
+        {
+            item.OwnerCharacterId = session.Player.CharacterId;
+            item.OwnerAccountId = session.Player.AccountId;
+            item.OwnerCharacterName = session.Player.Name;
+        }
+
         // Checks if item is stackable or not
         if (item.StackLimit > 1)
         {
@@ -169,8 +180,11 @@ public sealed class Inventory : IInventory
 
                     DatabaseManager.Items.Delete(item.Uid);
 
-                    session.Send(ItemInventoryPacket.Update(existingItem.Uid, existingItem.Amount));
-                    session.Send(ItemInventoryPacket.MarkItemNew(existingItem, item.Amount));
+                    session.Send(ItemInventoryPacket.UpdateAmount(existingItem.Uid, existingItem.Amount));
+                    if (isNew)
+                    {
+                        session.Send(ItemInventoryPacket.MarkItemNew(existingItem, item.Amount));
+                    }
                     return;
                 }
 
@@ -179,8 +193,11 @@ public sealed class Inventory : IInventory
                 item.Amount -= added;
                 existingItem.Amount = existingItem.StackLimit;
 
-                session.Send(ItemInventoryPacket.Update(existingItem.Uid, existingItem.Amount));
-                session.Send(ItemInventoryPacket.MarkItemNew(existingItem, added));
+                session.Send(ItemInventoryPacket.UpdateAmount(existingItem.Uid, existingItem.Amount));
+                if (isNew)
+                {
+                    session.Send(ItemInventoryPacket.MarkItemNew(existingItem, added));
+                }
             }
 
             // Add item to first free slot
@@ -223,7 +240,7 @@ public sealed class Inventory : IInventory
         }
 
         item.Amount -= amount;
-        session.Send(ItemInventoryPacket.Update(uid, item.Amount));
+        session.Send(ItemInventoryPacket.UpdateAmount(uid, item.Amount));
     }
 
     public bool RemoveItem(GameSession session, long uid, out Item item)
@@ -237,37 +254,37 @@ public sealed class Inventory : IInventory
         return true;
     }
 
-    public void DropItem(GameSession session, long uid, int amount, bool isBound)
+    public void DropItem(GameSession session, Item item, int amount)
     {
         // Drops item not bound
-        if (!isBound)
+        if (!item.TransferFlag.HasFlag(ItemTransferFlag.Tradeable))
         {
-            int remaining = Remove(uid, out Item droppedItem, amount); // Returns remaining amount of item
-            switch (remaining)
+            if (!session.Player.Inventory.RemoveItem(session, item.Uid, out item))
             {
-                case < 0:
-                    return; // Removal failed
-                case > 0: // Updates item amount
-                    session.Send(ItemInventoryPacket.Update(uid, remaining));
-                    DatabaseManager.Items.Update(Items[uid]);
-                    break;
-                default: // Removes item
-                    session.Send(ItemInventoryPacket.Remove(uid));
-                    break;
+                return; // Removal from inventory failed
             }
 
-            session.FieldManager.AddItem(session, droppedItem); // Drops item onto floor
+            session.Send(ItemInventoryPacket.Remove(item.Uid));
+            DatabaseManager.Items.Delete(item.Uid);
             return;
         }
 
-        // Drops bound item
-        if (session.Player.Inventory.RemoveItem(session, uid, out Item removedItem))
+        // Drops tradeable items
+        int remaining = Remove(item.Uid, out Item droppedItem, amount); // Returns remaining amount of item
+        switch (remaining)
         {
-            return; // Removal from inventory failed
+            case < 0:
+                return; // Removal failed
+            case > 0: // Updates item amount
+                session.Send(ItemInventoryPacket.UpdateAmount(item.Uid, remaining));
+                DatabaseManager.Items.Update(Items[item.Uid]);
+                break;
+            default: // Removes item
+                session.Send(ItemInventoryPacket.Remove(item.Uid));
+                break;
         }
 
-        session.Send(ItemInventoryPacket.Remove(uid));
-        DatabaseManager.Items.Delete(removedItem.Uid);
+        session.FieldManager.AddItem(session, droppedItem); // Drops item onto floor
     }
 
     public void MoveItem(GameSession session, long uid, short dstSlot)
@@ -292,7 +309,7 @@ public sealed class Inventory : IInventory
 
                     DatabaseManager.Items.Delete(srcItem.Uid);
 
-                    session.Send(ItemInventoryPacket.Update(item.Uid, item.Amount));
+                    session.Send(ItemInventoryPacket.UpdateAmount(item.Uid, item.Amount));
                     session.Send(ItemInventoryPacket.Remove(srcItem.Uid));
                     return;
                 }
@@ -302,8 +319,8 @@ public sealed class Inventory : IInventory
                 srcItem.Amount -= added;
                 item.Amount = item.StackLimit;
 
-                session.Send(ItemInventoryPacket.Update(srcItem.Uid, srcItem.Amount));
-                session.Send(ItemInventoryPacket.Update(item.Uid, item.Amount));
+                session.Send(ItemInventoryPacket.UpdateAmount(srcItem.Uid, srcItem.Amount));
+                session.Send(ItemInventoryPacket.UpdateAmount(item.Uid, item.Amount));
                 return;
             }
         }
@@ -662,5 +679,4 @@ public sealed class Inventory : IInventory
     }
 
     #endregion
-
 }

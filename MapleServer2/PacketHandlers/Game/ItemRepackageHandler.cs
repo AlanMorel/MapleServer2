@@ -53,7 +53,7 @@ public class ItemRepackageHandler : GamePacketHandler
             return;
         }
 
-        if (repackingItem.RemainingTrades != 0)
+        if (repackingItem.RemainingTrades != 0 || repackingItem.IsBound())
         {
             session.Send(ItemRepackagePacket.Notice((int) ItemRepackageNotice.CannotBePackaged));
         }
@@ -71,7 +71,7 @@ public class ItemRepackageHandler : GamePacketHandler
             return;
         }
 
-        repackingItem.RepackageCount -= 1;
+        repackingItem.RemainingRepackageCount -= 1;
         repackingItem.RemainingTrades++;
 
         session.Player.Inventory.ConsumeItem(session, ribbon.Uid, ribbonRequirementAmount);

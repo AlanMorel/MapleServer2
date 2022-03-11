@@ -1,6 +1,7 @@
 ﻿using Maple2Storage.Enums;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -45,13 +46,20 @@ public class ItemEquipHandler : GamePacketHandler
             return;
         }
 
-        // Remove the item from the users inventory
-        IInventory inventory = session.Player.Inventory;
-        inventory.RemoveItem(session, itemUid, out Item item);
-        if (item == null)
+        Item item = session.Player.Inventory.GetByUid(itemUid);
+        if (item is null)
         {
             return;
         }
+
+        if (item.TransferFlag.HasFlag(ItemTransferFlag.Binds) && item.TransferType == TransferType.BindOnEquip && !item.BindItem(session.Player))
+        {
+            return;
+        }
+
+        // Remove the item from the users inventory
+        IInventory inventory = session.Player.Inventory;
+        inventory.RemoveItem(session, itemUid, out item);
 
         // Get correct equipped inventory
         Dictionary<ItemSlot, Item> equippedInventory = session.Player.GetEquippedInventory(item.InventoryTab);
@@ -86,6 +94,7 @@ public class ItemEquipHandler : GamePacketHandler
                 {
                     prevItem2.Slot = item.Slot;
                 }
+
                 prevItem2.IsEquipped = false;
                 inventory.AddItem(session, prevItem2, false);
                 session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.Player.FieldPlayer, prevItem2));

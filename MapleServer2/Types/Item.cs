@@ -4,6 +4,7 @@ using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
+using MapleServer2.Packets;
 
 namespace MapleServer2.Types;
 
@@ -28,6 +29,7 @@ public class Item
     public ItemFunction Function { get; set; }
     public string Tag { get; set; }
     public int ShopID { get; set; }
+    public int PetId { get; set; }
     public ItemHousingCategory HousingCategory;
     public string BlackMarketCategory;
     public string Category;
@@ -53,9 +55,9 @@ public class Item
 
     // EnchantExp (10000 = 100%) for Peachy
     public int EnchantExp;
-    public int RepackageCount;
+    public int RemainingRepackageCount;
     public int Charges;
-    public TransferFlag TransferFlag;
+    public ItemTransferFlag TransferFlag;
     public TransferType TransferType;
     public int RemainingTrades;
 
@@ -101,6 +103,8 @@ public class Item
         PlayCount = ItemMetadataStorage.GetPlayCount(id);
         Color = ItemMetadataStorage.GetEquipColor(id);
         CreationTime = TimeInfo.Now();
+        RemainingTrades = ItemMetadataStorage.GetTradeableCount(Id);
+        RemainingRepackageCount = ItemMetadataStorage.GetRepackageCount(Id);
         RemainingGlamorForges = ItemExtractionMetadataStorage.GetExtractionCount(id);
         Slot = -1;
         Amount = 1;
@@ -149,7 +153,7 @@ public class Item
         GachaDismantleId = other.GachaDismantleId;
         Enchants = other.Enchants;
         EnchantExp = other.EnchantExp;
-        RepackageCount = other.RepackageCount;
+        RemainingRepackageCount = other.RemainingRepackageCount;
         Charges = other.Charges;
         TransferFlag = other.TransferFlag;
         RemainingTrades = other.RemainingTrades;
@@ -209,9 +213,50 @@ public class Item
         return slot is ItemSlot.CP or ItemSlot.CL or ItemSlot.PA or ItemSlot.GL or ItemSlot.SH or ItemSlot.MT;
     }
 
-    public static bool IsPet(int itemId)
+    public bool IsPet()
     {
-        return itemId is >= 60000001 and < 61000000;
+        return PetId != 0;
+    }
+
+    public bool BindItem(Player player)
+    {
+        if (OwnerCharacterId != 0 && OwnerCharacterId != player.CharacterId)
+        {
+            return false;
+        }
+
+        if (OwnerCharacterId == player.CharacterId)
+        {
+            return true;
+        }
+
+        OwnerAccountId = player.AccountId;
+        OwnerCharacterId = player.CharacterId;
+        OwnerCharacterName = player.Name;
+        RemainingTrades = 0;
+
+        player.Session?.Send(ItemInventoryPacket.UpdateBind(this));
+        return true;
+    }
+
+    public bool IsBound()
+    {
+        return OwnerCharacterId != 0;
+    }
+
+    public bool IsSelfBound(long characterId)
+    {
+        return OwnerAccountId == characterId;
+    }
+
+    public void DecreaseTradeCount()
+    {
+        if (!TransferFlag.HasFlag(ItemTransferFlag.LimitedTradeCount))
+        {
+            return;
+        }
+
+        RemainingTrades--;
     }
 
     public void SetMetadataValues()
@@ -230,9 +275,8 @@ public class Item
         Function = ItemMetadataStorage.GetFunction(Id);
         Tag = ItemMetadataStorage.GetTag(Id);
         ShopID = ItemMetadataStorage.GetShopID(Id);
-        RemainingTrades = ItemMetadataStorage.GetTradeableCount(Id);
         TransferType = ItemMetadataStorage.GetTransferType(Id);
-        RepackageCount = ItemMetadataStorage.GetRepackageCount(Id);
+        TransferFlag = ItemMetadataStorage.GetTransferFlag(Id, Rarity);
         HousingCategory = ItemMetadataStorage.GetHousingCategory(Id);
         BlackMarketCategory = ItemMetadataStorage.GetBlackMarketCategory(Id);
         Category = ItemMetadataStorage.GetCategory(Id);

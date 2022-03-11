@@ -15,7 +15,7 @@ public interface IInventory
     void AddItem(GameSession session, Item item, bool isNew);
     void ConsumeItem(GameSession session, long uid, int amount);
     bool RemoveItem(GameSession session, long uid, out Item item);
-    void DropItem(GameSession session, long uid, int amount, bool isBound);
+    void DropItem(GameSession session, Item item, int amount);
     void MoveItem(GameSession session, long uid, short dstSlot);
 
     /// <summary>

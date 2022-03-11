@@ -99,6 +99,11 @@ public class RequestItemUseHandler : GamePacketHandler
                 Logger.Warn($"Unhandled item function: {item.Function.Name}");
                 break;
         }
+
+        if (item.TransferType == TransferType.BindOnUse & !item.IsBound())
+        {
+            item.BindItem(session.Player);
+        }
     }
 
     private static void HandleItemRemakeScroll(GameSession session, long itemUid)
@@ -185,6 +190,7 @@ public class RequestItemUseHandler : GamePacketHandler
     {
         if (!InstrumentCategoryInfoMetadataStorage.IsValid(item.Function.Id))
         {
+            return;
         }
     }
 
@@ -203,7 +209,8 @@ public class RequestItemUseHandler : GamePacketHandler
 
     private static void HandleHongBao(GameSession session, Item item)
     {
-        HongBao newHongBao = new(session.Player, item.Function.HongBao.TotalUsers, item.Id, item.Function.HongBao.Id, item.Function.HongBao.Count, item.Function.HongBao.Duration);
+        HongBao newHongBao = new(session.Player, item.Function.HongBao.TotalUsers, item.Id, item.Function.HongBao.Id, item.Function.HongBao.Count,
+            item.Function.HongBao.Duration);
         GameServer.HongBaoManager.AddHongBao(newHongBao);
 
         session.FieldManager.BroadcastPacket(PlayerHostPacket.OpenHongbao(session.Player, newHongBao));
@@ -280,6 +287,7 @@ public class RequestItemUseHandler : GamePacketHandler
                 }
             } while (!sameGender);
         }
+
         return contents;
     }
 
@@ -309,18 +317,14 @@ public class RequestItemUseHandler : GamePacketHandler
         {
             Rarity = item.Function.OpenCoupleEffectBox.Rarity,
             PairedCharacterId = otherPlayer.CharacterId,
-            PairedCharacterName = otherPlayer.Name,
-            OwnerCharacterId = session.Player.CharacterId,
-            OwnerCharacterName = session.Player.Name
+            PairedCharacterName = otherPlayer.Name
         };
 
         Item otherUserBadge = new(item.Function.OpenCoupleEffectBox.Id)
         {
             Rarity = item.Function.OpenCoupleEffectBox.Rarity,
             PairedCharacterId = session.Player.CharacterId,
-            PairedCharacterName = session.Player.Name,
-            OwnerCharacterId = otherPlayer.CharacterId,
-            OwnerCharacterName = otherPlayer.Name
+            PairedCharacterName = session.Player.Name
         };
 
         List<Item> items = new()
@@ -329,13 +333,13 @@ public class RequestItemUseHandler : GamePacketHandler
         };
 
         MailHelper.SendMail(MailType.System, otherPlayer.CharacterId, session.Player.CharacterId,
-                            "<ms2><v key=\"s_couple_effect_mail_sender\" /></ms2>",
-                            "<ms2><v key=\"s_couple_effect_mail_title_receiver\" /></ms2>",
-                            "<ms2><v key=\"s_couple_effect_mail_content_receiver\" /></ms2>",
-                            "",
-                            $"<ms2><v str=\"{session.Player.Name}\" ></v></ms2>",
-                            items,
-                            0, 0, out Mail mail);
+            "<ms2><v key=\"s_couple_effect_mail_sender\" /></ms2>",
+            "<ms2><v key=\"s_couple_effect_mail_title_receiver\" /></ms2>",
+            "<ms2><v key=\"s_couple_effect_mail_content_receiver\" /></ms2>",
+            "",
+            $"<ms2><v str=\"{session.Player.Name}\" ></v></ms2>",
+            items,
+            0, 0, out Mail mail);
 
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
         session.Player.Inventory.AddItem(session, badge, true);
@@ -384,7 +388,8 @@ public class RequestItemUseHandler : GamePacketHandler
 
         int balloonUid = GuidGenerator.Int();
         string id = "AdBalloon_" + balloonUid;
-        AdBalloon balloon = new(id, item.Function.InstallBillboard.InteractId, InteractObjectState.Default, InteractObjectType.AdBalloon, session.Player.FieldPlayer, item.Function.InstallBillboard, title, description, publicHouse);
+        AdBalloon balloon = new(id, item.Function.InstallBillboard.InteractId, InteractObjectState.Default, InteractObjectType.AdBalloon,
+            session.Player.FieldPlayer, item.Function.InstallBillboard, title, description, publicHouse);
         session.FieldManager.State.AddInteractObject(balloon);
         session.FieldManager.BroadcastPacket(InteractObjectPacket.Add(balloon));
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
@@ -423,12 +428,35 @@ public class RequestItemUseHandler : GamePacketHandler
 
     public static void HandleNameVoucher(GameSession session, PacketReader packet, Item item)
     {
-        string characterName = packet.ReadUnicodeString();
-        session.Player.Name = characterName;
+        string newName = packet.ReadUnicodeString();
+        string oldName = session.Player.Name;
+        session.Player.Name = newName;
 
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
 
-        session.Send(CharacterListPacket.NameChanged(session.Player.CharacterId, characterName));
+        session.Send(CharacterListPacket.NameChanged(session.Player.CharacterId, newName));
+
+        // Update name on socials
+        foreach (Club club in session.Player.Clubs)
+        {
+            club.BroadcastPacketClub(ClubPacket.UpdateMemberName(oldName, newName, session.Player.CharacterId));
+            if (club.LeaderCharacterId == session.Player.CharacterId)
+            {
+                club.LeaderName = newName;
+            }
+        }
+
+        if (session.Player.Guild is not null)
+        {
+            session.Player.Guild?.BroadcastPacketGuild(GuildPacket.UpdateMemberName(oldName, newName));
+            if (session.Player.Guild.LeaderCharacterId == session.Player.CharacterId)
+            {
+                session.Player.Guild.LeaderName = newName;
+            }
+        }
+
+        session.Player.Party?.BroadcastPacketParty(PartyPacket.UpdatePlayer(session.Player));
+
         // TODO: Needs to redirect player to character selection screen after pop-up
     }
 

@@ -62,7 +62,6 @@ public static class GameEventPacket
                     break;
                 case MeratMarketNotice notice:
                     pWriter.WriteUnicodeString(notice.Message);
-                    Console.WriteLine(notice.Message);
                     break;
                 case EventFieldPopup field:
                     pWriter.WriteInt(field.MapId);

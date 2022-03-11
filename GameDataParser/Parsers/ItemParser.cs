@@ -46,6 +46,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                 Tab = GetTab(property.type, property.subtype, property.skin != 0),
                 IsTemplate = property.skinType == 99,
                 TradeableCount = (byte) property.tradableCount,
+                DisableTradeWithinAccount = property.moveDisable == 1,
                 RepackageCount = (byte) property.rePackingLimitCount,
                 RepackageItemConsumeCount = (byte) property.rePackingItemConsumeCount,
                 BlackMarketCategory = property.blackMarketCategory,
@@ -65,16 +66,37 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                 FileName = musicScore.fileName,
                 IsCustomScore = musicScore.isCustomNote,
                 ShopID = data.Shop?.systemShopID ?? 0,
+                PetId = data.pet?.petID ?? 0,
                 SkillID = data.skill.skillID,
                 EnableBreak = limit.enableBreak != 0,
                 Level = limit.levelLimit,
                 TransferType = (TransferType) limit.transferType,
+                TradeLimitByRarity = limit.tradeLimitRank,
                 Sellable = limit.shopSell != 0,
                 RecommendJobs = limit.recommendJobs.ToList(),
                 Gender = (Gender) limit.genderLimit,
                 IsCubeSolid = install.cubeProp != 0,
                 ObjectId = install.objCode
             };
+
+            // if globalTransferType is present, override with these values
+            if (limit.globalTransferType is not null)
+            {
+                metadata.TransferType = (TransferType) limit.globalTransferType;
+            }
+
+            // if globalTransferTypeNA is present, override with these values
+            if (limit.globalTransferTypeNA is not null)
+            {
+                metadata.TransferType = (TransferType) limit.globalTransferTypeNA;
+            }
+
+            // if globalRePackingLimit is present, override repacking with these values
+            if (property.globalRePackingLimitCount is not null)
+            {
+                metadata.RepackageCount = (byte) property.globalRePackingLimitCount;
+                metadata.RepackageItemConsumeCount = (byte) property.globalRePackingItemConsumeCount;
+            }
 
             // Item boxes
             ParseBoxes(function, metadata);
