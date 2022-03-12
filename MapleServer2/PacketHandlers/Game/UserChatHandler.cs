@@ -91,7 +91,7 @@ public class UserChatHandler : GamePacketHandler
 
         if (voucher is not null)
         {
-            session.Send(NoticePacket.Notice(SystemNotice.ChannelChatUseCoupon, NoticeType.ChatAndFastText));
+            session.Send(NoticePacket.Notice(SystemNotice.ChannelChatUseCoupon, NoticeType.Chat | NoticeType.FastText));
             player.Inventory.ConsumeItem(session, voucher.Uid, 1);
         }
         else if (!player.Account.RemoveMerets(meretCost))
@@ -153,7 +153,7 @@ public class UserChatHandler : GamePacketHandler
         Item voucher = session.Player.Inventory.GetAllByTag("FreeWorldChatCoupon").FirstOrDefault();
         if (voucher is not null)
         {
-            session.Send(NoticePacket.Notice(SystemNotice.WorldChatUseCoupon, NoticeType.ChatAndFastText));
+            session.Send(NoticePacket.Notice(SystemNotice.WorldChatUseCoupon, NoticeType.Chat | NoticeType.FastText));
             session.Player.Inventory.ConsumeItem(session, voucher.Uid, 1);
         }
         else if (!session.Player.Account.RemoveMerets(meretCost))

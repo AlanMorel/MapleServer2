@@ -119,12 +119,12 @@ public class PremiumClubHandler : GamePacketHandler
         if (!account.IsVip())
         {
             account.VIPExpiration = expiration;
-            session.Send(NoticePacket.Notice(SystemNotice.PremiumActivated, NoticeType.ChatAndFastText));
+            session.Send(NoticePacket.Notice(SystemNotice.PremiumActivated, NoticeType.Chat | NoticeType.FastText));
         }
         else
         {
             account.VIPExpiration += vipTime;
-            session.Send(NoticePacket.Notice(SystemNotice.PremiumExtended, NoticeType.ChatAndFastText));
+            session.Send(NoticePacket.Notice(SystemNotice.PremiumExtended, NoticeType.Chat | NoticeType.FastText));
         }
         session.Send(BuffPacket.SendBuff(0, new(100000014, session.Player.FieldPlayer.ObjectId, session.Player.FieldPlayer.ObjectId, 1, (int) vipTime, 1)));
         session.Send(PremiumClubPacket.ActivatePremium(session.Player.FieldPlayer, account.VIPExpiration));

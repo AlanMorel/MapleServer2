@@ -235,6 +235,7 @@ public enum SendOp : ushort
     ONE_TIME_EFFECT = 0x00F3,
     SET_CAMERA = 0x00F4,
     TIME_SCALE = 0x00F5,
+    LEGION_BATTLE = 0x00F6,
     FIREWORKS = 0x00F7,
     CLUB = 0x00F8,
     INVITE_TO_HOME = 0x00FA,

@@ -108,17 +108,29 @@ public class RequestItemUseHandler : GamePacketHandler
 
     private static void HandleChatEmoticonAdd(GameSession session, Item item)
     {
-        long expiration = TimeInfo.Now() + item.Function.ChatEmoticonAdd.Duration + Environment.TickCount;
+        long expiration = item.Function.ChatEmoticonAdd.Duration;
 
         if (item.Function.ChatEmoticonAdd.Duration == 0) // if no duration was set, set it to not expire
         {
             expiration = long.MaxValue;
         }
-
-        if (session.Player.ChatSticker.Any(p => p.GroupId == item.Function.ChatEmoticonAdd.Id))
+        else
         {
-            // TODO: Find reject packet
+            expiration *= 86400 + TimeInfo.Now(); // convert days to seconds
+        }
+
+        // sticker exists and no expiration
+        if (session.Player.ChatSticker.Any(p => p.GroupId == item.Function.ChatEmoticonAdd.Id && p.Expiration == long.MaxValue))
+        {
             return;
+        }
+        
+        // Add time if the sticker is already in the list
+        ChatSticker sticker = session.Player.ChatSticker.FirstOrDefault(p => p.GroupId == item.Function.ChatEmoticonAdd.Id);
+        if (sticker is not null)
+        {
+            long currentRemainingTime = sticker.Expiration;
+            expiration += currentRemainingTime;
         }
 
         session.Send(ChatStickerPacket.AddSticker(item.Id, item.Function.ChatEmoticonAdd.Id, expiration));
@@ -289,20 +301,26 @@ public class RequestItemUseHandler : GamePacketHandler
 
         if (targetUser == session.Player.Name)
         {
-            //TODO: Find the error packet
+            session.Send(NoticePacket.Notice(SystemNotice.CoupleEffectErrorOpenboxMyselfChar, NoticeType.Popup));
             return;
         }
-
+        
         if (!DatabaseManager.Characters.NameExists(targetUser))
         {
             session.Send(NoticePacket.Notice(SystemNotice.SpecifiedCharacterCouldNotBeFound, NoticeType.Popup));
             return;
         }
-
+        
         Player otherPlayer = GameServer.PlayerManager.GetPlayerByName(targetUser);
         if (otherPlayer == null)
         {
             otherPlayer = DatabaseManager.Characters.FindPartialPlayerByName(targetUser);
+        }
+
+        if (otherPlayer.AccountId == session.Player.AccountId)
+        {
+            session.Send(NoticePacket.Notice(SystemNotice.CoupleEffectErrorOpenboxMyselfAccount, NoticeType.Popup));
+            return;
         }
 
         Item badge = new(item.Function.OpenCoupleEffectBox.Id)
@@ -344,7 +362,7 @@ public class RequestItemUseHandler : GamePacketHandler
             otherPlayer.Name
         };
 
-        session.Send(NoticePacket.Notice(SystemNotice.YouMailedBuddyBadgeToOtherPlayer, NoticeType.ChatAndFastText, noticeParameters));
+        session.Send(NoticePacket.Notice(SystemNotice.YouMailedBuddyBadgeToOtherPlayer, NoticeType.Chat | NoticeType.FastText, noticeParameters));
     }
 
     public static void HandlePetExtraction(GameSession session, PacketReader packet, Item item)

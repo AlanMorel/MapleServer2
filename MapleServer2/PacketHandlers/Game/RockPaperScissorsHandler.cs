@@ -79,9 +79,7 @@ public class RockPaperScissorsHandler : GamePacketHandler
 
         if (!session.Player.Inventory.HasItem(rpsEvent.VoucherId))
         {
-            // TODO: Find correct packet to let player know they don't have a voucher
-            session.Send(NoticePacket.Notice("You must have a Rock Papers Scissors Play Ticket",
-                NoticeType.ChatAndFastText));
+            session.Send(NoticePacket.Notice(SystemNotice.MicrogameRpsOpenBannerFailedNotExistTicket, NoticeType.Chat | NoticeType.FastText));
             return;
         }
 
@@ -107,9 +105,7 @@ public class RockPaperScissorsHandler : GamePacketHandler
 
         if (!session.Player.Inventory.HasItem(rpsEvent.VoucherId))
         {
-            // TODO: Find correct packet to let player know they don't have a voucher
-            session.Send(NoticePacket.Notice("You must have a Rock Papers Scissors Play Ticket",
-                NoticeType.ChatAndFastText));
+            session.Send(NoticePacket.Notice(SystemNotice.MicrogameRpsOpenBannerFailedNotExistTicket, NoticeType.Chat | NoticeType.FastText));
             return;
         }
 

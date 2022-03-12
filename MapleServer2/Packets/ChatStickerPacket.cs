@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using Humanizer;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
 
@@ -30,21 +31,25 @@ public static class ChatStickerPacket
         foreach (ChatSticker stickerGroup in player.ChatSticker)
         {
             pWriter.WriteInt(stickerGroup.GroupId);
-            pWriter.WriteLong(stickerGroup.Expiration);
+            pWriter.WriteLong(TimeInfo.Now() + 2629743);
         }
         return pWriter;
     }
 
-    public static PacketWriter ExpiredStickerNotification()
+    public static PacketWriter ExpiredStickerNotification(List<ChatSticker> stickers)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.CHAT_STICKER);
         pWriter.Write(ChatStickerMode.ExpiredStickerNotification);
         pWriter.WriteInt();
-        pWriter.WriteInt(1);
+        pWriter.WriteInt(stickers.Count);
+        foreach(ChatSticker sticker in stickers)
+        {
+            pWriter.WriteInt(sticker.GroupId);
+        }
         return pWriter;
     }
 
-    public static PacketWriter AddSticker(int itemId, int stickerGroupId, long expiration = 9223372036854775807)
+    public static PacketWriter AddSticker(int itemId, int stickerGroupId, long expiration = long.MaxValue)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.CHAT_STICKER);
         pWriter.Write(ChatStickerMode.AddSticker);
