@@ -2,6 +2,9 @@
 
 public static class TimeInfo
 {
+    public const int SecondsInMonth = 2628000;
+    public const int SecondsInWeek = 604800;
+    public const int SecondsInDay = 86400;
     public static long Now() => DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
     public static DateTime CurrentDate() => DateTimeOffset.UtcNow.UtcDateTime;

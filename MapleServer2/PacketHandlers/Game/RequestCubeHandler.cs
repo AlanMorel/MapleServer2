@@ -960,39 +960,17 @@ public class RequestCubeHandler : GamePacketHandler
         // Decoration score goals
         Dictionary<ItemHousingCategory, int> goals = new()
         {
-            {
-                ItemHousingCategory.Bed, 1
-            },
-            {
-                ItemHousingCategory.Table, 1
-            },
-            {
-                ItemHousingCategory.SofasChairs, 2
-            },
-            {
-                ItemHousingCategory.Storage, 1
-            },
-            {
-                ItemHousingCategory.WallDecoration, 1
-            },
-            {
-                ItemHousingCategory.WallTiles, 3
-            },
-            {
-                ItemHousingCategory.Bathroom, 1
-            },
-            {
-                ItemHousingCategory.Lighting, 1
-            },
-            {
-                ItemHousingCategory.Electronics, 1
-            },
-            {
-                ItemHousingCategory.Fences, 2
-            },
-            {
-                ItemHousingCategory.NaturalTerrain, 4
-            }
+            {ItemHousingCategory.Bed, 1},
+            {ItemHousingCategory.Table, 1},
+            {ItemHousingCategory.SofasChairs, 2},
+            {ItemHousingCategory.Storage, 1},
+            {ItemHousingCategory.WallDecoration, 1},
+            {ItemHousingCategory.WallTiles, 3},
+            {ItemHousingCategory.Bathroom, 1},
+            {ItemHousingCategory.Lighting, 1},
+            {ItemHousingCategory.Electronics, 1},
+            {ItemHousingCategory.Fences, 2},
+            {ItemHousingCategory.NaturalTerrain, 4}
         };
 
         Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
@@ -1232,7 +1210,6 @@ public class RequestCubeHandler : GamePacketHandler
         home.BuildingPermissions.Add(target.AccountId);
 
         session.Send(ResponseCubePacket.AddBuildingPermission(target.AccountId));
-        session.Send(ChatPacket.Error(session.Player, SystemNotice.UgcMapPackageAutomaticCreationCompleted, ChatType.NoticeAlert));
         session.Send(NoticePacket.Notice(SystemNotice.UgcMapGiveDelegatorUser, NoticeType.Chat | NoticeType.FastText, new()
         {
             target.Name
@@ -1264,7 +1241,6 @@ public class RequestCubeHandler : GamePacketHandler
         session.Send(ResponseCubePacket.RemoveBuildingPermission(target.AccountId, target.Name));
         target.Session.Send(ResponseCubePacket.UpdateBuildingPermissions(0, player.AccountId));
         target.Session.Send(ChatPacket.Error(session.Player, SystemNotice.UgcMapReleaseDelegatorUser, ChatType.NoticeAlert));
-
     }
 
     private static bool PurchaseFurnishingItem(GameSession session, FurnishingShopMetadata shop)
