@@ -110,6 +110,12 @@ public class BlackMarketHandler : GamePacketHandler
             return;
         }
 
+        Item item = session.Player.Inventory.GetByUid(itemUid);
+        if (item.Amount < quantity || item.IsBound())
+        {
+            return;
+        }
+
         double depositRate = 0.01; // 1% deposit rate
         int maxDeposit = 100000;
 
@@ -121,16 +127,10 @@ public class BlackMarketHandler : GamePacketHandler
             return;
         }
 
-        Item item = session.Player.Inventory.GetByUid(itemUid);
-        if (item.Amount < quantity)
-        {
-            return;
-        }
-
         if (item.Amount > quantity)
         {
             item.TrySplit(quantity, out Item newStack);
-            session.Send(ItemInventoryPacket.Update(item.Uid, item.Amount));
+            session.Send(ItemInventoryPacket.UpdateAmount(item.Uid, item.Amount));
             item = newStack;
         }
         else
@@ -199,6 +199,7 @@ public class BlackMarketHandler : GamePacketHandler
                 {
                     continue;
                 }
+
                 stats.Add(stat);
             }
         }
@@ -257,6 +258,8 @@ public class BlackMarketHandler : GamePacketHandler
             newItem.Uid = DatabaseManager.Items.Insert(newItem);
             purchasedItem = newItem;
         }
+
+        purchasedItem.DecreaseTradeCount();
 
         MailHelper.BlackMarketTransaction(purchasedItem, listing, session.Player.CharacterId, listing.Price, removeListing);
         session.Send(BlackMarketPacket.Purchase(listingId, amount));

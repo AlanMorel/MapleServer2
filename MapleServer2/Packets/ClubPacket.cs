@@ -29,6 +29,7 @@ public static class ClubPacket
         UpdateMemberLocation = 0x17,
         UpdatePlayer = 0x18,
         Rename = 0x1A,
+        UpdateMemberName = 0x1B,
         ErrorNotice = 0x1D,
         Join = 0x1E
     }
@@ -55,6 +56,7 @@ public static class ClubPacket
             pWriter.WriteLong(club.Id);
             WriteClubMember(pWriter, member);
         }
+
         pWriter.WriteByte(0x1);
         return pWriter;
     }
@@ -90,6 +92,7 @@ public static class ClubPacket
             pWriter.WriteLong(club.Id);
             WriteClubMember(pWriter, member);
         }
+
         return pWriter;
     }
 
@@ -239,7 +242,7 @@ public static class ClubPacket
     public static PacketWriter UpdateMemberLocation(long clubId, string memberName, int mapId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
-        pWriter.Write(ClubPacketMode.ChangeBuff);
+        pWriter.Write(ClubPacketMode.UpdateMemberLocation);
         pWriter.WriteLong(clubId);
         pWriter.WriteUnicodeString(memberName);
         pWriter.WriteInt(mapId);
@@ -272,6 +275,16 @@ public static class ClubPacket
         pWriter.WriteLong(club.Id);
         pWriter.WriteUnicodeString(club.Name);
         pWriter.WriteLong(); //unk
+        return pWriter;
+    }
+
+    public static PacketWriter UpdateMemberName(string oldName, string newName, long characterId)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
+        pWriter.Write(ClubPacketMode.UpdateMemberName);
+        pWriter.WriteLong(characterId);
+        pWriter.WriteUnicodeString(oldName);
+        pWriter.WriteUnicodeString(newName);
         return pWriter;
     }
 
@@ -314,6 +327,7 @@ public static class ClubPacket
         {
             pWriter.WriteInt(trophyCategory);
         }
+
         pWriter.WriteLong(member.JoinTimestamp);
         pWriter.WriteLong(member.Player.LastLogTime);
         pWriter.WriteBool(!member.Player.Session?.Connected() ?? true);

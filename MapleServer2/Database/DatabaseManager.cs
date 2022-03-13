@@ -33,6 +33,7 @@ public static class DatabaseManager
     public static DatabaseCube Cubes { get; } = new();
     public static DatabaseEvent Events { get; } = new();
     public static DatabaseGameOptions GameOptions { get; } = new();
+    public static DatabaseMacros Macros { get; } = new();
     public static DatabaseGuild Guilds { get; } = new();
     public static DatabaseGuildApplication GuildApplications { get; } = new();
     public static DatabaseGuildMember GuildMembers { get; } = new();

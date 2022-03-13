@@ -109,11 +109,13 @@ public class Player
     public StatDistribution StatPointDistribution;
 
     public GameOptions GameOptions { get; set; }
+    public List<Macro> Macros { get; set; }
 
     public IInventory Inventory;
     public DismantleInventory DismantleInventory = new();
     public LockInventory LockInventory = new();
     public HairInventory HairInventory = new();
+    public TradeInventory TradeInventory;
 
     public List<Mail> Mailbox = new();
 
@@ -164,6 +166,7 @@ public class Player
         Gender = gender;
         Job = job;
         GameOptions = new(job);
+        Macros = new();
         Wallet = new(meso: 0, valorToken: 0, treva: 0, rue: 0, haviFruit: 0, gameSession: null);
         Levels = new(playerLevel: 1, exp: 0, restExp: 0, prestigeLevel: 1, prestigeExp: 0, masteryExp: new()
         {

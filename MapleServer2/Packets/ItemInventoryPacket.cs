@@ -12,14 +12,15 @@ public static class ItemInventoryPacket
     {
         Add = 0x00,
         Remove = 0x01,
-        Update = 0x02,
+        UpdateAmount = 0x02,
         Move = 0x03,
         LoadItem = 0x07,
         MarkItemNew = 0x08,
         LoadItemsToTab = 0x0A,
         Expand = 0x0C,
         ResetTab = 0x0D,
-        LoadTab = 0x0E
+        LoadTab = 0x0E,
+        UpdateBind = 0x10
     }
 
     public static PacketWriter Add(Item item)
@@ -46,10 +47,10 @@ public static class ItemInventoryPacket
         return pWriter;
     }
 
-    public static PacketWriter Update(long uid, int amount)
+    public static PacketWriter UpdateAmount(long uid, int amount)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY);
-        pWriter.Write(InventoryMode.Update);
+        pWriter.Write(InventoryMode.UpdateAmount);
         pWriter.WriteLong(uid);
         pWriter.WriteInt(amount);
 
@@ -140,6 +141,15 @@ public static class ItemInventoryPacket
         pWriter.WriteByte((byte) tab);
         pWriter.WriteInt(extraSlots);
 
+        return pWriter;
+    }
+
+    public static PacketWriter UpdateBind(Item item)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY);
+        pWriter.Write(InventoryMode.UpdateBind);
+        pWriter.WriteLong(item.Uid);
+        pWriter.WriteItem(item);
         return pWriter;
     }
 }

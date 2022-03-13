@@ -59,7 +59,7 @@ public class GameServer : Server<GameSession>
         Logger.Info($"Game client disconnected: {session}");
     }
 
-    public List<GameSession> GetSessions()
+    public IEnumerable<GameSession> GetSessions()
     {
         return Sessions;
     }

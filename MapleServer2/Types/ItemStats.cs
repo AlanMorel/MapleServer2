@@ -233,13 +233,13 @@ public class ItemStats
         Random random = RandomProvider.Get();
         int slots = random.Next(randomOptions.Slots[0], randomOptions.Slots[1]);
 
-        List<ItemStat> itemStats = RollStats(randomOptions, randomId, itemId);
+        IEnumerable<ItemStat> itemStats = RollStats(randomOptions, randomId, itemId);
         List<ItemStat> selectedStats = itemStats.OrderBy(x => random.Next()).Take(slots).ToList();
 
         BonusStats.AddRange(selectedStats);
     }
 
-    public static List<ItemStat> RollStats(ItemOptionRandom randomOptions, int randomId, int itemId)
+    public static IEnumerable<ItemStat> RollStats(ItemOptionRandom randomOptions, int randomId, int itemId)
     {
         List<ItemStat> itemStats = new();
 

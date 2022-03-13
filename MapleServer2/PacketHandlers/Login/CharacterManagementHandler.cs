@@ -216,6 +216,8 @@ public class CharacterManagementHandler : LoginPacketHandler
                     });
                     break;
             }
+            newCharacter.Inventory.Cosmetics[type].BindItem(newCharacter);
+
         }
         packet.ReadInt(); // const? (4)
 

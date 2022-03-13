@@ -9,5 +9,5 @@ public enum TransferType : byte
     BindOnUse = 4,
     BindOnTrade = 5,
     TradeableOnBlackMarket = 6, // ??
-    Unknown = 7
+    BindOnSummonEnchantOrReroll = 7
 }

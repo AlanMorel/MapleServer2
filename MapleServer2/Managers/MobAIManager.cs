@@ -61,7 +61,7 @@ public static class MobAIManager
             NpcState stateValue = GetMobState(node.Name);
             NpcAction newActionValue = GetMobAction(node.Attributes["action"]?.Value);
             MobMovement movementValue = GetMobMovement(node.Attributes["movement"]?.Value);
-            MobAI.Condition[] conditions = GetConditions( /*node*/);
+            IEnumerable<MobAI.Condition> conditions = GetConditions( /*node*/);
 
             ai.Rules.TryAdd(stateValue, (newActionValue, movementValue, Array.Empty<MobAI.Condition>()));
         }
@@ -103,7 +103,7 @@ public static class MobAIManager
         };
     }
 
-    private static MobAI.Condition[] GetConditions( /*XmlNode node*/)
+    private static IEnumerable<MobAI.Condition> GetConditions( /*XmlNode node*/)
     {
         // TODO: Parse actions' conditions
         return Array.Empty<MobAI.Condition>();

@@ -15,7 +15,7 @@ public interface IInventory
     void AddItem(GameSession session, Item item, bool isNew);
     void ConsumeItem(GameSession session, long uid, int amount);
     bool RemoveItem(GameSession session, long uid, out Item item);
-    void DropItem(GameSession session, long uid, int amount, bool isBound);
+    void DropItem(GameSession session, Item item, int amount);
     void MoveItem(GameSession session, long uid, short dstSlot);
 
     /// <summary>
@@ -47,7 +47,7 @@ public interface IInventory
     /// <summary>
     /// Gets all non-null items in the inventory
     /// </summary>
-    IReadOnlyCollection<Item> GetItemsNotNull();
+    IEnumerable<Item> GetItemsNotNull();
 
     /// <summary>
     /// Gets all items matching the given Item ID
@@ -68,7 +68,7 @@ public interface IInventory
     /// </summary>
     /// <param name="functionId">The Function ID of the item</param>
     /// <remarks>Never returns null, can return empty</remarks>
-    IReadOnlyCollection<Item> GetAllByFunctionId(int functionId);
+    IEnumerable<Item> GetAllByFunctionId(int functionId);
     bool Replace(Item item);
     void SortInventory(GameSession session, InventoryTab tab);
     void LoadInventoryTab(GameSession session, InventoryTab tab);
