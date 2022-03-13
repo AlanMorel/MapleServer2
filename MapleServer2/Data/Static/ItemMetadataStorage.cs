@@ -224,7 +224,7 @@ public static class ItemMetadataStorage
         ItemMetadata metadata = GetMetadata(itemId);
 
         long expirationTimestamp = 0;
-        
+
         if (metadata.ExpirationTime != new DateTime(1, 1, 1, 0, 0, 0))
         {
             expirationTimestamp = ((DateTimeOffset) metadata.ExpirationTime.ToUniversalTime().Date).ToUnixTimeSeconds();

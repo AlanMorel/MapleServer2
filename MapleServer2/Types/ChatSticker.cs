@@ -4,7 +4,7 @@ public class ChatSticker
 {
     public readonly byte GroupId;
     public readonly long Expiration;
-    
+
     public ChatSticker(byte groupId, long expiration)
     {
         GroupId = groupId;
