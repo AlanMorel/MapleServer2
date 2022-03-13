@@ -237,8 +237,8 @@ public static class ItemMetadataStorage
         {
             expirationTimestamp = metadata.ExpirationType switch
             {
-                ItemExpirationType.Months => metadata.ExpirationTypeDuration * TimeInfo.SecondsInMonth + TimeInfo.Now(),
-                ItemExpirationType.Weeks => metadata.ExpirationTypeDuration * TimeInfo.SecondsInWeek + TimeInfo.Now(),
+                ItemExpirationType.Months => metadata.ExpirationTypeDuration * (long) TimeSpan.FromDays(30).TotalSeconds + TimeInfo.Now(),
+                ItemExpirationType.Weeks => metadata.ExpirationTypeDuration * (long) TimeSpan.FromDays(7).TotalSeconds + TimeInfo.Now(),
                 _ => expirationTimestamp
             };
         }
