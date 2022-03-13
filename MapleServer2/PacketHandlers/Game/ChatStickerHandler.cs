@@ -26,7 +26,7 @@ public class ChatStickerHandler : GamePacketHandler
         switch (mode)
         {
             case ChatStickerMode.OpenWindow:
-                HandleOpenWindow( /*session, packet*/);
+                HandleOpenWindow();
                 break;
             case ChatStickerMode.UseSticker:
                 HandleUseSticker(session, packet);
@@ -46,7 +46,7 @@ public class ChatStickerHandler : GamePacketHandler
         }
     }
 
-    private static void HandleOpenWindow( /*GameSession session, ByteReader packet*/)
+    private static void HandleOpenWindow()
     {
         // TODO: if user has any expired stickers, use the packet below
         //session.Send(ChatStickerPacket.ExpiredStickerNotification());

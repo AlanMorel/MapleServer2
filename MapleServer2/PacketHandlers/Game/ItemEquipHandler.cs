@@ -47,7 +47,7 @@ public class ItemEquipHandler : GamePacketHandler
         }
 
         Item item = session.Player.Inventory.GetByUid(itemUid);
-        if (item is null)
+        if (item is null || item.IsExpired())
         {
             return;
         }

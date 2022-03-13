@@ -3,6 +3,7 @@ using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Enums;
+using MapleServer2.Types;
 using ProtoBuf;
 
 namespace MapleServer2.Data.Static;
@@ -217,6 +218,33 @@ public static class ItemMetadataStorage
     public static int GetObjectId(int itemId) => GetMetadata(itemId).ObjectId;
 
     public static string GetBlackMarketCategory(int itemId) => GetMetadata(itemId).BlackMarketCategory;
+
+    public static long GetExpiration(int itemId)
+    {
+        ItemMetadata metadata = GetMetadata(itemId);
+
+        long expirationTimestamp = 0;
+
+        if (metadata.ExpirationTime != new DateTime(1, 1, 1, 0, 0, 0))
+        {
+            expirationTimestamp = ((DateTimeOffset) metadata.ExpirationTime.ToUniversalTime().Date).ToUnixTimeSeconds();
+        }
+        else if (metadata.DurationPeriod > 0)
+        {
+            expirationTimestamp = TimeInfo.Now() + metadata.DurationPeriod;
+        }
+        else if (metadata.ExpirationType != ItemExpirationType.None)
+        {
+            expirationTimestamp = metadata.ExpirationType switch
+            {
+                ItemExpirationType.Months => metadata.ExpirationTypeDuration * TimeInfo.SecondsInMonth + TimeInfo.Now(),
+                ItemExpirationType.Weeks => metadata.ExpirationTypeDuration * TimeInfo.SecondsInWeek + TimeInfo.Now(),
+                _ => expirationTimestamp
+            };
+        }
+
+        return expirationTimestamp;
+    }
 
     public static IEnumerable<ItemMetadata> GetAll() => ItemMetadatas.Values;
 }

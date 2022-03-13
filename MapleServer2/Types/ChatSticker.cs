@@ -2,10 +2,8 @@
 
 public class ChatSticker
 {
-    public byte GroupId { get; set; }
-    public long Expiration { get; set; }
-
-    public ChatSticker() { }
+    public readonly byte GroupId;
+    public readonly long Expiration;
 
     public ChatSticker(byte groupId, long expiration)
     {

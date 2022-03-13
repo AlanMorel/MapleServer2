@@ -62,6 +62,12 @@ public class RideHandler : GamePacketHandler
             return;
         }
 
+        Item item = session.Player.Inventory.GetByUid(mountUid);
+        if (item.IsExpired())
+        {
+            return;
+        }
+
         IFieldObject<Mount> fieldMount =
             session.FieldManager.RequestFieldObject(new Mount
             {
@@ -75,7 +81,6 @@ public class RideHandler : GamePacketHandler
 
         PacketWriter startPacket = MountPacket.StartRide(session.Player.FieldPlayer);
 
-        Item item = session.Player.Inventory.GetByUid(mountUid);
         if (item.TransferFlag.HasFlag(ItemTransferFlag.Binds) && !item.IsBound())
         {
             item.BindItem(session.Player);
@@ -102,6 +107,17 @@ public class RideHandler : GamePacketHandler
         if (!session.Player.Inventory.HasItem(mountUid))
         {
             return;
+        }
+
+        Item item = session.Player.Inventory.GetByUid(mountUid);
+        if (item.IsExpired())
+        {
+            return;
+        }
+
+        if (item.TransferFlag.HasFlag(ItemTransferFlag.Binds) && !item.IsBound())
+        {
+            item.BindItem(session.Player);
         }
 
         PacketWriter changePacket = MountPacket.ChangeRide(session.Player.FieldPlayer.ObjectId, mountId, mountUid);

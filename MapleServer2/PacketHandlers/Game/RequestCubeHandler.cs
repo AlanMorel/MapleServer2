@@ -200,7 +200,7 @@ public class RequestCubeHandler : GamePacketHandler
 
         if (!HandlePlotPayment(session, land.PriceItemCode, price))
         {
-            session.SendNotice("You don't have enough mesos!");
+            session.Send(ChatPacket.Error(session.Player, SystemNotice.ErrorInsufficientMeso, ChatType.NoticeAlert));
             return;
         }
 
@@ -340,13 +340,13 @@ public class RequestCubeHandler : GamePacketHandler
             homeOwner = session.FieldManager.State.Players.Values.FirstOrDefault(x => x.Value.AccountId == home.AccountId);
             if (homeOwner is null)
             {
-                session.SendNotice("You cannot do that unless the home owner is present."); // TODO: use notice packet
+                session.Send(ChatPacket.Error(session.Player, SystemNotice.ErrUgcMapCantFindDelegateOwner, ChatType.NoticeAlert));
                 return;
             }
 
             if (!home.BuildingPermissions.Contains(player.Account.Id))
             {
-                session.SendNotice("You don't have building rights.");
+                session.Send(ChatPacket.Error(session.Player, SystemNotice.SocketError10013, ChatType.NoticeAlert));
                 return;
             }
         }
@@ -422,13 +422,13 @@ public class RequestCubeHandler : GamePacketHandler
             homeOwner = session.FieldManager.State.Players.Values.FirstOrDefault(x => x.Value.AccountId == home.AccountId);
             if (homeOwner is null)
             {
-                session.SendNotice("You cannot do that unless the home owner is present."); // TODO: use notice packet
+                session.Send(ChatPacket.Error(session.Player, SystemNotice.ErrUgcMapCantFindDelegateOwner, ChatType.NoticeAlert));
                 return;
             }
 
             if (!home.BuildingPermissions.Contains(player.Account.Id))
             {
-                session.SendNotice("You don't have building rights.");
+                session.Send(ChatPacket.Error(session.Player, SystemNotice.SocketError10013, ChatType.NoticeAlert));
                 return;
             }
         }
@@ -553,13 +553,13 @@ public class RequestCubeHandler : GamePacketHandler
             homeOwner = session.FieldManager.State.Players.Values.FirstOrDefault(x => x.Value.AccountId == home.AccountId);
             if (homeOwner is null)
             {
-                session.SendNotice("You cannot do that unless the home owner is present."); // TODO: use notice packet
+                session.Send(ChatPacket.Error(session.Player, SystemNotice.ErrUgcMapCantFindDelegateOwner, ChatType.NoticeAlert));
                 return;
             }
 
             if (!home.BuildingPermissions.Contains(player.Account.Id))
             {
-                session.SendNotice("You don't have building rights.");
+                session.Send(ChatPacket.Error(session.Player, SystemNotice.SocketError10013, ChatType.NoticeAlert));
                 return;
             }
         }
@@ -706,7 +706,7 @@ public class RequestCubeHandler : GamePacketHandler
             RemoveCube(session, session.Player.FieldPlayer, cube, home);
         }
 
-        session.SendNotice("The interior has been cleared!"); // TODO: use notice packet
+        session.Send(ChatPacket.Error(session.Player, SystemNotice.UgcMapPackageAutomaticRemovalCompleted, ChatType.NoticeAlert));
     }
 
     private static void HandleRequestLayout(GameSession session, PacketReader packet)
@@ -715,7 +715,7 @@ public class RequestCubeHandler : GamePacketHandler
 
         if (!session.FieldManager.State.Cubes.IsEmpty)
         {
-            session.SendNotice("Please clear the interior first."); // TODO: use notice packet
+            session.Send(ChatPacket.Error(session.Player, SystemNotice.ErrUgcMapPackageClearIndoorFirst, ChatType.NoticeAlert));
             return;
         }
 
@@ -806,7 +806,7 @@ public class RequestCubeHandler : GamePacketHandler
             session.FieldManager.AddCube(fieldCube, session.Player.FieldPlayer.ObjectId, session.Player.FieldPlayer.ObjectId);
         }
 
-        session.SendNotice("Layout loaded successfully!"); // TODO: Use notice packet
+        session.Send(ChatPacket.Error(session.Player, SystemNotice.UgcMapPackageAutomaticCreationCompleted, ChatType.NoticeAlert));
     }
 
     private static void HandleLoadLayout(GameSession session, PacketReader packet)
@@ -846,7 +846,7 @@ public class RequestCubeHandler : GamePacketHandler
         }
 
         session.Send(WarehouseInventoryPacket.Count(home.WarehouseInventory.Count));
-        session.SendNotice("Layout loaded successfully!"); // TODO: Use notice packet
+        session.Send(ChatPacket.Error(session.Player, SystemNotice.UgcMapPackageAutomaticCreationCompleted, ChatType.NoticeAlert));
     }
 
     private static void HandleModifySize(GameSession session, RequestCubeMode mode)
@@ -1243,10 +1243,13 @@ public class RequestCubeHandler : GamePacketHandler
         home.BuildingPermissions.Add(target.AccountId);
 
         session.Send(ResponseCubePacket.AddBuildingPermission(target.AccountId));
-        session.SendNotice($"You have granted furnishing rights to {target.Name}."); // TODO: use the notice packet
+        session.Send(NoticePacket.Notice(SystemNotice.UgcMapGiveDelegatorUser, NoticeType.Chat | NoticeType.FastText, new()
+        {
+            target.Name
+        }));
 
         target.Session.Send(ResponseCubePacket.UpdateBuildingPermissions(target.AccountId, player.AccountId));
-        target.Session.SendNotice("You have been granted furnishing rights."); // TODO: use the notice packet
+        target.Session.Send(ChatPacket.Error(session.Player, SystemNotice.UgcMapAddDelegatorUser, ChatType.NoticeAlert));
     }
 
     private static void HandleRemoveBuildingPermission(GameSession session, PacketReader packet)
@@ -1270,7 +1273,7 @@ public class RequestCubeHandler : GamePacketHandler
 
         session.Send(ResponseCubePacket.RemoveBuildingPermission(target.AccountId, target.Name));
         target.Session.Send(ResponseCubePacket.UpdateBuildingPermissions(0, player.AccountId));
-        target.Session.SendNotice("Your furnishing right has been removed."); // TODO: use the notice packet
+        target.Session.Send(ChatPacket.Error(session.Player, SystemNotice.UgcMapReleaseDelegatorUser, ChatType.NoticeAlert));
     }
 
     private static bool PurchaseFurnishingItem(GameSession session, FurnishingShopMetadata shop)

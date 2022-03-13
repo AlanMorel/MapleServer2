@@ -40,8 +40,8 @@ public class UnlockAll : InGameCommand
                 continue;
             }
 
-            trigger.Session.Send(ChatStickerPacket.AddSticker(21100000 + i, i));
-            player.ChatSticker.Add(new((byte) i, 9223372036854775807));
+            trigger.Session.Send(ChatStickerPacket.AddSticker(21100000 + i, i, long.MaxValue));
+            player.ChatSticker.Add(new((byte) i, long.MaxValue));
         }
 
         List<int> emotes = SkillMetadataStorage.GetEmotes();

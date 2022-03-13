@@ -11,7 +11,7 @@ public static class NoticePacket
         Send = 0x04
     }
 
-    public static PacketWriter Notice(string message, NoticeType type = NoticeType.Mint)
+    public static PacketWriter Notice(string message, NoticeType type = NoticeType.Mint, short durationSec = 0)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.NOTICE);
         pWriter.Write(NoticePacketMode.Send);
@@ -19,11 +19,14 @@ public static class NoticePacket
         pWriter.WriteByte();
         pWriter.WriteInt();
         pWriter.WriteUnicodeString(message);
-        pWriter.WriteShort();
+        if (type.HasFlag(NoticeType.Mint))
+        {
+            pWriter.WriteShort(durationSec);
+        }
         return pWriter;
     }
 
-    public static PacketWriter Notice(SystemNotice notice, NoticeType type = NoticeType.Mint, List<string> parameters = null)
+    public static PacketWriter Notice(SystemNotice notice, NoticeType type = NoticeType.Mint, List<string> parameters = null, short durationSec = 0)
     {
         parameters ??= new();
         PacketWriter pWriter = PacketWriter.Of(SendOp.NOTICE);
@@ -37,7 +40,10 @@ public static class NoticePacket
         {
             pWriter.WriteUnicodeString(parameter);
         }
-        pWriter.WriteShort();
+        if (type.HasFlag(NoticeType.Mint))
+        {
+            pWriter.WriteShort(durationSec);
+        }
         return pWriter;
     }
 }

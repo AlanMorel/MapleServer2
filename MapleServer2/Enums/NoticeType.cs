@@ -1,17 +1,12 @@
 ﻿namespace MapleServer2.Enums;
 
+[Flags]
 public enum NoticeType : short
 {
-    Chat = 0x1,
-    ChatAndFastText = 0x5,
-    Mint = 0x10,
-    ChatAndMint = 0x11,
-    FastText = 0x14,
-    Popup = 0x40,
-    PopupAndChat = 0x41,
-    PopupAndFastText = 0x44,
-    MintAndPopup = 0x50,
-    PopupAndKick = 0x80,
-    PopupMintAndKick = 0x90,
-    RedBanner = 0x400
+    Chat = 1,
+    FastText = 4,
+    Mint = 16,
+    Popup = 64,
+    KickPopup = 128,
+    RedBanner = 1024
 }

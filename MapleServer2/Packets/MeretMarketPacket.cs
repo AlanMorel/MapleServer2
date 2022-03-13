@@ -347,7 +347,7 @@ public static class MeretMarketPacket
         pWriter.WriteInt();
         pWriter.WriteLong(item.CreationTimestamp);
         pWriter.WriteLong(item.CreationTimestamp);
-        pWriter.WriteLong(item.ListingExpirationTimestamp); // TODO: Change name
+        pWriter.WriteLong(item.ListingExpirationTimestamp);
         pWriter.WriteInt();
         pWriter.WriteLong(item.PromotionExpirationTimestamp);
         pWriter.WriteLong();

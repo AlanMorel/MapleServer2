@@ -63,7 +63,6 @@ public class HongBao
         {
             Active = false;
             GameServer.HongBaoManager.RemoveHongBao(this);
-            // TODO find any system or chat notice packet
             return;
         }
         short dividedAwardAmount = (short) (RewardAmount / Receivers.Count);

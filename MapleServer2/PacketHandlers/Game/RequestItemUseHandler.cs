@@ -29,6 +29,10 @@ public class RequestItemUseHandler : GamePacketHandler
         }
 
         Item item = session.Player.Inventory.GetByUid(itemUid);
+        if (item.IsExpired())
+        {
+            return;
+        }
 
         switch (item.Function.Name)
         {
@@ -113,17 +117,24 @@ public class RequestItemUseHandler : GamePacketHandler
 
     private static void HandleChatEmoticonAdd(GameSession session, Item item)
     {
-        long expiration = TimeInfo.Now() + item.Function.ChatEmoticonAdd.Duration + Environment.TickCount;
+        long expiration = long.MaxValue;
 
-        if (item.Function.ChatEmoticonAdd.Duration == 0) // if no duration was set, set it to not expire
+        if (item.Function.ChatEmoticonAdd.Duration > 0)
         {
-            expiration = long.MaxValue;
+            expiration = item.Function.ChatEmoticonAdd.Duration + TimeInfo.Now();
         }
 
-        if (session.Player.ChatSticker.Any(p => p.GroupId == item.Function.ChatEmoticonAdd.Id))
+        // sticker exists and no expiration
+        if (session.Player.ChatSticker.Any(p => p.GroupId == item.Function.ChatEmoticonAdd.Id && p.Expiration == long.MaxValue))
         {
-            // TODO: Find reject packet
             return;
+        }
+
+        // Add time if the sticker is already in the list
+        ChatSticker sticker = session.Player.ChatSticker.FirstOrDefault(p => p.GroupId == item.Function.ChatEmoticonAdd.Id);
+        if (sticker is not null && sticker.Expiration != long.MaxValue)
+        {
+            expiration += sticker.Expiration - TimeInfo.Now();
         }
 
         session.Send(ChatStickerPacket.AddSticker(item.Id, item.Function.ChatEmoticonAdd.Id, expiration));
@@ -297,7 +308,7 @@ public class RequestItemUseHandler : GamePacketHandler
 
         if (targetUser == session.Player.Name)
         {
-            //TODO: Find the error packet
+            session.Send(NoticePacket.Notice(SystemNotice.CoupleEffectErrorOpenboxMyselfChar, NoticeType.Popup));
             return;
         }
 
@@ -311,6 +322,12 @@ public class RequestItemUseHandler : GamePacketHandler
         if (otherPlayer == null)
         {
             otherPlayer = DatabaseManager.Characters.FindPartialPlayerByName(targetUser);
+        }
+
+        if (otherPlayer.AccountId == session.Player.AccountId)
+        {
+            session.Send(NoticePacket.Notice(SystemNotice.CoupleEffectErrorOpenboxMyselfAccount, NoticeType.Popup));
+            return;
         }
 
         Item badge = new(item.Function.OpenCoupleEffectBox.Id)
@@ -348,7 +365,7 @@ public class RequestItemUseHandler : GamePacketHandler
             otherPlayer.Name
         };
 
-        session.Send(NoticePacket.Notice(SystemNotice.YouMailedBuddyBadgeToOtherPlayer, NoticeType.ChatAndFastText, noticeParameters));
+        session.Send(NoticePacket.Notice(SystemNotice.YouMailedBuddyBadgeToOtherPlayer, NoticeType.Chat | NoticeType.FastText, noticeParameters));
     }
 
     public static void HandlePetExtraction(GameSession session, PacketReader packet, Item item)
