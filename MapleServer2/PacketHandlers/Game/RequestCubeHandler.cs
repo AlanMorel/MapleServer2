@@ -961,48 +961,37 @@ public class RequestCubeHandler : GamePacketHandler
         Dictionary<ItemHousingCategory, int> goals = new()
         {
             {
-                ItemHousingCategory.Bed,
-                1
+                ItemHousingCategory.Bed, 1
             },
             {
-                ItemHousingCategory.Table,
-                1
+                ItemHousingCategory.Table, 1
             },
             {
-                ItemHousingCategory.SofasChairs,
-                2
+                ItemHousingCategory.SofasChairs, 2
             },
             {
-                ItemHousingCategory.Storage,
-                1
+                ItemHousingCategory.Storage, 1
             },
             {
-                ItemHousingCategory.WallDecoration,
-                1
+                ItemHousingCategory.WallDecoration, 1
             },
             {
-                ItemHousingCategory.WallTiles,
-                3
+                ItemHousingCategory.WallTiles, 3
             },
             {
-                ItemHousingCategory.Bathroom,
-                1
+                ItemHousingCategory.Bathroom, 1
             },
             {
-                ItemHousingCategory.Lighting,
-                1
+                ItemHousingCategory.Lighting, 1
             },
             {
-                ItemHousingCategory.Electronics,
-                1
+                ItemHousingCategory.Electronics, 1
             },
             {
-                ItemHousingCategory.Fences,
-                2
+                ItemHousingCategory.Fences, 2
             },
             {
-                ItemHousingCategory.NaturalTerrain,
-                4
+                ItemHousingCategory.NaturalTerrain, 4
             }
         };
 
@@ -1244,7 +1233,10 @@ public class RequestCubeHandler : GamePacketHandler
 
         session.Send(ResponseCubePacket.AddBuildingPermission(target.AccountId));
         session.Send(ChatPacket.Error(session.Player, SystemNotice.UgcMapPackageAutomaticCreationCompleted, ChatType.NoticeAlert));
-        session.Send(NoticePacket.Notice(SystemNotice.UgcMapGiveDelegatorUser, NoticeType.Chat | NoticeType.FastText, new(){target.Name}));
+        session.Send(NoticePacket.Notice(SystemNotice.UgcMapGiveDelegatorUser, NoticeType.Chat | NoticeType.FastText, new()
+        {
+            target.Name
+        }));
 
         target.Session.Send(ResponseCubePacket.UpdateBuildingPermissions(target.AccountId, player.AccountId));
         target.Session.Send(ChatPacket.Error(session.Player, SystemNotice.UgcMapAddDelegatorUser, ChatType.NoticeAlert));
