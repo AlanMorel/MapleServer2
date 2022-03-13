@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using System.Globalization;
+using System.Web;
 using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
@@ -34,6 +35,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
             Function function = data.function;
             Install install = data.install;
             MusicScore musicScore = data.MusicScore;
+            Life life = data.life;
 
             ItemMetadata metadata = new()
             {
@@ -76,8 +78,18 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                 RecommendJobs = limit.recommendJobs.ToList(),
                 Gender = (Gender) limit.genderLimit,
                 IsCubeSolid = install.cubeProp != 0,
-                ObjectId = install.objCode
+                ObjectId = install.objCode,
+                DurationPeriod = life.usePeriod,
+                ExpirationType = (ItemExpirationType) life.expirationType,
+                ExpirationTypeDuration = life.numberOfWeeksMonths
             };
+
+            // Parse expiration time
+            if (life.expirationPeriod.Length > 0)
+            {
+                metadata.ExpirationTime = new(life.expirationPeriod[0], life.expirationPeriod[1], life.expirationPeriod[2], life.expirationPeriod[3],
+                    life.expirationPeriod[4], life.expirationPeriod[5]);
+            }
 
             // if globalTransferType is present, override with these values
             if (limit.globalTransferType is not null)

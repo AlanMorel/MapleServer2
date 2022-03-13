@@ -29,6 +29,10 @@ public class RequestItemUseHandler : GamePacketHandler
         }
 
         Item item = session.Player.Inventory.GetByUid(itemUid);
+        if (item.IsExpired())
+        {
+            return;
+        }
 
         switch (item.Function.Name)
         {
@@ -113,15 +117,11 @@ public class RequestItemUseHandler : GamePacketHandler
 
     private static void HandleChatEmoticonAdd(GameSession session, Item item)
     {
-        long expiration = item.Function.ChatEmoticonAdd.Duration;
+        long expiration = long.MaxValue;
 
-        if (item.Function.ChatEmoticonAdd.Duration == 0) // if no duration was set, set it to not expire
+        if (item.Function.ChatEmoticonAdd.Duration > 0)
         {
-            expiration = long.MaxValue;
-        }
-        else
-        {
-            expiration *= 86400 + TimeInfo.Now(); // convert days to seconds
+            expiration = item.Function.ChatEmoticonAdd.Duration + TimeInfo.Now();
         }
 
         // sticker exists and no expiration
@@ -129,13 +129,12 @@ public class RequestItemUseHandler : GamePacketHandler
         {
             return;
         }
-        
+
         // Add time if the sticker is already in the list
         ChatSticker sticker = session.Player.ChatSticker.FirstOrDefault(p => p.GroupId == item.Function.ChatEmoticonAdd.Id);
-        if (sticker is not null)
+        if (sticker is not null && sticker.Expiration != long.MaxValue)
         {
-            long currentRemainingTime = sticker.Expiration;
-            expiration += currentRemainingTime;
+            expiration += sticker.Expiration - TimeInfo.Now();
         }
 
         session.Send(ChatStickerPacket.AddSticker(item.Id, item.Function.ChatEmoticonAdd.Id, expiration));
@@ -312,13 +311,13 @@ public class RequestItemUseHandler : GamePacketHandler
             session.Send(NoticePacket.Notice(SystemNotice.CoupleEffectErrorOpenboxMyselfChar, NoticeType.Popup));
             return;
         }
-        
+
         if (!DatabaseManager.Characters.NameExists(targetUser))
         {
             session.Send(NoticePacket.Notice(SystemNotice.SpecifiedCharacterCouldNotBeFound, NoticeType.Popup));
             return;
         }
-        
+
         Player otherPlayer = GameServer.PlayerManager.GetPlayerByName(targetUser);
         if (otherPlayer == null)
         {

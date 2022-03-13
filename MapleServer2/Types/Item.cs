@@ -249,6 +249,11 @@ public class Item
         return OwnerAccountId == characterId;
     }
 
+    public bool IsExpired()
+    {
+        return TimeInfo.Now() > ExpiryTime;
+    }
+
     public void DecreaseTradeCount()
     {
         if (!TransferFlag.HasFlag(ItemTransferFlag.LimitedTradeCount))

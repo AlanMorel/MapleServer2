@@ -50,11 +50,8 @@ public class ChatStickerHandler : GamePacketHandler
 
     private static void HandleOpenWindow(GameSession session)
     {
-        List<ChatSticker> stickers = session.Player.ChatSticker.Where(x => x.Expiration < TimeInfo.Now()).ToList();
-        if (stickers.Count > 0)
-        {
-            session.Send(ChatStickerPacket.ExpiredStickerNotification(stickers));
-        }
+        // TODO: if user has any expired stickers, use the packet below
+        //session.Send(ChatStickerPacket.ExpiredStickerNotification());
     }
 
     private static void HandleUseSticker(GameSession session, PacketReader packet)

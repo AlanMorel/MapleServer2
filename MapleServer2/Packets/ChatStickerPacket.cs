@@ -49,7 +49,7 @@ public static class ChatStickerPacket
         return pWriter;
     }
 
-    public static PacketWriter AddSticker(int itemId, int stickerGroupId, long expiration = long.MaxValue)
+    public static PacketWriter AddSticker(int itemId, int stickerGroupId, long expiration)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.CHAT_STICKER);
         pWriter.Write(ChatStickerMode.AddSticker);

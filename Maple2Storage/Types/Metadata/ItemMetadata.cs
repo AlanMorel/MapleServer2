@@ -97,6 +97,14 @@ public class ItemMetadata
     public string BlackMarketCategory;
     [XmlElement(Order = 45)]
     public string Category;
+    [XmlElement(Order = 46)]
+    public int DurationPeriod;
+    [XmlElement(Order = 47)]
+    public DateTime ExpirationTime;
+    [XmlElement(Order = 48)]
+    public ItemExpirationType ExpirationType;
+    [XmlElement(Order = 49)]
+    public int ExpirationTypeDuration;
 
     public override string ToString()
     {
