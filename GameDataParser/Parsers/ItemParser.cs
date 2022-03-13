@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using System.Web;
+﻿using System.Web;
 using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;

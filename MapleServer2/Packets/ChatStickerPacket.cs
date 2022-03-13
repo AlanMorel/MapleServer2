@@ -1,5 +1,4 @@
-﻿using Humanizer;
-using MaplePacketLib2.Tools;
+﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
 
@@ -42,7 +41,7 @@ public static class ChatStickerPacket
         pWriter.Write(ChatStickerMode.ExpiredStickerNotification);
         pWriter.WriteInt();
         pWriter.WriteInt(stickers.Count);
-        foreach(ChatSticker sticker in stickers)
+        foreach (ChatSticker sticker in stickers)
         {
             pWriter.WriteInt(sticker.GroupId);
         }
