@@ -52,7 +52,6 @@ public partial class FieldManager
 
             ConsumeSp(spiritCost);
             ConsumeStamina(staminaCost);
-            Value.Session.SendNotice(skillCast.SkillId.ToString());
 
             // TODO: Move this and all others combat cases like recover sp to its own class.
             // Since the cast is always sent by the skill, we have to check buffs even when not doing damage.

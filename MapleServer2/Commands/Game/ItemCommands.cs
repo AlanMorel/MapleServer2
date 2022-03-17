@@ -34,9 +34,16 @@ public class ItemCommand : InGameCommand
             return;
         }
 
+        rarity = rarity switch
+        {
+            < 1 => 1,
+            > 6 => 6,
+            _ => rarity
+        };
+
         Item item = new(itemId)
         {
-            Rarity = rarity >= 0 ? rarity : ItemMetadataStorage.GetRarity(itemId),
+            Rarity = rarity,
             TransferFlag = ItemMetadataStorage.GetTransferFlag(itemId, rarity),
             Amount = Math.Max(1, amount)
         };

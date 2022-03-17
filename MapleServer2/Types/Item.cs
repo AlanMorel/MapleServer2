@@ -251,7 +251,7 @@ public class Item
 
     public bool IsExpired()
     {
-        return TimeInfo.Now() > ExpiryTime;
+        return TimeInfo.Now() > ExpiryTime && ExpiryTime != 0;
     }
 
     public void DecreaseTradeCount()
