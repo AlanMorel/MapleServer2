@@ -34,12 +34,8 @@ public class ItemCommand : InGameCommand
             return;
         }
 
-        rarity = rarity switch
-        {
-            < 1 => 1,
-            > 6 => 6,
-            _ => rarity
-        };
+        rarity = Math.Min(rarity, 6);
+        rarity = Math.Max(rarity, 1);
 
         Item item = new(itemId)
         {
