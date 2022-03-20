@@ -19,8 +19,9 @@ public class NavMeshParser : Exporter<object>
 
     protected override object Parse()
     {
-        // Extract the contents of NavMesh.7z to the NavMesh directory
-        ExtractNavMesh();
+        // Extract the contents of NavMesh1.zip and NavMesh2.zip to the NavMesh directory
+        ExtractNavMesh("NavMesh1.zip");
+        ExtractNavMesh("NavMesh2.zip");
 
         // Parse all navmesh (.tok) files
         IEnumerable<PackFileEntry> packFileEntries = Resources.NavmeshReader.Files.Where(entry => entry.Name.EndsWith(".tok"));
@@ -84,11 +85,11 @@ public class NavMeshParser : Exporter<object>
         return null;
     }
 
-    private static void ExtractNavMesh()
+    private static void ExtractNavMesh(string fileName)
     {
         Directory.CreateDirectory(Paths.NAVMESH_DIR);
 
-        using FileStream fsInput = File.OpenRead(Paths.SOLUTION_DIR + "/GameDataParser/NavMesh.zip");
+        using FileStream fsInput = File.OpenRead(Paths.SOLUTION_DIR + $"/GameDataParser/{fileName}");
         using ZipFile zf = new(fsInput);
         foreach (ZipEntry zipEntry in zf)
         {
