@@ -2,15 +2,20 @@
 using Maple2Storage.Tools;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
+using MapleServer2.Enums;
+using MapleServer2.Tools;
+using MoonSharp.Interpreter;
 
 namespace MapleServer2.Types;
 
 public abstract class ItemStat
 {
     public dynamic ItemAttribute;
+    public ItemStatType Type;
     public dynamic Flat;
     public float Percent;
 }
+
 public class NormalStat : ItemStat
 {
     public new StatId ItemAttribute;
@@ -18,20 +23,23 @@ public class NormalStat : ItemStat
 
     public NormalStat() { }
 
-    public NormalStat(StatId attribute, int flat, float percent)
+    public NormalStat(StatId attribute, ItemStatType type, int flat, float percent)
     {
         ItemAttribute = attribute;
         Flat = flat;
         Percent = percent;
+        Type = type;
     }
 
-    public NormalStat(ParserStat stat)
+    public NormalStat(ParserStat stat, ItemStatType type)
     {
         ItemAttribute = stat.Id;
         Flat = stat.Flat;
         Percent = stat.Percent;
+        Type = type;
     }
 }
+
 public class SpecialStat : ItemStat
 {
     public new SpecialStatId ItemAttribute;
@@ -39,20 +47,23 @@ public class SpecialStat : ItemStat
 
     public SpecialStat() { }
 
-    public SpecialStat(SpecialStatId attribute, float flat, float percent)
+    public SpecialStat(SpecialStatId attribute, ItemStatType type, float flat, float percent)
     {
         ItemAttribute = attribute;
         Flat = flat;
         Percent = percent;
+        Type = type;
     }
 
-    public SpecialStat(ParserSpecialStat stat)
+    public SpecialStat(ParserSpecialStat stat, ItemStatType type)
     {
         ItemAttribute = stat.Id;
         Flat = stat.Flat;
         Percent = stat.Percent;
+        Type = type;
     }
 }
+
 public class Gemstone
 {
     public int Id;
@@ -61,11 +72,13 @@ public class Gemstone
     public bool IsLocked;
     public long UnlockTime;
 }
+
 public class GemSocket
 {
     public bool IsUnlocked;
     public Gemstone Gemstone;
 }
+
 public class ItemStats
 {
     public List<ItemStat> BasicStats;
@@ -76,12 +89,12 @@ public class ItemStats
 
     public ItemStats(Item item)
     {
-        CreateNewStats(item.Id, item.Rarity, item.ItemSlot, item.Level);
+        CreateNewStats(item, item.Rarity, item.ItemSlot, item.Level);
     }
 
-    public ItemStats(int itemId, int rarity, ItemSlot itemSlot, int itemLevel)
+    public ItemStats(Item item, int rarity, ItemSlot itemSlot, int itemLevel)
     {
-        CreateNewStats(itemId, rarity, itemSlot, itemLevel);
+        CreateNewStats(item, rarity, itemSlot, itemLevel);
     }
 
     public ItemStats(ItemStats other)
@@ -91,7 +104,7 @@ public class ItemStats
         GemSockets = new();
     }
 
-    public void CreateNewStats(int itemId, int rarity, ItemSlot itemSlot, int itemLevel)
+    private void CreateNewStats(Item item, int rarity, ItemSlot itemSlot, int itemLevel)
     {
         BasicStats = new();
         BonusStats = new();
@@ -101,60 +114,153 @@ public class ItemStats
             return;
         }
 
-        GetConstantStats(itemId, rarity, out List<NormalStat> normalStats, out List<SpecialStat> specialStats);
-        GetStaticStats(itemId, rarity, normalStats, specialStats);
-        GetBonusStats(itemId, rarity);
+        int optionId = ItemMetadataStorage.GetOptionId(item.Id);
+        float optionLevelFactor = ItemMetadataStorage.GetOptionLevelFactor(item.Id);
+        float globalOptionLevelFactor = ItemMetadataStorage.GetGlobalOptionLevelFactor(item.Id);
+
+        GetConstantStats(item, optionId, optionLevelFactor, globalOptionLevelFactor, out List<NormalStat> normalStats, out List<SpecialStat> specialStats);
+        BasicStats.AddRange(normalStats);
+        BonusStats.AddRange(specialStats);
+        GetStaticStats(item, optionId, optionLevelFactor, globalOptionLevelFactor, out List<NormalStat> staticNormalStats, out List<SpecialStat> staticSpecialStats);
+        BasicStats.AddRange(staticNormalStats);
+        BonusStats.AddRange(staticSpecialStats);
+        GetBonusStats(item.Id, rarity);
         if (itemLevel >= 50 && rarity >= 3)
         {
             GetGemSockets(itemSlot, rarity);
         }
     }
 
-    public static void GetConstantStats(int itemId, int rarity, out List<NormalStat> normalStats, out List<SpecialStat> specialStats)
+    private static void GetConstantStats(Item item, int optionId, float optionLevelFactor, float globalOptionLevelFactor, out List<NormalStat> normalStats, out List<SpecialStat> specialStats)
     {
         normalStats = new();
         specialStats = new();
 
-        // Get Constant Stats
-        int constantId = ItemMetadataStorage.GetOptionConstant(itemId);
-        ItemOptionsConstant basicOptions = ItemOptionConstantMetadataStorage.GetMetadata(constantId, rarity);
+        int constantId = ItemMetadataStorage.GetOptionConstant(item.Id);
+        ItemOptionsConstant basicOptions = ItemOptionConstantMetadataStorage.GetMetadata(constantId, item.Rarity);
         if (basicOptions == null)
         {
+            GetDefaultConstantStats(item, normalStats, optionId, optionLevelFactor, globalOptionLevelFactor);
             return;
         }
 
         foreach (ParserStat stat in basicOptions.Stats)
         {
-            normalStats.Add(new(stat.Id, stat.Flat, stat.Percent));
+            normalStats.Add(new(stat.Id, ItemStatType.Constant, stat.Flat, stat.Percent));
         }
 
         foreach (ParserSpecialStat stat in basicOptions.SpecialStats)
         {
-            specialStats.Add(new(stat.Id, stat.Flat, stat.Percent));
+            specialStats.Add(new(stat.Id, ItemStatType.Constant, stat.Flat, stat.Percent));
         }
 
         if (basicOptions.HiddenDefenseAdd > 0)
         {
-            AddHiddenNormalStat(normalStats, StatId.Defense, basicOptions.HiddenDefenseAdd, basicOptions.DefenseCalibrationFactor);
+            AddHiddenNormalStat(normalStats, ItemStatType.Constant, StatId.Defense, basicOptions.HiddenDefenseAdd, basicOptions.DefenseCalibrationFactor);
         }
 
         if (basicOptions.HiddenWeaponAtkAdd > 0)
         {
-            AddHiddenNormalStat(normalStats, StatId.MinWeaponAtk, basicOptions.HiddenWeaponAtkAdd, basicOptions.WeaponAtkCalibrationFactor);
-            AddHiddenNormalStat(normalStats, StatId.MaxWeaponAtk, basicOptions.HiddenWeaponAtkAdd, basicOptions.WeaponAtkCalibrationFactor);
+            AddHiddenNormalStat(normalStats, ItemStatType.Constant, StatId.MinWeaponAtk, basicOptions.HiddenWeaponAtkAdd, basicOptions.WeaponAtkCalibrationFactor);
+            AddHiddenNormalStat(normalStats, ItemStatType.Constant, StatId.MaxWeaponAtk, basicOptions.HiddenWeaponAtkAdd, basicOptions.WeaponAtkCalibrationFactor);
+        }
+
+        GetDefaultConstantStats(item, normalStats, optionId, optionLevelFactor, globalOptionLevelFactor);
+    }
+
+    private static void GetDefaultConstantStats(Item item, List<NormalStat> normalStats, int optionId, float optionLevelFactor, float globalOptionLevelFactor)
+    {
+        ItemOptionPick baseOptions = ItemOptionPickMetadataStorage.GetMetadata(optionId, item.Rarity);
+        if (baseOptions is null)
+        {
+            return;
+        }
+
+        ScriptLoader scriptLoader = new("Functions/calcItemValues");
+
+        foreach (ConstantPick constantPick in baseOptions.Constants)
+        {
+            string calcScript = "";
+            switch (constantPick.Stat)
+            {
+                case StatId.Hp:
+                    calcScript = "constant_value_hp";
+                    break;
+                case StatId.Defense:
+                    calcScript = "constant_value_ndd";
+                    break;
+                case StatId.MagicRes:
+                    calcScript = "constant_value_mar";
+                    break;
+                case StatId.PhysicalRes:
+                    calcScript = "constant_value_par";
+                    break;
+                case StatId.CritRate:
+                    calcScript = "constant_value_cap";
+                    break;
+                case StatId.Str:
+                    calcScript = "constant_value_str";
+                    break;
+                case StatId.Dex:
+                    calcScript = "constant_value_dex";
+                    break;
+                case StatId.Int:
+                    calcScript = "constant_value_int";
+                    break;
+                case StatId.Luk:
+                    calcScript = "constant_value_luk";
+                    break;
+                case StatId.MagicAtk:
+                    calcScript = "constant_value_map";
+                    break;
+                case StatId.MinWeaponAtk:
+                    calcScript = "constant_value_wapmin";
+                    break;
+                case StatId.MaxWeaponAtk:
+                    calcScript = "constant_value_wapmax";
+                    break;
+                default:
+                    continue;
+            }
+
+            NormalStat normalStat = normalStats.FirstOrDefault(x => x.ItemAttribute == constantPick.Stat);
+            if (normalStat is null)
+            {
+                normalStat = new(constantPick.Stat, ItemStatType.Constant, 0, 0);
+            }
+
+            DynValue result = scriptLoader.Call(calcScript, normalStat.Flat, constantPick.DeviationValue, (int) item.Type,
+                (int) item.RecommendJobs.First(), optionLevelFactor, item.Rarity, globalOptionLevelFactor, 0);
+
+            if (result.Number == 0)
+            {
+                continue;
+            }
+
+            normalStat.Flat += (int) result.Number;
+
+            int statIndex = normalStats.FindIndex(x => x.ItemAttribute == normalStat.ItemAttribute);
+            if (statIndex == -1)
+            {
+                normalStats.Add(normalStat);
+                continue;
+            }
+
+            normalStats[statIndex] = normalStat;
         }
     }
 
-    public void GetStaticStats(int itemId, int rarity, List<NormalStat> normalStats, List<SpecialStat> specialStats)
+    private static void GetStaticStats(Item item, int optionId, float optionLevelFactor, float globalOptionLevelFactor, out List<NormalStat> normalStats, out List<SpecialStat> specialStats)
     {
-        //Get Static Stats
-        int staticId = ItemMetadataStorage.GetOptionStatic(itemId);
+        normalStats = new();
+        specialStats = new();
 
-        ItemOptionsStatic staticOptions = ItemOptionStaticMetadataStorage.GetMetadata(staticId, rarity);
+        int staticId = ItemMetadataStorage.GetOptionStatic(item.Id);
+
+        ItemOptionsStatic staticOptions = ItemOptionStaticMetadataStorage.GetMetadata(staticId, item.Rarity);
         if (staticOptions == null)
         {
-            BasicStats.AddRange(normalStats);
-            BasicStats.AddRange(specialStats);
+            GetDefaultStaticStats(item, normalStats, optionId, optionLevelFactor, globalOptionLevelFactor);
             return;
         }
 
@@ -163,14 +269,14 @@ public class ItemStats
             NormalStat normalStat = normalStats.FirstOrDefault(x => x.ItemAttribute == stat.Id);
             if (normalStat == null)
             {
-                normalStats.Add(new(stat.Id, stat.Flat, stat.Percent));
+                normalStats.Add(new(stat.Id, ItemStatType.Static, stat.Flat, stat.Percent));
                 continue;
             }
             int index = normalStats.FindIndex(x => x.ItemAttribute == stat.Id);
             int summedFlat = normalStat.Flat + stat.Flat;
             float summedPercent = normalStat.Percent + stat.Percent;
 
-            normalStats[index] = new(stat.Id, summedFlat, summedPercent);
+            normalStats[index] = new(stat.Id, ItemStatType.Static, summedFlat, summedPercent);
         }
 
         foreach (ParserSpecialStat stat in staticOptions.SpecialStats)
@@ -178,7 +284,7 @@ public class ItemStats
             SpecialStat normalStat = specialStats.FirstOrDefault(x => x.ItemAttribute == stat.Id);
             if (normalStat == null)
             {
-                specialStats.Add(new(stat.Id, stat.Flat, stat.Percent));
+                specialStats.Add(new(stat.Id, ItemStatType.Static, stat.Flat, stat.Percent));
                 continue;
             }
 
@@ -186,25 +292,104 @@ public class ItemStats
             float summedFlat = normalStat.Flat + stat.Flat;
             float summedPercent = normalStat.Percent + stat.Percent;
 
-            specialStats[index] = new(stat.Id, summedFlat, summedPercent);
+            specialStats[index] = new(stat.Id, ItemStatType.Static, summedFlat, summedPercent);
         }
 
         if (staticOptions.HiddenDefenseAdd > 0)
         {
-            AddHiddenNormalStat(normalStats, StatId.Defense, staticOptions.HiddenDefenseAdd, staticOptions.DefenseCalibrationFactor);
+            AddHiddenNormalStat(normalStats, ItemStatType.Static, StatId.Defense, staticOptions.HiddenDefenseAdd, staticOptions.DefenseCalibrationFactor);
         }
 
         if (staticOptions.HiddenWeaponAtkAdd > 0)
         {
-            AddHiddenNormalStat(normalStats, StatId.MinWeaponAtk, staticOptions.HiddenWeaponAtkAdd, staticOptions.WeaponAtkCalibrationFactor);
-            AddHiddenNormalStat(normalStats, StatId.MaxWeaponAtk, staticOptions.HiddenWeaponAtkAdd, staticOptions.WeaponAtkCalibrationFactor);
+            AddHiddenNormalStat(normalStats, ItemStatType.Static, StatId.MinWeaponAtk, staticOptions.HiddenWeaponAtkAdd, staticOptions.WeaponAtkCalibrationFactor);
+            AddHiddenNormalStat(normalStats, ItemStatType.Static, StatId.MaxWeaponAtk, staticOptions.HiddenWeaponAtkAdd, staticOptions.WeaponAtkCalibrationFactor);
         }
 
-        BasicStats.AddRange(normalStats);
-        BasicStats.AddRange(specialStats);
+        GetDefaultStaticStats(item, normalStats, optionId, optionLevelFactor, globalOptionLevelFactor);
     }
 
-    private static void AddHiddenNormalStat(List<NormalStat> normalStats, StatId attribute, int value, float calibrationFactor)
+    private static void GetDefaultStaticStats(Item item, List<NormalStat> normalStats, int optionId, float optionLevelFactor, float globalOptionLevelFactor)
+    {
+        ItemOptionPick baseOptions = ItemOptionPickMetadataStorage.GetMetadata(optionId, item.Rarity);
+        if (baseOptions is null)
+        {
+            return;
+        }
+
+        Random random = RandomProvider.Get();
+        ScriptLoader scriptLoader = new("Functions/calcItemValues");
+        foreach (StaticPick staticPick in baseOptions.Statics)
+        {
+            string calcScript = "";
+            switch (staticPick.Stat)
+            {
+                case StatId.Hp:
+                    calcScript = "static_value_hp";
+                    break;
+                case StatId.Defense:
+                    calcScript = "static_value_ndd";
+                    break;
+                case StatId.MagicRes:
+                    calcScript = "static_value_mar";
+                    break;
+                case StatId.PhysicalRes:
+                    calcScript = "static_value_par";
+                    break;
+                case StatId.PhysicalAtk:
+                    calcScript = "static_value_pap";
+                    break;
+                case StatId.MagicAtk:
+                    calcScript = "static_value_map";
+                    break;
+                case StatId.PerfectGuard:
+                    calcScript = "static_rate_abp";
+                    break;
+                case StatId.MaxWeaponAtk:
+                    calcScript = "static_value_wapmax";
+                    break;
+                default:
+                    continue;
+            }
+
+            NormalStat normalStat = normalStats.FirstOrDefault(x => x.ItemAttribute == staticPick.Stat);
+            if (normalStat is null)
+            {
+                normalStat = new(staticPick.Stat, ItemStatType.Static, 0, 0);
+            }
+
+            DynValue result = scriptLoader.Call(calcScript, normalStat.Flat, staticPick.DeviationValue, (int) item.Type,
+                (int) item.RecommendJobs.First(), optionLevelFactor, item.Rarity, globalOptionLevelFactor, 0);
+
+            if (result.Tuple.Length == 0)
+            {
+                continue;
+            }
+
+            // Get random between min and max values
+            double statValue = random.NextDouble() * (result.Tuple[1].Number - result.Tuple[0].Number) + result.Tuple[0].Number;
+
+            if (normalStat.ItemAttribute == StatId.PerfectGuard)
+            {
+                normalStat.Percent += (float) statValue;
+            }
+            else
+            {
+                normalStat.Flat += (int) statValue;
+            }
+
+            int statIndex = normalStats.FindIndex(x => x.ItemAttribute == normalStat.ItemAttribute);
+            if (statIndex == -1)
+            {
+                normalStats.Add(normalStat);
+                continue;
+            }
+
+            normalStats[statIndex] = normalStat;
+        }
+    }
+
+    private static void AddHiddenNormalStat(List<NormalStat> normalStats, ItemStatType type, StatId attribute, int value, float calibrationFactor)
     {
         NormalStat normalStat = normalStats.FirstOrDefault(x => x.ItemAttribute == attribute);
         if (normalStat == null)
@@ -217,7 +402,7 @@ public class ItemStats
         int biggerValue = Math.Max(value, calibratedValue);
         int smallerValue = Math.Min(value, calibratedValue);
         int summedFlat = normalStat.Flat + RandomProvider.Get().Next(smallerValue, biggerValue);
-        normalStats[index] = new(normalStat.ItemAttribute, summedFlat, normalStat.Percent);
+        normalStats[index] = new(normalStat.ItemAttribute, type, summedFlat, normalStat.Percent);
     }
 
     public void GetBonusStats(int itemId, int rarity)
@@ -251,7 +436,7 @@ public class ItemStats
                 continue;
             }
 
-            NormalStat normalStat = new(rangeDictionary[stat.Id][Roll(itemId)]);
+            NormalStat normalStat = new(rangeDictionary[stat.Id][Roll(itemId)], ItemStatType.Random);
             if (randomOptions.MultiplyFactor > 0)
             {
                 normalStat.Flat *= (int) Math.Ceiling(randomOptions.MultiplyFactor);
@@ -268,7 +453,7 @@ public class ItemStats
                 continue;
             }
 
-            SpecialStat specialStat = new(rangeDictionary[stat.Id][Roll(itemId)]);
+            SpecialStat specialStat = new(rangeDictionary[stat.Id][Roll(itemId)], ItemStatType.Random);
             if (randomOptions.MultiplyFactor > 0)
             {
                 specialStat.Flat *= (int) Math.Ceiling(randomOptions.MultiplyFactor);
@@ -305,7 +490,7 @@ public class ItemStats
                 continue;
             }
 
-            NormalStat normalStat = new(dictionary[attribute.Id][Roll(id)]);
+            NormalStat normalStat = new(dictionary[attribute.Id][Roll(id)], ItemStatType.Random);
             if (randomOptions.MultiplyFactor > 0)
             {
                 normalStat.Flat *= (int) Math.Ceiling(randomOptions.MultiplyFactor);
@@ -322,7 +507,7 @@ public class ItemStats
                 continue;
             }
 
-            SpecialStat specialStat = new(dictionary[attribute.Id][Roll(id)]);
+            SpecialStat specialStat = new(dictionary[attribute.Id][Roll(id)], ItemStatType.Random);
             if (randomOptions.MultiplyFactor > 0)
             {
                 specialStat.Flat *= (int) Math.Ceiling(randomOptions.MultiplyFactor);
@@ -352,7 +537,7 @@ public class ItemStats
             {
                 continue;
             }
-            newBonus.Add(new NormalStat(dictionary[stat.ItemAttribute][Roll(item.Level)]));
+            newBonus.Add(new NormalStat(dictionary[stat.ItemAttribute][Roll(item.Level)], ItemStatType.Random));
         }
 
         foreach (SpecialStat stat in item.Stats.BonusStats.OfType<SpecialStat>())
@@ -368,7 +553,7 @@ public class ItemStats
             {
                 continue;
             }
-            newBonus.Add(new SpecialStat(dictionary[stat.ItemAttribute][Roll(item.Level)]));
+            newBonus.Add(new SpecialStat(dictionary[stat.ItemAttribute][Roll(item.Level)], ItemStatType.Random));
         }
 
         return newBonus;

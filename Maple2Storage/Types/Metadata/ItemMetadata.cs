@@ -88,22 +88,26 @@ public class ItemMetadata
     [XmlElement(Order = 40)]
     public float OptionLevelFactor;
     [XmlElement(Order = 41)]
-    public bool IsCubeSolid;
+    public float GlobalOptionLevelFactor;
     [XmlElement(Order = 42)]
-    public ItemHousingCategory HousingCategory;
+    public int OptionId;
     [XmlElement(Order = 43)]
-    public int ObjectId;
+    public bool IsCubeSolid;
     [XmlElement(Order = 44)]
-    public string BlackMarketCategory;
+    public ItemHousingCategory HousingCategory;
     [XmlElement(Order = 45)]
-    public string Category;
+    public int ObjectId;
     [XmlElement(Order = 46)]
-    public int DurationPeriod;
+    public string BlackMarketCategory;
     [XmlElement(Order = 47)]
-    public DateTime ExpirationTime;
+    public string Category;
     [XmlElement(Order = 48)]
-    public ItemExpirationType ExpirationType;
+    public int DurationPeriod;
     [XmlElement(Order = 49)]
+    public DateTime ExpirationTime;
+    [XmlElement(Order = 50)]
+    public ItemExpirationType ExpirationType;
+    [XmlElement(Order = 51)]
     public int ExpirationTypeDuration;
 
     public override string ToString()

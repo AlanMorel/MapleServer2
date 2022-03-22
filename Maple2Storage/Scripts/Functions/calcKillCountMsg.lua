@@ -1,0 +1,3 @@
+function calcKillCountMsg(killCount)
+
+end

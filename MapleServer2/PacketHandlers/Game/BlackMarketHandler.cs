@@ -272,7 +272,7 @@ public class BlackMarketHandler : GamePacketHandler
         {
             float percent = (float) (value + 5) / 10000;
             StatId attribute = (StatId) (statId - 1000);
-            return new NormalStat(attribute, 0, percent);
+            return new NormalStat(attribute, ItemStatType.Static, 0, percent);
         }
 
         // Special Stat with percent value
@@ -280,10 +280,10 @@ public class BlackMarketHandler : GamePacketHandler
         {
             float percent = (float) (value + 5) / 10000;
             SpecialStatId attribute = (SpecialStatId) (statId - 11000);
-            return new SpecialStat(attribute, 0, percent);
+            return new SpecialStat(attribute, ItemStatType.None, 0, percent);
         }
 
         // Normal Stat with flat value
-        return new NormalStat((StatId) statId, value, 0);
+        return new NormalStat((StatId) statId, ItemStatType.None, value, 0);
     }
 }

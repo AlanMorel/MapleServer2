@@ -59,6 +59,8 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                 OptionRandom = data.option.random,
                 OptionConstant = data.option.constant,
                 OptionLevelFactor = data.option.optionLevelFactor,
+                GlobalOptionLevelFactor = data.option.globalOptionLevelFactor ?? 0f,
+                OptionId = data.option.optionID,
                 FunctionData =
                 {
                     Name = function.name

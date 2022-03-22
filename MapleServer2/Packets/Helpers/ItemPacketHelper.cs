@@ -1,5 +1,6 @@
 ﻿using Maple2Storage.Enums;
 using MaplePacketLib2.Tools;
+using MapleServer2.Enums;
 using MapleServer2.Types;
 
 namespace MapleServer2.Packets.Helpers;
@@ -131,18 +132,18 @@ public static class ItemPacketHelper
     private static PacketWriter WriteStats(this PacketWriter pWriter, ItemStats stats)
     {
         pWriter.WriteByte(); // Not part of appearance sub!
-        List<NormalStat> basicNormalStats = stats.BasicStats.OfType<NormalStat>().ToList();
-        pWriter.WriteShort((short) basicNormalStats.Count);
-        foreach (NormalStat stat in basicNormalStats)
+        List<NormalStat> basicConstantNormalStats = stats.BasicStats.Where(x => x.Type == ItemStatType.Constant).OfType<NormalStat>().ToList();
+        pWriter.WriteShort((short) basicConstantNormalStats.Count);
+        foreach (NormalStat stat in basicConstantNormalStats)
         {
             pWriter.WriteShort((short) stat.ItemAttribute);
             pWriter.WriteInt(stat.Flat);
             pWriter.WriteFloat(stat.Percent);
         }
 
-        List<SpecialStat> basicSpecialStats = stats.BasicStats.OfType<SpecialStat>().ToList();
-        pWriter.WriteShort((short) basicSpecialStats.Count);
-        foreach (SpecialStat stat in basicSpecialStats)
+        List<SpecialStat> basicConstantSpecialStats = stats.BasicStats.Where(x => x.Type == ItemStatType.Constant).OfType<SpecialStat>().ToList();
+        pWriter.WriteShort((short) basicConstantSpecialStats.Count);
+        foreach (SpecialStat stat in basicConstantSpecialStats)
         {
             pWriter.WriteShort((short) stat.ItemAttribute);
             pWriter.WriteFloat(stat.Percent);
@@ -150,12 +151,27 @@ public static class ItemPacketHelper
         }
         pWriter.WriteInt();
 
-        // Another basic stats block
-        pWriter.WriteShort();
-        pWriter.WriteShort();
+        List<NormalStat> staticNormalStats = stats.BasicStats.Where(x => x.Type == ItemStatType.Static).OfType<NormalStat>().ToList();
+        pWriter.WriteShort((short)staticNormalStats.Count);
+        foreach (NormalStat stat in staticNormalStats)
+        {
+            pWriter.WriteShort((short) stat.ItemAttribute);
+            pWriter.WriteInt(stat.Flat);
+            pWriter.WriteFloat(stat.Percent);
+        }
+        
+        List<SpecialStat> staticSpecialStats = stats.BasicStats.Where(x => x.Type == ItemStatType.Static).OfType<SpecialStat>().ToList();
+        pWriter.WriteShort((short) staticSpecialStats.Count);
+        foreach (SpecialStat stat in staticSpecialStats)
+        {
+            pWriter.WriteShort((short) stat.ItemAttribute);
+            pWriter.WriteFloat(stat.Percent);
+            pWriter.WriteFloat(stat.Flat);
+        }
+        
         pWriter.WriteInt();
 
-        List<NormalStat> bonusNormalStats = stats.BonusStats.OfType<NormalStat>().ToList();
+        List<NormalStat> bonusNormalStats = stats.BonusStats.Where(x => x.Type == ItemStatType.Random).OfType<NormalStat>().ToList();
         pWriter.WriteShort((short) bonusNormalStats.Count);
         foreach (NormalStat stat in bonusNormalStats)
         {
@@ -163,7 +179,8 @@ public static class ItemPacketHelper
             pWriter.WriteInt(stat.Flat);
             pWriter.WriteFloat(stat.Percent);
         }
-        List<SpecialStat> bonusSpecialStats = stats.BonusStats.OfType<SpecialStat>().ToList();
+        
+        List<SpecialStat> bonusSpecialStats = stats.BonusStats.Where(x => x.Type == ItemStatType.Random).OfType<SpecialStat>().ToList();
         pWriter.WriteShort((short) bonusSpecialStats.Count);
         foreach (SpecialStat stat in bonusSpecialStats)
         {
