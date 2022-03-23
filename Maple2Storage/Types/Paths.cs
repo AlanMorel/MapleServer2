@@ -5,6 +5,7 @@ public static class Paths
     public static readonly string SOLUTION_DIR = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
 
     public static readonly string RESOURCES_DIR = $"{SOLUTION_DIR}/Maple2Storage/Resources";
+    public static readonly string NAVMESH_DIR = $"{RESOURCES_DIR}/NavMesh";
     public static readonly string JSON_DIR = $"{SOLUTION_DIR}/Maple2Storage/Json";
     public static readonly string SCRIPTS_DIR = $"{SOLUTION_DIR}/Maple2Storage/Scripts";
 

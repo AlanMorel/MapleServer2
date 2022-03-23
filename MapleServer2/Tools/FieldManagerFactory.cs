@@ -60,6 +60,8 @@ public class FieldManagerFactory
                 return false;
             }
 
+            fieldManager.Dispose();
+
             return managerList.Remove(fieldManager);
         }
     }

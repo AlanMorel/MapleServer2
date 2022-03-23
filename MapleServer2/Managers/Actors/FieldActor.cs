@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Enums;
+﻿using Maple2.PathEngine;
+using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -8,7 +9,7 @@ namespace MapleServer2.Managers;
 
 public partial class FieldManager
 {
-    private abstract partial class FieldActor<T> : FieldObject<T>, IFieldActor<T>
+    private abstract partial class FieldActor<T> : FieldObject<T>, IFieldActor<T>, IDisposable
     {
         public CoordF Velocity { get; set; }
         public short Animation { get; set; }
@@ -19,6 +20,8 @@ public partial class FieldManager
         public List<Status> Statuses { get; set; }
         public SkillCast SkillCast { get; set; }
         public bool OnCooldown { get; set; }
+        public FieldNavigator Navigator { get; set; }
+        public Agent Agent { get; set; }
 
         public FieldActor(int objectId, T value) : base(objectId, value) { }
 
@@ -168,6 +171,11 @@ public partial class FieldManager
 
         public virtual void Animate(string sequenceName)
         {
+        }
+
+        public void Dispose()
+        {
+            Agent?.Dispose();
         }
     }
 }

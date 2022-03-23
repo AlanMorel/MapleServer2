@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Reflection;
 using GameDataParser.Files;
+using GameDataParser.Parsers;
 using Maple2Storage.Extensions;
 using Maple2Storage.Tools;
 using Maple2Storage.Types;
@@ -17,11 +18,14 @@ internal static class Program
         // Create Resources folders if they don't exist
         Directory.CreateDirectory(Paths.RESOURCES_INPUT_DIR);
         Directory.CreateDirectory(Paths.RESOURCES_DIR);
+        Directory.CreateDirectory(Paths.NAVMESH_DIR);
+
         Stopwatch runtime = Stopwatch.StartNew();
 
-        object resources = Activator.CreateInstance(typeof(MetadataResources));
+        MetadataResources resources = new();
         List<Task> tasks = new();
-        List<Type> parserClassList = Assembly.GetExecutingAssembly().GetTypes().Where(t => !t.IsAbstract && !t.IsNested && t.IsClass && t.Namespace == "GameDataParser.Parsers").ToList();
+        List<Type> parserClassList = Assembly.GetExecutingAssembly().GetTypes()
+            .Where(t => !t.IsAbstract && !t.IsNested && t.IsClass && t.Namespace == "GameDataParser.Parsers").ToList();
 
         int count = 1;
         foreach (Type parserClass in parserClassList)
@@ -42,12 +46,13 @@ internal static class Program
                 exporter = (MetadataExporter) Activator.CreateInstance(parserClass);
             }
 
-            tasks.Add(Task.Run(() => exporter.Export()).ContinueWith(t =>
+            tasks.Add(Task.Run(() => exporter!.Export()).ContinueWith(t =>
             {
                 if (t.IsFaulted)
                 {
                     throw new($"Error: {t.Exception}");
                 }
+
                 ConsoleUtility.WriteProgressBar((float) count++ / parserClassList.Count * 100f);
             }));
         }

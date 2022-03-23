@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Enums;
+﻿using Maple2.PathEngine.Types;
+using Maple2Storage.Enums;
 using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -38,7 +39,7 @@ public partial class FieldManager
 
         public void Attack()
         {
-            int roll = RandomProvider.Get().Next(100);
+            int roll = Rand.Next(100);
             for (int i = 0; i < Value.NpcMetadataSkill.SkillIds.Length; i++)
             {
                 if (roll < Value.NpcMetadataSkill.SkillProbs[i])
@@ -64,14 +65,14 @@ public partial class FieldManager
 
         public void Act()
         {
-            if (AI == null)
+            if (AI is null)
             {
                 return;
             }
 
             (string actionName, NpcAction actionType) = AI.GetAction(this);
 
-            if (actionName != null)
+            if (actionName is not null)
             {
                 Animation = AnimationStorage.GetSequenceIdBySequenceName(Value.Model, actionName);
             }
@@ -106,29 +107,51 @@ public partial class FieldManager
             }
         }
 
-        public void Move(MobMovement moveType)
+        private void Move(MobMovement moveType)
         {
-            Random rand = RandomProvider.Get();
-
             switch (moveType)
             {
                 case MobMovement.Patrol:
-                    // Fallback Dummy Movement
-                    int moveDistance = rand.Next(0, Value.MoveRange);
-                    short moveDir = (short) rand.Next(-1800, 1800);
-
-                    Velocity = CoordF.From(moveDistance, moveDir);
-                    // Keep near spawn
-                    if ((SpawnDistance - Velocity).Length() >= Block.BLOCK_SIZE * 2)
                     {
-                        moveDir = (short) SpawnDistance.XYAngle();
-                        Velocity = CoordF.From(Block.BLOCK_SIZE, moveDir);
-                    }
+                        int moveDistance = Rand.Next(1, Value.MoveRange);
 
-                    LookDirection = moveDir; // looking direction of the monster
+                        CoordF originSpawnCoord = OriginSpawn?.Coord ?? Coord;
+                        IEnumerable<CoordS> path = Navigator.GenerateRandomPathAroundCoord(Agent, originSpawnCoord.ToShort(), moveDistance);
+                        if (path is null)
+                        {
+                            return;
+                        }
+
+                        CoordS coordF = path.Last();
+                        Position newPosition = Navigator.FindPositionFromCoordS(coordF);
+                        if (Navigator.PositionIsValid(newPosition))
+                        {
+                            Agent.moveTo(newPosition);
+                        }
+
+                        MoveTo(coordF.ToFloat());
+                        LookDirection = (short) Velocity.XYAngle(); // looking direction of the monster
+                    }
                     break;
                 case MobMovement.Follow: // move towards target
-                    Velocity = CoordF.From(0, 0, 0);
+                    // {
+                    //     IEnumerable<CoordS> path = Navigator.FindPath(Agent, Target.Coord.ToShort());
+                    //     if (path is null)
+                    //     {
+                    //         Console.WriteLine("Path is null");
+                    //         return;
+                    //     }
+                    //
+                    //     CoordS coordF = path.Last();
+                    //     Position newPosition = Navigator.FindPositionFromCoordS(coordF);
+                    //     if (Navigator.PositionIsValid(newPosition))
+                    //     {
+                    //         Agent.moveTo(newPosition);
+                    //     }
+                    //
+                    //     MoveTo(coordF.ToFloat());
+                    //     LookDirection = (short) Velocity.XYAngle();
+                    // }
                     break;
                 case MobMovement.Strafe: // move around target
                 case MobMovement.Run: // move away from target

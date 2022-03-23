@@ -198,6 +198,16 @@ public struct CoordS
             Z = z
         };
     }
+    
+    public static CoordS From(int x, int y, int z)
+    {
+        return new()
+        {
+            X = (short) x,
+            Y = (short) y,
+            Z = (short) z
+        };
+    }
 
     public static CoordS From(short distance, double zRotation)
     {

@@ -12,12 +12,16 @@ using MapleServer2.Servers.Login;
 using MapleServer2.Tools;
 using MapleServer2.Types;
 using NLog;
+using Maple2.PathEngine;
+using Path = System.IO.Path;
 using TaskScheduler = MapleServer2.Tools.TaskScheduler;
 
 namespace MapleServer2;
 
 public static class MapleServer
 {
+    public static readonly PathEngine PathEngine = new(new ErrorHandler());
+
     private static GameServer _gameServer;
     private static LoginServer _loginServer;
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
