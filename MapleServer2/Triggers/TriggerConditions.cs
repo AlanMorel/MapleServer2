@@ -1,6 +1,5 @@
 ﻿using Maple2.Trigger.Enum;
 using Maple2Storage.Enums;
-using Maple2Storage.Tools;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
