@@ -1,6 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
@@ -118,7 +119,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                             continue;
                         }
 
-                        int[] sub = skill.Attributes["sub"].Value.Split(",").Select(int.Parse).ToArray();
+                        int[] sub = skill.Attributes["sub"].Value.SplitAndParseToInt(',').ToArray();
                         skillList.Find(x => x.SkillId == id).SubSkills = sub;
                         foreach (int subSkillId in sub)
                         {
@@ -186,10 +187,10 @@ public class SkillParser : Exporter<List<SkillMetadata>>
 
     private static SkillUpgrade ParseSkillUpgrade(XmlNode level)
     {
-        int upgradeLevel = int.Parse(level.SelectSingleNode("upgrade")?.Attributes?["level"]?.Value ?? "0");
-        int[] upgradeSkills = level.SelectSingleNode("upgrade")?.Attributes?["skillIDs"]?.Value.Split(",").Select(int.Parse).ToArray();
-        short[] upgradeSkillsLevel = level.SelectSingleNode("upgrade")?.Attributes?["skillLevels"]?.Value.Split(",").Select(short.Parse)
-            .ToArray();
+        XmlNode upgradeNode = level.SelectSingleNode("upgrade");
+        int upgradeLevel = int.Parse(upgradeNode?.Attributes?["level"]?.Value ?? "0");
+        int[] upgradeSkills = upgradeNode?.Attributes?["skillIDs"]?.Value.SplitAndParseToInt(',').ToArray();
+        short[] upgradeSkillsLevel = upgradeNode?.Attributes?["skillLevels"]?.Value.SplitAndParseToShort(',').ToArray();
 
         return new(upgradeLevel, upgradeSkills, upgradeSkillsLevel);
     }

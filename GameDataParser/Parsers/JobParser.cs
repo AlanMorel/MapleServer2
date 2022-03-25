@@ -1,5 +1,6 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types.Metadata;
 
@@ -32,8 +33,8 @@ public class JobParser : Exporter<List<JobMetadata>>
                 {
                     JobId = short.Parse(jobNode.Attributes["code"].Value),
                     StartMapId = int.Parse(jobNode.Attributes["startField"].Value),
-                    OpenTaxis = jobNode.Attributes["tutorialClearOpenTaxis"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList(),
-                    OpenMaps = jobNode.Attributes["tutorialClearOpenMaps"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList()
+                    OpenTaxis = jobNode.Attributes["tutorialClearOpenTaxis"]?.Value.SplitAndParseToInt(',').ToList(),
+                    OpenMaps = jobNode.Attributes["tutorialClearOpenMaps"]?.Value.SplitAndParseToInt(',').ToList()
                 };
 
                 foreach (XmlNode childNode in jobNode)
@@ -70,7 +71,7 @@ public class JobParser : Exporter<List<JobMetadata>>
                             short subJobCode = short.Parse(skillNode.Attributes["subJobCode"]?.Value ?? "0");
                             byte quickSlotPriority = byte.Parse(skillNode.Attributes["quickSlotPriority"]?.Value ?? "99");
 
-                            List<int> subSkillIds = skillNode.Attributes["sub"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList();
+                            List<int> subSkillIds = skillNode.Attributes["sub"]?.Value.SplitAndParseToInt(',').ToList();
 
                             metadata.Skills.Add(new(skillId, subJobCode, maxLevel, subSkillIds, quickSlotPriority));
                         }

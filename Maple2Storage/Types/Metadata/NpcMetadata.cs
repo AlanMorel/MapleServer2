@@ -56,6 +56,8 @@ public class NpcMetadata
     public short Kind; // 13 = Shop
     [XmlElement(Order = 25)]
     public int ShopId;
+    [XmlElement(Order = 26)]
+    public NpcMetadataCapsule NpcMetadataCapsule;
 
     public override string ToString()
     {
@@ -219,4 +221,24 @@ public class NpcMetadataInteract
     public ushort InteractCastingTime; // 0, 500, 800, 1000, 2000, 4000
     [XmlElement]
     public ushort InteractCooldownTime; // 0, 5400, 7000, 8000, 12000
+}
+
+[XmlType]
+public class NpcMetadataCapsule
+{
+    [XmlElement(Order = 1)]
+    public int Radius;
+
+    [XmlElement(Order = 2)]
+    public int Height;
+
+    [XmlElement(Order = 3)]
+    public bool Ignore;
+
+    public NpcMetadataCapsule(int radius, int height, bool ignore)
+    {
+        Radius = radius;
+        Height = height;
+        Ignore = ignore;
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types.Metadata;
 
@@ -32,7 +33,7 @@ public class FishParser : Exporter<List<FishMetadata>>
                     continue;
                 }
 
-                List<int> habitat = habitatString.Split(",").Select(int.Parse).ToList();
+                List<int> habitat = habitatString.SplitAndParseToInt(',').ToList();
 
                 if (fishHabitat.ContainsKey(fishId))
                 {
@@ -68,8 +69,8 @@ public class FishParser : Exporter<List<FishMetadata>>
                     CompanionId = int.Parse(fishnode.Attributes["companion"]?.Value ?? "0"),
                     Mastery = short.Parse(fishnode.Attributes["fishMastery"]?.Value ?? "0"),
                     Rarity = byte.Parse(fishnode.Attributes["rank"].Value),
-                    SmallSize = fishnode.Attributes["smallSize"].Value.Split("-").Select(short.Parse).ToArray(),
-                    BigSize = fishnode.Attributes["bigSize"].Value.Split("-").Select(short.Parse).ToArray()
+                    SmallSize = fishnode.Attributes["smallSize"].Value.SplitAndParseToShort('-').ToArray(),
+                    BigSize = fishnode.Attributes["bigSize"].Value.SplitAndParseToShort('-').ToArray()
                 };
 
                 if (fishnode.Attributes["ignoreSpotMastery"] != null)

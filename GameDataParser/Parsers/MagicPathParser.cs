@@ -1,6 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -78,7 +79,7 @@ public class MagicPathParser : Exporter<List<MagicPathMetadata>>
 
     private static CoordF ParseCoordFromString(string input)
     {
-        float[] floatArray = Array.ConvertAll(input.Split(","), float.Parse);
+        float[] floatArray = input.SplitAndParseToFloat(',').ToArray();
 
         if (floatArray.Length < 3)
         {

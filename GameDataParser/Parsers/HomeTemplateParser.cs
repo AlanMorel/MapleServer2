@@ -1,5 +1,6 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -39,7 +40,7 @@ public class HomeTemplateParser : Exporter<List<HomeTemplateMetadata>>
 
             homeTemplate.Size = byte.Parse(size[0]);
             homeTemplate.Height = byte.Parse(size[2]);
-            sbyte[] baseCoordB = item.Attributes["baseCubePoint3"].Value.Split(",").Select(sbyte.Parse).ToArray();
+            sbyte[] baseCoordB = item.Attributes["baseCubePoint3"].Value.SplitAndParseToSByte(',').ToArray();
             CoordF baseCoordF = CoordF.From(baseCoordB[0] * Block.BLOCK_SIZE, baseCoordB[1] * Block.BLOCK_SIZE, baseCoordB[2] * Block.BLOCK_SIZE);
 
             XmlNodeList cubes = document.GetElementsByTagName("cube");
@@ -47,7 +48,7 @@ public class HomeTemplateParser : Exporter<List<HomeTemplateMetadata>>
             {
                 int itemId = int.Parse(cube.Attributes["itemID"].Value);
 
-                byte[] coordsB = cube.Attributes["offsetCubePoint3"].Value.Split(",").Select(byte.Parse).ToArray();
+                byte[] coordsB = cube.Attributes["offsetCubePoint3"].Value.SplitAndParseToByte(',').ToArray();
                 CoordF cubeCoordF;
 
                 cubeCoordF = CoordF.From(coordsB[0] * Block.BLOCK_SIZE, coordsB[1] * Block.BLOCK_SIZE, coordsB[2] * Block.BLOCK_SIZE);
