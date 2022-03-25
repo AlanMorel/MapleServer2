@@ -1,5 +1,6 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
@@ -65,19 +66,15 @@ public class QuestParser : Exporter<List<QuestMetadata>>
                             metadata.Require.Level = short.Parse(node.Attributes["level"]?.Value ?? "0");
                             metadata.Require.MaxLevel = short.Parse(node.Attributes["maxLevel"]?.Value ?? "0");
 
-                            metadata.Require.Job = node.Attributes["job"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(short.Parse).ToList();
-                            metadata.Require.RequiredQuests = node.Attributes["quest"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse)
-                                .ToList();
-                            metadata.Require.SelectableQuest = node.Attributes["selectableQuest"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x))
-                                .Select(int.Parse).ToList();
-                            metadata.Require.Unrequire = node.Attributes["unrequire"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse)
-                                .ToList();
+                            metadata.Require.Job = node.Attributes["job"]?.Value.SplitAndParseToShort(',').ToList();
+                            metadata.Require.RequiredQuests = node.Attributes["quest"]?.Value.SplitAndParseToInt(',').ToList();
+                            metadata.Require.SelectableQuest = node.Attributes["selectableQuest"]?.Value.SplitAndParseToInt(',').ToList();
+                            metadata.Require.Unrequire = node.Attributes["unrequire"]?.Value.SplitAndParseToInt(',').ToList();
 
                             _ = int.TryParse(node.Attributes["field"]?.Value ?? "0", out metadata.Require.Field);
                             metadata.Require.Achievement = int.Parse(node.Attributes["achievement"]?.Value ?? "0");
 
-                            metadata.Require.UnreqAchievement = node.Attributes["unreqAchievement"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x))
-                                .Select(int.Parse).ToList();
+                            metadata.Require.UnreqAchievement = node.Attributes["unreqAchievement"]?.Value.SplitAndParseToInt(',').ToList();
 
                             metadata.Require.GroupID = int.Parse(node.Attributes["groupID"]?.Value ?? "0");
                             metadata.Require.DayOfWeek = node.Attributes["dayOfWeek"].Value;
@@ -118,8 +115,7 @@ public class QuestParser : Exporter<List<QuestMetadata>>
 
                             break;
                         case "progressMap":
-                            metadata.ProgressMap = node.Attributes["progressMap"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse)
-                                .ToList();
+                            metadata.ProgressMap = node.Attributes["progressMap"]?.Value.SplitAndParseToInt(',').ToList();
                             break;
                         case "guide":
                             metadata.Guide.Type = node.Attributes["guideType"].Value;

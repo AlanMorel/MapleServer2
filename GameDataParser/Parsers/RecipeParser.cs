@@ -1,5 +1,6 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types.Metadata;
 
@@ -41,7 +42,7 @@ internal class RecipeParser : Exporter<List<RecipeMetadata>>
                     MasteryType = short.Parse(recipe.Attributes["masteryType"]?.Value ?? "0"),
                     ExceptRewardExp = int.Parse(recipe.Attributes["exceptRewardExp"].Value) == 1,
                     RequireMastery = long.Parse(recipe.Attributes["requireMastery"]?.Value ?? "0"),
-                    RequireQuest = recipe.Attributes["requireQuest"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList(),
+                    RequireQuest = recipe.Attributes["requireQuest"]?.Value.SplitAndParseToInt(',').ToList(),
                     RewardMastery = long.Parse(recipe.Attributes["rewardMastery"]?.Value ?? "0"),
                     GatheringTime = recipe.Attributes["gatheringTime"].Value
                 };
@@ -56,7 +57,7 @@ internal class RecipeParser : Exporter<List<RecipeMetadata>>
                     if (recipe.Attributes["requireItem" + i].Value != "")
                     {
                         RecipeItem requiredItem = new();
-                        List<int> itemMetadata = recipe.Attributes["requireItem" + i].Value.Split(",").Select(int.Parse).ToList();
+                        List<int> itemMetadata = recipe.Attributes["requireItem" + i].Value.SplitAndParseToInt(',').ToList();
                         requiredItem.ItemId = itemMetadata[0];
                         requiredItem.Rarity = itemMetadata[1];
                         requiredItem.Amount = itemMetadata[2];
@@ -69,7 +70,7 @@ internal class RecipeParser : Exporter<List<RecipeMetadata>>
                     if (recipe.Attributes["rewardItem" + i].Value != "")
                     {
                         RecipeItem rewardItem = new();
-                        List<int> itemMetadata = recipe.Attributes["rewardItem" + i].Value.Split(",").Select(int.Parse).ToList();
+                        List<int> itemMetadata = recipe.Attributes["rewardItem" + i].Value.SplitAndParseToInt(',').ToList();
                         rewardItem.ItemId = itemMetadata[0];
                         rewardItem.Rarity = itemMetadata[1];
                         rewardItem.Amount = itemMetadata[2];

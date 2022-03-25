@@ -1,5 +1,6 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
@@ -25,36 +26,40 @@ public class NpcParser : Exporter<List<NpcMetadata>>
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
             foreach (XmlNode node in document.DocumentElement.ChildNodes)
             {
-                if (node.Name == "table")
+                if (node.Name != "table")
                 {
-                    if (int.Parse(node.Attributes["expTableID"].Value) != 1)
+                    continue;
+                }
+
+                if (int.Parse(node.Attributes["expTableID"].Value) != 1)
+                {
+                    continue;
+                }
+
+                foreach (XmlNode tableNode in node.ChildNodes)
+                {
+                    if (tableNode.Name != "base")
                     {
                         continue;
                     }
 
-                    foreach (XmlNode tableNode in node.ChildNodes)
-                    {
-                        if (tableNode.Name == "base")
-                        {
-                            ExpMetadata expTable = new();
+                    ExpMetadata expTable = new();
 
-                            byte level = byte.Parse(tableNode.Attributes["level"].Value);
-                            if (level != 0)
-                            {
-                                expTable.Level = level;
-                                expTable.Experience = long.Parse(tableNode.Attributes["exp"].Value);
-                                levelExp[level] = expTable;
-                            }
-                        }
+                    byte level = byte.Parse(tableNode.Attributes["level"].Value);
+                    if (level == 0)
+                    {
+                        continue;
                     }
+
+                    expTable.Level = level;
+                    expTable.Experience = long.Parse(tableNode.Attributes["exp"].Value);
+                    levelExp[level] = expTable;
                 }
             }
         }
 
-        Dictionary<int, string> npcIdToName = new();
-        List<NpcMetadata> npcs = new();
-
         // Parse the NpcId -> Names first.
+        Dictionary<int, string> npcIdToName = new();
         foreach (PackFileEntry entry in Resources.XmlReader.Files.Where(entry => entry.Name.Equals("string/en/npcname.xml")))
         {
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
@@ -70,6 +75,7 @@ public class NpcParser : Exporter<List<NpcMetadata>>
         }
 
         // Handle /npc files second, to setup the NpcMetadata
+        List<NpcMetadata> npcs = new();
         foreach (PackFileEntry entry in Resources.XmlReader.Files.Where(entry => entry.Name.StartsWith("npc/")))
         {
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
@@ -86,6 +92,7 @@ public class NpcParser : Exporter<List<NpcMetadata>>
             XmlNode npcNormalNode = document.SelectSingleNode("ms2/environment/normal") ?? document.SelectSingleNode("ms2/normal");
             XmlNode npcDeadNode = document.SelectSingleNode("ms2/environment/dead") ?? document.SelectSingleNode("ms2/dead");
             XmlNode npcDropItemNode = document.SelectSingleNode("ms2/environment/dropiteminfo") ?? document.SelectSingleNode("ms2/dropiteminfo");
+            XmlNode npcCapsuleNode = document.SelectSingleNode("ms2/environment/capsule") ?? document.SelectSingleNode("ms2/capsule");
             XmlAttributeCollection statsCollection = npcStatsNode.Attributes;
 
             // Metadata
@@ -128,20 +135,22 @@ public class NpcParser : Exporter<List<NpcMetadata>>
             metadata.NpcMetadataDistance.SightHeightDown = int.Parse(npcDistanceNode.Attributes["sightHeightDown"]?.Value ?? "0");
 
             // Parse skill
-            metadata.NpcMetadataSkill.SkillIds = npcSkillNode.Attributes["ids"].Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToArray();
+            metadata.NpcMetadataSkill.SkillIds =
+                npcSkillNode.Attributes["ids"].Value.SplitAndParseToInt(',').ToArray();
             if (metadata.NpcMetadataSkill.SkillIds.Length > 0)
             {
-                metadata.NpcMetadataSkill.SkillLevels = npcSkillNode.Attributes["levels"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(byte.Parse).ToArray();
-                metadata.NpcMetadataSkill.SkillPriorities = npcSkillNode.Attributes["priorities"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(byte.Parse).ToArray();
-                metadata.NpcMetadataSkill.SkillProbs = npcSkillNode.Attributes["probs"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(short.Parse).ToArray();
+                metadata.NpcMetadataSkill.SkillLevels = npcSkillNode.Attributes["levels"]?.Value.SplitAndParseToByte(',').ToArray();
+                metadata.NpcMetadataSkill.SkillPriorities = npcSkillNode.Attributes["priorities"]?.Value.SplitAndParseToByte(',').ToArray();
+                metadata.NpcMetadataSkill.SkillProbs = npcSkillNode.Attributes["probs"]?.Value.SplitAndParseToShort(',').ToArray();
                 metadata.NpcMetadataSkill.SkillCooldown = short.Parse(npcSkillNode.Attributes["coolDown"].Value);
             }
 
             // Parse Additional Effects (Effect / Buff)
-            metadata.NpcMetadataEffect.EffectIds = npcEffectNode.Attributes["codes"].Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToArray();
+            metadata.NpcMetadataEffect.EffectIds =
+                npcEffectNode.Attributes["codes"].Value.SplitAndParseToInt(',').ToArray();
             if (metadata.NpcMetadataEffect.EffectIds.Length > 0)
             {
-                metadata.NpcMetadataEffect.EffectLevels = npcEffectNode.Attributes["levels"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(byte.Parse).ToArray();
+                metadata.NpcMetadataEffect.EffectLevels = npcEffectNode.Attributes["levels"]?.Value.SplitAndParseToByte(',').ToArray();
             }
 
             // Parse normal state
@@ -149,7 +158,7 @@ public class NpcParser : Exporter<List<NpcMetadata>>
             string[] normalActionIds = npcNormalNode.Attributes["action"]?.Value.Split(",") ?? Array.Empty<string>();
             if (normalActionIds.Length > 0)
             {
-                short[] actionProbs = npcNormalNode.Attributes["prob"]?.Value.Split(",").Select(short.Parse).ToArray();
+                short[] actionProbs = npcNormalNode.Attributes["prob"]?.Value.SplitAndParseToShort(',').ToArray();
                 for (int i = 0; i < normalActionIds.Length; i++)
                 {
                     normalActions.Add((normalActionIds[i], GetNpcAction(normalActionIds[i]), actionProbs[i]));
@@ -195,9 +204,16 @@ public class NpcParser : Exporter<List<NpcMetadata>>
             metadata.Experience = customExpValue >= 0 ? customExpValue : (int) levelExp[metadata.Level].Experience;
             metadata.NpcMetadataDead.Time = float.Parse(npcDeadNode.Attributes["time"].Value);
             metadata.NpcMetadataDead.Actions = npcDeadNode.Attributes["defaultaction"].Value.Split(",");
-            metadata.GlobalDropBoxIds = npcDropItemNode.Attributes["globalDropBoxId"].Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToArray();
+            metadata.GlobalDropBoxIds = npcDropItemNode.Attributes["globalDropBoxId"].Value.SplitAndParseToInt(',').ToArray();
             metadata.Kind = short.Parse(npcBasicNode.Attributes["kind"].Value);
             metadata.ShopId = int.Parse(npcBasicNode.Attributes["shopId"].Value);
+            
+            // Parse capsule
+            int radius = int.Parse(npcCapsuleNode.Attributes["radius"].Value);
+            int height = int.Parse(npcCapsuleNode.Attributes["height"].Value);
+            bool ignore = npcCapsuleNode.Attributes["ignore"].Value == "1";
+            metadata.NpcMetadataCapsule = new(radius, height, ignore);
+            
             npcs.Add(metadata);
         }
 

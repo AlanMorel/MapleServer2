@@ -1,5 +1,6 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
@@ -37,7 +38,7 @@ public class ItemOptionStaticParser : Exporter<List<ItemOptionStaticMetadata>>
                             _ = byte.TryParse(node.Attributes["grade"]?.Value ?? "0", out optionsStatic.Rarity);
                             break;
                         case "optionNumPick":
-                            optionsStatic.Slots = node.Attributes[item.Name].Value.Split(",").Select(byte.Parse).ToArray();
+                            optionsStatic.Slots = node.Attributes[item.Name].Value.SplitAndParseToByte(',').ToArray();
                             break;
                         case "abp_rate_base":
                             optionsStatic.Stats.Add(new(StatId.PerfectGuard, float.Parse(node.Attributes[item.Name].Value.Split(",").First())));
