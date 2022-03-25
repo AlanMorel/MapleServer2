@@ -13,7 +13,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class SkillHandler : GamePacketHandler
 {
-    private static readonly Random Rand = RandomProvider.Get();
+    private static readonly Random Rand = Random.Shared;
 
     public override RecvOp OpCode => RecvOp.SKILL;
 

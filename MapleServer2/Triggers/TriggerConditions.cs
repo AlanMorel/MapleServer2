@@ -177,7 +177,7 @@ public partial class TriggerContext
         return false;
     }
 
-    public bool RandomCondition(float proc, string desc) => RandomProvider.Get().Next(100) <= proc;
+    public bool RandomCondition(float proc, string desc) => Random.Shared.Next(100) <= proc;
 
     public bool TimeExpired(string id)
     {

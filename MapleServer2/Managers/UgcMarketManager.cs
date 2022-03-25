@@ -48,7 +48,7 @@ public class UgcMarketManager
     public List<UgcMarketItem> GetPromoItems()
     {
         return Items.Values.Where(x => x.PromotionExpirationTimestamp > TimeInfo.Now() && x.Status == UgcMarketListingStatus.Active)
-            .OrderBy(_ => RandomProvider.Get().Next()).Take(12).ToList(); // 12 being the max the shop can display
+            .OrderBy(_ => Random.Shared.Next()).Take(12).ToList(); // 12 being the max the shop can display
     }
 
     public List<UgcMarketItem> GetNewestItems()

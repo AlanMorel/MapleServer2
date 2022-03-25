@@ -42,7 +42,7 @@ public class MobSpawn
                 spawnOffsets.Add(CoordF.From(i * Block.BLOCK_SIZE - spawnRadius, j * Block.BLOCK_SIZE - spawnRadius, 0));
             }
         }
-        return spawnOffsets.OrderBy(x => RandomProvider.Get().Next()).ToList();
+        return spawnOffsets.OrderBy(x => Random.Shared.Next()).ToList();
     }
 
     public static List<CoordF> SelectPoints(int count, int spawnRadius)

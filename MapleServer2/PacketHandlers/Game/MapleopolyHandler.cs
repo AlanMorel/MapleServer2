@@ -110,7 +110,7 @@ public class MapleopolyHandler : GamePacketHandler
             return;
         }
 
-        Random rnd = RandomProvider.Get();
+        Random rnd = Random.Shared;
 
         // roll two dice
         int roll1 = rnd.Next(1, 6);

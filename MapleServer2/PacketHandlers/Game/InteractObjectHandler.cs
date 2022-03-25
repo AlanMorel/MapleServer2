@@ -146,7 +146,7 @@ internal class InteractObjectHandler : GamePacketHandler
                         {
                             Item item = new(itemId)
                             {
-                                Amount = RandomProvider.Get().Next((int) dropGroupContent.MinAmount, (int) dropGroupContent.MaxAmount),
+                                Amount = Random.Shared.Next((int) dropGroupContent.MinAmount, (int) dropGroupContent.MaxAmount),
                                 Rarity = dropGroupContent.Rarity
                             };
 
@@ -172,7 +172,7 @@ internal class InteractObjectHandler : GamePacketHandler
                         {
                             Item item = new(itemId)
                             {
-                                Amount = RandomProvider.Get().Next((int) dropGroupContent.MinAmount, (int) dropGroupContent.MaxAmount),
+                                Amount = Random.Shared.Next((int) dropGroupContent.MinAmount, (int) dropGroupContent.MaxAmount),
                                 Rarity = dropGroupContent.Rarity
                             };
 

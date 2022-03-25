@@ -14,7 +14,7 @@ public static class ItemBoxHelper
     public static List<Item> GetItemsFromDropGroup(DropGroupContent dropContent, Gender playerGender, Job job)
     {
         List<Item> items = new();
-        Random rng = RandomProvider.Get();
+        Random rng = Random.Shared;
         int amount = rng.Next((int) dropContent.MinAmount, (int) dropContent.MaxAmount);
         foreach (int id in dropContent.ItemIds)
         {
@@ -76,7 +76,7 @@ public static class ItemBoxHelper
 
         DropGroupContent dropContents = dropContentsList[index];
 
-        Random rng = RandomProvider.Get();
+        Random rng = Random.Shared;
         int amount = rng.Next((int) dropContents.MinAmount, (int) dropContents.MaxAmount);
         foreach (int id in dropContents.ItemIds)
         {
@@ -120,7 +120,7 @@ public static class ItemBoxHelper
 
         inventory.ConsumeItem(session, item.Uid, box.AmountRequired);
 
-        Random rng = RandomProvider.Get();
+        Random rng = Random.Shared;
 
         // Receive one item from each drop group
         if (box.ReceiveOneItem)

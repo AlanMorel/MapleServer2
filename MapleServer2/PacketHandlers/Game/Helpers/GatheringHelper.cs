@@ -43,7 +43,7 @@ public static class GatheringHelper
         foreach (RecipeItem item in items)
         {
             int prob = masteryDiffFactor / 100;
-            if (RandomProvider.Get().Next(100) >= prob)
+            if (Random.Shared.Next(100) >= prob)
             {
                 continue;
             }

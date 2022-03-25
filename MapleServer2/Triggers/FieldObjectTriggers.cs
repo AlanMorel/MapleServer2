@@ -111,7 +111,7 @@ public partial class TriggerContext
 
     public void SetRandomMesh(int[] meshIds, bool isVisible, byte meshCount, int arg4, int delayTime)
     {
-        Random random = RandomProvider.Get();
+        Random random = Random.Shared;
         int[] pickedMeshIds = meshIds.OrderBy(x => random.Next()).Take(meshCount).ToArray();
         Task.Run(async () =>
         {

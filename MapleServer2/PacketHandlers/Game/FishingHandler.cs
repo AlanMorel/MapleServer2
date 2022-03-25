@@ -246,7 +246,7 @@ public class FishingHandler : GamePacketHandler
         //determine fish rarity
         List<FishMetadata> selectedFishRarities = FilterFishesByRarity(fishes);
 
-        Random rnd = RandomProvider.Get();
+        Random rnd = Random.Shared;
         int randomFishIndex = rnd.Next(selectedFishRarities.Count);
         FishMetadata fish = selectedFishRarities[randomFishIndex];
 
@@ -285,7 +285,7 @@ public class FishingHandler : GamePacketHandler
         int fishRarity;
         do // re-rolls until there is an acceptable rarity
         {
-            fishRarity = RandomProvider.Get().NextDouble() switch
+            fishRarity = Random.Shared.NextDouble() switch
             {
                 >= 0 and < 0.60 => 1,
                 >= 0.60 and < 0.85 => 2,
@@ -315,7 +315,7 @@ public class FishingHandler : GamePacketHandler
         bool minigame = false;
         int fishingTick = 15000; // base fishing tick
 
-        Random rnd = RandomProvider.Get();
+        Random rnd = Random.Shared;
 
         int successChance = rnd.Next(0, 100);
         if (successChance < 90)
@@ -343,7 +343,7 @@ public class FishingHandler : GamePacketHandler
 
     private static void HandleCatchItem(GameSession session)
     {
-        Random rnd = RandomProvider.Get();
+        Random rnd = Random.Shared;
 
         int itemChance = rnd.Next(0, 100);
         if (itemChance > 10)

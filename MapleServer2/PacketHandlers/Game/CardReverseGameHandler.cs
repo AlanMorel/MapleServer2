@@ -67,7 +67,7 @@ public class CardReverseGameHandler : GamePacketHandler
 
         List<CardReverseGame> cards = DatabaseManager.CardReverseGame.FindAll();
 
-        int index = RandomProvider.Get().Next(cards.Count);
+        int index = Random.Shared.Next(cards.Count);
 
         CardReverseGame card = cards[index];
         Item item = new(card.ItemId)

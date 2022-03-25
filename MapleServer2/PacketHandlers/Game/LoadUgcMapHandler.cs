@@ -48,7 +48,7 @@ public class LoadUgcMapHandler : GamePacketHandler
             CoordF rotation;
             if (portals.Count > 0)
             {
-                Cube portal = portals.OrderBy(_ => RandomProvider.Get().Next()).First();
+                Cube portal = portals.OrderBy(_ => Random.Shared.Next()).First();
                 coord = portal.CoordF;
                 coord.Z += 1;
                 rotation = portal.Rotation;

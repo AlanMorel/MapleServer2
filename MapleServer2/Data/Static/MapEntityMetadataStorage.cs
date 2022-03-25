@@ -82,7 +82,7 @@ public static class MapEntityMetadataStorage
     public static MapPlayerSpawn GetRandomPlayerSpawn(int mapId)
     {
         List<MapPlayerSpawn> list = PlayerSpawns.GetValueOrDefault(mapId);
-        return list?.Count > 0 ? list[RandomProvider.Get().Next(list.Count)] : null;
+        return list?.Count > 0 ? list[Random.Shared.Next(list.Count)] : null;
     }
 
     public static bool HasPortals(int mapId)
@@ -166,7 +166,7 @@ public static class MapEntityMetadataStorage
             return 0;
         }
 
-        Random random = RandomProvider.Get();
+        Random random = Random.Shared;
         int index = random.Next(weaponObject.WeaponItemIds.Count);
         return weaponObject.WeaponItemIds[index];
     }

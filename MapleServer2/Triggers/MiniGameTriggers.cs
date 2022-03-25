@@ -66,7 +66,7 @@ public partial class TriggerContext
             }
         }
 
-        Random random = RandomProvider.Get();
+        Random random = Random.Shared;
         int index = random.Next(boxPlayers.Count);
         IFieldObject<Player> randomPlayer = boxPlayers[index];
         Field.BroadcastPacket(LocalCameraPacket.Camera(cameraId, 1, randomPlayer.ObjectId));

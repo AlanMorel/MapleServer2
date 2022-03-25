@@ -31,7 +31,7 @@ public static class SkillUsePacket
     public static PacketWriter MobSkillUse(IFieldObject mob, int skillId, short skillLevel, byte part)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_USE);
-        pWriter.WriteInt(RandomProvider.Get().Next()); // Seems to be an incrementing number - unique id
+        pWriter.WriteInt(Random.Shared.Next()); // Seems to be an incrementing number - unique id
         pWriter.WriteInt(mob.ObjectId);
         pWriter.WriteInt();
         pWriter.WriteInt(mob.ObjectId);

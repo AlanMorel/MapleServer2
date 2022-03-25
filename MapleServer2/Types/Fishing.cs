@@ -59,7 +59,7 @@ public class Fishing
         }
 
         int expChance;
-        Random rnd = RandomProvider.Get();
+        Random rnd = Random.Shared;
         MasteryExp masteryExp = session.Player.Levels.MasteryExp.FirstOrDefault(x => x.Type == MasteryType.Fishing);
         FishingSpotMetadata fishingSpot = FishingSpotMetadataStorage.GetMetadata(session.Player.MapId);
 

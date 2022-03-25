@@ -222,7 +222,7 @@ public class BeautyHandler : GamePacketHandler
         }
 
         // Grab random hair
-        Random random = RandomProvider.Get();
+        Random random = Random.Shared;
         int indexHair = random.Next(beautyItems.Count);
         BeautyItem chosenHair = beautyItems[indexHair];
 

@@ -77,7 +77,7 @@ public class BonusGameHandler : GamePacketHandler
             new(11050020, 1, 1),
             new(20300041, 1, 1)
         };
-        int randomIndex = RandomProvider.Get().Next(0, items.Count);
+        int randomIndex = Random.Shared.Next(0, items.Count);
         session.Send(BonusGamePacket.SpinWheel(randomIndex, items[randomIndex]));
     }
 }

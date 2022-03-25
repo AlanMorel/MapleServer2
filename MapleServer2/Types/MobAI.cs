@@ -34,7 +34,7 @@ public class MobAI
 
             if (mob.Value.StateActions[mob.State].Length > 0)
             {
-                int roll = RandomProvider.Get().Next(10000);
+                int roll = Random.Shared.Next(10000);
                 foreach ((string name, NpcAction type, int probability) in mob.Value.StateActions[mob.State])
                 {
                     if (roll < probability)

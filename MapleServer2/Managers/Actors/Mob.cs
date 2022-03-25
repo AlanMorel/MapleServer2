@@ -12,7 +12,7 @@ namespace MapleServer2.Managers;
 
 public partial class FieldManager
 {
-    private static readonly Random Rand = RandomProvider.Get();
+    private static readonly Random Rand = Random.Shared;
 
     private partial class Mob : FieldActor<NpcMetadata>, INpc
     {
@@ -38,7 +38,7 @@ public partial class FieldManager
 
         public void Attack()
         {
-            int roll = RandomProvider.Get().Next(100);
+            int roll = Random.Shared.Next(100);
             for (int i = 0; i < Value.NpcMetadataSkill.SkillIds.Length; i++)
             {
                 if (roll < Value.NpcMetadataSkill.SkillProbs[i])
@@ -108,7 +108,7 @@ public partial class FieldManager
 
         public void Move(MobMovement moveType)
         {
-            Random rand = RandomProvider.Get();
+            Random rand = Random.Shared;
 
             switch (moveType)
             {
@@ -157,7 +157,7 @@ public partial class FieldManager
         {
             IsDead = true;
             State = NpcState.Dead;
-            int randAnim = RandomProvider.Get().Next(Value.StateActions[NpcState.Dead].Length);
+            int randAnim = Random.Shared.Next(Value.StateActions[NpcState.Dead].Length);
             Animation = AnimationStorage.GetSequenceIdBySequenceName(Value.Model, Value.StateActions[NpcState.Dead][randAnim].Item1);
         }
 
