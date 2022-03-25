@@ -135,8 +135,7 @@ public class NpcParser : Exporter<List<NpcMetadata>>
             metadata.NpcMetadataDistance.SightHeightDown = int.Parse(npcDistanceNode.Attributes["sightHeightDown"]?.Value ?? "0");
 
             // Parse skill
-            metadata.NpcMetadataSkill.SkillIds =
-                npcSkillNode.Attributes["ids"].Value.SplitAndParseToInt(',').ToArray();
+            metadata.NpcMetadataSkill.SkillIds = npcSkillNode.Attributes["ids"].Value.SplitAndParseToInt(',').ToArray();
             if (metadata.NpcMetadataSkill.SkillIds.Length > 0)
             {
                 metadata.NpcMetadataSkill.SkillLevels = npcSkillNode.Attributes["levels"]?.Value.SplitAndParseToByte(',').ToArray();
@@ -146,8 +145,7 @@ public class NpcParser : Exporter<List<NpcMetadata>>
             }
 
             // Parse Additional Effects (Effect / Buff)
-            metadata.NpcMetadataEffect.EffectIds =
-                npcEffectNode.Attributes["codes"].Value.SplitAndParseToInt(',').ToArray();
+            metadata.NpcMetadataEffect.EffectIds = npcEffectNode.Attributes["codes"].Value.SplitAndParseToInt(',').ToArray();
             if (metadata.NpcMetadataEffect.EffectIds.Length > 0)
             {
                 metadata.NpcMetadataEffect.EffectLevels = npcEffectNode.Attributes["levels"]?.Value.SplitAndParseToByte(',').ToArray();
