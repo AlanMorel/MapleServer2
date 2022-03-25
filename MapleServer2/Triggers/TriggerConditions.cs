@@ -1,6 +1,5 @@
 ﻿using Maple2.Trigger.Enum;
 using Maple2Storage.Enums;
-using Maple2Storage.Tools;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
@@ -177,7 +176,7 @@ public partial class TriggerContext
         return false;
     }
 
-    public bool RandomCondition(float proc, string desc) => RandomProvider.Get().Next(100) <= proc;
+    public bool RandomCondition(float proc, string desc) => Random.Shared.Next(100) <= proc;
 
     public bool TimeExpired(string id)
     {

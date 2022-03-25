@@ -1,5 +1,4 @@
-﻿using Maple2Storage.Tools;
-using Maple2Storage.Types.Metadata;
+﻿using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Servers.Game;
@@ -43,7 +42,7 @@ public static class GatheringHelper
         foreach (RecipeItem item in items)
         {
             int prob = masteryDiffFactor / 100;
-            if (RandomProvider.Get().Next(100) >= prob)
+            if (Random.Shared.Next(100) >= prob)
             {
                 continue;
             }

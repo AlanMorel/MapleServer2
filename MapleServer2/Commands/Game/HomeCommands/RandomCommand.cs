@@ -1,5 +1,4 @@
-﻿using Maple2Storage.Tools;
-using MapleServer2.Commands.Core;
+﻿using MapleServer2.Commands.Core;
 using MapleServer2.Constants;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
@@ -29,7 +28,7 @@ public class RandomUserCommand : InGameCommand
             return;
         }
 
-        string randomPlayer = trigger.Session.FieldManager.State.Players.Values.ToList().OrderBy(_ => RandomProvider.Get().Next()).FirstOrDefault()?.Value.Name;
+        string randomPlayer = trigger.Session.FieldManager.State.Players.Values.ToList().OrderBy(_ => Random.Shared.Next()).FirstOrDefault()?.Value.Name;
         if (randomPlayer is null)
         {
             return;
@@ -66,6 +65,6 @@ public class RandomNumberCommand : InGameCommand
             return;
         }
 
-        trigger.Session.FieldManager.BroadcastPacket(HomeActionPacket.Roll(trigger.Session.Player, RandomProvider.Get().Next(100)));
+        trigger.Session.FieldManager.BroadcastPacket(HomeActionPacket.Roll(trigger.Session.Player, Random.Shared.Next(100)));
     }
 }

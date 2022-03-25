@@ -1,5 +1,4 @@
 ﻿using Maple2Storage.Enums;
-using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
@@ -250,7 +249,7 @@ public class RequestItemUseHandler : GamePacketHandler
         {
             GachaContent contents = HandleSmartGender(gacha, session.Player.Gender);
 
-            int itemAmount = RandomProvider.Get().Next(contents.MinAmount, contents.MaxAmount);
+            int itemAmount = Random.Shared.Next(contents.MinAmount, contents.MaxAmount);
 
             Item gachaItem = new(contents.ItemId)
             {
@@ -272,7 +271,7 @@ public class RequestItemUseHandler : GamePacketHandler
 
     private static GachaContent HandleSmartGender(GachaMetadata gacha, Gender playerGender)
     {
-        Random random = RandomProvider.Get();
+        Random random = Random.Shared;
         int index = random.Next(gacha.Contents.Count);
 
         GachaContent contents = gacha.Contents[index];
