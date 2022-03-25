@@ -228,7 +228,7 @@ public class NpcMetadataCapsule
 {
     [XmlElement(Order = 1)]
     public int Radius;
-    
+
     [XmlElement(Order = 2)]
     public int Height;
 

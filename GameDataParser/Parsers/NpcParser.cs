@@ -205,13 +205,13 @@ public class NpcParser : Exporter<List<NpcMetadata>>
             metadata.GlobalDropBoxIds = npcDropItemNode.Attributes["globalDropBoxId"].Value.SplitAndParseToInt(',').ToArray();
             metadata.Kind = short.Parse(npcBasicNode.Attributes["kind"].Value);
             metadata.ShopId = int.Parse(npcBasicNode.Attributes["shopId"].Value);
-            
+
             // Parse capsule
             int radius = int.Parse(npcCapsuleNode.Attributes["radius"].Value);
             int height = int.Parse(npcCapsuleNode.Attributes["height"].Value);
             bool ignore = npcCapsuleNode.Attributes["ignore"].Value == "1";
             metadata.NpcMetadataCapsule = new(radius, height, ignore);
-            
+
             npcs.Add(metadata);
         }
 

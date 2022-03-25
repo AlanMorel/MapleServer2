@@ -8,7 +8,7 @@ public static class StringExtensions
             .Where(x => !string.IsNullOrEmpty(x))
             .Select(byte.Parse);
     }
-    
+
     public static IEnumerable<sbyte> SplitAndParseToSByte(this string value, char separator)
     {
         return value.Split(separator)
@@ -29,7 +29,7 @@ public static class StringExtensions
             .Where(x => !string.IsNullOrEmpty(x))
             .Select(int.Parse);
     }
-    
+
     public static IEnumerable<float> SplitAndParseToFloat(this string value, char separator)
     {
         return value.Split(separator)
@@ -43,14 +43,14 @@ public static class StringExtensions
             .Where(x => !string.IsNullOrEmpty(x))
             .Select(long.Parse);
     }
-    
+
     public static IEnumerable<byte> SplitAndParseToByte(this string value, params char[] separator)
     {
         return value.Split(separator)
             .Where(x => !string.IsNullOrEmpty(x))
             .Select(byte.Parse);
     }
-    
+
     public static IEnumerable<sbyte> SplitAndParseToSByte(this string value, params char[] separator)
     {
         return value.Split(separator)
@@ -71,7 +71,7 @@ public static class StringExtensions
             .Where(x => !string.IsNullOrEmpty(x))
             .Select(int.Parse);
     }
-    
+
     public static IEnumerable<float> SplitAndParseToFloat(this string value, params char[] separator)
     {
         return value.Split(separator)
