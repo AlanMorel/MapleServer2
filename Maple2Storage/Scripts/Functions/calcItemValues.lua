@@ -900,7 +900,7 @@ function constant_value_addndd(l_4_0, deviationValue, itemSlot, itemJob, optionL
     end
 end
 
-function constant_value_ndd(l_5_0, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor, l_5_7)
+function constant_value_ndd(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor, l_5_7)
     globalOptionLevelFactor = optionLevelFactor
     local nddValue
     local baseNddValue
@@ -922,13 +922,13 @@ function constant_value_ndd(l_5_0, deviationValue, itemSlot, itemJob, optionLeve
         baseNddValue = addNddValue
     end
     addNddValue = 0
-    addNddValue = constant_value_addndd(l_5_0, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor, l_5_7)
+    addNddValue = constant_value_addndd(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor, l_5_7)
     if itemSlot == Belt then
         nddValue = round((baseNddValue) * armorConstantSlotCoefficient[itemSlot] * armorConstantJobCoefficient[GlobalJob] *
             armorConstantGradeCoefficient[deviationValue][rarity], 0) + addNddValue
-    elseif globalOptionLevelFactor >= 70 and l_5_0 > 0 then
+    elseif globalOptionLevelFactor >= 70 and currentStatValue > 0 then
         nddValue = round((baseNddValue) * armorConstantSlotCoefficient[itemSlot] * armorConstantJobCoefficient[itemJob] *
-            armorConstantGradeCoefficient[deviationValue][rarity] * (l_5_0 / 100), 0) + round(addNddValue * (l_5_0 / 100), 0)
+            armorConstantGradeCoefficient[deviationValue][rarity] * (currentStatValue / 100), 0) + round(addNddValue * (currentStatValue / 100), 0)
     else
         nddValue = round((baseNddValue) * armorConstantSlotCoefficient[itemSlot] * armorConstantJobCoefficient[itemJob] *
             armorConstantGradeCoefficient[deviationValue][rarity], 0) + addNddValue
@@ -1459,18 +1459,18 @@ function static_value_ndd(currentStatValue, deviationValue, itemSlot, itemJob, o
     addNddValue = 0
     addNddValue = static_value_addndd(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor, l_20_7)
     if itemSlot == 21 then
-        maxNddValue = math.max(round((baseNddValue) * armorConstantSlotCoefficient[itemSlot] * armorConstantJobCoefficient[GlobalJob] *
+        maxNddValue = (math.max)(round((baseNddValue) * armorConstantSlotCoefficient[itemSlot] * armorConstantJobCoefficient[GlobalJob] *
             staticArmorGradeCoefficient[rarity], 0), 4)
     elseif itemSlot == 12 or itemSlot == 18 or itemSlot == 19 or itemSlot == 20 then
-        maxNddValue = math.max(round((baseNddValue) * armorConstantSlotCoefficient[itemSlot] * staticAccGradeCoefficient[rarity], 0), 0)
+        maxNddValue = (math.max)(round((baseNddValue) * armorConstantSlotCoefficient[itemSlot] * staticAccGradeCoefficient[rarity], 0), 0)
     else
-        maxNddValue = math.max(round((baseNddValue) * armorConstantSlotCoefficient[itemSlot] * armorConstantJobCoefficient[itemJob] *
+        maxNddValue = (math.max)(round((baseNddValue) * armorConstantSlotCoefficient[itemSlot] * armorConstantJobCoefficient[itemJob] *
             staticArmorGradeCoefficient[rarity], 0), 4)
     end
     if maxNddValue < 466 then
-        minNddValue = round(maxNddValue * math.max(0.0598 * math.log(maxNddValue) + 0.432, 0.5), 0)
+        minNddValue = round(maxNddValue * (math.max)(0.0598 * (math.log)(maxNddValue) + 0.432, 0.5), 0)
     else
-        minNddValue = math.max(round(maxNddValue * 0.8, 0), 1)
+        minNddValue = (math.max)(round(maxNddValue * 0.8, 0), 1)
     end
     if currentStatValue == 0 then
         staticMinAddValue = minNddValue + addNddValue
