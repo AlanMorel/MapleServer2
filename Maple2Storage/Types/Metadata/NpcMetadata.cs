@@ -235,6 +235,8 @@ public class NpcMetadataCapsule
     [XmlElement(Order = 3)]
     public bool Ignore;
 
+    public NpcMetadataCapsule() { }
+
     public NpcMetadataCapsule(int radius, int height, bool ignore)
     {
         Radius = radius;
