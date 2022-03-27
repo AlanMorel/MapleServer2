@@ -13,7 +13,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class FunctionCubeHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.FUNCTION_CUBE;
+    public override RecvOp OpCode => RecvOp.FunctionCube;
 
     private enum FunctionCubeMode : byte
     {

@@ -9,7 +9,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class MacroHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.MACRO;
+    public override RecvOp OpCode => RecvOp.Macro;
 
     private enum MacroMode : byte
     {

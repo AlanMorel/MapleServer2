@@ -12,7 +12,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class UgcHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.UGC;
+    public override RecvOp OpCode => RecvOp.Ugc;
 
     private enum UgcMode : byte
     {

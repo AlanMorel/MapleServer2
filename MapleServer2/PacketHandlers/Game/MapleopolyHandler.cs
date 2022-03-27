@@ -13,7 +13,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class MapleopolyHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.MAPLEOPOLY;
+    public override RecvOp OpCode => RecvOp.Mapleopoly;
 
     private enum MapleopolyMode : byte
     {

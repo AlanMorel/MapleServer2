@@ -18,7 +18,7 @@ public static class StatPointPacket
     // how each stat point was obtained (ie quest, trophy, exploration, prestige)
     public static PacketWriter WriteTotalStatPoints(Player character)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.STAT_POINT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.StatPoint);
 
         pWriter.Write(StatPointPacketMode.TotalPoints);
         pWriter.WriteInt(character.StatPointDistribution.TotalStatPoints);
@@ -36,7 +36,7 @@ public static class StatPointPacket
     // packet that updates or loads the character's current stat distribution
     public static PacketWriter WriteStatPointDistribution(Player character)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.STAT_POINT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.StatPoint);
 
         pWriter.WriteByte((byte) StatPointPacketMode.StatDistribution);
         pWriter.WriteInt(character.StatPointDistribution.TotalStatPoints);

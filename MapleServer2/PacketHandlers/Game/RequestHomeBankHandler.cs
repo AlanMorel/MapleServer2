@@ -8,7 +8,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class RequestHomeBankHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.REQUEST_HOME_BANK;
+    public override RecvOp OpCode => RecvOp.RequestHomeBank;
 
     private enum BankMode : byte
     {

@@ -8,7 +8,7 @@ internal class MeretsPacket
 {
     public static PacketWriter UpdateMerets(Account account, long amountGain = 0)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MERET);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Meret);
 
         pWriter.WriteLong(); // Total amount of merets
         pWriter.WriteLong(account.Meret.Amount);

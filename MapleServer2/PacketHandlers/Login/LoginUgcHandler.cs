@@ -8,7 +8,7 @@ namespace MapleServer2.PacketHandlers.Login;
 
 public class LoginUgcHandler : LoginPacketHandler
 {
-    public override RecvOp OpCode => RecvOp.UGC;
+    public override RecvOp OpCode => RecvOp.Ugc;
 
     private enum UgcMode : byte
     {

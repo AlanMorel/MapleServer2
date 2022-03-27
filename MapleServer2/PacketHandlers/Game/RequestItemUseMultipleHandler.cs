@@ -11,7 +11,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class RequestItemUseMultipleHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.REQUEST_ITEM_USE_MULTIPLE;
+    public override RecvOp OpCode => RecvOp.RequestItemUseMultiple;
 
     private enum BoxType : byte
     {

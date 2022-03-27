@@ -11,7 +11,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class BuddyHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.BUDDY;
+    public override RecvOp OpCode => RecvOp.Buddy;
 
     private enum BuddyMode : byte
     {

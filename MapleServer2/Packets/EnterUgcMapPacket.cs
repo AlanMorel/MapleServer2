@@ -13,7 +13,7 @@ public static class EnterUgcMapPacket
 
     public static PacketWriter RequestPassword(long accountId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ENTER_UGC_MAP);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.EnterUgcMap);
         pWriter.Write(EnterUgcMapMode.RequestPassword);
         pWriter.WriteInt();
         pWriter.WriteLong();
@@ -26,7 +26,7 @@ public static class EnterUgcMapPacket
 
     public static PacketWriter WrongPassword(long accountId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ENTER_UGC_MAP);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.EnterUgcMap);
         pWriter.Write(EnterUgcMapMode.WrongPassword);
         pWriter.WriteInt();
         pWriter.WriteLong();

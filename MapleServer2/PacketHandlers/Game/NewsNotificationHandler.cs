@@ -7,7 +7,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class NewsNotificationHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.NEWS_NOTIFICATION;
+    public override RecvOp OpCode => RecvOp.NewsNotif;
 
     private enum NewsNotificationMode : byte
     {

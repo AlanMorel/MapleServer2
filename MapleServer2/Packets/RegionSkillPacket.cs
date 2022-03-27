@@ -15,7 +15,7 @@ public static class RegionSkillPacket
 
     public static PacketWriter Send(SkillCast skill)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.REGION_SKILL);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.RegionSkill);
 
         pWriter.Write(RegionSkillMode.Add);
         pWriter.WriteInt(skill.SkillObjectId);
@@ -42,7 +42,7 @@ public static class RegionSkillPacket
 
     public static PacketWriter Remove(int sourceObjectId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.REGION_SKILL);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.RegionSkill);
         pWriter.Write(RegionSkillMode.Remove);
         pWriter.WriteInt(sourceObjectId); // Uid regionEffect
         return pWriter;

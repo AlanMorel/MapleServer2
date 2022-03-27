@@ -7,7 +7,7 @@ public static class SyncValuePacket
 {
     public static PacketWriter SetSyncValue(int value)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SYNC_VALUE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.SyncValue);
         pWriter.WriteInt(value);
 
         return pWriter;

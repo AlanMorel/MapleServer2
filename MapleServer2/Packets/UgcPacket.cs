@@ -19,7 +19,7 @@ public static class UgcPacket
 
     public static PacketWriter SetEndpoint(string uploadEndpoint, string resourceEndpoint, string locale = "na")
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Ugc);
         pWriter.Write(UgcMode.SetEndpoint); // Function
         pWriter.WriteUnicodeString(uploadEndpoint); // Serves some random irrq.aspx
         pWriter.WriteUnicodeString(resourceEndpoint); // Serves resources
@@ -37,7 +37,7 @@ public static class UgcPacket
 
     public static PacketWriter CreateUgc(Item item)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Ugc);
         pWriter.Write(UgcMode.CreateUgc);
         pWriter.Write(item.Ugc.Type);
         pWriter.WriteLong(item.Ugc.Uid);
@@ -48,7 +48,7 @@ public static class UgcPacket
 
     public static PacketWriter SetItemUrl(Item item)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Ugc);
         pWriter.Write(UgcMode.SetItemUrl);
         pWriter.Write(item.Ugc.Type);
         pWriter.WriteLong(item.Ugc.Uid);
@@ -59,7 +59,7 @@ public static class UgcPacket
 
     public static PacketWriter Unknown7()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Ugc);
         pWriter.WriteByte(0x07);
         pWriter.WriteLong();
         pWriter.WriteByte(); // condition
@@ -73,7 +73,7 @@ public static class UgcPacket
 
     public static PacketWriter Unknown8()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Ugc);
         pWriter.WriteByte(0x08);
         SharedSubUgc2(pWriter);
 
@@ -82,7 +82,7 @@ public static class UgcPacket
 
     public static PacketWriter Unknown9()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Ugc);
         pWriter.WriteByte(0x09);
         pWriter.WriteLong();
         pWriter.WriteInt(); // counter for loop
@@ -96,7 +96,7 @@ public static class UgcPacket
 
     public static PacketWriter SetProfilePictureUrl(int objectId, long characterId, string url)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Ugc);
         pWriter.Write(UgcMode.ProfilePicture);
         pWriter.WriteInt(objectId);
         pWriter.WriteLong(characterId);
@@ -107,7 +107,7 @@ public static class UgcPacket
 
     public static PacketWriter UpdateUgcItem(IFieldObject<Player> fieldPlayer, Item item)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Ugc);
         pWriter.Write(UgcMode.UpdateUgcItem);
         pWriter.WriteInt(fieldPlayer.ObjectId);
         pWriter.WriteLong(item.Uid);
@@ -124,7 +124,7 @@ public static class UgcPacket
 
     public static PacketWriter UpdateUgcFurnishing(IFieldObject<Player> fieldPlayer, Item item)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Ugc);
         pWriter.Write(UgcMode.UpdateUgcFurnishing);
         pWriter.WriteInt(fieldPlayer.ObjectId);
         pWriter.WriteLong(item.Uid);
@@ -141,7 +141,7 @@ public static class UgcPacket
 
     public static PacketWriter Unknown16()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Ugc);
         pWriter.WriteByte(0x10);
         pWriter.WriteInt();
         // sub1
@@ -157,7 +157,7 @@ public static class UgcPacket
 
     public static PacketWriter Unknown17()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Ugc);
         pWriter.WriteByte(0x11);
         pWriter.WriteUnicodeString("WstrA");
         pWriter.WriteUnicodeString("WstrA");
@@ -169,7 +169,7 @@ public static class UgcPacket
 
     public static PacketWriter Mode12()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Ugc);
         pWriter.Write(UgcMode.Mode12);
 
         int counter1 = 0;
@@ -229,7 +229,7 @@ public static class UgcPacket
 
     public static PacketWriter Unknown20()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Ugc);
         pWriter.WriteByte(0x14);
         pWriter.WriteLong();
         pWriter.WriteInt(); // some count for loop
@@ -248,7 +248,7 @@ public static class UgcPacket
 
     public static PacketWriter Unknown21()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Ugc);
         pWriter.WriteByte(0x15);
         pWriter.WriteInt(); // some count for loop
         for (int i = 0; i < 0; i++)
@@ -262,7 +262,7 @@ public static class UgcPacket
 
     public static PacketWriter Unknown22()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Ugc);
         pWriter.WriteByte(0x16);
         pWriter.WriteInt();
 

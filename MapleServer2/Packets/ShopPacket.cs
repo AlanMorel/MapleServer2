@@ -20,7 +20,7 @@ public static class ShopPacket
 
     public static PacketWriter Open(Shop shop)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Shop);
         pWriter.Write(ShopMode.Open);
         pWriter.WriteInt(shop.Uid);
         pWriter.WriteInt(shop.Id);
@@ -44,7 +44,7 @@ public static class ShopPacket
 
     public static PacketWriter Reload()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Shop);
         pWriter.Write(ShopMode.Reload);
         pWriter.WriteByte();
         pWriter.WriteByte();
@@ -54,7 +54,7 @@ public static class ShopPacket
 
     public static PacketWriter Close()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Shop);
         pWriter.WriteShort();
 
         return pWriter;
@@ -62,7 +62,7 @@ public static class ShopPacket
 
     public static PacketWriter Buy(int itemId, int quantity, int price, ShopCurrencyType shopCurrencyType)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Shop);
         pWriter.Write(ShopMode.Buy);
         pWriter.WriteInt(itemId);
         pWriter.WriteInt(quantity);
@@ -75,7 +75,7 @@ public static class ShopPacket
 
     public static PacketWriter Sell(Item item, int quantity)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Shop);
         pWriter.Write(ShopMode.Sell);
         pWriter.WriteInt(quantity);
         pWriter.WriteShort();
@@ -91,7 +91,7 @@ public static class ShopPacket
 
     public static PacketWriter LoadProducts(ShopItem product)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Shop);
         pWriter.Write(ShopMode.LoadProducts);
         pWriter.WriteByte(1);
         pWriter.WriteInt(product.Uid);

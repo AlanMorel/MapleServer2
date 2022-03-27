@@ -16,7 +16,7 @@ public static class StatPacket
 
     public static PacketWriter UpdateStats(IFieldActor player, StatId statId, params StatId[] otherIds)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.STAT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Stat);
         pWriter.WriteInt(player.ObjectId);
         pWriter.Write(StatsMode.UpdateStats);
         pWriter.WriteByte((byte) (1 + otherIds.Length));
@@ -33,7 +33,7 @@ public static class StatPacket
 
     public static PacketWriter UpdateStats(IFieldActor<Player> player, IEnumerable<StatId> statIds)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.STAT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Stat);
         pWriter.WriteInt(player.ObjectId);
         pWriter.Write(StatsMode.UpdateStats);
         pWriter.WriteByte((byte) statIds.Count());
@@ -48,7 +48,7 @@ public static class StatPacket
 
     public static PacketWriter SetStats(IFieldActor<Player> player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.STAT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Stat);
         pWriter.WriteInt(player.ObjectId);
         pWriter.WriteByte(); // Unknown (0x00/0x01)
         pWriter.Write(StatsMode.SendStats);
@@ -62,7 +62,7 @@ public static class StatPacket
 
     public static PacketWriter UpdateFieldStats(IFieldActor<Player> player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.STAT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Stat);
         pWriter.WriteInt(player.ObjectId);
         pWriter.WriteByte(); // Unknown (0x00/0x01)
         pWriter.Write(StatsMode.SendStats);
@@ -73,7 +73,7 @@ public static class StatPacket
 
     public static PacketWriter UpdateMobStats(IFieldActor mob)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.STAT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Stat);
         pWriter.WriteInt(mob.ObjectId);
         pWriter.WriteByte();
         pWriter.WriteByte(1);

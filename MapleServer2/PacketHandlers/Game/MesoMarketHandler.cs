@@ -11,7 +11,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class MesoMarketHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.MESO_MARKET;
+    public override RecvOp OpCode => RecvOp.MesoMarket;
 
     private enum MesoMarketMode : byte
     {

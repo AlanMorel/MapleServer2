@@ -15,7 +15,7 @@ public static class ItemBreakPacket
 
     public static PacketWriter Add(long uid, short slot, int amount)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_BREAK);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemBreak);
         pWriter.Write(ItemBreakMode.Add);
         pWriter.WriteLong(uid);
         pWriter.WriteShort(slot);
@@ -26,7 +26,7 @@ public static class ItemBreakPacket
 
     public static PacketWriter Remove(long uid)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_BREAK);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemBreak);
         pWriter.Write(ItemBreakMode.Remove);
         pWriter.WriteLong(uid);
 
@@ -35,7 +35,7 @@ public static class ItemBreakPacket
 
     public static PacketWriter Results(Dictionary<int, int> rewards)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_BREAK);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemBreak);
         pWriter.Write(ItemBreakMode.Results);
         pWriter.WriteInt(rewards.Count);
         foreach ((int id, int amount) in rewards)
@@ -50,7 +50,7 @@ public static class ItemBreakPacket
 
     public static PacketWriter ShowRewards(Dictionary<int, int> rewards)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_BREAK);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemBreak);
         pWriter.Write(ItemBreakMode.ShowRewards);
         pWriter.WriteByte(1); // unknown
         pWriter.WriteInt(rewards.Count);

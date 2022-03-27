@@ -14,7 +14,7 @@ public static class SuperChatPacket
 
     public static PacketWriter Select(IFieldObject<Player> player, int itemId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SUPER_WORLDCHAT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.SuperWorldChat);
         pWriter.Write(SuperChatMode.Select);
         pWriter.WriteInt(player.ObjectId);
         pWriter.WriteLong(itemId);
@@ -23,7 +23,7 @@ public static class SuperChatPacket
 
     public static PacketWriter Deselect(IFieldObject<Player> player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SUPER_WORLDCHAT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.SuperWorldChat);
         pWriter.Write(SuperChatMode.Deselect);
         pWriter.WriteInt(player.ObjectId);
         return pWriter;

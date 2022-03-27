@@ -8,7 +8,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class RequestHomeHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.REQUEST_HOME;
+    public override RecvOp OpCode => RecvOp.RequestHome;
 
     private enum RequestHomeMode : byte
     {

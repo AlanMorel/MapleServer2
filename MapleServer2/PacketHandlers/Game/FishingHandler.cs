@@ -12,7 +12,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class FishingHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.FISHING;
+    public override RecvOp OpCode => RecvOp.Fishing;
 
     private enum FishingMode : byte
     {

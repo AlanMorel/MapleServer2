@@ -28,7 +28,7 @@ public static class GemPacket
 
     public static PacketWriter EquipItem(GameSession session, Item item, int index)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.GEM);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Gem);
 
         pWriter.Write(GemMode.EquipItem);
         pWriter.WriteInt(session.Player.FieldPlayer.ObjectId);
@@ -43,7 +43,7 @@ public static class GemPacket
 
     public static PacketWriter UnequipItem(GameSession session, GemSlot gemSlot)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.GEM);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Gem);
 
         pWriter.Write(GemMode.UnequipItem);
         pWriter.WriteInt(session.Player.FieldPlayer.ObjectId);
@@ -54,7 +54,7 @@ public static class GemPacket
 
     public static PacketWriter EquipError(GemEquipError type)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.GEM);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Gem);
 
         pWriter.Write(GemMode.EquipError);
         pWriter.WriteShort((short) type);

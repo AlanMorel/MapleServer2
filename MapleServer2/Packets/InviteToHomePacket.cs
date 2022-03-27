@@ -8,7 +8,7 @@ public class InviteToHomePacket
 {
     public static PacketWriter InviteToHome(Player sourcePlayer)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.INVITE_TO_HOME);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.InviteToHome);
         pWriter.WriteByte(2);
         pWriter.WriteLong(sourcePlayer.AccountId);
         pWriter.WriteUnicodeString(sourcePlayer.Name);

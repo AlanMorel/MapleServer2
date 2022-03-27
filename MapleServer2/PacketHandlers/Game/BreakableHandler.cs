@@ -7,7 +7,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class BreakableHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.BREAKABLE;
+    public override RecvOp OpCode => RecvOp.Breakable;
 
     public override void Handle(GameSession session, PacketReader packet)
     {

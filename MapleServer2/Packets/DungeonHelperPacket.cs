@@ -14,7 +14,7 @@ public static class DungeonHelperPacket
 
     public static PacketWriter BroadcastAssist(Party party, int dungeonId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.DUNGEON_HELPER);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.DungeonHelper);
         pWriter.Write(DungeonHelperPacketMode.BroadcastAssist);
         pWriter.WriteInt(party.Id);
         pWriter.WriteUnicodeString();
@@ -27,7 +27,7 @@ public static class DungeonHelperPacket
 
     public static PacketWriter DisplayVetAndRookie(Party party)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.DUNGEON_HELPER);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.DungeonHelper);
         pWriter.Write(DungeonHelperPacketMode.DisplayVetAndRookie);
         pWriter.WriteByte(); // rookie count
         pWriter.WriteByte(); // veteran count

@@ -7,7 +7,7 @@ public static class DungeonWaitPacket
 {
     public static PacketWriter Show(int dungeonId, int playerCountDisplay)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.DUNGEON_WAIT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.DungeonWait);
         pWriter.WriteInt(dungeonId);
         pWriter.WriteInt(playerCountDisplay);
         return pWriter;

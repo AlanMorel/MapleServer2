@@ -10,7 +10,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class ItemSocketSystemHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.ITEM_SOCKET_SYSTEM;
+    public override RecvOp OpCode => RecvOp.ItemSocketSystem;
 
     private enum ItemSocketSystemMode : byte
     {

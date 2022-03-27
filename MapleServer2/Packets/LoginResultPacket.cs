@@ -44,7 +44,7 @@ public static class LoginResultPacket
 
     public static PacketWriter InitLogin(long accountId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.LOGIN_RESULT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.LoginResult);
         pWriter.Write(LoginModes.LoginOk);
         pWriter.WriteInt(); // Const
         pWriter.WriteUnicodeString(); // Ban reason
@@ -62,7 +62,7 @@ public static class LoginResultPacket
 
     public static PacketWriter IncorrectId()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.LOGIN_RESULT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.LoginResult);
         pWriter.Write(LoginModes.IncorrectId);
         pWriter.WriteZero(45);
 
@@ -71,7 +71,7 @@ public static class LoginResultPacket
 
     public static PacketWriter IncorrectPassword()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.LOGIN_RESULT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.LoginResult);
         pWriter.Write(LoginModes.IncorrectPassword);
         pWriter.WriteZero(45);
 
@@ -80,7 +80,7 @@ public static class LoginResultPacket
 
     public static PacketWriter AccountAlreadyLoggedIn()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.LOGIN_RESULT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.LoginResult);
         pWriter.Write(LoginModes.AccountAlreadyLoggedIn);
         pWriter.WriteZero(45);
 
@@ -89,7 +89,7 @@ public static class LoginResultPacket
 
     public static PacketWriter AccountBanned()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.LOGIN_RESULT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.LoginResult);
         pWriter.Write(LoginModes.AccountSuspended);
         pWriter.WriteInt(); // Const
         pWriter.WriteUnicodeString(); // Ban reason
@@ -107,7 +107,7 @@ public static class LoginResultPacket
 
     public static PacketWriter AccountNotInBeta()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.LOGIN_RESULT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.LoginResult);
         pWriter.Write(LoginModes.AccountNotInBeta);
         pWriter.WriteZero(45);
 

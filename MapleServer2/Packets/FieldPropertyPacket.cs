@@ -12,7 +12,7 @@ public static class FieldPropertyPacket
 
     public static PacketWriter ChangeGravity(float value)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_PROPERTY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FieldProperty);
         pWriter.Write(FieldPropertyMode.ChangeGravity);
         pWriter.WriteByte(1);
         pWriter.WriteFloat(value);

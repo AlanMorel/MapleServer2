@@ -16,7 +16,7 @@ namespace MapleServer2.PacketHandlers.Common;
 
 public class ResponseKeyHandler : CommonPacketHandler
 {
-    public override RecvOp OpCode => RecvOp.RESPONSE_KEY;
+    public override RecvOp OpCode => RecvOp.ResponseKey;
 
     public override void Handle(GameSession session, PacketReader packet)
     {

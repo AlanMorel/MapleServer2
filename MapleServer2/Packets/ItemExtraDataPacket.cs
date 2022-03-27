@@ -8,7 +8,7 @@ public static class ItemExtraDataPacket
 {
     public static PacketWriter Update(IFieldObject<Player> player, Item item)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_EXTRA_DATA);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemExtraData);
         pWriter.WriteInt(player.ObjectId);
         pWriter.WriteLong(item.Uid);
         return pWriter;

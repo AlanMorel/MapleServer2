@@ -13,7 +13,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class AttendanceHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.ATTENDANCE;
+    public override RecvOp OpCode => RecvOp.Attendance;
 
     private enum AttendanceMode : byte
     {

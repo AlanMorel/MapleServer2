@@ -16,7 +16,7 @@ public static class SkillBookTreePacket
 
     public static PacketWriter Open(Player player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_BOOK_TREE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.SkillBooKTree);
 
         // Writes only skills that are learned and for the job rank tab that is opened also doesn't write default passive skills
         pWriter.Write(SkillBookTreeMode.Open);
@@ -42,7 +42,7 @@ public static class SkillBookTreePacket
 
     public static PacketWriter Save(Player player, long selectedTab)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_BOOK_TREE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.SkillBooKTree);
 
         pWriter.Write(SkillBookTreeMode.Save);
         pWriter.WriteLong(player.ActiveSkillTabId);
@@ -54,7 +54,7 @@ public static class SkillBookTreePacket
 
     public static PacketWriter Rename(long id, string name)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_BOOK_TREE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.SkillBooKTree);
         pWriter.Write(SkillBookTreeMode.Rename);
         pWriter.WriteLong(id);
         pWriter.WriteUnicodeString(name);
@@ -65,7 +65,7 @@ public static class SkillBookTreePacket
 
     public static PacketWriter AddTab(Player player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_BOOK_TREE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.SkillBooKTree);
 
         pWriter.Write(SkillBookTreeMode.AddTab);
         pWriter.WriteInt(2);

@@ -8,7 +8,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class ChangeAttributesScrollHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.CHANGE_ATTRIBUTES_SCROLL;
+    public override RecvOp OpCode => RecvOp.ChangeAttributeScroll;
 
     private enum ChangeAttributeMode : byte
     {

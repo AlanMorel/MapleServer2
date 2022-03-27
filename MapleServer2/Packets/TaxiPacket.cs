@@ -7,7 +7,7 @@ public static class TaxiPacket
 {
     public static PacketWriter DiscoverTaxi(int mapId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.TAXI);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Taxi);
         pWriter.WriteInt(1);
         pWriter.WriteInt(mapId);
         pWriter.WriteByte(1);

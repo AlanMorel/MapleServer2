@@ -11,7 +11,7 @@ public static class UserMoveByPortalPacket
     {
         coords.Z += 25; // make sure coord is above ground
 
-        PacketWriter pWriter = PacketWriter.Of(SendOp.USER_MOVE_BY_PORTAL);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.UserMoveByPortal);
         pWriter.WriteInt(fieldPlayer.ObjectId);
         pWriter.Write(coords);
         pWriter.Write(rotation);

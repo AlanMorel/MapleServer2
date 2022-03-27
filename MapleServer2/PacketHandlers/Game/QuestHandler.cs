@@ -13,7 +13,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class QuestHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.QUEST;
+    public override RecvOp OpCode => RecvOp.Quest;
 
     private enum QuestMode : byte
     {

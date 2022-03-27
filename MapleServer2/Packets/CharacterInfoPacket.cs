@@ -8,7 +8,7 @@ public class CharacterInfoPacket
 {
     public static PacketWriter WriteCharacterInfo(long characterId, Player player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_INFO);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.CharInfo);
         pWriter.WriteLong(characterId);
         pWriter.WriteBool(player != null);
         if (player == null)

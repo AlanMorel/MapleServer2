@@ -14,7 +14,7 @@ public static class EmotePacket
 
     public static PacketWriter LoadEmotes(Player player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.EMOTION);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Emotion);
         pWriter.Write(EmotePacketMode.LoadEmotes);
         pWriter.WriteInt(player.Emotes.Count);
         foreach (int emoteId in player.Emotes)
@@ -28,7 +28,7 @@ public static class EmotePacket
 
     public static PacketWriter LearnEmote(int emoteId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.EMOTION);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Emotion);
         pWriter.Write(EmotePacketMode.LearnEmote);
         pWriter.WriteInt(emoteId);
         pWriter.WriteInt(1); // quantity

@@ -28,7 +28,7 @@ public class BuddyPacket
 
     public static PacketWriter LoadList(List<Buddy> buddyList)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
         pWriter.Write(BuddyPacketMode.LoadList);
         pWriter.WriteInt(buddyList.Count);
         foreach (Buddy buddy in buddyList)
@@ -40,7 +40,7 @@ public class BuddyPacket
 
     public static PacketWriter Notice(byte notice, string playerName)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
         pWriter.Write(BuddyPacketMode.Notice);
         pWriter.WriteByte(notice);
         pWriter.WriteUnicodeString(playerName);
@@ -50,7 +50,7 @@ public class BuddyPacket
 
     public static PacketWriter AcceptRequest(Buddy buddy)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
         pWriter.Write(BuddyPacketMode.AcceptRequest);
         pWriter.WriteByte();
         pWriter.WriteLong(buddy.SharedId);
@@ -62,7 +62,7 @@ public class BuddyPacket
 
     public static PacketWriter DeclineRequest(Buddy buddy)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
         pWriter.Write(BuddyPacketMode.DeclineRequest);
         pWriter.WriteByte();
         pWriter.WriteLong(buddy.SharedId);
@@ -71,7 +71,7 @@ public class BuddyPacket
 
     public static PacketWriter Block(Buddy buddy)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
         pWriter.Write(BuddyPacketMode.Block);
         pWriter.WriteByte();
         pWriter.WriteLong(buddy.SharedId);
@@ -82,7 +82,7 @@ public class BuddyPacket
 
     public static PacketWriter Unblock(Buddy buddy)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
         pWriter.Write(BuddyPacketMode.Unblock);
         pWriter.WriteByte();
         pWriter.WriteLong(buddy.SharedId);
@@ -91,7 +91,7 @@ public class BuddyPacket
 
     public static PacketWriter RemoveFromList(Buddy buddy)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
         pWriter.Write(BuddyPacketMode.RemoveFromList);
         pWriter.WriteByte();
         pWriter.WriteLong(buddy.SharedId);
@@ -103,7 +103,7 @@ public class BuddyPacket
 
     public static PacketWriter UpdateBuddy(Buddy buddy)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
         pWriter.Write(BuddyPacketMode.UpdateBuddy);
         WriteBuddy(buddy, pWriter);
         return pWriter;
@@ -111,7 +111,7 @@ public class BuddyPacket
 
     public static PacketWriter AddToList(Buddy buddy)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
         pWriter.Write(BuddyPacketMode.AddToList);
         WriteBuddy(buddy, pWriter);
         return pWriter;
@@ -119,7 +119,7 @@ public class BuddyPacket
 
     public static PacketWriter EditBlockReason(Buddy buddy)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
         pWriter.Write(BuddyPacketMode.EditBlockReason);
         pWriter.WriteByte();
         pWriter.WriteLong(buddy.SharedId);
@@ -132,7 +132,7 @@ public class BuddyPacket
 
     public static PacketWriter AcceptNotification(Buddy buddy)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
         pWriter.Write(BuddyPacketMode.AcceptNotification);
         pWriter.WriteLong(buddy.SharedId);
         return pWriter;
@@ -140,7 +140,7 @@ public class BuddyPacket
 
     public static PacketWriter BlockNotification(string playerName)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
         pWriter.Write(BuddyPacketMode.BlockNotification);
         pWriter.WriteByte();
         pWriter.WriteUnicodeString(playerName);
@@ -149,7 +149,7 @@ public class BuddyPacket
 
     public static PacketWriter LoginLogoutNotification(Buddy buddy)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
         pWriter.Write(BuddyPacketMode.LoginLogoutNotification);
         pWriter.WriteBool(!buddy.Friend?.Session?.Connected() ?? true);
         pWriter.WriteLong(buddy.SharedId);
@@ -159,14 +159,14 @@ public class BuddyPacket
 
     public static PacketWriter Initialize()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
         pWriter.Write(BuddyPacketMode.Initialize);
         return pWriter;
     }
 
     public static PacketWriter CancelRequest(Buddy buddy)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
         pWriter.Write(BuddyPacketMode.CancelRequest);
         pWriter.WriteByte();
         pWriter.WriteLong(buddy.SharedId);
@@ -175,7 +175,7 @@ public class BuddyPacket
 
     public static PacketWriter EndList(int buddyCount)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
         pWriter.Write(BuddyPacketMode.EndList);
         pWriter.WriteInt(buddyCount);
         return pWriter;

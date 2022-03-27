@@ -7,7 +7,7 @@ public static class MoveResultPacket
 {
     public static PacketWriter SendStatus(byte status)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MOVE_RESULT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MoveResult);
         pWriter.WriteByte(status); // 0 = success, others = different error messages
 
         return pWriter;

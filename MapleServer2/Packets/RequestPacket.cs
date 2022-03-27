@@ -7,17 +7,17 @@ public static class RequestPacket
 {
     public static PacketWriter Login()
     {
-        return PacketWriter.Of(SendOp.REQUEST_LOGIN);
+        return PacketWriter.Of(SendOp.RequestLogin);
     }
 
     public static PacketWriter Key()
     {
-        return PacketWriter.Of(SendOp.REQUEST_KEY);
+        return PacketWriter.Of(SendOp.RequestKey);
     }
 
     public static PacketWriter Heartbeat(int key)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.REQUEST_HEARTBEAT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.RequestHeartBeat);
         pWriter.WriteInt(key);
 
         return pWriter;
@@ -25,7 +25,7 @@ public static class RequestPacket
 
     public static PacketWriter TickSync()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.REQUEST_CLIENTTICK_SYNC);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.RequestClientTickSync);
         pWriter.WriteInt(Environment.TickCount);
 
         return pWriter;

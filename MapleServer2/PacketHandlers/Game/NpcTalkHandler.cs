@@ -14,7 +14,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class NpcTalkHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.NPC_TALK;
+    public override RecvOp OpCode => RecvOp.NpcTalk;
 
     private enum NpcTalkMode : byte
     {

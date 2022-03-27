@@ -12,7 +12,7 @@ public static class SystemShopPacket
 
     public static PacketWriter Open()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SYSTEM_SHOP);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.SystemShop);
         pWriter.Write(SystemShopPacketMode.Open);
         pWriter.WriteByte(0x1);
         return pWriter;

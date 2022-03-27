@@ -39,7 +39,7 @@ public class HomeActionPacket
     {
         CubePortalSettings portalSettings = cube.PortalSettings;
 
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_HOME_ACTION);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseHomeAction);
 
         pWriter.Write(HomeActionMode.PortalCube);
         pWriter.WriteByte();
@@ -60,7 +60,7 @@ public class HomeActionPacket
 
     public static PacketWriter HostAlarm(string message)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_HOME_ACTION);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseHomeAction);
         pWriter.Write(HomeActionMode.Alarm);
         pWriter.WriteByte();
         pWriter.WriteInt();
@@ -71,7 +71,7 @@ public class HomeActionPacket
 
     public static PacketWriter SurveyMessage()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_HOME_ACTION);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseHomeAction);
         pWriter.Write(HomeActionMode.Survey);
         pWriter.Write(SurveyMode.Message);
 
@@ -80,7 +80,7 @@ public class HomeActionPacket
 
     public static PacketWriter SurveyQuestion(HomeSurvey survey)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_HOME_ACTION);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseHomeAction);
         pWriter.Write(HomeActionMode.Survey);
         pWriter.Write(SurveyMode.Question);
         pWriter.WriteUnicodeString(survey.Question);
@@ -91,7 +91,7 @@ public class HomeActionPacket
 
     public static PacketWriter SurveyAddOption(HomeSurvey survey)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_HOME_ACTION);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseHomeAction);
         pWriter.Write(HomeActionMode.Survey);
         pWriter.Write(SurveyMode.AddOption);
         pWriter.WriteUnicodeString(survey.Question);
@@ -104,7 +104,7 @@ public class HomeActionPacket
 
     public static PacketWriter SurveyStart(HomeSurvey survey)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_HOME_ACTION);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseHomeAction);
         pWriter.Write(HomeActionMode.Survey);
         pWriter.Write(SurveyMode.Start);
         pWriter.WriteLong(survey.OwnerId); // character id
@@ -122,7 +122,7 @@ public class HomeActionPacket
 
     public static PacketWriter SurveyAnswer(string name)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_HOME_ACTION);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseHomeAction);
         pWriter.Write(HomeActionMode.Survey);
         pWriter.Write(SurveyMode.Answer);
         pWriter.WriteUnicodeString(name);
@@ -132,7 +132,7 @@ public class HomeActionPacket
 
     public static PacketWriter SurveyEnd(HomeSurvey survey)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_HOME_ACTION);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseHomeAction);
         pWriter.Write(HomeActionMode.Survey);
         pWriter.Write(SurveyMode.End);
         pWriter.WriteLong(survey.Id);
@@ -171,7 +171,7 @@ public class HomeActionPacket
 
     public static PacketWriter AddBall(IFieldObject<GuideObject> guide)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_HOME_ACTION);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseHomeAction);
         pWriter.Write(HomeActionMode.Ball);
         pWriter.Write(BallMode.Add);
         pWriter.WriteInt(guide.ObjectId);
@@ -184,7 +184,7 @@ public class HomeActionPacket
 
     public static PacketWriter RemoveBall(IFieldObject<GuideObject> guide)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_HOME_ACTION);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseHomeAction);
         pWriter.Write(HomeActionMode.Ball);
         pWriter.Write(BallMode.Remove);
         pWriter.WriteInt(guide.ObjectId);
@@ -194,7 +194,7 @@ public class HomeActionPacket
 
     public static PacketWriter UpdateBall(IFieldObject<GuideObject> guide, CoordF velocity1, CoordF velocity2)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_HOME_ACTION);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseHomeAction);
         pWriter.Write(HomeActionMode.Ball);
         pWriter.Write(BallMode.Update);
         pWriter.WriteInt(guide.ObjectId);
@@ -208,7 +208,7 @@ public class HomeActionPacket
 
     public static PacketWriter HitBall(IFieldObject<GuideObject> guide, CoordF velocity)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_HOME_ACTION);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseHomeAction);
         pWriter.Write(HomeActionMode.Ball);
         pWriter.Write(BallMode.Hit);
         pWriter.WriteInt(guide.ObjectId);
@@ -221,7 +221,7 @@ public class HomeActionPacket
 
     public static PacketWriter Roll(Player player, int randomNumber)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_HOME_ACTION);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseHomeAction);
         pWriter.Write(HomeActionMode.Roll);
         pWriter.WriteLong(player.CharacterId);
         pWriter.WriteUnicodeString(player.Name);

@@ -9,7 +9,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class RideSyncHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.RIDE_SYNC;
+    public override RecvOp OpCode => RecvOp.RideSync;
 
     public override void Handle(GameSession session, PacketReader packet)
     {

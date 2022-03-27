@@ -14,7 +14,7 @@ public static class MacroPacket
 
     public static PacketWriter OpenSettings(List<Macro> compactControls)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MACRO);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Macro);
         pWriter.Write(MacroPacketMode.OpenSettings);
         WriteMacroList(pWriter, compactControls);
         return pWriter;
@@ -22,7 +22,7 @@ public static class MacroPacket
 
     public static PacketWriter LoadControls(List<Macro> compactControls)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MACRO);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Macro);
         pWriter.Write(MacroPacketMode.LoadControls);
         WriteMacroList(pWriter, compactControls);
         return pWriter;

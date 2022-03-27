@@ -7,7 +7,7 @@ public static class StoryBookPacket
 {
     public static PacketWriter Open(int storyBookId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.STORY_BOOK);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.StoryBook);
         pWriter.WriteInt(storyBookId);
         return pWriter;
     }

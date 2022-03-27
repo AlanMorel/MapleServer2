@@ -11,7 +11,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class PremiumClubHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.PREMIUM_CLUB;
+    public override RecvOp OpCode => RecvOp.PremiumClub;
 
     private enum PremiumClubMode : byte
     {

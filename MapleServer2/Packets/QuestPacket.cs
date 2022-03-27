@@ -23,7 +23,7 @@ public static class QuestPacket
 
     public static PacketWriter SendDialogQuest(int objectId, List<QuestStatus> questList)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Quest);
         pWriter.Write(QuestType.Dialog);
         pWriter.WriteInt(objectId);
         pWriter.WriteInt(questList.Count);
@@ -37,7 +37,7 @@ public static class QuestPacket
 
     public static PacketWriter AcceptQuest(QuestStatus quest)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Quest);
         pWriter.Write(QuestType.AcceptQuest);
         pWriter.WriteInt(quest.Id);
         pWriter.WriteLong(TimeInfo.Now());
@@ -53,7 +53,7 @@ public static class QuestPacket
 
     public static PacketWriter UpdateCondition(int questId, List<Condition> conditions)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Quest);
         pWriter.Write(QuestType.UpdateCondition);
         pWriter.WriteInt(questId);
         pWriter.WriteInt(conditions.Count);
@@ -68,7 +68,7 @@ public static class QuestPacket
     // Animation: Animates the quest helper
     public static PacketWriter CompleteQuest(int questId, bool animation)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Quest);
         pWriter.Write(QuestType.CompleteQuest);
         pWriter.WriteInt(questId);
         pWriter.WriteInt(animation ? 1 : 0);
@@ -79,7 +79,7 @@ public static class QuestPacket
 
     public static PacketWriter ToggleTracking(int questId, bool tracked)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Quest);
         pWriter.Write(QuestType.ToggleTracking);
         pWriter.WriteInt(questId);
         pWriter.WriteBool(tracked);
@@ -89,7 +89,7 @@ public static class QuestPacket
 
     public static PacketWriter StartList()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Quest);
         pWriter.Write(QuestType.StartList);
         pWriter.WriteLong(); // unknown, sometimes it has an value
 
@@ -98,7 +98,7 @@ public static class QuestPacket
 
     public static PacketWriter SendQuests(List<QuestStatus> questList)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Quest);
         pWriter.Write(QuestType.SendQuests);
 
         pWriter.WriteInt(questList.Count);
@@ -142,7 +142,7 @@ public static class QuestPacket
 
     public static PacketWriter EndList()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Quest);
         pWriter.Write(QuestType.EndList);
         pWriter.WriteInt();
 
@@ -151,7 +151,7 @@ public static class QuestPacket
 
     public static PacketWriter Packet1F()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Quest);
         pWriter.Write(QuestType.FameMissions);
         pWriter.WriteByte();
         pWriter.WriteInt();
@@ -161,7 +161,7 @@ public static class QuestPacket
 
     public static PacketWriter Packet20()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Quest);
         pWriter.Write(QuestType.FameMissions2);
         pWriter.WriteByte();
         pWriter.WriteInt();

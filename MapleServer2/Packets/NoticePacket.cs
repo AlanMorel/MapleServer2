@@ -13,7 +13,7 @@ public static class NoticePacket
 
     public static PacketWriter Notice(string message, NoticeType type = NoticeType.Mint, short durationSec = 0)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.NOTICE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Notice);
         pWriter.Write(NoticePacketMode.Send);
         pWriter.WriteShort((short) type);
         pWriter.WriteByte();
@@ -29,7 +29,7 @@ public static class NoticePacket
     public static PacketWriter Notice(SystemNotice notice, NoticeType type = NoticeType.Mint, List<string> parameters = null, short durationSec = 0)
     {
         parameters ??= new();
-        PacketWriter pWriter = PacketWriter.Of(SendOp.NOTICE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Notice);
         pWriter.Write(NoticePacketMode.Send);
         pWriter.WriteShort((short) type);
         pWriter.WriteByte(0x1);

@@ -8,7 +8,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class RequestMoneyPickupHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.REQUEST_MONEY_PICKUP;
+    public override RecvOp OpCode => RecvOp.RequestMoneyPickup;
 
     public override void Handle(GameSession session, PacketReader packet)
     {

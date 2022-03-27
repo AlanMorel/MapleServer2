@@ -7,7 +7,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class StateHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.STATE;
+    public override RecvOp OpCode => RecvOp.State;
 
     private enum StateHandlerMode : byte
     {

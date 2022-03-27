@@ -7,7 +7,7 @@ public static class LevelUpPacket
 {
     public static PacketWriter LevelUp(int playerObjectId, short level)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.LEVEL_UP);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.LevelUp);
 
         pWriter.WriteInt(playerObjectId);
         pWriter.WriteShort(level);

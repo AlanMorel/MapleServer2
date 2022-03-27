@@ -14,7 +14,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class GuildHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.GUILD;
+    public override RecvOp OpCode => RecvOp.Guild;
 
     private enum GuildMode : byte
     {

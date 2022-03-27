@@ -20,7 +20,7 @@ public static class BuddyEmotePacket
 
     public static PacketWriter SendRequest(int buddyEmoteId, Player sender)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY_EMOTE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.BuddyEmote);
         pWriter.Write(BuddyEmotePacketMode.SendRequest);
         pWriter.WriteInt(buddyEmoteId);
         pWriter.WriteLong(sender.CharacterId);
@@ -30,7 +30,7 @@ public static class BuddyEmotePacket
 
     public static PacketWriter ConfirmSendRequest(Player player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY_EMOTE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.BuddyEmote);
         pWriter.Write(BuddyEmotePacketMode.ConfirmSendRequest);
         pWriter.WriteLong(player.CharacterId);
         return pWriter;
@@ -38,7 +38,7 @@ public static class BuddyEmotePacket
 
     public static PacketWriter LearnEmote()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY_EMOTE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.BuddyEmote);
         pWriter.Write(BuddyEmotePacketMode.LearnEmote);
         pWriter.WriteInt(); // emoteID
         pWriter.WriteInt(1); // quantity
@@ -48,7 +48,7 @@ public static class BuddyEmotePacket
 
     public static PacketWriter SendAccept(int buddyEmoteId, Player player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY_EMOTE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.BuddyEmote);
         pWriter.Write(BuddyEmotePacketMode.AcceptEmote);
         pWriter.WriteInt(buddyEmoteId);
         pWriter.WriteLong(player.CharacterId);
@@ -57,7 +57,7 @@ public static class BuddyEmotePacket
 
     public static PacketWriter DeclineEmote(int buddyEmoteId, Player player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY_EMOTE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.BuddyEmote);
         pWriter.Write(BuddyEmotePacketMode.DeclineEmote);
         pWriter.WriteInt(buddyEmoteId);
         pWriter.WriteLong(player.CharacterId);
@@ -66,7 +66,7 @@ public static class BuddyEmotePacket
 
     public static PacketWriter StartEmote(int buddyEmoteId, Player player1, Player player2, CoordF coords, int rotation)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY_EMOTE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.BuddyEmote);
         pWriter.Write(BuddyEmotePacketMode.StartEmote);
         pWriter.WriteInt(buddyEmoteId);
         pWriter.WriteLong(player1.CharacterId);
@@ -81,7 +81,7 @@ public static class BuddyEmotePacket
 
     public static PacketWriter StopEmote(int buddyEmoteId, Player player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY_EMOTE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.BuddyEmote);
         pWriter.Write(BuddyEmotePacketMode.StopEmote);
         pWriter.WriteInt(buddyEmoteId);
         pWriter.WriteLong(player.CharacterId);

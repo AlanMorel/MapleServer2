@@ -10,7 +10,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class LapenshardHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.ITEM_LAPENSHARD;
+    public override RecvOp OpCode => RecvOp.ItemLapenshard;
 
     private enum LapenshardMode : byte
     {

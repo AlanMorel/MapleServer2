@@ -11,7 +11,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 internal class RequestTaxiHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.REQUEST_TAXI;
+    public override RecvOp OpCode => RecvOp.RequestTaxi;
 
     private enum RequestTaxiMode : byte
     {

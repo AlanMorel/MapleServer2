@@ -6,7 +6,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class RequestItemLockHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.REQUEST_ITEM_LOCK;
+    public override RecvOp OpCode => RecvOp.RequestItemLock;
 
     private enum ItemLockMode : byte
     {

@@ -16,7 +16,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class RequestCubeHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.REQUEST_CUBE;
+    public override RecvOp OpCode => RecvOp.RequestCube;
 
     private enum RequestCubeMode : byte
     {

@@ -7,7 +7,7 @@ public static class SetCameraPacket
 {
     public static PacketWriter Set(float interpolationTime)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SET_CAMERA);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.SetCamera);
         pWriter.WriteFloat(interpolationTime);
         return pWriter;
     }

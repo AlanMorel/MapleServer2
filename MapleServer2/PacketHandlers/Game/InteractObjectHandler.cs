@@ -14,7 +14,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 internal class InteractObjectHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.INTERACT_OBJECT;
+    public override RecvOp OpCode => RecvOp.InteractObject;
 
     private enum InteractObjectMode : byte
     {

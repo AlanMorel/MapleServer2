@@ -9,7 +9,7 @@ namespace MapleServer2.PacketHandlers.Common;
 
 public class ResponseVersionHandler : CommonPacketHandler
 {
-    public override RecvOp OpCode => RecvOp.RESPONSE_VERSION;
+    public override RecvOp OpCode => RecvOp.ResponseVersion;
 
     public override void Handle(LoginSession session, PacketReader packet)
     {
@@ -23,7 +23,7 @@ public class ResponseVersionHandler : CommonPacketHandler
         HandleCommon(session, packet);
 
         // No idea what this is, but server sends it when logging into game server
-        PacketWriter pWriter = PacketWriter.Of(SendOp.UNKNOWN_SYNC);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.UnknownSync);
         pWriter.WriteByte();
         pWriter.WriteInt(session.ClientTick);
 

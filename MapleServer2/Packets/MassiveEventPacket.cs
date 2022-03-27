@@ -17,7 +17,7 @@ public static class MassiveEventPacket
 
     public static PacketWriter RoundBar(int currentRound, int lastRound, int startFromRound)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MASSIVE_EVENT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MassiveEvent);
         pWriter.Write(MassiveEventPacketMode.RoundBar);
         pWriter.WriteInt(currentRound);
         pWriter.WriteInt(lastRound);
@@ -28,7 +28,7 @@ public static class MassiveEventPacket
 
     public static PacketWriter Round(string text, int round, int countFrom, int soundType = 0)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MASSIVE_EVENT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MassiveEvent);
         pWriter.Write(MassiveEventPacketMode.RoundBanner);
         pWriter.WriteUnicodeString(text);
         pWriter.WriteInt(round);
@@ -39,7 +39,7 @@ public static class MassiveEventPacket
 
     public static PacketWriter TextBanner(EventBannerType type, string script, int duration)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MASSIVE_EVENT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MassiveEvent);
         pWriter.Write(MassiveEventPacketMode.TextBanner);
         pWriter.Write(type);
         pWriter.WriteUnicodeString(script);
@@ -49,7 +49,7 @@ public static class MassiveEventPacket
 
     public static PacketWriter RoundHeader(int round, bool finalRound, int duration)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MASSIVE_EVENT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MassiveEvent);
         pWriter.Write(MassiveEventPacketMode.RoundHeader);
         pWriter.WriteInt(round);
         pWriter.WriteBool(finalRound);
@@ -59,7 +59,7 @@ public static class MassiveEventPacket
 
     public static PacketWriter PrepareCountdown(int countFrom)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MASSIVE_EVENT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MassiveEvent);
         pWriter.Write(MassiveEventPacketMode.PrepareCountdown);
         pWriter.WriteInt(countFrom);
         return pWriter;

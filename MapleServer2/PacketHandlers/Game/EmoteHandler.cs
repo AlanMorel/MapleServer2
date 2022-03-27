@@ -8,7 +8,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class EmoteHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.EMOTION;
+    public override RecvOp OpCode => RecvOp.Emotion;
 
     private enum EmoteMode : byte
     {

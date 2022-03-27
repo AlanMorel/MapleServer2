@@ -8,7 +8,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class ChannelHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.CHANNEL;
+    public override RecvOp OpCode => RecvOp.Channel;
 
     public override void Handle(GameSession session, PacketReader packet)
     {

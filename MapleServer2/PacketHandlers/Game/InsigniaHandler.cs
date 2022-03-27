@@ -8,7 +8,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class InsigniaHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.INSIGNIA;
+    public override RecvOp OpCode => RecvOp.Insignia;
 
     public override void Handle(GameSession session, PacketReader packet)
     {

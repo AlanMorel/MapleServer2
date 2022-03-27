@@ -9,7 +9,7 @@ public static class ItemLinkPacket
 {
     public static PacketWriter SendLinkItem(List<Item> items)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.USER_CHAT_ITEM_LINK);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.UserChatItemLink);
         pWriter.WriteInt(items.Count);
         foreach (Item item in items)
         {

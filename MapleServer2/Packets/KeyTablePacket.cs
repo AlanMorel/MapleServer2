@@ -15,7 +15,7 @@ public static class KeyTablePacket
 
     public static PacketWriter SendFullOptions(GameOptions options)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.KEY_TABLE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.KeyTable);
         pWriter.Write(KeyTablePacketMode.SendFullOptions);
         pWriter.WriteBool(false); // if true, load DefaultKey.xml
 
@@ -34,7 +34,7 @@ public static class KeyTablePacket
 
     public static PacketWriter SendHotbars(GameOptions options)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.KEY_TABLE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.KeyTable);
         pWriter.Write(KeyTablePacketMode.SendHotbars);
         pWriter.WriteHotbars(options);
 
@@ -43,7 +43,7 @@ public static class KeyTablePacket
 
     public static PacketWriter AskKeyboardOrMouse()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.KEY_TABLE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.KeyTable);
         pWriter.Write(KeyTablePacketMode.AskKeyboardOrMouse);
 
         return pWriter;

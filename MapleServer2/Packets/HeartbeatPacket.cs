@@ -7,7 +7,7 @@ public static class HeartbeatPacket
 {
     public static PacketWriter Request()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.REQUEST_HEARTBEAT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.RequestHeartBeat);
         pWriter.WriteInt(Environment.TickCount);
         return pWriter;
     }

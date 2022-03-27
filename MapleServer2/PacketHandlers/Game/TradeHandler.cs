@@ -9,7 +9,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class TradeHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.TRADE;
+    public override RecvOp OpCode => RecvOp.Trade;
 
     private enum TradeModeType : byte
     {

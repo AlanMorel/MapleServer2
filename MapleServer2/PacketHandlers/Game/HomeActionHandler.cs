@@ -13,7 +13,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class HomeActionHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.HOME_ACTION;
+    public override RecvOp OpCode => RecvOp.HomeAction;
 
     private enum HomeActionMode : byte
     {

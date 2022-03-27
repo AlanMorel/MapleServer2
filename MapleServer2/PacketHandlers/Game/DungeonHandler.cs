@@ -10,7 +10,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class DungeonHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.ROOM_DUNGEON;
+    public override RecvOp OpCode => RecvOp.RoomDungeon;
 
     private enum DungeonMode : byte
     {

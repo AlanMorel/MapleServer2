@@ -7,7 +7,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class StateSkillHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.STATE_SKILL;
+    public override RecvOp OpCode => RecvOp.StateSkill;
 
     public override void Handle(GameSession session, PacketReader packet)
     {

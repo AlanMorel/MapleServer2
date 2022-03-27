@@ -13,7 +13,7 @@ namespace MapleServer2.PacketHandlers.Game;
 // Currently I am just updating animation instantly.
 public class UserSyncHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.USER_SYNC;
+    public override RecvOp OpCode => RecvOp.UserSync;
 
     public override void Handle(GameSession session, PacketReader packet)
     {
