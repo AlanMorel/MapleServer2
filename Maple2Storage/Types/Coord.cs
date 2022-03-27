@@ -16,6 +16,7 @@ public struct CoordF
     public float Z { get; set; }
 
     #region Constructors
+
     public static CoordF From(float x, float y, float z)
     {
         return new()
@@ -64,9 +65,11 @@ public struct CoordF
             (sbyte) (Y / Block.BLOCK_SIZE),
             (sbyte) (Z / Block.BLOCK_SIZE));
     }
+
     #endregion
 
     #region Operators
+
     public static bool operator ==(CoordF left, CoordF right)
     {
         return Equals(left, right);
@@ -80,8 +83,8 @@ public struct CoordF
     public static CoordF operator +(CoordF left, CoordF right)
     {
         return From(left.X + right.X,
-                    left.Y + right.Y,
-                    left.Z + right.Z);
+            left.Y + right.Y,
+            left.Z + right.Z);
     }
 
     public static CoordF operator +(CoordF coord, float value)
@@ -103,8 +106,8 @@ public struct CoordF
     public static CoordF operator -(CoordF left, CoordF right)
     {
         return From(left.X - right.X,
-                    left.Y - right.Y,
-                    left.Z - right.Z);
+            left.Y - right.Y,
+            left.Z - right.Z);
     }
 
     public static CoordF operator -(CoordF coord, float value)
@@ -126,9 +129,10 @@ public struct CoordF
         double cos = Math.Cos(angle);
         double sin = Math.Sin(angle);
         return From((float) (coord.X * cos - coord.Y * sin),
-                    (float) (coord.X * sin + coord.Y * cos),
-                    coord.Z);
+            (float) (coord.X * sin + coord.Y * cos),
+            coord.Z);
     }
+
     #endregion
 
     public float Length()
@@ -147,6 +151,7 @@ public struct CoordF
     }
 
     #region Overrides
+
     public bool Equals(CoordF other)
     {
         return X == other.X && Y == other.Y && Z == other.Z;
@@ -171,12 +176,15 @@ public struct CoordF
     {
         return HashCode.Combine(X, Y, Z);
     }
+
     public override string ToString()
     {
         return $"CoordF({X}, {Y}, {Z})";
     }
+
     #endregion
 }
+
 [XmlType]
 [StructLayout(LayoutKind.Sequential, Pack = 2, Size = 6)]
 public struct CoordS
@@ -189,6 +197,7 @@ public struct CoordS
     public short Z { get; set; }
 
     #region Constructors
+
     public static CoordS From(short x, short y, short z)
     {
         return new()
@@ -198,7 +207,7 @@ public struct CoordS
             Z = z
         };
     }
-    
+
     public static CoordS From(int x, int y, int z)
     {
         return new()
@@ -247,9 +256,11 @@ public struct CoordS
             (sbyte) (Y / Block.BLOCK_SIZE),
             (sbyte) (Z / Block.BLOCK_SIZE));
     }
+
     #endregion
 
     #region Operators
+
     public static bool operator ==(CoordS left, CoordS right)
     {
         return Equals(left, right);
@@ -263,36 +274,36 @@ public struct CoordS
     public static CoordS operator +(CoordS left, CoordS right)
     {
         return From((short) (left.X + right.X),
-                    (short) (left.Y + right.Y),
-                    (short) (left.Z + right.Z));
+            (short) (left.Y + right.Y),
+            (short) (left.Z + right.Z));
     }
 
     public static CoordS operator +(CoordS coord, short value)
     {
         return From((short) (coord.X + value),
-                    (short) (coord.Y + value),
-                    (short) (coord.Z + value));
+            (short) (coord.Y + value),
+            (short) (coord.Z + value));
     }
 
     public static CoordS operator +(short value, CoordS coord)
     {
         return From((short) (coord.X + value),
-                    (short) (coord.Y + value),
-                    (short) (coord.Z + value));
+            (short) (coord.Y + value),
+            (short) (coord.Z + value));
     }
 
     public static CoordS operator -(CoordS left, CoordS right)
     {
         return From((short) (left.X - right.X),
-                    (short) (left.Y - right.Y),
-                    (short) (left.Z - right.Z));
+            (short) (left.Y - right.Y),
+            (short) (left.Z - right.Z));
     }
 
     public static CoordS operator -(CoordS coord, short value)
     {
         return From((short) (coord.X - value),
-                    (short) (coord.Y - value),
-                    (short) (coord.Z - value));
+            (short) (coord.Y - value),
+            (short) (coord.Z - value));
     }
 
     public static short operator *(CoordS left, CoordS right)
@@ -306,9 +317,10 @@ public struct CoordS
         double cos = Math.Cos(angle);
         double sin = Math.Sin(angle);
         return From((short) (coord.X * cos - coord.Y * sin),
-                    (short) (coord.X * sin + coord.Y * cos),
-                    coord.Z);
+            (short) (coord.X * sin + coord.Y * cos),
+            coord.Z);
     }
+
     #endregion
 
     public short Length()
@@ -327,6 +339,7 @@ public struct CoordS
     }
 
     #region Overrides
+
     public bool Equals(CoordS other)
     {
         return X == other.X && Y == other.Y && Z == other.Z;
@@ -351,12 +364,15 @@ public struct CoordS
     {
         return HashCode.Combine(X, Y, Z);
     }
+
     public override string ToString()
     {
         return $"CoordS({X}, {Y}, {Z})";
     }
+
     #endregion
 }
+
 [XmlType]
 [StructLayout(LayoutKind.Sequential, Pack = 2, Size = 3)]
 public struct CoordB
@@ -369,6 +385,7 @@ public struct CoordB
     public sbyte Z { get; private set; }
 
     #region Constructors
+
     public static CoordB From(sbyte x, sbyte y, sbyte z)
     {
         return new()
@@ -423,9 +440,11 @@ public struct CoordB
             (short) (Y * Block.BLOCK_SIZE),
             (short) (Z * Block.BLOCK_SIZE));
     }
+
     #endregion
 
     #region Operators
+
     public static bool operator ==(CoordB left, CoordB right)
     {
         return Equals(left, right);
@@ -439,36 +458,36 @@ public struct CoordB
     public static CoordB operator +(CoordB left, CoordB right)
     {
         return From((sbyte) (left.X + right.X),
-                    (sbyte) (left.Y + right.Y),
-                    (sbyte) (left.Z + right.Z));
+            (sbyte) (left.Y + right.Y),
+            (sbyte) (left.Z + right.Z));
     }
 
     public static CoordB operator +(CoordB coord, short value)
     {
         return From((sbyte) (coord.X + value),
-                    (sbyte) (coord.Y + value),
-                    (sbyte) (coord.Z + value));
+            (sbyte) (coord.Y + value),
+            (sbyte) (coord.Z + value));
     }
 
     public static CoordB operator +(short value, CoordB coord)
     {
         return From((sbyte) (coord.X + value),
-                    (sbyte) (coord.Y + value),
-                    (sbyte) (coord.Z + value));
+            (sbyte) (coord.Y + value),
+            (sbyte) (coord.Z + value));
     }
 
     public static CoordB operator -(CoordB left, CoordB right)
     {
         return From((sbyte) (left.X - right.X),
-                    (sbyte) (left.Y - right.Y),
-                    (sbyte) (left.Z - right.Z));
+            (sbyte) (left.Y - right.Y),
+            (sbyte) (left.Z - right.Z));
     }
 
     public static CoordB operator -(CoordB coord, sbyte value)
     {
         return From((sbyte) (coord.X - value),
-                    (sbyte) (coord.Y - value),
-                    (sbyte) (coord.Z - value));
+            (sbyte) (coord.Y - value),
+            (sbyte) (coord.Z - value));
     }
 
     public static sbyte operator *(CoordB left, CoordB right)
@@ -482,9 +501,10 @@ public struct CoordB
         double cos = Math.Cos(angle);
         double sin = Math.Sin(angle);
         return From((sbyte) (coord.X * cos - coord.Y * sin),
-                    (sbyte) (coord.X * sin + coord.Y * cos),
-                    coord.Z);
+            (sbyte) (coord.X * sin + coord.Y * cos),
+            coord.Z);
     }
+
     #endregion
 
     public sbyte Length()
@@ -515,6 +535,7 @@ public struct CoordB
     }
 
     #region Overrides
+
     public bool Equals(CoordB other)
     {
         return X == other.X && Y == other.Y && Z == other.Z;
@@ -539,9 +560,11 @@ public struct CoordB
     {
         return HashCode.Combine(X, Y, Z);
     }
+
     public override string ToString()
     {
         return $"CoordB({X}, {Y}, {Z})";
     }
+
     #endregion
 }

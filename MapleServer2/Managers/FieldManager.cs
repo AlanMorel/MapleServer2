@@ -421,7 +421,6 @@ public partial class FieldManager : IDisposable
 
     private void AddMob(Mob fieldMob)
     {
-        
         State.AddMob(fieldMob);
 
         Broadcast(session =>
