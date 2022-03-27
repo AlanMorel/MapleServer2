@@ -2,7 +2,6 @@
 using System.Globalization;
 using System.Reflection;
 using GameDataParser.Files;
-using GameDataParser.Parsers;
 using Maple2Storage.Extensions;
 using Maple2Storage.Tools;
 using Maple2Storage.Types;

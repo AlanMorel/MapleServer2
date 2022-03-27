@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using Maple2.PathEngine;
-using Maple2.PathEngine.Types;
 using Maple2.Trigger;
 using Maple2.Trigger.Enum;
 using Maple2Storage.Enums;
@@ -136,7 +135,7 @@ public partial class FieldManager : IDisposable
         Npc npc = WrapNpc(npcId);
         npc.Coord = coord;
         npc.Rotation = rotation;
-        npc.Agent = Navigator.AddAgent(npc, Navigator.AddShape());
+        npc.Agent = Navigator.AddAgent(npc, Navigator.AddShape(meta.NpcMetadataCapsule));
 
         if (animation != default)
         {
@@ -152,7 +151,7 @@ public partial class FieldManager : IDisposable
         Mob mob = WrapMob(mobId);
         mob.Coord = coord;
         mob.Rotation = rotation;
-        mob.Agent = Navigator.AddAgent(mob, Navigator.AddShape());
+        mob.Agent = Navigator.AddAgent(mob, Navigator.AddShape(mob.Value.NpcMetadataCapsule));
         mob.Navigator = Navigator;
 
         if (animation != default)
@@ -169,7 +168,7 @@ public partial class FieldManager : IDisposable
         Mob mob = WrapMob(mobId);
         mob.OriginSpawn = spawnPoint;
 
-        Shape shape = Navigator.AddShape();
+        Shape shape = Navigator.AddShape(mob.Value.NpcMetadataCapsule);
         CoordS? randomPositionAround = Navigator.FindClosestUnobstructedCoordS(shape, spawnPoint.Coord.ToShort(), spawnPoint.Value.SpawnRadius);
         if (randomPositionAround is null)
         {
@@ -180,10 +179,10 @@ public partial class FieldManager : IDisposable
         mob.Coord = randomPositionAround.Value.ToFloat();
         mob.Rotation = default;
         mob.Animation = default;
-
-        mob.Agent = Navigator.AddAgent(mob, Navigator.AddShape());
+        mob.Agent = Navigator.AddAgent(mob, shape);
         mob.Navigator = Navigator;
 
+        mob.OriginSpawn.Value.Mobs.Add(mob);
         AddMob(mob);
         return mob;
     }
@@ -201,7 +200,6 @@ public partial class FieldManager : IDisposable
         Player player = sender.Player;
         Debug.Assert(player.FieldPlayer.ObjectId > 0, "Player was added to field without initialized objectId.");
 
-        player.FieldPlayer.Navigator = Navigator;
         player.MapId = MapId;
         if (Capacity == 0)
         {
@@ -423,7 +421,7 @@ public partial class FieldManager : IDisposable
 
     private void AddMob(Mob fieldMob)
     {
-        fieldMob.OriginSpawn?.Value.Mobs.Add(fieldMob);
+        
         State.AddMob(fieldMob);
 
         Broadcast(session =>

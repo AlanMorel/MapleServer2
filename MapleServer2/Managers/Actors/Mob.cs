@@ -1,6 +1,5 @@
 ﻿using Maple2.PathEngine.Types;
 using Maple2Storage.Enums;
-using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
@@ -39,6 +38,7 @@ public partial class FieldManager
 
         public void Attack()
         {
+            int roll = Rand.Next(100);
             for (int i = 0; i < Value.NpcMetadataSkill.SkillIds.Length; i++)
             {
                 if (roll < Value.NpcMetadataSkill.SkillProbs[i])

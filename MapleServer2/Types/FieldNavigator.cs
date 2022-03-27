@@ -2,6 +2,7 @@
 using Maple2.PathEngine.Interface;
 using Maple2.PathEngine.Types;
 using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 using Path = Maple2.PathEngine.Path;
 
 namespace MapleServer2.Types;
@@ -94,12 +95,11 @@ public class FieldNavigator : IDisposable
     /// <summary>
     /// Creates a box from the given capsule metadata. Used to calculate collision in the mesh.
     /// </summary>
-    /// <returns>Shape</returns>
-    public Shape AddShape( /*NpcMetadataCapsule metadata*/)
+    public Shape AddShape(NpcMetadataCapsule metadata)
     {
         // TODO: Cache shapes??
-        int width = 45;
-        int height = 170;
+        int width = metadata.Radius; // Using radius for width
+        int height = metadata.Height;
 
         int halfWidth = width / 2;
         int halfHeight = height / 2;

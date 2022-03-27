@@ -1,5 +1,4 @@
-﻿using Maple2.PathEngine;
-using Maple2Storage.Types;
+﻿using Maple2Storage.Types;
 using MapleServer2.Servers.Game;
 
 namespace MapleServer2.Types;
@@ -15,8 +14,6 @@ public interface IFieldActor : IFieldObject
     public List<Status> Statuses { get; set; }
     public SkillCast SkillCast { get; }
     public bool OnCooldown { get; set; }
-    public FieldNavigator Navigator { get; set; }
-    public Agent Agent { get; set; }
 
     public void MoveBy(CoordF displacement);
     public void MoveTo(CoordF to);
