@@ -8,7 +8,8 @@ public static class NoticePacket
 {
     private enum NoticePacketMode : byte
     {
-        Send = 0x04
+        Send = 0x04,
+        Quit = 0x05
     }
 
     public static PacketWriter Notice(string message, NoticeType type = NoticeType.Mint, short durationSec = 0)
@@ -31,6 +32,21 @@ public static class NoticePacket
         parameters ??= new();
         PacketWriter pWriter = PacketWriter.Of(SendOp.NOTICE);
         pWriter.Write(NoticePacketMode.Send);
+        WriteNotice(pWriter, notice, type, parameters, durationSec);
+        return pWriter;
+    }
+
+    public static PacketWriter QuitNotice(SystemNotice notice, NoticeType type = NoticeType.Mint, List<string> parameters = null, short durationSec = 0)
+    {
+        parameters ??= new();
+        PacketWriter pWriter = PacketWriter.Of(SendOp.NOTICE);
+        pWriter.Write(NoticePacketMode.Quit);
+        WriteNotice(pWriter, notice, type, parameters, durationSec);
+        return pWriter;
+    }
+
+    public static void WriteNotice(PacketWriter pWriter, SystemNotice notice, NoticeType type = NoticeType.Mint, List<string> parameters = null, short durationSec = 0)
+    {
         pWriter.WriteShort((short) type);
         pWriter.WriteByte(0x1);
         pWriter.WriteInt(0x1);
@@ -44,6 +60,5 @@ public static class NoticePacket
         {
             pWriter.WriteShort(durationSec);
         }
-        return pWriter;
     }
 }
