@@ -1,5 +1,4 @@
-﻿using Maple2Storage.Tools;
-using MaplePacketLib2.Tools;
+﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -77,7 +76,7 @@ public class BonusGameHandler : GamePacketHandler
             new(11050020, 1, 1),
             new(20300041, 1, 1)
         };
-        int randomIndex = RandomProvider.Get().Next(0, items.Count);
+        int randomIndex = Random.Shared.Next(0, items.Count);
         session.Send(BonusGamePacket.SpinWheel(randomIndex, items[randomIndex]));
     }
 }

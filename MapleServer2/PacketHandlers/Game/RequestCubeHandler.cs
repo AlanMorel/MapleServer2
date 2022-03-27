@@ -1,5 +1,4 @@
 ﻿using Maple2Storage.Enums;
-using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
@@ -1078,7 +1077,7 @@ public class RequestCubeHandler : GamePacketHandler
         }
 
         home.GainExp(decorationScore);
-        session.Player.Inventory.AddItem(session, new(rewardsIds.OrderBy(_ => RandomProvider.Get().Next()).First()), true);
+        session.Player.Inventory.AddItem(session, new(rewardsIds.OrderBy(_ => Random.Shared.Next()).First()), true);
         home.DecorationRewardTimestamp = TimeInfo.Now();
         session.Send(ResponseCubePacket.DecorationScore(home));
     }

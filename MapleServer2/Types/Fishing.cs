@@ -1,5 +1,4 @@
-﻿using Maple2Storage.Tools;
-using Maple2Storage.Types.Metadata;
+﻿using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
@@ -59,7 +58,7 @@ public class Fishing
         }
 
         int expChance;
-        Random rnd = RandomProvider.Get();
+        Random rnd = Random.Shared;
         MasteryExp masteryExp = session.Player.Levels.MasteryExp.FirstOrDefault(x => x.Type == MasteryType.Fishing);
         FishingSpotMetadata fishingSpot = FishingSpotMetadataStorage.GetMetadata(session.Player.MapId);
 

@@ -1,5 +1,6 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
@@ -140,15 +141,13 @@ public class ScriptParser : Exporter<List<ScriptMetadata>>
             List<Distractor> distractors = new();
             foreach (XmlNode distractorNode in content.ChildNodes)
             {
-                List<int> gotoList = new();
-                List<int> gotoFailList = new();
                 if (distractorNode.Name != "distractor")
                 {
                     continue;
                 }
 
-                gotoList.AddRange(distractorNode.Attributes["goto"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList());
-                gotoFailList.AddRange(distractorNode.Attributes["gotoFail"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList());
+                List<int> gotoList = distractorNode.Attributes["goto"]?.Value.SplitAndParseToInt(',').ToList();
+                List<int> gotoFailList = distractorNode.Attributes["gotoFail"]?.Value.SplitAndParseToInt(',').ToList();
                 distractors.Add(new(gotoList, gotoFailList));
             }
 

@@ -1,5 +1,4 @@
 ﻿using Maple2Storage.Enums;
-using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
@@ -222,7 +221,7 @@ public class BeautyHandler : GamePacketHandler
         }
 
         // Grab random hair
-        Random random = RandomProvider.Get();
+        Random random = Random.Shared;
         int indexHair = random.Next(beautyItems.Count);
         BeautyItem chosenHair = beautyItems[indexHair];
 

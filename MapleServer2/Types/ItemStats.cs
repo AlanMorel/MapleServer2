@@ -1,5 +1,4 @@
 ﻿using Maple2Storage.Enums;
-using Maple2Storage.Tools;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 
@@ -216,7 +215,7 @@ public class ItemStats
         int index = normalStats.FindIndex(x => x.ItemAttribute == attribute);
         int biggerValue = Math.Max(value, calibratedValue);
         int smallerValue = Math.Min(value, calibratedValue);
-        int summedFlat = normalStat.Flat + RandomProvider.Get().Next(smallerValue, biggerValue);
+        int summedFlat = normalStat.Flat + Random.Shared.Next(smallerValue, biggerValue);
         normalStats[index] = new(normalStat.ItemAttribute, summedFlat, normalStat.Percent);
     }
 
@@ -230,7 +229,7 @@ public class ItemStats
         }
 
         // get amount of slots
-        Random random = RandomProvider.Get();
+        Random random = Random.Shared;
         int slots = random.Next(randomOptions.Slots[0], randomOptions.Slots[1]);
 
         IEnumerable<ItemStat> itemStats = RollStats(randomOptions, randomId, itemId);
@@ -331,7 +330,7 @@ public class ItemStats
             itemStats.Add(specialStat);
         }
 
-        return itemStats.OrderBy(x => RandomProvider.Get().Next()).Take(item.Stats.BonusStats.Count).ToList();
+        return itemStats.OrderBy(x => Random.Shared.Next()).Take(item.Stats.BonusStats.Count).ToList();
     }
 
     // Roll new values for existing bonus stats
@@ -421,7 +420,7 @@ public class ItemStats
     private static int Roll(int itemId)
     {
         float itemLevelFactor = ItemMetadataStorage.GetOptionLevelFactor(itemId);
-        Random random = RandomProvider.Get();
+        Random random = Random.Shared;
         if (itemLevelFactor >= 70)
         {
             return random.NextDouble() switch
@@ -478,7 +477,7 @@ public class ItemStats
         // roll to unlock sockets
         for (int i = 0; i < GemSockets.Count; i++)
         {
-            int successNumber = RandomProvider.Get().Next(0, 100);
+            int successNumber = Random.Shared.Next(0, 100);
 
             // 5% success rate to unlock a gemsocket
             if (successNumber < 95)

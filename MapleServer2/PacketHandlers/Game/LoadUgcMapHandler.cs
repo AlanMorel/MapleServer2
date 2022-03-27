@@ -1,5 +1,4 @@
-﻿using Maple2Storage.Tools;
-using Maple2Storage.Types;
+﻿using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
@@ -48,7 +47,7 @@ public class LoadUgcMapHandler : GamePacketHandler
             CoordF rotation;
             if (portals.Count > 0)
             {
-                Cube portal = portals.OrderBy(_ => RandomProvider.Get().Next()).First();
+                Cube portal = portals.OrderBy(_ => Random.Shared.Next()).First();
                 coord = portal.CoordF;
                 coord.Z += 1;
                 rotation = portal.Rotation;
