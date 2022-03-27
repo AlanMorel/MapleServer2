@@ -984,6 +984,7 @@ public partial class FieldManager : IDisposable
 
     private Task StartMapLoop()
     {
+        CancellationToken ct = CancellationToken.Token;
         return Task.Run(async () =>
         {
             while (!State.Players.IsEmpty)
@@ -993,9 +994,10 @@ public partial class FieldManager : IDisposable
                 UpdateObjects();
                 HealingSpot();
                 SendUpdates();
-                await Task.Delay(1000);
+                Console.WriteLine("Loop");
+                await Task.Delay(1000, ct);
             }
-        });
+        }, ct);
     }
 
     private void SendUpdates()
@@ -1187,11 +1189,10 @@ public partial class FieldManager : IDisposable
 
     public void Dispose()
     {
-        // FIX THIS
-        // CancellationToken.Cancel();
-        // MapLoopTask?.Dispose();
-        // TriggerTask?.Dispose();
-        // Navigator?.Dispose();
-        // GC.SuppressFinalize(this);
+        CancellationToken.Cancel();
+        MapLoopTask?.Dispose();
+        TriggerTask?.Dispose();
+        Navigator?.Dispose();
+        GC.SuppressFinalize(this);
     }
 }
