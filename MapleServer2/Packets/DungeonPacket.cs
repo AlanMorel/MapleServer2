@@ -13,7 +13,7 @@ public static class DungeonPacket
 
     public static PacketWriter DungeonInfo(int dungeonId, byte weeklyClearCountMax, byte addRewards, int clearCount, short lifetimeRecord, byte toggle)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RoomDungeon);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.DungeonRoom);
         pWriter.Write(DungeonPacketMode.DungeonInfo);
         pWriter.WriteInt(dungeonId);
         pWriter.WriteLong(); //timestamp
@@ -33,7 +33,7 @@ public static class DungeonPacket
 
     public static PacketWriter UpdateDungeonInfo(byte mode, int dungeonId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RoomDungeon);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.DungeonRoom);
         pWriter.Write(DungeonPacketMode.UpdateDungeonInfo);
         pWriter.WriteByte(mode); //05 = favorite, 04 = become veteran
         pWriter.WriteInt(dungeonId);

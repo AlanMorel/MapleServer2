@@ -17,7 +17,7 @@ public static class UserEnvPacket
 
     public static PacketWriter AddTitle(int titleId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnv);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnviroment);
         pWriter.Write(UserEnvPacketMode.AddTitle);
         pWriter.WriteInt(titleId);
         return pWriter;
@@ -25,7 +25,7 @@ public static class UserEnvPacket
 
     public static PacketWriter UpdateTitle(GameSession session, int titleId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnv);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnviroment);
         pWriter.Write(UserEnvPacketMode.UpdateTitles);
         pWriter.WriteInt(session.Player.FieldPlayer.ObjectId);
         pWriter.WriteInt(titleId);
@@ -35,7 +35,7 @@ public static class UserEnvPacket
     // Unlocked Titles
     public static PacketWriter SetTitles(Player player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnv);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnviroment);
         pWriter.Write(UserEnvPacketMode.SetTitles);
         pWriter.WriteInt(player.Titles.Count);
         foreach (int titleId in player.Titles)
@@ -48,7 +48,7 @@ public static class UserEnvPacket
 
     public static PacketWriter UpdateTrophy()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnv);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnviroment);
         // seems unchanged before and after gaining trophy
         // TODO: figure out what the bytes mean
         byte[] toSend =
@@ -61,7 +61,7 @@ public static class UserEnvPacket
 
     public static PacketWriter Send03()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnv);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnviroment);
         pWriter.WriteByte(0x03);
         pWriter.WriteInt();
         // Loop: Int + Byte
@@ -71,7 +71,7 @@ public static class UserEnvPacket
 
     public static PacketWriter Send04()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnv);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnviroment);
         pWriter.WriteByte(0x04);
         pWriter.WriteInt();
         // Loop: Int
@@ -81,7 +81,7 @@ public static class UserEnvPacket
 
     public static PacketWriter Send05()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnv);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnviroment);
         pWriter.WriteByte(0x05);
         pWriter.WriteInt();
 
@@ -90,7 +90,7 @@ public static class UserEnvPacket
 
     public static PacketWriter UpdateLifeSkills(List<GatheringCount> gatherings)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnv);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnviroment);
         pWriter.Write(UserEnvPacketMode.LifeSkills);
         pWriter.WriteInt(gatherings.Count);
         foreach (GatheringCount gathering in gatherings)
@@ -105,7 +105,7 @@ public static class UserEnvPacket
 
     public static PacketWriter Send09()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnv);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnviroment);
         pWriter.WriteByte(0x09);
         pWriter.WriteInt();
         // Loop: Int + Byte
@@ -115,7 +115,7 @@ public static class UserEnvPacket
 
     public static PacketWriter Send10()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnv);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnviroment);
         pWriter.WriteByte(0x0A);
         pWriter.WriteInt();
         // Loop: Short + Byte
@@ -125,7 +125,7 @@ public static class UserEnvPacket
 
     public static PacketWriter Send11()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnv);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnviroment);
         pWriter.WriteByte(0x0B);
         pWriter.WriteShort();
         pWriter.WriteInt();
@@ -135,7 +135,7 @@ public static class UserEnvPacket
 
     public static PacketWriter Send12()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnv);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnviroment);
         pWriter.WriteByte(0x0C);
         pWriter.WriteInt();
         // Loop: Int + Long
@@ -145,7 +145,7 @@ public static class UserEnvPacket
 
     public static PacketWriter Send13()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnv);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnviroment);
         pWriter.WriteByte(0x0D);
         pWriter.WriteInt();
         pWriter.WriteLong();

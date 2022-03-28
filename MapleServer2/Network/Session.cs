@@ -328,7 +328,7 @@ public abstract class Session : IDisposable
             case SendOp.Emotion:
             case SendOp.CharList:
             case SendOp.ItemInventory:
-            case SendOp.FieldAddNpc:
+            case SendOp.FieldAddNPC:
             case SendOp.FieldPortal:
             case SendOp.NpcControl:
             case SendOp.RideSync:

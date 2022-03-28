@@ -22,7 +22,7 @@ public static class SkillDamagePacket
     public static PacketWriter SyncDamage(SkillCast skillCast, CoordF position, CoordF rotation, IFieldObject<Player> player, List<int> sourceId, byte count,
         List<int> atkCount, List<int> entityId, List<short> animation)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SkillDmg);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.SkillDamage);
 
         pWriter.Write(SkillDamageMode.SyncDamage);
         pWriter.WriteLong(skillCast.SkillSn);
@@ -51,7 +51,7 @@ public static class SkillDamagePacket
     public static PacketWriter Damage(SkillCast skillCast, int attackCount, CoordF position, CoordF rotation,
         List<(int targetId, byte damageType, double damage)> damages)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SkillDmg);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.SkillDamage);
 
         pWriter.Write(SkillDamageMode.Damage);
         pWriter.WriteLong(skillCast.SkillSn);
@@ -88,7 +88,7 @@ public static class SkillDamagePacket
 
     public static PacketWriter DotDamage(int ownerId, int targetId, int tick, DamageType damageType, int damage)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SkillDmg);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.SkillDamage);
 
         pWriter.Write(SkillDamageMode.DotDamage);
         pWriter.WriteInt(ownerId);
@@ -102,7 +102,7 @@ public static class SkillDamagePacket
 
     public static PacketWriter Heal(Status status, int healAmount)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SkillDmg);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.SkillDamage);
 
         pWriter.Write(SkillDamageMode.Heal);
         pWriter.WriteInt(status.Source);
@@ -117,7 +117,7 @@ public static class SkillDamagePacket
 
     public static PacketWriter RegionDamage(SkillCast skillCast, List<DamageHandler> damageHandlers)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SkillDmg);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.SkillDamage);
 
         pWriter.Write(SkillDamageMode.RegionDamage);
         pWriter.WriteLong(); // always 0??
@@ -149,7 +149,7 @@ public static class SkillDamagePacket
     public static PacketWriter TileSkill(SkillCast skillCast, byte targetCount, IFieldObject<Player> player, byte count2, CoordF position, CoordF direction,
         long damage)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SkillDmg);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.SkillDamage);
 
         pWriter.Write(SkillDamageMode.RegionDamage);
         pWriter.WriteLong(skillCast.SkillSn);
@@ -174,7 +174,7 @@ public static class SkillDamagePacket
 
     public static PacketWriter UnkDamageMode(int unkInt, int unkInt2, int count)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SkillDmg);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.SkillDamage);
 
         pWriter.Write(SkillDamageMode.UnkMode7);
         pWriter.WriteInt(unkInt);

@@ -14,7 +14,7 @@ public static class PvpPacket
 
     public static PacketWriter Mode16()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.Pvp);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.PVP);
         pWriter.Write(PvpMode.Mode16);
         pWriter.WriteInt();
         pWriter.WriteInt();
@@ -26,7 +26,7 @@ public static class PvpPacket
 
     public static PacketWriter Mode17()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.Pvp);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.PVP);
         pWriter.Write(PvpMode.Mode17);
         pWriter.WriteInt();
 
@@ -35,7 +35,7 @@ public static class PvpPacket
 
     public static PacketWriter Mode0C()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.Pvp);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.PVP);
         pWriter.Write(PvpMode.Mode0C);
         pWriter.WriteByte();
 

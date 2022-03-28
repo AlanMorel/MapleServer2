@@ -7,7 +7,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class RequestUserEnvHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.RequestUserEnv;
+    public override RecvOp OpCode => RecvOp.RequestUserEnviroment;
 
     private enum UserEnvMode : byte
     {

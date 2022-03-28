@@ -9,7 +9,7 @@ public static class ResponseLoadUgcMapPacket
 {
     public static PacketWriter LoadUgcMap(Home home = null, bool inDecorPlanner = false)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.LoadUgcMap);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.LoadUGCMap);
         pWriter.WriteLong();
         pWriter.WriteBool(home is not null);
 
