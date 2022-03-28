@@ -360,7 +360,7 @@ public abstract class Session : IDisposable
             case RecvOp.GuideObjectSync:
             case RecvOp.RequestTimeSync:
             case RecvOp.State:
-            case RecvOp.StateFallDmg:
+            case RecvOp.StateFallDamage:
             case RecvOp.Vibrate:
                 break;
             default:
