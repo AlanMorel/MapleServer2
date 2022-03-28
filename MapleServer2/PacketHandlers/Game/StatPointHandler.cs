@@ -8,7 +8,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class StatPointHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.STAT_POINT;
+    public override RecvOp OpCode => RecvOp.StatPoint;
 
     private enum StatPointMode : byte
     {

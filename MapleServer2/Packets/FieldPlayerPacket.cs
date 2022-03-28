@@ -11,7 +11,7 @@ public static class FieldPlayerPacket
     public static PacketWriter AddPlayer(IFieldActor<Player> fieldPlayer)
     {
         Player player = fieldPlayer.Value;
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_ADD_PLAYER);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FieldAddPlayer);
         pWriter.WriteInt(fieldPlayer.ObjectId);
         pWriter.WriteCharacter(player);
 
@@ -142,7 +142,7 @@ public static class FieldPlayerPacket
 
     public static PacketWriter RemovePlayer(IFieldObject<Player> player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_REMOVE_PLAYER);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FieldRemovePlayer);
         pWriter.WriteInt(player.ObjectId);
 
         return pWriter;

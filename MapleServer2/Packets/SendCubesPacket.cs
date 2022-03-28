@@ -16,7 +16,7 @@ public static class SendCubesPacket
 
     public static PacketWriter LoadCubes(List<Cube> cubes)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.CUBES);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Cubes);
         pWriter.Write(SendCubesMode.LoadCubes);
         pWriter.WriteByte();
         pWriter.WriteInt(cubes.Count);
@@ -45,7 +45,7 @@ public static class SendCubesPacket
 
     public static PacketWriter LoadAvailablePlots(List<Home> homes, List<byte> plotNumbers)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.CUBES);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Cubes);
         pWriter.Write(SendCubesMode.AvailablePlots);
         pWriter.WriteInt(plotNumbers.Count);
         foreach (int plotId in plotNumbers)
@@ -59,7 +59,7 @@ public static class SendCubesPacket
 
     public static PacketWriter LoadPlots(List<Home> homes, int mapId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.CUBES);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Cubes);
         pWriter.Write(SendCubesMode.LoadPlots);
         pWriter.WriteInt(homes.Count);
         foreach (Home home in homes)
@@ -75,7 +75,7 @@ public static class SendCubesPacket
 
     public static PacketWriter Expiration(List<Home> homes)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.CUBES);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Cubes);
         pWriter.Write(SendCubesMode.Expiration);
         pWriter.WriteInt(homes.Count);
         foreach (Home home in homes)

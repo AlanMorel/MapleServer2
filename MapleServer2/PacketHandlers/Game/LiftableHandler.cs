@@ -14,7 +14,7 @@ public class LiftableHandler : GamePacketHandler
         PickUp = 1
     }
 
-    public override RecvOp OpCode => RecvOp.LIFTABLE;
+    public override RecvOp OpCode => RecvOp.Liftable;
 
     public override void Handle(GameSession session, PacketReader packet)
     {

@@ -7,7 +7,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class RequestWorldMapHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.REQUEST_WORLD_MAP;
+    public override RecvOp OpCode => RecvOp.RequestWorldMap;
 
     private enum WorldMapMode : byte
     {

@@ -9,7 +9,7 @@ public static class SkillSyncPacket
 {
     public static PacketWriter Sync(SkillCast skillCast, IFieldObject<Player> player, CoordF position, CoordF rotation, bool toggle)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_SYNC);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.SkillSync);
 
         pWriter.WriteLong(skillCast.SkillSn);
         pWriter.WriteInt(player.ObjectId);

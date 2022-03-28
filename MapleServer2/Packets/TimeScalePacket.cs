@@ -7,7 +7,7 @@ public static class TimeScalePacket
 {
     public static PacketWriter SetTimeScale(bool enable, float startScale, float endScale, float duration, byte interpolator)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.TIME_SCALE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.TimeScale);
         pWriter.WriteBool(enable);
         pWriter.WriteFloat(startScale);
         pWriter.WriteFloat(endScale);

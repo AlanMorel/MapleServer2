@@ -7,7 +7,7 @@ public static class ExperiencePacket
 {
     public static PacketWriter ExpUp(int expGained, long expTotal, long restExp)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.EXP_UP);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ExpUp);
 
         pWriter.WriteByte();
         pWriter.WriteLong(expGained);

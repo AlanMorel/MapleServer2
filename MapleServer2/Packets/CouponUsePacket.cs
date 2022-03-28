@@ -17,21 +17,21 @@ public static class CouponUsePacket
 
     public static PacketWriter CharacterSlotAdded()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.COUPON_USE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.CouponUse);
         pWriter.Write(CouponUsePacketMode.CharacterSlotAdded);
         return pWriter;
     }
 
     public static PacketWriter MaxCharacterSlots()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.COUPON_USE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.CouponUse);
         pWriter.Write(CouponUsePacketMode.MaxCharacterSlots);
         return pWriter;
     }
 
     public static PacketWriter BeautyCoupon(IFieldObject<Player> player, long itemUid)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.COUPON_USE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.CouponUse);
         pWriter.Write(CouponUsePacketMode.BeautyCoupon);
         pWriter.WriteInt(player.ObjectId);
         pWriter.WriteLong(itemUid);

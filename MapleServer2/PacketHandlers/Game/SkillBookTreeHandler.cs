@@ -9,7 +9,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class SkillBookTreeHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.REQUEST_SKILL_BOOK_TREE;
+    public override RecvOp OpCode => RecvOp.RequestSkillBookTree;
 
     private enum SkillBookMode : byte
     {

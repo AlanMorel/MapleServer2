@@ -17,7 +17,7 @@ public static class PremiumClubPacket
 
     public static PacketWriter Open()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PREMIUM_CLUB);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.PremiumClub);
         pWriter.Write(PremiumClubPacketMode.Open);
         pWriter.WriteInt();
         return pWriter;
@@ -25,7 +25,7 @@ public static class PremiumClubPacket
 
     public static PacketWriter ClaimItem(int benefitId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PREMIUM_CLUB);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.PremiumClub);
         pWriter.Write(PremiumClubPacketMode.ClaimItem);
         pWriter.WriteInt(benefitId);
         return pWriter;
@@ -33,7 +33,7 @@ public static class PremiumClubPacket
 
     public static PacketWriter OpenPurchaseWindow()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PREMIUM_CLUB);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.PremiumClub);
         pWriter.Write(PremiumClubPacketMode.OpenPurchaseWindow);
         pWriter.WriteInt();
         return pWriter;
@@ -41,7 +41,7 @@ public static class PremiumClubPacket
 
     public static PacketWriter PurchaseMembership(int packageId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PREMIUM_CLUB);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.PremiumClub);
         pWriter.Write(PremiumClubPacketMode.PurchaseMembership);
         pWriter.WriteInt(packageId);
         return pWriter;
@@ -49,7 +49,7 @@ public static class PremiumClubPacket
 
     public static PacketWriter ActivatePremium(IFieldObject<Player> player, long expiration)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PREMIUM_CLUB);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.PremiumClub);
         pWriter.Write(PremiumClubPacketMode.ActivatePremium);
         pWriter.WriteInt(player.ObjectId);
         pWriter.WriteLong(expiration);

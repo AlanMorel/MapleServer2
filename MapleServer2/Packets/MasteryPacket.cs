@@ -17,7 +17,7 @@ public static class MasteryPacket
 
     public static PacketWriter SetExp(MasteryType type, long totalExp)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MASTERY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Mastery);
 
         pWriter.Write(MasteryMode.SetMasteryExp);
         pWriter.Write(type);
@@ -28,7 +28,7 @@ public static class MasteryPacket
 
     public static PacketWriter ClaimReward(int rewardBoxDetails, Item item)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MASTERY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Mastery);
 
         pWriter.Write(MasteryMode.ClaimRewardBox);
         pWriter.WriteInt(rewardBoxDetails);
@@ -41,7 +41,7 @@ public static class MasteryPacket
 
     public static PacketWriter GetCraftedItem(MasteryType type, Item item)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MASTERY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Mastery);
 
         pWriter.Write(MasteryMode.GetCraftedItem);
         pWriter.WriteShort((short) type);
@@ -53,7 +53,7 @@ public static class MasteryPacket
 
     public static PacketWriter MasteryNotice(short noticeId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MASTERY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Mastery);
 
         pWriter.Write(MasteryMode.MasteryNotice);
         pWriter.WriteShort(noticeId);

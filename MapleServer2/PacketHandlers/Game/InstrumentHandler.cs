@@ -11,7 +11,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class InstrumentHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.PLAY_INSTRUMENT;
+    public override RecvOp OpCode => RecvOp.PlayInstrument;
 
     private enum InstrumentMode : byte
     {

@@ -8,7 +8,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class KeyTableHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.KEY_TABLE;
+    public override RecvOp OpCode => RecvOp.KeyTable;
 
     private enum KeyTableEnum : byte
     {

@@ -7,7 +7,7 @@ internal class FallDamagePacket
 {
     public static PacketWriter FallDamage(int objectId, int hpLost)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.STATE_FALL_DAMAGE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.StateFallDmg);
         pWriter.WriteInt(objectId);
         pWriter.WriteInt(hpLost);
 

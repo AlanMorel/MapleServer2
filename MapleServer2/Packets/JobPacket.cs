@@ -17,7 +17,7 @@ public static class JobPacket
 
     public static PacketWriter UpdateSkillTab(IFieldObject<Player> fieldPlayer, HashSet<int> newSkillIds = null)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.JOB);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Job);
         pWriter.WriteInt(fieldPlayer.ObjectId);
         pWriter.Write(JobMode.Update);
         pWriter.WriteJobInfo(fieldPlayer.Value, newSkillIds);
@@ -27,7 +27,7 @@ public static class JobPacket
 
     public static PacketWriter SendJob(IFieldObject<Player> fieldPlayer)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.JOB);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Job);
         pWriter.WriteInt(fieldPlayer.ObjectId);
         pWriter.Write(JobMode.Unk);
         pWriter.WriteJobInfo(fieldPlayer.Value);
@@ -37,7 +37,7 @@ public static class JobPacket
 
     public static PacketWriter Close(IFieldActor<Player> fieldPlayer)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.JOB);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Job);
 
         pWriter.WriteInt(fieldPlayer.ObjectId);
         pWriter.Write(JobMode.Close);
@@ -48,7 +48,7 @@ public static class JobPacket
 
     public static PacketWriter Save(IFieldActor<Player> fieldPlayer, HashSet<int> newSkillIds = null)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.JOB);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Job);
 
         pWriter.WriteInt(fieldPlayer.ObjectId);
         pWriter.Write(JobMode.Save);

@@ -14,7 +14,7 @@ public static class GlobalPortalPacket
 
     public static PacketWriter Notice(GlobalEvent globalEvent)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.GLOBAL_PORTAL);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.GlobalPortal);
         pWriter.Write(GlobalPortalPacketMode.Notice);
         pWriter.WriteInt(globalEvent.Id);
         pWriter.WriteInt(144); // unk. seems to either be 144 or 145
@@ -29,7 +29,7 @@ public static class GlobalPortalPacket
 
     public static PacketWriter Clear(GlobalEvent globalEvent)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.GLOBAL_PORTAL);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.GlobalPortal);
         pWriter.Write(GlobalPortalPacketMode.Clear);
         pWriter.WriteInt(globalEvent.Id);
         return pWriter;

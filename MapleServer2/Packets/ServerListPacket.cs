@@ -9,7 +9,7 @@ public static class ServerListPacket
 {
     public static PacketWriter SetServers(string serverName, ImmutableList<IPEndPoint> serverIps, short channelCount)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SERVER_LIST);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ServerList);
 
         pWriter.WriteBool(true); // If false packet isn't processed
         pWriter.WriteInt(1); // Unk.

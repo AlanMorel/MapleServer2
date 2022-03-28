@@ -9,7 +9,7 @@ public static class BuildModePacket
 {
     public static PacketWriter Use(IFieldObject<Player> fieldPlayer, BuildModeHandler.BuildModeType type, int itemId = 0, long itemUid = 0)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SET_BUILD_MODE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.SetBuildMode);
         pWriter.WriteInt(fieldPlayer.ObjectId);
         pWriter.Write(type);
 

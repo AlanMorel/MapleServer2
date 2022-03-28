@@ -7,7 +7,7 @@ public static class CharacterNameChangePacket
 {
     public static PacketWriter NameResult(bool nameBeingUsed, string characterName, long itemUid)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.CHECK_CHAR_NAME_RESULT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.CheckCharNameResult);
         pWriter.WriteBool(nameBeingUsed);
         pWriter.WriteLong(itemUid);
         pWriter.WriteUnicodeString(characterName);

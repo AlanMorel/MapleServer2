@@ -25,7 +25,7 @@ public static class TradePacket
 
     public static PacketWriter TradeRequest(string playerName, long playerCharacterId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.TRADE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Trade);
         pWriter.Write(TradePacketMode.TradeRequest);
         pWriter.WriteUnicodeString(playerName);
         pWriter.WriteLong(playerCharacterId);
@@ -34,14 +34,14 @@ public static class TradePacket
 
     public static PacketWriter RequestSent()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.TRADE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Trade);
         pWriter.Write(TradePacketMode.RequestSent);
         return pWriter;
     }
 
     public static PacketWriter RequestDeclined(string characterName)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.TRADE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Trade);
         pWriter.Write(TradePacketMode.RequestDeclined);
         pWriter.WriteUnicodeString(characterName);
         return pWriter;
@@ -49,7 +49,7 @@ public static class TradePacket
 
     public static PacketWriter RequestAccepted(long playerCharacterId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.TRADE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Trade);
         pWriter.Write(TradePacketMode.RequestAccepted);
         pWriter.WriteLong(playerCharacterId);
         return pWriter;
@@ -57,7 +57,7 @@ public static class TradePacket
 
     public static PacketWriter TradeStatus(bool tradeIsComplete)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.TRADE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Trade);
         pWriter.Write(TradePacketMode.TradeStatus);
         pWriter.WriteBool(tradeIsComplete);
         return pWriter;
@@ -65,7 +65,7 @@ public static class TradePacket
 
     public static PacketWriter AddItemToTrade(Item item, int index, bool selfInventory)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.TRADE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Trade);
         pWriter.Write(TradePacketMode.AddItemToTrade);
         pWriter.WriteBool(selfInventory);
         pWriter.WriteInt(item.Id);
@@ -80,7 +80,7 @@ public static class TradePacket
 
     public static PacketWriter RemoveItemToTrade(Item item, int index, bool selfInventory)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.TRADE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Trade);
         pWriter.Write(TradePacketMode.RemoveItemToTrade);
         pWriter.WriteBool(selfInventory);
         pWriter.WriteInt(index);
@@ -90,7 +90,7 @@ public static class TradePacket
 
     public static PacketWriter AddMesosToTrade(long mesos, bool selfInventory)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.TRADE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Trade);
         pWriter.Write(TradePacketMode.AddMesosToTrade);
         pWriter.WriteBool(selfInventory);
         pWriter.WriteLong(mesos);
@@ -99,7 +99,7 @@ public static class TradePacket
 
     public static PacketWriter FinalizeOffer(bool selfInventory)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.TRADE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Trade);
         pWriter.Write(TradePacketMode.FinalizeOffer);
         pWriter.WriteBool(selfInventory);
         return pWriter;
@@ -107,7 +107,7 @@ public static class TradePacket
 
     public static PacketWriter OfferedAltered(bool self)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.TRADE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Trade);
         pWriter.Write(TradePacketMode.OfferedAltered);
         pWriter.WriteBool(self);
         return pWriter;
@@ -115,7 +115,7 @@ public static class TradePacket
 
     public static PacketWriter FinalizeTrade(bool selfInventory)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.TRADE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Trade);
         pWriter.Write(TradePacketMode.FinalizeTrade);
         pWriter.WriteBool(selfInventory);
         return pWriter;

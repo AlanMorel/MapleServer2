@@ -16,7 +16,7 @@ public static class ItemRepackagePacket
 
     public static PacketWriter Open(long itemUid)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_REPACKAGE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemRepackage);
         pWriter.Write(ItemRepackagePacketMode.Open);
         pWriter.WriteLong(itemUid);
         return pWriter;
@@ -24,7 +24,7 @@ public static class ItemRepackagePacket
 
     public static PacketWriter Repackage(Item item)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_REPACKAGE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemRepackage);
         pWriter.Write(ItemRepackagePacketMode.Repackage);
         pWriter.WriteShort();
         pWriter.WriteLong(item.Uid);
@@ -34,7 +34,7 @@ public static class ItemRepackagePacket
 
     public static PacketWriter Notice(int noticeId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_REPACKAGE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemRepackage);
         pWriter.Write(ItemRepackagePacketMode.Notice);
         pWriter.WriteByte();
         pWriter.WriteInt(noticeId);

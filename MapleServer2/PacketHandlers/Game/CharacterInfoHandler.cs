@@ -7,7 +7,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class CharacterInfoHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.CHARACTER_INFO;
+    public override RecvOp OpCode => RecvOp.CharInfo;
 
     public override void Handle(GameSession session, PacketReader packet)
     {

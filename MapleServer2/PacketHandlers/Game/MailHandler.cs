@@ -12,7 +12,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class MailHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.MAIL;
+    public override RecvOp OpCode => RecvOp.Mail;
 
     private enum MailMode : byte
     {

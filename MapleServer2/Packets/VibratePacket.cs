@@ -8,7 +8,7 @@ public static class VibratePacket
 {
     public static PacketWriter Vibrate(string objectHash, SkillCast skillCast)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.VIBRATE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Vibrate);
         pWriter.WriteByte(1);
         pWriter.WriteString(objectHash);
         pWriter.WriteLong(skillCast.SkillSn);

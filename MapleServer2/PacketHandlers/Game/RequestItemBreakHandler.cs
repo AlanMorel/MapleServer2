@@ -7,7 +7,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class RequestItemBreakHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.REQUEST_ITEM_BREAK;
+    public override RecvOp OpCode => RecvOp.RequestItemBreak;
 
     private enum ItemBreakMode : byte
     {

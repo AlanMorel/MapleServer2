@@ -9,7 +9,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class BuddyEmoteHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.BUDDY_EMOTE;
+    public override RecvOp OpCode => RecvOp.BuddyEmote;
 
     private enum BuddyEmoteMode : byte
     {

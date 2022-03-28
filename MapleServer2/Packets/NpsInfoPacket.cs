@@ -7,7 +7,7 @@ public static class NpsInfoPacket
 {
     public static PacketWriter SendUsername(string username)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.NPS_INFO);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.NpsInfo);
         pWriter.WriteLong();
         pWriter.WriteUnicodeString(username);
 

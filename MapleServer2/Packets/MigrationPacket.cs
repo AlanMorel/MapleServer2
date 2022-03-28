@@ -9,7 +9,7 @@ public static class MigrationPacket
 {
     public static PacketWriter LoginToGame(IPEndPoint endpoint, int mapId, AuthData authData)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.LOGIN_TO_GAME);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.LoginToGame);
         pWriter.WriteByte(); // 0 = Success
         pWriter.WriteBytes(endpoint.Address.GetAddressBytes());
         pWriter.Write((ushort) endpoint.Port);
@@ -22,7 +22,7 @@ public static class MigrationPacket
 
     public static PacketWriter LoginToGameError(string message)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.LOGIN_TO_GAME);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.LoginToGame);
         pWriter.WriteByte(1); // !0 = Error
         pWriter.WriteUnicodeString(message);
 
@@ -31,7 +31,7 @@ public static class MigrationPacket
 
     public static PacketWriter GameToLogin(IPEndPoint endpoint, AuthData authData)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.GAME_TO_LOGIN);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.GameToLogin);
         pWriter.WriteByte(); // 0 = Success
         pWriter.WriteBytes(endpoint.Address.GetAddressBytes());
         pWriter.Write((ushort) endpoint.Port);
@@ -43,7 +43,7 @@ public static class MigrationPacket
 
     public static PacketWriter GameToLoginError()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.GAME_TO_LOGIN);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.GameToLogin);
         pWriter.WriteByte(1); // !0 = Error
 
         return pWriter;
@@ -51,7 +51,7 @@ public static class MigrationPacket
 
     public static PacketWriter GameToGame(IPEndPoint endpoint, Player player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.GAME_TO_GAME);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.GameToGame);
         pWriter.WriteByte(); // 0 = Success
         pWriter.WriteInt(player.Account.AuthData.TokenA);
         pWriter.WriteInt(player.Account.AuthData.TokenB);
@@ -65,7 +65,7 @@ public static class MigrationPacket
 
     public static PacketWriter GameToGameError()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.GAME_TO_GAME);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.GameToGame);
         pWriter.WriteByte(1); // !0 = Error
 
         return pWriter;

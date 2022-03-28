@@ -14,7 +14,7 @@ public static class FireWorksPacket
 
     public static PacketWriter TreasureChest(int itemId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FIREWORKS);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Fireworks);
         pWriter.Write(FireworksPacketMode.TreasureChest);
         pWriter.WriteInt(itemId);
         return pWriter;
@@ -22,7 +22,7 @@ public static class FireWorksPacket
 
     public static PacketWriter Gacha(List<Item> items)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FIREWORKS);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Fireworks);
         pWriter.Write(FireworksPacketMode.Gacha);
         pWriter.WriteInt(items.Count);
         foreach (Item item in items)

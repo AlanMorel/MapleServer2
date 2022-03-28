@@ -10,7 +10,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class ClubHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.CLUB;
+    public override RecvOp OpCode => RecvOp.Club;
 
     private enum ClubMode : byte
     {

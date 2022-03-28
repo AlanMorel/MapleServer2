@@ -7,7 +7,7 @@ public static class HomeBank
 {
     public static PacketWriter OpenBank(long date = 0)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.HOME_BANK);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.HomeBank);
         pWriter.WriteLong(date); // cooldown timer
 
         return pWriter;

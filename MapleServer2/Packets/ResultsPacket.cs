@@ -15,7 +15,7 @@ public static class ResultsPacket
 
     public static PacketWriter Timed(bool success, List<Item> itemRewards, bool bonus, List<Item> itemRewardsBonus = null)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESULTS);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Results);
         pWriter.Write(ResultsPacketMode.Timed);
         pWriter.WriteBool(success);
         pWriter.WriteInt(); // dungeonID
@@ -65,7 +65,7 @@ public static class ResultsPacket
 
     public static PacketWriter Rounds(int roundsCleared, int totalRounds)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESULTS);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Results);
         pWriter.Write(ResultsPacketMode.Rounds);
         pWriter.WriteInt(roundsCleared);
         pWriter.WriteInt(totalRounds);
@@ -90,7 +90,7 @@ public static class ResultsPacket
 
     public static PacketWriter Untimed(bool success)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESULTS);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Results);
         pWriter.Write(ResultsPacketMode.Untimed);
         pWriter.WriteBool(success);
         pWriter.WriteInt(); // dungeonID

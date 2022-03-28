@@ -7,7 +7,7 @@ public static class SkillCancelPacket
 {
     public static PacketWriter SkillCancel(long skillSn, int playerObjectId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_CANCEL);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.SkillCancel);
         pWriter.WriteLong(skillSn);
         pWriter.WriteInt(playerObjectId);
 

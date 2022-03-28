@@ -7,7 +7,7 @@ public static class WebOpenPacket
 {
     public static PacketWriter Open(string url)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.WEB_OPEN);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.WebOpen);
         pWriter.WriteByte(1);
         pWriter.WriteUnicodeString(url);
         return pWriter;

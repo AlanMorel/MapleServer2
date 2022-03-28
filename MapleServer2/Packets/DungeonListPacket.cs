@@ -7,7 +7,7 @@ public static class DungeonListPacket
 {
     public static PacketWriter DungeonList()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.DUNGEON_LIST);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.DungeonList);
         pWriter.WriteByte();
         pWriter.WriteInt(1); // dungeon count
         for (int i = 0; i < 1; i++)

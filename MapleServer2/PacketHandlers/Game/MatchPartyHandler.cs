@@ -9,7 +9,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class MatchPartyHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.MATCH_PARTY;
+    public override RecvOp OpCode => RecvOp.MatchParty;
 
     private enum MatchPartyMode : byte
     {

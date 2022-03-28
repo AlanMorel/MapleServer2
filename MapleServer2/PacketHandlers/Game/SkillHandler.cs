@@ -14,7 +14,7 @@ public class SkillHandler : GamePacketHandler
 {
     private static readonly Random Rand = Random.Shared;
 
-    public override RecvOp OpCode => RecvOp.SKILL;
+    public override RecvOp OpCode => RecvOp.Skill;
 
     private enum SkillHandlerMode : byte
     {

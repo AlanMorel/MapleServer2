@@ -10,7 +10,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class ItemExtractionHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.ITEM_EXTRACTION;
+    public override RecvOp OpCode => RecvOp.ItemExtraction;
 
     public override void Handle(GameSession session, PacketReader packet)
     {

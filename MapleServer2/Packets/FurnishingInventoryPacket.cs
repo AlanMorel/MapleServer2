@@ -16,7 +16,7 @@ public static class FurnishingInventoryPacket
 
     public static PacketWriter StartList()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FURNISHING_INVENTORY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FurnishingInventory);
         pWriter.Write(FurnishingInventoryPacketMode.StartList);
 
         return pWriter;
@@ -24,7 +24,7 @@ public static class FurnishingInventoryPacket
 
     public static PacketWriter Load(Cube cube)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FURNISHING_INVENTORY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FurnishingInventory);
         pWriter.Write(FurnishingInventoryPacketMode.Load);
         pWriter.WriteInt(cube.Item.Id);
         pWriter.WriteLong(cube.Uid);
@@ -40,7 +40,7 @@ public static class FurnishingInventoryPacket
 
     public static PacketWriter Remove(Cube cube)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FURNISHING_INVENTORY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FurnishingInventory);
         pWriter.Write(FurnishingInventoryPacketMode.Remove);
         pWriter.WriteLong(cube.Uid);
 
@@ -49,7 +49,7 @@ public static class FurnishingInventoryPacket
 
     public static PacketWriter EndList()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FURNISHING_INVENTORY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FurnishingInventory);
         pWriter.Write(FurnishingInventoryPacketMode.EndList);
 
         return pWriter;

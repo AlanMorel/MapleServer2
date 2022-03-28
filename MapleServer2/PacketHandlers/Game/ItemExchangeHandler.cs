@@ -10,7 +10,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class ItemExchangeHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.ITEM_EXCHANGE;
+    public override RecvOp OpCode => RecvOp.ItemExchange;
 
     private enum ItemExchangeMode : byte
     {

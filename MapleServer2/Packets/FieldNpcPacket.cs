@@ -9,7 +9,7 @@ public static class FieldNpcPacket
 {
     public static PacketWriter AddNpc(IFieldObject<NpcMetadata> npc)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_ADD_NPC);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FieldAddNPC);
         pWriter.WriteInt(npc.ObjectId);
         pWriter.WriteInt(npc.Value.Id);
         pWriter.Write(npc.Coord);
@@ -47,7 +47,7 @@ public static class FieldNpcPacket
 
     public static PacketWriter AddMob(IFieldActor<NpcMetadata> mob)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_ADD_NPC);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FieldAddNPC);
 
         pWriter.WriteInt(mob.ObjectId);
         pWriter.WriteInt(mob.Value.Id);
@@ -103,7 +103,7 @@ public static class FieldNpcPacket
 
     public static PacketWriter RemoveNpc(IFieldActor<NpcMetadata> npc)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_REMOVE_NPC);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FieldRemoveNPC);
         pWriter.WriteInt(npc.ObjectId);
         return pWriter;
     }

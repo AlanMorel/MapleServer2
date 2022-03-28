@@ -10,7 +10,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class CardReverseGameHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.CARD_REVERSE_GAME;
+    public override RecvOp OpCode => RecvOp.CardReverseGame;
 
     private enum CardReverseGameMode : byte
     {

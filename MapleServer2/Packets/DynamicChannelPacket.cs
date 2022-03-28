@@ -7,7 +7,7 @@ public static class DynamicChannelPacket
 {
     public static PacketWriter DynamicChannel(short channelCount)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.DYNAMIC_CHANNEL);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.DynamicChannel);
         pWriter.WriteByte();
         pWriter.WriteShort(10);
         pWriter.WriteShort(channelCount);

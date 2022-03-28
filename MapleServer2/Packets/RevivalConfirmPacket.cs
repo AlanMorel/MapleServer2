@@ -7,7 +7,7 @@ public class RevivalConfirmPacket
 {
     public static PacketWriter Send(int objectId, long unk)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.REVIVAL_CONFIRM);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.RevivalConfirm);
 
         pWriter.WriteInt(objectId);
         pWriter.WriteLong(unk);

@@ -14,7 +14,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class MeretMarketHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.MERET_MARKET;
+    public override RecvOp OpCode => RecvOp.MeretMarket;
 
     private enum MeretMarketMode : byte
     {

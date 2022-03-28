@@ -16,7 +16,7 @@ public static class MapleopolyPacket
 
     public static PacketWriter Open(int totalTileCount, int freeRollAmount, List<MapleopolyTile> tiles, int tokenItemId, int playerTokenAmount)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MAPLEOPOLY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Mapleopoly);
         pWriter.Write(MapleopolyPacketMode.Open);
         pWriter.WriteInt(totalTileCount);
         pWriter.WriteInt(freeRollAmount);
@@ -37,7 +37,7 @@ public static class MapleopolyPacket
 
     public static PacketWriter Roll(int tileLocation, int roll1, int roll2)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MAPLEOPOLY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Mapleopoly);
         pWriter.Write(MapleopolyPacketMode.Roll);
         pWriter.WriteByte();
         pWriter.WriteInt(tileLocation);
@@ -49,7 +49,7 @@ public static class MapleopolyPacket
 
     public static PacketWriter ProcessTile(int totalTileCount, int freeRollAmount, MapleopolyTile tile)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MAPLEOPOLY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Mapleopoly);
         pWriter.Write(MapleopolyPacketMode.ProcessTile);
         pWriter.Write(tile.Type);
         pWriter.WriteInt(tile.TileParameter);
@@ -63,7 +63,7 @@ public static class MapleopolyPacket
 
     public static PacketWriter Notice(byte noticeId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MAPLEOPOLY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Mapleopoly);
         pWriter.Write(MapleopolyPacketMode.Notice);
         pWriter.WriteByte(noticeId);
         return pWriter;

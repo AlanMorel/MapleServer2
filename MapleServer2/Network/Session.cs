@@ -322,25 +322,25 @@ public abstract class Session : IDisposable
         SendOp sendOp = (SendOp) (packet.Buffer[1] << 8 | packet.Buffer[0]);
         switch (sendOp)
         {
-            case SendOp.USER_SYNC:
-            case SendOp.KEY_TABLE:
-            case SendOp.STAT:
-            case SendOp.EMOTION:
-            case SendOp.CHARACTER_LIST:
-            case SendOp.ITEM_INVENTORY:
-            case SendOp.FIELD_ADD_NPC:
-            case SendOp.FIELD_PORTAL:
-            case SendOp.NPC_CONTROL:
-            case SendOp.RIDE_SYNC:
-            case SendOp.FIELD_OBJECT:
-            case SendOp.FIELD_ADD_PLAYER:
-            case SendOp.DUNGEON_LIST:
-            case SendOp.SERVER_ENTER:
-            case SendOp.QUEST:
-            case SendOp.STORAGE_INVENTORY:
-            case SendOp.TROPHY:
-            case SendOp.RESPONSE_TIME_SYNC:
-            case SendOp.VIBRATE:
+            case SendOp.UserSync:
+            case SendOp.KeyTable:
+            case SendOp.Stat:
+            case SendOp.Emotion:
+            case SendOp.CharList:
+            case SendOp.ItemInventory:
+            case SendOp.FieldAddNPC:
+            case SendOp.FieldPortal:
+            case SendOp.NpcControl:
+            case SendOp.RideSync:
+            case SendOp.FieldObject:
+            case SendOp.FieldAddPlayer:
+            case SendOp.DungeonList:
+            case SendOp.ServerEnter:
+            case SendOp.Quest:
+            case SendOp.StorageInventory:
+            case SendOp.Trophy:
+            case SendOp.ResponseTimeSync:
+            case SendOp.Vibrate:
                 break;
             default:
                 string packetString = packet.ToString();
@@ -354,14 +354,14 @@ public abstract class Session : IDisposable
         RecvOp recvOp = (RecvOp) (packet.Buffer[1] << 8 | packet.Buffer[0]);
         switch (recvOp)
         {
-            case RecvOp.USER_SYNC:
-            case RecvOp.KEY_TABLE:
-            case RecvOp.RIDE_SYNC:
-            case RecvOp.GUIDE_OBJECT_SYNC:
-            case RecvOp.REQUEST_TIME_SYNC:
-            case RecvOp.STATE:
-            case RecvOp.STATE_FALL_DAMAGE:
-            case RecvOp.VIBRATE:
+            case RecvOp.UserSync:
+            case RecvOp.KeyTable:
+            case RecvOp.RideSync:
+            case RecvOp.GuideObjectSync:
+            case RecvOp.RequestTimeSync:
+            case RecvOp.State:
+            case RecvOp.StateFallDamage:
+            case RecvOp.Vibrate:
                 break;
             default:
                 string packetString = packet.ToString();

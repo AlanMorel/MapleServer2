@@ -16,7 +16,7 @@ public class ChangeAttributesScrollPacket
 
     public static PacketWriter Open(long uid)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.CHANGE_ATTRIBUTES_SCROLL);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ChangeAttributesScroll);
         pWriter.Write(ChangeAttributesScrollMode.Open);
         pWriter.WriteLong(uid);
 
@@ -25,7 +25,7 @@ public class ChangeAttributesScrollPacket
 
     public static PacketWriter PreviewNewItem(Item item)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.CHANGE_ATTRIBUTES_SCROLL);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ChangeAttributesScroll);
         pWriter.Write(ChangeAttributesScrollMode.Preview);
         pWriter.WriteLong(item.Uid);
         pWriter.WriteItem(item);
@@ -35,7 +35,7 @@ public class ChangeAttributesScrollPacket
 
     public static PacketWriter AddNewItem(Item item)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.CHANGE_ATTRIBUTES_SCROLL);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ChangeAttributesScroll);
         pWriter.Write(ChangeAttributesScrollMode.Add);
         pWriter.WriteLong(item.Uid);
         pWriter.WriteItem(item);

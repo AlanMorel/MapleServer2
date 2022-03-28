@@ -9,7 +9,7 @@ public static class GameEventPacket
 {
     public static PacketWriter Load(List<GameEvent> events)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.GAME_EVENT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.GameEvent);
         pWriter.WriteByte();
         pWriter.WriteInt(events.Count);
         foreach (GameEvent e in events)

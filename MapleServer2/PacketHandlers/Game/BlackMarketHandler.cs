@@ -14,7 +14,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class BlackMarketHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.BLACK_MARKET;
+    public override RecvOp OpCode => RecvOp.BlackMarket;
 
     private enum BlackMarketMode : byte
     {

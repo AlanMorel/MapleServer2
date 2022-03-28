@@ -8,7 +8,7 @@ public static class UserBattlePacket
 {
     public static PacketWriter UserBattle(IFieldObject<Player> player, bool flag)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.USER_BATTLE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.UserBattle);
         pWriter.WriteInt(player.ObjectId);
         pWriter.WriteBool(flag);
         return pWriter;

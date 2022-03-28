@@ -16,7 +16,7 @@ public static class ItemLockPacket
 
     public static PacketWriter Add(long uid, short slot)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_LOCK);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemLock);
         pWriter.Write(ItemLockMode.Add);
         pWriter.WriteLong(uid);
         pWriter.WriteShort(slot);
@@ -26,7 +26,7 @@ public static class ItemLockPacket
 
     public static PacketWriter Remove(long uid)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_LOCK);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemLock);
         pWriter.Write(ItemLockMode.Remove);
         pWriter.WriteLong(uid);
 
@@ -35,7 +35,7 @@ public static class ItemLockPacket
 
     public static PacketWriter UpdateItems(List<Item> items)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_LOCK);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemLock);
         pWriter.Write(ItemLockMode.Update);
         pWriter.WriteByte((byte) items.Count);
         foreach (Item item in items)

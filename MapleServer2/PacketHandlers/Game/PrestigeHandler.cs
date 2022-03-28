@@ -11,7 +11,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class PrestigeHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.PRESTIGE;
+    public override RecvOp OpCode => RecvOp.Prestige;
 
     private enum PrestigeMode : byte
     {

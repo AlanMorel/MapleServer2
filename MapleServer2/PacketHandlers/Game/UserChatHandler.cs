@@ -15,7 +15,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class UserChatHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.USER_CHAT;
+    public override RecvOp OpCode => RecvOp.UserChat;
 
     public override void Handle(GameSession session, PacketReader packet)
     {

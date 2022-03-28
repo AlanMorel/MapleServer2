@@ -17,7 +17,7 @@ public static class PrestigePacket
 
     public static PacketWriter SetLevels(Player player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PRESTIGE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Prestige);
         pWriter.Write(PrestigePacketMode.SetLevels);
         pWriter.WriteLong(player.Levels.PrestigeExp); // PrestigeExp
         pWriter.WriteInt(player.Levels.PrestigeLevel); // PrestigeLevel
@@ -35,7 +35,7 @@ public static class PrestigePacket
 
     public static PacketWriter ExpUp(long prestigeExp, long amount)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PRESTIGE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Prestige);
 
         pWriter.Write(PrestigePacketMode.Exp);
         pWriter.WriteLong(prestigeExp);
@@ -46,7 +46,7 @@ public static class PrestigePacket
 
     public static PacketWriter LevelUp(int playerObjectId, int level)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PRESTIGE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Prestige);
 
         pWriter.Write(PrestigePacketMode.LevelUp);
         pWriter.WriteInt(playerObjectId);
@@ -57,7 +57,7 @@ public static class PrestigePacket
 
     public static PacketWriter Reward(int rank)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PRESTIGE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Prestige);
 
         pWriter.Write(PrestigePacketMode.Reward);
         pWriter.WriteByte(0x01); // Unknown maybe boolean for whether to accept?
@@ -69,7 +69,7 @@ public static class PrestigePacket
 
     public static PacketWriter WeeklyMissions()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PRESTIGE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Prestige);
         pWriter.Write(PrestigePacketMode.WeeklyMissions);
         pWriter.WriteInt(3); // Amount of missions
         for (int i = 1; i <= 3; i++)

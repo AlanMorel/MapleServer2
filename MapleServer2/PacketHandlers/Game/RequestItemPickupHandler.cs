@@ -8,7 +8,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class RequestItemPickupHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.REQUEST_ITEM_PICKUP;
+    public override RecvOp OpCode => RecvOp.RequestItemPickup;
 
     public override void Handle(GameSession session, PacketReader packet)
     {

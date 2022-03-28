@@ -8,7 +8,7 @@ public static class SkillUsePacket
 {
     public static PacketWriter SkillUse(SkillCast skillCast)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_USE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.SkillUse);
 
         pWriter.WriteLong(skillCast.SkillSn);
         pWriter.WriteInt(skillCast.ServerTick);
@@ -29,7 +29,7 @@ public static class SkillUsePacket
     // TODO: change to SkillCast (refactor SkillCast / SkillManager)
     public static PacketWriter MobSkillUse(IFieldObject mob, int skillId, short skillLevel, byte part)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_USE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.SkillUse);
         pWriter.WriteInt(Random.Shared.Next()); // Seems to be an incrementing number - unique id
         pWriter.WriteInt(mob.ObjectId);
         pWriter.WriteInt();

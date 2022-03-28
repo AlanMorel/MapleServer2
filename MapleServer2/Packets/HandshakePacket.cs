@@ -8,7 +8,7 @@ public class HandshakePacket
 {
     public static PacketWriter Handshake(uint version, uint riv, uint siv, uint blockIv, PatchType patchType, int handshakeSize)
     {
-        PacketWriter handshake = PacketWriter.Of(SendOp.REQUEST_VERSION, handshakeSize);
+        PacketWriter handshake = PacketWriter.Of(SendOp.RequestVersion, handshakeSize);
         handshake.Write(version);
         handshake.Write(riv);
         handshake.Write(siv);

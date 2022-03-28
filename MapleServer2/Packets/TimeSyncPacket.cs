@@ -20,7 +20,7 @@ public static class TimeSyncPacket
 
     public static PacketWriter SetSessionServerTick(int key)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_TIME_SYNC);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseTimeSync);
         pWriter.Write(TimeSyncPacketMode.SetSessionServerTick);
         pWriter.WriteInt(Environment.TickCount);
         pWriter.WriteLong(TimeInfo.Now());
@@ -33,7 +33,7 @@ public static class TimeSyncPacket
 
     public static PacketWriter SetInitial1()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_TIME_SYNC);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseTimeSync);
         pWriter.Write(TimeSyncPacketMode.SetInitial1);
         pWriter.WriteInt(Environment.TickCount);
         pWriter.WriteLong(TimeInfo.Now());
@@ -45,7 +45,7 @@ public static class TimeSyncPacket
 
     public static PacketWriter Request()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_TIME_SYNC);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseTimeSync);
         pWriter.Write(TimeSyncPacketMode.Request);
         pWriter.WriteInt(Environment.TickCount);
         pWriter.WriteLong(TimeInfo.Now());
@@ -57,7 +57,7 @@ public static class TimeSyncPacket
 
     public static PacketWriter SetInitial2()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_TIME_SYNC);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseTimeSync);
         pWriter.Write(TimeSyncPacketMode.SetInitial2);
         pWriter.WriteLong(TimeInfo.Now());
 

@@ -21,14 +21,14 @@ public static class RockPaperScissorsPacket
 
     public static PacketWriter Open()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ROCK_PAPER_SCISSORS);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.RockPaperScissors);
         pWriter.Write(RpsPacketMode.Open);
         return pWriter;
     }
 
     public static PacketWriter RequestMatch(long characterId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ROCK_PAPER_SCISSORS);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.RockPaperScissors);
         pWriter.Write(RpsPacketMode.RequestMatch);
         pWriter.WriteLong(characterId);
         return pWriter;
@@ -36,7 +36,7 @@ public static class RockPaperScissorsPacket
 
     public static PacketWriter ConfirmMatch(long characterId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ROCK_PAPER_SCISSORS);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.RockPaperScissors);
         pWriter.Write(RpsPacketMode.ConfirmMatch);
         pWriter.WriteLong(characterId);
         return pWriter;
@@ -44,7 +44,7 @@ public static class RockPaperScissorsPacket
 
     public static PacketWriter DenyMatch(long characterId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ROCK_PAPER_SCISSORS);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.RockPaperScissors);
         pWriter.Write(RpsPacketMode.DenyMatch);
         pWriter.WriteLong(characterId);
         return pWriter;
@@ -52,14 +52,14 @@ public static class RockPaperScissorsPacket
 
     public static PacketWriter BeginMatch()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ROCK_PAPER_SCISSORS);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.RockPaperScissors);
         pWriter.Write(RpsPacketMode.BeginMatch);
         return pWriter;
     }
 
     public static PacketWriter CancelRequestMatch(long characterId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ROCK_PAPER_SCISSORS);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.RockPaperScissors);
         pWriter.Write(RpsPacketMode.CancelRequestMatch);
         pWriter.WriteLong(characterId);
         return pWriter;
@@ -67,7 +67,7 @@ public static class RockPaperScissorsPacket
 
     public static PacketWriter Notice(byte noticeId, long characterId = 0)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ROCK_PAPER_SCISSORS);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.RockPaperScissors);
         pWriter.Write(RpsPacketMode.CancelRequestMatch);
         pWriter.WriteLong(characterId);
         pWriter.WriteByte(noticeId);
@@ -76,7 +76,7 @@ public static class RockPaperScissorsPacket
 
     public static PacketWriter MatchResults(RpsResult result, RpsChoice playerChoice, RpsChoice opponentChoice)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ROCK_PAPER_SCISSORS);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.RockPaperScissors);
         pWriter.Write(RpsPacketMode.MatchResults);
         pWriter.Write(result);
         pWriter.Write(playerChoice);
@@ -86,7 +86,7 @@ public static class RockPaperScissorsPacket
 
     public static PacketWriter ConfirmMatch2(long characterId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ROCK_PAPER_SCISSORS);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.RockPaperScissors);
         pWriter.Write(RpsPacketMode.ConfirmMatch2);
         pWriter.WriteLong(characterId);
         return pWriter;

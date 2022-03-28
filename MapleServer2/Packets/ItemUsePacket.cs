@@ -7,7 +7,7 @@ public static class ItemUsePacket
 {
     public static PacketWriter Use(int id, int amount)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_USE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemUse);
 
         pWriter.WriteInt(id);
         pWriter.WriteInt(amount);
