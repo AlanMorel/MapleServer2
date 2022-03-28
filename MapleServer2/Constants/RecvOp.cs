@@ -164,5 +164,6 @@ public enum RecvOp : ushort
     SystemInfo = 0x00B7,
     ChatSticker = 0x00B9,
     FileHash = 0x00BB,
-    Marriage = 0x00BC
+    Marriage = 0x00BC,
+    WorldChampion = 0x00B8,
 }
