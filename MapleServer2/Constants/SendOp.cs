@@ -165,7 +165,7 @@ public enum SendOp : ushort
     PCBangBonus = 0x00A7,
     Dead = 0x00A8,
     DynamicChannel = 0x00A9,
-    UserEnviroment = 0x00AA,
+    UserEnvironment = 0x00AA,
     Manufacturer = 0x00AB,
     EnterUGCMap = 0x00AC,
     CouponUse = 0x00AD,
