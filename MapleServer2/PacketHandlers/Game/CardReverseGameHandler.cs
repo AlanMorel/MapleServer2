@@ -1,5 +1,4 @@
-﻿using Maple2Storage.Tools;
-using MaplePacketLib2.Tools;
+﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Database;
 using MapleServer2.Database.Types;
@@ -67,7 +66,7 @@ public class CardReverseGameHandler : GamePacketHandler
 
         List<CardReverseGame> cards = DatabaseManager.CardReverseGame.FindAll();
 
-        int index = RandomProvider.Get().Next(cards.Count);
+        int index = Random.Shared.Next(cards.Count);
 
         CardReverseGame card = cards[index];
         Item item = new(card.ItemId)

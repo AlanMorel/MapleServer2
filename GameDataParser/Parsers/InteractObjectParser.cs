@@ -1,5 +1,6 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
@@ -55,8 +56,8 @@ public class InteractObjectParser : Exporter<List<InteractObjectMetadata>>
                             InteractObjectDropMetadata drop = new()
                             {
                                 ObjectLevel = childNode.Attributes["objectLevel"]?.Value ?? "",
-                                GlobalDropBoxId = childNode.Attributes["globalDropBoxId"].Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList(),
-                                IndividualDropBoxId = childNode.Attributes["individualDropBoxId"].Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList()
+                                GlobalDropBoxId = childNode.Attributes["globalDropBoxId"].Value.SplitAndParseToInt(',').ToList(),
+                                IndividualDropBoxId = childNode.Attributes["individualDropBoxId"].Value.SplitAndParseToInt(',').ToList()
                             };
                             _ = int.TryParse(childNode.Attributes["objectDropRank"]?.Value ?? "0", out drop.DropRank);
 
@@ -75,8 +76,8 @@ public class InteractObjectParser : Exporter<List<InteractObjectMetadata>>
                             };
                             break;
                         case "quest":
-                            List<int> questIds = childNode.Attributes["maskQuestID"]?.Value.Split(',', '|').Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList();
-                            List<byte> states = childNode.Attributes["maskQuestState"]?.Value.Split(',', '|').Where(x => !string.IsNullOrEmpty(x)).Select(byte.Parse).ToList();
+                            List<int> questIds = childNode.Attributes["maskQuestID"]?.Value.SplitAndParseToInt(',', '|').ToList();
+                            List<byte> states = childNode.Attributes["maskQuestState"]?.Value.SplitAndParseToByte(',', '|').ToList();
                             if (questIds == null || states == null)
                             {
                                 continue;

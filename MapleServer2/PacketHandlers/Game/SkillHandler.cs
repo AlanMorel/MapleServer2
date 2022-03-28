@@ -1,5 +1,4 @@
 ﻿using Maple2Storage.Enums;
-using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
@@ -13,7 +12,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class SkillHandler : GamePacketHandler
 {
-    private static readonly Random Rand = RandomProvider.Get();
+    private static readonly Random Rand = Random.Shared;
 
     public override RecvOp OpCode => RecvOp.SKILL;
 

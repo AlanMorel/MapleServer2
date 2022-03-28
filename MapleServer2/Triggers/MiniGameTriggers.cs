@@ -1,5 +1,4 @@
 ﻿using Maple2.Trigger.Enum;
-using Maple2Storage.Tools;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Managers;
@@ -66,7 +65,7 @@ public partial class TriggerContext
             }
         }
 
-        Random random = RandomProvider.Get();
+        Random random = Random.Shared;
         int index = random.Next(boxPlayers.Count);
         IFieldObject<Player> randomPlayer = boxPlayers[index];
         Field.BroadcastPacket(LocalCameraPacket.Camera(cameraId, 1, randomPlayer.ObjectId));

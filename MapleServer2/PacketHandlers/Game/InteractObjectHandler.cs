@@ -1,5 +1,4 @@
 ﻿using Maple2Storage.Enums;
-using Maple2Storage.Tools;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
@@ -146,7 +145,7 @@ internal class InteractObjectHandler : GamePacketHandler
                         {
                             Item item = new(itemId)
                             {
-                                Amount = RandomProvider.Get().Next((int) dropGroupContent.MinAmount, (int) dropGroupContent.MaxAmount),
+                                Amount = Random.Shared.Next((int) dropGroupContent.MinAmount, (int) dropGroupContent.MaxAmount),
                                 Rarity = dropGroupContent.Rarity
                             };
 
@@ -172,7 +171,7 @@ internal class InteractObjectHandler : GamePacketHandler
                         {
                             Item item = new(itemId)
                             {
-                                Amount = RandomProvider.Get().Next((int) dropGroupContent.MinAmount, (int) dropGroupContent.MaxAmount),
+                                Amount = Random.Shared.Next((int) dropGroupContent.MinAmount, (int) dropGroupContent.MaxAmount),
                                 Rarity = dropGroupContent.Rarity
                             };
 

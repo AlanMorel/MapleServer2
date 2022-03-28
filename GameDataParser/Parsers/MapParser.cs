@@ -1,5 +1,6 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Tools;
 using Maple2.File.Flat;
 using Maple2.File.Flat.maplestory2library;
 using Maple2.File.IO.Crypto.Common;
@@ -277,7 +278,7 @@ public class MapParser : Exporter<List<MapMetadata>>
                                 break;
                             }
 
-                            List<int> weaponIds = prop.ObjectWeaponItemCode.Split(",").Select(int.Parse).ToList();
+                            List<int> weaponIds = prop.ObjectWeaponItemCode.SplitAndParseToInt(',').ToList();
                             mapEntity.WeaponObjects.Add(new(CoordB.FromVector3(prop.Position), weaponIds));
                             break;
                         case IMS2Liftable liftable:

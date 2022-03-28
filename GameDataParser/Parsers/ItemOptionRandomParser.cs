@@ -1,5 +1,6 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
@@ -37,7 +38,7 @@ public class ItemOptionRandomParser : Exporter<List<ItemOptionRandomMetadata>>
                             itemOption.Rarity = byte.Parse(node.Attributes["grade"]?.Value ?? "0");
                             break;
                         case "optionNumPick":
-                            itemOption.Slots = node.Attributes[item.Name].Value.Split(",").Select(byte.Parse).ToArray();
+                            itemOption.Slots = node.Attributes[item.Name].Value.SplitAndParseToByte(',').ToArray();
                             break;
                         case "multiply_factor":
                             itemOption.MultiplyFactor = float.Parse(node.Attributes[item.Name].Value);

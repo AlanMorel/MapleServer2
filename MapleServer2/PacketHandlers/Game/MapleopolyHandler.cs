@@ -1,5 +1,4 @@
-﻿using Maple2Storage.Tools;
-using MaplePacketLib2.Tools;
+﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
@@ -110,7 +109,7 @@ public class MapleopolyHandler : GamePacketHandler
             return;
         }
 
-        Random rnd = RandomProvider.Get();
+        Random rnd = Random.Shared;
 
         // roll two dice
         int roll1 = rnd.Next(1, 6);

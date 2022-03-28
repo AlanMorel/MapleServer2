@@ -1,5 +1,4 @@
 ﻿using Maple2Storage.Enums;
-using Maple2Storage.Tools;
 
 namespace MapleServer2.Types;
 
@@ -74,6 +73,6 @@ public class DamageHandler
 
     public static bool RollCrit(int critRate = 0)
     {
-        return RandomProvider.Get().Next(1000) < Math.Clamp(50 + critRate, 0, 400);
+        return Random.Shared.Next(1000) < Math.Clamp(50 + critRate, 0, 400);
     }
 }

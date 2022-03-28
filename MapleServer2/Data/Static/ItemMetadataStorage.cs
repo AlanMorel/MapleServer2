@@ -1,5 +1,4 @@
 ﻿using Maple2Storage.Enums;
-using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Enums;
@@ -151,7 +150,7 @@ public static class ItemMetadataStorage
             return 0;
         }
 
-        int rand = RandomProvider.Get().Next(0, pricePoints.Count);
+        int rand = Random.Shared.Next(0, pricePoints.Count);
 
         return pricePoints.ElementAt(rand);
     }
@@ -165,7 +164,7 @@ public static class ItemMetadataStorage
             return 0;
         }
 
-        int rand = RandomProvider.Get().Next(0, pricePoints.Count);
+        int rand = Random.Shared.Next(0, pricePoints.Count);
 
         return pricePoints.ElementAt(rand);
     }
@@ -201,7 +200,7 @@ public static class ItemMetadataStorage
 
         if (colorPalette > 0 && colorIndex == -1) // random color from color palette
         {
-            Random random = RandomProvider.Get();
+            Random random = Random.Shared;
 
             int index = random.Next(palette.DefaultColors.Count);
 

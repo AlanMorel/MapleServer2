@@ -257,7 +257,7 @@ public enum SendOp : ushort
     SPECTATE = 0x011C,
     ITEM_LAPENSHARD = 0x011D,
     PRESTIGE = 0x011E,
-    WORLD_CHAMPION = 0x120,
+    WORLD_CHAMPION = 0x121,
     SYNC_VALUE = 0x0122,
     NO = 0x0123,
     WARDROBE = 0x0125,

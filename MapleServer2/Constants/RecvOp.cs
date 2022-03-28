@@ -164,5 +164,6 @@ public enum RecvOp : ushort
     SYSTEM_INFO = 0x00B7,
     CHAT_STICKER = 0x00B9,
     FILE_HASH = 0x00BB,
-    MARRIAGE = 0x00BC
+    MARRIAGE = 0x00BC,
+    WORLD_CHAMPION = 0x00B8,
 }
