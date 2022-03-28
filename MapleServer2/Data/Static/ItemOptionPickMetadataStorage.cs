@@ -17,7 +17,7 @@ public static class ItemOptionPickMetadataStorage
             ItemOptionPick[item.Id] = item;
         }
     }
-    
+
     public static ItemOptionPick GetMetadata(int id, int rarity)
     {
         ItemOptionPickMetadata metadata = ItemOptionPick.Values.FirstOrDefault(x => x.Id == id);

@@ -334,7 +334,7 @@ public class ItemOptionRangeParser : Exporter<List<ItemOptionRangeMetadata>>
 
         return values;
     }
-    
+
     private static List<ParserSpecialStat> ParseSpecialStat(StatAttribute attribute, XmlNode node, StatAttributeType type)
     {
         List<ParserSpecialStat> values = new();

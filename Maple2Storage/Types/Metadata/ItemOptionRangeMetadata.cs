@@ -22,7 +22,7 @@ public class ParserStat
     [XmlElement(Order = 2)]
     public float Value;
     [XmlElement(Order = 3)]
-    public StatAttributeType AttributeType; 
+    public StatAttributeType AttributeType;
 
     public ParserStat() { }
 
@@ -47,7 +47,7 @@ public class ParserSpecialStat
     [XmlElement(Order = 2)]
     public float Value;
     [XmlElement(Order = 3)]
-    public StatAttributeType AttributeType; 
+    public StatAttributeType AttributeType;
 
     public ParserSpecialStat() { }
 

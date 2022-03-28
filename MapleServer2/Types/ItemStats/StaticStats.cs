@@ -101,7 +101,8 @@ public static class StaticStats
     private static double CalculateStat(Item item, float optionLevelFactor, float globalOptionLevelFactor, StaticPick staticPick, ScriptLoader scriptLoader, float currentStatValue)
     {
 
-        Random random = Random.Shared;;
+        Random random = Random.Shared;
+        ;
         string calcScript = "";
         switch (staticPick.Stat)
         {

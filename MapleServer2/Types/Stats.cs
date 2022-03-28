@@ -16,144 +16,109 @@ public class Stats
         Data = new()
         {
             {
-                StatAttribute.Str,
-                new(metadata.Stats.Str)
+                StatAttribute.Str, new(metadata.Stats.Str)
             },
             {
-                StatAttribute.Dex,
-                new(metadata.Stats.Dex)
+                StatAttribute.Dex, new(metadata.Stats.Dex)
             },
             {
-                StatAttribute.Int,
-                new(metadata.Stats.Int)
+                StatAttribute.Int, new(metadata.Stats.Int)
             },
             {
-                StatAttribute.Luk,
-                new(metadata.Stats.Luk)
+                StatAttribute.Luk, new(metadata.Stats.Luk)
             },
             {
-                StatAttribute.Hp,
-                new(metadata.Stats.Hp)
+                StatAttribute.Hp, new(metadata.Stats.Hp)
             }, // Max = 0 on login
             {
-                StatAttribute.HpRegen,
-                new(metadata.Stats.HpRegen)
+                StatAttribute.HpRegen, new(metadata.Stats.HpRegen)
             },
             {
-                StatAttribute.HpRegenInterval,
-                new(metadata.Stats.HpInterval)
+                StatAttribute.HpRegenInterval, new(metadata.Stats.HpInterval)
             },
             {
-                StatAttribute.Spirit,
-                new(metadata.Stats.Sp)
+                StatAttribute.Spirit, new(metadata.Stats.Sp)
             }, // Max = 0 on login
             {
-                StatAttribute.SpRegen,
-                new(metadata.Stats.SpRegen)
+                StatAttribute.SpRegen, new(metadata.Stats.SpRegen)
             },
             {
-                StatAttribute.SpRegenInterval,
-                new(metadata.Stats.SpInterval)
+                StatAttribute.SpRegenInterval, new(metadata.Stats.SpInterval)
             },
             {
-                StatAttribute.Stamina,
-                new(metadata.Stats.Ep)
+                StatAttribute.Stamina, new(metadata.Stats.Ep)
             }, // Max = 0 on login
             {
-                StatAttribute.StaminaRegen,
-                new(metadata.Stats.EpRegen)
+                StatAttribute.StaminaRegen, new(metadata.Stats.EpRegen)
             },
             {
-                StatAttribute.StaminaRegenInterval,
-                new(metadata.Stats.EpInterval)
+                StatAttribute.StaminaRegenInterval, new(metadata.Stats.EpInterval)
             },
             {
-                StatAttribute.AttackSpeed,
-                new(metadata.Stats.AtkSpd)
+                StatAttribute.AttackSpeed, new(metadata.Stats.AtkSpd)
             },
             {
-                StatAttribute.MovementSpeed,
-                new(metadata.Stats.MoveSpd)
+                StatAttribute.MovementSpeed, new(metadata.Stats.MoveSpd)
             },
             {
-                StatAttribute.Accuracy,
-                new(metadata.Stats.Accuracy)
+                StatAttribute.Accuracy, new(metadata.Stats.Accuracy)
             },
             {
-                StatAttribute.Evasion,
-                new(metadata.Stats.Evasion)
+                StatAttribute.Evasion, new(metadata.Stats.Evasion)
             }, // changes with job
             {
-                StatAttribute.CritRate,
-                new(metadata.Stats.CritRate)
+                StatAttribute.CritRate, new(metadata.Stats.CritRate)
             }, // changes with job
             {
-                StatAttribute.CritDamage,
-                new(metadata.Stats.CritDamage)
+                StatAttribute.CritDamage, new(metadata.Stats.CritDamage)
             },
             {
-                StatAttribute.CritEvasion,
-                new(metadata.Stats.CritResist)
+                StatAttribute.CritEvasion, new(metadata.Stats.CritResist)
             },
             {
-                StatAttribute.Defense,
-                new(metadata.Stats.Defense)
+                StatAttribute.Defense, new(metadata.Stats.Defense)
             }, // base affected by something?
             {
-                StatAttribute.PerfectGuard,
-                new(metadata.Stats.Guard)
+                StatAttribute.PerfectGuard, new(metadata.Stats.Guard)
             },
             {
-                StatAttribute.JumpHeight,
-                new(metadata.Stats.JumpHeight)
+                StatAttribute.JumpHeight, new(metadata.Stats.JumpHeight)
             },
             {
-                StatAttribute.PhysicalAtk,
-                new(metadata.Stats.PhysAtk)
+                StatAttribute.PhysicalAtk, new(metadata.Stats.PhysAtk)
             }, // base for mage, 74 thief
             {
-                StatAttribute.MagicAtk,
-                new(metadata.Stats.MagAtk)
+                StatAttribute.MagicAtk, new(metadata.Stats.MagAtk)
             }, // base for thief, 216 mage
             {
-                StatAttribute.PhysicalRes,
-                new(metadata.Stats.PhysRes)
+                StatAttribute.PhysicalRes, new(metadata.Stats.PhysRes)
             },
             {
-                StatAttribute.MagicRes,
-                new(metadata.Stats.MagRes)
+                StatAttribute.MagicRes, new(metadata.Stats.MagRes)
             },
             {
-                StatAttribute.MinWeaponAtk,
-                new(metadata.Stats.MinAtk)
+                StatAttribute.MinWeaponAtk, new(metadata.Stats.MinAtk)
             },
             {
-                StatAttribute.MaxWeaponAtk,
-                new(metadata.Stats.MaxAtk)
+                StatAttribute.MaxWeaponAtk, new(metadata.Stats.MaxAtk)
             },
             {
-                StatAttribute.MinDamage,
-                new(metadata.Stats.Damage)
+                StatAttribute.MinDamage, new(metadata.Stats.Damage)
             },
             {
-                StatAttribute.MaxDamage,
-                new(metadata.Stats.Damage)
+                StatAttribute.MaxDamage, new(metadata.Stats.Damage)
             },
             {
-                StatAttribute.Pierce,
-                new(metadata.Stats.Pierce)
+                StatAttribute.Pierce, new(metadata.Stats.Pierce)
             },
             {
-                StatAttribute.MountMovementSpeed,
-                new(metadata.Stats.MountSpeed)
+                StatAttribute.MountMovementSpeed, new(metadata.Stats.MountSpeed)
             },
             {
-                StatAttribute.BonusAtk,
-                new(metadata.Stats.BonusAtk)
+                StatAttribute.BonusAtk, new(metadata.Stats.BonusAtk)
             },
             {
-                StatAttribute.PetBonusAtk,
-                new(metadata.Stats.BonusAtkPet)
+                StatAttribute.PetBonusAtk, new(metadata.Stats.BonusAtkPet)
             }
         };
     }
@@ -164,144 +129,109 @@ public class Stats
         Data = new()
         {
             {
-                StatAttribute.Str,
-                new(strBase)
+                StatAttribute.Str, new(strBase)
             },
             {
-                StatAttribute.Dex,
-                new(dexBase)
+                StatAttribute.Dex, new(dexBase)
             },
             {
-                StatAttribute.Int,
-                new(intBase)
+                StatAttribute.Int, new(intBase)
             },
             {
-                StatAttribute.Luk,
-                new(lukBase)
+                StatAttribute.Luk, new(lukBase)
             },
             {
-                StatAttribute.Hp,
-                new(hpBase)
+                StatAttribute.Hp, new(hpBase)
             }, // Max = 0 on login
             {
-                StatAttribute.HpRegen,
-                new(10)
+                StatAttribute.HpRegen, new(10)
             },
             {
-                StatAttribute.HpRegenInterval,
-                new(3000) // base (3000ms)
+                StatAttribute.HpRegenInterval, new(3000) // base (3000ms)
             },
             {
-                StatAttribute.Spirit,
-                new(100)
+                StatAttribute.Spirit, new(100)
             }, // Max = 0 on login
             {
-                StatAttribute.SpRegen,
-                new(1)
+                StatAttribute.SpRegen, new(1)
             },
             {
-                StatAttribute.SpRegenInterval,
-                new(200) // base (200ms)
+                StatAttribute.SpRegenInterval, new(200) // base (200ms)
             },
             {
-                StatAttribute.Stamina,
-                new(120) // base 120 (20 = 1 block)
+                StatAttribute.Stamina, new(120) // base 120 (20 = 1 block)
             }, // Max = 0 on login
             {
-                StatAttribute.StaminaRegen,
-                new(10) // base 10  (10 = 0.5 block)
+                StatAttribute.StaminaRegen, new(10) // base 10  (10 = 0.5 block)
             },
             {
-                StatAttribute.StaminaRegenInterval,
-                new(500) // base (500ms)
+                StatAttribute.StaminaRegenInterval, new(500) // base (500ms)
             },
             {
-                StatAttribute.AttackSpeed,
-                new(100)
+                StatAttribute.AttackSpeed, new(100)
             },
             {
-                StatAttribute.MovementSpeed,
-                new(100)
+                StatAttribute.MovementSpeed, new(100)
             },
             {
-                StatAttribute.Accuracy,
-                new(82)
+                StatAttribute.Accuracy, new(82)
             },
             {
-                StatAttribute.Evasion,
-                new(70)
+                StatAttribute.Evasion, new(70)
             }, // changes with job
             {
-                StatAttribute.CritRate,
-                new(critBase)
+                StatAttribute.CritRate, new(critBase)
             }, // changes with job
             {
-                StatAttribute.CritDamage,
-                new(250)
+                StatAttribute.CritDamage, new(250)
             },
             {
-                StatAttribute.CritEvasion,
-                new(50)
+                StatAttribute.CritEvasion, new(50)
             },
             {
-                StatAttribute.Defense,
-                new(16)
+                StatAttribute.Defense, new(16)
             }, // base affected by something?
             {
-                StatAttribute.PerfectGuard,
-                new(0)
+                StatAttribute.PerfectGuard, new(0)
             },
             {
-                StatAttribute.JumpHeight,
-                new(100)
+                StatAttribute.JumpHeight, new(100)
             },
             {
-                StatAttribute.PhysicalAtk,
-                new(10)
+                StatAttribute.PhysicalAtk, new(10)
             }, // base for mage, 74 thief
             {
-                StatAttribute.MagicAtk,
-                new(2)
+                StatAttribute.MagicAtk, new(2)
             }, // base for thief, 216 mage
             {
-                StatAttribute.PhysicalRes,
-                new(5)
+                StatAttribute.PhysicalRes, new(5)
             },
             {
-                StatAttribute.MagicRes,
-                new(4)
+                StatAttribute.MagicRes, new(4)
             },
             {
-                StatAttribute.MinWeaponAtk,
-                new(0)
+                StatAttribute.MinWeaponAtk, new(0)
             },
             {
-                StatAttribute.MaxWeaponAtk,
-                new(0)
+                StatAttribute.MaxWeaponAtk, new(0)
             },
             {
-                StatAttribute.MinDamage,
-                new(0)
+                StatAttribute.MinDamage, new(0)
             },
             {
-                StatAttribute.MaxDamage,
-                new(0)
+                StatAttribute.MaxDamage, new(0)
             },
             {
-                StatAttribute.Pierce,
-                new(0)
+                StatAttribute.Pierce, new(0)
             },
             {
-                StatAttribute.MountMovementSpeed,
-                new(100)
+                StatAttribute.MountMovementSpeed, new(100)
             },
             {
-                StatAttribute.BonusAtk,
-                new(0)
+                StatAttribute.BonusAtk, new(0)
             },
             {
-                StatAttribute.PetBonusAtk,
-                new(0) // base 0 (bonuses can be added)
+                StatAttribute.PetBonusAtk, new(0) // base 0 (bonuses can be added)
             }
         };
 
@@ -319,7 +249,7 @@ public class Stats
             {
                 Data[statIndex] = new(0);
             }
-            return Data[statIndex];   
+            return Data[statIndex];
         }
 
         private set => Data[statIndex] = value;

@@ -1,6 +1,5 @@
 ﻿using Maple2Storage.Enums;
 using MaplePacketLib2.Tools;
-using MapleServer2.Enums;
 using MapleServer2.Types;
 
 namespace MapleServer2.Packets.Helpers;
@@ -148,19 +147,19 @@ public static class ItemPacketHelper
         pWriter.WriteInt();
 
         List<BasicStat> staticNormalStats = stats.Statics.OfType<BasicStat>().ToList();
-        pWriter.WriteShort((short)staticNormalStats.Count);
+        pWriter.WriteShort((short) staticNormalStats.Count);
         foreach (BasicStat stat in staticNormalStats)
         {
             WriteBasicStat(pWriter, stat);
         }
-        
+
         List<SpecialStat> staticSpecialStats = stats.Statics.OfType<SpecialStat>().ToList();
         pWriter.WriteShort((short) staticSpecialStats.Count);
         foreach (SpecialStat stat in staticSpecialStats)
         {
             WriteSpecialStat(pWriter, stat);
         }
-        
+
         pWriter.WriteInt();
 
         List<BasicStat> bonusNormalStats = stats.Randoms.OfType<BasicStat>().ToList();
@@ -169,7 +168,7 @@ public static class ItemPacketHelper
         {
             WriteBasicStat(pWriter, stat);
         }
-        
+
         List<SpecialStat> bonusSpecialStats = stats.Randoms.OfType<SpecialStat>().ToList();
         pWriter.WriteShort((short) bonusSpecialStats.Count);
         foreach (SpecialStat stat in bonusSpecialStats)
@@ -207,14 +206,14 @@ public static class ItemPacketHelper
         pWriter.WriteInt(stat.Flat);
         pWriter.WriteFloat(stat.Rate);
     }
-    
+
     private static void WriteSpecialStat(PacketWriter pWriter, SpecialStat stat)
     {
         pWriter.WriteShort(stat.WriteAttribute());
         pWriter.WriteFloat(stat.Rate);
         pWriter.WriteFloat(stat.Flat);
     }
-    
+
     private static PacketWriter WriteStatDiff(this PacketWriter pWriter /*, ItemStats old, ItemStats new*/)
     {
         // TODO: Find stat diffs (low priority)
