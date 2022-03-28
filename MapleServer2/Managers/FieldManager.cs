@@ -993,7 +993,6 @@ public partial class FieldManager : IDisposable
                 UpdateObjects();
                 HealingSpot();
                 SendUpdates();
-                Console.WriteLine("Loop");
                 await Task.Delay(1000, ct);
             }
         }, ct);
@@ -1189,9 +1188,16 @@ public partial class FieldManager : IDisposable
     public void Dispose()
     {
         CancellationToken.Cancel();
+        Task.WaitAll(MapLoopTask, TriggerTask);
+
         MapLoopTask?.Dispose();
         TriggerTask?.Dispose();
         Navigator?.Dispose();
         GC.SuppressFinalize(this);
+    }
+
+    ~FieldManager()
+    {
+        Dispose();
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Maple2.PathEngine;
-using Maple2.PathEngine.Interface;
+using Maple2.PathEngine.Exception;
 using Maple2.PathEngine.Types;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -11,13 +11,15 @@ public class FieldNavigator : IDisposable
 {
     private readonly Mesh Mesh;
     private readonly CollisionContext CollisionContext;
+    private readonly Dictionary<(int, int), Shape> Shapes;
 
     public FieldNavigator(string mapName)
     {
         byte[] meshBuffer = File.ReadAllBytes(Paths.NAVMESH_DIR + $"/{mapName}.tok");
 
-        Mesh = MapleServer.PathEngine.loadMeshFromBuffer(FileFormat.tok, meshBuffer, options: null);
+        Mesh = MapleServer.PathEngine.loadMeshFromBuffer(FileFormat.tok, meshBuffer);
         CollisionContext = Mesh.newContext();
+        Shapes = new();
     }
 
     /// <summary>
@@ -64,7 +66,7 @@ public class FieldNavigator : IDisposable
     }
 
     /// <summary>
-    /// Find the shortest curved path from the agent to the target position.
+    /// Find the shortest path from the agent to the target position.
     /// </summary>
     /// <returns>List of CoordS or null if path is not possible</returns>
     public List<CoordS> FindPath(Agent agent, CoordS endCoord)
@@ -76,19 +78,7 @@ public class FieldNavigator : IDisposable
             return null;
         }
 
-        using Path shortestPath = agent.findShortestPathTo(CollisionContext, end);
-        if (shortestPath is null)
-        {
-            Console.WriteLine("Shortest path is null");
-            return null;
-        }
-
-        using Path path = agent.generateCurvedPath(shortestPath, CollisionContext, 0, 0, sectionLength: 50, turnRatio1: 0.5f, turnRatio2: 0.9f);
-        if (path is null)
-        {
-            Console.WriteLine("Curved path is null");
-        }
-
+        using Path path = agent.findShortestPathTo(CollisionContext, end);
         return PathToCoordS(path);
     }
 
@@ -97,23 +87,28 @@ public class FieldNavigator : IDisposable
     /// </summary>
     public Shape AddShape(NpcMetadataCapsule metadata)
     {
-        // TODO: Cache shapes??
         int width = metadata.Radius; // Using radius for width
         int height = metadata.Height;
 
+        if (Shapes.TryGetValue((width, height), out Shape cacheShape))
+        {
+            return cacheShape;
+        }
+
         int halfWidth = width / 2;
         int halfHeight = height / 2;
-        int negativeHalfWidth = halfWidth * -1;
-        int negativeHalfHeight = halfHeight * -1;
         List<Point> rectArray = new()
         {
-            new(negativeHalfWidth, negativeHalfHeight),
-            new(negativeHalfWidth, halfHeight),
+            new(-halfWidth, -halfHeight),
+            new(-halfWidth, halfHeight),
             new(halfWidth, halfHeight),
-            new(halfWidth, negativeHalfHeight)
+            new(halfWidth, -halfHeight)
         };
 
         Shape shape = MapleServer.PathEngine.newShape(rectArray);
+
+        Shapes.Add((width, height), shape);
+
         Mesh.generateUnobstructedSpaceFor(shape, true);
         Mesh.generatePathfindPreprocessFor(shape);
         return shape;
@@ -156,19 +151,14 @@ public class FieldNavigator : IDisposable
 
     public Position? FindClosestUnobstructedPosition(Shape shape, Position position, int radius)
     {
-        if (!PositionIsValid(position))
+        Position unobstructedPosition;
+        try
         {
-            return null;
-        }
+            Position randomPosition = Mesh.generateRandomPositionLocally(position, radius);
 
-        Position randomPosition = Mesh.generateRandomPositionLocally(position, radius);
-        if (!PositionIsValid(randomPosition))
-        {
-            return null;
+            unobstructedPosition = Mesh.findClosestUnobstructedPosition(shape, CollisionContext, randomPosition, radius);
         }
-
-        Position unobstructedPosition = Mesh.findClosestUnobstructedPosition(shape, CollisionContext, randomPosition, radius);
-        if (!PositionIsValid(unobstructedPosition))
+        catch (InvalidPositionException)
         {
             return null;
         }
@@ -184,19 +174,14 @@ public class FieldNavigator : IDisposable
 
     public CoordS? FindClosestUnobstructedCoordS(Shape shape, Position position, int radius)
     {
-        if (!PositionIsValid(position))
+        Position unobstructedPosition;
+        try
         {
-            return null;
-        }
+            Position randomPosition = Mesh.generateRandomPositionLocally(position, radius);
 
-        Position randomPosition = Mesh.generateRandomPositionLocally(position, radius);
-        if (!PositionIsValid(randomPosition))
-        {
-            return null;
+            unobstructedPosition = Mesh.findClosestUnobstructedPosition(shape, CollisionContext, randomPosition, radius);
         }
-
-        Position unobstructedPosition = Mesh.findClosestUnobstructedPosition(shape, CollisionContext, randomPosition, radius);
-        if (!PositionIsValid(unobstructedPosition))
+        catch (InvalidPositionException)
         {
             return null;
         }
@@ -217,7 +202,6 @@ public class FieldNavigator : IDisposable
             Position position = path.position(i);
             if (position.Cell < 0)
             {
-                Console.WriteLine("Invalid position: " + position);
                 continue;
             }
 
@@ -232,13 +216,9 @@ public class FieldNavigator : IDisposable
         Mesh?.Dispose();
         GC.SuppressFinalize(this);
     }
-}
 
-public class ErrorHandler : IErrorHandler
-{
-    public override ErrorResult handle(ErrorType type, string description, IDictionary<string, string> attributes)
+    ~FieldNavigator()
     {
-        Console.WriteLine("Type: " + type + " Description: " + description + " Attributes: " + attributes);
-        return 0;
+        Dispose();
     }
 }

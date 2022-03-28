@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using Autofac;
 using Maple2.PathEngine;
+using Maple2.PathEngine.Utils;
 using Maple2Storage.Extensions;
 using Maple2Storage.Tools;
 using Maple2Storage.Types;
@@ -20,7 +21,7 @@ namespace MapleServer2;
 
 public static class MapleServer
 {
-    public static readonly PathEngine PathEngine = new(new ErrorHandler());
+    public static readonly PathEngine PathEngine = new(new PrintErrorHandler(Console.Out));
 
     private static GameServer _gameServer;
     private static LoginServer _loginServer;
