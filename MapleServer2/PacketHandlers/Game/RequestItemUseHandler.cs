@@ -16,7 +16,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class RequestItemUseHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.REQUEST_ITEM_USE;
+    public override RecvOp OpCode => RecvOp.RequestItemUse;
 
     public override void Handle(GameSession session, PacketReader packet)
     {

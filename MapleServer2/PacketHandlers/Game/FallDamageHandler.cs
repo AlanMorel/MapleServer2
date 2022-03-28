@@ -9,7 +9,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class FallDamageHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.STATE_FALL_DAMAGE;
+    public override RecvOp OpCode => RecvOp.StateFallDamage;
 
     public override void Handle(GameSession session, PacketReader packet)
     {

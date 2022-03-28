@@ -14,7 +14,7 @@ public static class ItemExtractionPacket
 
     public static PacketWriter Extract(Item resultItem)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_EXTRACTION);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemExtraction);
         pWriter.Write(ItemExtractionPacketMode.Extract);
         pWriter.WriteLong(resultItem.Uid);
         pWriter.WriteLong(resultItem.Uid);
@@ -33,7 +33,7 @@ public static class ItemExtractionPacket
 
     public static PacketWriter InsufficientAnvils()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_EXTRACTION);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemExtraction);
         pWriter.Write(ItemExtractionPacketMode.InsufficientAnvils);
         return pWriter;
     }

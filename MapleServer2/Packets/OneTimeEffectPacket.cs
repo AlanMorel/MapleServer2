@@ -7,7 +7,7 @@ public static class OneTimeEffectPacket
 {
     public static PacketWriter View(int id, bool enable, string path = "")
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ONE_TIME_EFFECT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.OneTimeEffect);
         pWriter.WriteInt(id);
         pWriter.WriteBool(enable);
         if (enable)

@@ -25,7 +25,7 @@ public static class ItemInventoryPacket
 
     public static PacketWriter Add(Item item)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemInventory);
         pWriter.Write(InventoryMode.Add);
         pWriter.WriteInt(item.Id);
         pWriter.WriteLong(item.Uid);
@@ -40,7 +40,7 @@ public static class ItemInventoryPacket
 
     public static PacketWriter Remove(long uid)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemInventory);
         pWriter.Write(InventoryMode.Remove);
         pWriter.WriteLong(uid);
 
@@ -49,7 +49,7 @@ public static class ItemInventoryPacket
 
     public static PacketWriter UpdateAmount(long uid, int amount)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemInventory);
         pWriter.Write(InventoryMode.UpdateAmount);
         pWriter.WriteLong(uid);
         pWriter.WriteInt(amount);
@@ -59,7 +59,7 @@ public static class ItemInventoryPacket
 
     public static PacketWriter Move(long dstUid, short srcSlot, long srcUid, short dstSlot)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemInventory);
         pWriter.Write(InventoryMode.Move);
         pWriter.WriteLong(dstUid);
         pWriter.WriteShort(srcSlot);
@@ -71,7 +71,7 @@ public static class ItemInventoryPacket
 
     public static PacketWriter LoadItem(IReadOnlyCollection<Item> items)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemInventory);
         pWriter.Write(InventoryMode.LoadItem);
 
         pWriter.WriteShort((short) items.Count);
@@ -90,7 +90,7 @@ public static class ItemInventoryPacket
     // Marks an item in inventory as new
     public static PacketWriter MarkItemNew(Item item, int amount)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemInventory);
         pWriter.Write(InventoryMode.MarkItemNew);
         pWriter.WriteLong(item.Uid);
         pWriter.WriteInt(amount);
@@ -101,7 +101,7 @@ public static class ItemInventoryPacket
 
     public static PacketWriter LoadItemsToTab(InventoryTab tab, IReadOnlyCollection<Item> items)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemInventory);
         pWriter.Write(InventoryMode.LoadItemsToTab);
         pWriter.WriteInt((int) tab);
         pWriter.WriteShort((short) items.Count);
@@ -119,7 +119,7 @@ public static class ItemInventoryPacket
 
     public static PacketWriter Expand()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemInventory);
         pWriter.Write(InventoryMode.Expand);
 
         return pWriter;
@@ -127,7 +127,7 @@ public static class ItemInventoryPacket
 
     public static PacketWriter ResetTab(InventoryTab tab)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemInventory);
         pWriter.Write(InventoryMode.ResetTab);
         pWriter.WriteInt((int) tab); // index
 
@@ -136,7 +136,7 @@ public static class ItemInventoryPacket
 
     public static PacketWriter LoadTab(InventoryTab tab, short extraSlots)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemInventory);
         pWriter.Write(InventoryMode.LoadTab);
         pWriter.WriteByte((byte) tab);
         pWriter.WriteInt(extraSlots);
@@ -146,7 +146,7 @@ public static class ItemInventoryPacket
 
     public static PacketWriter UpdateBind(Item item)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemInventory);
         pWriter.Write(InventoryMode.UpdateBind);
         pWriter.WriteLong(item.Uid);
         pWriter.WriteItem(item);

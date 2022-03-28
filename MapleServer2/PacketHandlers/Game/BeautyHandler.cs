@@ -14,7 +14,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class BeautyHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.BEAUTY;
+    public override RecvOp OpCode => RecvOp.Beauty;
 
     private enum BeautyMode : byte
     {

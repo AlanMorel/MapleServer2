@@ -15,7 +15,7 @@ public static class GameEventUserValuePacket
 
     public static PacketWriter LoadValues(List<GameEventUserValue> userValues)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.GAME_EVENT_USER_VALUE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.GameEventUserValue);
         pWriter.Write(GameEventUserValuePacketMode.LoadValues);
         pWriter.WriteByte();
         pWriter.WriteInt(userValues.Count);
@@ -29,7 +29,7 @@ public static class GameEventUserValuePacket
 
     public static PacketWriter UpdateValue(GameEventUserValue userValue)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.GAME_EVENT_USER_VALUE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.GameEventUserValue);
         pWriter.Write(GameEventUserValuePacketMode.UpdateValue);
         pWriter.WriteByte();
         WriteUserValue(pWriter, userValue);

@@ -21,7 +21,7 @@ public static class MesoMarketPacket
 
     public static PacketWriter Error(int errorCode)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MESO_MARKET);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MesoMarket);
         pWriter.Write(MesoMarketPacketMode.Error);
         pWriter.WriteInt(errorCode);
         return pWriter;
@@ -29,7 +29,7 @@ public static class MesoMarketPacket
 
     public static PacketWriter LoadMarket()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MESO_MARKET);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MesoMarket);
         pWriter.Write(MesoMarketPacketMode.LoadMarket);
         pWriter.WriteFloat(float.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketTax")));
         pWriter.WriteFloat(float.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketPriceRange")));
@@ -46,7 +46,7 @@ public static class MesoMarketPacket
 
     public static PacketWriter AccountStats(int todaysListingCount, int monthlyPurchaseCount)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MESO_MARKET);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MesoMarket);
         pWriter.Write(MesoMarketPacketMode.AccountStats);
         pWriter.WriteInt(todaysListingCount);
         pWriter.WriteInt(monthlyPurchaseCount);
@@ -55,7 +55,7 @@ public static class MesoMarketPacket
 
     public static PacketWriter MyListings(List<MesoMarketListing> listings)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MESO_MARKET);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MesoMarket);
         pWriter.Write(MesoMarketPacketMode.MyListings);
         pWriter.WriteInt(listings.Count);
         foreach (MesoMarketListing listing in listings)
@@ -68,7 +68,7 @@ public static class MesoMarketPacket
 
     public static PacketWriter CreateListing(MesoMarketListing listing)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MESO_MARKET);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MesoMarket);
         pWriter.Write(MesoMarketPacketMode.CreateListing);
         WriteListing(pWriter, listing);
         pWriter.WriteInt();
@@ -77,7 +77,7 @@ public static class MesoMarketPacket
 
     public static PacketWriter CancelListing(long listingId, int errorCode = 0)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MESO_MARKET);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MesoMarket);
         pWriter.Write(MesoMarketPacketMode.CancelListing);
         pWriter.WriteInt(errorCode);
         pWriter.WriteLong(listingId);
@@ -86,7 +86,7 @@ public static class MesoMarketPacket
 
     public static PacketWriter LoadListings(List<MesoMarketListing> listings)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MESO_MARKET);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MesoMarket);
         pWriter.Write(MesoMarketPacketMode.LoadListings);
         pWriter.WriteInt(listings.Count);
         foreach (MesoMarketListing listing in listings)
@@ -98,7 +98,7 @@ public static class MesoMarketPacket
 
     public static PacketWriter Purchase(long listingId, int errorCode = 0)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MESO_MARKET);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MesoMarket);
         pWriter.Write(MesoMarketPacketMode.Purchase);
         pWriter.WriteInt(errorCode);
         pWriter.WriteLong(listingId);

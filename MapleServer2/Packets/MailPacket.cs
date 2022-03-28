@@ -24,7 +24,7 @@ public static class MailPacket
 
     public static PacketWriter Open(List<Mail> box)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Mail);
         pWriter.Write(MailPacketMode.Open);
         pWriter.WriteInt(box.Count);
         foreach (Mail mail in box)
@@ -36,7 +36,7 @@ public static class MailPacket
 
     public static PacketWriter Send(Mail mail)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Mail);
         pWriter.Write(MailPacketMode.Send);
         pWriter.WriteLong(mail.Id);
         return pWriter;
@@ -44,7 +44,7 @@ public static class MailPacket
 
     public static PacketWriter Read(Mail mail)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Mail);
         pWriter.Write(MailPacketMode.Read);
         pWriter.WriteLong(mail.Id);
         pWriter.WriteLong(mail.ReadTimestamp);
@@ -53,7 +53,7 @@ public static class MailPacket
 
     public static PacketWriter Collect(Mail mail)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Mail);
         pWriter.Write(MailPacketMode.Collect);
         pWriter.WriteLong(mail.Id);
         pWriter.WriteByte(1);
@@ -64,7 +64,7 @@ public static class MailPacket
 
     public static PacketWriter UpdateReadTime(Mail mail)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Mail);
         pWriter.Write(MailPacketMode.UpdateReadTime);
         pWriter.WriteLong(mail.Id);
         pWriter.WriteLong(mail.ReadTimestamp);
@@ -73,7 +73,7 @@ public static class MailPacket
 
     public static PacketWriter Delete(Mail mail)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Mail);
         pWriter.Write(MailPacketMode.Delete);
         pWriter.WriteLong(mail.Id);
         return pWriter;
@@ -81,7 +81,7 @@ public static class MailPacket
 
     public static PacketWriter Notify(int unreadCount, bool alert = false)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Mail);
         pWriter.Write(MailPacketMode.Notify);
         pWriter.WriteInt(unreadCount);
         pWriter.WriteBool(alert);
@@ -91,28 +91,28 @@ public static class MailPacket
 
     public static PacketWriter ExpireNotification()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Mail);
         pWriter.Write(MailPacketMode.ExpireNotification);
         return pWriter;
     }
 
     public static PacketWriter StartOpen()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Mail);
         pWriter.Write(MailPacketMode.StartOpen);
         return pWriter;
     }
 
     public static PacketWriter EndOpen()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Mail);
         pWriter.Write(MailPacketMode.EndOpen);
         return pWriter;
     }
 
     public static PacketWriter Error(byte errorCode)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Mail);
         pWriter.Write(MailPacketMode.Error);
         pWriter.WriteByte(0x1);
         pWriter.WriteByte(errorCode);

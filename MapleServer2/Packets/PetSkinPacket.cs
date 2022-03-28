@@ -13,7 +13,7 @@ public static class PetSkinPacket
 
     public static PacketWriter Extract(long petUid, Item badge)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PET_SKIN);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.PetSkin);
         pWriter.Write(PetSkinPacketMode.Skin);
         pWriter.WriteLong(petUid);
         pWriter.WriteLong(badge.Uid);

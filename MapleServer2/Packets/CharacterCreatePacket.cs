@@ -7,7 +7,7 @@ public static class ResponseCharCreatePacket
 {
     public static PacketWriter NameTaken()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_CREATE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.CharCreate);
         pWriter.WriteByte(0x0B); // Name is taken
         pWriter.WriteShort(); // idk
 

@@ -10,7 +10,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class TriggerHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.TRIGGER;
+    public override RecvOp OpCode => RecvOp.Trigger;
 
     private enum TriggerMode : byte
     {

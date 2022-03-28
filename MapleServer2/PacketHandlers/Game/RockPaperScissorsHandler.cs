@@ -12,7 +12,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class RockPaperScissorsHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.ROCK_PAPER_SCISSORS;
+    public override RecvOp OpCode => RecvOp.RockPaperScissors;
 
     private enum RpsMode : short
     {

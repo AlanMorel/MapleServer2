@@ -8,7 +8,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class RequestGemEquipmentHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.REQUEST_GEM_EQUIPMENT;
+    public override RecvOp OpCode => RecvOp.RequestGemEquipment;
 
     private enum RequestGemEquipmentMode : byte
     {

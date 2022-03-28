@@ -8,7 +8,7 @@ internal class WalletPacket
 {
     public static PacketWriter UpdateWallet(CurrencyType type, long amount)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MONEY_TOKEN);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MesoToken);
 
         pWriter.WriteByte((byte) type); // type of currency
         pWriter.WriteLong(amount); // currency amount

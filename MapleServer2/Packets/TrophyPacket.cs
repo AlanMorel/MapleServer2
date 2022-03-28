@@ -22,7 +22,7 @@ public static class TrophyPacket
 
     public static PacketWriter WriteTableStart()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.TROPHY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Trophy);
         pWriter.Write(TrophyPacketMode.TableStart);
 
         return pWriter;
@@ -31,7 +31,7 @@ public static class TrophyPacket
     // packet from WriteTableStart() must be sent immediately before sending these packets
     public static PacketWriter WriteTableContent(List<Trophy> trophies)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.TROPHY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Trophy);
         pWriter.Write(TrophyPacketMode.TableContent);
         pWriter.WriteInt(trophies.Count);
 
@@ -47,7 +47,7 @@ public static class TrophyPacket
 
     public static PacketWriter WriteUpdate(Trophy trophy)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.TROPHY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Trophy);
         pWriter.Write(TrophyPacketMode.Update);
         pWriter.WriteInt(trophy.Id);
         WriteIndividualTrophy(pWriter, trophy);
@@ -57,7 +57,7 @@ public static class TrophyPacket
 
     public static PacketWriter ToggleFavorite(Trophy trophy, bool favorited)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.TROPHY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Trophy);
         pWriter.Write(TrophyPacketMode.Favorite);
         pWriter.WriteInt(trophy.Id);
         pWriter.WriteBool(favorited);

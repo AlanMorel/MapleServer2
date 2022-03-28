@@ -14,7 +14,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class MoveFieldHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.REQUEST_MOVE_FIELD;
+    public override RecvOp OpCode => RecvOp.RequestMoveField;
 
     private enum RequestMoveFieldMode : byte
     {

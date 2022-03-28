@@ -12,7 +12,7 @@ public static class ItemExchangePacket
 
     public static PacketWriter Notice(short noticeId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_EXCHANGE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemExchange);
         pWriter.Write(ItemExchangePacketMode.Notice);
         pWriter.WriteShort(noticeId);
         return pWriter;

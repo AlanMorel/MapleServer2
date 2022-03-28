@@ -7,7 +7,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class BonusGameHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.BONUS_GAME;
+    public override RecvOp OpCode => RecvOp.BonusGame;
 
     private enum BonusGameType : byte
     {

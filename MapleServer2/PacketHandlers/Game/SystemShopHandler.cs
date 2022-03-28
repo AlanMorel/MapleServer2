@@ -10,7 +10,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class SystemShopHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.SYSTEM_SHOP;
+    public override RecvOp OpCode => RecvOp.SystemShop;
 
     private enum ShopMode : byte
     {

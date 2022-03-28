@@ -14,7 +14,7 @@ public class HomeCommandPacket
 
     public static PacketWriter LoadHome(Player player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.HOME_COMMAND);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.HomeCommand);
         pWriter.Write(HomeCommandMode.Load);
         pWriter.WriteLong(player.AccountId);
         pWriter.WriteLong(); // last time player nominated home
@@ -24,7 +24,7 @@ public class HomeCommandPacket
 
     public static PacketWriter UpdateArchitectScore(int ownerObjectId, int architectScoreCurrent, int architectScoreTotal)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.HOME_COMMAND);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.HomeCommand);
         pWriter.Write(HomeCommandMode.UpdateArchitectScore);
         pWriter.WriteInt(ownerObjectId);
         pWriter.WriteLong(TimeInfo.Now());

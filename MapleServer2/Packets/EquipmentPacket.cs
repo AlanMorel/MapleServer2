@@ -10,7 +10,7 @@ public static class EquipmentPacket
 {
     public static PacketWriter EquipItem(IFieldObject<Player> player, Item item, ItemSlot equipSlot)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_PUT_ON);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemPutOn);
         pWriter.WriteInt(player.ObjectId);
         pWriter.WriteInt(item.Id);
         pWriter.WriteLong(item.Uid);
@@ -24,7 +24,7 @@ public static class EquipmentPacket
 
     public static PacketWriter UnequipItem(IFieldObject<Player> player, Item item)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_PUT_OFF);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemPutOff);
         pWriter.WriteInt(player.ObjectId);
         pWriter.WriteLong(item.Uid);
 

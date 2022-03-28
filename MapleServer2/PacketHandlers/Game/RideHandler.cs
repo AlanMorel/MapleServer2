@@ -11,7 +11,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class RideHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.REQUEST_RIDE;
+    public override RecvOp OpCode => RecvOp.RequestRide;
 
     private enum RideMode : byte
     {

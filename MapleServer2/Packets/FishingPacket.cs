@@ -23,7 +23,7 @@ public static class FishingPacket
 
     public static PacketWriter PrepareFishing(long rodItemUid)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FISHING);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Fishing);
         pWriter.Write(FishingPacketMode.PrepareFishing);
         pWriter.WriteLong(rodItemUid);
         return pWriter;
@@ -31,14 +31,14 @@ public static class FishingPacket
 
     public static PacketWriter Stop()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FISHING);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Fishing);
         pWriter.Write(FishingPacketMode.Stop);
         return pWriter;
     }
 
     public static PacketWriter Notice(short notice)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FISHING);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Fishing);
         pWriter.Write(FishingPacketMode.Notice);
         pWriter.WriteShort(notice);
         return pWriter;
@@ -46,7 +46,7 @@ public static class FishingPacket
 
     public static PacketWriter IncreaseMastery(MasteryType type, int fishId, int exp)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FISHING);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Fishing);
         pWriter.Write(FishingPacketMode.IncreaseMastery);
         pWriter.WriteInt(fishId);
         pWriter.WriteInt(exp);
@@ -56,7 +56,7 @@ public static class FishingPacket
 
     public static PacketWriter LoadFishTiles(List<MapBlock> tiles, int reduceTime)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FISHING);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Fishing);
         pWriter.Write(FishingPacketMode.LoadFishTiles);
         pWriter.WriteByte();
         pWriter.WriteInt(tiles.Count);
@@ -74,7 +74,7 @@ public static class FishingPacket
 
     public static PacketWriter CatchItem(List<Item> items)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FISHING);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Fishing);
         pWriter.Write(FishingPacketMode.CatchItem);
         pWriter.WriteInt(items.Count);
 
@@ -89,7 +89,7 @@ public static class FishingPacket
 
     public static PacketWriter LoadAlbum(Player player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FISHING);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Fishing);
         pWriter.Write(FishingPacketMode.LoadAlbum);
         pWriter.WriteInt(player.FishAlbum.Count);
         foreach ((int _, Fishing fishing) in player.FishAlbum)
@@ -103,7 +103,7 @@ public static class FishingPacket
 
     public static PacketWriter CatchFish(Player player, FishMetadata fish, int fishSize, bool success)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FISHING);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Fishing);
         pWriter.Write(FishingPacketMode.CatchFish);
         pWriter.WriteInt(fish.Id);
         pWriter.WriteInt(fishSize);
@@ -123,7 +123,7 @@ public static class FishingPacket
 
     public static PacketWriter Start(int fishingTick, bool minigame)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FISHING);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Fishing);
         pWriter.Write(FishingPacketMode.Start);
         pWriter.WriteBool(minigame);
         pWriter.WriteInt(fishingTick);

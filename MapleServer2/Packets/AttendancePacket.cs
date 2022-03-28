@@ -12,7 +12,7 @@ public static class AttendancePacket
 
     public static PacketWriter Notice(byte noticeId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ATTENDANCE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Attendance);
         pWriter.Write(AttendancePacketMode.Notice);
         pWriter.WriteByte(noticeId);
         return pWriter;

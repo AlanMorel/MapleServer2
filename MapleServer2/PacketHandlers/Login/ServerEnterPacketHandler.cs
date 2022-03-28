@@ -13,7 +13,7 @@ namespace MapleServer2.PacketHandlers.Login;
 
 public class ServerEnterPacketHandler : LoginPacketHandler
 {
-    public override RecvOp OpCode => RecvOp.RESPONSE_SERVER_ENTER;
+    public override RecvOp OpCode => RecvOp.ResponseServerEnter;
 
     // TODO: This data needs to be dynamic
     private readonly ImmutableList<IPEndPoint> ServerIPs;

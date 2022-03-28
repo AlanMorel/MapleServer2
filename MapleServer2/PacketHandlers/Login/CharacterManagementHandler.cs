@@ -14,7 +14,7 @@ namespace MapleServer2.PacketHandlers.Login;
 
 public class CharacterManagementHandler : LoginPacketHandler
 {
-    public override RecvOp OpCode => RecvOp.CHARACTER_MANAGEMENT;
+    public override RecvOp OpCode => RecvOp.CharManagement;
 
     private enum CharacterManagementMode : byte
     {

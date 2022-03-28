@@ -10,7 +10,7 @@ public static class ItemEnchantPacket
     // Sent when putting item into enchant window
     public static PacketWriter BeginEnchant(byte type, Item item)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_ENCHANT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemEnchant);
         pWriter.WriteByte(0x05);
         pWriter.WriteShort(type);
         pWriter.WriteLong(item.Uid);
@@ -67,7 +67,7 @@ public static class ItemEnchantPacket
 
     public static PacketWriter UpdateCharges(Item item)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_ENCHANT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemEnchant);
         pWriter.WriteByte(0x06);
         pWriter.WriteLong(item.Uid);
         pWriter.WriteInt(item.EnchantExp);
@@ -77,7 +77,7 @@ public static class ItemEnchantPacket
 
     public static PacketWriter EnchantResult(Item item)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_ENCHANT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemEnchant);
         pWriter.WriteByte(0x0A);
         pWriter.WriteLong(item.Uid);
         pWriter.WriteItem(item);

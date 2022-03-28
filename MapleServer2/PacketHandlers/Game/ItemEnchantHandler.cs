@@ -8,7 +8,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class ItemEnchantHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.REQUEST_ITEM_ENCHANT;
+    public override RecvOp OpCode => RecvOp.RequestItemEnchant;
 
     private enum ItemEnchantMode : byte
     {

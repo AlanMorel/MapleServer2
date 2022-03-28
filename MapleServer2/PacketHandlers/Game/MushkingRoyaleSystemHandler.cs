@@ -12,7 +12,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class MushkingRoyaleSystemHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.MUSHKING_ROYALE;
+    public override RecvOp OpCode => RecvOp.MushkingRoyale;
 
     private enum MushkingRoyaleSystemMode : byte
     {

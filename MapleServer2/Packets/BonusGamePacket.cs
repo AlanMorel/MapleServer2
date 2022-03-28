@@ -13,7 +13,7 @@ public static class BonusGamePacket
 
     public static PacketWriter OpenWheel(List<Tuple<int, byte, int>> items)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.BONUS_GAME);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.BonusGame);
         pWriter.Write(BonusGameMode.OpenWheel);
         pWriter.WriteByte();
         pWriter.WriteInt(items.Count);
@@ -30,7 +30,7 @@ public static class BonusGamePacket
 
     public static PacketWriter SpinWheel(int index, Tuple<int, byte, int> item)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.BONUS_GAME);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.BonusGame);
         pWriter.Write(BonusGameMode.SpinWheel);
         pWriter.WriteInt(1); // spins? | loop count?
         pWriter.WriteInt(index);

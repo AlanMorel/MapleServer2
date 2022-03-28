@@ -8,7 +8,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class RequestItemStorage : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.REQUEST_ITEM_STORAGE;
+    public override RecvOp OpCode => RecvOp.RequestItemStorage;
 
     private enum ItemStorageMode : byte
     {

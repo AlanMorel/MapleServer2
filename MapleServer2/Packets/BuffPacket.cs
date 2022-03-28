@@ -15,7 +15,7 @@ public static class BuffPacket
 
     public static PacketWriter SendBuff(byte mode, Status status)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.BUFF);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Buff);
         pWriter.WriteByte(mode);
         pWriter.WriteInt(status.Target);
         pWriter.WriteInt(status.UniqueId);

@@ -54,7 +54,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter LoadFurnishingItem(IFieldObject<Player> player, int itemId, long itemUid, Item item = null)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.LoadFurnishingItem);
         pWriter.WriteInt(player.ObjectId);
         pWriter.WriteInt(itemId);
@@ -71,7 +71,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter EnablePlotFurnishing(Player player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.EnablePlotFurnishing);
         pWriter.WriteByte(); // disable bool
         pWriter.WriteInt(player.Account.Home.PlotNumber);
@@ -85,7 +85,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter CompletePurchase()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.CompletePurchase);
 
         return pWriter;
@@ -93,7 +93,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter RemovePlot(int plotNumber, int apartmentNumber)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.ForfeitPlot);
         pWriter.WriteByte();
         pWriter.WriteInt(plotNumber);
@@ -105,7 +105,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter RemovePlot2(int plotId, int plotNumber)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.ForfeitPlot2);
         pWriter.WriteByte(72); // unknown
         pWriter.WriteShort();
@@ -117,7 +117,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter PlaceFurnishing(IFieldObject<Cube> cube, int ownerObjectId, int fieldPlayerObjectId, bool sendOnlyObjectId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.PlaceFurnishing);
         pWriter.WriteBool(sendOnlyObjectId);
         pWriter.WriteInt(ownerObjectId);
@@ -152,7 +152,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter PlaceLiftable(LiftableObject liftable, int ownerObjectId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.PlaceFurnishing);
         pWriter.WriteBool(false);
         pWriter.WriteInt(ownerObjectId);
@@ -176,7 +176,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter CantPlaceHere(int fieldPlayerObjectId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.PlaceFurnishing);
         pWriter.WriteByte(44);
         pWriter.WriteInt(fieldPlayerObjectId);
@@ -187,7 +187,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter RemoveCube(int ownerObjectId, int fieldPlayerObjectId, CoordB coord)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.RemoveCube);
         pWriter.WriteByte();
         pWriter.WriteInt(ownerObjectId);
@@ -201,7 +201,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter RotateCube(IFieldObject<Player> player, IFieldObject<Cube> cube)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.RotateCube);
         pWriter.WriteByte();
         pWriter.WriteInt(player.ObjectId);
@@ -215,7 +215,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter ReplaceCube(int homeOwnerObjectId, int fieldPlayerObjectId, IFieldObject<Cube> newCube, bool sendOnlyObjectId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.ReplaceCube);
         pWriter.WriteBool(sendOnlyObjectId);
         pWriter.WriteInt(homeOwnerObjectId);
@@ -247,7 +247,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter Pickup(IFieldActor<Player> fieldPlayer, int weaponId, CoordB coords)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.Pickup);
         pWriter.WriteZero(1);
         pWriter.WriteInt(fieldPlayer.ObjectId);
@@ -261,7 +261,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter Drop(IFieldObject<Player> player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.Drop);
         pWriter.WriteZero(1);
         pWriter.WriteInt(player.ObjectId);
@@ -271,7 +271,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter LoadHome(int playerObjectId, Home home)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.LoadHome);
         pWriter.WriteInt(playerObjectId);
         pWriter.WriteInt(home?.MapId ?? 0);
@@ -288,7 +288,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter HomeName(Player player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.HomeName);
         pWriter.WriteByte();
         pWriter.WriteLong(player.AccountId);
@@ -301,7 +301,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter PurchasePlot(int plotNumber, int apartmentNumber, long expiration)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.PurchasePlot);
         pWriter.WriteInt(plotNumber);
         pWriter.WriteInt(apartmentNumber);
@@ -313,7 +313,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter ForfeitPlot(int plotNumber, int apartmentNumber, long expiration)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.PurchasePlot);
         pWriter.WriteInt(plotNumber);
         pWriter.WriteInt(apartmentNumber);
@@ -325,7 +325,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter ChangePassword()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.ChangePassword);
         pWriter.WriteByte();
 
@@ -334,7 +334,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter ArchitectScoreExpiration(long accountId, long now)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.ArchitectScoreExpiration);
         pWriter.WriteByte();
         pWriter.WriteLong(accountId);
@@ -345,7 +345,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter KickEveryone()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.KickEveryone);
 
         return pWriter;
@@ -353,7 +353,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter UpdateArchitectScore(int current, int total)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.UpdateArchitectScore);
         pWriter.WriteInt(current);
         pWriter.WriteInt(total);
@@ -363,7 +363,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter HomeDescription(string description)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.HomeDescription);
         pWriter.WriteByte();
         pWriter.WriteUnicodeString(description);
@@ -373,7 +373,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter ReturnMap(int mapId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.ReturnMap);
         pWriter.WriteInt(mapId);
 
@@ -382,7 +382,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter BillPopup(Dictionary<byte, long> cubeCosts, int cubeCount)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.LoadLayout);
         pWriter.WriteByte((byte) cubeCosts.Keys.Count);
         pWriter.WriteInt(cubeCount);
@@ -397,7 +397,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter IncreaseSize(byte size)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.IncreaseSize);
         pWriter.WriteByte();
         pWriter.WriteByte(size);
@@ -407,7 +407,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter DecreaseSize(byte size)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.DecreaseSize);
         pWriter.WriteByte();
         pWriter.WriteByte(size);
@@ -417,7 +417,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter DecorationScore(Home home)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.Rewards);
         pWriter.WriteLong(home?.AccountId ?? 0);
         pWriter.WriteLong(home?.DecorationRewardTimestamp ?? 0);
@@ -437,7 +437,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter EnablePermission(HomePermission permission, bool enabled)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.EnablePermission);
         pWriter.Write(permission);
         pWriter.WriteBool(enabled);
@@ -447,7 +447,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter SetPermission(HomePermission permission, byte setting)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.SetPermission);
         pWriter.Write(permission);
         pWriter.WriteByte(setting);
@@ -457,7 +457,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter IncreaseHeight(byte height)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.IncreaseHeight);
         pWriter.WriteByte();
         pWriter.WriteByte(height);
@@ -467,7 +467,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter DecreaseHeight(byte height)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.DecreaseHeight);
         pWriter.WriteByte();
         pWriter.WriteByte(height);
@@ -477,7 +477,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter SaveLayout(long accountId, int layoutId, string layoutName, long timestamp)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.SaveLayout);
         pWriter.WriteByte();
         pWriter.WriteLong(accountId);
@@ -490,7 +490,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter ChangeBackground(byte lighthing)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.ChangeLighting);
         pWriter.WriteByte();
         pWriter.WriteByte(lighthing);
@@ -500,7 +500,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter ChangeLighting(byte background)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.ChangeBackground);
         pWriter.WriteByte();
         pWriter.WriteByte(background);
@@ -510,7 +510,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter UpdateBuildingPermissions(long targetAccountId, long ownerAccountId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.GiveBuildingPermission);
         pWriter.WriteLong(targetAccountId);
         pWriter.WriteLong(ownerAccountId);
@@ -522,7 +522,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter ChangeCamera(byte camera)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.ChangeCamera);
         pWriter.WriteByte();
         pWriter.WriteByte(camera);
@@ -532,7 +532,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter SendWarehouseItems(List<Item> items)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.LoadWarehouseItems);
         pWriter.WriteShort(3);
         pWriter.WriteInt(items.Count);
@@ -547,7 +547,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter UpdateBudget(Home home)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.UpdateBudget);
         pWriter.WriteByte();
         pWriter.WriteLong(home.Mesos);
@@ -558,7 +558,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter AddBuildingPermission(long accountId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.AddBuildingPermission);
         pWriter.WriteByte();
         pWriter.WriteLong(accountId);
@@ -568,7 +568,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter RemoveBuildingPermission(long accountId, string characterName)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.RemoveBuildingPermission);
         pWriter.WriteByte();
         pWriter.WriteLong(accountId);
@@ -579,7 +579,7 @@ public static class ResponseCubePacket
 
     public static PacketWriter UpdateHomeSizeAndHeight(byte size, byte height)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.UpdateSizeHeight);
         pWriter.WriteByte();
         pWriter.WriteByte(size);

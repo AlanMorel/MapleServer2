@@ -10,7 +10,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class VibrateHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.VIBRATE;
+    public override RecvOp OpCode => RecvOp.Vibrate;
 
     public override void Handle(GameSession session, PacketReader packet)
     {

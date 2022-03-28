@@ -8,7 +8,7 @@ public static class MyInfoPacket
 {
     public static PacketWriter SetMotto(IFieldObject<Player> pObject, string motto)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MY_INFO);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MyInfo);
         pWriter.WriteInt(pObject.ObjectId);
         pWriter.WriteUnicodeString(motto);
         pWriter.WriteInt(); //Unk

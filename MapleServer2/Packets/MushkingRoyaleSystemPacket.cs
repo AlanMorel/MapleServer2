@@ -27,21 +27,21 @@ public class MushkingRoyaleSystemPacket
 
     public static PacketWriter JoinSoloQueue()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MushkingRoyaleSystem);
         pWriter.Write(MushkingRoyaleSystemPacketMode.JoinSoloQueue);
         return pWriter;
     }
 
     public static PacketWriter WithdrawSoloQueue()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MushkingRoyaleSystem);
         pWriter.Write(MushkingRoyaleSystemPacketMode.WithdrawSoloQueue);
         return pWriter;
     }
 
     public static PacketWriter MatchFound()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MushkingRoyaleSystem);
         pWriter.Write(MushkingRoyaleSystemPacketMode.MatchFound);
         pWriter.WriteLong(); // match ID
         pWriter.WriteBool(false); // false = 15 second window, true = 5 second window
@@ -50,7 +50,7 @@ public class MushkingRoyaleSystemPacket
 
     public static PacketWriter Results()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MushkingRoyaleSystem);
         pWriter.Write(MushkingRoyaleSystemPacketMode.Results);
         pWriter.WriteInt();
         pWriter.WriteInt();
@@ -86,7 +86,7 @@ public class MushkingRoyaleSystemPacket
 
     public static PacketWriter LastStandingNotice()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MushkingRoyaleSystem);
         pWriter.Write(MushkingRoyaleSystemPacketMode.Results);
         pWriter.WriteByte();
         pWriter.WriteInt(); // amount of users
@@ -99,7 +99,7 @@ public class MushkingRoyaleSystemPacket
 
     public static PacketWriter Unk16()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MushkingRoyaleSystem);
         pWriter.Write(MushkingRoyaleSystemPacketMode.Unk16);
         pWriter.WriteInt();
         pWriter.WriteInt(1);
@@ -117,7 +117,7 @@ public class MushkingRoyaleSystemPacket
 
     public static PacketWriter LoadStats(MushkingRoyaleStats stats, long expGained = 0)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MushkingRoyaleSystem);
         pWriter.Write(MushkingRoyaleSystemPacketMode.LoadStats);
         pWriter.WriteLong(stats.Id);
         pWriter.WriteInt();
@@ -133,14 +133,14 @@ public class MushkingRoyaleSystemPacket
 
     public static PacketWriter NewSeasonNotice()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MushkingRoyaleSystem);
         pWriter.Write(MushkingRoyaleSystemPacketMode.NewSeasonNotice);
         return pWriter;
     }
 
     public static PacketWriter SurvivalSessionStats()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MushkingRoyaleSystem);
         pWriter.Write(MushkingRoyaleSystemPacketMode.SurvivalSessionStats);
         pWriter.WriteInt(); // players remaining
         pWriter.WriteInt(); // total players
@@ -150,7 +150,7 @@ public class MushkingRoyaleSystemPacket
 
     public static PacketWriter UpdateKills()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MushkingRoyaleSystem);
         pWriter.Write(MushkingRoyaleSystemPacketMode.UpdateKills);
         pWriter.WriteInt(); // kill count
         return pWriter;
@@ -158,14 +158,14 @@ public class MushkingRoyaleSystemPacket
 
     public static PacketWriter Poisoned()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MushkingRoyaleSystem);
         pWriter.Write(MushkingRoyaleSystemPacketMode.Poisoned);
         return pWriter;
     }
 
     public static PacketWriter LoadMedals(Account account)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MushkingRoyaleSystem);
         pWriter.Write(MushkingRoyaleSystemPacketMode.LoadMedals);
         pWriter.WriteByte((byte) Enum.GetNames(typeof(MedalSlot)).Length);
         foreach (MedalSlot slot in Enum.GetValues(typeof(MedalSlot)))
@@ -184,7 +184,7 @@ public class MushkingRoyaleSystemPacket
 
     public static PacketWriter ClaimRewards(int silverStartLevel, int silverEndLevel, int goldStartLevel, int goldEndLevel)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MushkingRoyaleSystem);
         pWriter.Write(MushkingRoyaleSystemPacketMode.ClaimRewards);
         pWriter.WriteInt(silverStartLevel);
         pWriter.WriteInt(silverEndLevel);

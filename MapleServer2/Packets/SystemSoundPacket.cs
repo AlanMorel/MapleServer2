@@ -7,7 +7,7 @@ public static class SystemSoundPacket
 {
     public static PacketWriter Play(string sound)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_SYSTEM_SOUND);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.PlaySystemSound);
         pWriter.WriteUnicodeString(sound);
         return pWriter;
     }

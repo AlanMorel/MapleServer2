@@ -7,7 +7,7 @@ internal class MesosPacket
 {
     public static PacketWriter UpdateMesos(long mesoAmount)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MONEY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Meso);
 
         pWriter.WriteLong(mesoAmount); // Total amount of mesos
         pWriter.WriteInt(); // unknown int

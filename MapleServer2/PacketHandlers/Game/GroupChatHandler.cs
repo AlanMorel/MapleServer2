@@ -8,7 +8,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class GroupChatHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.GROUP_CHAT;
+    public override RecvOp OpCode => RecvOp.GroupChat;
 
     private enum GroupChatMode : byte
     {

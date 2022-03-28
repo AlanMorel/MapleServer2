@@ -18,7 +18,7 @@ public static class NpcTalkPacket
 
     public static PacketWriter Respond(IFieldObject<NpcMetadata> npc, NpcType npcType, DialogType dialogType, int scriptId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.NPC_TALK);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.NPCTalk);
         pWriter.Write(NpcTalkMode.Respond);
         pWriter.WriteInt(npc.ObjectId);
         pWriter.Write(npcType);
@@ -31,7 +31,7 @@ public static class NpcTalkPacket
 
     public static PacketWriter ContinueChat(int scriptId, ResponseType responseType, DialogType dialogType, int contentIndex, int questId = 0)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.NPC_TALK);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.NPCTalk);
         pWriter.Write(NpcTalkMode.Continue);
         pWriter.Write(responseType);
         pWriter.WriteInt(questId);
@@ -44,7 +44,7 @@ public static class NpcTalkPacket
 
     public static PacketWriter Action(ActionType actionType, string window = "", string parameters = "", int function = 0)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.NPC_TALK);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.NPCTalk);
         pWriter.Write(NpcTalkMode.Action);
         pWriter.Write(actionType);
         switch (actionType)
@@ -63,7 +63,7 @@ public static class NpcTalkPacket
 
     public static PacketWriter Close()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.NPC_TALK);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.NPCTalk);
         pWriter.Write(NpcTalkMode.Close);
 
         return pWriter;

@@ -11,7 +11,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class FieldEnterHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.RESPONSE_FIELD_ENTER;
+    public override RecvOp OpCode => RecvOp.ResponseFieldEnter;
 
     public override void Handle(GameSession session, PacketReader packet)
     {

@@ -9,7 +9,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class BuildModeHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.REQUEST_SET_BUILD_MODE;
+    public override RecvOp OpCode => RecvOp.RequestSetBuildMode;
 
     private enum BuildModeMode : byte
     {

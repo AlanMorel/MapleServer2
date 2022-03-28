@@ -20,7 +20,7 @@ public static class FieldPortalPacket
         CoordF coord = fieldPortal.Coord;
         coord.Z -= 75; // Looks like every portal coord is offset by 75
 
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_PORTAL);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FieldPortal);
         pWriter.Write(PortalType.AddPortal);
         pWriter.WriteInt(portal.Id);
         pWriter.WriteBool(portal.IsVisible);
@@ -48,7 +48,7 @@ public static class FieldPortalPacket
 
     public static PacketWriter RemovePortal(Portal portal)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_PORTAL);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FieldPortal);
         pWriter.Write(PortalType.RemovePortal);
         pWriter.WriteInt(portal.Id);
 
@@ -57,7 +57,7 @@ public static class FieldPortalPacket
 
     public static PacketWriter UpdatePortal(IFieldObject<Portal> portal)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_PORTAL);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FieldPortal);
         pWriter.Write(PortalType.UpdatePortal);
         pWriter.WriteInt(portal.Value.Id);
         pWriter.WriteBool(portal.Value.IsVisible);

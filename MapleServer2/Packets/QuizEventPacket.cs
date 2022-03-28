@@ -13,7 +13,7 @@ public static class QuizEventPacket
 
     public static PacketWriter Question(string category, string question, int duration)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.QUIZ_EVENT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.QuizEvent);
         pWriter.Write(QuizEventPacketMode.Question);
         pWriter.WriteUnicodeString(category);
         pWriter.WriteUnicodeString(question);
@@ -24,7 +24,7 @@ public static class QuizEventPacket
 
     public static PacketWriter Answer(bool answer, string answerText, int duration)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.QUIZ_EVENT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.QuizEvent);
         pWriter.Write(QuizEventPacketMode.Answer);
         pWriter.WriteBool(answer);
         pWriter.WriteUnicodeString(answerText);

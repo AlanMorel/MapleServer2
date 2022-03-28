@@ -6,7 +6,7 @@ namespace MapleServer2.PacketHandlers.Common;
 
 public abstract class HeartbeatHandler : CommonPacketHandler
 {
-    public override RecvOp OpCode => RecvOp.RESPONSE_HEARTBEAT;
+    public override RecvOp OpCode => RecvOp.ResponseHeartbeat;
 
     public override void Handle(LoginSession session, PacketReader packet)
     {

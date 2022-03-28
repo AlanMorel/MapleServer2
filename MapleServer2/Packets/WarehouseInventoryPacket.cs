@@ -20,7 +20,7 @@ public static class WarehouseInventoryPacket
 
     public static PacketWriter StartList()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.WAREHOUSE_INVENTORY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.WarehouseInventory);
         pWriter.Write(WarehouseInventoryPacketMode.StartList);
 
         return pWriter;
@@ -28,7 +28,7 @@ public static class WarehouseInventoryPacket
 
     public static PacketWriter Count(int amount)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.WAREHOUSE_INVENTORY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.WarehouseInventory);
         pWriter.Write(WarehouseInventoryPacketMode.Count);
         pWriter.WriteInt(amount);
 
@@ -37,7 +37,7 @@ public static class WarehouseInventoryPacket
 
     public static PacketWriter Load(Item item, int counter)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.WAREHOUSE_INVENTORY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.WarehouseInventory);
         pWriter.Write(WarehouseInventoryPacketMode.Load);
         pWriter.WriteInt(item.Id);
         pWriter.WriteLong(item.Uid);
@@ -50,7 +50,7 @@ public static class WarehouseInventoryPacket
 
     public static PacketWriter Remove(long itemUid)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.WAREHOUSE_INVENTORY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.WarehouseInventory);
         pWriter.Write(WarehouseInventoryPacketMode.Remove);
         pWriter.WriteLong(itemUid);
 
@@ -59,7 +59,7 @@ public static class WarehouseInventoryPacket
 
     public static PacketWriter GainItemMessage(Item item, int amount)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.WAREHOUSE_INVENTORY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.WarehouseInventory);
         pWriter.Write(WarehouseInventoryPacketMode.GainItemMessage);
         pWriter.WriteLong(item.Uid);
         pWriter.WriteInt(amount);
@@ -69,7 +69,7 @@ public static class WarehouseInventoryPacket
 
     public static PacketWriter UpdateAmount(long itemUid, int amount)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.WAREHOUSE_INVENTORY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.WarehouseInventory);
         pWriter.Write(WarehouseInventoryPacketMode.UpdateAmount);
         pWriter.WriteLong(itemUid);
         pWriter.WriteInt(amount);
@@ -79,7 +79,7 @@ public static class WarehouseInventoryPacket
 
     public static PacketWriter EndList()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.WAREHOUSE_INVENTORY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.WarehouseInventory);
         pWriter.Write(WarehouseInventoryPacketMode.EndList);
 
         return pWriter;

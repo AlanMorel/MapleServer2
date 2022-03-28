@@ -6,7 +6,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class ClientTickSyncHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.RESPONSE_CLIENTTICK_SYNC;
+    public override RecvOp OpCode => RecvOp.ResponseClientTickSync;
 
     public override void Handle(GameSession session, PacketReader packet)
     {

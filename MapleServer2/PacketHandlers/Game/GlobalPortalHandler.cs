@@ -9,7 +9,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class GlobalPortalHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.GLOBAL_PORTAL;
+    public override RecvOp OpCode => RecvOp.GlobalPortal;
 
     private enum GlobalPortalMode : byte
     {

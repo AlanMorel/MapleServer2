@@ -10,7 +10,7 @@ public static class FieldItemPacket
 {
     public static PacketWriter AddItem(IFieldObject<Item> item, int userObjectId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_ADD_ITEM);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FieldAddItem);
         pWriter.Write(item.ObjectId); // object id
         pWriter.Write(item.Value.Id);
         pWriter.Write(item.Value.Amount);
@@ -39,7 +39,7 @@ public static class FieldItemPacket
     {
         // Works for meso
 
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_ADD_ITEM);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FieldAddItem);
         pWriter.WriteInt(item.ObjectId);
         pWriter.WriteInt(item.Value.Id);
         pWriter.WriteInt(item.Value.Amount);
@@ -96,7 +96,7 @@ public static class FieldItemPacket
 
     public static PacketWriter PickupItem(int objectId, Item item, int userObjectId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_PICKUP_ITEM);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FieldPickupItem);
         pWriter.WriteByte(0x01);
         pWriter.WriteInt(objectId);
         pWriter.WriteInt(userObjectId);
@@ -107,7 +107,7 @@ public static class FieldItemPacket
 
     public static PacketWriter RemoveItem(int objectId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_REMOVE_ITEM);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FieldRemoveItem);
         pWriter.WriteInt(objectId);
 
         return pWriter;

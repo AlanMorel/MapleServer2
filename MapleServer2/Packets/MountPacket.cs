@@ -18,7 +18,7 @@ public static class MountPacket
 
     public static PacketWriter StartRide(IFieldObject<Player> player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_RIDE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseRide);
         pWriter.Write(MountPacketMode.StartRide);
         pWriter.WriteInt(player.ObjectId);
         pWriter.WriteMount(player.Value.Mount);
@@ -27,7 +27,7 @@ public static class MountPacket
 
     public static PacketWriter StopRide(IFieldObject<Player> player, bool forced = false)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_RIDE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseRide);
         pWriter.Write(MountPacketMode.StopRide);
         pWriter.WriteInt(player.ObjectId);
         pWriter.WriteByte();
@@ -37,7 +37,7 @@ public static class MountPacket
 
     public static PacketWriter ChangeRide(int playerObjectId, int mountId, long mountUid)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_RIDE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseRide);
         pWriter.Write(MountPacketMode.ChangeRide);
         pWriter.WriteInt(playerObjectId);
         pWriter.WriteInt(mountId);
@@ -47,7 +47,7 @@ public static class MountPacket
 
     public static PacketWriter StartTwoPersonRide(int otherPlayerObjectId, int playerObjectId, byte index)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_RIDE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseRide);
         pWriter.Write(MountPacketMode.StartTwoPersonRide);
         pWriter.WriteInt(otherPlayerObjectId);
         pWriter.WriteInt(playerObjectId);
@@ -57,7 +57,7 @@ public static class MountPacket
 
     public static PacketWriter StopTwoPersonRide(int otherPlayerObjectId, int playerObjectId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_RIDE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseRide);
         pWriter.Write(MountPacketMode.StopTwoPersonRide);
         pWriter.WriteInt(otherPlayerObjectId);
         pWriter.WriteInt(playerObjectId);

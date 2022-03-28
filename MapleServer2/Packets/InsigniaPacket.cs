@@ -8,7 +8,7 @@ public static class InsigniaPacket
 {
     public static PacketWriter UpdateInsignia(GameSession session, short insigniaId, bool show)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.NAME_TAG_SYMBOL);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.NameTagSymbol);
         pWriter.WriteInt(session.Player.FieldPlayer.ObjectId);
         pWriter.WriteShort(insigniaId);
         pWriter.WriteBool(show);

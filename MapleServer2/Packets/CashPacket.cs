@@ -12,7 +12,7 @@ public static class CashPacket
 
     public static PacketWriter Unknown09()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.CASH);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Cash);
         pWriter.Write(CashMode.Mode09);
         pWriter.WriteByte();
 

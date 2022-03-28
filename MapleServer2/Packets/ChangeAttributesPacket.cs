@@ -9,7 +9,7 @@ public static class ChangeAttributesPacket
 {
     public static PacketWriter PreviewNewItem(Item item)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.CHANGE_ATTRIBUTES);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ChangeAttributes);
         pWriter.WriteByte(0x01);
         pWriter.WriteLong(item.Uid);
         pWriter.WriteItem(item);
@@ -19,7 +19,7 @@ public static class ChangeAttributesPacket
 
     public static PacketWriter AddNewItem(Item item)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.CHANGE_ATTRIBUTES);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ChangeAttributes);
         pWriter.WriteByte(0x02);
         pWriter.WriteLong(item.Uid);
         pWriter.WriteItem(item);

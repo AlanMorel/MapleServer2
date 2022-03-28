@@ -20,7 +20,7 @@ public static class InteractObjectPacket
 
     public static PacketWriter Update(InteractObject interactObject)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.InteractObject);
         pWriter.Write(InteractObjectMode.Update);
         pWriter.WriteString(interactObject.Id);
         pWriter.Write(interactObject.State);
@@ -31,7 +31,7 @@ public static class InteractObjectPacket
 
     public static PacketWriter Use(InteractObject interactObject, short result = 0, int numDrops = 0)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.InteractObject);
         pWriter.Write(InteractObjectMode.Use);
         pWriter.WriteString(interactObject.Id);
         pWriter.Write(interactObject.Type);
@@ -47,7 +47,7 @@ public static class InteractObjectPacket
 
     public static PacketWriter Set(InteractObject interactObject)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.InteractObject);
         pWriter.Write(InteractObjectMode.Set);
         pWriter.WriteInt(interactObject.InteractId);
         pWriter.Write(interactObject.State);
@@ -56,7 +56,7 @@ public static class InteractObjectPacket
 
     public static PacketWriter LoadObjects(List<InteractObject> interactObjects)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.InteractObject);
         pWriter.Write(InteractObjectMode.Load);
         pWriter.WriteInt(interactObjects.Count);
         foreach (InteractObject interactObject in interactObjects)
@@ -69,7 +69,7 @@ public static class InteractObjectPacket
 
     public static PacketWriter Add(InteractObject interactObject)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.InteractObject);
         pWriter.Write(InteractObjectMode.Add);
         pWriter.WriteString(interactObject.Id);
         pWriter.Write(interactObject.State);
@@ -94,7 +94,7 @@ public static class InteractObjectPacket
 
     public static PacketWriter Remove(InteractObject interactObject)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.InteractObject);
         pWriter.Write(InteractObjectMode.Remove);
         pWriter.WriteString(interactObject.Id);
         pWriter.WriteUnicodeString();
@@ -104,7 +104,7 @@ public static class InteractObjectPacket
 
     public static PacketWriter Interact(InteractObject interactObject)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.InteractObject);
         pWriter.Write(InteractObjectMode.Interact);
         pWriter.WriteByte();
         pWriter.WriteString(interactObject.Id);

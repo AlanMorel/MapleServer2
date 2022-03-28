@@ -9,7 +9,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class ItemRepackageHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.ITEM_REPACKAGE;
+    public override RecvOp OpCode => RecvOp.ItemRepackage;
 
     private enum ItemRepackageMode : byte
     {

@@ -8,7 +8,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class SuperChatHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.SUPER_WORLDCHAT;
+    public override RecvOp OpCode => RecvOp.SuperWorldChat;
 
     private enum SuperChatMode : byte
     {

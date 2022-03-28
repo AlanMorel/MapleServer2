@@ -16,7 +16,7 @@ namespace MapleServer2.PacketHandlers.Login;
 // ReSharper disable once ClassNeverInstantiated.Global
 public class LoginHandler : LoginPacketHandler
 {
-    public override RecvOp OpCode => RecvOp.RESPONSE_LOGIN;
+    public override RecvOp OpCode => RecvOp.ResponseLogin;
 
     // TODO: This data needs to be dynamic
     private readonly ImmutableList<IPEndPoint> ServerIPs;

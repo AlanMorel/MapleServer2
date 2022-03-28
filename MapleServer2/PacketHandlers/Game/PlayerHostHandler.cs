@@ -8,7 +8,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class PlayerHostHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.PLAYER_HOST;
+    public override RecvOp OpCode => RecvOp.PlayerHost;
 
     private enum PlayerHostMode : byte
     {

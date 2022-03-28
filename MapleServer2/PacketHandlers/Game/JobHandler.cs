@@ -9,7 +9,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class JobHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.JOB;
+    public override RecvOp OpCode => RecvOp.Job;
 
     private enum JobMode : byte
     {

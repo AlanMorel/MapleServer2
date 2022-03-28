@@ -10,7 +10,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class ItemEquipHandler : GamePacketHandler
 {
-    public override RecvOp OpCode => RecvOp.ITEM_EQUIP;
+    public override RecvOp OpCode => RecvOp.ItemEquip;
 
     private enum ItemEquipMode : byte
     {

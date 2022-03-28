@@ -9,7 +9,7 @@ public static class SyncStatePacket
 {
     public static PacketWriter UserSync(IFieldObject<Player> player, params SyncState[] syncStates)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.USER_SYNC);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.UserSync);
         pWriter.WriteInt(player.ObjectId);
         pWriter.WriteSyncStates(syncStates);
 
@@ -18,7 +18,7 @@ public static class SyncStatePacket
 
     public static PacketWriter RideSync(IFieldObject<Player> player, params SyncState[] syncStates)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RIDE_SYNC);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.RideSync);
         pWriter.WriteInt(player.ObjectId);
         pWriter.WriteSyncStates(syncStates);
 

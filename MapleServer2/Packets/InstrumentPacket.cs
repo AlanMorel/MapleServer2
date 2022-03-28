@@ -22,7 +22,7 @@ public static class InstrumentPacket
 
     public static PacketWriter StartImprovise(IFieldObject<Instrument> instrument)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.PlayInstrument);
         pWriter.Write(InstrumentPacketMode.StartImprovise);
         pWriter.WriteInt(instrument.ObjectId);
         pWriter.WriteInt(instrument.Value.PlayerObjectId);
@@ -34,7 +34,7 @@ public static class InstrumentPacket
 
     public static PacketWriter PlayNote(int note, IFieldObject<Player> player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.PlayInstrument);
         pWriter.Write(InstrumentPacketMode.PlayNote);
         pWriter.WriteInt(player.Value.Instrument.ObjectId);
         pWriter.WriteInt(player.ObjectId);
@@ -44,7 +44,7 @@ public static class InstrumentPacket
 
     public static PacketWriter StopImprovise(IFieldObject<Player> player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.PlayInstrument);
         pWriter.Write(InstrumentPacketMode.StopImprovise);
         pWriter.WriteInt(player.Value.Instrument.ObjectId);
         pWriter.WriteInt(player.ObjectId);
@@ -53,7 +53,7 @@ public static class InstrumentPacket
 
     public static PacketWriter PlayScore(IFieldObject<Instrument> instrument)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.PlayInstrument);
         pWriter.Write(InstrumentPacketMode.PlayScore);
         pWriter.WriteBool(instrument.Value.IsCustomScore);
         pWriter.WriteInt(instrument.ObjectId);
@@ -77,7 +77,7 @@ public static class InstrumentPacket
 
     public static PacketWriter StopScore(IFieldObject<Instrument> instrument)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.PlayInstrument);
         pWriter.Write(InstrumentPacketMode.StopScore);
         pWriter.WriteInt(instrument.ObjectId);
         pWriter.WriteInt(instrument.Value.PlayerObjectId);
@@ -86,14 +86,14 @@ public static class InstrumentPacket
 
     public static PacketWriter LeaveEnsemble()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.PlayInstrument);
         pWriter.Write(InstrumentPacketMode.LeaveEnsemble);
         return pWriter;
     }
 
     public static PacketWriter Compose(Item item)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.PlayInstrument);
         pWriter.Write(InstrumentPacketMode.Compose);
         pWriter.WriteLong(item.Uid);
         pWriter.WriteItem(item);
@@ -102,7 +102,7 @@ public static class InstrumentPacket
 
     public static PacketWriter UpdateScoreUses(long scoreItemUid, int usesRemaining)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.PlayInstrument);
         pWriter.Write(InstrumentPacketMode.UpdateScoreUses);
         pWriter.WriteLong(scoreItemUid);
         pWriter.WriteInt(usesRemaining);
@@ -111,7 +111,7 @@ public static class InstrumentPacket
 
     public static PacketWriter Fireworks(int objectId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.PlayInstrument);
         pWriter.Write(InstrumentPacketMode.Fireworks);
         pWriter.WriteInt(objectId);
         return pWriter;

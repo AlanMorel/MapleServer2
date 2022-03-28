@@ -12,7 +12,7 @@ public static class ResponsePetPacket
 
     public static PacketWriter Mode07()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_PET);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ResponsePet);
         pWriter.Write(ResponsePetMode.Mode07);
         pWriter.WriteInt();
 

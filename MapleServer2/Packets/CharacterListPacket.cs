@@ -22,7 +22,7 @@ public static class CharacterListPacket
     }
     public static PacketWriter AddEntries(List<Player> players)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.CharList);
         pWriter.Write(ListMode.AddEntries);
         pWriter.WriteByte((byte) players.Count);
         foreach (Player player in players)
@@ -36,7 +36,7 @@ public static class CharacterListPacket
     // Sent after creating a character to append to list
     public static PacketWriter AppendEntry(Player player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.CharList);
         pWriter.Write(ListMode.AppendEntry);
         WriteCharacterEntry(pWriter, player);
 
@@ -45,7 +45,7 @@ public static class CharacterListPacket
 
     public static PacketWriter DeleteCharacter(long playerId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.CharList);
         pWriter.Write(ListMode.DeleteCharacter);
         pWriter.WriteInt(); // unk
         pWriter.WriteLong(playerId);
@@ -55,7 +55,7 @@ public static class CharacterListPacket
 
     public static PacketWriter DeletePending(long playerId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.CharList);
         pWriter.Write(ListMode.DeletePending);
         pWriter.WriteLong(playerId);
         pWriter.WriteInt(); // unk
@@ -66,7 +66,7 @@ public static class CharacterListPacket
 
     public static PacketWriter DeleteCancel(long playerId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.CharList);
         pWriter.Write(ListMode.DeleteCancel);
         pWriter.WriteLong(playerId);
         pWriter.WriteInt(); // unk
@@ -76,7 +76,7 @@ public static class CharacterListPacket
 
     public static PacketWriter SetMax(int unlocked)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.CHAR_MAX_COUNT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.CharMaxCount);
         pWriter.WriteInt(unlocked);
         pWriter.WriteInt(int.Parse(ConstantsMetadataStorage.GetConstant("MaxCharacterSlots")));
 
@@ -252,7 +252,7 @@ public static class CharacterListPacket
 
     public static PacketWriter StartList()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.CharList);
         pWriter.Write(ListMode.StartList);
 
         return pWriter;
@@ -261,7 +261,7 @@ public static class CharacterListPacket
     // This only needs to be sent if char count > 0
     public static PacketWriter EndList()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.CharList);
         pWriter.Write(ListMode.EndList);
         pWriter.WriteBool(false);
 
@@ -270,7 +270,7 @@ public static class CharacterListPacket
 
     public static PacketWriter NameChanged(long characterId, string characterName)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.CharList);
         pWriter.Write(ListMode.NameChange);
         pWriter.WriteInt(1);
         pWriter.WriteLong(characterId);

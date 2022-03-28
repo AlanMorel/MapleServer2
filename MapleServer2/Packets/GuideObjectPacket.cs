@@ -16,7 +16,7 @@ public static class GuideObjectPacket
 
     public static PacketWriter Add(IFieldObject<GuideObject> guide)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.GUIDE_OBJECT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.GuideObject);
         pWriter.Write(GuideObjectPacketMode.Add);
         pWriter.WriteShort(guide.Value.Type);
         pWriter.WriteInt(guide.ObjectId);
@@ -33,7 +33,7 @@ public static class GuideObjectPacket
 
     public static PacketWriter Remove(IFieldObject<GuideObject> guide)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.GUIDE_OBJECT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.GuideObject);
         pWriter.Write(GuideObjectPacketMode.Remove);
         pWriter.WriteInt(guide.ObjectId);
         pWriter.WriteLong(guide.Value.BoundCharacterId);
@@ -43,7 +43,7 @@ public static class GuideObjectPacket
 
     public static PacketWriter Sync(IFieldObject<GuideObject> guide, byte unk2, byte unk3, byte unk4, byte unk5, CoordS unkCoord, short unk6, int unk7)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.GUIDE_OBJECT);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.GuideObject);
         pWriter.Write(GuideObjectPacketMode.Sync);
         pWriter.WriteInt(guide.ObjectId);
         pWriter.WriteByte(unk2);

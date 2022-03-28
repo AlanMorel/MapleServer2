@@ -16,7 +16,7 @@ public static class LiftablePacket
 
     public static PacketWriter LoadLiftables(List<LiftableObject> liftableObjects)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.LIFTABLE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Liftable);
         pWriter.Write(LiftableMode.LoadLiftables);
         pWriter.Write(liftableObjects.Count);
         foreach (LiftableObject liftableObject in liftableObjects)
@@ -37,7 +37,7 @@ public static class LiftablePacket
 
     public static PacketWriter UpdateEntityById(LiftableObject liftableObject)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.LIFTABLE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Liftable);
         pWriter.Write(LiftableMode.UpdateEntity);
         pWriter.WriteString(liftableObject.EntityId);
         pWriter.WriteByte();
@@ -49,7 +49,7 @@ public static class LiftablePacket
 
     public static PacketWriter UpdateEntityByCoord(LiftableObject liftableObject)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.LIFTABLE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Liftable);
         pWriter.Write(LiftableMode.UpdateEntity);
         pWriter.WriteString($"4_{liftableObject.Position.ToByte().AsHexadecimal()}");
         pWriter.WriteByte();
@@ -61,7 +61,7 @@ public static class LiftablePacket
 
     public static PacketWriter Drop(LiftableObject liftableObject)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.LIFTABLE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Liftable);
         pWriter.Write(LiftableMode.Drop);
         pWriter.WriteString($"4_{liftableObject.Position.ToByte().AsHexadecimal()}");
         pWriter.WriteInt(1);
@@ -76,7 +76,7 @@ public static class LiftablePacket
 
     public static PacketWriter RemoveCube(LiftableObject liftableObject)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.LIFTABLE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Liftable);
         pWriter.Write(LiftableMode.RemoveCube);
         pWriter.WriteString($"4_{liftableObject.Position.ToByte().AsHexadecimal()}");
 

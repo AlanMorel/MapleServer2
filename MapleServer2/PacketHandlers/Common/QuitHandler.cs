@@ -9,7 +9,7 @@ namespace MapleServer2.PacketHandlers.Common;
 
 public class QuitHandler : CommonPacketHandler
 {
-    public override RecvOp OpCode => RecvOp.REQUEST_QUIT;
+    public override RecvOp OpCode => RecvOp.RequestQuit;
     private readonly IPEndPoint LoginEndpoint;
 
     public QuitHandler()

@@ -35,7 +35,7 @@ public static class PartyPacket
 
     public static PacketWriter Notice(Player player, PartyNotice notice)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(PartyPacketMode.Notice);
         pWriter.Write(notice);
         pWriter.WriteUnicodeString(player.Name);
@@ -46,7 +46,7 @@ public static class PartyPacket
     {
         SkillTab skillTab = player.SkillTabs.First(x => x.TabId == player.ActiveSkillTabId);
 
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(PartyPacketMode.Join);
         pWriter.WriteCharacter(player);
         pWriter.WriteInt();
@@ -59,7 +59,7 @@ public static class PartyPacket
 
     public static PacketWriter Leave(Player player, byte self)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(PartyPacketMode.Leave);
         pWriter.WriteLong(player.CharacterId);
         pWriter.WriteByte(self); //0 = Other leaving, 1 = Self leaving
@@ -68,7 +68,7 @@ public static class PartyPacket
 
     public static PacketWriter Kick(Player player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(PartyPacketMode.Kick);
         pWriter.WriteLong(player.CharacterId);
         return pWriter;
@@ -76,7 +76,7 @@ public static class PartyPacket
 
     public static PacketWriter Create(Party party, bool joinNotice)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(PartyPacketMode.Create);
         pWriter.WriteBool(joinNotice);
         pWriter.WriteInt(party.Id);
@@ -100,7 +100,7 @@ public static class PartyPacket
 
     public static PacketWriter LoginNotice(Player player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(PartyPacketMode.LoginNotice);
         pWriter.WriteCharacter(player);
         pWriter.WriteLong();
@@ -112,7 +112,7 @@ public static class PartyPacket
 
     public static PacketWriter LogoutNotice(long characterId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(PartyPacketMode.LogoutNotice);
         pWriter.WriteLong(characterId);
         return pWriter;
@@ -120,14 +120,14 @@ public static class PartyPacket
 
     public static PacketWriter Disband()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(PartyPacketMode.Disband);
         return pWriter;
     }
 
     public static PacketWriter SetLeader(Player player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(PartyPacketMode.SetLeader);
         pWriter.WriteLong(player.CharacterId);
         return pWriter;
@@ -135,7 +135,7 @@ public static class PartyPacket
 
     public static PacketWriter SendInvite(Player sender, Party party)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(PartyPacketMode.Invite);
         pWriter.WriteUnicodeString(sender.Name);
         pWriter.WriteInt(party.Id);
@@ -144,7 +144,7 @@ public static class PartyPacket
 
     public static PacketWriter UpdateMemberLocation(Player player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(PartyPacketMode.UpdateMemberLocation);
         pWriter.WriteLong(player.CharacterId);
         pWriter.WriteCharacter(player);
@@ -154,7 +154,7 @@ public static class PartyPacket
 
     public static PacketWriter UpdatePlayer(Player player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(PartyPacketMode.UpdatePlayer);
         pWriter.WriteLong(player.CharacterId);
 
@@ -165,7 +165,7 @@ public static class PartyPacket
 
     public static PacketWriter UpdateDungeonInfo(Player player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(PartyPacketMode.UpdateDungeonInfo);
         pWriter.WriteLong(player.CharacterId);
         pWriter.WriteInt(); //unknown: but value 100 was frequent
@@ -175,7 +175,7 @@ public static class PartyPacket
 
     public static PacketWriter UpdateHitpoints(Player player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(PartyPacketMode.UpdateHitpoints);
         pWriter.WriteLong(player.CharacterId);
         pWriter.WriteLong(player.AccountId);
@@ -187,7 +187,7 @@ public static class PartyPacket
 
     public static PacketWriter PartyHelp(int dungeonId, byte enabled = 1)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(PartyPacketMode.PartyHelp);
         pWriter.WriteByte(enabled);
         pWriter.WriteInt(dungeonId);
@@ -196,7 +196,7 @@ public static class PartyPacket
 
     public static PacketWriter MatchParty(Party party, bool createListing)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(PartyPacketMode.MatchParty);
         pWriter.WriteBool(createListing);
         if (createListing)
@@ -224,7 +224,7 @@ public static class PartyPacket
 
     public static PacketWriter DungeonFindParty()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(PartyPacketMode.DungeonFindParty);
         pWriter.WriteInt(); // dungeon queue Id
         return pWriter;
@@ -232,7 +232,7 @@ public static class PartyPacket
 
     public static PacketWriter JoinRequest(Player player)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(PartyPacketMode.JoinRequest);
         pWriter.WriteUnicodeString(player.Name);
         return pWriter;
@@ -240,7 +240,7 @@ public static class PartyPacket
 
     public static PacketWriter StartReadyCheck(Player leader, List<Player> members, int count)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(PartyPacketMode.StartReadyCheck);
         pWriter.WriteByte(2); //unk
         pWriter.WriteInt(count);
@@ -259,7 +259,7 @@ public static class PartyPacket
 
     public static PacketWriter ReadyCheck(Player player, byte accept)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(PartyPacketMode.ReadyCheck);
         pWriter.WriteLong(player.CharacterId);
         pWriter.WriteByte(accept);
@@ -268,7 +268,7 @@ public static class PartyPacket
 
     public static PacketWriter EndReadyCheck()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(PartyPacketMode.EndReadyCheck);
         return pWriter;
     }

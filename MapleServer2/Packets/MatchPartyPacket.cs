@@ -15,7 +15,7 @@ public static class MatchPartyPacket
 
     public static PacketWriter CreateListing(Party party)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MATCH_PARTY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MatchParty);
         pWriter.Write(MatchPartyPacketMode.Create);
         WritePartyInformation(pWriter, party, false);
 
@@ -24,7 +24,7 @@ public static class MatchPartyPacket
 
     public static PacketWriter RemoveListing(Party party)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MATCH_PARTY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MatchParty);
         pWriter.Write(MatchPartyPacketMode.Remove);
         pWriter.WriteLong(party.PartyFinderId);
 
@@ -33,7 +33,7 @@ public static class MatchPartyPacket
 
     public static PacketWriter SendListings(List<Party> parties)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.MATCH_PARTY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MatchParty);
         pWriter.Write(MatchPartyPacketMode.Refresh);
         pWriter.WriteInt(parties.Count);
         foreach (Party party in parties)

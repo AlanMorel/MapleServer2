@@ -9,7 +9,7 @@ public static class SkinColorPacket
 {
     public static PacketWriter Update(IFieldObject<Player> player, SkinColor skinColor)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.USER_SKIN_COLOR);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.UserSkinColor);
         pWriter.WriteInt(player.ObjectId);
         pWriter.Write(skinColor);
         return pWriter;
