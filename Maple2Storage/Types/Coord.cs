@@ -70,6 +70,9 @@ public struct CoordF
 
     #region Operators
 
+    public static explicit operator CoordF(CoordS coordS) => From(coordS.X, coordS.Y, coordS.Z);
+    public static implicit operator CoordS(CoordF coordS) => CoordS.From(coordS.X, coordS.Y, coordS.Z);
+
     public static bool operator ==(CoordF left, CoordF right)
     {
         return Equals(left, right);
@@ -218,6 +221,16 @@ public struct CoordS
         };
     }
 
+    public static CoordS From(float x, float y, float z)
+    {
+        return new()
+        {
+            X = (short) x,
+            Y = (short) y,
+            Z = (short) z
+        };
+    }
+
     public static CoordS From(short distance, double zRotation)
     {
         double angle = Math.PI * ((zRotation - 900) / 1800);
@@ -260,6 +273,9 @@ public struct CoordS
     #endregion
 
     #region Operators
+
+    public static explicit operator CoordS(CoordF coordS) => From(coordS.X, coordS.Y, coordS.Z);
+    public static implicit operator CoordF(CoordS coordS) => CoordF.From(coordS.X, coordS.Y, coordS.Z);
 
     public static bool operator ==(CoordS left, CoordS right)
     {

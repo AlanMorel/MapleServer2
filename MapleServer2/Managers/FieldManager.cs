@@ -169,7 +169,7 @@ public partial class FieldManager : IDisposable
         mob.OriginSpawn = spawnPoint;
 
         Shape shape = Navigator.AddShape(mob.Value.NpcMetadataCapsule);
-        CoordS? randomPositionAround = Navigator.FindClosestUnobstructedCoordS(shape, spawnPoint.Coord.ToShort(), spawnPoint.Value.SpawnRadius);
+        CoordS? randomPositionAround = Navigator.FindClosestUnobstructedCoordS(shape, spawnPoint.Coord, spawnPoint.Value.SpawnRadius);
         if (randomPositionAround is null)
         {
             Logger.Error("Could not find a random position around spawn point {0}", spawnPoint.Coord);
