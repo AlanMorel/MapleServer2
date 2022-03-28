@@ -248,7 +248,7 @@ public static class RegionSkillHandler
         }
 
         List<DamageHandler> damages = new();
-        bool isCrit = DamageHandler.RollCrit(caster.Value.Stats[StatId.CritRate].Total);
+        bool isCrit = DamageHandler.RollCrit(caster.Value.Stats[StatAttribute.CritRate].Total);
 
         foreach (IFieldActor<NpcMetadata> mob in field.State.Mobs.Values)
         {

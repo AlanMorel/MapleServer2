@@ -129,8 +129,8 @@ public static class CharacterListPacket
         pWriter.WriteShort(player.ChannelId);
         pWriter.Write(player.Job);
         pWriter.Write(player.JobCode);
-        pWriter.WriteInt(player.Stats[StatId.Hp].Total);
-        pWriter.WriteInt(player.Stats[StatId.Hp].Bonus);
+        pWriter.WriteInt(player.Stats[StatAttribute.Hp].Total);
+        pWriter.WriteInt(player.Stats[StatAttribute.Hp].Bonus);
         pWriter.WriteShort();
         pWriter.WriteLong();
         pWriter.WriteLong(); // Some timestamp

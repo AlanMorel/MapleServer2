@@ -35,7 +35,8 @@ public class ItemOptionPickParser : Exporter<List<ItemOptionPickMetadata>>
                 };
 
                 List<string> constants = node.Attributes["constant_value"].Value.Split(",").ToList();
-                List<string> statics = node.Attributes["static_value"].Value.Split(",").ToList();
+                List<string> staticValues = node.Attributes["static_value"].Value.Split(",").ToList();
+                List<string> staticRates = node.Attributes["static_rate"].Value.Split(",").ToList();
 
                 for (int i = 0; i < constants.Count; i += 2)
                 {
@@ -51,18 +52,32 @@ public class ItemOptionPickParser : Exporter<List<ItemOptionPickMetadata>>
                     optionPick.Constants.Add(constantPick);
                 }
 
-                for (int i = 0; i < statics.Count; i += 2)
+                for (int i = 0; i < staticValues.Count; i += 2)
                 {
-                    if (statics[i] == "")
+                    if (staticValues[i] == "")
                     {
                         continue;
                     }
                     StaticPick staticPick = new()
                     {
-                        Stat = ParseItemOptionPickStat(statics[i]),
-                        DeviationValue = int.Parse(statics[i + 1])
+                        Stat = ParseItemOptionPickStat(staticValues[i]),
+                        DeviationValue = int.Parse(staticValues[i + 1])
                     };
-                    optionPick.Statics.Add(staticPick);
+                    optionPick.StaticValues.Add(staticPick);
+                }
+
+                for (int i = 0; i < staticRates.Count; i += 2)
+                {
+                    if (staticRates[i] == "")
+                    {
+                        continue;
+                    }
+                    StaticPick staticPick = new()
+                    {
+                        Stat = ParseItemOptionPickStat(staticRates[i]),
+                        DeviationValue = int.Parse(staticRates[i + 1])
+                    };
+                    optionPick.StaticRates.Add(staticPick);
                 }
 
                 if (itemOptionPick.ContainsKey(id))
@@ -91,22 +106,22 @@ public class ItemOptionPickParser : Exporter<List<ItemOptionPickMetadata>>
         return items;
     }
 
-    private static StatId ParseItemOptionPickStat(string stat) => stat switch
+    private static StatAttribute ParseItemOptionPickStat(string stat) => stat switch
     {
-        "ndd" => StatId.Defense,
-        "str" => StatId.Str,
-        "dex" => StatId.Dex,
-        "int" => StatId.Int,
-        "luk" => StatId.Luk,
-        "hp" => StatId.Hp,
-        "pap" => StatId.PhysicalAtk,
-        "map" => StatId.MagicAtk,
-        "par" => StatId.PhysicalRes,
-        "mar" => StatId.MagicRes,
-        "cap" => StatId.CritRate,
-        "abp" => StatId.PerfectGuard,
-        "wapmin" => StatId.MinWeaponAtk,
-        "wapmax" => StatId.MaxWeaponAtk,
+        "ndd" => StatAttribute.Defense,
+        "str" => StatAttribute.Str,
+        "dex" => StatAttribute.Dex,
+        "int" => StatAttribute.Int,
+        "luk" => StatAttribute.Luk,
+        "hp" => StatAttribute.Hp,
+        "pap" => StatAttribute.PhysicalAtk,
+        "map" => StatAttribute.MagicAtk,
+        "par" => StatAttribute.PhysicalRes,
+        "mar" => StatAttribute.MagicRes,
+        "cap" => StatAttribute.CritRate,
+        "abp" => StatAttribute.PerfectGuard,
+        "wapmin" => StatAttribute.MinWeaponAtk,
+        "wapmax" => StatAttribute.MaxWeaponAtk,
         _ => throw new ArgumentOutOfRangeException(nameof(stat), stat, $"Unhandled stat: {stat}")
     };
 }

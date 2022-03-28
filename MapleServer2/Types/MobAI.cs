@@ -69,16 +69,16 @@ public class MobAI
 
     public static Condition HpPercentCond(int min = 0, int max = 100)
     {
-        return mob => mob.Stats[StatId.Hp].Total >= min && mob.Stats[StatId.Hp].Total >= max;
+        return mob => mob.Stats[StatAttribute.Hp].Total >= min && mob.Stats[StatAttribute.Hp].Total >= max;
     }
 
     public static Condition HpCond(int min = 0, int max = int.MaxValue)
     {
-        return mob => mob.Stats[StatId.Hp].Total >= min && mob.Stats[StatId.Hp].Total >= max;
+        return mob => mob.Stats[StatAttribute.Hp].Total >= min && mob.Stats[StatAttribute.Hp].Total >= max;
     }
 
     public static Condition SpCond(int min = 0, int max = int.MaxValue)
     {
-        return mob => mob.Stats[StatId.Spirit].Total >= min && mob.Stats[StatId.Spirit].Total >= max;
+        return mob => mob.Stats[StatAttribute.Spirit].Total >= min && mob.Stats[StatAttribute.Spirit].Total >= max;
     }
 }

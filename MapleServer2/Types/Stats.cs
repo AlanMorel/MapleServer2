@@ -7,7 +7,7 @@ namespace MapleServer2.Types;
 public class Stats
 {
     // TODO: Handle stat allocation in here?
-    public Dictionary<StatId, Stat> Data;
+    public Dictionary<StatAttribute, Stat> Data;
 
     public Stats() { }
 
@@ -16,143 +16,143 @@ public class Stats
         Data = new()
         {
             {
-                StatId.Str,
+                StatAttribute.Str,
                 new(metadata.Stats.Str)
             },
             {
-                StatId.Dex,
+                StatAttribute.Dex,
                 new(metadata.Stats.Dex)
             },
             {
-                StatId.Int,
+                StatAttribute.Int,
                 new(metadata.Stats.Int)
             },
             {
-                StatId.Luk,
+                StatAttribute.Luk,
                 new(metadata.Stats.Luk)
             },
             {
-                StatId.Hp,
+                StatAttribute.Hp,
                 new(metadata.Stats.Hp)
             }, // Max = 0 on login
             {
-                StatId.HpRegen,
+                StatAttribute.HpRegen,
                 new(metadata.Stats.HpRegen)
             },
             {
-                StatId.HpRegenInterval,
+                StatAttribute.HpRegenInterval,
                 new(metadata.Stats.HpInterval)
             },
             {
-                StatId.Spirit,
+                StatAttribute.Spirit,
                 new(metadata.Stats.Sp)
             }, // Max = 0 on login
             {
-                StatId.SpRegen,
+                StatAttribute.SpRegen,
                 new(metadata.Stats.SpRegen)
             },
             {
-                StatId.SpRegenInterval,
+                StatAttribute.SpRegenInterval,
                 new(metadata.Stats.SpInterval)
             },
             {
-                StatId.Stamina,
+                StatAttribute.Stamina,
                 new(metadata.Stats.Ep)
             }, // Max = 0 on login
             {
-                StatId.StaminaRegen,
+                StatAttribute.StaminaRegen,
                 new(metadata.Stats.EpRegen)
             },
             {
-                StatId.StaminaRegenInterval,
+                StatAttribute.StaminaRegenInterval,
                 new(metadata.Stats.EpInterval)
             },
             {
-                StatId.AttackSpeed,
+                StatAttribute.AttackSpeed,
                 new(metadata.Stats.AtkSpd)
             },
             {
-                StatId.MovementSpeed,
+                StatAttribute.MovementSpeed,
                 new(metadata.Stats.MoveSpd)
             },
             {
-                StatId.Accuracy,
+                StatAttribute.Accuracy,
                 new(metadata.Stats.Accuracy)
             },
             {
-                StatId.Evasion,
+                StatAttribute.Evasion,
                 new(metadata.Stats.Evasion)
             }, // changes with job
             {
-                StatId.CritRate,
+                StatAttribute.CritRate,
                 new(metadata.Stats.CritRate)
             }, // changes with job
             {
-                StatId.CritDamage,
+                StatAttribute.CritDamage,
                 new(metadata.Stats.CritDamage)
             },
             {
-                StatId.CritEvasion,
+                StatAttribute.CritEvasion,
                 new(metadata.Stats.CritResist)
             },
             {
-                StatId.Defense,
+                StatAttribute.Defense,
                 new(metadata.Stats.Defense)
             }, // base affected by something?
             {
-                StatId.PerfectGuard,
+                StatAttribute.PerfectGuard,
                 new(metadata.Stats.Guard)
             },
             {
-                StatId.JumpHeight,
+                StatAttribute.JumpHeight,
                 new(metadata.Stats.JumpHeight)
             },
             {
-                StatId.PhysicalAtk,
+                StatAttribute.PhysicalAtk,
                 new(metadata.Stats.PhysAtk)
             }, // base for mage, 74 thief
             {
-                StatId.MagicAtk,
+                StatAttribute.MagicAtk,
                 new(metadata.Stats.MagAtk)
             }, // base for thief, 216 mage
             {
-                StatId.PhysicalRes,
+                StatAttribute.PhysicalRes,
                 new(metadata.Stats.PhysRes)
             },
             {
-                StatId.MagicRes,
+                StatAttribute.MagicRes,
                 new(metadata.Stats.MagRes)
             },
             {
-                StatId.MinWeaponAtk,
+                StatAttribute.MinWeaponAtk,
                 new(metadata.Stats.MinAtk)
             },
             {
-                StatId.MaxWeaponAtk,
+                StatAttribute.MaxWeaponAtk,
                 new(metadata.Stats.MaxAtk)
             },
             {
-                StatId.MinDamage,
+                StatAttribute.MinDamage,
                 new(metadata.Stats.Damage)
             },
             {
-                StatId.MaxDamage,
+                StatAttribute.MaxDamage,
                 new(metadata.Stats.Damage)
             },
             {
-                StatId.Pierce,
+                StatAttribute.Pierce,
                 new(metadata.Stats.Pierce)
             },
             {
-                StatId.MountMovementSpeed,
+                StatAttribute.MountMovementSpeed,
                 new(metadata.Stats.MountSpeed)
             },
             {
-                StatId.BonusAtk,
+                StatAttribute.BonusAtk,
                 new(metadata.Stats.BonusAtk)
             },
             {
-                StatId.PetBonusAtk,
+                StatAttribute.PetBonusAtk,
                 new(metadata.Stats.BonusAtkPet)
             }
         };
@@ -164,154 +164,154 @@ public class Stats
         Data = new()
         {
             {
-                StatId.Str,
+                StatAttribute.Str,
                 new(strBase)
             },
             {
-                StatId.Dex,
+                StatAttribute.Dex,
                 new(dexBase)
             },
             {
-                StatId.Int,
+                StatAttribute.Int,
                 new(intBase)
             },
             {
-                StatId.Luk,
+                StatAttribute.Luk,
                 new(lukBase)
             },
             {
-                StatId.Hp,
+                StatAttribute.Hp,
                 new(hpBase)
             }, // Max = 0 on login
             {
-                StatId.HpRegen,
+                StatAttribute.HpRegen,
                 new(10)
             },
             {
-                StatId.HpRegenInterval,
+                StatAttribute.HpRegenInterval,
                 new(3000) // base (3000ms)
             },
             {
-                StatId.Spirit,
+                StatAttribute.Spirit,
                 new(100)
             }, // Max = 0 on login
             {
-                StatId.SpRegen,
+                StatAttribute.SpRegen,
                 new(1)
             },
             {
-                StatId.SpRegenInterval,
+                StatAttribute.SpRegenInterval,
                 new(200) // base (200ms)
             },
             {
-                StatId.Stamina,
+                StatAttribute.Stamina,
                 new(120) // base 120 (20 = 1 block)
             }, // Max = 0 on login
             {
-                StatId.StaminaRegen,
+                StatAttribute.StaminaRegen,
                 new(10) // base 10  (10 = 0.5 block)
             },
             {
-                StatId.StaminaRegenInterval,
+                StatAttribute.StaminaRegenInterval,
                 new(500) // base (500ms)
             },
             {
-                StatId.AttackSpeed,
+                StatAttribute.AttackSpeed,
                 new(100)
             },
             {
-                StatId.MovementSpeed,
+                StatAttribute.MovementSpeed,
                 new(100)
             },
             {
-                StatId.Accuracy,
+                StatAttribute.Accuracy,
                 new(82)
             },
             {
-                StatId.Evasion,
+                StatAttribute.Evasion,
                 new(70)
             }, // changes with job
             {
-                StatId.CritRate,
+                StatAttribute.CritRate,
                 new(critBase)
             }, // changes with job
             {
-                StatId.CritDamage,
+                StatAttribute.CritDamage,
                 new(250)
             },
             {
-                StatId.CritEvasion,
+                StatAttribute.CritEvasion,
                 new(50)
             },
             {
-                StatId.Defense,
+                StatAttribute.Defense,
                 new(16)
             }, // base affected by something?
             {
-                StatId.PerfectGuard,
+                StatAttribute.PerfectGuard,
                 new(0)
             },
             {
-                StatId.JumpHeight,
+                StatAttribute.JumpHeight,
                 new(100)
             },
             {
-                StatId.PhysicalAtk,
+                StatAttribute.PhysicalAtk,
                 new(10)
             }, // base for mage, 74 thief
             {
-                StatId.MagicAtk,
+                StatAttribute.MagicAtk,
                 new(2)
             }, // base for thief, 216 mage
             {
-                StatId.PhysicalRes,
+                StatAttribute.PhysicalRes,
                 new(5)
             },
             {
-                StatId.MagicRes,
+                StatAttribute.MagicRes,
                 new(4)
             },
             {
-                StatId.MinWeaponAtk,
+                StatAttribute.MinWeaponAtk,
                 new(0)
             },
             {
-                StatId.MaxWeaponAtk,
+                StatAttribute.MaxWeaponAtk,
                 new(0)
             },
             {
-                StatId.MinDamage,
+                StatAttribute.MinDamage,
                 new(0)
             },
             {
-                StatId.MaxDamage,
+                StatAttribute.MaxDamage,
                 new(0)
             },
             {
-                StatId.Pierce,
+                StatAttribute.Pierce,
                 new(0)
             },
             {
-                StatId.MountMovementSpeed,
+                StatAttribute.MountMovementSpeed,
                 new(100)
             },
             {
-                StatId.BonusAtk,
+                StatAttribute.BonusAtk,
                 new(0)
             },
             {
-                StatId.PetBonusAtk,
+                StatAttribute.PetBonusAtk,
                 new(0) // base 0 (bonuses can be added)
             }
         };
 
         if (job is Job.Runeblade)
         {
-            Data[StatId.Int].IncreaseBonus(5);
+            Data[StatAttribute.Int].IncreaseBonus(5);
         }
     }
 
-    public Stat this[StatId statIndex]
+    public Stat this[StatAttribute statIndex]
     {
         get => Data[statIndex];
 
@@ -320,34 +320,34 @@ public class Stats
 
     public void InitializePools(int hp, int spirit, int stamina)
     {
-        Stat hpStat = this[StatId.Hp];
-        Stat spiritStat = this[StatId.Spirit];
-        Stat staStat = this[StatId.Stamina];
-        Data[StatId.Hp] = new(hpStat.Bonus, hpStat.Base, hp);
-        Data[StatId.Spirit] = new(spiritStat.Bonus, spiritStat.Base, spirit);
-        Data[StatId.Stamina] = new(staStat.Bonus, staStat.Base, stamina);
+        Stat hpStat = this[StatAttribute.Hp];
+        Stat spiritStat = this[StatAttribute.Spirit];
+        Stat staStat = this[StatAttribute.Stamina];
+        Data[StatAttribute.Hp] = new(hpStat.Bonus, hpStat.Base, hp);
+        Data[StatAttribute.Spirit] = new(spiritStat.Bonus, spiritStat.Base, spirit);
+        Data[StatAttribute.Stamina] = new(staStat.Bonus, staStat.Base, stamina);
     }
 
-    public void Allocate(StatId statId)
+    public void Allocate(StatAttribute statAttribute)
     {
-        int gainAmount = statId switch
+        int gainAmount = statAttribute switch
         {
-            StatId.Hp => 10,
-            StatId.CritRate => 3,
+            StatAttribute.Hp => 10,
+            StatAttribute.CritRate => 3,
             _ => 1
         };
 
-        Data[statId].IncreaseBonus(gainAmount);
+        Data[statAttribute].IncreaseBonus(gainAmount);
     }
 
     public void ResetAllocations(StatDistribution statDist)
     {
-        foreach ((StatId id, int value) in statDist.AllocatedStats)
+        foreach ((StatAttribute id, int value) in statDist.AllocatedStats)
         {
             int gainAmount = id switch
             {
-                StatId.Hp => 10,
-                StatId.CritRate => 3,
+                StatAttribute.Hp => 10,
+                StatAttribute.CritRate => 3,
                 _ => 1
             };
 
@@ -471,7 +471,7 @@ public class Stats
     {
         Job job = player.Job;
         int level = player.Levels.Level;
-        Dictionary<StatId, Stat> stats = player.Stats.Data;
+        Dictionary<StatAttribute, Stat> stats = player.Stats.Data;
 
         // TODO: Find HP formula
         int strIncrease = 0, dexIncrease = 0, intIncrease = 0, lukIncrease = 0, hpIncrease = 0;
@@ -521,11 +521,11 @@ public class Stats
                 break;
             case Job.Wizard:
                 intIncrease = 8;
-                if (stats[StatId.Str].Base > stats[StatId.Dex].Base)
+                if (stats[StatAttribute.Str].Base > stats[StatAttribute.Dex].Base)
                 {
                     dexIncrease = 1;
                 }
-                else if (stats[StatId.Str].Base > stats[StatId.Luk].Base)
+                else if (stats[StatAttribute.Str].Base > stats[StatAttribute.Luk].Base)
                 {
                     lukIncrease = 1;
                 }
@@ -538,11 +538,11 @@ public class Stats
                 break;
             case Job.Priest:
                 intIncrease = 8;
-                if (stats[StatId.Str].Base > stats[StatId.Dex].Base)
+                if (stats[StatAttribute.Str].Base > stats[StatAttribute.Dex].Base)
                 {
                     dexIncrease = 1;
                 }
-                else if (stats[StatId.Str].Base > stats[StatId.Luk].Base)
+                else if (stats[StatAttribute.Str].Base > stats[StatAttribute.Luk].Base)
                 {
                     lukIncrease = 1;
                 }
@@ -639,11 +639,11 @@ public class Stats
                 break;
             case Job.SoulBinder:
                 intIncrease = 8;
-                if (stats[StatId.Str].Base > stats[StatId.Dex].Base)
+                if (stats[StatAttribute.Str].Base > stats[StatAttribute.Dex].Base)
                 {
                     dexIncrease = 1;
                 }
-                else if (stats[StatId.Str].Base > stats[StatId.Luk].Base)
+                else if (stats[StatAttribute.Str].Base > stats[StatAttribute.Luk].Base)
                 {
                     lukIncrease = 1;
                 }
@@ -666,10 +666,10 @@ public class Stats
     public void AddBaseStats(Player player)
     {
         (int strIncrease, int dexIncrease, int intIncrease, int lukIncrease, int hpIncrease) = GetJobStatIncrease(player);
-        Data[StatId.Str].IncreaseBase(strIncrease);
-        Data[StatId.Dex].IncreaseBase(dexIncrease);
-        Data[StatId.Int].IncreaseBase(intIncrease);
-        Data[StatId.Luk].IncreaseBase(lukIncrease);
-        Data[StatId.Hp].IncreaseBase(hpIncrease);
+        Data[StatAttribute.Str].IncreaseBase(strIncrease);
+        Data[StatAttribute.Dex].IncreaseBase(dexIncrease);
+        Data[StatAttribute.Int].IncreaseBase(intIncrease);
+        Data[StatAttribute.Luk].IncreaseBase(lukIncrease);
+        Data[StatAttribute.Hp].IncreaseBase(hpIncrease);
     }
 }

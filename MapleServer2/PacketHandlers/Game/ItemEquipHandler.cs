@@ -177,20 +177,17 @@ public class ItemEquipHandler : GamePacketHandler
 
     private static void DecreaseStats(GameSession session, Item item)
     {
-        if (item.Stats.BasicStats.Count != 0)
+        foreach (ItemStat stat in item.Stats.Constants)
         {
-            foreach (NormalStat stat in item.Stats.BasicStats.OfType<NormalStat>())
-            {
-                session.Player.Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat);
-            }
+            session.Player.Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat + (int) stat.Rate);
         }
-
-        if (item.Stats.BonusStats.Count != 0)
+        foreach (ItemStat stat in item.Stats.Statics)
         {
-            foreach (NormalStat stat in item.Stats.BonusStats.OfType<NormalStat>())
-            {
-                session.Player.Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat);
-            }
+            session.Player.Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat + (int) stat.Rate);
+        }
+        foreach (ItemStat stat in item.Stats.Randoms)
+        {
+            session.Player.Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat + (int) stat.Rate);
         }
 
         session.Send(StatPacket.SetStats(session.Player.FieldPlayer));
@@ -198,20 +195,17 @@ public class ItemEquipHandler : GamePacketHandler
 
     private static void IncreaseStats(GameSession session, Item item)
     {
-        if (item.Stats.BasicStats.Count != 0)
+        foreach (ItemStat stat in item.Stats.Constants)
         {
-            foreach (NormalStat stat in item.Stats.BasicStats.OfType<NormalStat>())
-            {
-                session.Player.Stats[stat.ItemAttribute].IncreaseBonus(stat.Flat);
-            }
+            session.Player.Stats[stat.ItemAttribute].IncreaseBase(stat.Flat + (int) stat.Rate);
         }
-
-        if (item.Stats.BonusStats.Count != 0)
+        foreach (ItemStat stat in item.Stats.Statics)
         {
-            foreach (NormalStat stat in item.Stats.BonusStats.OfType<NormalStat>())
-            {
-                session.Player.Stats[stat.ItemAttribute].IncreaseBonus(stat.Flat);
-            }
+            session.Player.Stats[stat.ItemAttribute].IncreaseBase(stat.Flat + (int) stat.Rate);
+        }
+        foreach (ItemStat stat in item.Stats.Randoms)
+        {
+            session.Player.Stats[stat.ItemAttribute].IncreaseBase(stat.Flat + (int) stat.Rate);
         }
 
         session.Send(StatPacket.SetStats(session.Player.FieldPlayer));

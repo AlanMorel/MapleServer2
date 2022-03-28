@@ -1,4 +1,5 @@
-﻿using MapleServer2.Database;
+﻿using Maple2Storage.Enums;
+using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Types;
@@ -79,47 +80,16 @@ public class BlackMarketManager
                 continue;
             }
 
-            List<NormalStat> normalStats = new();
-            List<SpecialStat> specialStats = new();
-            foreach (ItemStat stat in item.Stats.BasicStats)
-            {
-                if (stat is NormalStat normalStat)
-                {
-                    normalStats.Add(normalStat);
-                    continue;
-                }
-                specialStats.Add((SpecialStat) stat);
-            }
-
-            foreach (ItemStat stat in item.Stats.BonusStats)
-            {
-                if (stat is NormalStat normalStat)
-                {
-                    normalStats.Add(normalStat);
-                    continue;
-                }
-                specialStats.Add((SpecialStat) stat);
-            }
-
             // find if stats contains all values inside searchedStats
             bool containsAll = true;
             foreach (ItemStat searchedStat in searchedStats)
             {
-                if (searchedStat is NormalStat normalStat)
+                if (!item.Stats.Constants.Any(x => x.ItemAttribute == searchedStat.ItemAttribute && x.Flat >= searchedStat.Flat && x.Rate >= searchedStat.Rate) &&
+                    !item.Stats.Statics.Any(x => x.ItemAttribute == searchedStat.ItemAttribute && x.Flat >= searchedStat.Flat && x.Rate >= searchedStat.Rate) &&
+                    !item.Stats.Randoms.Any(x => x.ItemAttribute == searchedStat.ItemAttribute && x.Flat >= searchedStat.Flat && x.Rate >= searchedStat.Rate))
                 {
-                    if (!normalStats.Any(x => x.ItemAttribute == normalStat.ItemAttribute && x.Flat >= normalStat.Flat && x.Percent >= normalStat.Percent))
-                    {
-                        containsAll = false;
-                        break;
-                    }
-                }
-                else if (searchedStat is SpecialStat specialStat)
-                {
-                    if (!specialStats.Any(x => x.ItemAttribute == specialStat.ItemAttribute && x.Flat >= specialStat.Flat && x.Percent >= specialStat.Percent))
-                    {
-                        containsAll = false;
-                        break;
-                    }
+                    containsAll = false;
+                    break;
                 }
             }
 

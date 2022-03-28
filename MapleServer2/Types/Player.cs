@@ -409,10 +409,10 @@ public class Player
 
     public void FallDamage()
     {
-        long currentHp = Stats[StatId.Hp].TotalLong;
+        long currentHp = Stats[StatAttribute.Hp].TotalLong;
         int fallDamage = (int) (currentHp * Math.Clamp(currentHp * 4 / 100 - 1, 0, 25) / 100); // TODO: Create accurate damage model
         FieldPlayer.ConsumeHp(fallDamage);
-        Session.Send(StatPacket.UpdateStats(FieldPlayer, StatId.Hp));
+        Session.Send(StatPacket.UpdateStats(FieldPlayer, StatAttribute.Hp));
         Session.Send(FallDamagePacket.FallDamage(FieldPlayer.ObjectId, fallDamage));
     }
 

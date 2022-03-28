@@ -20,14 +20,16 @@ public class ItemOptionPick
     [XmlElement(Order = 2)]
     public List<ConstantPick> Constants = new();
     [XmlElement(Order = 3)]
-    public List<StaticPick> Statics = new();
+    public List<StaticPick> StaticValues = new();
+    [XmlElement(Order = 4)]
+    public List<StaticPick> StaticRates = new();
 }
 
 [XmlType]
 public class ConstantPick
 {
     [XmlElement(Order = 1)]
-    public StatId Stat;
+    public StatAttribute Stat;
     [XmlElement(Order = 2)]
     public int DeviationValue;
 }
@@ -36,7 +38,7 @@ public class ConstantPick
 public class StaticPick
 {
     [XmlElement(Order = 1)]
-    public StatId Stat;
+    public StatAttribute Stat;
     [XmlElement(Order = 2)]
     public int DeviationValue;
 }

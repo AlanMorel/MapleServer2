@@ -267,23 +267,26 @@ public class BlackMarketHandler : GamePacketHandler
 
     private static ItemStat ReadStat(int statId, int value)
     {
-        // Normal Stat with percent value
-        if (statId >= 1000 && statId < 11000)
+        switch (statId)
         {
-            float percent = (float) (value + 5) / 10000;
-            StatId attribute = (StatId) (statId - 1000);
-            return new NormalStat(attribute, ItemStatType.Static, 0, percent);
+            // Basic Stat with percent value
+            case >= 1000 and < 11000:
+                {
+                    float percent = (float) (value + 5) / 10000;
+                    StatAttribute attribute = (StatAttribute) (statId - 1000);
+                    return new BasicStat(attribute, percent, StatAttributeType.Rate);
+                }
+            // Special Stat with percent value
+            case >= 11000:
+                {
+                    float percent = (float) (value + 5) / 10000;
+                    StatAttribute attribute = (StatAttribute) (statId);
+                    return new SpecialStat(attribute, percent, StatAttributeType.Rate);
+                }
+            default:
+                // Basic Stat with flat value
+                return new BasicStat((StatAttribute) statId, value, StatAttributeType.Flat);
         }
 
-        // Special Stat with percent value
-        if (statId >= 11000)
-        {
-            float percent = (float) (value + 5) / 10000;
-            SpecialStatId attribute = (SpecialStatId) (statId - 11000);
-            return new SpecialStat(attribute, ItemStatType.None, 0, percent);
-        }
-
-        // Normal Stat with flat value
-        return new NormalStat((StatId) statId, ItemStatType.None, value, 0);
     }
 }

@@ -91,7 +91,7 @@ public class ChangeAttributesScrollHandler : GamePacketHandler
         Item newItem = new(gear);
 
         // Set new values for attributes
-        newItem.Stats.BonusStats = ItemStats.RollNewBonusValues(newItem, lockStatId, isSpecialStat);
+        newItem.Stats.Randoms = RandomStats.RollNewBonusValues(newItem, lockStatId, isSpecialStat);
 
         inventory.TemporaryStorage[newItem.Uid] = newItem;
 

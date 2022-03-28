@@ -1,3 +1,0 @@
-function calcKillCountMsg(killCount)
-
-end

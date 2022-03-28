@@ -9,40 +9,33 @@ public class ItemOptionRangeMetadata
     [XmlElement(Order = 1)]
     public ItemOptionRangeType RangeType;
     [XmlElement(Order = 2)]
-    public Dictionary<StatId, List<ParserStat>> Stats = new();
+    public Dictionary<StatAttribute, List<ParserStat>> Stats = new();
     [XmlElement(Order = 3)]
-    public Dictionary<SpecialStatId, List<ParserSpecialStat>> SpecialStats = new();
+    public Dictionary<StatAttribute, List<ParserSpecialStat>> SpecialStats = new();
 }
 
 [XmlType]
 public class ParserStat
 {
     [XmlElement(Order = 1)]
-    public StatId Id;
+    public StatAttribute Attribute;
     [XmlElement(Order = 2)]
-    public int Flat;
+    public float Value;
     [XmlElement(Order = 3)]
-    public float Percent;
+    public StatAttributeType AttributeType; 
 
     public ParserStat() { }
 
-    public ParserStat(StatId type, int flat)
+    public ParserStat(StatAttribute attribute, float value, StatAttributeType type)
     {
-        Id = type;
-        Flat = flat;
-        Percent = 0;
-    }
-
-    public ParserStat(StatId type, float percent)
-    {
-        Id = type;
-        Flat = 0;
-        Percent = percent;
+        Attribute = attribute;
+        Value = value;
+        AttributeType = type;
     }
 
     public override string ToString()
     {
-        return $"Id: {Id}, Flat: {Flat}, Percent: {Percent}";
+        return $"Id: {Attribute}, Value: {Value}";
     }
 }
 
@@ -50,23 +43,22 @@ public class ParserStat
 public class ParserSpecialStat
 {
     [XmlElement(Order = 1)]
-    public SpecialStatId Id;
+    public StatAttribute Id;
     [XmlElement(Order = 2)]
-    public float Percent;
+    public float Value;
     [XmlElement(Order = 3)]
-    public float Flat;
+    public StatAttributeType AttributeType; 
 
     public ParserSpecialStat() { }
 
-    public ParserSpecialStat(SpecialStatId id, float percent, float flat)
+    public ParserSpecialStat(StatAttribute id, float value, StatAttributeType type)
     {
         Id = id;
-        Percent = percent;
-        Flat = flat;
+        Value = value;
     }
 
     public override string ToString()
     {
-        return $"Id: {Id}, Flat: {Flat}, Percent: {Percent}";
+        return $"Id: {Id}, Value: {Value}";
     }
 }

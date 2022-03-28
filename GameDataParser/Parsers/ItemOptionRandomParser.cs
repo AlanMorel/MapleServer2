@@ -43,283 +43,283 @@ public class ItemOptionRandomParser : Exporter<List<ItemOptionRandomMetadata>>
                             itemOption.MultiplyFactor = float.Parse(node.Attributes[item.Name].Value);
                             break;
                         case "abp_rate_base":
-                            itemOption.Stats.Add(new(StatId.PerfectGuard, float.Parse(node.Attributes[item.Name].Value)));
+                            itemOption.Stats.Add(new(StatAttribute.PerfectGuard, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Rate));
                             break;
                         case "asp_value_base":
-                            itemOption.Stats.Add(new(StatId.AttackSpeed, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
+                            itemOption.Stats.Add(new(StatAttribute.AttackSpeed, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Flat));
                             break;
                         case "atp_value_base":
-                            itemOption.Stats.Add(new(StatId.Accuracy, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
+                            itemOption.Stats.Add(new(StatAttribute.Accuracy, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Flat));
                             break;
                         case "bap_value_base":
-                            itemOption.Stats.Add(new(StatId.BonusAtk, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
+                            itemOption.Stats.Add(new(StatAttribute.BonusAtk, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Flat));
                             break;
                         case "cad_value_base":
-                            itemOption.Stats.Add(new(StatId.CritDamage, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
+                            itemOption.Stats.Add(new(StatAttribute.CritDamage, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Flat));
                             break;
                         case "cap_value_base":
-                            itemOption.Stats.Add(new(StatId.CritRate, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
+                            itemOption.Stats.Add(new(StatAttribute.CritRate, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Flat));
                             break;
                         case "car_value_base":
-                            itemOption.Stats.Add(new(StatId.CritEvasion, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
+                            itemOption.Stats.Add(new(StatAttribute.CritEvasion, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Flat));
                             break;
                         case "dex_value_base":
-                            itemOption.Stats.Add(new(StatId.Dex, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
+                            itemOption.Stats.Add(new(StatAttribute.Dex, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Flat));
                             break;
                         case "evp_value_base":
-                            itemOption.Stats.Add(new(StatId.Evasion, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
+                            itemOption.Stats.Add(new(StatAttribute.Evasion, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Flat));
                             break;
                         case "finaladditionaldamage_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.TotalDamage, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.TotalDamage, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "firedamage_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.FireDamage, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.FireDamage, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "firedamagereduce_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.FireDamageReduce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.FireDamageReduce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "heal_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.Heal, float.Parse(node.Attributes[item.Name].Value), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.Heal, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Rate));
                             break;
                         case "hp_rgp_value_base":
-                            itemOption.Stats.Add(new(StatId.HpRegen, int.Parse(node.Attributes[item.Name].Value)));
+                            itemOption.Stats.Add(new(StatAttribute.HpRegen, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Flat));
                             break;
                         case "hp_value_base":
-                            itemOption.Stats.Add(new(StatId.Hp, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
+                            itemOption.Stats.Add(new(StatAttribute.Hp, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Flat));
                             break;
                         case "icedamage_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.IceDamage, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.IceDamage, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "icedamagereduce_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.IceDamageReduce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.IceDamageReduce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "int_value_base":
-                            itemOption.Stats.Add(new(StatId.Int, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
+                            itemOption.Stats.Add(new(StatAttribute.Int, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Flat));
                             break;
                         case "killhprestore_value_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.HpOnKill, 0, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
+                            itemOption.SpecialStats.Add(new(StatAttribute.HpOnKill, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Flat));
                             break;
                         case "knockbackreduce_value_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.KnockbackReduce, 0, int.Parse(node.Attributes[item.Name].Value)));
+                            itemOption.SpecialStats.Add(new(StatAttribute.KnockbackReduce, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Flat));
                             break;
                         case "lddincrease_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.RangedDamage, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.RangedDamage, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "longdistancedamagereduce_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.RangedDamageReduce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.RangedDamageReduce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "lightdamage_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.HolyDamage, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.HolyDamage, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "lightdamagereduce_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.HolyDamageReduce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.HolyDamageReduce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "luk_value_base":
-                            itemOption.Stats.Add(new(StatId.Luk, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
+                            itemOption.Stats.Add(new(StatAttribute.Luk, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Flat));
                             break;
                         case "map_value_base":
-                            itemOption.Stats.Add(new(StatId.MagicAtk, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
+                            itemOption.Stats.Add(new(StatAttribute.MagicAtk, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Flat));
                             break;
                         case "mar_value_base":
-                            itemOption.Stats.Add(new(StatId.MagicRes, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
+                            itemOption.Stats.Add(new(StatAttribute.MagicRes, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Flat));
                             break;
                         case "marpen_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.MagicPiercing, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.MagicPiercing, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "msp_value_base":
-                            itemOption.Stats.Add(new(StatId.MovementSpeed, int.Parse(node.Attributes[item.Name].Value)));
+                            itemOption.Stats.Add(new(StatAttribute.MovementSpeed, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Flat));
                             break;
                         case "ndd_value_base":
-                            itemOption.Stats.Add(new(StatId.Defense, int.Parse(node.Attributes[item.Name].Value)));
+                            itemOption.Stats.Add(new(StatAttribute.Defense, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Flat));
                             break;
                         case "nddincrease_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.MeleeDamage, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.MeleeDamage, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "neardistancedamagereduce_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.MeleeDamageReduce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.MeleeDamageReduce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "pap_value_base":
-                            itemOption.Stats.Add(new(StatId.PhysicalAtk, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
+                            itemOption.Stats.Add(new(StatAttribute.PhysicalAtk, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Flat));
                             break;
                         case "par_value_base":
-                            itemOption.Stats.Add(new(StatId.PhysicalRes, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
+                            itemOption.Stats.Add(new(StatAttribute.PhysicalRes, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Flat));
                             break;
                         case "parpen_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.PhysicalPiercing, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.PhysicalPiercing, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "pen_rate_base":
-                            itemOption.Stats.Add(new(StatId.Pierce, float.Parse(node.Attributes[item.Name].Value.Split(",").First())));
+                            itemOption.Stats.Add(new(StatAttribute.Pierce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "poisondamage_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.PoisonDamage, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.PoisonDamage, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "poisondamagereduce_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.PoisonDamageReduce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.PoisonDamageReduce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "sgi_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.BossDamage, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.BossDamage, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "skillcooldown_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.CooldownReduce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.CooldownReduce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "str_value_base":
-                            itemOption.Stats.Add(new(StatId.Str, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
+                            itemOption.Stats.Add(new(StatAttribute.Str, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Flat));
                             break;
                         case "stunreduce_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.StunReduce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.StunReduce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "thunderdamage_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.ElectricDamage, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.ElectricDamage, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "thunderdamagereduce_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.ElectricDamageReduce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.ElectricDamageReduce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "wapmax_value_base":
-                            itemOption.Stats.Add(new(StatId.MaxWeaponAtk, int.Parse(node.Attributes[item.Name].Value)));
+                            itemOption.Stats.Add(new(StatAttribute.MaxWeaponAtk, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Flat));
                             break;
                         case "wapmin_value_base":
-                            itemOption.Stats.Add(new(StatId.MinWeaponAtk, int.Parse(node.Attributes[item.Name].Value)));
+                            itemOption.Stats.Add(new(StatAttribute.MinWeaponAtk, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Flat));
                             break;
                         case "bap_pet_value_base":
-                            itemOption.Stats.Add(new(StatId.PetBonusAtk, int.Parse(node.Attributes[item.Name].Value)));
+                            itemOption.Stats.Add(new(StatAttribute.PetBonusAtk, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Flat));
                             break;
                         case "receivedhealincrease_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.AllyRecovery, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.AllyRecovery, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "reduce_darkstream_recive_damage_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.DarkDescentDamageReduce, float.Parse(node.Attributes[item.Name].Value), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.DarkDescentDamageReduce, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Rate));
                             break;
                         case "smd_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.MesoBonus, float.Parse(node.Attributes[item.Name].Value), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.MesoBonus, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Rate));
                             break;
                         case "sss_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.SwimSpeed, float.Parse(node.Attributes[item.Name].Value), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.SwimSpeed, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Rate));
                             break;
                         case "wapmin_rate_base":
-                            itemOption.Stats.Add(new(StatId.MinWeaponAtk, float.Parse(node.Attributes[item.Name].Value)));
+                            itemOption.Stats.Add(new(StatAttribute.MinWeaponAtk, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Rate));
                             break;
                         case "wapmax_rate_base":
-                            itemOption.Stats.Add(new(StatId.MaxWeaponAtk, float.Parse(node.Attributes[item.Name].Value)));
+                            itemOption.Stats.Add(new(StatAttribute.MaxWeaponAtk, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Rate));
                             break;
                         case "pvpdamagereduce_value_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.PvPDefense, 0, int.Parse(node.Attributes[item.Name].Value)));
+                            itemOption.SpecialStats.Add(new(StatAttribute.PvPDefense, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Flat));
                             break;
                         case "pvpdamageincrease_value_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.PvPDamage, 0, int.Parse(node.Attributes[item.Name].Value)));
+                            itemOption.SpecialStats.Add(new(StatAttribute.PvPDamage, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Flat));
                             break;
                         case "improve_pvp_exp_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.PvPExp, float.Parse(node.Attributes[item.Name].Value), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.PvPExp, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Rate));
                             break;
                         case "improve_honor_token_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.ValorTokens, float.Parse(node.Attributes[item.Name].Value), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.ValorTokens, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Rate));
                             break;
                         case "npckilldropitemincrate_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.DropRate, float.Parse(node.Attributes[item.Name].Value), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.DropRate, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Rate));
                             break;
                         case "improve_massive_ox_exp_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.OXQuizExp, float.Parse(node.Attributes[item.Name].Value), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.OXQuizExp, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Rate));
                             break;
                         case "improve_massive_finalsurvival_exp_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.SoleSurvivorExp, float.Parse(node.Attributes[item.Name].Value), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.SoleSurvivorExp, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Rate));
                             break;
                         case "improve_massive_trapmaster_exp_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.TrapMasterExp, float.Parse(node.Attributes[item.Name].Value), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.TrapMasterExp, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Rate));
                             break;
                         case "improve_massive_crazyrunner_exp_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.CrazyRunnerExp, float.Parse(node.Attributes[item.Name].Value), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.CrazyRunnerExp, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Rate));
                             break;
                         case "improve_massive_escape_exp_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.LudiEscapeExp, float.Parse(node.Attributes[item.Name].Value), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.LudiEscapeExp, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Rate));
                             break;
                         case "improve_massive_springbeach_exp_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.SpringBeachExp, float.Parse(node.Attributes[item.Name].Value), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.SpringBeachExp, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Rate));
                             break;
                         case "improve_massive_dancedance_exp_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.DanceDanceExp, float.Parse(node.Attributes[item.Name].Value), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.DanceDanceExp, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Rate));
                             break;
                         case "improve_massive_ox_msp_value_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.OXMovementSpeed, 0, int.Parse(node.Attributes[item.Name].Value)));
+                            itemOption.SpecialStats.Add(new(StatAttribute.OXMovementSpeed, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Flat));
                             break;
                         case "improve_massive_finalsurvival_msp_value_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.SoleSurvivorMovementSpeed, 0, int.Parse(node.Attributes[item.Name].Value)));
+                            itemOption.SpecialStats.Add(new(StatAttribute.SoleSurvivorMovementSpeed, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Flat));
                             break;
                         case "improve_massive_trapmaster_msp_value_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.TrapMasterMovementSpeed, 0, int.Parse(node.Attributes[item.Name].Value)));
+                            itemOption.SpecialStats.Add(new(StatAttribute.TrapMasterMovementSpeed, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Flat));
                             break;
                         case "improve_massive_crazyrunner_msp_value_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.CrazyRunnerMovementSpeed, 0, int.Parse(node.Attributes[item.Name].Value)));
+                            itemOption.SpecialStats.Add(new(StatAttribute.CrazyRunnerMovementSpeed, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Flat));
                             break;
                         case "improve_massive_escape_msp_value_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.LudiEscapeMovementSpeed, 0, int.Parse(node.Attributes[item.Name].Value)));
+                            itemOption.SpecialStats.Add(new(StatAttribute.LudiEscapeMovementSpeed, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Flat));
                             break;
                         case "improve_massive_springbeach_msp_value_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.SpringBeachMovementSpeed, 0, int.Parse(node.Attributes[item.Name].Value)));
+                            itemOption.SpecialStats.Add(new(StatAttribute.SpringBeachMovementSpeed, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Flat));
                             break;
                         case "improve_massive_dancedance_msp_value_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.DanceDanceStopMovementSpeed, 0, int.Parse(node.Attributes[item.Name].Value)));
+                            itemOption.SpecialStats.Add(new(StatAttribute.DanceDanceStopMovementSpeed, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Flat));
                             break;
                         case "seg_fishingreward_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.FishingExp, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.FishingExp, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "seg_playinstrumentreward_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.PerformanceExp, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.PerformanceExp, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "npc_hit_reward_sp_ball_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.GenerateSpiritOrbs, float.Parse(node.Attributes[item.Name].Value), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.GenerateSpiritOrbs, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Rate));
                             break;
                         case "npc_hit_reward_ep_ball_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.GenerateStaminaOrbs, float.Parse(node.Attributes[item.Name].Value), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.GenerateStaminaOrbs, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Rate));
                             break;
                         case "complete_fieldmission_msp_value_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.ExploredAreasMovementSpeed, 0, int.Parse(node.Attributes[item.Name].Value)));
+                            itemOption.SpecialStats.Add(new(StatAttribute.ExploredAreasMovementSpeed, int.Parse(node.Attributes[item.Name].Value), StatAttributeType.Flat));
                             break;
                         case "improve_glide_vertical_velocity_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.AirMountAscentSpeed, float.Parse(node.Attributes[item.Name].Value), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.AirMountAscentSpeed, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Rate));
                             break;
                         case "fishing_double_mastery_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.DoubleFishingMastery, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.DoubleFishingMastery, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "playinstrument_double_mastery_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.DoublePerformanceMastery, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.DoublePerformanceMastery, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "gathering_double_mastery_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.DoubleForagingMastery, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.DoubleForagingMastery, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "farming_double_mastery_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.DoubleFarmingMastery, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.DoubleFarmingMastery, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "mining_double_mastery_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.DoubleMiningMastery, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.DoubleMiningMastery, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "breeding_double_mastery_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.DoubleRanchingMastery, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.DoubleRanchingMastery, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "improve_darkstream_damage_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.DarkDescentDamageBonus, float.Parse(node.Attributes[item.Name].Value), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.DarkDescentDamageBonus, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Rate));
                             break;
                         case "improve_chaosraid_wap_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.ChaosRaidWeaponAttack, float.Parse(node.Attributes[item.Name].Value), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.ChaosRaidWeaponAttack, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Rate));
                             break;
                         case "improve_chaosraid_asp_value_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.ChaosRaidAttackSpeed, 0, int.Parse(node.Attributes[item.Name].Value)));
+                            itemOption.SpecialStats.Add(new(StatAttribute.ChaosRaidAttackSpeed, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Flat));
                             break;
                         case "improve_chaosraid_atp_value_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.ChaosRaidAccuracy, 0, int.Parse(node.Attributes[item.Name].Value)));
+                            itemOption.SpecialStats.Add(new(StatAttribute.ChaosRaidAccuracy, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Flat));
                             break;
                         case "improve_chaosraid_hp_value_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.ChaosRaidHealth, 0, int.Parse(node.Attributes[item.Name].Value)));
+                            itemOption.SpecialStats.Add(new(StatAttribute.ChaosRaidHealth, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Flat));
                             break;
                         case "darkdamagereduce_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.DarkDamageReduce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.DarkDamageReduce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "darkdamage_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.DarkDamage, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.DarkDamage, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "pvpdamageincrease_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.PvPDamage, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.PvPDamage, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "pvpdamagereduce_rate_base":
-                            itemOption.SpecialStats.Add(new(SpecialStatId.PvPDefense, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
+                            itemOption.SpecialStats.Add(new(StatAttribute.PvPDefense, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "additionaleffect_95000012_value_base":
                         case "additionaleffect_95000014_value_base":

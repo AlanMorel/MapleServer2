@@ -109,7 +109,7 @@ public class Item
         Slot = -1;
         Amount = 1;
         Score = new();
-        Stats = new(this, Rarity, ItemSlot, Level);
+        Stats = new(this);
         if (saveToDatabase)
         {
             Uid = DatabaseManager.Items.Insert(this);

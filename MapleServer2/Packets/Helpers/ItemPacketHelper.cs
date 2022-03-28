@@ -132,61 +132,49 @@ public static class ItemPacketHelper
     private static PacketWriter WriteStats(this PacketWriter pWriter, ItemStats stats)
     {
         pWriter.WriteByte(); // Not part of appearance sub!
-        List<NormalStat> basicConstantNormalStats = stats.BasicStats.Where(x => x.Type == ItemStatType.Constant).OfType<NormalStat>().ToList();
+        List<BasicStat> basicConstantNormalStats = stats.Constants.OfType<BasicStat>().ToList();
         pWriter.WriteShort((short) basicConstantNormalStats.Count);
-        foreach (NormalStat stat in basicConstantNormalStats)
+        foreach (BasicStat stat in basicConstantNormalStats)
         {
-            pWriter.WriteShort((short) stat.ItemAttribute);
-            pWriter.WriteInt(stat.Flat);
-            pWriter.WriteFloat(stat.Percent);
+            WriteBasicStat(pWriter, stat);
         }
 
-        List<SpecialStat> basicConstantSpecialStats = stats.BasicStats.Where(x => x.Type == ItemStatType.Constant).OfType<SpecialStat>().ToList();
+        List<SpecialStat> basicConstantSpecialStats = stats.Constants.OfType<SpecialStat>().ToList();
         pWriter.WriteShort((short) basicConstantSpecialStats.Count);
         foreach (SpecialStat stat in basicConstantSpecialStats)
         {
-            pWriter.WriteShort((short) stat.ItemAttribute);
-            pWriter.WriteFloat(stat.Percent);
-            pWriter.WriteFloat(stat.Flat);
+            WriteSpecialStat(pWriter, stat);
         }
         pWriter.WriteInt();
 
-        List<NormalStat> staticNormalStats = stats.BasicStats.Where(x => x.Type == ItemStatType.Static).OfType<NormalStat>().ToList();
+        List<BasicStat> staticNormalStats = stats.Statics.OfType<BasicStat>().ToList();
         pWriter.WriteShort((short)staticNormalStats.Count);
-        foreach (NormalStat stat in staticNormalStats)
+        foreach (BasicStat stat in staticNormalStats)
         {
-            pWriter.WriteShort((short) stat.ItemAttribute);
-            pWriter.WriteInt(stat.Flat);
-            pWriter.WriteFloat(stat.Percent);
+            WriteBasicStat(pWriter, stat);
         }
         
-        List<SpecialStat> staticSpecialStats = stats.BasicStats.Where(x => x.Type == ItemStatType.Static).OfType<SpecialStat>().ToList();
+        List<SpecialStat> staticSpecialStats = stats.Statics.OfType<SpecialStat>().ToList();
         pWriter.WriteShort((short) staticSpecialStats.Count);
         foreach (SpecialStat stat in staticSpecialStats)
         {
-            pWriter.WriteShort((short) stat.ItemAttribute);
-            pWriter.WriteFloat(stat.Percent);
-            pWriter.WriteFloat(stat.Flat);
+            WriteSpecialStat(pWriter, stat);
         }
         
         pWriter.WriteInt();
 
-        List<NormalStat> bonusNormalStats = stats.BonusStats.Where(x => x.Type == ItemStatType.Random).OfType<NormalStat>().ToList();
+        List<BasicStat> bonusNormalStats = stats.Randoms.OfType<BasicStat>().ToList();
         pWriter.WriteShort((short) bonusNormalStats.Count);
-        foreach (NormalStat stat in bonusNormalStats)
+        foreach (BasicStat stat in bonusNormalStats)
         {
-            pWriter.WriteShort((short) stat.ItemAttribute);
-            pWriter.WriteInt(stat.Flat);
-            pWriter.WriteFloat(stat.Percent);
+            WriteBasicStat(pWriter, stat);
         }
         
-        List<SpecialStat> bonusSpecialStats = stats.BonusStats.Where(x => x.Type == ItemStatType.Random).OfType<SpecialStat>().ToList();
+        List<SpecialStat> bonusSpecialStats = stats.Randoms.OfType<SpecialStat>().ToList();
         pWriter.WriteShort((short) bonusSpecialStats.Count);
         foreach (SpecialStat stat in bonusSpecialStats)
         {
-            pWriter.WriteShort((short) stat.ItemAttribute);
-            pWriter.WriteFloat(stat.Percent);
-            pWriter.WriteFloat(stat.Flat);
+            WriteSpecialStat(pWriter, stat);
         }
         pWriter.WriteInt();
 
@@ -213,36 +201,44 @@ public static class ItemPacketHelper
         return pWriter;
     }
 
+    private static void WriteBasicStat(PacketWriter pWriter, BasicStat stat)
+    {
+        pWriter.WriteShort(stat.WriteAttribute());
+        pWriter.WriteInt(stat.Flat);
+        pWriter.WriteFloat(stat.Rate);
+    }
+    
+    private static void WriteSpecialStat(PacketWriter pWriter, SpecialStat stat)
+    {
+        pWriter.WriteShort(stat.WriteAttribute());
+        pWriter.WriteFloat(stat.Rate);
+        pWriter.WriteFloat(stat.Flat);
+    }
+    
     private static PacketWriter WriteStatDiff(this PacketWriter pWriter /*, ItemStats old, ItemStats new*/)
     {
         // TODO: Find stat diffs (low priority)
-        List<NormalStat> generalStatDiff = new();
-        pWriter.WriteByte((byte) generalStatDiff.Count);
-        foreach (NormalStat stat in generalStatDiff)
+        List<BasicStat> constantStatDiff = new();
+        pWriter.WriteByte((byte) constantStatDiff.Count);
+        foreach (BasicStat stat in constantStatDiff)
         {
-            pWriter.WriteShort((short) stat.ItemAttribute);
-            pWriter.WriteInt(stat.Flat);
-            pWriter.WriteFloat(stat.Percent);
+            WriteBasicStat(pWriter, stat);
         }
 
         pWriter.WriteInt(); // ???
 
-        List<NormalStat> statDiff = new();
-        pWriter.WriteInt(statDiff.Count);
-        foreach (NormalStat stat in statDiff)
+        List<BasicStat> staticStatDiff = new();
+        pWriter.WriteInt(staticStatDiff.Count);
+        foreach (BasicStat stat in staticStatDiff)
         {
-            pWriter.WriteShort((short) stat.ItemAttribute);
-            pWriter.WriteInt(stat.Flat);
-            pWriter.WriteFloat(stat.Percent);
+            WriteBasicStat(pWriter, stat);
         }
 
-        List<SpecialStat> bonusStatDiff = new();
-        pWriter.WriteInt(bonusStatDiff.Count);
-        foreach (SpecialStat stat in bonusStatDiff)
+        List<SpecialStat> randomStatDiff = new();
+        pWriter.WriteInt(randomStatDiff.Count);
+        foreach (SpecialStat stat in randomStatDiff)
         {
-            pWriter.WriteShort((short) stat.ItemAttribute);
-            pWriter.WriteFloat(stat.Percent);
-            pWriter.WriteFloat(stat.Flat);
+            WriteSpecialStat(pWriter, stat);
         }
 
         return pWriter;
