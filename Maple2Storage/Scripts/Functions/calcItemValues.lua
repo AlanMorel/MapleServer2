@@ -627,110 +627,106 @@ function clipValue(clipMinValue, floorValue, clipMaxValue)
 end
 
 function calcItemGearScore(gearScoreFactorValue, rarity, itemSlot, enchantLevel, limitBreakLevel)
-
     local maxEnchantValue = 15
     enchantLevel = clipValue(enchantLevel, 0, maxEnchantValue)
-    local l_66_6 = 0
+    local scoreResult = 0
     local itemGearScore = 0
-    local l_66_8 = 0
+    local addItemGearScore = 0
     if gearScoreFactorValue > 0 then
         if limitBreakLevel < 60 then
             if rarity > 3 and gearScoreFactorValue >= 50 then
                 if ItemLevelRarityCoefficient[itemSlot] > 0 then
                     if rarity >= 5 then
-                        l_66_8 = 100
-                        l_66_6 = (10 * gearScoreFactorValue + (math.max)((rarity - 1) * 5, 0)) *
+                        scoreResult = (10 * gearScoreFactorValue + (math.max)((rarity - 1) * 5, 0)) *
                             ItemLevelCoefficient[itemSlot] * 2 * (math.max)(rarity - 3, 1) +
-                            (math.max)((gearScoreFactorValue - 50) * l_66_8 * ItemLevelCoefficient[itemSlot], 0)
+                            (math.max)((gearScoreFactorValue - 50) * 100 * ItemLevelCoefficient[itemSlot], 0)
                     else
-                        l_66_6 = (10 * gearScoreFactorValue + (math.max)((rarity - 1) * 5, 0)) *
+                        scoreResult = (10 * gearScoreFactorValue + (math.max)((rarity - 1) * 5, 0)) *
                             ItemLevelCoefficient[itemSlot] * 2 * (math.max)(rarity - 3, 1)
                     end
                 else
                     if itemSlot == Earring or itemSlot == Cape or itemSlot == Necklace or itemSlot == Ring then
                         if rarity >= 5 then
-                            l_66_8 = 100
-                            l_66_6 = (10 * gearScoreFactorValue + (math.max)((rarity - 2) * 5, 0)) *
+                            scoreResult = (10 * gearScoreFactorValue + (math.max)((rarity - 2) * 5, 0)) *
                                 ItemLevelCoefficient[itemSlot] * 2 * (math.max)(rarity - 4, 1) +
-                                (math.max)((gearScoreFactorValue - 50) * l_66_8 * ItemLevelCoefficient[itemSlot], 0)
+                                (math.max)((gearScoreFactorValue - 50) * 100 * ItemLevelCoefficient[itemSlot], 0)
                         else
-                            l_66_6 = (10 * gearScoreFactorValue + (math.max)((rarity - 1) * 5, 0)) *
+                            scoreResult = (10 * gearScoreFactorValue + (math.max)((rarity - 1) * 5, 0)) *
                                 ItemLevelCoefficient[itemSlot]
                         end
                     else
-                        l_66_6 = (10 * gearScoreFactorValue + (math.max)((rarity - 1) * 5, 0)) *
+                        scoreResult = (10 * gearScoreFactorValue + (math.max)((rarity - 1) * 5, 0)) *
                             ItemLevelCoefficient[itemSlot]
                     end
                 end
             else
-                l_66_6 = (10 * gearScoreFactorValue + (math.max)((rarity - 1) * 5, 0)) * ItemLevelCoefficient[itemSlot]
+                scoreResult = (10 * gearScoreFactorValue + (math.max)((rarity - 1) * 5, 0)) * ItemLevelCoefficient[itemSlot]
             end
             if rarity > 3 and gearScoreFactorValue >= 50 then
                 if ItemLevelRarityCoefficient[itemSlot] > 0 then
-                    l_66_6 = (2 + LevelScoreFactorNA[gearScoreFactorValue]) * 1030 * RarityScoreFactor[rarity] *
+                    scoreResult = (2 + LevelScoreFactorNA[gearScoreFactorValue]) * 1030 * RarityScoreFactor[rarity] *
                         ItemLevelCoefficient[itemSlot]
                 else
                     if itemSlot == Earring or itemSlot == Cape or itemSlot == Necklace or itemSlot == Ring then
-                        l_66_6 = (2 + LevelScoreFactorNA[gearScoreFactorValue]) * 1030 * RarityScoreFactor[rarity] *
+                        scoreResult = (2 + LevelScoreFactorNA[gearScoreFactorValue]) * 1030 * RarityScoreFactor[rarity] *
                             ItemLevelCoefficient[itemSlot]
                     else
-                        l_66_6 = (10 * gearScoreFactorValue + (math.max)((rarity - 1) * 5, 0)) *
+                        scoreResult = (10 * gearScoreFactorValue + (math.max)((rarity - 1) * 5, 0)) *
                             ItemLevelCoefficient[itemSlot]
                     end
                 end
             else
-                l_66_6 = (10 * gearScoreFactorValue + (math.max)((rarity - 1) * 5, 0)) *
+                scoreResult = (10 * gearScoreFactorValue + (math.max)((rarity - 1) * 5, 0)) *
                     ItemLevelCoefficient[itemSlot]
             end
         else
             if limitBreakLevel < 70 then
                 if rarity > 3 and gearScoreFactorValue >= 50 then
                     if ItemLevelRarityCoefficient[itemSlot] > 0 then
-                        l_66_6 = (2 + LevelScoreFactorNA[gearScoreFactorValue]) * 1030 * RarityScoreFactor[rarity] *
+                        scoreResult = (2 + LevelScoreFactorNA[gearScoreFactorValue]) * 1030 * RarityScoreFactor[rarity] *
                             ItemLevelCoefficient[itemSlot]
                     else
                         if itemSlot == Earring or itemSlot == Cape or itemSlot == Necklace or itemSlot == Ring then
-                            l_66_6 = (2 + LevelScoreFactorNA[gearScoreFactorValue]) * 1030 * RarityScoreFactor[rarity] *
+                            scoreResult = (2 + LevelScoreFactorNA[gearScoreFactorValue]) * 1030 * RarityScoreFactor[rarity] *
                                 ItemLevelCoefficient[itemSlot]
                         else
-                            l_66_6 = (10 * gearScoreFactorValue + (math.max)((rarity - 1) * 5, 0)) *
+                            scoreResult = (10 * gearScoreFactorValue + (math.max)((rarity - 1) * 5, 0)) *
                                 ItemLevelCoefficient[itemSlot]
                         end
                     end
                 else
-                    l_66_6 = (10 * gearScoreFactorValue + (math.max)((rarity - 1) * 5, 0)) *
+                    scoreResult = (10 * gearScoreFactorValue + (math.max)((rarity - 1) * 5, 0)) *
                         ItemLevelCoefficient[itemSlot]
                 end
             else
                 if rarity > 3 and gearScoreFactorValue >= 50 then
                     local rarityFactor = RarityScoreFactor[rarity]
                     if ItemLevelRarityCoefficient[itemSlot] > 0 then
-                        l_66_6 = (2 + LevelScoreFactorNA[gearScoreFactorValue]) * 1030 * rarityFactor *
+                        scoreResult = (2 + LevelScoreFactorNA[gearScoreFactorValue]) * 1030 * rarityFactor *
                             ItemLevelCoefficient[itemSlot]
                     else
                         if itemSlot == Earring or itemSlot == Cape or itemSlot == Necklace or itemSlot == Ring then
-                            l_66_6 = (2 + LevelScoreFactorNA[gearScoreFactorValue]) * 1030 * rarityFactor *
+                            scoreResult = (2 + LevelScoreFactorNA[gearScoreFactorValue]) * 1030 * rarityFactor *
                                 ItemLevelCoefficient[itemSlot]
                         else
-                            l_66_6 = (10 * gearScoreFactorValue + (math.max)((rarity - 1) * 5, 0)) *
+                            scoreResult = (10 * gearScoreFactorValue + (math.max)((rarity - 1) * 5, 0)) *
                                 ItemLevelCoefficient[itemSlot]
                         end
                     end
                 else
                     do
-                        l_66_6 = (10 * gearScoreFactorValue + (math.max)((rarity - 1) * 5, 0)) *
+                        scoreResult = (10 * gearScoreFactorValue + (math.max)((rarity - 1) * 5, 0)) *
                             ItemLevelCoefficient[itemSlot]
-                        l_66_6 = 0
+                        scoreResult = 0
                         if limitBreakLevel < 60 then
-                            itemGearScore = l_66_6
+                            itemGearScore = scoreResult
                         else
                             if limitBreakLevel < 70 then
-                                itemGearScore = l_66_6
+                                itemGearScore = scoreResult
                             else
-                                itemGearScore = l_66_6
+                                itemGearScore = scoreResult
                             end
                         end
-                        local addItemGearScore = 0
                         if limitBreakLevel < 60 then
                             if rarity >= 4 then
                                 addItemGearScore = itemGearScore * LimitBreakItemLevelCoefficientNA[enchantLevel]
@@ -760,12 +756,13 @@ function calcItemGearScore(gearScoreFactorValue, rarity, itemSlot, enchantLevel,
                                 end
                             end
                         end
-                        return itemGearScore, addItemGearScore
                     end
                 end
             end
         end
     end
+    itemGearScore = scoreResult
+    return itemGearScore, addItemGearScore
 end
 
 function constant_value_hp(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
@@ -1461,7 +1458,6 @@ function static_value_ndd(currentStatValue, deviationValue, itemSlot, itemJob, o
         staticMinAddValue = round(maxNddValue * (currentStatValue / 100), 0) + addNddValue
         staticMaxAddValue = round(maxNddValue * (currentStatValue / 100), 0) + addNddValue
     end
-    print(staticMinAddValue, staticMaxAddValue)
     return staticMinAddValue, staticMaxAddValue
 end
 
@@ -1690,7 +1686,6 @@ function static_value_wapmax(currentStatValue, deviationValue, itemSlot, itemJob
             finalWapMinValue = round(staticWapMaxValue * (currentStatValue / 100), 0)
             finalWapMaxValue = round(staticWapMaxValue * (currentStatValue / 100), 0)
         end
-        print (finalWapMinValue, finalWapMaxValue)
         return finalWapMinValue, finalWapMaxValue
     end
 end

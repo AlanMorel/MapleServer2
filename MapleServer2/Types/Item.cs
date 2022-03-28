@@ -5,6 +5,8 @@ using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
+using MapleServer2.Tools;
+using MoonSharp.Interpreter;
 
 namespace MapleServer2.Types;
 
@@ -50,8 +52,9 @@ public class Item
     public long UnlockTime;
     public short RemainingGlamorForges;
     public int GachaDismantleId;
-
+    public int GearScore;
     public int Enchants;
+    public int LimitBreakLevel;
 
     // EnchantExp (10000 = 100%) for Peachy
     public int EnchantExp;
@@ -109,6 +112,7 @@ public class Item
         Slot = -1;
         Amount = 1;
         Score = new();
+        GearScore = GetGearScore();
         Stats = new(this);
         if (saveToDatabase)
         {
@@ -285,12 +289,13 @@ public class Item
         HousingCategory = ItemMetadataStorage.GetHousingCategory(Id);
         BlackMarketCategory = ItemMetadataStorage.GetBlackMarketCategory(Id);
         Category = ItemMetadataStorage.GetCategory(Id);
-        Type = GetItemType(Id);
+        Type = GetItemType();
     }
 
-    private static ItemType GetItemType(int itemId)
+    public ItemType GetItemType()
     {
-        return (itemId / 100000) switch
+        //TODO: Find a better method to find the item type
+        return (Id / 100000) switch
         {
             112 => ItemType.Earring,
             113 => ItemType.Hat,
@@ -324,5 +329,13 @@ public class Item
             900 => ItemType.Currency,
             _ => ItemType.None
         };
+    }
+
+    public int GetGearScore()
+    {
+        int gearScoreFactor = ItemMetadataStorage.GetGearScoreFactor(Id);
+        ScriptLoader scriptLoader = new("Functions/calcItemValues");
+        DynValue result = scriptLoader.Call("calcItemGearScore", gearScoreFactor, Rarity, (int) Type, Enchants, LimitBreakLevel);
+        return (int) result.Tuple[0].Number + (int) result.Tuple[1].Number;
     }
 }

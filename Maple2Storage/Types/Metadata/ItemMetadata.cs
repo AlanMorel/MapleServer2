@@ -109,6 +109,8 @@ public class ItemMetadata
     public ItemExpirationType ExpirationType;
     [XmlElement(Order = 51)]
     public int ExpirationTypeDuration;
+    [XmlElement(Order = 52)]
+    public int GearScoreFactor;
 
     public override string ToString()
     {

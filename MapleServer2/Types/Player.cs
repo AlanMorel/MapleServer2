@@ -58,6 +58,7 @@ public class Player
     public long InstanceId { get; set; }
     public int TitleId { get; set; }
     public short InsigniaId { get; set; }
+    public int GearScore;
     public List<int> Titles { get; set; }
     public List<int> PrestigeRewardsClaimed { get; set; }
 
@@ -513,5 +514,21 @@ public class Player
         {
             UnlockedMaps.Add(MapId);
         }
+    }
+
+    public void UpdateGearScore(Item item, int value)
+    {
+        ItemType itemType = item.GetItemType();
+        switch (itemType)
+        {
+            case ItemType.ThrowingStar:
+            case ItemType.Dagger:
+                value /= 2;
+                break;
+            case ItemType.Shield:
+            case ItemType.Spellbook:
+                return;
+        }
+        GearScore += value;
     }
 }

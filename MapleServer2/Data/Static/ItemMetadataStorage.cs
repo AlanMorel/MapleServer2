@@ -222,6 +222,8 @@ public static class ItemMetadataStorage
 
     public static string GetBlackMarketCategory(int itemId) => GetMetadata(itemId).BlackMarketCategory;
 
+    public static int GetGearScoreFactor(int itemId) => GetMetadata(itemId).GearScoreFactor;
+
     public static long GetExpiration(int itemId)
     {
         ItemMetadata metadata = GetMetadata(itemId);

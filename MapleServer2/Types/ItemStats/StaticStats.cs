@@ -1,11 +1,8 @@
 ﻿using Maple2Storage.Enums;
-using Maple2Storage.Tools;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
-using MapleServer2.Enums;
 using MapleServer2.Tools;
 using MoonSharp.Interpreter;
-using MySqlX.XDevAPI.Common;
 
 namespace MapleServer2.Types;
 
@@ -35,7 +32,7 @@ public static class StaticStats
         {
             staticStats.Add(new SpecialStat(stat));
         }
-        
+
         // TODO: Implement Hidden ndd (defense) and wapmax (Max Weapon Attack)
 
         GetDefault(item, staticStats, optionId, optionLevelFactor, globalOptionLevelFactor);
@@ -104,7 +101,7 @@ public static class StaticStats
     private static double CalculateStat(Item item, float optionLevelFactor, float globalOptionLevelFactor, StaticPick staticPick, ScriptLoader scriptLoader, float currentStatValue)
     {
 
-        Random random = RandomProvider.Get();
+        Random random = Random.Shared;;
         string calcScript = "";
         switch (staticPick.Stat)
         {

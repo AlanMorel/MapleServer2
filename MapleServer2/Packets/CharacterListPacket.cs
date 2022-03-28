@@ -137,7 +137,7 @@ public static class CharacterListPacket
         pWriter.WriteLong();
         pWriter.WriteInt(player.ReturnMapId);
         pWriter.Write(player.ReturnCoord);
-        pWriter.WriteInt(); // gearscore
+        pWriter.WriteInt(player.GearScore);
         pWriter.Write(player.SkinColor);
         pWriter.WriteLong(player.CreationTime + Environment.TickCount64);
         foreach (int trophyCount in player.TrophyCount)

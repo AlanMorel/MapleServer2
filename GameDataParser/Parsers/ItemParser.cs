@@ -82,7 +82,8 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                 ObjectId = install.objCode,
                 DurationPeriod = life.usePeriod,
                 ExpirationType = (ItemExpirationType) life.expirationType,
-                ExpirationTypeDuration = life.numberOfWeeksMonths
+                ExpirationTypeDuration = life.numberOfWeeksMonths,
+                GearScoreFactor = property.gearScore
             };
 
             // Parse expiration time

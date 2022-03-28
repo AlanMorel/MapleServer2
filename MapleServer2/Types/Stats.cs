@@ -313,7 +313,14 @@ public class Stats
 
     public Stat this[StatAttribute statIndex]
     {
-        get => Data[statIndex];
+        get
+        {
+            if (!Data.ContainsKey(statIndex))
+            {
+                Data[statIndex] = new(0);
+            }
+            return Data[statIndex];   
+        }
 
         private set => Data[statIndex] = value;
     }

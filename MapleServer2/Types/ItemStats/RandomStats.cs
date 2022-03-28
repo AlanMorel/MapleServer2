@@ -1,8 +1,6 @@
 ﻿using Maple2Storage.Enums;
-using Maple2Storage.Tools;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
-using MapleServer2.Enums;
 
 namespace MapleServer2.Types;
 
@@ -19,7 +17,7 @@ public static class RandomStats
         }
 
         // get amount of slots
-        Random random = RandomProvider.Get();
+        Random random = Random.Shared;
         int slots = random.Next(randomOptions.Slots[0], randomOptions.Slots[1]);
 
         IEnumerable<ItemStat> itemStats = RollStats(randomOptions, item.Id);

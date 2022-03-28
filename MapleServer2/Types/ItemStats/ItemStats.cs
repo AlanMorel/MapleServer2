@@ -1,5 +1,4 @@
 ﻿using Maple2Storage.Enums;
-using Maple2Storage.Tools;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 
@@ -143,7 +142,7 @@ public class ItemStats
         int index = stats.FindIndex(x => x.ItemAttribute == attribute);
         int biggerValue = Math.Max(value, calibratedValue);
         int smallerValue = Math.Min(value, calibratedValue);
-        int summedFlat = (int) (normalStat.Flat + RandomProvider.Get().Next(smallerValue, biggerValue));
+        int summedFlat = (int) (normalStat.Flat + Random.Shared.Next(smallerValue, biggerValue));
         stats[index] = new SpecialStat(normalStat.ItemAttribute, summedFlat, StatAttributeType.Flat);
     }
 
@@ -173,7 +172,7 @@ public class ItemStats
         // roll to unlock sockets
         for (int i = 0; i < GemSockets.Count; i++)
         {
-            int successNumber = RandomProvider.Get().Next(0, 100);
+            int successNumber = Random.Shared.Next(0, 100);
 
             // 5% success rate to unlock a gemsocket
             if (successNumber < 95)

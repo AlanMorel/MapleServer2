@@ -80,6 +80,7 @@ public class ItemEquipHandler : GamePacketHandler
             if (prevItem.InventoryTab == InventoryTab.Gear)
             {
                 DecreaseStats(session, prevItem);
+                session.Player.UpdateGearScore(prevItem, -prevItem.GearScore);
             }
         }
 
@@ -131,6 +132,7 @@ public class ItemEquipHandler : GamePacketHandler
         if (item.InventoryTab == InventoryTab.Gear)
         {
             IncreaseStats(session, item);
+            session.Player.UpdateGearScore(item, item.GearScore);
         }
     }
 
@@ -154,6 +156,7 @@ public class ItemEquipHandler : GamePacketHandler
             session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.Player.FieldPlayer, unequipItem));
 
             DecreaseStats(session, unequipItem);
+            session.Player.UpdateGearScore(unequipItem, -unequipItem.GearScore);
             return;
         }
 
@@ -179,14 +182,26 @@ public class ItemEquipHandler : GamePacketHandler
     {
         foreach (ItemStat stat in item.Stats.Constants)
         {
+            if (stat.ItemAttribute > (StatAttribute) 11000)
+            {
+                continue;
+            }
             session.Player.Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat + (int) stat.Rate);
         }
         foreach (ItemStat stat in item.Stats.Statics)
         {
+            if (stat.ItemAttribute > (StatAttribute) 11000)
+            {
+                continue;
+            }
             session.Player.Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat + (int) stat.Rate);
         }
         foreach (ItemStat stat in item.Stats.Randoms)
         {
+            if (stat.ItemAttribute > (StatAttribute) 11000)
+            {
+                continue;
+            }
             session.Player.Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat + (int) stat.Rate);
         }
 

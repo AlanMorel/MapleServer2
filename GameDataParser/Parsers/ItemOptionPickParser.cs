@@ -1,7 +1,6 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
-using Maple2.File.Parser.Xml.Npc;
 using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 
@@ -28,12 +27,13 @@ public class ItemOptionPickParser : Exporter<List<ItemOptionPickMetadata>>
             foreach (XmlNode node in nodeList)
             {
                 int id = int.Parse(node.Attributes["optionPickID"].Value);
-                
+
                 ItemOptionPick optionPick = new()
                 {
                     Rarity = byte.Parse(node.Attributes["itemGrade"].Value)
                 };
 
+                //TODO: Add support for constant rates, random values, and random rates
                 List<string> constants = node.Attributes["constant_value"].Value.Split(",").ToList();
                 List<string> staticValues = node.Attributes["static_value"].Value.Split(",").ToList();
                 List<string> staticRates = node.Attributes["static_rate"].Value.Split(",").ToList();
