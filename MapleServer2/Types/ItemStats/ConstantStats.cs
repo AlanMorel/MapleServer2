@@ -8,7 +8,7 @@ namespace MapleServer2.Types;
 
 public static class ConstantStats
 {
-    public static void GetStats(Item item, int optionId, float optionLevelFactor, float globalOptionLevelFactor, out List<ItemStat> constantStats)
+    public static void GetStats(Item item, int optionId, float optionLevelFactor, float globalOptionLevelFactor, out Dictionary<StatAttribute, ItemStat> constantStats)
     {
         constantStats = new();
         int constantId = ItemMetadataStorage.GetOptionConstant(item.Id);
@@ -21,11 +21,11 @@ public static class ConstantStats
 
         foreach (ParserStat stat in basicOptions.Stats)
         {
-            constantStats.Add(new BasicStat(stat));
+            constantStats[stat.Attribute] = new BasicStat(stat);
         }
         foreach (ParserSpecialStat stat in basicOptions.SpecialStats)
         {
-            constantStats.Add(new SpecialStat(stat));
+            constantStats[stat.Attribute] = new SpecialStat(stat);
         }
 
         // TODO: Implement Hidden ndd (defense) and wapmax (Max Weapon Attack)
@@ -36,7 +36,7 @@ public static class ConstantStats
         }
     }
 
-    private static void GetDefault(Item item, List<ItemStat> normalStats, int optionId, float optionLevelFactor, float globalOptionLevelFactor)
+    private static void GetDefault(Item item, Dictionary<StatAttribute, ItemStat> constantStats, int optionId, float optionLevelFactor, float globalOptionLevelFactor)
     {
         ItemOptionPick baseOptions = ItemOptionPickMetadataStorage.GetMetadata(optionId, item.Rarity);
         if (baseOptions is null)
@@ -91,13 +91,12 @@ public static class ConstantStats
                     continue;
             }
 
-            ItemStat normalStat = normalStats.FirstOrDefault(x => x.ItemAttribute == constantPick.Stat);
-            if (normalStat is null)
+            if (!constantStats.ContainsKey(constantPick.Stat))
             {
-                normalStat = new BasicStat(constantPick.Stat, 0, StatAttributeType.Flat);
+                constantStats[constantPick.Stat] = new BasicStat(constantPick.Stat, 0, StatAttributeType.Flat);
             }
 
-            float statValue = normalStat.GetValue();
+            float statValue = constantStats[constantPick.Stat].GetValue();
             DynValue result = scriptLoader.Call(calcScript, statValue, constantPick.DeviationValue, (int) item.Type,
                 (int) item.RecommendJobs.First(), optionLevelFactor, item.Rarity, globalOptionLevelFactor);
 
@@ -106,16 +105,7 @@ public static class ConstantStats
                 continue;
             }
 
-            normalStat.SetValue((float) result.Number);
-
-            int statIndex = normalStats.FindIndex(x => x.ItemAttribute == normalStat.ItemAttribute);
-            if (statIndex == -1)
-            {
-                normalStats.Add(normalStat);
-                continue;
-            }
-
-            normalStats[statIndex] = normalStat;
+            constantStats[constantPick.Stat].SetValue((float) result.Number);
         }
     }
 }

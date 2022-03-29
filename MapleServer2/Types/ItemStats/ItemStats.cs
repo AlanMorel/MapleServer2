@@ -63,7 +63,7 @@ public class SpecialStat : ItemStat
     public SpecialStat() { }
     public SpecialStat(StatAttribute attribute, float value, StatAttributeType type) : base(attribute, type, value) { }
 
-    public SpecialStat(ParserSpecialStat parsedStat) : base(parsedStat.Id, parsedStat.AttributeType, parsedStat.Value) { }
+    public SpecialStat(ParserSpecialStat parsedStat) : base(parsedStat.Attribute, parsedStat.AttributeType, parsedStat.Value) { }
 }
 
 public class Gemstone
@@ -83,9 +83,9 @@ public class GemSocket
 
 public class ItemStats
 {
-    public List<ItemStat> Constants;
-    public List<ItemStat> Statics;
-    public List<ItemStat> Randoms;
+    public Dictionary<StatAttribute, ItemStat> Constants;
+    public Dictionary<StatAttribute, ItemStat> Statics;
+    public Dictionary<StatAttribute, ItemStat> Randoms;
     public List<GemSocket> GemSockets;
 
     public ItemStats() { }
@@ -118,11 +118,11 @@ public class ItemStats
         float optionLevelFactor = ItemMetadataStorage.GetOptionLevelFactor(item.Id);
         float globalOptionLevelFactor = ItemMetadataStorage.GetGlobalOptionLevelFactor(item.Id);
 
-        ConstantStats.GetStats(item, optionId, optionLevelFactor, globalOptionLevelFactor, out List<ItemStat> constantStats);
+        ConstantStats.GetStats(item, optionId, optionLevelFactor, globalOptionLevelFactor, out Dictionary<StatAttribute, ItemStat> constantStats);
         Constants = constantStats;
-        StaticStats.GetStats(item, optionId, optionLevelFactor, globalOptionLevelFactor, out List<ItemStat> staticStats);
+        StaticStats.GetStats(item, optionId, optionLevelFactor, globalOptionLevelFactor, out Dictionary<StatAttribute, ItemStat> staticStats);
         Statics = staticStats;
-        RandomStats.GetStats(item, out List<ItemStat> randomStats);
+        RandomStats.GetStats(item, out Dictionary<StatAttribute, ItemStat> randomStats);
         Randoms = randomStats;
         if (optionLevelFactor >= 50 && item.Rarity >= 3)
         {

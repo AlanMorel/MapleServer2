@@ -1,4 +1,5 @@
-﻿using MapleServer2.Database;
+﻿using Maple2Storage.Enums;
+using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Types;
@@ -83,12 +84,23 @@ public class BlackMarketManager
             bool containsAll = true;
             foreach (ItemStat searchedStat in searchedStats)
             {
-                if (!item.Stats.Constants.Any(x => x.ItemAttribute == searchedStat.ItemAttribute && x.Flat >= searchedStat.Flat && x.Rate >= searchedStat.Rate) &&
-                    !item.Stats.Statics.Any(x => x.ItemAttribute == searchedStat.ItemAttribute && x.Flat >= searchedStat.Flat && x.Rate >= searchedStat.Rate) &&
-                    !item.Stats.Randoms.Any(x => x.ItemAttribute == searchedStat.ItemAttribute && x.Flat >= searchedStat.Flat && x.Rate >= searchedStat.Rate))
+                ICollection<Dictionary<StatAttribute, ItemStat>> stats = new List<Dictionary<StatAttribute, ItemStat>>();
+                stats.Add(item.Stats.Constants);
+                stats.Add(item.Stats.Statics);
+                stats.Add(item.Stats.Randoms);
+                foreach (Dictionary<StatAttribute, ItemStat> statCollection in stats)
                 {
-                    containsAll = false;
-                    break;
+                    if (!statCollection.ContainsKey(searchedStat.ItemAttribute))
+                    {
+                        containsAll = false;
+                        break;
+                    }
+                    if (statCollection[searchedStat.ItemAttribute].Flat < searchedStat.Flat && 
+                        statCollection[searchedStat.ItemAttribute].Rate < searchedStat.Rate)
+                    {
+                        containsAll = false;
+                        break;
+                    }
                 }
             }
 

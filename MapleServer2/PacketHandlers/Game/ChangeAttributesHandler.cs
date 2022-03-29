@@ -137,15 +137,16 @@ public class ChangeAttributesHandler : GamePacketHandler
         // Get random stats except stat that is locked
         List<ItemStat> randomList = RandomStats.RollBonusStatsWithStatLocked(newItem, lockStatId, isSpecialStat);
 
+        Dictionary<StatAttribute, ItemStat> newRandoms = new(newItem.Stats.Randoms);
         for (int i = 0; i < newItem.Stats.Randoms.Count; i++)
         {
+            ItemStat stat = newRandoms.ElementAt(i).Value;
             // Check if BonusStats[i] is BasicStat and isSpecialStat is false
             // Check if BonusStats[i] is SpecialStat and isSpecialStat is true
-            switch (newItem.Stats.Randoms[i])
+            switch (stat)
             {
                 case BasicStat when !isSpecialStat:
                 case SpecialStat when isSpecialStat:
-                    ItemStat stat = newItem.Stats.Randoms[i];
                     switch (stat)
                     {
                         case SpecialStat ns when ns.ItemAttribute == (StatAttribute) lockStatId:
@@ -155,8 +156,11 @@ public class ChangeAttributesHandler : GamePacketHandler
                     break;
             }
 
-            newItem.Stats.Randoms[i] = randomList[i];
+            newRandoms.Remove(stat.ItemAttribute);
+            
+            newRandoms[stat.ItemAttribute] = randomList[i];
         }
+        newItem.Stats.Randoms = newRandoms;
 
         // Consume materials from inventory
         ConsumeMaterials(session, greenCrystalCost, metacellCosts, crystalFragmentsCosts, greenCrystals, metacells, crystalFragments);

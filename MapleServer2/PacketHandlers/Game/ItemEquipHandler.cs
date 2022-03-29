@@ -180,7 +180,7 @@ public class ItemEquipHandler : GamePacketHandler
 
     private static void DecreaseStats(GameSession session, Item item)
     {
-        foreach (ItemStat stat in item.Stats.Constants)
+        foreach (ItemStat stat in item.Stats.Constants.Values)
         {
             if (stat.ItemAttribute > (StatAttribute) 11000)
             {
@@ -188,7 +188,7 @@ public class ItemEquipHandler : GamePacketHandler
             }
             session.Player.Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat + (int) stat.Rate);
         }
-        foreach (ItemStat stat in item.Stats.Statics)
+        foreach (ItemStat stat in item.Stats.Statics.Values)
         {
             if (stat.ItemAttribute > (StatAttribute) 11000)
             {
@@ -196,7 +196,7 @@ public class ItemEquipHandler : GamePacketHandler
             }
             session.Player.Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat + (int) stat.Rate);
         }
-        foreach (ItemStat stat in item.Stats.Randoms)
+        foreach (ItemStat stat in item.Stats.Randoms.Values)
         {
             if (stat.ItemAttribute > (StatAttribute) 11000)
             {
@@ -210,15 +210,15 @@ public class ItemEquipHandler : GamePacketHandler
 
     private static void IncreaseStats(GameSession session, Item item)
     {
-        foreach (ItemStat stat in item.Stats.Constants)
+        foreach (ItemStat stat in item.Stats.Constants.Values)
         {
             session.Player.Stats[stat.ItemAttribute].IncreaseBase(stat.Flat + (int) stat.Rate);
         }
-        foreach (ItemStat stat in item.Stats.Statics)
+        foreach (ItemStat stat in item.Stats.Statics.Values)
         {
             session.Player.Stats[stat.ItemAttribute].IncreaseBase(stat.Flat + (int) stat.Rate);
         }
-        foreach (ItemStat stat in item.Stats.Randoms)
+        foreach (ItemStat stat in item.Stats.Randoms.Values)
         {
             session.Player.Stats[stat.ItemAttribute].IncreaseBase(stat.Flat + (int) stat.Rate);
         }

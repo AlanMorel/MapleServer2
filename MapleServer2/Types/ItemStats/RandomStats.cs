@@ -6,7 +6,7 @@ namespace MapleServer2.Types;
 
 public static class RandomStats
 {
-    public static void GetStats(Item item, out List<ItemStat> randomStats)
+    public static void GetStats(Item item, out Dictionary<StatAttribute, ItemStat> randomStats)
     {
         randomStats = new();
         int randomId = ItemMetadataStorage.GetOptionRandom(item.Id);
@@ -23,7 +23,10 @@ public static class RandomStats
         IEnumerable<ItemStat> itemStats = RollStats(randomOptions, item.Id);
         List<ItemStat> selectedStats = itemStats.OrderBy(x => random.Next()).Take(slots).ToList();
 
-        randomStats.AddRange(selectedStats);
+        foreach (ItemStat stat in selectedStats)
+        {
+            randomStats[stat.ItemAttribute] = stat;
+        }
     }
     public static IEnumerable<ItemStat> RollStats(ItemOptionRandom randomOptions, int itemId)
     {
@@ -49,12 +52,12 @@ public static class RandomStats
         foreach (ParserSpecialStat stat in randomOptions.SpecialStats)
         {
             Dictionary<StatAttribute, List<ParserSpecialStat>> rangeDictionary = GetSpecialRange(itemId);
-            if (!rangeDictionary.ContainsKey(stat.Id))
+            if (!rangeDictionary.ContainsKey(stat.Attribute))
             {
                 continue;
             }
 
-            SpecialStat specialStat = new(rangeDictionary[stat.Id][Roll(itemId)]);
+            SpecialStat specialStat = new(rangeDictionary[stat.Attribute][Roll(itemId)]);
             if (randomOptions.MultiplyFactor > 0)
             {
                 specialStat.Flat *= (int) Math.Ceiling(randomOptions.MultiplyFactor);
@@ -81,7 +84,7 @@ public static class RandomStats
         List<ItemStat> itemStats = new();
 
         List<ParserStat> attributes = isSpecialStat ? randomOptions.Stats : randomOptions.Stats.Where(x => (short) x.Attribute != ignoreStat).ToList();
-        List<ParserSpecialStat> specialAttributes = isSpecialStat ? randomOptions.SpecialStats.Where(x => (short) x.Id != ignoreStat).ToList() : randomOptions.SpecialStats;
+        List<ParserSpecialStat> specialAttributes = isSpecialStat ? randomOptions.SpecialStats.Where(x => (short) x.Attribute != ignoreStat).ToList() : randomOptions.SpecialStats;
 
         foreach (ParserStat attribute in attributes)
         {
@@ -103,12 +106,12 @@ public static class RandomStats
         foreach (ParserSpecialStat attribute in specialAttributes)
         {
             Dictionary<StatAttribute, List<ParserSpecialStat>> dictionary = GetSpecialRange(item.Id);
-            if (!dictionary.ContainsKey(attribute.Id))
+            if (!dictionary.ContainsKey(attribute.Attribute))
             {
                 continue;
             }
 
-            SpecialStat specialStat = new(dictionary[attribute.Id][Roll(id)]);
+            SpecialStat specialStat = new(dictionary[attribute.Attribute][Roll(id)]);
             if (randomOptions.MultiplyFactor > 0)
             {
                 specialStat.Flat *= (int) Math.Ceiling(randomOptions.MultiplyFactor);
@@ -121,15 +124,15 @@ public static class RandomStats
     }
 
     // Roll new values for existing bonus stats
-    public static List<ItemStat> RollNewBonusValues(Item item, short ignoreStat, bool isSpecialStat)
+    public static Dictionary<StatAttribute, ItemStat> RollNewBonusValues(Item item, short ignoreStat, bool isSpecialStat)
     {
-        List<ItemStat> newBonus = new();
+        Dictionary<StatAttribute, ItemStat> newBonus = new();
 
-        foreach (BasicStat stat in item.Stats.Randoms.OfType<BasicStat>())
+        foreach (BasicStat stat in item.Stats.Randoms.Values.OfType<BasicStat>())
         {
             if (!isSpecialStat && (short) stat.ItemAttribute == ignoreStat)
             {
-                newBonus.Add(stat);
+                newBonus[stat.ItemAttribute] = stat;
                 continue;
             }
 
@@ -138,14 +141,14 @@ public static class RandomStats
             {
                 continue;
             }
-            newBonus.Add(new BasicStat(dictionary[stat.ItemAttribute][Roll(item.Level)]));
+            newBonus[stat.ItemAttribute] = new BasicStat(dictionary[stat.ItemAttribute][Roll(item.Level)]);
         }
 
         foreach (SpecialStat stat in item.Stats.Randoms.OfType<SpecialStat>())
         {
             if (isSpecialStat && (short) stat.ItemAttribute == ignoreStat)
             {
-                newBonus.Add(stat);
+                newBonus[stat.ItemAttribute] = stat;
                 continue;
             }
 
@@ -154,7 +157,7 @@ public static class RandomStats
             {
                 continue;
             }
-            newBonus.Add(new SpecialStat(dictionary[stat.ItemAttribute][Roll(item.Level)]));
+            newBonus[stat.ItemAttribute] = new SpecialStat(dictionary[stat.ItemAttribute][Roll(item.Level)]);
         }
 
         return newBonus;

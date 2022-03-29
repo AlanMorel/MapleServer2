@@ -8,7 +8,7 @@ namespace MapleServer2.Types;
 
 public static class StaticStats
 {
-    public static void GetStats(Item item, int optionId, float optionLevelFactor, float globalOptionLevelFactor, out List<ItemStat> staticStats)
+    public static void GetStats(Item item, int optionId, float optionLevelFactor, float globalOptionLevelFactor, out Dictionary<StatAttribute, ItemStat> staticStats)
     {
         staticStats = new();
         if (optionLevelFactor < 50)
@@ -26,11 +26,11 @@ public static class StaticStats
 
         foreach (ParserStat stat in staticOptions.Stats)
         {
-            staticStats.Add(new BasicStat(stat));
+            staticStats[stat.Attribute] = new BasicStat(stat);
         }
         foreach (ParserSpecialStat stat in staticOptions.SpecialStats)
         {
-            staticStats.Add(new SpecialStat(stat));
+            staticStats[stat.Attribute] = new SpecialStat(stat);
         }
 
         // TODO: Implement Hidden ndd (defense) and wapmax (Max Weapon Attack)
@@ -38,7 +38,7 @@ public static class StaticStats
         GetDefault(item, staticStats, optionId, optionLevelFactor, globalOptionLevelFactor);
     }
 
-    private static void GetDefault(Item item, List<ItemStat> stats, int optionId, float optionLevelFactor, float globalOptionLevelFactor)
+    private static void GetDefault(Item item, Dictionary<StatAttribute, ItemStat> stats, int optionId, float optionLevelFactor, float globalOptionLevelFactor)
     {
         ItemOptionPick baseOptions = ItemOptionPickMetadataStorage.GetMetadata(optionId, item.Rarity);
         if (baseOptions is null)
@@ -47,57 +47,34 @@ public static class StaticStats
         }
 
         ScriptLoader scriptLoader = new("Functions/calcItemValues");
-        float currentStatValue = 0;
-        ItemStat stat = null;
-        int statIndex = -1;
         foreach (StaticPick staticPickFlat in baseOptions.StaticValues)
         {
-            stat = stats.FirstOrDefault(x => x.ItemAttribute == staticPickFlat.Stat);
-            if (stat?.ItemAttribute == StatAttribute.MaxWeaponAtk && stat?.Flat != 0)
-            {
-                continue;
-            }
-            if (stat is null)
-            {
-                stat = new BasicStat(staticPickFlat.Stat, 0, StatAttributeType.Flat);
-                stats.Add(stat);
-            }
-            statIndex = stats.FindIndex(x => x.ItemAttribute == staticPickFlat.Stat);
-            currentStatValue = stat.GetValue();
-
-            double statValue = CalculateStat(item, optionLevelFactor, globalOptionLevelFactor, staticPickFlat, scriptLoader, currentStatValue);
-            if (statValue == 0)
-            {
-                continue;
-            }
-
-            stat.SetValue((int) statValue);
-
-            stats[statIndex] = stat;
+            SetStat(stats, staticPickFlat, item, scriptLoader, optionLevelFactor, globalOptionLevelFactor);
         }
 
         foreach (StaticPick staticPickRate in baseOptions.StaticRates)
         {
-            stat = stats.FirstOrDefault(x => x.ItemAttribute == staticPickRate.Stat);
-            if (stat is null)
-            {
-                stat = new BasicStat(staticPickRate.Stat, 0, StatAttributeType.Rate);
-                stats.Add(stat);
-            }
-            statIndex = stats.FindIndex(x => x.ItemAttribute == staticPickRate.Stat);
-            currentStatValue = stat.GetValue();
-
-            double statValue = CalculateStat(item, optionLevelFactor, globalOptionLevelFactor, staticPickRate, scriptLoader, currentStatValue);
-            if (statValue == 0)
-            {
-                continue;
-            }
-
-            stat.SetValue((float) statValue);
-
-            stats[statIndex] = stat;
+            SetStat(stats, staticPickRate, item, scriptLoader, optionLevelFactor, globalOptionLevelFactor);
         }
     }
+
+    private static void SetStat(Dictionary<StatAttribute, ItemStat> stats, StaticPick staticPick, Item item, ScriptLoader scriptLoader, float optionLevelFactor, float globalOptionLevelFactor)
+    {
+        if (!stats.ContainsKey(staticPick.Stat))
+        {
+            stats[staticPick.Stat] = new BasicStat(staticPick.Stat, 0, StatAttributeType.Flat);
+        }
+        float currentStatValue = stats[staticPick.Stat].GetValue();
+
+        double statValue = CalculateStat(item, optionLevelFactor, globalOptionLevelFactor, staticPick, scriptLoader, currentStatValue);
+        if (statValue == 0)
+        {
+            return;
+        }
+
+        stats[staticPick.Stat].SetValue((float) statValue);
+    }
+
     private static double CalculateStat(Item item, float optionLevelFactor, float globalOptionLevelFactor, StaticPick staticPick, ScriptLoader scriptLoader, float currentStatValue)
     {
 

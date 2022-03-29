@@ -43,7 +43,7 @@ public class ParserStat
 public class ParserSpecialStat
 {
     [XmlElement(Order = 1)]
-    public StatAttribute Id;
+    public StatAttribute Attribute;
     [XmlElement(Order = 2)]
     public float Value;
     [XmlElement(Order = 3)]
@@ -51,14 +51,14 @@ public class ParserSpecialStat
 
     public ParserSpecialStat() { }
 
-    public ParserSpecialStat(StatAttribute id, float value, StatAttributeType type)
+    public ParserSpecialStat(StatAttribute attribute, float value, StatAttributeType type)
     {
-        Id = id;
+        Attribute = attribute;
         Value = value;
     }
 
     public override string ToString()
     {
-        return $"Id: {Id}, Value: {Value}";
+        return $"Id: {Attribute}, Value: {Value}";
     }
 }
