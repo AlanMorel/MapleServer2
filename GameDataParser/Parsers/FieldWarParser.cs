@@ -14,7 +14,7 @@ public class FieldWarParser : Exporter<List<FieldWarMetadata>>
         List<FieldWarMetadata> fieldWar = new();
         PackFileEntry fieldWarData = Resources.XmlReader.Files.FirstOrDefault(x => x.Name.StartsWith("table/fieldwardata"));
 
-        if (fieldWarData != null)
+        if (fieldWarData is null)
         {
             throw new FileNotFoundException("Could not find table fieldwardata.xml");
         }
