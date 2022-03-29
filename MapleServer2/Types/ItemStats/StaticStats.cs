@@ -127,7 +127,6 @@ public static class StaticStats
         }
 
         // Get random between min and max values
-        double statValue = random.NextDouble() * (result.Tuple[1].Number - result.Tuple[0].Number) + result.Tuple[0].Number;
-        return statValue;
+        return random.NextDouble() * (result.Tuple[1].Number - result.Tuple[0].Number) + result.Tuple[0].Number;;
     }
 }

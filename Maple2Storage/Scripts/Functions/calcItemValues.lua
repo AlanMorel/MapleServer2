@@ -1402,8 +1402,8 @@ function static_value_addndd(currentStatValue, deviationValue, itemSlot, itemJob
     end
     do
         if itemSlot == Belt then
-            maxAddNddValue = math.max(round((baseNddValue) * ArmorConstantSlotCoefficient[itemSlot] * ArmorConstantJobCoefficient[JC_Global] * StaticArmorRarityCoefficient[rarity], 0), 4) * itemRarityFactor
-            minAddNddValue = math.max(round((baseNddValue) * ArmorConstantSlotCoefficient[itemSlot] * ArmorConstantJobCoefficient[JC_Global] * StaticArmorRarityCoefficient[4], 0), 4) * rarityFactor
+            maxAddNddValue = math.max(round((baseNddValue) * ArmorConstantSlotCoefficient[itemSlot] * ArmorConstantJobCoefficient[GlobalJob] * StaticArmorRarityCoefficient[rarity], 0), 4) * itemRarityFactor
+            minAddNddValue = math.max(round((baseNddValue) * ArmorConstantSlotCoefficient[itemSlot] * ArmorConstantJobCoefficient[GlobalJob] * StaticArmorRarityCoefficient[4], 0), 4) * rarityFactor
         else
             do
                 if itemSlot == Earring or itemSlot == Cape or itemSlot == Necklace or itemSlot == Ring then
@@ -1430,6 +1430,7 @@ function static_value_addndd(currentStatValue, deviationValue, itemSlot, itemJob
 end
 
 function static_value_ndd(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
+    globalOptionLevelFactor = optionLevelFactor
     local l_22_8 = 0
     local l_22_9 = 0
     local l_22_10 = 0
