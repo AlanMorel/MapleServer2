@@ -663,13 +663,13 @@ public class Stats
         return (strIncrease, dexIncrease, intIncrease, lukIncrease, hpIncrease);
     }
 
-    public void AddBaseStats(Player player)
+    public void AddBaseStats(Player player, int repeat = 1)
     {
         (int strIncrease, int dexIncrease, int intIncrease, int lukIncrease, int hpIncrease) = GetJobStatIncrease(player);
-        Data[StatId.Str].IncreaseBase(strIncrease);
-        Data[StatId.Dex].IncreaseBase(dexIncrease);
-        Data[StatId.Int].IncreaseBase(intIncrease);
-        Data[StatId.Luk].IncreaseBase(lukIncrease);
-        Data[StatId.Hp].IncreaseBase(hpIncrease);
+        Data[StatId.Str].IncreaseBase(strIncrease * repeat);
+        Data[StatId.Dex].IncreaseBase(dexIncrease * repeat);
+        Data[StatId.Int].IncreaseBase(intIncrease * repeat);
+        Data[StatId.Luk].IncreaseBase(lukIncrease * repeat);
+        Data[StatId.Hp].IncreaseBase(hpIncrease * repeat);
     }
 }
