@@ -2,6 +2,8 @@
 using Maple2Storage.Types;
 using MapleWebServer.Endpoints;
 using Serilog;
+using Serilog.Templates;
+using Serilog.Templates.Themes;
 
 string dotenv = Path.Combine(Paths.SOLUTION_DIR, ".env");
 if (!File.Exists(dotenv))
@@ -12,10 +14,14 @@ if (!File.Exists(dotenv))
 DotEnv.Load(dotenv);
 
 Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console(outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
-    .WriteTo.File("logs/WebServerLogs.txt",
+    .MinimumLevel.Debug()
+    .WriteTo.Console(new ExpressionTemplate(
+        "[{@t:HH:mm:ss}] [{@l:u3}]" +
+        "{#if SourceContext is not null} {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1),-15}:{#end} {@m}\n{@x}",
+        theme: TemplateTheme.Literate))
+    .WriteTo.File($"{Paths.SOLUTION_DIR}/Logs/MapleWebServer/LOG-.txt",
         rollingInterval: RollingInterval.Day,
-        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+        outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss}] [{Level}] {SourceContext:l}: {Message:lj}{NewLine}{Exception}")
     .CreateLogger();
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);

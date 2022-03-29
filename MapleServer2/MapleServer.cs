@@ -28,11 +28,11 @@ public static class MapleServer
         // Setup Serilog
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()
-            .WriteTo.Console(
-                new ExpressionTemplate("[{@t:HH:mm:ss}] [{@l:u3}]" +
-                    "{#if SourceContext is not null} {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1),-15}:{#end}" +
-                    " {@m:lj}\n{@x}", theme: TemplateTheme.Literate))
-            .WriteTo.File("logs/logs.txt",
+            .WriteTo.Console(new ExpressionTemplate(
+                "[{@t:HH:mm:ss}] [{@l:u3}]" +
+                "{#if SourceContext is not null} {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1),-15}:{#end} {@m}\n{@x}",
+                theme: TemplateTheme.Literate))
+            .WriteTo.File($"{Paths.SOLUTION_DIR}/Logs/MapleServer2/LOG-.txt",
                 rollingInterval: RollingInterval.Day,
                 outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss}] [{Level}] {SourceContext:l}: {Message:lj}{NewLine}{Exception}")
             .CreateLogger();
@@ -215,7 +215,7 @@ public static class MapleServer
     {
         SaveAll();
         Exception e = (Exception) args.ExceptionObject;
-        _logger.Fatal("Exception Type: {type}\nMessage: {message}\nStack Trace: {stackTrace}\n", 
+        _logger.Fatal("Exception Type: {type}\nMessage: {message}\nStack Trace: {stackTrace}\n",
             e.GetType(), e.Message, e.StackTrace);
     }
 
