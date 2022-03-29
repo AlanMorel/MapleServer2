@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Maple2.PathEngine;
 using Maple2.Trigger;
 using Maple2.Trigger.Enum;
 using Maple2Storage.Enums;
@@ -20,7 +21,7 @@ namespace MapleServer2.Managers;
 // TODO: This needs to be thread safe
 // TODO: FieldManager probably needs its own thread to send updates about user position
 // This seems to be done every ~2s rather than on every update.
-public partial class FieldManager
+public partial class FieldManager : IDisposable
 {
     private readonly ILogger Logger = LogManager.GetCurrentClassLogger();
 
@@ -39,17 +40,26 @@ public partial class FieldManager
     private Task MapLoopTask;
     private Task TriggerTask;
     private static readonly TriggerLoader TriggerLoader = new();
+    private readonly FieldNavigator Navigator;
+    private readonly CancellationTokenSource CancellationToken = new();
 
     #region Constructors
 
     public FieldManager(Player player)
     {
         MapId = player.MapId;
-        Capacity = MapMetadataStorage.GetMetadata(MapId).Property.Capacity;
+
+        MapMetadata metadata = MapMetadataStorage.GetMetadata(MapId);
+
+        Capacity = metadata.Property.Capacity;
+        Navigator = new(metadata.XBlockName);
+
+        BoundingBox = MapEntityMetadataStorage.GetBoundingBox(MapId);
 
         // Capacity 0 means solo instances
         if (Capacity == 0)
         {
+            // Set instance id to player id so it's unique
             InstanceId = player.CharacterId;
             player.InstanceId = player.CharacterId;
         }
@@ -58,22 +68,13 @@ public partial class FieldManager
             InstanceId = player.InstanceId;
         }
 
-        BoundingBox = MapEntityMetadataStorage.GetBoundingBox(MapId);
-
-        // TODO: generate navmeshes for all maps
-
         // Load triggers
-        MapMetadata mapMetadata = MapMetadataStorage.GetMetadata(MapId);
-        if (mapMetadata != null)
+        Triggers = TriggerLoader.GetTriggers(metadata.XBlockName).Select(initializer =>
         {
-            string xBlockName = mapMetadata.XBlockName;
-            Triggers = TriggerLoader.GetTriggers(xBlockName).Select(initializer =>
-            {
-                TriggerContext context = new(this, Logger);
-                TriggerState startState = initializer.Invoke(context);
-                return new TriggerScript(context, startState);
-            }).ToArray();
-        }
+            TriggerContext context = new(this, Logger);
+            TriggerState startState = initializer.Invoke(context);
+            return new TriggerScript(context, startState);
+        }).ToArray();
 
         // Add entities to state from MapEntityStorage
         AddEntitiesToState();
@@ -134,6 +135,8 @@ public partial class FieldManager
         Npc npc = WrapNpc(npcId);
         npc.Coord = coord;
         npc.Rotation = rotation;
+        npc.Agent = Navigator.AddAgent(npc, Navigator.AddShape(meta.NpcMetadataCapsule));
+
         if (animation != default)
         {
             npc.Animation = animation;
@@ -148,6 +151,9 @@ public partial class FieldManager
         Mob mob = WrapMob(mobId);
         mob.Coord = coord;
         mob.Rotation = rotation;
+        mob.Agent = Navigator.AddAgent(mob, Navigator.AddShape(mob.Value.NpcMetadataCapsule));
+        mob.Navigator = Navigator;
+
         if (animation != default)
         {
             mob.Animation = animation;
@@ -157,18 +163,26 @@ public partial class FieldManager
         return mob;
     }
 
-    public IFieldActor<NpcMetadata> RequestMob(int mobId, IFieldObject<MobSpawn> spawnPoint, CoordF coord = default, CoordF rotation = default,
-        short animation = default)
+    public IFieldActor<NpcMetadata> RequestMob(int mobId, IFieldObject<MobSpawn> spawnPoint)
     {
         Mob mob = WrapMob(mobId);
         mob.OriginSpawn = spawnPoint;
-        mob.Coord = coord;
-        mob.Rotation = rotation;
-        if (animation != default)
+
+        Shape shape = Navigator.AddShape(mob.Value.NpcMetadataCapsule);
+        CoordS? randomPositionAround = Navigator.FindClosestUnobstructedCoordS(shape, spawnPoint.Coord, spawnPoint.Value.SpawnRadius);
+        if (randomPositionAround is null)
         {
-            mob.Animation = animation;
+            Logger.Error("Could not find a random position around spawn point {0}", spawnPoint.Coord);
+            return null;
         }
 
+        mob.Coord = randomPositionAround.Value.ToFloat();
+        mob.Rotation = default;
+        mob.Animation = default;
+        mob.Agent = Navigator.AddAgent(mob, shape);
+        mob.Navigator = Navigator;
+
+        mob.OriginSpawn.Value.Mobs.Add(mob);
         AddMob(mob);
         return mob;
     }
@@ -400,12 +414,13 @@ public partial class FieldManager
             session.Send(FieldNpcPacket.RemoveNpc(fieldNpc));
             session.Send(FieldObjectPacket.RemoveNpc(fieldNpc));
         });
+
+        fieldNpc.Dispose();
         return true;
     }
 
     private void AddMob(Mob fieldMob)
     {
-        fieldMob.OriginSpawn?.Value.Mobs.Add(fieldMob);
         State.AddMob(fieldMob);
 
         Broadcast(session =>
@@ -442,6 +457,8 @@ public partial class FieldManager
             session.Send(FieldNpcPacket.RemoveNpc(mob));
             session.Send(FieldObjectPacket.RemoveMob(mob));
         });
+
+        mob.Dispose();
         return true;
     }
 
@@ -670,8 +687,6 @@ public partial class FieldManager
 
     private void SpawnMobs(IFieldObject<MobSpawn> mobSpawn)
     {
-        List<CoordF> spawnPoints = MobSpawn.SelectPoints(mobSpawn.Value.SpawnRadius);
-
         foreach (NpcMetadata mob in mobSpawn.Value.SpawnMobs)
         {
             if (mob.Name == "Constructor Type 13")
@@ -687,8 +702,7 @@ public partial class FieldManager
 
             for (int i = 0; i < groupSpawnCount; i++)
             {
-                CoordF spawnCoord = mobSpawn.Coord + spawnPoints[mobSpawn.Value.Mobs.Count % spawnPoints.Count];
-                IFieldActor<NpcMetadata> fieldMob = RequestMob(mob.Id, mobSpawn, spawnCoord);
+                RequestMob(mob.Id, mobSpawn);
             }
         }
     }
@@ -969,18 +983,19 @@ public partial class FieldManager
 
     private Task StartMapLoop()
     {
+        CancellationToken ct = CancellationToken.Token;
         return Task.Run(async () =>
         {
             while (!State.Players.IsEmpty)
             {
                 UpdatePhysics();
                 UpdateEvents();
-                HealingSpot();
                 UpdateObjects();
+                HealingSpot();
                 SendUpdates();
-                await Task.Delay(1000);
+                await Task.Delay(1000, ct);
             }
-        });
+        }, ct);
     }
 
     private void SendUpdates()
@@ -1090,6 +1105,7 @@ public partial class FieldManager
 
     private Task StartTriggerTask()
     {
+        CancellationToken ct = CancellationToken.Token;
         return Task.Run(async () =>
         {
             while (!State.Players.IsEmpty)
@@ -1111,9 +1127,9 @@ public partial class FieldManager
                     }
                 }
 
-                await Task.Delay(200);
+                await Task.Delay(200, ct);
             }
-        });
+        }, ct);
     }
 
     private Task StartSpawnTimer(IFieldObject<MobSpawn> mobSpawn)
@@ -1140,7 +1156,6 @@ public partial class FieldManager
 
         public virtual CoordF Coord { get; set; }
         public CoordF Rotation { get; set; }
-
         public short LookDirection
         {
             get => (short) (Rotation.Z * 10);
@@ -1170,7 +1185,19 @@ public partial class FieldManager
     {
     }
 
-    private abstract partial class FieldActor<T>
+    public void Dispose()
     {
+        CancellationToken.Cancel();
+        Task.WaitAll(MapLoopTask, TriggerTask);
+
+        MapLoopTask?.Dispose();
+        TriggerTask?.Dispose();
+        Navigator?.Dispose();
+        GC.SuppressFinalize(this);
+    }
+
+    ~FieldManager()
+    {
+        Dispose();
     }
 }

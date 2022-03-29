@@ -162,8 +162,8 @@ public enum RecvOp : ushort
     ResponseServerEnter = 0x00B2,
     Wardrobe = 0x00B6,
     SystemInfo = 0x00B7,
+    FieldWar = 0x00B8,
     ChatSticker = 0x00B9,
     FileHash = 0x00BB,
-    Marriage = 0x00BC,
-    WorldChampion = 0x00B8,
+    Marriage = 0x00BC
 }

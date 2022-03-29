@@ -29,7 +29,7 @@ public static class Hash
         File.WriteAllText(hashPath, newHash);
     }
 
-    public static string GetHash(string filename)
+    private static string GetHash(string filename)
     {
         string filepath = $"{Paths.RESOURCES_DIR}/{filename}";
 
@@ -38,13 +38,10 @@ public static class Hash
             return "";
         }
 
-        using (MD5 md5 = MD5.Create())
-        {
-            using (FileStream stream = File.OpenRead(filepath))
-            {
-                byte[] hash = md5.ComputeHash(stream);
-                return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
-            }
-        }
+        using MD5 md5 = MD5.Create();
+        using FileStream stream = File.OpenRead(filepath);
+
+        byte[] hash = md5.ComputeHash(stream);
+        return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
     }
 }

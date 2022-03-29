@@ -2,17 +2,17 @@
 
 public abstract class Exporter<Metadata> : MetadataExporter
 {
-    protected MetadataResources Resources;
+    protected readonly MetadataResources Resources;
 
-    public Exporter(MetadataResources resources, string slug) : base(slug)
+    protected Exporter(MetadataResources resources, string slug) : base(slug)
     {
         Resources = resources;
     }
 
-    protected override void Serialize()
+    protected override bool Serialize()
     {
         Metadata entities = Parse();
-        Write(entities);
+        return Write(entities);
     }
 
     protected abstract Metadata Parse();
