@@ -7,9 +7,11 @@ namespace MapleServer2.Types;
 public class FieldWar
 {
     public int Id;
-    public int PlayerCount;
-    public DateTimeOffset EntryClosureTime;
     public int MapId;
+    public int PlayerCount;
+
+    public DateTimeOffset EntryClosureTime;
+
     public FieldWar(int id)
     {
         Id = id;
