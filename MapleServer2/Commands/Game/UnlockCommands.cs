@@ -34,8 +34,8 @@ public class UnlockAll : InGameCommand
 
         player.Levels.SetLevel(90);
         player.Levels.SetPrestigeLevel(100);
-        player.Wallet.Meso.SetAmount(10000000000); // 10B
-        player.Account.Meret.SetAmount(10000000000); // 10B
+        player.Wallet.Meso.SetAmount(10_000_000_000); // 10B
+        player.Account.Meret.SetAmount(10_000_000_000); // 10B
 
         PremiumClubHandler.ActivatePremium(trigger.Session, 2592000); // 30 days in seconds
 
