@@ -53,7 +53,7 @@ public class KeyTableHandler : GamePacketHandler
         short hotbarId = packet.ReadShort();
         if (!session.Player.GameOptions.TryGetHotbar(hotbarId, out Hotbar targetHotbar))
         {
-            Logger.Warn($"Invalid hotbar id {hotbarId}");
+            Logger.Warning("Invalid hotbar id {hotbarId}", hotbarId);
             return;
         }
 
@@ -81,7 +81,7 @@ public class KeyTableHandler : GamePacketHandler
         short hotbarId = packet.ReadShort();
         if (!session.Player.GameOptions.TryGetHotbar(hotbarId, out Hotbar targetHotbar))
         {
-            Logger.Warn($"Invalid hotbar id {hotbarId}");
+            Logger.Warning("Invalid hotbar id {hotbarId}", hotbarId);
             return;
         }
 
@@ -98,7 +98,7 @@ public class KeyTableHandler : GamePacketHandler
         short hotbarId = packet.ReadShort();
         if (!session.Player.GameOptions.TryGetHotbar(hotbarId, out Hotbar targetHotbar))
         {
-            Logger.Warn($"Invalid hotbar id {hotbarId}");
+            Logger.Warning("Invalid hotbar id {hotbarId}", hotbarId);
             return;
         }
 

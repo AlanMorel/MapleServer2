@@ -56,7 +56,7 @@ public class MasteryHandler : GamePacketHandler
         MasteryMetadata mastery = MasteryMetadataStorage.GetMastery(type);
         if (mastery == null)
         {
-            Logger.Error($"Unknown mastery type {type} from user: {session.Player.Name}");
+            Logger.Error("Unknown mastery type {type} from user: {name}", type, session.Player.Name);
             return;
         }
 
@@ -81,7 +81,7 @@ public class MasteryHandler : GamePacketHandler
         RecipeMetadata recipe = RecipeMetadataStorage.GetRecipe(recipeId);
         if (recipe == null)
         {
-            Logger.Error($"Unknown recipe ID {recipeId} from user: {session.Player.Name}");
+            Logger.Error("Unknown recipe ID {recipeId} from user: {name}", recipeId, session.Player.Name);
             return;
         }
 

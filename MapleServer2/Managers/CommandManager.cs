@@ -1,12 +1,12 @@
 ﻿using System.Reflection;
 using MapleServer2.Commands.Core;
-using NLog;
+using Serilog;
 
 namespace MapleServer2.Managers;
 
 public class CommandManager
 {
-    private readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private readonly ILogger Logger = Log.Logger.ForContext<CommandManager>();
 
     public static Dictionary<string, CommandBase> CommandsByAlias { get; set; }
 
@@ -37,13 +37,13 @@ public class CommandManager
     {
         if (Activator.CreateInstance(commandType) is not CommandBase instanceCommand)
         {
-            Logger.Error($"Cannot create a new instance of {commandType}");
+            Logger.Error("Cannot create a new instance of {commandType}", commandType);
             return;
         }
 
         if (instanceCommand.Aliases == null)
         {
-            Logger.Error($"Cannot register Command {commandType.Name}, Aliases is null");
+            Logger.Error("Cannot register Command {name}, Aliases is null", commandType.Name);
             return;
         }
 
@@ -55,7 +55,7 @@ public class CommandManager
             }
             else
             {
-                Logger.Error($"Found two Commands with Alias \"{alias}\": {command} and {instanceCommand}");
+                Logger.Error("Found two Commands with Alias \"{alias}\": {command} and {instanceCommand}", alias, command, instanceCommand);
             }
         }
     }
@@ -64,7 +64,7 @@ public class CommandManager
     {
         if (trigger == null)
         {
-            Logger.Warn("No CommandTrigger were pass.");
+            Logger.Warning("No CommandTrigger were pass.");
             return false;
         }
 
@@ -75,7 +75,7 @@ public class CommandManager
 
         if (!trigger.DefinedParametersCommand(command))
         {
-            Logger.Info("No Parameters to defined in this command.");
+            Logger.Information("No Parameters to defined in this command.");
             return false;
         }
         command.Execute(trigger);

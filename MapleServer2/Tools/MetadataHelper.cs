@@ -1,17 +1,16 @@
 ﻿using System.Reflection;
-using Maple2Storage.Extensions;
 using Maple2Storage.Tools;
-using NLog;
+using Serilog;
 
 namespace MapleServer2.Tools;
 
 public static class MetadataHelper
 {
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private static readonly ILogger _logger = Log.Logger.ForContext(typeof(MetadataHelper));
 
     public static async Task InitializeAll()
     {
-        Logger.Info("Initializing Data...Please Wait".ColorYellow());
+        _logger.Information("Initializing Data...Please Wait");
 
         List<Task> tasks = new();
         List<Type> listStaticClass = Assembly.GetExecutingAssembly().GetTypes()
@@ -28,6 +27,6 @@ public static class MetadataHelper
         }
 
         await Task.WhenAll(tasks);
-        Logger.Info("Initializing Data...Complete!".ColorGreen());
+        _logger.Information("Initializing Data...Complete!");
     }
 }

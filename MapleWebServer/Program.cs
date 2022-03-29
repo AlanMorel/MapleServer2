@@ -1,6 +1,7 @@
 ﻿using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using MapleWebServer.Endpoints;
+using Serilog;
 
 string dotenv = Path.Combine(Paths.SOLUTION_DIR, ".env");
 if (!File.Exists(dotenv))
@@ -10,7 +11,19 @@ if (!File.Exists(dotenv))
 
 DotEnv.Load(dotenv);
 
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console(outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+    .WriteTo.File("logs/WebServerLogs.txt",
+        rollingInterval: RollingInterval.Day,
+        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+    .CreateLogger();
+
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.ClearProviders();
+
+// Register Serilog
+builder.Logging.AddSerilog(Log.Logger);
 
 WebApplication app = builder.Build();
 

@@ -1,6 +1,7 @@
 ﻿using MapleServer2.Enums;
 using MapleServer2.Network;
 using MapleServer2.Packets;
+using Serilog;
 
 namespace MapleServer2.Servers.Login;
 

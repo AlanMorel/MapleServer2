@@ -57,7 +57,7 @@ internal class RequestTaxiHandler : GamePacketHandler
     {
         if (!WorldMapGraphStorage.CanPathFind(session.Player.MapId.ToString(), mapId.ToString(), out int mapCount))
         {
-            Logger.Warn("Path not found.");
+            Logger.Warning("Path not found.");
             return;
         }
 

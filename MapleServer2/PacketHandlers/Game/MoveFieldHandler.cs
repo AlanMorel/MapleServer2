@@ -64,7 +64,7 @@ public class MoveFieldHandler : GamePacketHandler
         IFieldObject<Portal> fieldPortal = session.FieldManager.State.Portals.Values.FirstOrDefault(x => x.Value.Id == portalId);
         if (fieldPortal == default)
         {
-            Logger.Warn($"Unable to find portal:{portalId} in map:{srcMapId}");
+            Logger.Warning("Unable to find portal: {portalId} in map: {srcMapId}", portalId, srcMapId);
             return;
         }
 
@@ -88,7 +88,7 @@ public class MoveFieldHandler : GamePacketHandler
                 HandleHomePortal(session, fieldPortal);
                 return;
             default:
-                Logger.Warn($"unknown portal type id: {srcPortal.PortalType}");
+                Logger.Warning("unknown portal type id: {portalType}", srcPortal.PortalType);
                 break;
         }
 

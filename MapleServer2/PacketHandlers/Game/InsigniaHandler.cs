@@ -42,7 +42,7 @@ public class InsigniaHandler : GamePacketHandler
             case "adventure_level":
                 return session.Player.Levels.PrestigeLevel >= 100;
             default:
-                Logger.Warn($"Unhandled condition type for insigniaid: {insigniaId}, type: {type}");
+                Logger.Warning("Unhandled condition type for insigniaid: {insigniaId}, type: {type}", insigniaId, type);
                 return false;
         }
     }

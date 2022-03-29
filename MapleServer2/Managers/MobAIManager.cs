@@ -3,18 +3,18 @@ using System.Xml.Schema;
 using Maple2Storage.Enums;
 using MapleServer2.Enums;
 using MapleServer2.Types;
-using NLog;
+using Serilog;
 
 namespace MapleServer2.Managers;
 
 public static class MobAIManager
 {
     private static readonly Dictionary<string, MobAI> AiTable = new();
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private static readonly ILogger _logger = Log.Logger.ForContext(typeof(MobAIManager));
 
     public static void Load(string dirPath, string schemaPath = null)
     {
-        Logger.Info("Loading Mob AI...");
+        _logger.Information("Loading Mob AI...");
         foreach (string filePath in Directory.GetFiles(dirPath, "*.xml", SearchOption.AllDirectories))
         {
             string filename = Path.GetFileName(filePath);
@@ -30,20 +30,19 @@ public static class MobAIManager
             }
             catch (XmlException)
             {
-                Logger.Warn($"Skipping {filename}");
+                _logger.Warning("Skipping {filename}", filename);
                 continue;
             }
             catch (XmlSchemaValidationException e)
             {
-                Logger.Warn($"{filename} is invalid:");
-                Logger.Warn(e);
+                _logger.Warning("{filename} is invalid: {e}", filename, e);
                 continue;
             }
 
             ParseAI(document);
-            Logger.Info($"Loaded {filename}");
+            _logger.Information("Loaded {filename}", filename);
         }
-        Logger.Info("Finished loading AI.");
+        _logger.Information("Finished loading AI.");
     }
 
     public static MobAI GetAI(string aiInfo)

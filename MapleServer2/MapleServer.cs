@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using Autofac;
-using Maple2Storage.Extensions;
 using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
@@ -11,7 +10,9 @@ using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using NLog;
+using Serilog;
+using Serilog.Templates;
+using Serilog.Templates.Themes;
 using TaskScheduler = MapleServer2.Tools.TaskScheduler;
 
 namespace MapleServer2;
@@ -20,13 +21,27 @@ public static class MapleServer
 {
     private static GameServer _gameServer;
     private static LoginServer _loginServer;
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private static ILogger _logger;
 
     public static async Task Main()
     {
+        // Setup Serilog
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.Console(
+                new ExpressionTemplate("[{@t:HH:mm:ss}] [{@l:u3}]" +
+                    "{#if SourceContext is not null} {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1),-15}:{#end}" +
+                    " {@m:lj}\n{@x}", theme: TemplateTheme.Literate))
+            .WriteTo.File("logs/logs.txt",
+                rollingInterval: RollingInterval.Day,
+                outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss}] [{Level}] {SourceContext:l}: {Message:lj}{NewLine}{Exception}")
+            .CreateLogger();
+
+        _logger = Log.Logger.ForContext(typeof(MapleServer));
+
         AppDomain currentDomain = AppDomain.CurrentDomain;
         currentDomain.UnhandledException += UnhandledExceptionEventHandler;
-        currentDomain.ProcessExit += SaveAll;
+        currentDomain.ProcessExit += Shutdown;
 
         // Force Globalization to en-US because we use periods instead of commas for decimals
         CultureInfo.CurrentCulture = new("en-US");
@@ -67,16 +82,16 @@ public static class MapleServer
         GlobalEventManager.ScheduleEvents();
 
         IContainer loginContainer = LoginContainerConfig.Configure();
-        using ILifetimeScope loginScope = loginContainer.BeginLifetimeScope();
+        await using ILifetimeScope loginScope = loginContainer.BeginLifetimeScope();
         _loginServer = loginScope.Resolve<LoginServer>();
         _loginServer.Start();
 
         IContainer gameContainer = GameContainerConfig.Configure();
-        using ILifetimeScope gameScope = gameContainer.BeginLifetimeScope();
+        await using ILifetimeScope gameScope = gameContainer.BeginLifetimeScope();
         _gameServer = gameScope.Resolve<GameServer>();
         _gameServer.Start();
 
-        Logger.Info("All Servers have been Started.".ColorGreen());
+        _logger.Information("All Servers have been Started.");
 
         // Input commands to the server
         while (true)
@@ -98,11 +113,11 @@ public static class MapleServer
                     string packet = input[1];
                     PacketWriter pWriter = new();
                     pWriter.WriteBytes(packet.ToByteArray());
-                    Logger.Info(pWriter);
+                    _logger.Information(pWriter.ToString());
 
                     foreach (Session session in GetSessions(_loginServer, _gameServer))
                     {
-                        Logger.Info($"Sending packet to {session}: {pWriter}");
+                        _logger.Information("Sending packet to {session}: {pWriter}", session, pWriter);
                         session.Send(pWriter);
                     }
 
@@ -124,7 +139,7 @@ public static class MapleServer
                     resolver.Start(first);
                     break;
                 default:
-                    Logger.Info($"Unknown command:{input[0]} args:{(input.Length > 1 ? input[1] : "N/A")}");
+                    _logger.Information("Unknown command:{input[0]} args:{input}", input[0], input.Length > 1 ? input[1] : "N/A");
                     break;
             }
         }
@@ -198,12 +213,13 @@ public static class MapleServer
 
     private static void UnhandledExceptionEventHandler(object sender, UnhandledExceptionEventArgs args)
     {
-        SaveAll(sender, args);
+        SaveAll();
         Exception e = (Exception) args.ExceptionObject;
-        Logger.Fatal($"Exception Type: {e.GetType()}\nMessage: {e.Message}\nStack Trace: {e.StackTrace}\n");
+        _logger.Fatal("Exception Type: {type}\nMessage: {message}\nStack Trace: {stackTrace}\n", 
+            e.GetType(), e.Message, e.StackTrace);
     }
 
-    private static void SaveAll(object sender, EventArgs e)
+    private static void SaveAll()
     {
         List<Player> players = GameServer.PlayerManager.GetAllPlayers();
         foreach (Player item in players)
@@ -222,5 +238,11 @@ public static class MapleServer
         {
             DatabaseManager.Homes.Update(home);
         }
+    }
+
+    private static void Shutdown(object sender, EventArgs e)
+    {
+        SaveAll();
+        Log.CloseAndFlush();
     }
 }

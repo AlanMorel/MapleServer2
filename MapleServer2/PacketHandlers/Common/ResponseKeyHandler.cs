@@ -261,7 +261,7 @@ public class ResponseKeyHandler : CommonPacketHandler
         int tokenA = packet.ReadInt();
         int tokenB = packet.ReadInt();
 
-        Logger.Info($"LOGIN USER: {accountId}");
+        Logger.Information("LOGIN USER: {accountId}", accountId);
         AuthData authData = DatabaseManager.AuthData.GetByAccountId(accountId);
         if (authData == null)
         {

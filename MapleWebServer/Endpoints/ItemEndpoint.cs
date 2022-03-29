@@ -4,6 +4,7 @@ namespace MapleWebServer.Endpoints;
 
 public static class ItemEndpoint
 {
+    
     public static IResult Get(int itemId, string uuid)
     {
         string fullPath = $"{Paths.DATA_DIR}/item/{itemId}/{uuid}.m2u";

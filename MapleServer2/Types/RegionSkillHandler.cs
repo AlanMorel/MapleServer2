@@ -5,13 +5,13 @@ using MapleServer2.Data.Static;
 using MapleServer2.Managers;
 using MapleServer2.Packets;
 using MapleServer2.Tools;
-using NLog;
+using Serilog;
 
 namespace MapleServer2.Types;
 
 public static class RegionSkillHandler
 {
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private static readonly ILogger Logger = Log.Logger.ForContext(typeof(RegionSkillHandler));
 
     public static void HandleEffect(FieldManager field, SkillCast skillCast, int attackIndex)
     {

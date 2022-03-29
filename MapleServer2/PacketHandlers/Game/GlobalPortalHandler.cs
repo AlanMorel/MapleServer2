@@ -85,7 +85,7 @@ public class GlobalPortalHandler : GamePacketHandler
                 map = Map.HolidayDanceDanceStop;
                 break;
             default:
-                Logger.Warn($"Unknown Global Event: {globalEvent.Events[selectionIndex]}");
+                Logger.Warning("Unknown Global Event: {event}", globalEvent.Events[selectionIndex]);
                 return;
         }
 

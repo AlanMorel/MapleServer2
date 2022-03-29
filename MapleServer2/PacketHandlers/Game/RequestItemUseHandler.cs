@@ -102,7 +102,7 @@ public class RequestItemUseHandler : GamePacketHandler
                 HandleSurvivalLevelExp(session, item);
                 break;
             default:
-                Logger.Warn($"Unhandled item function: {item.Function.Name}");
+                Logger.Warning("Unhandled item function: {functionName}", item.Function.Name);
                 break;
         }
 

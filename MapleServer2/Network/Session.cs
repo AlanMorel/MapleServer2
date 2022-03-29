@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO.Pipelines;
 using System.Net.Sockets;
 using System.Security.Cryptography;
-using Maple2Storage.Extensions;
 using MaplePacketLib2.Crypto;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
@@ -11,7 +10,8 @@ using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
-using NLog;
+using Serilog;
+using ILogger = Serilog.ILogger;
 
 namespace MapleServer2.Network;
 
@@ -41,7 +41,7 @@ public abstract class Session : IDisposable
     private readonly Pipe RecvPipe;
 
     protected abstract PatchType Type { get; }
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private static readonly ILogger Logger = Log.Logger.ForContext<Session>();
 
     private static readonly RandomNumberGenerator Rng = RandomNumberGenerator.Create();
 
@@ -193,7 +193,7 @@ public abstract class Session : IDisposable
         {
             if (!Disposed)
             {
-                Logger.Fatal($"Exception on session thread: {ex}");
+                Logger.Fatal("Exception on session thread: {ex}", ex);
             }
         }
         finally
@@ -208,7 +208,7 @@ public abstract class Session : IDisposable
 
         // No encryption for handshake
         using PoolPacketWriter packet = SendCipher.WriteHeader(handshake.Buffer, 0, handshake.Length);
-        Logger.Debug($"Handshake: {packet}");
+        Logger.Debug("Handshake: {packet}", packet);
         SendRaw(packet);
     }
 
@@ -269,7 +269,7 @@ public abstract class Session : IDisposable
         {
             if (!Disposed)
             {
-                Logger.Fatal($"Exception in recv PipeScheduler: {ex}");
+                Logger.Fatal("Exception in recv PipeScheduler: {ex}", ex);
             }
         }
         finally
@@ -344,7 +344,7 @@ public abstract class Session : IDisposable
                 break;
             default:
                 string packetString = packet.ToString();
-                Logger.Debug($"SEND ({sendOp}): {packetString[Math.Min(packetString.Length, 6)..]}".ColorRed());
+                Logger.Debug("SEND ({sendOp} - 0x{hexa}): {packetString}", sendOp, sendOp.ToString("X"), packetString[Math.Min(packetString.Length, 6)..]);
                 break;
         }
     }
@@ -365,7 +365,7 @@ public abstract class Session : IDisposable
                 break;
             default:
                 string packetString = packet.ToString();
-                Logger.Debug($"RECV ({recvOp}): {packetString[Math.Min(packetString.Length, 6)..]}".ColorGreen());
+                Logger.Debug("RECV ({recvOp} - 0x{hexa}): {packetString}", recvOp, recvOp.ToString("X"),packetString[Math.Min(packetString.Length, 6)..]);
                 break;
         }
     }

@@ -13,7 +13,7 @@ using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Triggers;
 using MapleServer2.Types;
-using NLog;
+using Serilog;
 
 namespace MapleServer2.Managers;
 
@@ -22,7 +22,7 @@ namespace MapleServer2.Managers;
 // This seems to be done every ~2s rather than on every update.
 public partial class FieldManager
 {
-    private readonly ILogger Logger = LogManager.GetCurrentClassLogger();
+    private readonly ILogger Logger = Log.Logger.ForContext<FieldManager>();
 
     public readonly int MapId;
     public readonly long InstanceId;
@@ -1102,7 +1102,7 @@ public partial class FieldManager
                     }
                     catch (Exception e)
                     {
-                        Logger.Error(e);
+                        Logger.Error(e.ToString());
                         // Disconnect everyone in the field if a trigger has an exception
                         foreach (IFieldActor<Player> fieldPlayers in State.Players.Values)
                         {
