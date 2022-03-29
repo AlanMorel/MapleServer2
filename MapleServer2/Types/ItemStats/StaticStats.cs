@@ -67,9 +67,10 @@ public static class StaticStats
         float currentStatValue = stats[staticPick.Stat].GetValue();
 
         double statValue = CalculateStat(item, optionLevelFactor, globalOptionLevelFactor, staticPick, scriptLoader, currentStatValue);
-        if (statValue == 0)
+
+        if (stats[staticPick.Stat].GetValue() <= 0)
         {
-            return;
+            stats.Remove(staticPick.Stat);return;
         }
 
         stats[staticPick.Stat].SetValue((float) statValue);

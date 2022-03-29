@@ -35,9 +35,9 @@ public abstract class ItemStat
     {
         if (AttributeType == StatAttributeType.Flat)
         {
-            return Rate;
+            return Flat;
         }
-        return Flat;
+        return Rate;
     }
 
     public short WriteAttribute()

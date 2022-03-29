@@ -98,14 +98,13 @@ public static class ConstantStats
 
             float statValue = constantStats[constantPick.Stat].GetValue();
             DynValue result = scriptLoader.Call(calcScript, statValue, constantPick.DeviationValue, (int) item.Type,
-                (int) item.RecommendJobs.First(), optionLevelFactor, item.Rarity, globalOptionLevelFactor);
-
-            if (result.Number == 0)
-            {
-                continue;
-            }
+                (int) item.RecommendJobs.First(), 70, item.Rarity, globalOptionLevelFactor);
 
             constantStats[constantPick.Stat].SetValue((float) result.Number);
+            if (constantStats[constantPick.Stat].GetValue() <= 0)
+            {
+                constantStats.Remove(constantPick.Stat);
+            }
         }
     }
 }

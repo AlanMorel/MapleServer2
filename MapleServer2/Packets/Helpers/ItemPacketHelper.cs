@@ -131,14 +131,14 @@ public static class ItemPacketHelper
     private static PacketWriter WriteStats(this PacketWriter pWriter, ItemStats stats)
     {
         pWriter.WriteByte(); // Not part of appearance sub!
-        List<BasicStat> basicConstantNormalStats = stats.Constants.OfType<BasicStat>().ToList();
+        List<BasicStat> basicConstantNormalStats = stats.Constants.Values.OfType<BasicStat>().ToList();
         pWriter.WriteShort((short) basicConstantNormalStats.Count);
         foreach (BasicStat stat in basicConstantNormalStats)
         {
             WriteBasicStat(pWriter, stat);
         }
 
-        List<SpecialStat> basicConstantSpecialStats = stats.Constants.OfType<SpecialStat>().ToList();
+        List<SpecialStat> basicConstantSpecialStats = stats.Constants.Values.OfType<SpecialStat>().ToList();
         pWriter.WriteShort((short) basicConstantSpecialStats.Count);
         foreach (SpecialStat stat in basicConstantSpecialStats)
         {
@@ -146,14 +146,14 @@ public static class ItemPacketHelper
         }
         pWriter.WriteInt();
 
-        List<BasicStat> staticNormalStats = stats.Statics.OfType<BasicStat>().ToList();
+        List<BasicStat> staticNormalStats = stats.Statics.Values.OfType<BasicStat>().ToList();
         pWriter.WriteShort((short) staticNormalStats.Count);
         foreach (BasicStat stat in staticNormalStats)
         {
             WriteBasicStat(pWriter, stat);
         }
 
-        List<SpecialStat> staticSpecialStats = stats.Statics.OfType<SpecialStat>().ToList();
+        List<SpecialStat> staticSpecialStats = stats.Statics.Values.OfType<SpecialStat>().ToList();
         pWriter.WriteShort((short) staticSpecialStats.Count);
         foreach (SpecialStat stat in staticSpecialStats)
         {
@@ -162,14 +162,14 @@ public static class ItemPacketHelper
 
         pWriter.WriteInt();
 
-        List<BasicStat> bonusNormalStats = stats.Randoms.OfType<BasicStat>().ToList();
+        List<BasicStat> bonusNormalStats = stats.Randoms.Values.OfType<BasicStat>().ToList();
         pWriter.WriteShort((short) bonusNormalStats.Count);
         foreach (BasicStat stat in bonusNormalStats)
         {
             WriteBasicStat(pWriter, stat);
         }
 
-        List<SpecialStat> bonusSpecialStats = stats.Randoms.OfType<SpecialStat>().ToList();
+        List<SpecialStat> bonusSpecialStats = stats.Randoms.Values.OfType<SpecialStat>().ToList();
         pWriter.WriteShort((short) bonusSpecialStats.Count);
         foreach (SpecialStat stat in bonusSpecialStats)
         {
