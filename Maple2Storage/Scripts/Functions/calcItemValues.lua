@@ -604,7 +604,7 @@ StaticRarityCoefficient[CommonRarity] = 0.4
 StaticRarityCoefficient[RareRarity] = 0.55
 StaticRarityCoefficient[ExceptionalRarity] = 0.7
 StaticRarityCoefficient[EpicRarity] = 0.85
-StaticRarityCoefficient[LegendaryRarity] =  1
+StaticRarityCoefficient[LegendaryRarity] = 1
 StaticRarityCoefficient[AscendantRarity] = 1
 
 UpgradeFactor = 0.06
@@ -1364,10 +1364,10 @@ end
 function static_value_addndd(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
     local itemRarityFactor = 0
     local rarityFactor = 0
+    local armorLevelBaseCurrentLevelPlus
     local baseNddValue = 0
     local maxAddNddValue = 0
     local minAddNddValue = 0
-
     if globalOptionLevelFactor < 60 then
         itemRarityFactor = WeaponRarityAddndd50NA[rarity]
         rarityFactor = WeaponRarityAddndd50NA[4]
@@ -1394,75 +1394,105 @@ function static_value_addndd(currentStatValue, deviationValue, itemSlot, itemJob
             else
                 armorLevelBaseCurrentLevelPlus = math.max((1 + x / 10 * 4), 0)
             end
-                addNddValue = addNddValue + armorLevelBaseCurrentLevelPlus
-                baseNddValue = addNddValue
+            do
+                    addNddValue = addNddValue + armorLevelBaseCurrentLevelPlus
+                    baseNddValue = addNddValue
+            end
         end
     end
     do
         if itemSlot == Belt then
-            maxAddNddValue = round((baseNddValue) * ArmorConstantSlotCoefficient[itemSlot] * ArmorConstantJobCoefficient[GlobalJob] * (ArmorConstantRarityCoefficient[deviationValue])[rarity], 0) * itemRarityFactor
-            minAddNddValue = round((baseNddValue) * ArmorConstantSlotCoefficient[itemSlot] * ArmorConstantJobCoefficient[GlobalJob] * (ArmorConstantRarityCoefficient[deviationValue])[4], 0) * rarityFactor
+            maxAddNddValue = math.max(round((baseNddValue) * ArmorConstantSlotCoefficient[itemSlot] * ArmorConstantJobCoefficient[JC_Global] * StaticArmorRarityCoefficient[rarity], 0), 4) * itemRarityFactor
+            minAddNddValue = math.max(round((baseNddValue) * ArmorConstantSlotCoefficient[itemSlot] * ArmorConstantJobCoefficient[JC_Global] * StaticArmorRarityCoefficient[4], 0), 4) * rarityFactor
         else
-            maxAddNddValue = round((baseNddValue) * ArmorConstantSlotCoefficient[itemSlot] * ArmorConstantJobCoefficient[itemJob] * (ArmorConstantRarityCoefficient[deviationValue])[rarity], 0) * itemRarityFactor
-            minAddNddValue = round((baseNddValue) * ArmorConstantSlotCoefficient[itemSlot] * ArmorConstantJobCoefficient[itemJob] * (ArmorConstantRarityCoefficient[deviationValue])[4], 0) * rarityFactor
-        end
-        local addNddValue = 0
-        if globalOptionLevelFactor > 49 and rarity > 3 then
-            addNddValue = round(maxAddNddValue + minAddNddValue * (rarity - 4), 0)
-        end
-        do
-            return math.max(addNddValue, 0)
+            do
+                if itemSlot == Earring or itemSlot == Cape or itemSlot == Necklace or itemSlot == Ring then
+                    maxAddNddValue = math.max(round((baseNddValue) * ArmorConstantSlotCoefficient[itemSlot] * StaticAccRarityCoefficient[rarity], 0), 0) * itemRarityFactor
+                    minAddNddValue = math.max(round((baseNddValue) * ArmorConstantSlotCoefficient[itemSlot] * StaticAccRarityCoefficient[4], 0), 0) * rarityFactor
+                else
+                    maxAddNddValue = math.max(round((baseNddValue) * ArmorConstantSlotCoefficient[itemSlot] * ArmorConstantJobCoefficient[itemJob] * StaticArmorRarityCoefficient[rarity], 0), 4) * itemRarityFactor
+                    minAddNddValue = math.max(round((baseNddValue) * ArmorConstantSlotCoefficient[itemSlot] * ArmorConstantJobCoefficient[itemJob] * StaticArmorRarityCoefficient[4], 0), 4) * rarityFactor
+                end
+                local addNddValueResult = 0
+                if globalOptionLevelFactor > 49 and rarity > 3 then
+                    if currentStatValue == 0 then
+                        addNddValueResult = round(maxAddNddValue + minAddNddValue * (rarity - 4), 0)
+                    else
+                        addNddValueResult = round((maxAddNddValue + minAddNddValue * (rarity - 4)) * (currentStatValue / 100), 0)
+                    end
+                end
+                do
+                    return math.max(addNddValueResult, 0)
+                end
+            end
         end
     end
 end
 
 function static_value_ndd(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
-    globalOptionLevelFactor = optionLevelFactor
-    local minNddValue = 0
-    local maxNddValue = 0
-    local baseNddValue = 0
-    local addNddValue = 0
-    local staticMinAddValue = 0
-    local staticMaxAddValue = 0
-
+    local l_22_8 = 0
+    local l_22_9 = 0
+    local l_22_10 = 0
     if optionLevelFactor == 1 then
-        baseNddValue = 9
+        l_22_10 = 9
     else
-        addNddValue = 9
-        for x = 2, optionLevelFactor do
-            if x > 49 then
-                armorLevelBaseCurrentLevelPlus = addNddValue * UpgradeFactor
+        local l_22_11 = 9
+        for l_22_15 = 2, optionLevelFactor do
+            if g_locale == Locale_KR then
+                if globalOptionLevelFactor < 60 then
+                    armorLevelBaseCurrentLevelPlus = (math.max)(1 + l_22_15 / 10 * 4, 0)
+                else
+                    if l_22_15 > 49 then
+                        armorLevelBaseCurrentLevelPlus = l_22_11 * UpgradeFactor
+                    else
+                        armorLevelBaseCurrentLevelPlus = (math.max)(1 + l_22_15 / 10 * 4, 0)
+                    end
+                end
             else
-                armorLevelBaseCurrentLevelPlus = math.max((1 + ((x / 10) * 4)), 0)
+                if l_22_15 > 49 then
+                    armorLevelBaseCurrentLevelPlus = l_22_11 * UpgradeFactor
+                else
+                    armorLevelBaseCurrentLevelPlus = (math.max)(1 + l_22_15 / 10 * 4, 0)
+                end
             end
-            addNddValue = addNddValue + armorLevelBaseCurrentLevelPlus
-            baseNddValue = addNddValue
+            l_22_11 = l_22_11 + armorLevelBaseCurrentLevelPlus
+            l_22_10 = l_22_11
         end
     end
-    addNddValue = 0
-    addNddValue = static_value_addndd(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
-    if itemSlot == 21 then
-        maxNddValue = (math.max)(round((baseNddValue) * ArmorConstantSlotCoefficient[itemSlot] * ArmorConstantJobCoefficient[GlobalJob] *
-            StaticArmorRarityCoefficient[rarity], 0), 4)
-    elseif itemSlot == 12 or itemSlot == 18 or itemSlot == 19 or itemSlot == 20 then
-        maxNddValue = (math.max)(round((baseNddValue) * ArmorConstantSlotCoefficient[itemSlot] * StaticAccRarityCoefficient[rarity], 0), 0)
-    else
-        maxNddValue = (math.max)(round((baseNddValue) * ArmorConstantSlotCoefficient[itemSlot] * ArmorConstantJobCoefficient[itemJob] *
-            StaticArmorRarityCoefficient[rarity], 0), 4)
+    do
+        local l_22_16 = 0
+        if g_locale == Locale_KR then
+            if globalOptionLevelFactor < 60 then
+                l_22_16 = 0
+            else
+                l_22_16 = static_value_addndd(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
+            end
+        else
+            l_22_16 = static_value_addndd(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
+        end
+        if itemSlot == 21 then
+            l_22_9 = (math.max)(round((l_22_10) * ArmorConstantSlotCoefficient[itemSlot] * ArmorConstantJobCoefficient[GlobalJob] * StaticArmorRarityCoefficient[rarity], 0), 4)
+        else
+            if itemSlot == 12 or itemSlot == 18 or itemSlot == 19 or itemSlot == 20 then
+                l_22_9 = (math.max)(round((l_22_10) * ArmorConstantSlotCoefficient[itemSlot] * StaticAccRarityCoefficient[rarity], 0), 0)
+            else
+                l_22_9 = (math.max)(round((l_22_10) * ArmorConstantSlotCoefficient[itemSlot] * ArmorConstantJobCoefficient[itemJob] * StaticArmorRarityCoefficient[rarity], 0), 4)
+            end
+        end
+        if l_22_9 < 466 then
+            l_22_8 = round(l_22_9 * (math.max)(0.0598 * (math.log)(l_22_9) + 0.432, 0.5), 0)
+        else
+            l_22_8 = (math.max)(round(l_22_9 * 0.8, 0), 1)
+        end
+        if currentStatValue == 0 then
+            staticNDDValueMin_final = l_22_8 + l_22_16
+            staticNDDValueMax_final = l_22_9 + l_22_16
+        else
+            staticNDDValueMin_final = round(l_22_9 * (currentStatValue / 100), 0) + l_22_16
+            staticNDDValueMax_final = round(l_22_9 * (currentStatValue / 100), 0) + l_22_16
+        end
+        return staticNDDValueMin_final, staticNDDValueMax_final
     end
-    if maxNddValue < 466 then
-        minNddValue = round(maxNddValue * (math.max)(0.0598 * (math.log)(maxNddValue) + 0.432, 0.5), 0)
-    else
-        minNddValue = (math.max)(round(maxNddValue * 0.8, 0), 1)
-    end
-    if currentStatValue == 0 then
-        staticMinAddValue = minNddValue + addNddValue
-        staticMaxAddValue = maxNddValue + addNddValue
-    else
-        staticMinAddValue = round(maxNddValue * (currentStatValue / 100), 0) + addNddValue
-        staticMaxAddValue = round(maxNddValue * (currentStatValue / 100), 0) + addNddValue
-    end
-    return staticMinAddValue, staticMaxAddValue
 end
 
 function static_value_mar(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
