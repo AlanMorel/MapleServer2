@@ -55,6 +55,7 @@ public class ParserSpecialStat
     {
         Attribute = attribute;
         Value = value;
+        AttributeType = type;
     }
 
     public override string ToString()
