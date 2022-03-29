@@ -8,7 +8,6 @@ using MapleServer2.Network;
 using MapleServer2.Packets;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Serilog;
 
 namespace MapleServer2.Servers.Game;
 

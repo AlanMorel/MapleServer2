@@ -11,7 +11,6 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
 using Serilog;
-using ILogger = Serilog.ILogger;
 
 namespace MapleServer2.Network;
 
@@ -365,7 +364,7 @@ public abstract class Session : IDisposable
                 break;
             default:
                 string packetString = packet.ToString();
-                Logger.Debug("RECV ({recvOp} - 0x{hexa}): {packetString}", recvOp, recvOp.ToString("X"),packetString[Math.Min(packetString.Length, 6)..]);
+                Logger.Debug("RECV ({recvOp} - 0x{hexa}): {packetString}", recvOp, recvOp.ToString("X"), packetString[Math.Min(packetString.Length, 6)..]);
                 break;
         }
     }

@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using Autofac;
-using Maple2Storage.Extensions;
 using MapleServer2.Commands.Core;
 using MapleServer2.Database;
 using MapleServer2.Managers;

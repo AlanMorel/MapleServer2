@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Maple2Storage.Extensions;
 using MapleServer2.Network;
 using Serilog;
 
@@ -8,7 +7,7 @@ namespace MapleServer2.Servers.Login;
 public class LoginServer : Server<LoginSession>
 {
     private List<LoginSession> Sessions;
-    
+
     private readonly ILogger Logger = Log.Logger.ForContext<LoginServer>();
 
     public LoginServer(PacketRouter<LoginSession> router, IComponentContext context) : base(router, context) { }

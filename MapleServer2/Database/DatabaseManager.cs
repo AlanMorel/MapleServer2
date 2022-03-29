@@ -9,7 +9,7 @@ namespace MapleServer2.Database;
 
 public static class DatabaseManager
 {
-    private static ILogger _logger = Log.Logger.ForContext(typeof(DatabaseManager));
+    private static readonly ILogger _logger = Log.Logger.ForContext(typeof(DatabaseManager));
     private static readonly int MIN_MYSQL_VERSION = 8;
 
     public static readonly string ConnectionString;
@@ -80,7 +80,7 @@ public static class DatabaseManager
             _logger.Information("Database already exists.");
             return;
         }
-        
+
         _logger.Information("Creating database...");
         CreateDatabase();
 
