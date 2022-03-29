@@ -26,6 +26,7 @@ public class GameServer : Server<GameSession>
     public static readonly BlackMarketManager BlackMarketManager = new();
     public static readonly MesoMarketManager MesoMarketManager = new();
     public static readonly UgcMarketManager UgcMarketManager = new();
+    public static readonly FieldWarManager FieldWarManager = new();
 
     private List<GameSession> Sessions;
 

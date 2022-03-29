@@ -1,5 +1,7 @@
 ﻿using System.Globalization;
 using Autofac;
+using Maple2.PathEngine;
+using Maple2.PathEngine.Utils;
 using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
@@ -13,12 +15,15 @@ using MapleServer2.Types;
 using Serilog;
 using Serilog.Templates;
 using Serilog.Templates.Themes;
+using Path = System.IO.Path;
 using TaskScheduler = MapleServer2.Tools.TaskScheduler;
 
 namespace MapleServer2;
 
 public static class MapleServer
 {
+    public static readonly PathEngine PathEngine = new(new PrintErrorHandler(Console.Out));
+
     private static GameServer _gameServer;
     private static LoginServer _loginServer;
     private static ILogger _logger;
