@@ -6,11 +6,11 @@ namespace MapleServer2.Tools;
 
 public static class MetadataHelper
 {
-    private static readonly ILogger _logger = Log.Logger.ForContext(typeof(MetadataHelper));
+    private static readonly ILogger Logger = Log.Logger.ForContext(typeof(MetadataHelper));
 
     public static async Task InitializeAll()
     {
-        _logger.Information("Initializing Data...Please Wait");
+        Logger.Information("Initializing Data...Please Wait");
 
         List<Task> tasks = new();
         List<Type> listStaticClass = Assembly.GetExecutingAssembly().GetTypes()
@@ -27,6 +27,6 @@ public static class MetadataHelper
         }
 
         await Task.WhenAll(tasks);
-        _logger.Information("Initializing Data...Complete!");
+        Logger.Information("Initializing Data...Complete!");
     }
 }
