@@ -95,7 +95,7 @@ public class BlackMarketManager
                         containsAll = false;
                         break;
                     }
-                    if (statCollection[searchedStat.ItemAttribute].Flat < searchedStat.Flat && 
+                    if (statCollection[searchedStat.ItemAttribute].Flat < searchedStat.Flat &&
                         statCollection[searchedStat.ItemAttribute].Rate < searchedStat.Rate)
                     {
                         containsAll = false;

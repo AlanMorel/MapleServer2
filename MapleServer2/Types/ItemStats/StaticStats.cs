@@ -69,10 +69,11 @@ public static class StaticStats
         double statValue = CalculateStat(item, optionLevelFactor, globalOptionLevelFactor, staticPick, scriptLoader, currentStatValue);
 
         stats[staticPick.Stat].SetValue((float) statValue);
-        
+
         if (stats[staticPick.Stat].GetValue() <= 0.0000f)
         {
-            stats.Remove(staticPick.Stat);;
+            stats.Remove(staticPick.Stat);
+            ;
         }
     }
 
@@ -127,6 +128,6 @@ public static class StaticStats
         }
 
         // Get random between min and max values
-        return random.NextDouble() * (result.Tuple[1].Number - result.Tuple[0].Number) + result.Tuple[0].Number;;
+        return random.NextDouble() * (result.Tuple[1].Number - result.Tuple[0].Number) + result.Tuple[0].Number;
     }
 }

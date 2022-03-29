@@ -157,7 +157,7 @@ public class ChangeAttributesHandler : GamePacketHandler
             }
 
             newRandoms.Remove(stat.ItemAttribute);
-            
+
             newRandoms[stat.ItemAttribute] = randomList[i];
         }
         newItem.Stats.Randoms = newRandoms;
