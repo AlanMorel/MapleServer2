@@ -63,6 +63,12 @@ public class FieldEnterHandler : GamePacketHandler
             session.Send(GlobalPortalPacket.Notice(globalEvent));
         }
 
+        FieldWar fieldWar = GameServer.FieldWarManager.CurrentFieldWar;
+        if (fieldWar is not null && !MapMetadataStorage.MapIsInstancedOnly(player.MapId) && fieldWar.MapId != player.MapId)
+        {
+            session.Send(FieldWarPacket.LegionPopup(fieldWar.Id, fieldWar.EntryClosureTime.ToUnixTimeSeconds()));
+        }
+
         session.Send(KeyTablePacket.SendHotbars(player.GameOptions));
 
         TrophyManager.OnMapEntered(player, player.MapId);
