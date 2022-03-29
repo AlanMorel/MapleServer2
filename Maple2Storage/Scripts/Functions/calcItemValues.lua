@@ -1003,6 +1003,7 @@ function constant_value_cap(currentStatValue, deviationValue, itemSlot, itemJob,
 end
 
 function constant_value_str(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
+    globalOptionLevelFactor = optionLevelFactor
     local strValue = 0
     if globalOptionLevelFactor < 51 then
         if itemJob == Knight or itemJob == Berserker or itemJob == RuneBlader then
@@ -1041,6 +1042,7 @@ function constant_value_str(currentStatValue, deviationValue, itemSlot, itemJob,
 end
 
 function constant_value_int(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
+    globalOptionLevelFactor = optionLevelFactor
     local intValue = 0
     if globalOptionLevelFactor < 51 then
         if itemJob == Wizard or itemJob == Priest or itemJob == SoulBinder or itemJob == Striker and l_14_7 == 1 then
@@ -1079,6 +1081,7 @@ function constant_value_int(currentStatValue, deviationValue, itemSlot, itemJob,
 end
 
 function constant_value_dex(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
+    globalOptionLevelFactor = optionLevelFactor
     local dexValue = 0
     if globalOptionLevelFactor < 51 then
         if itemJob == Archer or itemJob == HeavyGunner or itemJob == Striker then
@@ -1115,6 +1118,7 @@ function constant_value_dex(currentStatValue, deviationValue, itemSlot, itemJob,
 end
 
 function constant_value_luk(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
+    globalOptionLevelFactor = optionLevelFactor
     local lukValue = 0
     if globalOptionLevelFactor < 51 then
         if itemJob == Thief or itemJob == Assassin then
