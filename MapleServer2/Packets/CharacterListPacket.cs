@@ -129,15 +129,15 @@ public static class CharacterListPacket
         pWriter.WriteShort(player.ChannelId);
         pWriter.Write(player.Job);
         pWriter.Write(player.JobCode);
-        pWriter.WriteInt(player.Stats[StatId.Hp].Total);
-        pWriter.WriteInt(player.Stats[StatId.Hp].Bonus);
+        pWriter.WriteInt(player.Stats[StatAttribute.Hp].Total);
+        pWriter.WriteInt(player.Stats[StatAttribute.Hp].Bonus);
         pWriter.WriteShort();
         pWriter.WriteLong();
         pWriter.WriteLong(); // Some timestamp
         pWriter.WriteLong();
         pWriter.WriteInt(player.ReturnMapId);
         pWriter.Write(player.ReturnCoord);
-        pWriter.WriteInt(); // gearscore
+        pWriter.WriteInt(player.GearScore);
         pWriter.Write(player.SkinColor);
         pWriter.WriteLong(player.CreationTime + Environment.TickCount64);
         foreach (int trophyCount in player.TrophyCount)

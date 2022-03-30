@@ -36,7 +36,7 @@ public class StatPointHandler : GamePacketHandler
 
     private static void HandleStatIncrement(GameSession session, PacketReader packet)
     {
-        StatId statTypeIndex = (StatId) packet.ReadByte();
+        StatAttribute statTypeIndex = (StatAttribute) packet.ReadByte();
 
         session.Player.StatPointDistribution.AddPoint(statTypeIndex);
         session.Player.Stats.Allocate(statTypeIndex);

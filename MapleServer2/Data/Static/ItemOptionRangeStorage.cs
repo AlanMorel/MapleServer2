@@ -7,8 +7,8 @@ namespace MapleServer2.Data.Static;
 
 public static class ItemOptionRangeStorage
 {
-    public static readonly Dictionary<ItemOptionRangeType, Dictionary<StatId, List<ParserStat>>> NormalRange = new();
-    public static readonly Dictionary<ItemOptionRangeType, Dictionary<SpecialStatId, List<ParserSpecialStat>>> SpecialRange = new();
+    public static readonly Dictionary<ItemOptionRangeType, Dictionary<StatAttribute, List<ParserStat>>> NormalRange = new();
+    public static readonly Dictionary<ItemOptionRangeType, Dictionary<StatAttribute, List<ParserSpecialStat>>> SpecialRange = new();
 
     public static void Init()
     {
@@ -21,42 +21,42 @@ public static class ItemOptionRangeStorage
         }
     }
 
-    public static Dictionary<StatId, List<ParserStat>> GetAccessoryRanges()
+    public static Dictionary<StatAttribute, List<ParserStat>> GetAccessoryRanges()
     {
         return NormalRange[ItemOptionRangeType.itemoptionvariation_acc];
     }
 
-    public static Dictionary<StatId, List<ParserStat>> GetArmorRanges()
+    public static Dictionary<StatAttribute, List<ParserStat>> GetArmorRanges()
     {
         return NormalRange[ItemOptionRangeType.itemoptionvariation_armor];
     }
 
-    public static Dictionary<StatId, List<ParserStat>> GetPetRanges()
+    public static Dictionary<StatAttribute, List<ParserStat>> GetPetRanges()
     {
         return NormalRange[ItemOptionRangeType.itemoptionvariation_pet];
     }
 
-    public static Dictionary<StatId, List<ParserStat>> GetWeaponRanges()
+    public static Dictionary<StatAttribute, List<ParserStat>> GetWeaponRanges()
     {
         return NormalRange[ItemOptionRangeType.itemoptionvariation_weapon];
     }
 
-    public static Dictionary<SpecialStatId, List<ParserSpecialStat>> GetAccessorySpecialRanges()
+    public static Dictionary<StatAttribute, List<ParserSpecialStat>> GetAccessorySpecialRanges()
     {
         return SpecialRange[ItemOptionRangeType.itemoptionvariation_acc];
     }
 
-    public static Dictionary<SpecialStatId, List<ParserSpecialStat>> GetArmorSpecialRanges()
+    public static Dictionary<StatAttribute, List<ParserSpecialStat>> GetArmorSpecialRanges()
     {
         return SpecialRange[ItemOptionRangeType.itemoptionvariation_armor];
     }
 
-    public static Dictionary<SpecialStatId, List<ParserSpecialStat>> GetPetSpecialRanges()
+    public static Dictionary<StatAttribute, List<ParserSpecialStat>> GetPetSpecialRanges()
     {
         return SpecialRange[ItemOptionRangeType.itemoptionvariation_pet];
     }
 
-    public static Dictionary<SpecialStatId, List<ParserSpecialStat>> GetWeaponSpecialRanges()
+    public static Dictionary<StatAttribute, List<ParserSpecialStat>> GetWeaponSpecialRanges()
     {
         return SpecialRange[ItemOptionRangeType.itemoptionvariation_weapon];
     }

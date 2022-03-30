@@ -65,7 +65,7 @@ public class Levels
         Level++;
 
         Player.Stats.AddBaseStats(Player);
-        Player.FieldPlayer.RecoverHp(FieldPlayer.Stats[StatId.Hp].Bonus);
+        Player.FieldPlayer.RecoverHp(FieldPlayer.Stats[StatAttribute.Hp].Bonus);
 
         Session.FieldManager.BroadcastPacket(RevivalConfirmPacket.Send(FieldPlayer.ObjectId, 0));
         Session.FieldManager.BroadcastPacket(LevelUpPacket.LevelUp(FieldPlayer.ObjectId, Level));
