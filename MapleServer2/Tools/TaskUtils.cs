@@ -1,4 +1,4 @@
-﻿using NLog;
+﻿using Serilog;
 
 namespace MapleServer2.Tools;
 
@@ -13,7 +13,7 @@ public static class TaskUtils
         catch (AggregateException) { } // CancellationToken.Cancel(), then task.Wait() always throws AggregateException
         catch (Exception e)
         {
-            LogManager.GetCurrentClassLogger().Error(e);
+            Log.Logger.Error(e.ToString());
         }
     }
 }
