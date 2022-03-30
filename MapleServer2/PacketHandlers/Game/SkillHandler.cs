@@ -234,7 +234,7 @@ public class SkillHandler : GamePacketHandler
             return;
         }
 
-        bool isCrit = DamageHandler.RollCrit(session.Player.Stats[StatId.CritRate].Total);
+        bool isCrit = DamageHandler.RollCrit(session.Player.Stats[StatAttribute.CritRate].Total);
         List<(int targetId, byte damageType, double damage)> damages = new();
         for (int i = 0; i < count; i++)
         {

@@ -80,6 +80,7 @@ public class ItemEquipHandler : GamePacketHandler
             if (prevItem.InventoryTab == InventoryTab.Gear)
             {
                 DecreaseStats(session, prevItem);
+                session.Player.UpdateGearScore(prevItem, -prevItem.GearScore);
             }
         }
 
@@ -131,6 +132,7 @@ public class ItemEquipHandler : GamePacketHandler
         if (item.InventoryTab == InventoryTab.Gear)
         {
             IncreaseStats(session, item);
+            session.Player.UpdateGearScore(item, item.GearScore);
         }
     }
 
@@ -154,6 +156,7 @@ public class ItemEquipHandler : GamePacketHandler
             session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.Player.FieldPlayer, unequipItem));
 
             DecreaseStats(session, unequipItem);
+            session.Player.UpdateGearScore(unequipItem, -unequipItem.GearScore);
             return;
         }
 
@@ -177,20 +180,29 @@ public class ItemEquipHandler : GamePacketHandler
 
     private static void DecreaseStats(GameSession session, Item item)
     {
-        if (item.Stats.BasicStats.Count != 0)
+        foreach (ItemStat stat in item.Stats.Constants.Values)
         {
-            foreach (NormalStat stat in item.Stats.BasicStats.OfType<NormalStat>())
+            if (stat.ItemAttribute > (StatAttribute) 11000)
             {
-                session.Player.Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat);
+                continue;
             }
+            session.Player.Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat + (int) stat.Rate);
         }
-
-        if (item.Stats.BonusStats.Count != 0)
+        foreach (ItemStat stat in item.Stats.Statics.Values)
         {
-            foreach (NormalStat stat in item.Stats.BonusStats.OfType<NormalStat>())
+            if (stat.ItemAttribute > (StatAttribute) 11000)
             {
-                session.Player.Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat);
+                continue;
             }
+            session.Player.Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat + (int) stat.Rate);
+        }
+        foreach (ItemStat stat in item.Stats.Randoms.Values)
+        {
+            if (stat.ItemAttribute > (StatAttribute) 11000)
+            {
+                continue;
+            }
+            session.Player.Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat + (int) stat.Rate);
         }
 
         session.Send(StatPacket.SetStats(session.Player.FieldPlayer));
@@ -198,20 +210,17 @@ public class ItemEquipHandler : GamePacketHandler
 
     private static void IncreaseStats(GameSession session, Item item)
     {
-        if (item.Stats.BasicStats.Count != 0)
+        foreach (ItemStat stat in item.Stats.Constants.Values)
         {
-            foreach (NormalStat stat in item.Stats.BasicStats.OfType<NormalStat>())
-            {
-                session.Player.Stats[stat.ItemAttribute].IncreaseBonus(stat.Flat);
-            }
+            session.Player.Stats[stat.ItemAttribute].IncreaseBase(stat.Flat + (int) stat.Rate);
         }
-
-        if (item.Stats.BonusStats.Count != 0)
+        foreach (ItemStat stat in item.Stats.Statics.Values)
         {
-            foreach (NormalStat stat in item.Stats.BonusStats.OfType<NormalStat>())
-            {
-                session.Player.Stats[stat.ItemAttribute].IncreaseBonus(stat.Flat);
-            }
+            session.Player.Stats[stat.ItemAttribute].IncreaseBase(stat.Flat + (int) stat.Rate);
+        }
+        foreach (ItemStat stat in item.Stats.Randoms.Values)
+        {
+            session.Player.Stats[stat.ItemAttribute].IncreaseBase(stat.Flat + (int) stat.Rate);
         }
 
         session.Send(StatPacket.SetStats(session.Player.FieldPlayer));

@@ -24,17 +24,17 @@ public partial class FieldManager
         {
             if (HpRegenThread == null || HpRegenThread.IsCompleted)
             {
-                HpRegenThread = StartRegen(StatId.Hp, StatId.HpRegen, StatId.HpRegenInterval);
+                HpRegenThread = StartRegen(StatAttribute.Hp, StatAttribute.HpRegen, StatAttribute.HpRegenInterval);
             }
 
             if (SpRegenThread == null || SpRegenThread.IsCompleted)
             {
-                SpRegenThread = StartRegen(StatId.Spirit, StatId.SpRegen, StatId.SpRegenInterval);
+                SpRegenThread = StartRegen(StatAttribute.Spirit, StatAttribute.SpRegen, StatAttribute.SpRegenInterval);
             }
 
             if (StaRegenThread == null || StaRegenThread.IsCompleted)
             {
-                StaRegenThread = StartRegen(StatId.Stamina, StatId.StaminaRegen, StatId.StaminaRegenInterval);
+                StaRegenThread = StartRegen(StatAttribute.Stamina, StatAttribute.StaminaRegen, StatAttribute.StaminaRegenInterval);
             }
         }
 
@@ -43,7 +43,7 @@ public partial class FieldManager
             int spiritCost = skillCast.GetSpCost();
             int staminaCost = skillCast.GetStaCost();
 
-            if (Value.Stats[StatId.Spirit].Total < spiritCost || Value.Stats[StatId.Stamina].Total < staminaCost)
+            if (Value.Stats[StatAttribute.Spirit].Total < spiritCost || Value.Stats[StatAttribute.Stamina].Total < staminaCost)
             {
                 return;
             }
@@ -76,11 +76,11 @@ public partial class FieldManager
 
             lock (Stats)
             {
-                Stat stat = Stats[StatId.Hp];
+                Stat stat = Stats[StatAttribute.Hp];
                 if (stat.Total < stat.Bonus)
                 {
                     stat.Increase(Math.Min(amount, stat.Bonus - stat.Total));
-                    Value.Session.Send(StatPacket.UpdateStats(this, StatId.Hp));
+                    Value.Session.Send(StatPacket.UpdateStats(this, StatAttribute.Hp));
                 }
             }
         }
@@ -94,13 +94,13 @@ public partial class FieldManager
 
             lock (Stats)
             {
-                Stat stat = Stats[StatId.Hp];
+                Stat stat = Stats[StatAttribute.Hp];
                 stat.Decrease(Math.Min(amount, stat.Total));
             }
 
             if (HpRegenThread == null || HpRegenThread.IsCompleted)
             {
-                HpRegenThread = StartRegen(StatId.Hp, StatId.HpRegen, StatId.HpRegenInterval);
+                HpRegenThread = StartRegen(StatAttribute.Hp, StatAttribute.HpRegen, StatAttribute.HpRegenInterval);
             }
         }
 
@@ -113,11 +113,11 @@ public partial class FieldManager
 
             lock (Stats)
             {
-                Stat stat = Stats[StatId.Spirit];
+                Stat stat = Stats[StatAttribute.Spirit];
                 if (stat.Total < stat.Bonus)
                 {
                     stat.Increase(Math.Min(amount, stat.Bonus - stat.Total));
-                    Value.Session.Send(StatPacket.UpdateStats(this, StatId.Spirit));
+                    Value.Session.Send(StatPacket.UpdateStats(this, StatAttribute.Spirit));
                 }
             }
         }
@@ -131,13 +131,13 @@ public partial class FieldManager
 
             lock (Stats)
             {
-                Stat stat = Stats[StatId.Spirit];
-                Stats[StatId.Spirit].Decrease(Math.Min(amount, stat.Total));
+                Stat stat = Stats[StatAttribute.Spirit];
+                Stats[StatAttribute.Spirit].Decrease(Math.Min(amount, stat.Total));
             }
 
             if (SpRegenThread == null || SpRegenThread.IsCompleted)
             {
-                SpRegenThread = StartRegen(StatId.Spirit, StatId.SpRegen, StatId.SpRegenInterval);
+                SpRegenThread = StartRegen(StatAttribute.Spirit, StatAttribute.SpRegen, StatAttribute.SpRegenInterval);
             }
         }
 
@@ -150,11 +150,11 @@ public partial class FieldManager
 
             lock (Stats)
             {
-                Stat stat = Stats[StatId.Stamina];
+                Stat stat = Stats[StatAttribute.Stamina];
                 if (stat.Total < stat.Bonus)
                 {
-                    Stats[StatId.Stamina].Increase(Math.Min(amount, stat.Bonus - stat.Total));
-                    Value.Session.Send(StatPacket.UpdateStats(this, StatId.Stamina));
+                    Stats[StatAttribute.Stamina].Increase(Math.Min(amount, stat.Bonus - stat.Total));
+                    Value.Session.Send(StatPacket.UpdateStats(this, StatAttribute.Stamina));
                 }
             }
         }
@@ -168,35 +168,35 @@ public partial class FieldManager
 
             lock (Stats)
             {
-                Stat stat = Stats[StatId.Stamina];
-                Stats[StatId.Stamina].Decrease(Math.Min(amount, stat.Total));
+                Stat stat = Stats[StatAttribute.Stamina];
+                Stats[StatAttribute.Stamina].Decrease(Math.Min(amount, stat.Total));
             }
 
             if (StaRegenThread == null || StaRegenThread.IsCompleted)
             {
-                StaRegenThread = StartRegen(StatId.Stamina, StatId.StaminaRegen, StatId.StaminaRegenInterval);
+                StaRegenThread = StartRegen(StatAttribute.Stamina, StatAttribute.StaminaRegen, StatAttribute.StaminaRegenInterval);
             }
         }
 
-        private Task StartRegen(StatId statId, StatId regenStatId, StatId timeStatId)
+        private Task StartRegen(StatAttribute statAttribute, StatAttribute regenStatAttribute, StatAttribute timeStatAttribute)
         {
             // TODO: merge regen updates with larger packets
             return Task.Run(async () =>
             {
                 while (true)
                 {
-                    await Task.Delay(Stats[timeStatId].Total);
+                    await Task.Delay(Stats[timeStatAttribute].Total);
 
                     lock (Stats)
                     {
-                        if (Stats[statId].Total >= Stats[statId].Bonus)
+                        if (Stats[statAttribute].Total >= Stats[statAttribute].Bonus)
                         {
                             return;
                         }
 
                         // TODO: Check if regen-enabled
-                        AddStatRegen(statId, regenStatId);
-                        Value.Session?.FieldManager.BroadcastPacket(StatPacket.UpdateStats(this, statId));
+                        AddStatRegen(statAttribute, regenStatAttribute);
+                        Value.Session?.FieldManager.BroadcastPacket(StatPacket.UpdateStats(this, statAttribute));
                         if (Value.Party != null)
                         {
                             Value.Party.BroadcastPacketParty(PartyPacket.UpdateHitpoints(Value));
@@ -229,7 +229,7 @@ public partial class FieldManager
             }, cts.Token);
         }
 
-        private void AddStatRegen(StatId statIndex, StatId regenStatIndex)
+        private void AddStatRegen(StatAttribute statIndex, StatAttribute regenStatIndex)
         {
             int regenAmount = Stats[regenStatIndex].Total;
             if (regenAmount <= 0)

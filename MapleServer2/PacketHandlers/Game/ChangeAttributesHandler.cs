@@ -103,7 +103,8 @@ public class ChangeAttributesHandler : GamePacketHandler
         int metacellCosts = Math.Min(11 + gear.TimesAttributesChanged, 25);
 
         // Relation between TimesAttributesChanged to amount of crystalFragments for epic gear
-        int[] crystalFragmentsEpicGear = {
+        int[] crystalFragmentsEpicGear =
+        {
             200, 250, 312, 390, 488, 610, 762, 953, 1192, 1490, 1718, 2131, 2642, 3277, 4063
         };
 
@@ -134,28 +135,32 @@ public class ChangeAttributesHandler : GamePacketHandler
         Item newItem = new(gear);
 
         // Get random stats except stat that is locked
-        List<ItemStat> randomList = ItemStats.RollBonusStatsWithStatLocked(newItem, lockStatId, isSpecialStat);
+        List<ItemStat> randomList = RandomStats.RollBonusStatsWithStatLocked(newItem, lockStatId, isSpecialStat);
 
-        for (int i = 0; i < newItem.Stats.BonusStats.Count; i++)
+        Dictionary<StatAttribute, ItemStat> newRandoms = new(newItem.Stats.Randoms);
+        for (int i = 0; i < newItem.Stats.Randoms.Count; i++)
         {
-            // Check if BonusStats[i] is NormalStat and isSpecialStat is false
+            ItemStat stat = newRandoms.ElementAt(i).Value;
+            // Check if BonusStats[i] is BasicStat and isSpecialStat is false
             // Check if BonusStats[i] is SpecialStat and isSpecialStat is true
-            switch (newItem.Stats.BonusStats[i])
+            switch (stat)
             {
-                case NormalStat when !isSpecialStat:
+                case BasicStat when !isSpecialStat:
                 case SpecialStat when isSpecialStat:
-                    ItemStat stat = newItem.Stats.BonusStats[i];
                     switch (stat)
                     {
-                        case NormalStat ns when ns.ItemAttribute == (StatId) lockStatId:
-                        case SpecialStat ss when ss.ItemAttribute == (SpecialStatId) lockStatId:
+                        case SpecialStat ns when ns.ItemAttribute == (StatAttribute) lockStatId:
+                        case SpecialStat ss when ss.ItemAttribute == (StatAttribute) lockStatId:
                             continue;
                     }
                     break;
             }
 
-            newItem.Stats.BonusStats[i] = randomList[i];
+            newRandoms.Remove(stat.ItemAttribute);
+
+            newRandoms[stat.ItemAttribute] = randomList[i];
         }
+        newItem.Stats.Randoms = newRandoms;
 
         // Consume materials from inventory
         ConsumeMaterials(session, greenCrystalCost, metacellCosts, crystalFragmentsCosts, greenCrystals, metacells, crystalFragments);
