@@ -1188,12 +1188,26 @@ public partial class FieldManager : IDisposable
     public void Dispose()
     {
         CancellationToken.Cancel();
-        Task.WaitAll(MapLoopTask, TriggerTask);
+        WaitForTask(MapLoopTask);
+        WaitForTask(TriggerTask);
 
         MapLoopTask?.Dispose();
         TriggerTask?.Dispose();
         Navigator?.Dispose();
         GC.SuppressFinalize(this);
+
+        void WaitForTask(Task task)
+        {
+            try
+            {
+                task.Wait();
+            }
+            catch (AggregateException) { } // CancellationToken.Cancel(), then task.Wait() always throws AggregateException
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
+        }
     }
 
     ~FieldManager()
