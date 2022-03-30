@@ -31,15 +31,14 @@ public static class MapleServer
     public static async Task Main()
     {
         // Setup Serilog
+        const string ConsoleOutputTemplate = "[{@t:HH:mm:ss}] [{@l:u3}]" +
+                                             "{#if SourceContext is not null} {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1),-15}:{#end} {@m}\n{@x}";
+        const string FileOutputTemplate = "[{Timestamp:yyyy-MM-dd HH:mm:ss}] [{Level}] {SourceContext:l}: {Message:lj}{NewLine}{Exception}";
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()
-            .WriteTo.Console(new ExpressionTemplate(
-                "[{@t:HH:mm:ss}] [{@l:u3}]" +
-                "{#if SourceContext is not null} {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1),-15}:{#end} {@m}\n{@x}",
-                theme: TemplateTheme.Literate))
+            .WriteTo.Console(new ExpressionTemplate(ConsoleOutputTemplate, theme: TemplateTheme.Literate))
             .WriteTo.File($"{Paths.SOLUTION_DIR}/Logs/MapleServer2/LOG-.txt",
-                rollingInterval: RollingInterval.Day,
-                outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss}] [{Level}] {SourceContext:l}: {Message:lj}{NewLine}{Exception}")
+                rollingInterval: RollingInterval.Day, outputTemplate: FileOutputTemplate)
             .CreateLogger();
 
         _logger = Log.Logger.ForContext(typeof(MapleServer));
