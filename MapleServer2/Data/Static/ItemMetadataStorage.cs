@@ -181,6 +181,10 @@ public static class ItemMetadataStorage
 
     public static float GetOptionLevelFactor(int itemId) => GetMetadata(itemId)?.OptionLevelFactor ?? 0;
 
+    public static float GetGlobalOptionLevelFactor(int itemId) => GetMetadata(itemId).GlobalOptionLevelFactor;
+
+    public static int GetOptionId(int itemId) => GetMetadata(itemId).OptionId;
+
     public static EquipColor GetEquipColor(int itemId)
     {
         ItemMetadata itemMetadata = GetMetadata(itemId);
@@ -217,6 +221,8 @@ public static class ItemMetadataStorage
     public static int GetObjectId(int itemId) => GetMetadata(itemId).ObjectId;
 
     public static string GetBlackMarketCategory(int itemId) => GetMetadata(itemId).BlackMarketCategory;
+
+    public static int GetGearScoreFactor(int itemId) => GetMetadata(itemId).GearScoreFactor;
 
     public static long GetExpiration(int itemId)
     {

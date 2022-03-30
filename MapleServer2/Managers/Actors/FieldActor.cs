@@ -57,8 +57,8 @@ public partial class FieldManager
         public virtual void Heal(GameSession session, Status status, int amount)
         {
             session.FieldManager.BroadcastPacket(SkillDamagePacket.Heal(status, amount));
-            Stats[StatId.Hp].Increase(amount);
-            session.Send(StatPacket.UpdateStats(this, StatId.Hp));
+            Stats[StatAttribute.Hp].Increase(amount);
+            session.Send(StatPacket.UpdateStats(this, StatAttribute.Hp));
         }
 
         public virtual void RecoverHp(int amount)
@@ -70,7 +70,7 @@ public partial class FieldManager
 
             lock (Stats)
             {
-                Stat stat = Stats[StatId.Hp];
+                Stat stat = Stats[StatAttribute.Hp];
                 if (stat.Total < stat.Bonus)
                 {
                     stat.Increase(Math.Min(amount, stat.Bonus - stat.Total));
@@ -87,7 +87,7 @@ public partial class FieldManager
 
             lock (Stats)
             {
-                Stat stat = Stats[StatId.Hp];
+                Stat stat = Stats[StatAttribute.Hp];
                 stat.Decrease(Math.Min(amount, stat.Total));
             }
         }
@@ -101,7 +101,7 @@ public partial class FieldManager
 
             lock (Stats)
             {
-                Stat stat = Stats[StatId.Spirit];
+                Stat stat = Stats[StatAttribute.Spirit];
                 if (stat.Total < stat.Bonus)
                 {
                     stat.Increase(Math.Min(amount, stat.Bonus - stat.Total));
@@ -118,8 +118,8 @@ public partial class FieldManager
 
             lock (Stats)
             {
-                Stat stat = Stats[StatId.Spirit];
-                Stats[StatId.Spirit].Decrease(Math.Min(amount, stat.Total));
+                Stat stat = Stats[StatAttribute.Spirit];
+                Stats[StatAttribute.Spirit].Decrease(Math.Min(amount, stat.Total));
             }
         }
 
@@ -132,10 +132,10 @@ public partial class FieldManager
 
             lock (Stats)
             {
-                Stat stat = Stats[StatId.Stamina];
+                Stat stat = Stats[StatAttribute.Stamina];
                 if (stat.Total < stat.Bonus)
                 {
-                    Stats[StatId.Stamina].Increase(Math.Min(amount, stat.Bonus - stat.Total));
+                    Stats[StatAttribute.Stamina].Increase(Math.Min(amount, stat.Bonus - stat.Total));
                 }
             }
         }
@@ -149,14 +149,14 @@ public partial class FieldManager
 
             lock (Stats)
             {
-                Stat stat = Stats[StatId.Stamina];
-                Stats[StatId.Stamina].Decrease(Math.Min(amount, stat.Total));
+                Stat stat = Stats[StatAttribute.Stamina];
+                Stats[StatAttribute.Stamina].Decrease(Math.Min(amount, stat.Total));
             }
         }
 
         public virtual void Damage(DamageHandler damage, GameSession session)
         {
-            Stat health = Stats[StatId.Hp];
+            Stat health = Stats[StatAttribute.Hp];
             health.Decrease((long) damage.Damage);
             if (health.Total <= 0)
             {

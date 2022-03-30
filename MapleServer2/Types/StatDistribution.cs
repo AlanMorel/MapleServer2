@@ -7,12 +7,12 @@ public class StatDistribution
 {
     public int TotalStatPoints;
     public Dictionary<OtherStatsIndex, int> OtherStats { get; } // Dictionary of OtherStatsIndex and amount of points allocated to it
-    public Dictionary<StatId, int> AllocatedStats { get; } // Dictionary of StatId and amount of stat points allocated to it
+    public Dictionary<StatAttribute, int> AllocatedStats { get; } // Dictionary of StatId and amount of stat points allocated to it
 
-    public StatDistribution(int totalStats = 0, Dictionary<StatId, int> allocatedStats = null, Dictionary<OtherStatsIndex, int> otherStats = null)
+    public StatDistribution(int totalStats = 0, Dictionary<StatAttribute, int> allocatedStats = null, Dictionary<OtherStatsIndex, int> otherStats = null)
     {
         TotalStatPoints = totalStats;
-        AllocatedStats = allocatedStats ?? new Dictionary<StatId, int>();
+        AllocatedStats = allocatedStats ?? new Dictionary<StatAttribute, int>();
         OtherStats = otherStats ?? new Dictionary<OtherStatsIndex, int>();
     }
 
@@ -32,7 +32,7 @@ public class StatDistribution
         OtherStats[pointSrc] += amount;
     }
 
-    public void AddPoint(StatId statType)
+    public void AddPoint(StatAttribute statType)
     {
         if (AllocatedStats.ContainsKey(statType))
         {

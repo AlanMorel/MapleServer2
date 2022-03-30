@@ -42,274 +42,274 @@ public class ItemOptionRangeParser : Exporter<List<ItemOptionRangeMetadata>>
                 switch (option)
                 {
                     case "strValue":
-                        metadata.Stats[StatId.Str] = ParseIntValues(StatId.Str, node);
+                        metadata.Stats[StatAttribute.Str] = ParseNormalStat(StatAttribute.Str, node, StatAttributeType.Flat);
                         break;
                     case "dexValue":
-                        metadata.Stats[StatId.Dex] = ParseIntValues(StatId.Dex, node);
+                        metadata.Stats[StatAttribute.Dex] = ParseNormalStat(StatAttribute.Dex, node, StatAttributeType.Flat);
                         break;
                     case "intValue":
-                        metadata.Stats[StatId.Int] = ParseIntValues(StatId.Int, node);
+                        metadata.Stats[StatAttribute.Int] = ParseNormalStat(StatAttribute.Int, node, StatAttributeType.Flat);
                         break;
                     case "lukValue":
-                        metadata.Stats[StatId.Luk] = ParseIntValues(StatId.Luk, node);
+                        metadata.Stats[StatAttribute.Luk] = ParseNormalStat(StatAttribute.Luk, node, StatAttributeType.Flat);
                         break;
                     case "hpValue":
-                        metadata.Stats[StatId.Hp] = ParseIntValues(StatId.Hp, node);
+                        metadata.Stats[StatAttribute.Hp] = ParseNormalStat(StatAttribute.Hp, node, StatAttributeType.Flat);
                         break;
                     case "aspValue":
-                        metadata.Stats[StatId.AttackSpeed] = ParseIntValues(StatId.AttackSpeed, node);
+                        metadata.Stats[StatAttribute.AttackSpeed] = ParseNormalStat(StatAttribute.AttackSpeed, node, StatAttributeType.Flat);
                         break;
                     case "mspValue":
-                        metadata.Stats[StatId.MovementSpeed] = ParseIntValues(StatId.MovementSpeed, node);
+                        metadata.Stats[StatAttribute.MovementSpeed] = ParseNormalStat(StatAttribute.MovementSpeed, node, StatAttributeType.Flat);
                         break;
                     case "atpValue":
-                        metadata.Stats[StatId.Accuracy] = ParseIntValues(StatId.Accuracy, node);
+                        metadata.Stats[StatAttribute.Accuracy] = ParseNormalStat(StatAttribute.Accuracy, node, StatAttributeType.Flat);
                         break;
                     case "evpValue":
-                        metadata.Stats[StatId.Evasion] = ParseIntValues(StatId.Evasion, node);
+                        metadata.Stats[StatAttribute.Evasion] = ParseNormalStat(StatAttribute.Evasion, node, StatAttributeType.Flat);
                         break;
                     case "capValue":
-                        metadata.Stats[StatId.CritRate] = ParseIntValues(StatId.CritRate, node);
+                        metadata.Stats[StatAttribute.CritRate] = ParseNormalStat(StatAttribute.CritRate, node, StatAttributeType.Flat);
                         break;
                     case "cadValue":
-                        metadata.Stats[StatId.CritDamage] = ParseIntValues(StatId.CritDamage, node);
+                        metadata.Stats[StatAttribute.CritDamage] = ParseNormalStat(StatAttribute.CritDamage, node, StatAttributeType.Flat);
                         break;
                     case "carValue":
-                        metadata.Stats[StatId.CritEvasion] = ParseIntValues(StatId.CritEvasion, node);
+                        metadata.Stats[StatAttribute.CritEvasion] = ParseNormalStat(StatAttribute.CritEvasion, node, StatAttributeType.Flat);
                         break;
                     case "nddValue":
-                        metadata.Stats[StatId.Defense] = ParseIntValues(StatId.Defense, node);
+                        metadata.Stats[StatAttribute.Defense] = ParseNormalStat(StatAttribute.Defense, node, StatAttributeType.Flat);
                         break;
                     case "papValue":
-                        metadata.Stats[StatId.PhysicalAtk] = ParseIntValues(StatId.PhysicalAtk, node);
+                        metadata.Stats[StatAttribute.PhysicalAtk] = ParseNormalStat(StatAttribute.PhysicalAtk, node, StatAttributeType.Flat);
                         break;
                     case "mapValue":
-                        metadata.Stats[StatId.MagicAtk] = ParseIntValues(StatId.MagicAtk, node);
+                        metadata.Stats[StatAttribute.MagicAtk] = ParseNormalStat(StatAttribute.MagicAtk, node, StatAttributeType.Flat);
                         break;
                     case "parValue":
-                        metadata.Stats[StatId.PhysicalRes] = ParseIntValues(StatId.PhysicalRes, node);
+                        metadata.Stats[StatAttribute.PhysicalRes] = ParseNormalStat(StatAttribute.PhysicalRes, node, StatAttributeType.Flat);
                         break;
                     case "marValue":
-                        metadata.Stats[StatId.MagicRes] = ParseIntValues(StatId.MagicRes, node);
+                        metadata.Stats[StatAttribute.MagicRes] = ParseNormalStat(StatAttribute.MagicRes, node, StatAttributeType.Flat);
                         break;
                     case "penRate":
-                        metadata.Stats[StatId.Pierce] = ParseFloatValues(StatId.Pierce, node);
+                        metadata.Stats[StatAttribute.Pierce] = ParseNormalStat(StatAttribute.Pierce, node, StatAttributeType.Rate);
                         break;
                     case "sgi_BossRate":
-                        metadata.SpecialStats[SpecialStatId.BossDamage] = ParseSpecialValues(SpecialStatId.BossDamage, node, true);
+                        metadata.SpecialStats[StatAttribute.BossDamage] = ParseSpecialStat(StatAttribute.BossDamage, node, StatAttributeType.Rate);
                         break;
                     case "stunReduceRate":
-                        metadata.SpecialStats[SpecialStatId.StunReduce] = ParseSpecialValues(SpecialStatId.StunReduce, node, true);
+                        metadata.SpecialStats[StatAttribute.StunReduce] = ParseSpecialStat(StatAttribute.StunReduce, node, StatAttributeType.Rate);
                         break;
                     case "killHPRestoreValue":
-                        metadata.SpecialStats[SpecialStatId.HpOnKill] = ParseSpecialValues(SpecialStatId.HpOnKill, node, false);
+                        metadata.SpecialStats[StatAttribute.HpOnKill] = ParseSpecialStat(StatAttribute.HpOnKill, node, StatAttributeType.Flat);
                         break;
                     case "skillCooldownRate":
-                        metadata.SpecialStats[SpecialStatId.CooldownReduce] = ParseSpecialValues(SpecialStatId.CooldownReduce, node, true);
+                        metadata.SpecialStats[StatAttribute.CooldownReduce] = ParseSpecialStat(StatAttribute.CooldownReduce, node, StatAttributeType.Rate);
                         break;
                     case "KnockBackReduceValue":
-                        metadata.SpecialStats[SpecialStatId.KnockbackReduce] = ParseSpecialValues(SpecialStatId.KnockbackReduce, node, false);
+                        metadata.SpecialStats[StatAttribute.KnockbackReduce] = ParseSpecialStat(StatAttribute.KnockbackReduce, node, StatAttributeType.Flat);
                         break;
                     case "nearDistanceDamageReduceRate":
-                        metadata.SpecialStats[SpecialStatId.MeleeDamageReduce] = ParseSpecialValues(SpecialStatId.MeleeDamageReduce, node, true);
+                        metadata.SpecialStats[StatAttribute.MeleeDamageReduce] = ParseSpecialStat(StatAttribute.MeleeDamageReduce, node, StatAttributeType.Rate);
                         break;
                     case "longDistanceDamageReduceRate":
-                        metadata.SpecialStats[SpecialStatId.RangedDamageReduce] = ParseSpecialValues(SpecialStatId.RangedDamageReduce, node, true);
+                        metadata.SpecialStats[StatAttribute.RangedDamageReduce] = ParseSpecialStat(StatAttribute.RangedDamageReduce, node, StatAttributeType.Rate);
                         break;
                     case "finalAdditionalDamageRate":
-                        metadata.SpecialStats[SpecialStatId.TotalDamage] = ParseSpecialValues(SpecialStatId.TotalDamage, node, true);
+                        metadata.SpecialStats[StatAttribute.TotalDamage] = ParseSpecialStat(StatAttribute.TotalDamage, node, StatAttributeType.Rate);
                         break;
                     case "firedamagereduceRate":
-                        metadata.SpecialStats[SpecialStatId.FireDamageReduce] = ParseSpecialValues(SpecialStatId.FireDamageReduce, node, true);
+                        metadata.SpecialStats[StatAttribute.FireDamageReduce] = ParseSpecialStat(StatAttribute.FireDamageReduce, node, StatAttributeType.Rate);
                         break;
                     case "icedamagereduceRate":
-                        metadata.SpecialStats[SpecialStatId.IceDamageReduce] = ParseSpecialValues(SpecialStatId.IceDamageReduce, node, true);
+                        metadata.SpecialStats[StatAttribute.IceDamageReduce] = ParseSpecialStat(StatAttribute.IceDamageReduce, node, StatAttributeType.Rate);
                         break;
                     case "thunderdamagereduceRate":
-                        metadata.SpecialStats[SpecialStatId.ElectricDamageReduce] = ParseSpecialValues(SpecialStatId.ElectricDamageReduce, node, true);
+                        metadata.SpecialStats[StatAttribute.ElectricDamageReduce] = ParseSpecialStat(StatAttribute.ElectricDamageReduce, node, StatAttributeType.Rate);
                         break;
                     case "poisondamagereduceRate":
-                        metadata.SpecialStats[SpecialStatId.PoisonDamageReduce] = ParseSpecialValues(SpecialStatId.PoisonDamageReduce, node, true);
+                        metadata.SpecialStats[StatAttribute.PoisonDamageReduce] = ParseSpecialStat(StatAttribute.PoisonDamageReduce, node, StatAttributeType.Rate);
                         break;
                     case "darkdamagereduceRate":
-                        metadata.SpecialStats[SpecialStatId.DarkDamageReduce] = ParseSpecialValues(SpecialStatId.DarkDamageReduce, node, true);
+                        metadata.SpecialStats[StatAttribute.DarkDamageReduce] = ParseSpecialStat(StatAttribute.DarkDamageReduce, node, StatAttributeType.Rate);
                         break;
                     case "lightdamagereduceRate":
-                        metadata.SpecialStats[SpecialStatId.HolyDamageReduce] = ParseSpecialValues(SpecialStatId.HolyDamageReduce, node, true);
+                        metadata.SpecialStats[StatAttribute.HolyDamageReduce] = ParseSpecialStat(StatAttribute.HolyDamageReduce, node, StatAttributeType.Rate);
                         break;
                     case "parpenRate":
-                        metadata.SpecialStats[SpecialStatId.PhysicalPiercing] = ParseSpecialValues(SpecialStatId.PhysicalPiercing, node, true);
+                        metadata.SpecialStats[StatAttribute.PhysicalPiercing] = ParseSpecialStat(StatAttribute.PhysicalPiercing, node, StatAttributeType.Rate);
                         break;
                     case "marpenRate":
-                        metadata.SpecialStats[SpecialStatId.MagicPiercing] = ParseSpecialValues(SpecialStatId.MagicPiercing, node, true);
+                        metadata.SpecialStats[StatAttribute.MagicPiercing] = ParseSpecialStat(StatAttribute.MagicPiercing, node, StatAttributeType.Rate);
                         break;
                     case "firedamageRate":
-                        metadata.SpecialStats[SpecialStatId.FireDamage] = ParseSpecialValues(SpecialStatId.FireDamage, node, true);
+                        metadata.SpecialStats[StatAttribute.FireDamage] = ParseSpecialStat(StatAttribute.FireDamage, node, StatAttributeType.Rate);
                         break;
                     case "icedamageRate":
-                        metadata.SpecialStats[SpecialStatId.IceDamage] = ParseSpecialValues(SpecialStatId.IceDamage, node, true);
+                        metadata.SpecialStats[StatAttribute.IceDamage] = ParseSpecialStat(StatAttribute.IceDamage, node, StatAttributeType.Rate);
                         break;
                     case "thunderdamageRate":
-                        metadata.SpecialStats[SpecialStatId.ElectricDamage] = ParseSpecialValues(SpecialStatId.ElectricDamage, node, true);
+                        metadata.SpecialStats[StatAttribute.ElectricDamage] = ParseSpecialStat(StatAttribute.ElectricDamage, node, StatAttributeType.Rate);
                         break;
                     case "poisondamageRate":
-                        metadata.SpecialStats[SpecialStatId.PoisonDamage] = ParseSpecialValues(SpecialStatId.PoisonDamage, node, true);
+                        metadata.SpecialStats[StatAttribute.PoisonDamage] = ParseSpecialStat(StatAttribute.PoisonDamage, node, StatAttributeType.Rate);
                         break;
                     case "darkdamageRate":
-                        metadata.SpecialStats[SpecialStatId.DarkDamage] = ParseSpecialValues(SpecialStatId.DarkDamage, node, true);
+                        metadata.SpecialStats[StatAttribute.DarkDamage] = ParseSpecialStat(StatAttribute.DarkDamage, node, StatAttributeType.Rate);
                         break;
                     case "lightdamageRate":
-                        metadata.SpecialStats[SpecialStatId.HolyDamage] = ParseSpecialValues(SpecialStatId.HolyDamage, node, true);
+                        metadata.SpecialStats[StatAttribute.HolyDamage] = ParseSpecialStat(StatAttribute.HolyDamage, node, StatAttributeType.Rate);
                         break;
                     case "lddIncreaseRate":
-                        metadata.SpecialStats[SpecialStatId.RangedDamage] = ParseSpecialValues(SpecialStatId.RangedDamage, node, true);
+                        metadata.SpecialStats[StatAttribute.RangedDamage] = ParseSpecialStat(StatAttribute.RangedDamage, node, StatAttributeType.Rate);
                         break;
                     case "nddIncreaseRate":
-                        metadata.SpecialStats[SpecialStatId.MeleeDamage] = ParseSpecialValues(SpecialStatId.MeleeDamage, node, true);
+                        metadata.SpecialStats[StatAttribute.MeleeDamage] = ParseSpecialStat(StatAttribute.MeleeDamage, node, StatAttributeType.Rate);
                         break;
                     case "healRate":
-                        metadata.SpecialStats[SpecialStatId.Heal] = ParseSpecialValues(SpecialStatId.Heal, node, true);
+                        metadata.SpecialStats[StatAttribute.Heal] = ParseSpecialStat(StatAttribute.Heal, node, StatAttributeType.Rate);
                         break;
                     case "conditionReduceRate":
-                        metadata.SpecialStats[SpecialStatId.DebuffDurationReduce] = ParseSpecialValues(SpecialStatId.DebuffDurationReduce, node, true);
+                        metadata.SpecialStats[StatAttribute.DebuffDurationReduce] = ParseSpecialStat(StatAttribute.DebuffDurationReduce, node, StatAttributeType.Rate);
                         break;
                     case "receivedhealincreaseRate":
-                        metadata.SpecialStats[SpecialStatId.AllyRecovery] = ParseSpecialValues(SpecialStatId.AllyRecovery, node, true);
+                        metadata.SpecialStats[StatAttribute.AllyRecovery] = ParseSpecialStat(StatAttribute.AllyRecovery, node, StatAttributeType.Rate);
                         break;
                     case "improve_massive_ox_expRate":
-                        metadata.SpecialStats[SpecialStatId.OXQuizExp] = ParseSpecialValues(SpecialStatId.OXQuizExp, node, true);
+                        metadata.SpecialStats[StatAttribute.OXQuizExp] = ParseSpecialStat(StatAttribute.OXQuizExp, node, StatAttributeType.Rate);
                         break;
                     case "improve_massive_trapmaster_expRate":
-                        metadata.SpecialStats[SpecialStatId.TrapMasterExp] = ParseSpecialValues(SpecialStatId.TrapMasterExp, node, true);
+                        metadata.SpecialStats[StatAttribute.TrapMasterExp] = ParseSpecialStat(StatAttribute.TrapMasterExp, node, StatAttributeType.Rate);
                         break;
                     case "improve_massive_finalsurvival_expRate":
-                        metadata.SpecialStats[SpecialStatId.SoleSurvivorExp] = ParseSpecialValues(SpecialStatId.SoleSurvivorExp, node, true);
+                        metadata.SpecialStats[StatAttribute.SoleSurvivorExp] = ParseSpecialStat(StatAttribute.SoleSurvivorExp, node, StatAttributeType.Rate);
                         break;
                     case "improve_massive_crazyrunner_expRate":
-                        metadata.SpecialStats[SpecialStatId.CrazyRunnerExp] = ParseSpecialValues(SpecialStatId.CrazyRunnerExp, node, true);
+                        metadata.SpecialStats[StatAttribute.CrazyRunnerExp] = ParseSpecialStat(StatAttribute.CrazyRunnerExp, node, StatAttributeType.Rate);
                         break;
                     case "improve_massive_escape_expRate":
-                        metadata.SpecialStats[SpecialStatId.LudiEscapeExp] = ParseSpecialValues(SpecialStatId.LudiEscapeExp, node, true);
+                        metadata.SpecialStats[StatAttribute.LudiEscapeExp] = ParseSpecialStat(StatAttribute.LudiEscapeExp, node, StatAttributeType.Rate);
                         break;
                     case "improve_massive_springbeach_expRate":
-                        metadata.SpecialStats[SpecialStatId.SpringBeachExp] = ParseSpecialValues(SpecialStatId.SpringBeachExp, node, true);
+                        metadata.SpecialStats[StatAttribute.SpringBeachExp] = ParseSpecialStat(StatAttribute.SpringBeachExp, node, StatAttributeType.Rate);
                         break;
                     case "improve_massive_dancedance_expRate":
-                        metadata.SpecialStats[SpecialStatId.DanceDanceExp] = ParseSpecialValues(SpecialStatId.DanceDanceExp, node, true);
+                        metadata.SpecialStats[StatAttribute.DanceDanceExp] = ParseSpecialStat(StatAttribute.DanceDanceExp, node, StatAttributeType.Rate);
                         break;
                     case "improve_massive_ox_mspValue":
-                        metadata.SpecialStats[SpecialStatId.OXMovementSpeed] = ParseSpecialValues(SpecialStatId.OXMovementSpeed, node, false);
+                        metadata.SpecialStats[StatAttribute.OXMovementSpeed] = ParseSpecialStat(StatAttribute.OXMovementSpeed, node, StatAttributeType.Flat);
                         break;
                     case "improve_massive_trapmaster_mspValue":
-                        metadata.SpecialStats[SpecialStatId.TrapMasterMovementSpeed] = ParseSpecialValues(SpecialStatId.TrapMasterMovementSpeed, node, false);
+                        metadata.SpecialStats[StatAttribute.TrapMasterMovementSpeed] = ParseSpecialStat(StatAttribute.TrapMasterMovementSpeed, node, StatAttributeType.Flat);
                         break;
                     case "improve_massive_finalsurvival_mspValue":
-                        metadata.SpecialStats[SpecialStatId.SoleSurvivorMovementSpeed] = ParseSpecialValues(SpecialStatId.SoleSurvivorMovementSpeed, node, false);
+                        metadata.SpecialStats[StatAttribute.SoleSurvivorMovementSpeed] = ParseSpecialStat(StatAttribute.SoleSurvivorMovementSpeed, node, StatAttributeType.Flat);
                         break;
                     case "improve_massive_crazyrunner_mspValue":
-                        metadata.SpecialStats[SpecialStatId.CrazyRunnerMovementSpeed] = ParseSpecialValues(SpecialStatId.CrazyRunnerMovementSpeed, node, false);
+                        metadata.SpecialStats[StatAttribute.CrazyRunnerMovementSpeed] = ParseSpecialStat(StatAttribute.CrazyRunnerMovementSpeed, node, StatAttributeType.Flat);
                         break;
                     case "improve_massive_escape_mspValue":
-                        metadata.SpecialStats[SpecialStatId.LudiEscapeMovementSpeed] = ParseSpecialValues(SpecialStatId.LudiEscapeMovementSpeed, node, false);
+                        metadata.SpecialStats[StatAttribute.LudiEscapeMovementSpeed] = ParseSpecialStat(StatAttribute.LudiEscapeMovementSpeed, node, StatAttributeType.Flat);
                         break;
                     case "improve_massive_springbeach_mspValue":
-                        metadata.SpecialStats[SpecialStatId.SpringBeachMovementSpeed] = ParseSpecialValues(SpecialStatId.SpringBeachMovementSpeed, node, false);
+                        metadata.SpecialStats[StatAttribute.SpringBeachMovementSpeed] = ParseSpecialStat(StatAttribute.SpringBeachMovementSpeed, node, StatAttributeType.Flat);
                         break;
                     case "improve_massive_dancedance_mspValue":
-                        metadata.SpecialStats[SpecialStatId.DanceDanceStopMovementSpeed] = ParseSpecialValues(SpecialStatId.DanceDanceStopMovementSpeed, node, false);
+                        metadata.SpecialStats[StatAttribute.DanceDanceStopMovementSpeed] = ParseSpecialStat(StatAttribute.DanceDanceStopMovementSpeed, node, StatAttributeType.Flat);
                         break;
                     case "npc_hit_reward_sp_ballRate":
-                        metadata.SpecialStats[SpecialStatId.GenerateSpiritOrbs] = ParseSpecialValues(SpecialStatId.GenerateSpiritOrbs, node, true);
+                        metadata.SpecialStats[StatAttribute.GenerateSpiritOrbs] = ParseSpecialStat(StatAttribute.GenerateSpiritOrbs, node, StatAttributeType.Rate);
                         break;
                     case "npc_hit_reward_ep_ballRate":
-                        metadata.SpecialStats[SpecialStatId.GenerateStaminaOrbs] = ParseSpecialValues(SpecialStatId.GenerateStaminaOrbs, node, true);
+                        metadata.SpecialStats[StatAttribute.GenerateStaminaOrbs] = ParseSpecialStat(StatAttribute.GenerateStaminaOrbs, node, StatAttributeType.Rate);
                         break;
                     case "improve_honor_tokenRate":
-                        metadata.SpecialStats[SpecialStatId.ValorTokens] = ParseSpecialValues(SpecialStatId.ValorTokens, node, true);
+                        metadata.SpecialStats[StatAttribute.ValorTokens] = ParseSpecialStat(StatAttribute.ValorTokens, node, StatAttributeType.Rate);
                         break;
                     case "improve_pvp_expRate":
-                        metadata.SpecialStats[SpecialStatId.PvPExp] = ParseSpecialValues(SpecialStatId.PvPExp, node, true);
+                        metadata.SpecialStats[StatAttribute.PvPExp] = ParseSpecialStat(StatAttribute.PvPExp, node, StatAttributeType.Rate);
                         break;
                     case "improve_darkstream_damageRate":
-                        metadata.SpecialStats[SpecialStatId.DarkDescentDamageBonus] = ParseSpecialValues(SpecialStatId.DarkDescentDamageBonus, node, true);
+                        metadata.SpecialStats[StatAttribute.DarkDescentDamageBonus] = ParseSpecialStat(StatAttribute.DarkDescentDamageBonus, node, StatAttributeType.Rate);
                         break;
                     case "reduce_darkstream_recive_damageRate":
-                        metadata.SpecialStats[SpecialStatId.DarkDescentDamageReduce] = ParseSpecialValues(SpecialStatId.DarkDescentDamageReduce, node, true);
+                        metadata.SpecialStats[StatAttribute.DarkDescentDamageReduce] = ParseSpecialStat(StatAttribute.DarkDescentDamageReduce, node, StatAttributeType.Rate);
                         break;
                     case "fishing_double_masteryRate":
-                        metadata.SpecialStats[SpecialStatId.DoubleFishingMastery] = ParseSpecialValues(SpecialStatId.DoubleFishingMastery, node, true);
+                        metadata.SpecialStats[StatAttribute.DoubleFishingMastery] = ParseSpecialStat(StatAttribute.DoubleFishingMastery, node, StatAttributeType.Rate);
                         break;
                     case "playinstrument_double_masteryRate":
-                        metadata.SpecialStats[SpecialStatId.DoublePerformanceMastery] = ParseSpecialValues(SpecialStatId.DoublePerformanceMastery, node, true);
+                        metadata.SpecialStats[StatAttribute.DoublePerformanceMastery] = ParseSpecialStat(StatAttribute.DoublePerformanceMastery, node, StatAttributeType.Rate);
                         break;
                     case "complete_fieldmission_mspValue":
-                        metadata.SpecialStats[SpecialStatId.ExploredAreasMovementSpeed] = ParseSpecialValues(SpecialStatId.ExploredAreasMovementSpeed, node, false);
+                        metadata.SpecialStats[StatAttribute.ExploredAreasMovementSpeed] = ParseSpecialStat(StatAttribute.ExploredAreasMovementSpeed, node, StatAttributeType.Flat);
                         break;
                     case "improve_glide_vertical_velocityRate":
-                        metadata.SpecialStats[SpecialStatId.AirMountAscentSpeed] = ParseSpecialValues(SpecialStatId.AirMountAscentSpeed, node, true);
+                        metadata.SpecialStats[StatAttribute.AirMountAscentSpeed] = ParseSpecialStat(StatAttribute.AirMountAscentSpeed, node, StatAttributeType.Rate);
                         break;
                     case "seg_fishingrewardRate":
-                        metadata.SpecialStats[SpecialStatId.FishingExp] = ParseSpecialValues(SpecialStatId.FishingExp, node, true);
+                        metadata.SpecialStats[StatAttribute.FishingExp] = ParseSpecialStat(StatAttribute.FishingExp, node, StatAttributeType.Rate);
                         break;
                     case "seg_playinstrumentrewardRate":
-                        metadata.SpecialStats[SpecialStatId.PerformanceExp] = ParseSpecialValues(SpecialStatId.PerformanceExp, node, true);
+                        metadata.SpecialStats[StatAttribute.PerformanceExp] = ParseSpecialStat(StatAttribute.PerformanceExp, node, StatAttributeType.Rate);
                         break;
                     case "mining_double_rewardRate":
-                        metadata.SpecialStats[SpecialStatId.DoubleMiningProduction] = ParseSpecialValues(SpecialStatId.DoubleMiningProduction, node, true);
+                        metadata.SpecialStats[StatAttribute.DoubleMiningProduction] = ParseSpecialStat(StatAttribute.DoubleMiningProduction, node, StatAttributeType.Rate);
                         break;
                     case "breeding_double_rewardRate":
-                        metadata.SpecialStats[SpecialStatId.DoubleRanchingProduction] = ParseSpecialValues(SpecialStatId.DoubleRanchingProduction, node, true);
+                        metadata.SpecialStats[StatAttribute.DoubleRanchingProduction] = ParseSpecialStat(StatAttribute.DoubleRanchingProduction, node, StatAttributeType.Rate);
                         break;
                     case "gathering_double_rewardRate":
-                        metadata.SpecialStats[SpecialStatId.DoubleForagingProduction] = ParseSpecialValues(SpecialStatId.DoubleForagingProduction, node, true);
+                        metadata.SpecialStats[StatAttribute.DoubleForagingProduction] = ParseSpecialStat(StatAttribute.DoubleForagingProduction, node, StatAttributeType.Rate);
                         break;
                     case "farming_double_rewardRate":
-                        metadata.SpecialStats[SpecialStatId.DoubleFarmingProduction] = ParseSpecialValues(SpecialStatId.DoubleFarmingProduction, node, true);
+                        metadata.SpecialStats[StatAttribute.DoubleFarmingProduction] = ParseSpecialStat(StatAttribute.DoubleFarmingProduction, node, StatAttributeType.Rate);
                         break;
                     case "blacksmithing_double_rewardRate":
-                        metadata.SpecialStats[SpecialStatId.DoubleSmithingProduction] = ParseSpecialValues(SpecialStatId.DoubleSmithingProduction, node, true);
+                        metadata.SpecialStats[StatAttribute.DoubleSmithingProduction] = ParseSpecialStat(StatAttribute.DoubleSmithingProduction, node, StatAttributeType.Rate);
                         break;
                     case "engraving_double_rewardRate":
-                        metadata.SpecialStats[SpecialStatId.DoubleHandicraftProduction] = ParseSpecialValues(SpecialStatId.DoubleHandicraftProduction, node, true);
+                        metadata.SpecialStats[StatAttribute.DoubleHandicraftProduction] = ParseSpecialStat(StatAttribute.DoubleHandicraftProduction, node, StatAttributeType.Rate);
                         break;
                     case "alchemist_double_rewardRate":
-                        metadata.SpecialStats[SpecialStatId.DoubleAlchemyProduction] = ParseSpecialValues(SpecialStatId.DoubleAlchemyProduction, node, true);
+                        metadata.SpecialStats[StatAttribute.DoubleAlchemyProduction] = ParseSpecialStat(StatAttribute.DoubleAlchemyProduction, node, StatAttributeType.Rate);
                         break;
                     case "cooking_double_rewardRate":
-                        metadata.SpecialStats[SpecialStatId.DoubleCookingProduction] = ParseSpecialValues(SpecialStatId.DoubleCookingProduction, node, true);
+                        metadata.SpecialStats[StatAttribute.DoubleCookingProduction] = ParseSpecialStat(StatAttribute.DoubleCookingProduction, node, StatAttributeType.Rate);
                         break;
                     case "mining_double_masteryRate":
-                        metadata.SpecialStats[SpecialStatId.DoubleMiningMastery] = ParseSpecialValues(SpecialStatId.DoubleMiningMastery, node, true);
+                        metadata.SpecialStats[StatAttribute.DoubleMiningMastery] = ParseSpecialStat(StatAttribute.DoubleMiningMastery, node, StatAttributeType.Rate);
                         break;
                     case "breeding_double_masteryRate":
-                        metadata.SpecialStats[SpecialStatId.DoubleRanchingMastery] = ParseSpecialValues(SpecialStatId.DoubleRanchingMastery, node, true);
+                        metadata.SpecialStats[StatAttribute.DoubleRanchingMastery] = ParseSpecialStat(StatAttribute.DoubleRanchingMastery, node, StatAttributeType.Rate);
                         break;
                     case "gathering_double_masteryRate":
-                        metadata.SpecialStats[SpecialStatId.DoubleForagingMastery] = ParseSpecialValues(SpecialStatId.DoubleForagingMastery, node, true);
+                        metadata.SpecialStats[StatAttribute.DoubleForagingMastery] = ParseSpecialStat(StatAttribute.DoubleForagingMastery, node, StatAttributeType.Rate);
                         break;
                     case "farming_double_masteryRate":
-                        metadata.SpecialStats[SpecialStatId.DoubleFarmingMastery] = ParseSpecialValues(SpecialStatId.DoubleFarmingMastery, node, true);
+                        metadata.SpecialStats[StatAttribute.DoubleFarmingMastery] = ParseSpecialStat(StatAttribute.DoubleFarmingMastery, node, StatAttributeType.Rate);
                         break;
                     case "blacksmithing_double_masteryRate":
-                        metadata.SpecialStats[SpecialStatId.DoubleSmithingMastery] = ParseSpecialValues(SpecialStatId.DoubleSmithingMastery, node, true);
+                        metadata.SpecialStats[StatAttribute.DoubleSmithingMastery] = ParseSpecialStat(StatAttribute.DoubleSmithingMastery, node, StatAttributeType.Rate);
                         break;
                     case "engraving_double_masteryRate":
-                        metadata.SpecialStats[SpecialStatId.DoubleHandicraftMastery] = ParseSpecialValues(SpecialStatId.DoubleHandicraftMastery, node, true);
+                        metadata.SpecialStats[StatAttribute.DoubleHandicraftMastery] = ParseSpecialStat(StatAttribute.DoubleHandicraftMastery, node, StatAttributeType.Rate);
                         break;
                     case "alchemist_double_masteryRate":
-                        metadata.SpecialStats[SpecialStatId.DoubleAlchemyMastery] = ParseSpecialValues(SpecialStatId.DoubleAlchemyMastery, node, true);
+                        metadata.SpecialStats[StatAttribute.DoubleAlchemyMastery] = ParseSpecialStat(StatAttribute.DoubleAlchemyMastery, node, StatAttributeType.Rate);
                         break;
                     case "cooking_double_masteryRate":
-                        metadata.SpecialStats[SpecialStatId.DoubleCookingMastery] = ParseSpecialValues(SpecialStatId.DoubleCookingMastery, node, true);
+                        metadata.SpecialStats[StatAttribute.DoubleCookingMastery] = ParseSpecialStat(StatAttribute.DoubleCookingMastery, node, StatAttributeType.Rate);
                         break;
                     case "smdRate":
-                        metadata.SpecialStats[SpecialStatId.MesoBonus] = ParseSpecialValues(SpecialStatId.MesoBonus, node, true);
+                        metadata.SpecialStats[StatAttribute.MesoBonus] = ParseSpecialStat(StatAttribute.MesoBonus, node, StatAttributeType.Rate);
                         break;
                     case "npckilldropitemincrateRate":
-                        metadata.SpecialStats[SpecialStatId.DropRate] = ParseSpecialValues(SpecialStatId.DropRate, node, true);
+                        metadata.SpecialStats[StatAttribute.DropRate] = ParseSpecialStat(StatAttribute.DropRate, node, StatAttributeType.Rate);
                         break;
                     case "improve_darkstream_evpValue":
-                        metadata.SpecialStats[SpecialStatId.DarkDescentEvasion] = ParseSpecialValues(SpecialStatId.DarkDescentEvasion, node, false);
+                        metadata.SpecialStats[StatAttribute.DarkDescentEvasion] = ParseSpecialStat(StatAttribute.DarkDescentEvasion, node, StatAttributeType.Flat);
                         break;
                     case "additionaleffect_95000018Value":
                     case "additionaleffect_95000012Value":
@@ -324,35 +324,23 @@ public class ItemOptionRangeParser : Exporter<List<ItemOptionRangeMetadata>>
         return items;
     }
 
-    private static List<ParserStat> ParseIntValues(StatId attribute, XmlNode node)
+    private static List<ParserStat> ParseNormalStat(StatAttribute attribute, XmlNode node, StatAttributeType type)
     {
         List<ParserStat> values = new();
         for (int i = 2; i <= 17; i++)
         {
-            values.Add(new(attribute, int.Parse(node.Attributes[$"idx{i}"].Value)));
+            values.Add(new(attribute, float.Parse(node.Attributes[$"idx{i}"].Value), type));
         }
 
         return values;
     }
 
-    private static List<ParserStat> ParseFloatValues(StatId attribute, XmlNode node)
-    {
-        List<ParserStat> values = new();
-        for (int i = 2; i <= 17; i++)
-        {
-            values.Add(new(attribute, float.Parse(node.Attributes[$"idx{i}"].Value)));
-        }
-
-        return values;
-    }
-
-    private static List<ParserSpecialStat> ParseSpecialValues(SpecialStatId attribute, XmlNode node, bool isPercent)
+    private static List<ParserSpecialStat> ParseSpecialStat(StatAttribute attribute, XmlNode node, StatAttributeType type)
     {
         List<ParserSpecialStat> values = new();
         for (int i = 2; i <= 17; i++)
         {
-            float value = float.Parse(node.Attributes[$"idx{i}"].Value);
-            values.Add(new(attribute, isPercent ? value : 0, !isPercent ? value : 0));
+            values.Add(new(attribute, float.Parse(node.Attributes[$"idx{i}"].Value), type));
         }
 
         return values;

@@ -58,6 +58,7 @@ public class Player
     public long InstanceId { get; set; }
     public int TitleId { get; set; }
     public short InsigniaId { get; set; }
+    public int GearScore;
     public List<int> Titles { get; set; }
     public List<int> PrestigeRewardsClaimed { get; set; }
 
@@ -409,10 +410,10 @@ public class Player
 
     public void FallDamage()
     {
-        long currentHp = Stats[StatId.Hp].TotalLong;
+        long currentHp = Stats[StatAttribute.Hp].TotalLong;
         int fallDamage = (int) (currentHp * Math.Clamp(currentHp * 4 / 100 - 1, 0, 25) / 100); // TODO: Create accurate damage model
         FieldPlayer.ConsumeHp(fallDamage);
-        Session.Send(StatPacket.UpdateStats(FieldPlayer, StatId.Hp));
+        Session.Send(StatPacket.UpdateStats(FieldPlayer, StatAttribute.Hp));
         Session.Send(FallDamagePacket.FallDamage(FieldPlayer.ObjectId, fallDamage));
     }
 
@@ -513,5 +514,21 @@ public class Player
         {
             UnlockedMaps.Add(MapId);
         }
+    }
+
+    public void UpdateGearScore(Item item, int value)
+    {
+        ItemType itemType = item.GetItemType();
+        switch (itemType)
+        {
+            case ItemType.ThrowingStar:
+            case ItemType.Dagger:
+                value /= 2;
+                break;
+            case ItemType.Shield:
+            case ItemType.Spellbook:
+                return;
+        }
+        GearScore += value;
     }
 }

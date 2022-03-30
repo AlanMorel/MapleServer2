@@ -1091,14 +1091,14 @@ public partial class FieldManager : IDisposable
                     continue;
                 }
 
-                int healAmount = (int) (player.Value.Stats[StatId.Hp].Bonus * 0.03);
+                int healAmount = (int) (player.Value.Stats[StatAttribute.Hp].Bonus * 0.03);
                 Status status = new(new(70000018, 1, 0, 1), player.ObjectId, healingSpot.ObjectId, 1);
 
                 player.Value.Session.Send(BuffPacket.SendBuff(0, status));
                 BroadcastPacket(SkillDamagePacket.Heal(status, healAmount));
 
-                player.Stats[StatId.Hp].Increase(healAmount);
-                player.Value.Session.Send(StatPacket.UpdateStats(player, StatId.Hp));
+                player.Stats[StatAttribute.Hp].Increase(healAmount);
+                player.Value.Session.Send(StatPacket.UpdateStats(player, StatAttribute.Hp));
             }
         }
     }

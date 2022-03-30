@@ -44,6 +44,7 @@ public class ItemCommand : InGameCommand
             Amount = Math.Max(1, amount)
         };
         item.Stats = new(item);
+        item.GearScore = item.GetGearScore();
 
         // Simulate looting item
         trigger.Session.Player.Inventory.AddItem(trigger.Session, item, true);

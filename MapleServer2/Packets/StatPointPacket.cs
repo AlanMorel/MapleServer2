@@ -42,7 +42,7 @@ public static class StatPointPacket
         pWriter.WriteInt(character.StatPointDistribution.TotalStatPoints);
         pWriter.WriteInt(character.StatPointDistribution.GetStatTypeCount());
 
-        foreach ((StatId statType, int amount) in character.StatPointDistribution.AllocatedStats)
+        foreach ((StatAttribute statType, int amount) in character.StatPointDistribution.AllocatedStats)
         {
             pWriter.Write(statType);
             pWriter.WriteInt(amount);

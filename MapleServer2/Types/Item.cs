@@ -5,6 +5,8 @@ using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
+using MapleServer2.Tools;
+using MoonSharp.Interpreter;
 
 namespace MapleServer2.Types;
 
@@ -50,8 +52,9 @@ public class Item
     public long UnlockTime;
     public short RemainingGlamorForges;
     public int GachaDismantleId;
-
+    public int GearScore;
     public int Enchants;
+    public int LimitBreakLevel;
 
     // EnchantExp (10000 = 100%) for Peachy
     public int EnchantExp;
@@ -109,7 +112,8 @@ public class Item
         Slot = -1;
         Amount = 1;
         Score = new();
-        Stats = new(id, Rarity, ItemSlot, Level);
+        GearScore = GetGearScore();
+        Stats = new(this);
         if (saveToDatabase)
         {
             Uid = DatabaseManager.Items.Insert(this);
@@ -285,13 +289,39 @@ public class Item
         HousingCategory = ItemMetadataStorage.GetHousingCategory(Id);
         BlackMarketCategory = ItemMetadataStorage.GetBlackMarketCategory(Id);
         Category = ItemMetadataStorage.GetCategory(Id);
-        Type = GetItemType(Id);
+        Type = GetItemType();
     }
 
-    private static ItemType GetItemType(int itemId)
+    public ItemType GetItemType()
     {
-        return (itemId / 100000) switch
+        //TODO: Find a better method to find the item type
+        return (Id / 100000) switch
         {
+            112 => ItemType.Earring,
+            113 => ItemType.Hat,
+            114 => ItemType.Clothes,
+            115 => ItemType.Pants,
+            116 => ItemType.Gloves,
+            117 => ItemType.Shoes,
+            118 => ItemType.Cape,
+            119 => ItemType.Necklace,
+            120 => ItemType.Ring,
+            121 => ItemType.Belt,
+            122 => ItemType.Overall,
+            130 => ItemType.Bludgeon,
+            131 => ItemType.Dagger,
+            132 => ItemType.Longsword,
+            133 => ItemType.Scepter,
+            134 => ItemType.ThrowingStar,
+            140 => ItemType.Spellbook,
+            141 => ItemType.Shield,
+            150 => ItemType.Greatsword,
+            151 => ItemType.Bow,
+            152 => ItemType.Staff,
+            153 => ItemType.Cannon,
+            154 => ItemType.Blade,
+            155 => ItemType.Knuckle,
+            156 => ItemType.Orb,
             209 => ItemType.Medal,
             410 or 420 or 430 => ItemType.Lapenshard,
             501 or 502 or 503 or 504 or 505 => ItemType.Furnishing,
@@ -299,5 +329,13 @@ public class Item
             900 => ItemType.Currency,
             _ => ItemType.None
         };
+    }
+
+    public int GetGearScore()
+    {
+        int gearScoreFactor = ItemMetadataStorage.GetGearScoreFactor(Id);
+        ScriptLoader scriptLoader = new("Functions/calcItemValues");
+        DynValue result = scriptLoader.Call("calcItemGearScore", gearScoreFactor, Rarity, (int) Type, Enchants, LimitBreakLevel);
+        return (int) result.Tuple[0].Number + (int) result.Tuple[1].Number;
     }
 }
