@@ -1188,7 +1188,8 @@ public partial class FieldManager : IDisposable
     public void Dispose()
     {
         CancellationToken.Cancel();
-        Task.WaitAll(MapLoopTask, TriggerTask);
+        TaskUtils.WaitForTask(MapLoopTask);
+        TaskUtils.WaitForTask(TriggerTask);
 
         MapLoopTask?.Dispose();
         TriggerTask?.Dispose();
