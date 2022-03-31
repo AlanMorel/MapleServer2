@@ -59,7 +59,6 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                 OptionRandom = data.option.random,
                 OptionConstant = data.option.constant,
                 OptionLevelFactor = data.option.optionLevelFactor,
-                GlobalOptionLevelFactor = data.option.globalOptionLevelFactor ?? 0f,
                 OptionId = data.option.optionID,
                 FunctionData =
                 {
@@ -93,6 +92,11 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                     life.expirationPeriod[4], life.expirationPeriod[5]);
             }
 
+            // if globalOptionLevelFactor is present, override with these values
+            if (data.option.globalOptionLevelFactor is not null)
+            {
+                metadata.OptionLevelFactor = (float) data.option.globalOptionLevelFactor;
+            }
             // if globalTransferType is present, override with these values
             if (limit.globalTransferType is not null)
             {

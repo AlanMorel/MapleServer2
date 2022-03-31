@@ -4,7 +4,9 @@ using MapleServer2.Constants;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Tools;
 using MapleServer2.Types;
+using MoonSharp.Interpreter;
 
 namespace MapleServer2.PacketHandlers.Game;
 
@@ -50,25 +52,36 @@ public class ChangeAttributesHandler : GamePacketHandler
         }
 
         IInventory inventory = session.Player.Inventory;
-
-
-        // There are multiple ids for each type of material
-        IReadOnlyCollection<Item> greenCrystals = inventory.GetAllByTag("GreenCrystal");
-        IReadOnlyCollection<Item> metacells = inventory.GetAllByTag("MetaCell");
-        IReadOnlyCollection<Item> crystalFragments = inventory.GetAllByTag("CrystalPiece");
-
-        int greenCrystalTotalAmount = greenCrystals.Sum(x => x.Amount);
-        int metacellTotalAmount = metacells.Sum(x => x.Amount);
-        int crystalFragmentTotalAmount = crystalFragments.Sum(x => x.Amount);
-
         Item gear = inventory.GetByUid(itemUid);
-        Item scrollLock = null;
-
         // Check if gear exist in inventory
-        if (gear == null)
+        if (gear is null)
         {
             return;
         }
+
+        ScriptLoader scriptLoader = new("Functions/calcGetItemRemakeIngredient");
+        DynValue scriptResults = scriptLoader.Call("calcGetItemRemakeIngredientNew", (int) gear.Type, gear.TimesAttributesChanged, gear.Rarity, gear.Level);
+        
+        IReadOnlyCollection<Item> ingredient1 = inventory.GetAllByTag(scriptResults.Tuple[0].String);
+        int ingredient1Cost = (int) scriptResults.Tuple[1].Number;
+        IReadOnlyCollection<Item> ingredient2 = inventory.GetAllByTag(scriptResults.Tuple[2].String);
+        int ingredient2Cost = (int) scriptResults.Tuple[3].Number;
+        IReadOnlyCollection<Item> ingredient3= inventory.GetAllByTag(scriptResults.Tuple[4].String);
+        int ingredient3Cost = (int) scriptResults.Tuple[5].Number;
+        
+        Console.WriteLine($"Cost: {scriptResults.Tuple[0].String}: {scriptResults.Tuple[1].Number} -- {scriptResults.Tuple[2].String}: {scriptResults.Tuple[3].Number} -- {scriptResults.Tuple[4].String}: {scriptResults.Tuple[5].Number}");
+
+        int ingredient1TotalAmount = ingredient1.Sum(x => x.Amount);
+        int ingredient2TotalAmount = ingredient2.Sum(x => x.Amount);
+        int ingredient3TotalAmount = ingredient3.Sum(x => x.Amount);
+        
+        // Check if player has enough materials
+        if (ingredient1TotalAmount < ingredient1Cost || ingredient2TotalAmount < ingredient2Cost || ingredient3TotalAmount < ingredient3Cost)
+        {
+            return;
+        }
+
+        Item scrollLock = null;
 
         string tag = "";
         if (Item.IsAccessory(gear.ItemSlot))
@@ -99,37 +112,6 @@ public class ChangeAttributesHandler : GamePacketHandler
             }
         }
 
-        int greenCrystalCost = 5;
-        int metacellCosts = Math.Min(11 + gear.TimesAttributesChanged, 25);
-
-        // Relation between TimesAttributesChanged to amount of crystalFragments for epic gear
-        int[] crystalFragmentsEpicGear =
-        {
-            200, 250, 312, 390, 488, 610, 762, 953, 1192, 1490, 1718, 2131, 2642, 3277, 4063
-        };
-
-        int crystalFragmentsCosts = crystalFragmentsEpicGear[Math.Min(gear.TimesAttributesChanged, 14)];
-
-        if (gear.Rarity > (short) RarityType.Epic)
-        {
-            greenCrystalCost = 25;
-            metacellCosts = Math.Min(165 + gear.TimesAttributesChanged * 15, 375);
-            if (gear.Rarity == (short) RarityType.Legendary)
-            {
-                crystalFragmentsCosts = Math.Min(400 + gear.TimesAttributesChanged * 400, 6000);
-            }
-            else if (gear.Rarity == (short) RarityType.Ascendant)
-            {
-                crystalFragmentsCosts = Math.Min(600 + gear.TimesAttributesChanged * 600, 9000);
-            }
-        }
-
-        // Check if player has enough materials
-        if (greenCrystalTotalAmount < greenCrystalCost || metacellTotalAmount < metacellCosts || crystalFragmentTotalAmount < crystalFragmentsCosts)
-        {
-            return;
-        }
-
         gear.TimesAttributesChanged++;
 
         Item newItem = new(gear);
@@ -137,10 +119,10 @@ public class ChangeAttributesHandler : GamePacketHandler
         // Get random stats except stat that is locked
         List<ItemStat> randomList = RandomStats.RollBonusStatsWithStatLocked(newItem, lockStatId, isSpecialStat);
 
-        Dictionary<StatAttribute, ItemStat> newRandoms = new(newItem.Stats.Randoms);
+        Dictionary<StatAttribute, ItemStat> newRandoms = new();
         for (int i = 0; i < newItem.Stats.Randoms.Count; i++)
         {
-            ItemStat stat = newRandoms.ElementAt(i).Value;
+            ItemStat stat = newItem.Stats.Randoms.ElementAt(i).Value;
             // Check if BonusStats[i] is BasicStat and isSpecialStat is false
             // Check if BonusStats[i] is SpecialStat and isSpecialStat is true
             switch (stat)
@@ -151,19 +133,18 @@ public class ChangeAttributesHandler : GamePacketHandler
                     {
                         case SpecialStat ns when ns.ItemAttribute == (StatAttribute) lockStatId:
                         case SpecialStat ss when ss.ItemAttribute == (StatAttribute) lockStatId:
+                            newRandoms[stat.ItemAttribute] = stat;
                             continue;
                     }
                     break;
             }
 
-            newRandoms.Remove(stat.ItemAttribute);
-
-            newRandoms[stat.ItemAttribute] = randomList[i];
+            newRandoms[randomList[i].ItemAttribute] = randomList[i];
         }
         newItem.Stats.Randoms = newRandoms;
 
         // Consume materials from inventory
-        ConsumeMaterials(session, greenCrystalCost, metacellCosts, crystalFragmentsCosts, greenCrystals, metacells, crystalFragments);
+        ConsumeMaterials(session, ingredient1Cost, ingredient2Cost, ingredient3Cost, ingredient1, ingredient2, ingredient3);
 
         if (useLock)
         {
@@ -190,42 +171,42 @@ public class ChangeAttributesHandler : GamePacketHandler
         session.Send(ChangeAttributesPacket.AddNewItem(gear));
     }
 
-    private static void ConsumeMaterials(GameSession session, int greenCrystalCost, int metacellCosts, int crystalFragmentsCosts, IEnumerable<Item> greenCrystals, IEnumerable<Item> metacells, IEnumerable<Item> crystalFragments)
+    private static void ConsumeMaterials(GameSession session, int ingredient1Cost, int ingredient2Cost, int ingredient3Cost, IEnumerable<Item> ingredient1, IEnumerable<Item> ingredient2, IEnumerable<Item> ingredient3)
     {
         IInventory inventory = session.Player.Inventory;
-        foreach (Item item in greenCrystals)
+        foreach (Item item in ingredient1)
         {
-            if (item.Amount >= greenCrystalCost)
+            if (item.Amount >= ingredient1Cost)
             {
-                inventory.ConsumeItem(session, item.Uid, greenCrystalCost);
+                inventory.ConsumeItem(session, item.Uid, ingredient1Cost);
                 break;
             }
 
-            greenCrystalCost -= item.Amount;
+            ingredient1Cost -= item.Amount;
             inventory.ConsumeItem(session, item.Uid, item.Amount);
         }
 
-        foreach (Item item in metacells)
+        foreach (Item item in ingredient2)
         {
-            if (item.Amount >= metacellCosts)
+            if (item.Amount >= ingredient2Cost)
             {
-                inventory.ConsumeItem(session, item.Uid, metacellCosts);
+                inventory.ConsumeItem(session, item.Uid, ingredient2Cost);
                 break;
             }
 
-            metacellCosts -= item.Amount;
+            ingredient2Cost -= item.Amount;
             inventory.ConsumeItem(session, item.Uid, item.Amount);
         }
 
-        foreach (Item item in crystalFragments)
+        foreach (Item item in ingredient3)
         {
-            if (item.Amount >= crystalFragmentsCosts)
+            if (item.Amount >= ingredient3Cost)
             {
-                inventory.ConsumeItem(session, item.Uid, crystalFragmentsCosts);
+                inventory.ConsumeItem(session, item.Uid, ingredient3Cost);
                 break;
             }
 
-            crystalFragmentsCosts -= item.Amount;
+            ingredient3Cost -= item.Amount;
             inventory.ConsumeItem(session, item.Uid, item.Amount);
         }
     }

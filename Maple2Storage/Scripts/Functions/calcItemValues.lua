@@ -765,13 +765,12 @@ function calcItemGearScore(gearScoreFactorValue, rarity, itemSlot, enchantLevel,
     return itemGearScore, addItemGearScore
 end
 
-function constant_value_hp(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
+function constant_value_hp(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel)
     local hpValue = 0
-    globalOptionLevelFactor = optionLevelFactor
 
     if itemSlot == Earring or itemSlot == Cape or itemSlot == Necklace or itemSlot == Ring or itemSlot == Belt then
         if optionLevelFactor > 50 then
-            if globalOptionLevelFactor < 60 then
+            if itemLevel < 60 then
                 if rarity == 4 then
                     hpValue = round((360 * 0.6) * ((1 + 0.06) ^ (optionLevelFactor - 50)), 0)
                 elseif rarity == 5 then
@@ -815,7 +814,7 @@ function constant_value_hp(currentStatValue, deviationValue, itemSlot, itemJob, 
     return hpValue
 end
 
-function constant_value_addndd(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
+function constant_value_addndd(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel)
     local itemRarityFactor
     local itemRarityFactor2
     local baseAddNddValue
@@ -824,16 +823,16 @@ function constant_value_addndd(currentStatValue, deviationValue, itemSlot, itemJ
     local addNddValue
     itemRarityFactor = 0
     itemRarityFactor2 = 0
-    if globalOptionLevelFactor < 60 then
+    if itemLevel < 60 then
         itemRarityFactor = WeaponRarityAddndd50NA[rarity]
         itemRarityFactor2 = WeaponRarityAddndd50NA[4]
-    elseif globalOptionLevelFactor < 70 then
+    elseif itemLevel < 70 then
         itemRarityFactor = WeaponRarityAddndd60NA[rarity]
         itemRarityFactor2 = WeaponRarityAddndd60NA[4]
-    elseif globalOptionLevelFactor < 80 then
+    elseif itemLevel < 80 then
         itemRarityFactor = WeaponRarityAddndd70NA[rarity]
         itemRarityFactor2 = WeaponRarityAddndd70NA[4]
-    elseif globalOptionLevelFactor < 90 then
+    elseif itemLevel < 90 then
         itemRarityFactor = WeaponRarityAddndd80NA[rarity]
         itemRarityFactor2 = WeaponRarityAddndd80NA[4]
     else
@@ -873,7 +872,7 @@ function constant_value_addndd(currentStatValue, deviationValue, itemSlot, itemJ
         NddValueRoundedResult2 = addNddValue * itemRarityFactor2
     end
     addNddValue = 0
-    if globalOptionLevelFactor > 49 and rarity > 3 then
+    if itemLevel > 49 and rarity > 3 then
         addNddValue = round((NddValueRoundedResult + NddValueRoundedResult2 * (rarity - 4)), 0)
     end
     do
@@ -881,8 +880,7 @@ function constant_value_addndd(currentStatValue, deviationValue, itemSlot, itemJ
     end
 end
 
-function constant_value_ndd(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
-    globalOptionLevelFactor = optionLevelFactor
+function constant_value_ndd(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel)
     local nddValue
     local baseNddValue
     local addNddValue
@@ -903,11 +901,11 @@ function constant_value_ndd(currentStatValue, deviationValue, itemSlot, itemJob,
         baseNddValue = addNddValue
     end
     addNddValue = 0
-    addNddValue = constant_value_addndd(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
+    addNddValue = constant_value_addndd(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel)
     if itemSlot == Belt then
         nddValue = round((baseNddValue) * ArmorConstantSlotCoefficient[itemSlot] * ArmorConstantJobCoefficient[GlobalJob] *
             ArmorConstantRarityCoefficient[deviationValue][rarity], 0) + addNddValue
-    elseif globalOptionLevelFactor >= 70 and currentStatValue > 0 then
+    elseif itemLevel >= 70 and currentStatValue > 0 then
         nddValue = round((baseNddValue) * ArmorConstantSlotCoefficient[itemSlot] * ArmorConstantJobCoefficient[itemJob] *
             ArmorConstantRarityCoefficient[deviationValue][rarity] * (currentStatValue / 100), 0) + round(addNddValue * (currentStatValue / 100), 0)
     else
@@ -917,7 +915,7 @@ function constant_value_ndd(currentStatValue, deviationValue, itemSlot, itemJob,
     return nddValue
 end
 
-function constant_value_mar(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
+function constant_value_mar(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel)
     local marValue = 0
     if itemSlot == Earring then
         marValue = round((math.max(0, ((((4.5 + (1 * (optionLevelFactor - 12)))) / 1.5) * AccConstantRarityCoefficient[rarity]))), 0)
@@ -943,7 +941,7 @@ function constant_value_mar(currentStatValue, deviationValue, itemSlot, itemJob,
     return marValue
 end
 
-function constant_value_par(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
+function constant_value_par(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel)
     local parValue = 0
     if itemSlot == Cape then
         parValue = round(math.max(0, (3 + (((1 * (optionLevelFactor - 12)) / 1.5) * AccConstantRarityCoefficient[rarity]))), 0)
@@ -969,7 +967,7 @@ function constant_value_par(currentStatValue, deviationValue, itemSlot, itemJob,
     return parValue
 end
 
-function constant_value_map(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
+function constant_value_map(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel)
     local mapValue
     local fractionedFactor
     mapValue = 0
@@ -988,7 +986,7 @@ function constant_value_map(currentStatValue, deviationValue, itemSlot, itemJob,
     return mapValue
 end
 
-function constant_value_cap(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
+function constant_value_cap(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel)
     local capValue = 0
     if itemSlot > 29 and itemSlot < 40 then
         capValue = (WeaponCapSlotRarityValue[1])[rarity]
@@ -1002,21 +1000,20 @@ function constant_value_cap(currentStatValue, deviationValue, itemSlot, itemJob,
     return capValue
 end
 
-function constant_value_str(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
-    globalOptionLevelFactor = optionLevelFactor
+function constant_value_str(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel)
     local strValue = 0
-    if globalOptionLevelFactor < 51 then
+    if itemLevel < 51 then
         if itemJob == Knight or itemJob == Berserker or itemJob == RuneBlader then
             if itemSlot == Overall then
-                strValue = round(1.8 * (globalOptionLevelFactor - 20) / 3, 0)
+                strValue = round(1.8 * (itemLevel - 20) / 3, 0)
             else
-                strValue = round((globalOptionLevelFactor - 20) / 3, 0)
+                strValue = round((itemLevel - 20) / 3, 0)
             end
         elseif itemJob == GlobalJob then
             if itemSlot == Overall then
-                strValue = round(1.8 * (globalOptionLevelFactor - 20) / 6, 0)
+                strValue = round(1.8 * (itemLevel - 20) / 6, 0)
             else
-                strValue = round((globalOptionLevelFactor - 20) / 6, 0)
+                strValue = round((itemLevel - 20) / 6, 0)
             end
         else
             strValue = 0
@@ -1024,15 +1021,15 @@ function constant_value_str(currentStatValue, deviationValue, itemSlot, itemJob,
     else
         if itemJob == Knight or itemJob == Berserker or itemJob == RuneBlader then
             if itemSlot == Overall then
-                strValue = round(1.8 * (2 * globalOptionLevelFactor - 90) / 2, 0)
+                strValue = round(1.8 * (2 * itemLevel - 90) / 2, 0)
             else
-                strValue = round(2 * globalOptionLevelFactor - 90, 0)
+                strValue = round(2 * itemLevel - 90, 0)
             end
         elseif itemJob == GlobalJob then
             if itemSlot == Overall then
-                strValue = round(1.8 * (2 * globalOptionLevelFactor - 90) / 6, 0)
+                strValue = round(1.8 * (2 * itemLevel - 90) / 6, 0)
             else
-                strValue = round((2 * globalOptionLevelFactor - 90) / 3, 0)
+                strValue = round((2 * itemLevel - 90) / 3, 0)
             end
         else
             strValue = 0
@@ -1041,21 +1038,20 @@ function constant_value_str(currentStatValue, deviationValue, itemSlot, itemJob,
     return strValue
 end
 
-function constant_value_int(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
-    globalOptionLevelFactor = optionLevelFactor
+function constant_value_int(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel)
     local intValue = 0
-    if globalOptionLevelFactor < 51 then
+    if itemLevel < 51 then
         if itemJob == Wizard or itemJob == Priest or itemJob == SoulBinder or itemJob == Striker and l_14_7 == 1 then
             if itemSlot == Overall then
-                intValue = round(1.8 * (globalOptionLevelFactor - 20) / 3, 0)
+                intValue = round(1.8 * (itemLevel - 20) / 3, 0)
             else
-                intValue = round((globalOptionLevelFactor - 20) / 3, 0)
+                intValue = round((itemLevel - 20) / 3, 0)
             end
         elseif itemJob == GlobalJob then
             if itemSlot == Overall then
-                intValue = round(1.8 * (globalOptionLevelFactor - 20) / 6, 0)
+                intValue = round(1.8 * (itemLevel - 20) / 6, 0)
             else
-                intValue = round((globalOptionLevelFactor - 20) / 6, 0)
+                intValue = round((itemLevel - 20) / 6, 0)
             end
         else
             intValue = 0
@@ -1063,15 +1059,15 @@ function constant_value_int(currentStatValue, deviationValue, itemSlot, itemJob,
     else
         if itemJob == Wizard or itemJob == Priest or itemJob == SoulBinder or itemJob == Striker and l_14_7 == 1 then
             if itemSlot == Overall then
-                intValue = round(1.8 * (2 * globalOptionLevelFactor - 90) / 2, 0)
+                intValue = round(1.8 * (2 * itemLevel - 90) / 2, 0)
             else
-                intValue = round(2 * globalOptionLevelFactor - 90, 0)
+                intValue = round(2 * itemLevel - 90, 0)
             end
         elseif itemJob == GlobalJob then
             if itemSlot == Overall then
-                intValue = round(1.8 * (2 * globalOptionLevelFactor - 90) / 6, 0)
+                intValue = round(1.8 * (2 * itemLevel - 90) / 6, 0)
             else
-                intValue = round((2 * globalOptionLevelFactor - 90) / 3, 0)
+                intValue = round((2 * itemLevel - 90) / 3, 0)
             end
         else
             intValue = 0
@@ -1080,36 +1076,35 @@ function constant_value_int(currentStatValue, deviationValue, itemSlot, itemJob,
     return intValue
 end
 
-function constant_value_dex(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
-    globalOptionLevelFactor = optionLevelFactor
+function constant_value_dex(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel)
     local dexValue = 0
-    if globalOptionLevelFactor < 51 then
+    if itemLevel < 51 then
         if itemJob == Archer or itemJob == HeavyGunner or itemJob == Striker then
             if itemSlot == Overall then
-                dexValue = round(1.8 * (globalOptionLevelFactor - 20) / 3, 0)
+                dexValue = round(1.8 * (itemLevel - 20) / 3, 0)
             else
-                dexValue = round((globalOptionLevelFactor - 20) / 3, 0)
+                dexValue = round((itemLevel - 20) / 3, 0)
             end
         elseif itemJob == GlobalJob then
             if itemSlot == Overall then
-                dexValue = round(1.8 * (globalOptionLevelFactor - 20) / 6, 0)
+                dexValue = round(1.8 * (itemLevel - 20) / 6, 0)
             else
-                dexValue = round((globalOptionLevelFactor - 20) / 6, 0)
+                dexValue = round((itemLevel - 20) / 6, 0)
             end
         else
             dexValue = 0
         end
     elseif itemJob == Archer or itemJob == HeavyGunner or itemJob == Striker then
         if itemSlot == Overall then
-            dexValue = round(1.8 * (2 * globalOptionLevelFactor - 90) / 2, 0)
+            dexValue = round(1.8 * (2 * itemLevel - 90) / 2, 0)
         else
-            dexValue = round(2 * globalOptionLevelFactor - 90, 0)
+            dexValue = round(2 * itemLevel - 90, 0)
         end
     elseif itemJob == GlobalJob then
         if itemSlot == Overall then
-            dexValue = round(1.8 * (2 * globalOptionLevelFactor - 90) / 6, 0)
+            dexValue = round(1.8 * (2 * itemLevel - 90) / 6, 0)
         else
-            dexValue = round((2 * globalOptionLevelFactor - 90) / 3, 0)
+            dexValue = round((2 * itemLevel - 90) / 3, 0)
         end
     else
         dexValue = 0
@@ -1117,36 +1112,35 @@ function constant_value_dex(currentStatValue, deviationValue, itemSlot, itemJob,
     return dexValue
 end
 
-function constant_value_luk(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
-    globalOptionLevelFactor = optionLevelFactor
+function constant_value_luk(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel)
     local lukValue = 0
-    if globalOptionLevelFactor < 51 then
+    if itemLevel < 51 then
         if itemJob == Thief or itemJob == Assassin then
             if itemSlot == Overall then
-                lukValue = round(((1.8 * (globalOptionLevelFactor - 20)) / 3), 0)
+                lukValue = round(((1.8 * (itemLevel - 20)) / 3), 0)
             else
-                lukValue = round(((globalOptionLevelFactor - 20) / 3), 0)
+                lukValue = round(((itemLevel - 20) / 3), 0)
             end
         elseif itemJob == GlobalJob then
             if itemSlot == Overall then
-                lukValue = round(((1.8 * (globalOptionLevelFactor - 20)) / 6), 0)
+                lukValue = round(((1.8 * (itemLevel - 20)) / 6), 0)
             else
-                lukValue = round(((globalOptionLevelFactor - 20) / 6), 0)
+                lukValue = round(((itemLevel - 20) / 6), 0)
             end
         else
             lukValue = 0
         end
     elseif itemJob == Thief or itemJob == Assassin then
         if itemSlot == Overall then
-            lukValue = round(((1.8 * ((2 * globalOptionLevelFactor) - 90)) / 2), 0)
+            lukValue = round(((1.8 * ((2 * itemLevel) - 90)) / 2), 0)
         else
-            lukValue = round(((2 * globalOptionLevelFactor) - 90), 0)
+            lukValue = round(((2 * itemLevel) - 90), 0)
         end
     elseif itemJob == GlobalJob then
         if itemSlot == Overall then
-            lukValue = round(((1.8 * (((2 * globalOptionLevelFactor) - 90))) / 6), 0)
+            lukValue = round(((1.8 * (((2 * itemLevel) - 90))) / 6), 0)
         else
-            lukValue = round((((2 * globalOptionLevelFactor) - 90) / 3), 0)
+            lukValue = round((((2 * itemLevel) - 90) / 3), 0)
         end
     else
         lukValue = 0
@@ -1154,7 +1148,7 @@ function constant_value_luk(currentStatValue, deviationValue, itemSlot, itemJob,
     return lukValue
 end
 
-function constant_value_addwap(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
+function constant_value_addwap(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel)
     local weaponRarityFactor
     local weaponRarityFactor2
     local addWapValue = 0
@@ -1169,16 +1163,16 @@ function constant_value_addwap(currentStatValue, deviationValue, itemSlot, itemJ
     local maxAddWapValue
     weaponRarityFactor = 0
     weaponRarityFactor2 = 0
-    if globalOptionLevelFactor < 60 then
+    if itemLevel < 60 then
         weaponRarityFactor = WeaponRarityAddwap[rarity]
         weaponRarityFactor2 = WeaponRarityAddwap[4]
-    elseif globalOptionLevelFactor < 70 then
+    elseif itemLevel < 70 then
         weaponRarityFactor = WeaponRarityAddwap60NA[rarity]
         weaponRarityFactor2 = WeaponRarityAddwap60NA[4]
-    elseif globalOptionLevelFactor < 80 then
+    elseif itemLevel < 80 then
         weaponRarityFactor = WeaponRarityAddwap70NA[rarity]
         weaponRarityFactor2 = WeaponRarityAddwap70NA[4]
-    elseif globalOptionLevelFactor < 90 then
+    elseif itemLevel < 90 then
         weaponRarityFactor = WeaponRarityAddwap80NA[rarity]
         weaponRarityFactor2 = WeaponRarityAddwap80NA[4]
     else
@@ -1207,7 +1201,7 @@ function constant_value_addwap(currentStatValue, deviationValue, itemSlot, itemJ
     roundedWeaponWapValue3 = round(((weaponRoundedWapValue * WeaponRarityCoefficient[deviationValue][4]) * (1 - WeaponSlotDeviation[itemSlot][deviationValue])), 0)
     roundedWeaponWapValue4 = round(((weaponRoundedWapValue * WeaponRarityCoefficient[deviationValue][4]) * (1 + WeaponSlotDeviation[itemSlot][deviationValue])), 0)
     weaponRarityFactor2Result = ((roundedWeaponWapValue3 + roundedWeaponWapValue4) / 2) * weaponRarityFactor2
-    if globalOptionLevelFactor > 49 and rarity > 3 then
+    if itemLevel > 49 and rarity > 3 then
         minAddWapValue = round(weaponRarityFactorResult + weaponRarityFactor2Result * (rarity - 4), 0)
     end
     do
@@ -1215,8 +1209,7 @@ function constant_value_addwap(currentStatValue, deviationValue, itemSlot, itemJ
     end
 end
 
-function constant_value_wapmin(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
-    globalOptionLevelFactor = optionLevelFactor
+function constant_value_wapmin(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel)
     local wapMinValue
     local weaponRoundedWapValue
     local maxWapMinValue
@@ -1244,11 +1237,11 @@ function constant_value_wapmin(currentStatValue, deviationValue, itemSlot, itemJ
     end
     weaponRoundedWapValue = round((((wapMinValue) * WeaponSlotCoefficient[itemSlot]) / WeaponAttackSpeedCoefficient[itemSlot]), 1)
     addWapValue = 0
-    addWapValue = constant_value_addwap(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
-    if globalOptionLevelFactor < 60 then
+    addWapValue = constant_value_addwap(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel)
+    if itemLevel < 60 then
         minWapMinValue = round(weaponRoundedWapValue * WeaponRarityCoefficient[deviationValue][rarity] * (1 - WeaponSlotDeviation[itemSlot][deviationValue]), 0)
         maxWapMinValue = minWapMinValue + addWapValue
-    elseif globalOptionLevelFactor >= 70 and currentStatValue > 0 then
+    elseif itemLevel >= 70 and currentStatValue > 0 then
         maxWapMinValue = round(weaponRoundedWapValue * WeaponRarityCoefficient[deviationValue][rarity] * (1 - WeaponSlotDeviation[itemSlot][deviationValue]) * (currentStatValue / 100), 0) +
             round(addWapValue * (1 - WeaponSlotDeviation[itemSlot][deviationValue]) * (currentStatValue / 100), 0)
     else
@@ -1259,8 +1252,7 @@ function constant_value_wapmin(currentStatValue, deviationValue, itemSlot, itemJ
     return maxWapMinValue
 end
 
-function constant_value_wapmax(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
-    globalOptionLevelFactor = optionLevelFactor
+function constant_value_wapmax(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel)
     local wapMaxValue
     local weaponRoundedWapValue
     local maxWapMaxValue
@@ -1288,11 +1280,11 @@ function constant_value_wapmax(currentStatValue, deviationValue, itemSlot, itemJ
     end
     weaponRoundedWapValue = round((((wapMaxValue) * WeaponSlotCoefficient[itemSlot]) / WeaponAttackSpeedCoefficient[itemSlot]), 1)
     addWapValue = 0
-    addWapValue = constant_value_addwap(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
-    if globalOptionLevelFactor < 60 then
+    addWapValue = constant_value_addwap(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel)
+    if itemLevel < 60 then
         minWapMaxValue = round(weaponRoundedWapValue * WeaponRarityCoefficient[deviationValue][rarity] * (1 + WeaponSlotDeviation[itemSlot][deviationValue]), 0)
         maxWapMaxValue = minWapMaxValue + addWapValue
-    elseif globalOptionLevelFactor >= 70 and currentStatValue > 0 then
+    elseif itemLevel >= 70 and currentStatValue > 0 then
         minWapMaxValue = round(weaponRoundedWapValue * WeaponRarityCoefficient[deviationValue][rarity] * (1 + WeaponSlotDeviation[itemSlot][deviationValue]) * (currentStatValue / 100), 0)
         maxWapMaxValue = minWapMaxValue + round(addWapValue * (1 + WeaponSlotDeviation[itemSlot][deviationValue]) * (currentStatValue / 100), 0)
     else
@@ -1303,7 +1295,7 @@ function constant_value_wapmax(currentStatValue, deviationValue, itemSlot, itemJ
     return minWapMaxValue
 end
 
-function static_value_hp(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
+function static_value_hp(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel)
     local minHpValue = 0
     local maxHpValue = 0
     local staticMinHpValue = 0
@@ -1361,23 +1353,23 @@ function static_value_hp(currentStatValue, deviationValue, itemSlot, itemJob, op
     return staticMinHpValue, staticMaxHpValue
 end
 
-function static_value_addndd(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
+function static_value_addndd(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel)
     local itemRarityFactor = 0
     local rarityFactor = 0
     local armorLevelBaseCurrentLevelPlus
     local baseNddValue = 0
     local maxAddNddValue = 0
     local minAddNddValue = 0
-    if globalOptionLevelFactor < 60 then
+    if itemLevel < 60 then
         itemRarityFactor = WeaponRarityAddndd50NA[rarity]
         rarityFactor = WeaponRarityAddndd50NA[4]
-    elseif globalOptionLevelFactor < 70 then
+    elseif itemLevel < 70 then
         itemRarityFactor = WeaponRarityAddndd60NA[rarity]
         rarityFactor = WeaponRarityAddndd60NA[4]
-    elseif globalOptionLevelFactor < 80 then
+    elseif itemLevel < 80 then
         itemRarityFactor = WeaponRarityAddndd70NA[rarity]
         rarityFactor = WeaponRarityAddndd70NA[4]
-    elseif globalOptionLevelFactor < 90 then
+    elseif itemLevel < 90 then
         itemRarityFactor = WeaponRarityAddndd80NA[rarity]
         rarityFactor = WeaponRarityAddndd80NA[4]
     else
@@ -1414,7 +1406,7 @@ function static_value_addndd(currentStatValue, deviationValue, itemSlot, itemJob
                     minAddNddValue = math.max(round((baseNddValue) * ArmorConstantSlotCoefficient[itemSlot] * ArmorConstantJobCoefficient[itemJob] * StaticArmorRarityCoefficient[4], 0), 4) * rarityFactor
                 end
                 local addNddValueResult = 0
-                if globalOptionLevelFactor > 49 and rarity > 3 then
+                if itemLevel > 49 and rarity > 3 then
                     if currentStatValue == 0 then
                         addNddValueResult = round(maxAddNddValue + minAddNddValue * (rarity - 4), 0)
                     else
@@ -1429,8 +1421,7 @@ function static_value_addndd(currentStatValue, deviationValue, itemSlot, itemJob
     end
 end
 
-function static_value_ndd(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
-    globalOptionLevelFactor = optionLevelFactor
+function static_value_ndd(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel)
     local l_22_8 = 0
     local l_22_9 = 0
     local l_22_10 = 0
@@ -1440,7 +1431,7 @@ function static_value_ndd(currentStatValue, deviationValue, itemSlot, itemJob, o
         local l_22_11 = 9
         for l_22_15 = 2, optionLevelFactor do
             if g_locale == Locale_KR then
-                if globalOptionLevelFactor < 60 then
+                if itemLevel < 60 then
                     armorLevelBaseCurrentLevelPlus = (math.max)(1 + l_22_15 / 10 * 4, 0)
                 else
                     if l_22_15 > 49 then
@@ -1463,13 +1454,13 @@ function static_value_ndd(currentStatValue, deviationValue, itemSlot, itemJob, o
     do
         local l_22_16 = 0
         if g_locale == Locale_KR then
-            if globalOptionLevelFactor < 60 then
+            if itemLevel < 60 then
                 l_22_16 = 0
             else
-                l_22_16 = static_value_addndd(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
+                l_22_16 = static_value_addndd(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel)
             end
         else
-            l_22_16 = static_value_addndd(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
+            l_22_16 = static_value_addndd(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel)
         end
         if itemSlot == 21 then
             l_22_9 = (math.max)(round((l_22_10) * ArmorConstantSlotCoefficient[itemSlot] * ArmorConstantJobCoefficient[GlobalJob] * StaticArmorRarityCoefficient[rarity], 0), 4)
@@ -1496,7 +1487,7 @@ function static_value_ndd(currentStatValue, deviationValue, itemSlot, itemJob, o
     end
 end
 
-function static_value_mar(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
+function static_value_mar(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel)
     local minMarValue = 0
     local maxVarValue = 0
     local staticMinMarValue = 0
@@ -1526,7 +1517,7 @@ function static_value_mar(currentStatValue, deviationValue, itemSlot, itemJob, o
     return staticMinMarValue, staticMaxMarValue
 end
 
-function static_value_par(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
+function static_value_par(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel)
     local minParValue = 0
     local maxParValue = 0
     local staticMinParValue = 0
@@ -1552,7 +1543,7 @@ function static_value_par(currentStatValue, deviationValue, itemSlot, itemJob, o
     return staticMinParValue, staticMaxParValue
 end
 
-function static_value_map(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
+function static_value_map(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel)
     local minMapValue = 0
     local maxMapValue = 0
     local staticMinMapValue = 0
@@ -1576,7 +1567,7 @@ function static_value_map(currentStatValue, deviationValue, itemSlot, itemJob, o
     return staticMinMapValue, staticMaxMapValue
 end
 
-function static_value_pap(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
+function static_value_pap(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel)
     local minPapValue = 0
     local maxPapValue = 0
     local staticMinPapValue = 0
@@ -1604,7 +1595,7 @@ function static_value_pap(currentStatValue, deviationValue, itemSlot, itemJob, o
     return staticMinPapValue, staticMaxPapValue
 end
 
-function static_rate_abp(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
+function static_rate_abp(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel)
     local minAbpRate = 0
     local maxAbpRate = 0
     local staticMinAbpRate = 0
@@ -1622,7 +1613,7 @@ function static_rate_abp(currentStatValue, deviationValue, itemSlot, itemJob, op
     return staticMinAbpRate, staticMaxAbpRate
 end
 
-function static_value_addwap(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
+function static_value_addwap(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel)
     local itemRarityFactor
     local rarityFactor
     local baseAddWapValue = 0
@@ -1633,16 +1624,16 @@ function static_value_addwap(currentStatValue, deviationValue, itemSlot, itemJob
     local WapUpgradeFactor
     itemRarityFactor = 0
     rarityFactor = 0
-    if globalOptionLevelFactor < 60 then
+    if itemLevel < 60 then
         itemRarityFactor = WeaponRarityAddwap50NA[rarity]
         rarityFactor = WeaponRarityAddwap50NA[4]
-    elseif globalOptionLevelFactor < 70 then
+    elseif itemLevel < 70 then
         itemRarityFactor = WeaponRarityAddwap60NA[rarity]
         rarityFactor = WeaponRarityAddwap60NA[4]
-    elseif globalOptionLevelFactor < 80 then
+    elseif itemLevel < 80 then
         itemRarityFactor = WeaponRarityAddwap70NA[rarity]
         rarityFactor = WeaponRarityAddwap70NA[4]
-    elseif globalOptionLevelFactor < 90 then
+    elseif itemLevel < 90 then
         itemRarityFactor = WeaponRarityAddwap80NA[rarity]
         rarityFactor = WeaponRarityAddwap80NA[4]
     else
@@ -1672,7 +1663,7 @@ function static_value_addwap(currentStatValue, deviationValue, itemSlot, itemJob
     maxAddWapValue = math.max(((addWapValue * StaticWapmaxCoefficient[rarity]) * (1 + WeaponSlotDeviation[itemSlot][1])), 2)
     minAddWapValue = math.max(((addWapValue * StaticWapmaxCoefficient[4]) * (1 + WeaponSlotDeviation[itemSlot][1])), 2)
     addWapValueResult = 0
-    if globalOptionLevelFactor > 49 and rarity > 3 then
+    if itemLevel > 49 and rarity > 3 then
         addWapValueResult = round(maxAddWapValue + minAddWapValue * (rarity - 4), 0)
     end
     do
@@ -1680,8 +1671,7 @@ function static_value_addwap(currentStatValue, deviationValue, itemSlot, itemJob
     end
 end
 
-function static_value_wapmax(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor)
-    globalOptionLevelFactor = optionLevelFactor
+function static_value_wapmax(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel)
     local baseWapValue = 0
     local wapValueResult = 0
     local addWapValue = 0
@@ -1705,7 +1695,7 @@ function static_value_wapmax(currentStatValue, deviationValue, itemSlot, itemJob
         end
     end
     do
-        addWapValue = static_value_addwap(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, globalOptionLevelFactor, l_15_7)
+        addWapValue = static_value_addwap(currentStatValue, deviationValue, itemSlot, itemJob, optionLevelFactor, rarity, itemLevel, l_15_7)
         if itemSlot == Blade then
             wapValueResult = round((baseWapValue) * WeaponSlotCoefficient[Staff] / WeaponAttackSpeedCoefficient[Staff], 1)
             staticWapMaxValue = (math.max)(wapValueResult * StaticWapmaxCoefficient[rarity] * (1 + (WeaponSlotDeviation[itemSlot])[1]), 2) + addWapValue

@@ -8,14 +8,14 @@ namespace MapleServer2.Types;
 
 public static class ConstantStats
 {
-    public static void GetStats(Item item, int optionId, float optionLevelFactor, float globalOptionLevelFactor, out Dictionary<StatAttribute, ItemStat> constantStats)
+    public static void GetStats(Item item, int optionId, float optionLevelFactor, out Dictionary<StatAttribute, ItemStat> constantStats)
     {
         constantStats = new();
         int constantId = ItemMetadataStorage.GetOptionConstant(item.Id);
         ItemOptionsConstant basicOptions = ItemOptionConstantMetadataStorage.GetMetadata(constantId, item.Rarity);
         if (basicOptions == null)
         {
-            GetDefault(item, constantStats, optionId, optionLevelFactor, globalOptionLevelFactor);
+            GetDefault(item, constantStats, optionId, optionLevelFactor);
             return;
         }
 
@@ -32,11 +32,11 @@ public static class ConstantStats
 
         if (optionLevelFactor > 50)
         {
-            GetDefault(item, constantStats, optionId, optionLevelFactor, globalOptionLevelFactor);
+            GetDefault(item, constantStats, optionId, optionLevelFactor);
         }
     }
 
-    private static void GetDefault(Item item, Dictionary<StatAttribute, ItemStat> constantStats, int optionId, float optionLevelFactor, float globalOptionLevelFactor)
+    private static void GetDefault(Item item, Dictionary<StatAttribute, ItemStat> constantStats, int optionId, float optionLevelFactor)
     {
         ItemOptionPick baseOptions = ItemOptionPickMetadataStorage.GetMetadata(optionId, item.Rarity);
         if (baseOptions is null)
@@ -98,7 +98,7 @@ public static class ConstantStats
 
             float statValue = constantStats[constantPick.Stat].GetValue();
             DynValue result = scriptLoader.Call(calcScript, statValue, constantPick.DeviationValue, (int) item.Type,
-                (int) item.RecommendJobs.First(), optionLevelFactor, item.Rarity, globalOptionLevelFactor);
+                (int) item.RecommendJobs.First(), optionLevelFactor, item.Rarity, item.Level);
 
             constantStats[constantPick.Stat].SetValue((float) result.Number);
             if (constantStats[constantPick.Stat].GetValue() <= 0.0000f)

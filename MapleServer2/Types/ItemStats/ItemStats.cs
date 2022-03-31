@@ -1,6 +1,8 @@
 ﻿using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
+using MapleServer2.Tools;
+using MoonSharp.Interpreter;
 
 namespace MapleServer2.Types;
 
@@ -116,18 +118,14 @@ public class ItemStats
 
         int optionId = ItemMetadataStorage.GetOptionId(item.Id);
         float optionLevelFactor = ItemMetadataStorage.GetOptionLevelFactor(item.Id);
-        float globalOptionLevelFactor = ItemMetadataStorage.GetGlobalOptionLevelFactor(item.Id);
 
-        ConstantStats.GetStats(item, optionId, optionLevelFactor, globalOptionLevelFactor, out Dictionary<StatAttribute, ItemStat> constantStats);
+        ConstantStats.GetStats(item, optionId, optionLevelFactor, out Dictionary<StatAttribute, ItemStat> constantStats);
         Constants = constantStats;
-        StaticStats.GetStats(item, optionId, optionLevelFactor, globalOptionLevelFactor, out Dictionary<StatAttribute, ItemStat> staticStats);
+        StaticStats.GetStats(item, optionId, optionLevelFactor, out Dictionary<StatAttribute, ItemStat> staticStats);
         Statics = staticStats;
         RandomStats.GetStats(item, out Dictionary<StatAttribute, ItemStat> randomStats);
         Randoms = randomStats;
-        if (optionLevelFactor >= 50 && item.Rarity >= 3)
-        {
-            GetGemSockets(item.ItemSlot, item.Rarity);
-        }
+        GetGemSockets(item, optionLevelFactor);
     }
 
     public static void AddHiddenNormalStat(List<ItemStat> stats, StatAttribute attribute, int value, float calibrationFactor)
@@ -146,24 +144,18 @@ public class ItemStats
         stats[index] = new SpecialStat(normalStat.ItemAttribute, summedFlat, StatAttributeType.Flat);
     }
 
-    private void GetGemSockets(ItemSlot itemSlot, int rarity)
+    private void GetGemSockets(Item item, float optionLevelFactor)
     {
-        if (itemSlot != ItemSlot.EA &&
-            itemSlot != ItemSlot.RI &&
-            itemSlot != ItemSlot.PD)
+        ScriptLoader scriptLoader = new ScriptLoader("Functions/calcItemSocketMaxCount");
+        DynValue dynValue = scriptLoader.Call("calcItemSocketMaxCount", (int) item.Type, item.Rarity, optionLevelFactor, (int) item.InventoryTab);
+        int slotAmount = (int) dynValue.Number;
+        if (slotAmount <= 0)
         {
             return;
         }
-
-        int rollAmount = rarity switch
-        {
-            3 => 1,
-            > 3 => 3,
-            _ => 0
-        };
-
+        
         // add sockets
-        for (int i = 0; i < rollAmount; i++)
+        for (int i = 0; i < slotAmount; i++)
         {
             GemSocket socket = new();
             GemSockets.Add(socket);

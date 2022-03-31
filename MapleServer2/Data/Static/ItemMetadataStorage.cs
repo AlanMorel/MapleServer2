@@ -180,9 +180,7 @@ public static class ItemMetadataStorage
     public static int GetOptionConstant(int itemId) => GetMetadata(itemId).OptionConstant;
 
     public static float GetOptionLevelFactor(int itemId) => GetMetadata(itemId)?.OptionLevelFactor ?? 0;
-
-    public static float GetGlobalOptionLevelFactor(int itemId) => GetMetadata(itemId).GlobalOptionLevelFactor;
-
+    
     public static int GetOptionId(int itemId) => GetMetadata(itemId).OptionId;
 
     public static EquipColor GetEquipColor(int itemId)
