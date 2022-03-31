@@ -110,7 +110,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
 
         ScriptLoader scriptLoader = new("Functions/calcItemSocketUnlockIngredient");
         DynValue scriptResult = scriptLoader.Call("calcItemSocketUnlockIngredient", equip.Rarity, slot, (int) equip.InventoryTab);
-        
+
         string ingredientTag = scriptResult.Tuple[0].String;
         int ingredientCost = (int) scriptResult.Tuple[1].Number;
 
@@ -186,7 +186,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
                     return;
                 }
             }
-            
+
             inventory.ConsumeItem(session, gem.Uid, 1);
 
             Item upgradeGem = new(metadata.NextItemId)
@@ -270,7 +270,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
         }
         return true;
     }
-    
+
     private static bool ConsumeIngredients(GameSession session, IInventory inventory, int ingredientCost, string ingredientTag)
     {
         IReadOnlyCollection<Item> ingredients = inventory.GetAllByTag(ingredientTag);
@@ -397,9 +397,9 @@ public class ItemSocketSystemHandler : GamePacketHandler
         }
 
         Gemstone gemstone = equipItem.Stats.GemSockets[slot].Gemstone;
-        
+
         int gemLevel = ItemGemstoneUpgradeMetadataStorage.GetGemLevel(gemstone.Id);
-        
+
         ScriptLoader scriptLoader = new("Functions/calcGetGemStonePutOffPrice");
         DynValue scriptResult = scriptLoader.Call("calcGetGemStonePutOffPrice", gemLevel, (int) equipItem.InventoryTab);
 
@@ -410,7 +410,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
         {
             return;
         }
-        
+
         Item gemstoneItem = new(gemstone.Id)
         {
             IsLocked = gemstone.IsLocked,

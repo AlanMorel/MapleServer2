@@ -153,7 +153,7 @@ public class ItemStats
         {
             return;
         }
-        
+
         // add sockets
         for (int i = 0; i < slotAmount; i++)
         {

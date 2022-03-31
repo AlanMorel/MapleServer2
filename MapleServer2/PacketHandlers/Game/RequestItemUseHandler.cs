@@ -1,5 +1,4 @@
-﻿using Maple2.Trigger._03009023_in;
-using Maple2Storage.Enums;
+﻿using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
