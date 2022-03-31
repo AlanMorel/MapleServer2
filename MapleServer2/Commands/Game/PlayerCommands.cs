@@ -148,13 +148,22 @@ public class LevelCommand : InGameCommand
     {
         short level = trigger.Get<short>("level");
 
-        if (level > 0)
+        if (level <= 0)
         {
-            trigger.Session.Player.Levels.SetLevel(level);
+            trigger.Session.SendNotice("Level must be a number or more than 0.");
             return;
         }
 
-        trigger.Session.SendNotice("Level must be a number or more than 0.");
+        Player player = trigger.Session.Player;
+
+        // Reset stats to default
+        player.Stats = new(player.Job);
+        player.Stats.AddBaseStats(player, level - 1);
+
+        trigger.Session.Send(StatPacket.SetStats(player.FieldPlayer));
+        trigger.Session.FieldManager.BroadcastPacket(StatPacket.UpdateFieldStats(player.FieldPlayer), trigger.Session);
+
+        player.Levels.SetLevel(level);
     }
 }
 
