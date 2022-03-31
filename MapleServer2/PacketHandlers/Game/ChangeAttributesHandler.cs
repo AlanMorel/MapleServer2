@@ -61,20 +61,20 @@ public class ChangeAttributesHandler : GamePacketHandler
 
         ScriptLoader scriptLoader = new("Functions/calcGetItemRemakeIngredient");
         DynValue scriptResults = scriptLoader.Call("calcGetItemRemakeIngredientNew", (int) gear.Type, gear.TimesAttributesChanged, gear.Rarity, gear.Level);
-        
+
         IReadOnlyCollection<Item> ingredient1 = inventory.GetAllByTag(scriptResults.Tuple[0].String);
         int ingredient1Cost = (int) scriptResults.Tuple[1].Number;
         IReadOnlyCollection<Item> ingredient2 = inventory.GetAllByTag(scriptResults.Tuple[2].String);
         int ingredient2Cost = (int) scriptResults.Tuple[3].Number;
-        IReadOnlyCollection<Item> ingredient3= inventory.GetAllByTag(scriptResults.Tuple[4].String);
+        IReadOnlyCollection<Item> ingredient3 = inventory.GetAllByTag(scriptResults.Tuple[4].String);
         int ingredient3Cost = (int) scriptResults.Tuple[5].Number;
-        
+
         Console.WriteLine($"Cost: {scriptResults.Tuple[0].String}: {scriptResults.Tuple[1].Number} -- {scriptResults.Tuple[2].String}: {scriptResults.Tuple[3].Number} -- {scriptResults.Tuple[4].String}: {scriptResults.Tuple[5].Number}");
 
         int ingredient1TotalAmount = ingredient1.Sum(x => x.Amount);
         int ingredient2TotalAmount = ingredient2.Sum(x => x.Amount);
         int ingredient3TotalAmount = ingredient3.Sum(x => x.Amount);
-        
+
         // Check if player has enough materials
         if (ingredient1TotalAmount < ingredient1Cost || ingredient2TotalAmount < ingredient2Cost || ingredient3TotalAmount < ingredient3Cost)
         {

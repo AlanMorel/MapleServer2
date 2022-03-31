@@ -1,7 +1,9 @@
 ﻿using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Servers.Game;
+using MapleServer2.Tools;
 using MapleServer2.Types;
+using MoonSharp.Interpreter;
 
 namespace MapleServer2.PacketHandlers.Game.Helpers;
 
@@ -28,13 +30,13 @@ public class MailHelper
         string body = "<ms2><v key=\"s_blackmarket_mail_to_cancel_content\" /></ms2>";
         string addParameter1 = $"<ms2><v item=\"{listing.Item.Id}\" ></v></ms2>";
         string addParameter2 = "<ms2>" +
-            "<v key=\"s_blackmarket_mail_to_cancel_direct\" ></v>" +
-            $"<v item=\"{listing.Item.Id}\" ></v>" +
-            $"<v str=\"{listing.ListedQuantity}\" ></v>" +
-            $"<v money=\"{listing.Price * listing.ListedQuantity}\" ></v>" +
-            $"<v money=\"{listing.Price}\" ></v>" +
-            $"<v money=\"{deposit}\" ></v>" +
-            "</ms2>";
+                               "<v key=\"s_blackmarket_mail_to_cancel_direct\" ></v>" +
+                               $"<v item=\"{listing.Item.Id}\" ></v>" +
+                               $"<v str=\"{listing.ListedQuantity}\" ></v>" +
+                               $"<v money=\"{listing.Price * listing.ListedQuantity}\" ></v>" +
+                               $"<v money=\"{listing.Price}\" ></v>" +
+                               $"<v money=\"{deposit}\" ></v>" +
+                               "</ms2>";
 
         Mail mail = new(MailType.BlackMarketListingCancel, listing.OwnerCharacterId, 0, senderName, title, body, addParameter1, addParameter2, new()
         {
@@ -71,7 +73,9 @@ public class MailHelper
 
     private static void SendBlackMarketSoldMail(BlackMarketListing listing, Item item, long price, bool removeListing)
     {
-        float salesFeeRate = float.Parse(ConstantsMetadataStorage.GetConstant("BlackMarketSalesFeeRate"));
+        ScriptLoader scriptLoader = new("Functions/calcBlackMarketCostRate");
+        DynValue scriptResults = scriptLoader.Call("calcBlackMarketCostRate");
+        float salesFeeRate = (float) scriptResults.Number;
         long tax = (long) (salesFeeRate * (item.Amount * price));
         long revenue = item.Amount * price - tax;
 
@@ -144,9 +148,12 @@ public class MailHelper
         string senderName = "MapleStory2";
         string title = "[Emulator Attendance] Attendance Reward";
         string body = "Thanks for testing out the emulator. Here is a token of appreciation. " +
-            "P.S. did you know you can use /commands to spawn in items?";
+                      "P.S. did you know you can use /commands to spawn in items?";
 
-        Mail mail = new(MailType.System, recipientCharacterId, 0, senderName, title, body, "", "", new() { item }, 0, 0);
+        Mail mail = new(MailType.System, recipientCharacterId, 0, senderName, title, body, "", "", new()
+        {
+            item
+        }, 0, 0);
         GameServer.MailManager.AddMail(mail);
         SendNotification(mail, true);
     }
