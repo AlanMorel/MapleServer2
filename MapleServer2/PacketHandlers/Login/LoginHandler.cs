@@ -77,7 +77,7 @@ public class LoginHandler : LoginPacketHandler
             account = new(username, passwordHash); // Create a new account if username doesn't exist
         }
 
-        Logger.Debug("Logging in with account ID: {account.Id}", account.Id);
+        Logger.Debug("Logging in with account ID: {accountId}", account.Id);
         session.AccountId = account.Id;
         account.LastLogTime = TimeInfo.Now();
         DatabaseManager.Accounts.Update(account);
@@ -112,7 +112,7 @@ public class LoginHandler : LoginPacketHandler
 
         List<Player> characters = DatabaseManager.Characters.FindAllByAccountId(session.AccountId);
 
-        Logger.Debug("Initializing login with account id: {session.AccountId}", session.AccountId);
+        Logger.Debug("Initializing login with account id: {AccountId}", session.AccountId);
         session.Send(LoginResultPacket.InitLogin(session.AccountId));
         session.Send(UgcPacket.SetEndpoint($"{url}/ws.asmx?wsdl", url));
         session.Send(CharacterListPacket.SetMax(account.CharacterSlots));
