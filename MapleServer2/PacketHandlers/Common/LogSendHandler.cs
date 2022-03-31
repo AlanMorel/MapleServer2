@@ -34,7 +34,8 @@ public class LogSendHandler : CommonPacketHandler
                     string debug = packet.ReadUnicodeString();
 
                     SockExceptionInfo exceptionInfo = ErrorParser.Parse(debug);
-                    Logger.Error($"[{message}] [SendOp: {exceptionInfo.SendOp}] [Offset: {exceptionInfo.Offset}] [Hint: {exceptionInfo.Hint}]");
+                    Logger.Error("[{message}] [SendOp: {sendOp}] [Offset: {offset}] [Hint: {hint}]",
+                        message, exceptionInfo.SendOp, exceptionInfo.Offset, exceptionInfo.Hint);
 
                     session.OnError?.Invoke(session, debug);
                     return;
@@ -43,11 +44,11 @@ public class LogSendHandler : CommonPacketHandler
                 builder.Append(message);
             }
 
-            Logger.Warn($"Client Log: {builder}");
+            Logger.Warning("Client Log: {builder}", builder);
         }
         catch (Exception ex)
         {
-            Logger.Error($"Error parsing DEBUG_MSG packet:{packet} f({function}), {ex}");
+            Logger.Error("Error parsing DEBUG_MSG packet:{packet} f({function}), {ex}", packet, function, ex);
         }
     }
 }

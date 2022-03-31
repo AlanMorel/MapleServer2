@@ -54,7 +54,7 @@ public class ShopHandler : GamePacketHandler
         Shop shop = DatabaseManager.Shops.FindById(metadata.ShopId);
         if (shop == null)
         {
-            Logger.Warn($"Unknown shop ID: {metadata.ShopId}");
+            Logger.Warning("Unknown shop ID: {shopId}", metadata.ShopId);
             return;
         }
 
@@ -163,7 +163,7 @@ public class ShopHandler : GamePacketHandler
         Shop shop = DatabaseManager.Shops.FindById(item.ShopID);
         if (shop == null)
         {
-            Logger.Warn($"Unknown shop ID: {item.ShopID}");
+            Logger.Warning("Unknown shop ID: {shopID}", item.ShopID);
             return;
         }
 

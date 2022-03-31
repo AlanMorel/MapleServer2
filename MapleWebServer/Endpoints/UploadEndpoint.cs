@@ -5,14 +5,12 @@ using MaplePacketLib2.Tools;
 using MapleServer2.Database;
 using MapleServer2.Types;
 using MapleWebServer.Enums;
-using NLog;
+using Serilog;
 
 namespace MapleWebServer.Endpoints;
 
 public static class UploadEndpoint
 {
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
     public static async Task<IResult> Post(HttpRequest request)
     {
         Stream bodyStream = request.Body;
@@ -100,7 +98,7 @@ public static class UploadEndpoint
 
     private static IResult HandleUnknownMode(PostUgcMode mode)
     {
-        Logger.Info($"Unknown upload mode: {mode}");
+        Log.Logger.Information("Unknown upload mode: {mode}", mode);
         return Results.BadRequest();
     }
 

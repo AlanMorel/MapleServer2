@@ -42,7 +42,7 @@ public class ItemEquipHandler : GamePacketHandler
         string equipSlotStr = packet.ReadUnicodeString();
         if (!Enum.TryParse(equipSlotStr, out ItemSlot equipSlot))
         {
-            Logger.Warn($"Unknown equip slot: {equipSlotStr}");
+            Logger.Warning("Unknown equip slot: {equipSlotStr}", equipSlotStr);
             return;
         }
 
@@ -65,7 +65,7 @@ public class ItemEquipHandler : GamePacketHandler
         Dictionary<ItemSlot, Item> equippedInventory = session.Player.GetEquippedInventory(item.InventoryTab);
         if (equippedInventory == null)
         {
-            Logger.Warn($"equippedInventory was null: {item.InventoryTab}");
+            Logger.Warning("equippedInventory was null: {inventoryTab}", item.InventoryTab);
             return;
         }
 

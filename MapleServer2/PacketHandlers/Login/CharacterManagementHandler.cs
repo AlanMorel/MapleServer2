@@ -52,14 +52,14 @@ public class CharacterManagementHandler : LoginPacketHandler
             return;
         }
         session.Send(CharacterListPacket.DeleteCharacter(characterId));
-        Logger.Info($"Character id {characterId} deleted!");
+        Logger.Information("Character id {characterId} deleted!", characterId);
     }
 
     private void HandleSelect(LoginSession session, PacketReader packet)
     {
         long characterId = packet.ReadLong();
         packet.ReadShort(); // 01 00
-        Logger.Info($"Logging in to game with char id: {characterId}");
+        Logger.Information("Logging in to game with char id: {characterId}", characterId);
 
         string ipAddress = Environment.GetEnvironmentVariable("IP");
         int port = int.Parse(Environment.GetEnvironmentVariable("GAME_PORT"));

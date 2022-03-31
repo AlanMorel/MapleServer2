@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using Autofac;
-using NLog;
+using Serilog;
 using ThreadState = System.Threading.ThreadState;
 
 namespace MapleServer2.Network;
@@ -17,7 +17,7 @@ public abstract class Server<T> where T : Session
     private readonly PacketRouter<T> Router;
     private readonly IComponentContext Context;
 
-    protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private readonly ILogger Logger = Log.Logger.ForContext<T>();
 
     public Server(PacketRouter<T> router, IComponentContext context)
     {
@@ -39,7 +39,8 @@ public abstract class Server<T> where T : Session
             while (!Source.IsCancellationRequested)
             {
                 ClientConnected.Reset();
-                Logger.Info($"Thread from {GetType().Name} has started on Port:{port}");
+
+                Logger.Information("Thread from {name} has started on Port:{port}", GetType().Name, port);
                 Listener.BeginAcceptTcpClient(AcceptTcpClient, null);
                 ClientConnected.WaitOne();
             }
@@ -55,16 +56,16 @@ public abstract class Server<T> where T : Session
         switch (ServerThread.ThreadState)
         {
             case ThreadState.Unstarted:
-                Logger.Info($"{GetType().Name} has not been started.");
+                Logger.Information("{name} has not been started.", GetType().Name);
                 break;
             case ThreadState.Stopped:
-                Logger.Info($"{GetType().Name} has already been stopped.");
+                Logger.Information("{name} has already been stopped.", GetType().Name);
                 break;
             default:
                 Source.Cancel();
                 ClientConnected.Set();
                 ServerThread.Join();
-                Logger.Info($"{GetType().Name} was stopped.");
+                Logger.Information("{name} was stopped.", GetType().Name);
                 break;
         }
     }

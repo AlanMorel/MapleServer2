@@ -64,7 +64,7 @@ public partial class TriggerContext
                 }
                 break;
             default:
-                Logger.Warn($"Non implemented Widget Action. WidgetType: {type}");
+                Logger.Warning("Non implemented Widget Action. WidgetType: {type}", type);
                 break;
         }
     }

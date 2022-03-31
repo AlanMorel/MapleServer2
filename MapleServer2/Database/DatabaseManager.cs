@@ -1,8 +1,7 @@
-﻿using Maple2Storage.Extensions;
-using Maple2Storage.Types;
+﻿using Maple2Storage.Types;
 using MapleServer2.Database.Classes;
 using MySql.Data.MySqlClient;
-using NLog;
+using Serilog;
 using SqlKata.Compilers;
 using SqlKata.Execution;
 
@@ -10,8 +9,7 @@ namespace MapleServer2.Database;
 
 public static class DatabaseManager
 {
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
+    private static readonly ILogger Logger = Log.Logger.ForContext(typeof(DatabaseManager));
     private static readonly int MIN_MYSQL_VERSION = 8;
 
     public static readonly string ConnectionString;
@@ -79,11 +77,11 @@ public static class DatabaseManager
 
         if (DatabaseExists())
         {
-            Logger.Info("Database already exists.");
+            Logger.Information("Database already exists.");
             return;
         }
 
-        Logger.Info("Creating database...");
+        Logger.Information("Creating database...");
         CreateDatabase();
 
         string[] seeds =
@@ -96,7 +94,7 @@ public static class DatabaseManager
             Seed(seed);
         }
 
-        Logger.Info("Database created.".ColorGreen());
+        Logger.Information("Database created.");
     }
 
     public static void RunQuery(string query)
@@ -130,7 +128,7 @@ public static class DatabaseManager
 
     private static void Seed(string type)
     {
-        Logger.Info($"Seeding {type}...");
+        Logger.Information("Seeding {type}...", type);
         ExecuteSqlFile(File.ReadAllText(Paths.SOLUTION_DIR + "/MapleServer2/Database/Seeding/" + type + "Seeding.sql"));
     }
 

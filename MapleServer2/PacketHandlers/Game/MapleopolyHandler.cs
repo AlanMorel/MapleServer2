@@ -166,7 +166,7 @@ public class MapleopolyHandler : GamePacketHandler
             case MapleopolyTileType.Start:
                 break;
             default:
-                Logger.Warn("Unsupported tile");
+                Logger.Warning("Unsupported tile");
                 break;
         }
 

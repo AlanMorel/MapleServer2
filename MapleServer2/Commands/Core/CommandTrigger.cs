@@ -1,11 +1,11 @@
 ﻿using Maple2Storage.Types;
-using NLog;
+using Serilog;
 
 namespace MapleServer2.Commands.Core;
 
 public abstract class CommandTrigger
 {
-    protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    protected static readonly ILogger Logger = Log.Logger.ForContext<CommandTrigger>();
 
     public string[] Args { get; private set; }
     public CommandBase Command { get; private set; }
@@ -23,7 +23,7 @@ public abstract class CommandTrigger
         {
             return (T) CommandsParametersByName[name].DefaultValue;
         }
-        Logger.Error($"{name} is not an existing parameter.");
+        Logger.Error("{name} is not an existing parameter.", name);
         return default;
     }
 
@@ -76,7 +76,7 @@ public abstract class CommandTrigger
             }
             catch (Exception)
             {
-                Logger.Warn($"Error parsing argument => {arg}\n Make sure you have either defined the parameter or the argument is correct.");
+                Logger.Warning("Error parsing argument => {arg}\n Make sure you have either defined the parameter or the argument is correct.", arg);
             }
         }
         CommandsParametersByName = Command.Parameters.ToDictionary(entry => entry.Name);

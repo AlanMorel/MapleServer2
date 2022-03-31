@@ -5,14 +5,14 @@ using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using NLog;
+using Serilog;
 
 // TODO: make this class thread safe?
 namespace MapleServer2.Types;
 
 public sealed class Inventory : IInventory
 {
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private static readonly ILogger Logger = Log.Logger.ForContext<Inventory>();
 
     public long Id { get; }
 
@@ -107,7 +107,7 @@ public sealed class Inventory : IInventory
                     case InventoryTab.Outfit:
                         if (!Cosmetics.TryAdd(item.ItemSlot, item))
                         {
-                            Logger.Error($"Failed to add item {item.Id} to inventory {Id}, slot {item.ItemSlot} was already taken.");
+                            Logger.Error("Failed to add item {id} to inventory {id}, slot {itemSlot} was already taken.", item.Id, Id, item.ItemSlot);
                         }
 
                         continue;
@@ -120,7 +120,7 @@ public sealed class Inventory : IInventory
                     case InventoryTab.Gear:
                         if (!Equips.TryAdd(item.ItemSlot, item))
                         {
-                            Logger.Error($"Failed to add item {item.Id} to inventory {Id}, slot {item.ItemSlot} was already taken.");
+                            Logger.Error("Failed to add item {id} to inventory {id}, slot {itemSlot} was already taken.", item.Id, Id, item.ItemSlot);
                         }
 
                         continue;

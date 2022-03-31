@@ -1,11 +1,7 @@
-﻿using NLog;
-
-namespace MapleServer2.Commands.Core;
+﻿namespace MapleServer2.Commands.Core;
 
 public class Parameter<T> : IParameter<T>
 {
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
     public string Name { get; set; }
     public string Description { get; set; }
     public T Value { get; private set; }

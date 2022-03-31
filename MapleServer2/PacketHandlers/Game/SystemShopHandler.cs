@@ -60,7 +60,7 @@ public class SystemShopHandler : GamePacketHandler
         Shop shop = DatabaseManager.Shops.FindById(item.ShopID);
         if (shop == null)
         {
-            Logger.Warn($"Unknown shop ID: {item.ShopID}");
+            Logger.Warning("Unknown shop ID: {shopID}", item.ShopID);
             return;
         }
 

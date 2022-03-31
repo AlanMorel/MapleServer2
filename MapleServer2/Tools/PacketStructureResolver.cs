@@ -2,7 +2,7 @@
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Network;
-using NLog;
+using Serilog;
 
 namespace MapleServer2.Tools;
 
@@ -23,7 +23,7 @@ public class PacketStructureResolver
     private readonly ushort OpCode;
     private readonly string PacketName;
     private readonly PacketWriter Packet;
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private static readonly ILogger Logger = Log.Logger.ForContext<PacketStructureResolver>();
 
     private PacketStructureResolver(ushort opCode)
     {
@@ -61,7 +61,7 @@ public class PacketStructureResolver
                     opCode = BitConverter.ToUInt16(bytes);
                     break;
                 default:
-                    Logger.Info("Invalid opcode.");
+                    Logger.Information("Invalid opcode.");
                     return null;
             }
         }
@@ -117,13 +117,13 @@ public class PacketStructureResolver
                         resolver.Packet.WriteString(valueAsString.Replace("\"", ""));
                         break;
                     default:
-                        Logger.Info($"Unknown type: {type}");
+                        Logger.Information("Unknown type: {type}", type);
                         break;
                 }
             }
             catch
             {
-                Logger.Info($"Couldn't parse value on function: {line}");
+                Logger.Information("Couldn't parse value on function: {line}", line);
                 return null;
             }
         }
@@ -149,13 +149,13 @@ public class PacketStructureResolver
 
         if (OpCode != (ushort) info.SendOp)
         {
-            Logger.Warn($"Error for unexpected op code:{info.SendOp:X4}");
+            Logger.Warning("Error for unexpected op code:{0}", info.SendOp.ToString("X4"));
             return;
         }
 
         if (Packet.Length + HeaderLength != info.Offset)
         {
-            Logger.Warn($"Offset:{info.Offset} does not match Packet length:{Packet.Length + HeaderLength}");
+            Logger.Warning("Offset:{offset} does not match Packet length:{lenght}", info.Offset, Packet.Length + HeaderLength);
             return;
         }
 

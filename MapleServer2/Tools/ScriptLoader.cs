@@ -2,13 +2,13 @@
 using MapleServer2.Managers;
 using MapleServer2.Servers.Game;
 using MoonSharp.Interpreter;
-using NLog;
+using Serilog;
 
 namespace MapleServer2.Tools;
 
 public class ScriptLoader
 {
-    private readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private readonly ILogger Logger = Log.Logger.ForContext<ScriptLoader>();
 
     public Script Script;
     private readonly string ScriptName;
@@ -62,12 +62,12 @@ public class ScriptLoader
         }
         catch (ArgumentException ex)
         {
-            Logger.Error(ex.Message);
+            Logger.Error("Error on script {name}. {message}", ScriptName, ex.Message);
             return null;
         }
         catch (Exception ex)
         {
-            Logger.Error(ex.Message);
+            Logger.Error("Error on script {name}. {message}", ScriptName, ex.Message);
             return null;
         }
     }

@@ -347,7 +347,7 @@ public class BeautyHandler : GamePacketHandler
                 mapId = Map.DouglasDyeWorkshop;
                 break;
             default:
-                Logger.Warn($"teleportId: {teleportId} not found");
+                Logger.Warning("teleportId: {teleportId} not found", teleportId);
                 return;
         }
 
