@@ -146,7 +146,7 @@ public class ItemOptionStaticParser : Exporter<List<ItemOptionStaticMetadata>>
                             optionsStatic.SpecialStats.Add(new(StatAttribute.PhysicalPiercing, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "pen_rate_base":
-                            optionsStatic.Stats.Add(new(StatAttribute.Pierce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Flat));
+                            optionsStatic.Stats.Add(new(StatAttribute.Pierce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), StatAttributeType.Rate));
                             break;
                         case "poisondamage_rate_base":
                             optionsStatic.SpecialStats.Add(new(StatAttribute.PoisonDamage, float.Parse(node.Attributes[item.Name].Value), StatAttributeType.Rate));

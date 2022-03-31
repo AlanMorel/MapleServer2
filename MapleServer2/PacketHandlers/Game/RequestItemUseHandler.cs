@@ -508,48 +508,7 @@ public class RequestItemUseHandler : GamePacketHandler
             hairId = 10200012; // Cutesy Twin Tails
         }
 
-        Random random = Random.Shared;
-
-        //Grab a preset hair and length of hair
-        ItemMetadata beautyItemData = ItemMetadataStorage.GetMetadata(hairId);
-        int indexPreset = random.Next(beautyItemData.HairPresets.Count);
-        HairPresets chosenPreset = beautyItemData.HairPresets[indexPreset];
-
-        //Grab random front hair length
-        double chosenFrontLength = random.NextDouble() *
-            (beautyItemData.HairPresets[indexPreset].MaxScale - beautyItemData.HairPresets[indexPreset].MinScale) + beautyItemData.HairPresets[indexPreset].MinScale;
-
-        //Grab random back hair length
-        double chosenBackLength = random.NextDouble() *
-            (beautyItemData.HairPresets[indexPreset].MaxScale - beautyItemData.HairPresets[indexPreset].MinScale) + beautyItemData.HairPresets[indexPreset].MinScale;
-
-        // Grab random preset color
-        ColorPaletteMetadata palette = ColorPaletteMetadataStorage.GetMetadata(2); // pick from palette 2. Seems like it's the correct palette for basic hair colors
-
-        int indexColor = random.Next(palette.DefaultColors.Count);
-        MixedColor color = palette.DefaultColors[indexColor];
-
-        Item newHair = new(hairId)
-        {
-            Color = EquipColor.Argb(color, indexColor, palette.PaletteId),
-            HairData = new((float) chosenBackLength, (float) chosenFrontLength, chosenPreset.BackPositionCoord, chosenPreset.BackPositionRotation, chosenPreset.FrontPositionCoord, chosenPreset.FrontPositionRotation),
-            IsTemplate = false,
-            IsEquipped = true,
-            OwnerCharacterId = session.Player.CharacterId,
-            OwnerCharacterName = session.Player.Name
-        };
-        Dictionary<ItemSlot, Item> cosmetics = session.Player.Inventory.Cosmetics;
-
-        //Remove old hair
-        if (cosmetics.Remove(ItemSlot.HR, out Item previousHair))
-        {
-            previousHair.Slot = -1;
-            session.Player.HairInventory.RandomHair = previousHair; // store the previous hair
-            DatabaseManager.Items.Delete(previousHair.Uid);
-            session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.Player.FieldPlayer, previousHair));
-        }
-
-        cosmetics[ItemSlot.HR] = newHair;
+        BeautyHelper.ChangeHair(session, hairId, out _, out _);
     }
 
     private static void ChangeToDefaultFace(GameSession session)
@@ -564,36 +523,7 @@ public class RequestItemUseHandler : GamePacketHandler
             faceId = 10300004; // Bookworm
         }
 
-        Random random = Random.Shared;
-
-        //Grab a preset face
-        ItemMetadata beautyItemData = ItemMetadataStorage.GetMetadata(faceId);
-
-        // Grab random preset color
-        ColorPaletteMetadata palette = ColorPaletteMetadataStorage.GetMetadata(1); // pick from palette 2. Seems like it's the correct palette for basic face colors
-
-        int indexColor = random.Next(palette.DefaultColors.Count);
-        MixedColor color = palette.DefaultColors[indexColor];
-
-        Item newFace = new(faceId)
-        {
-            Color = EquipColor.Argb(color, indexColor, palette.PaletteId),
-            IsTemplate = false,
-            IsEquipped = true,
-            OwnerCharacterId = session.Player.CharacterId,
-            OwnerCharacterName = session.Player.Name
-        };
-        Dictionary<ItemSlot, Item> cosmetics = session.Player.Inventory.Cosmetics;
-
-        //Remove old face
-        if (cosmetics.Remove(ItemSlot.FA, out Item previousFace))
-        {
-            previousFace.Slot = -1;
-            DatabaseManager.Items.Delete(previousFace.Uid);
-            session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.Player.FieldPlayer, previousFace));
-        }
-
-        cosmetics[ItemSlot.FA] = newFace;
+        BeautyHelper.ChangeFace(session, faceId, out _, out _);
     }
 
     public static void HandleSurvivalLevelExp(GameSession session, Item item)

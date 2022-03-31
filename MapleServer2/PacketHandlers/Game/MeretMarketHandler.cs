@@ -8,7 +8,9 @@ using MapleServer2.Enums;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Tools;
 using MapleServer2.Types;
+using MoonSharp.Interpreter;
 
 namespace MapleServer2.PacketHandlers.Game;
 
@@ -152,11 +154,10 @@ public class MeretMarketHandler : GamePacketHandler
     private static long GetListingFee(long characterId, bool promote)
     {
         int activeListingsCount = GameServer.UgcMarketManager.GetItemsByCharacterId(characterId).Count;
-        long baseFee = long.Parse(ConstantsMetadataStorage.GetConstant("UGCShopBaseListFee"));
-        long fee = baseFee + activeListingsCount * 100;
+        ScriptLoader scriptLoader = new("Functions/calcMeretMarketRegisterFee");
+        DynValue feeDynValue = scriptLoader.Call("calcMeretMarketRegisterFee", activeListingsCount);
+        long fee = (long) feeDynValue.Number;
 
-        // Max fee being 390
-        fee = Math.Min(fee, baseFee + 200);
         if (promote)
         {
             fee += long.Parse(ConstantsMetadataStorage.GetConstant("UGCShopAdFeeMerat"));

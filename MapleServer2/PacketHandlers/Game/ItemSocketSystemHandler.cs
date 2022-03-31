@@ -4,7 +4,9 @@ using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Tools;
 using MapleServer2.Types;
+using MoonSharp.Interpreter;
 
 namespace MapleServer2.PacketHandlers.Game;
 
@@ -106,36 +108,17 @@ public class ItemSocketSystemHandler : GamePacketHandler
             return;
         }
 
-        // fragmment cost. hard coded into the client?
-        int crystalFragmentCost = 0;
-        if (slot == 0)
-        {
-            crystalFragmentCost = 400;
-        }
-        else if (slot is 1 or 2)
-        {
-            crystalFragmentCost = 600;
-        }
+        ScriptLoader scriptLoader = new("Functions/calcItemSocketUnlockIngredient");
+        DynValue scriptResult = scriptLoader.Call("calcItemSocketUnlockIngredient", equip.Rarity, slot, (int) equip.InventoryTab);
 
-        IReadOnlyCollection<Item> crystalFragments = inventory.GetAllByTag("CrystalPiece");
-        int crystalFragmentsTotalAmount = crystalFragments.Sum(x => x.Amount);
+        string ingredientTag = scriptResult.Tuple[0].String;
+        int ingredientCost = (int) scriptResult.Tuple[1].Number;
 
-        if (crystalFragmentsTotalAmount < crystalFragmentCost)
+        if (!ConsumeIngredients(session, inventory, ingredientCost, ingredientTag))
         {
             return;
         }
 
-        foreach (Item item in crystalFragments)
-        {
-            if (item.Amount >= crystalFragmentCost)
-            {
-                inventory.ConsumeItem(session, item.Uid, crystalFragmentCost);
-                break;
-            }
-
-            crystalFragmentCost -= item.Amount;
-            inventory.ConsumeItem(session, item.Uid, item.Amount);
-        }
         foreach (long uid in fodderUids)
         {
             inventory.ConsumeItem(session, uid, 1);
@@ -196,7 +179,14 @@ public class ItemSocketSystemHandler : GamePacketHandler
                 return;
             }
 
-            ConsumeIngredients(session, metadata);
+            for (int i = 0; i < metadata.IngredientItems.Count; i++)
+            {
+                if (!ConsumeIngredients(session, inventory, metadata.IngredientAmounts[i], metadata.IngredientItems[i]))
+                {
+                    return;
+                }
+            }
+
             inventory.ConsumeItem(session, gem.Uid, 1);
 
             Item upgradeGem = new(metadata.NextItemId)
@@ -232,7 +222,13 @@ public class ItemSocketSystemHandler : GamePacketHandler
             return;
         }
 
-        ConsumeIngredients(session, metadata);
+        for (int i = 0; i < metadata.IngredientItems.Count; i++)
+        {
+            if (!ConsumeIngredients(session, inventory, metadata.IngredientAmounts[i], metadata.IngredientItems[i]))
+            {
+                return;
+            }
+        }
 
         Item newGem = new(metadata.NextItemId)
         {
@@ -275,24 +271,28 @@ public class ItemSocketSystemHandler : GamePacketHandler
         return true;
     }
 
-    private static void ConsumeIngredients(GameSession session, ItemGemstoneUpgradeMetadata metadata)
+    private static bool ConsumeIngredients(GameSession session, IInventory inventory, int ingredientCost, string ingredientTag)
     {
-        for (int i = 0; i < metadata.IngredientItems.Count; i++)
+        IReadOnlyCollection<Item> ingredients = inventory.GetAllByTag(ingredientTag);
+        int totalIngredientAmount = ingredients.Sum(x => x.Amount);
+
+        if (totalIngredientAmount < ingredientCost)
         {
-            IReadOnlyCollection<Item> ingredients = session.Player.Inventory.GetAllByTag(metadata.IngredientItems[i]);
-
-            foreach (Item item in ingredients)
-            {
-                if (item.Amount >= metadata.IngredientAmounts[i])
-                {
-                    session.Player.Inventory.ConsumeItem(session, item.Uid, metadata.IngredientAmounts[i]);
-                    break;
-                }
-
-                metadata.IngredientAmounts[i] -= item.Amount;
-                session.Player.Inventory.ConsumeItem(session, item.Uid, item.Amount);
-            }
+            return false;
         }
+
+        foreach (Item item in ingredients)
+        {
+            if (item.Amount >= ingredientCost)
+            {
+                inventory.ConsumeItem(session, item.Uid, ingredientCost);
+                break;
+            }
+
+            ingredientCost -= item.Amount;
+            inventory.ConsumeItem(session, item.Uid, item.Amount);
+        }
+        return true;
     }
 
     private static void HandleSelectGemUpgrade(GameSession session, PacketReader packet)
@@ -398,7 +398,19 @@ public class ItemSocketSystemHandler : GamePacketHandler
 
         Gemstone gemstone = equipItem.Stats.GemSockets[slot].Gemstone;
 
-        // crystal fragment cost
+        int gemLevel = ItemGemstoneUpgradeMetadataStorage.GetGemLevel(gemstone.Id);
+
+        ScriptLoader scriptLoader = new("Functions/calcGetGemStonePutOffPrice");
+        DynValue scriptResult = scriptLoader.Call("calcGetGemStonePutOffPrice", gemLevel, (int) equipItem.InventoryTab);
+
+        string itemTag = scriptResult.Tuple[0].String;
+        int ingredientCost = (int) scriptResult.Tuple[1].Number;
+
+        if (!ConsumeIngredients(session, session.Player.Inventory, ingredientCost, itemTag))
+        {
+            return;
+        }
+
         Item gemstoneItem = new(gemstone.Id)
         {
             IsLocked = gemstone.IsLocked,

@@ -88,28 +88,26 @@ public class ItemMetadata
     [XmlElement(Order = 40)]
     public float OptionLevelFactor;
     [XmlElement(Order = 41)]
-    public float GlobalOptionLevelFactor;
-    [XmlElement(Order = 42)]
     public int OptionId;
-    [XmlElement(Order = 43)]
+    [XmlElement(Order = 42)]
     public bool IsCubeSolid;
-    [XmlElement(Order = 44)]
+    [XmlElement(Order = 43)]
     public ItemHousingCategory HousingCategory;
-    [XmlElement(Order = 45)]
+    [XmlElement(Order = 44)]
     public int ObjectId;
-    [XmlElement(Order = 46)]
+    [XmlElement(Order = 45)]
     public string BlackMarketCategory;
-    [XmlElement(Order = 47)]
+    [XmlElement(Order = 46)]
     public string Category;
-    [XmlElement(Order = 48)]
+    [XmlElement(Order = 47)]
     public int DurationPeriod;
-    [XmlElement(Order = 49)]
+    [XmlElement(Order = 48)]
     public DateTime ExpirationTime;
-    [XmlElement(Order = 50)]
+    [XmlElement(Order = 49)]
     public ItemExpirationType ExpirationType;
-    [XmlElement(Order = 51)]
+    [XmlElement(Order = 50)]
     public int ExpirationTypeDuration;
-    [XmlElement(Order = 52)]
+    [XmlElement(Order = 51)]
     public int GearScoreFactor;
 
     public override string ToString()

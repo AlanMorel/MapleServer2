@@ -8,7 +8,7 @@ namespace MapleServer2.Types;
 
 public static class StaticStats
 {
-    public static void GetStats(Item item, int optionId, float optionLevelFactor, float globalOptionLevelFactor, out Dictionary<StatAttribute, ItemStat> staticStats)
+    public static void GetStats(Item item, int optionId, float optionLevelFactor, out Dictionary<StatAttribute, ItemStat> staticStats)
     {
         staticStats = new();
         if (optionLevelFactor < 50)
@@ -20,7 +20,7 @@ public static class StaticStats
         ItemOptionsStatic staticOptions = ItemOptionStaticMetadataStorage.GetMetadata(staticId, item.Rarity);
         if (staticOptions == null)
         {
-            GetDefault(item, staticStats, optionId, optionLevelFactor, globalOptionLevelFactor);
+            GetDefault(item, staticStats, optionId, optionLevelFactor);
             return;
         }
 
@@ -35,10 +35,10 @@ public static class StaticStats
 
         // TODO: Implement Hidden ndd (defense) and wapmax (Max Weapon Attack)
 
-        GetDefault(item, staticStats, optionId, optionLevelFactor, globalOptionLevelFactor);
+        GetDefault(item, staticStats, optionId, optionLevelFactor);
     }
 
-    private static void GetDefault(Item item, Dictionary<StatAttribute, ItemStat> stats, int optionId, float optionLevelFactor, float globalOptionLevelFactor)
+    private static void GetDefault(Item item, Dictionary<StatAttribute, ItemStat> stats, int optionId, float optionLevelFactor)
     {
         ItemOptionPick baseOptions = ItemOptionPickMetadataStorage.GetMetadata(optionId, item.Rarity);
         if (baseOptions is null)
@@ -49,16 +49,16 @@ public static class StaticStats
         ScriptLoader scriptLoader = new("Functions/calcItemValues");
         foreach (StaticPick staticPickFlat in baseOptions.StaticValues)
         {
-            SetStat(stats, staticPickFlat, item, scriptLoader, optionLevelFactor, globalOptionLevelFactor);
+            SetStat(stats, staticPickFlat, item, scriptLoader, optionLevelFactor);
         }
 
         foreach (StaticPick staticPickRate in baseOptions.StaticRates)
         {
-            SetStat(stats, staticPickRate, item, scriptLoader, optionLevelFactor, globalOptionLevelFactor);
+            SetStat(stats, staticPickRate, item, scriptLoader, optionLevelFactor);
         }
     }
 
-    private static void SetStat(Dictionary<StatAttribute, ItemStat> stats, StaticPick staticPick, Item item, ScriptLoader scriptLoader, float optionLevelFactor, float globalOptionLevelFactor)
+    private static void SetStat(Dictionary<StatAttribute, ItemStat> stats, StaticPick staticPick, Item item, ScriptLoader scriptLoader, float optionLevelFactor)
     {
         if (!stats.ContainsKey(staticPick.Stat))
         {
@@ -66,7 +66,7 @@ public static class StaticStats
         }
         float currentStatValue = stats[staticPick.Stat].GetValue();
 
-        double statValue = CalculateStat(item, optionLevelFactor, globalOptionLevelFactor, staticPick, scriptLoader, currentStatValue);
+        double statValue = CalculateStat(item, optionLevelFactor, staticPick, scriptLoader, currentStatValue);
 
         stats[staticPick.Stat].SetValue((float) statValue);
 
@@ -77,7 +77,7 @@ public static class StaticStats
         }
     }
 
-    private static double CalculateStat(Item item, float optionLevelFactor, float globalOptionLevelFactor, StaticPick staticPick, ScriptLoader scriptLoader, float currentStatValue)
+    private static double CalculateStat(Item item, float optionLevelFactor, StaticPick staticPick, ScriptLoader scriptLoader, float currentStatValue)
     {
 
         Random random = Random.Shared;
@@ -115,7 +115,7 @@ public static class StaticStats
 
 
         DynValue result = scriptLoader.Call(calcScript, currentStatValue, staticPick.DeviationValue, (int) item.Type,
-            (int) item.RecommendJobs.First(), optionLevelFactor, item.Rarity, globalOptionLevelFactor);
+            (int) item.RecommendJobs.First(), optionLevelFactor, item.Rarity, item.Level);
 
         if (result.Tuple.Length < 2)
         {

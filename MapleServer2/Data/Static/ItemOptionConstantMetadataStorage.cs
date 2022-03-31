@@ -26,10 +26,6 @@ public static class ItemOptionConstantMetadataStorage
     public static ItemOptionsConstant GetMetadata(int id, int rarity)
     {
         ItemOptionConstantMetadata metadata = ItemOptionConstant.Values.FirstOrDefault(x => x.Id == id);
-        if (metadata == null)
-        {
-            return null;
-        }
-        return metadata.ItemOptions.FirstOrDefault(x => x.Rarity == rarity);
+        return metadata?.ItemOptions.FirstOrDefault(x => x.Rarity == rarity);
     }
 }

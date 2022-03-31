@@ -22,4 +22,9 @@ public static class ItemGemstoneUpgradeMetadataStorage
     {
         return ItemGemstoneUpgradeMetadatas.GetValueOrDefault(itemId);
     }
+
+    public static int GetGemLevel(int itemId)
+    {
+        return ItemGemstoneUpgradeMetadatas.GetValueOrDefault(itemId).GemLevel;
+    }
 }
