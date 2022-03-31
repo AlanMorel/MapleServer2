@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO.Pipelines;
 using System.Net.Sockets;
 using System.Security.Cryptography;
+using Maple2Storage.Extensions;
 using MaplePacketLib2.Crypto;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
@@ -143,6 +144,7 @@ public abstract class Session : IDisposable
         {
             throw new ObjectDisposedException("Session has been disposed.");
         }
+
         if (Client == null)
         {
             throw new InvalidOperationException("Cannot start a session without a client.");
@@ -258,6 +260,7 @@ public abstract class Session : IDisposable
                     {
                         packet.Dispose();
                     }
+
                     buffer = buffer.Slice(bytesRead);
                 }
 
@@ -343,7 +346,8 @@ public abstract class Session : IDisposable
                 break;
             default:
                 string packetString = packet.ToString();
-                Logger.Debug("SEND ({sendOp} - 0x{hexa}): {packetString}", sendOp, sendOp.ToString("X"), packetString[Math.Min(packetString.Length, 6)..]);
+                Logger.Debug("{mode} ({sendOp} - {hexa}): {packetString}",
+                    "SEND".ColorRed(), sendOp, $"0x{sendOp:X}", packetString[Math.Min(packetString.Length, 6)..]);
                 break;
         }
     }
@@ -364,7 +368,8 @@ public abstract class Session : IDisposable
                 break;
             default:
                 string packetString = packet.ToString();
-                Logger.Debug("RECV ({recvOp} - 0x{hexa}): {packetString}", recvOp, recvOp.ToString("X"), packetString[Math.Min(packetString.Length, 6)..]);
+                Logger.Debug("{mode} ({recvOp} - {hexa}): {packetString}",
+                    "RECV".ColorGreen(), recvOp, $"0x{recvOp:X}", packetString[Math.Min(packetString.Length, 6)..]);
                 break;
         }
     }

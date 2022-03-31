@@ -13,6 +13,7 @@ using MapleServer2.Servers.Login;
 using MapleServer2.Tools;
 using MapleServer2.Types;
 using Serilog;
+using Serilog.Events;
 using Serilog.Templates;
 using Serilog.Templates.Themes;
 using Path = System.IO.Path;
@@ -32,13 +33,14 @@ public static class MapleServer
     {
         // Setup Serilog
         const string ConsoleOutputTemplate = "[{@t:HH:mm:ss}] [{@l:u3}]" +
-                                             "{#if SourceContext is not null} {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1),-15}:{#end} {@m}\n{@x}";
+                                             "{#if SourceContext is not null} {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)}:{#end} {@m}\n{@x}";
         const string FileOutputTemplate = "[{Timestamp:yyyy-MM-dd HH:mm:ss}] [{Level}] {SourceContext:l}: {Message:lj}{NewLine}{Exception}";
+
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()
-            .WriteTo.Console(new ExpressionTemplate(ConsoleOutputTemplate, theme: TemplateTheme.Literate))
+            .WriteTo.Console(new ExpressionTemplate(ConsoleOutputTemplate, theme: TemplateTheme.Code))
             .WriteTo.File($"{Paths.SOLUTION_DIR}/Logs/MapleServer2/LOG-.txt",
-                rollingInterval: RollingInterval.Day, outputTemplate: FileOutputTemplate)
+                rollingInterval: RollingInterval.Day, outputTemplate: FileOutputTemplate, restrictedToMinimumLevel: LogEventLevel.Information)
             .CreateLogger();
 
         _logger = Log.Logger.ForContext(typeof(MapleServer));

@@ -14,10 +14,11 @@ if (!File.Exists(dotenv))
 DotEnv.Load(dotenv);
 
 const string ConsoleOutputTemplate = "[{@t:HH:mm:ss}] [{@l:u3}]" +
-                                     "{#if SourceContext is not null} {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1),-15}:{#end} {@m}\n{@x}";
+                                     "{#if SourceContext is not null} {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)}:{#end} {@m}\n{@x}";
 const string FileOutputTemplate = "[{Timestamp:yyyy-MM-dd HH:mm:ss}] [{Level}] {SourceContext:l}: {Message:lj}{NewLine}{Exception}";
+
 Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Debug()
+    .MinimumLevel.Information()
     .WriteTo.Console(new ExpressionTemplate(ConsoleOutputTemplate, theme: TemplateTheme.Literate))
     .WriteTo.File($"{Paths.SOLUTION_DIR}/Logs/MapleWebServer/LOG-.txt",
         rollingInterval: RollingInterval.Day, outputTemplate: FileOutputTemplate)
