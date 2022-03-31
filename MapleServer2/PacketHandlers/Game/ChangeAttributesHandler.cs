@@ -68,8 +68,6 @@ public class ChangeAttributesHandler : GamePacketHandler
         IReadOnlyCollection<Item> ingredient3 = inventory.GetAllByTag(scriptResults.Tuple[4].String);
         int ingredient3Cost = (int) scriptResults.Tuple[5].Number;
 
-        Console.WriteLine($"Cost: {scriptResults.Tuple[0].String}: {scriptResults.Tuple[1].Number} -- {scriptResults.Tuple[2].String}: {scriptResults.Tuple[3].Number} -- {scriptResults.Tuple[4].String}: {scriptResults.Tuple[5].Number}");
-
         int ingredient1TotalAmount = ingredient1.Sum(x => x.Amount);
         int ingredient2TotalAmount = ingredient2.Sum(x => x.Amount);
         int ingredient3TotalAmount = ingredient3.Sum(x => x.Amount);

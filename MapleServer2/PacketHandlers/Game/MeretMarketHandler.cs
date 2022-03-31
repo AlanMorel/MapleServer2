@@ -157,7 +157,7 @@ public class MeretMarketHandler : GamePacketHandler
         ScriptLoader scriptLoader = new("Functions/calcMeretMarketRegisterFee");
         DynValue feeDynValue = scriptLoader.Call("calcMeretMarketRegisterFee", activeListingsCount);
         long fee = (long) feeDynValue.Number;
-        Console.WriteLine(fee);
+
         if (promote)
         {
             fee += long.Parse(ConstantsMetadataStorage.GetConstant("UGCShopAdFeeMerat"));
