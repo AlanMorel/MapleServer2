@@ -71,6 +71,7 @@ public class ItemEnchantHandler : GamePacketHandler
             session.Send(ItemEnchantPacket.Notice((short) ItemEnchantError.ItemCannotBeEnchanted));
             return;
         }
+
         if (item.Type is ItemType.Necklace or ItemType.Belt or ItemType.Earring or ItemType.Ring or ItemType.Shield or ItemType.Spellbook)
         {
             session.Send(ItemEnchantPacket.Notice((short) ItemEnchantError.ItemCannotBeEnchanted));
@@ -189,6 +190,7 @@ public class ItemEnchantHandler : GamePacketHandler
 
         Random random = Random.Shared;
         double randomResult = random.NextDouble();
+
         float successRate = itemEnchantStats.Rates.BaseSuccessRate + (itemEnchantStats.Rates.ChargesAdded * itemEnchantStats.Rates.ChargesRate) + (Math.Min(itemEnchantStats.Rates.AdditionalCatalysts * itemEnchantStats.Rates.CatalystRate, 30));
         if (successRate < (float) (randomResult * 100))
         {
@@ -304,31 +306,16 @@ public class ItemEnchantHandler : GamePacketHandler
     private static int GetNeededEnchantExp(int currentEnchantLevel)
     {
         // hard coded values in client (?)
-        switch (currentEnchantLevel)
+        return currentEnchantLevel switch
         {
-            case 0:
-            case 1:
-            case 2:
-                return 1;
-            case 3:
-            case 4:
-            case 5:
-                return 2;
-            case 6:
-            case 7:
-            case 8:
-                return 4;
-            case 9:
-                return 5;
-            case 10:
-                return 3;
-            case 11:
-            case 12:
-                return 5;
-            case 13:
-            case 14:
-                return 8;
-        }
-        return 0;
+            0 or 1 or 2 => 1,
+            3 or 4 or 5 => 2,
+            6 or 7 or 8 => 4,
+            9 => 5,
+            10 => 3,
+            11 or 12 => 5,
+            13 or 14 => 8,
+            _ => 0
+        };
     }
 }

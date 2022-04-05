@@ -41,7 +41,7 @@ public static class ItemEnchantPacket
             pWriter.WriteFloat(stats.AddRate);
         }
 
-        if (type == EnchantType.Ophelia)
+        if (type is EnchantType.Ophelia)
         {
             WriteEnchantRates(pWriter, enchantInfo.Rates);
             pWriter.WriteLong();
