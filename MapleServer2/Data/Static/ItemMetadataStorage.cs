@@ -182,6 +182,10 @@ public static class ItemMetadataStorage
     public static float GetOptionLevelFactor(int itemId) => GetMetadata(itemId)?.OptionLevelFactor ?? 0;
 
     public static int GetOptionId(int itemId) => GetMetadata(itemId).OptionId;
+    
+    public static int GetPetId(int itemId) => GetMetadata(itemId).PetId;
+
+    public static bool IsEnchantDisabled(int itemId) => GetMetadata(itemId).DisableEnchant;
 
     public static EquipColor GetEquipColor(int itemId)
     {

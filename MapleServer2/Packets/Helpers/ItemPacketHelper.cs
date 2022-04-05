@@ -35,7 +35,7 @@ public static class ItemPacketHelper
         pWriter.WriteInt();
         pWriter.WriteBool(item.TransferFlag.HasFlag(ItemTransferFlag.Tradeable) || item.RemainingTrades > 0 || item.RemainingRepackageCount > 0);
         pWriter.WriteInt(item.Charges);
-        pWriter.WriteStatDiff( /*item.Stats, item.Stats*/);
+        pWriter.WriteStatDiff(item.Stats);
 
         if (item.IsCustomScore)
         {
@@ -177,23 +177,22 @@ public static class ItemPacketHelper
         }
         pWriter.WriteInt();
 
-        // Ignore other stats
-        pWriter.WriteShort();
-        pWriter.WriteShort();
-        pWriter.WriteInt();
-        pWriter.WriteShort();
+        pWriter.WriteShort(); // Title Attributes
         pWriter.WriteShort();
         pWriter.WriteInt();
-        pWriter.WriteShort();
-        pWriter.WriteShort();
-        pWriter.WriteInt();
-        pWriter.WriteShort();
+        pWriter.WriteShort(); // Empowerment Attributes
         pWriter.WriteShort();
         pWriter.WriteInt();
-        pWriter.WriteShort();
+        pWriter.WriteShort(); // Empowerment Attributes
         pWriter.WriteShort();
         pWriter.WriteInt();
+        pWriter.WriteShort(); // Empowerment Attributes
         pWriter.WriteShort();
+        pWriter.WriteInt();
+        pWriter.WriteShort(); // Empowerment Attributes
+        pWriter.WriteShort();
+        pWriter.WriteInt();
+        pWriter.WriteShort(); // Empowerment Attributes
         pWriter.WriteShort();
         pWriter.WriteInt();
 
@@ -214,14 +213,15 @@ public static class ItemPacketHelper
         pWriter.WriteFloat(stat.Flat);
     }
 
-    private static PacketWriter WriteStatDiff(this PacketWriter pWriter /*, ItemStats old, ItemStats new*/)
+    private static PacketWriter WriteStatDiff(this PacketWriter pWriter, ItemStats stats)
     {
-        // TODO: Find stat diffs (low priority)
-        List<BasicStat> constantStatDiff = new();
-        pWriter.WriteByte((byte) constantStatDiff.Count);
-        foreach (BasicStat stat in constantStatDiff)
+        List<BasicStat> enchantStats = stats.Enchants.Values.OfType<BasicStat>().ToList();
+        pWriter.WriteByte((byte) enchantStats.Count);
+        foreach (BasicStat stat in enchantStats)
         {
-            WriteBasicStat(pWriter, stat);
+            pWriter.WriteInt((int) stat.ItemAttribute);
+            pWriter.WriteInt(stat.Flat);
+            pWriter.WriteFloat(stat.Rate);
         }
 
         pWriter.WriteInt(); // ???

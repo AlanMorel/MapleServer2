@@ -33,6 +33,12 @@ public abstract class ItemStat
         Rate = value;
     }
 
+    public void SetEnchantValues(int flat, float addRate)
+    {
+        Flat = flat;
+        Rate = addRate;
+    }
+
     public float GetValue()
     {
         if (AttributeType == StatAttributeType.Flat)
@@ -88,6 +94,7 @@ public class ItemStats
     public Dictionary<StatAttribute, ItemStat> Constants;
     public Dictionary<StatAttribute, ItemStat> Statics;
     public Dictionary<StatAttribute, ItemStat> Randoms;
+    public Dictionary<StatAttribute, ItemStat> Enchants;
     public List<GemSocket> GemSockets;
 
     public ItemStats() { }
@@ -102,6 +109,7 @@ public class ItemStats
         Constants = new(other.Constants);
         Statics = new(other.Statics);
         Randoms = new(other.Randoms);
+        Enchants = new(other.Enchants);
         GemSockets = new();
     }
 
@@ -110,6 +118,7 @@ public class ItemStats
         Constants = new();
         Statics = new();
         Randoms = new();
+        Enchants = new();
         GemSockets = new();
         if (item.Rarity is 0 or > 6)
         {
@@ -126,6 +135,26 @@ public class ItemStats
         RandomStats.GetStats(item, out Dictionary<StatAttribute, ItemStat> randomStats);
         Randoms = randomStats;
         GetGemSockets(item, optionLevelFactor);
+    }
+
+    public float GetTotalStatValue(StatAttribute attribute)
+    {
+        float statValue = 0;
+
+        if (Constants.ContainsKey(attribute))
+        {
+            statValue += Constants[attribute].GetValue();
+        }
+        if (Statics.ContainsKey(attribute))
+        {
+            statValue += Statics[attribute].GetValue();
+        }
+        if (Randoms.ContainsKey(attribute))
+        {
+            statValue += Randoms[attribute].GetValue();
+        }
+
+        return statValue;
     }
 
     public static void AddHiddenNormalStat(List<ItemStat> stats, StatAttribute attribute, int value, float calibrationFactor)

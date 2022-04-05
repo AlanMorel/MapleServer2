@@ -117,6 +117,7 @@ public class Player
     public LockInventory LockInventory = new();
     public HairInventory HairInventory = new();
     public TradeInventory TradeInventory;
+    public ItemEnchant ItemEnchant; // Current item player is enchanting
 
     public List<Mail> Mailbox = new();
 

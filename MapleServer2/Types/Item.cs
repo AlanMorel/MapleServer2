@@ -55,6 +55,7 @@ public class Item
     public int GearScore;
     public int Enchants;
     public int LimitBreakLevel;
+    public bool DisableEnchant;
 
     // EnchantExp (10000 = 100%) for Peachy
     public int EnchantExp;
@@ -219,7 +220,7 @@ public class Item
 
     public bool IsPet()
     {
-        return PetId != 0;
+        return ItemMetadataStorage.GetPetId(Id) != 0;
     }
 
     public bool BindItem(Player player)
@@ -289,6 +290,7 @@ public class Item
         HousingCategory = ItemMetadataStorage.GetHousingCategory(Id);
         BlackMarketCategory = ItemMetadataStorage.GetBlackMarketCategory(Id);
         Category = ItemMetadataStorage.GetCategory(Id);
+        DisableEnchant = ItemMetadataStorage.IsEnchantDisabled(Id);
         Type = GetItemType();
     }
 
