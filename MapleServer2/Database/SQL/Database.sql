@@ -464,7 +464,7 @@ CREATE TABLE `items`
     `color`                    text             NOT NULL,
     `creation_time`            bigint           NOT NULL,
     `enchant_exp`              int              NOT NULL,
-    `enchants`                 int              NOT NULL,
+    `enchant_level`            int              NOT NULL,
     `limit_break_level`        int              NOT NULL,
     `gear_score`                int              NOT NULL,
     `expiry_time`              bigint           NOT NULL,

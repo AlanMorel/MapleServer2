@@ -27,7 +27,7 @@ public static class ItemPacketHelper
 
         // Write Stats 0x0582B10
         pWriter.WriteStats(item.Stats);
-        pWriter.WriteInt(item.Enchants);
+        pWriter.WriteInt(item.EnchantLevel);
         pWriter.WriteInt(item.EnchantExp);
         pWriter.WriteBool(true); // Enchant based peachy charges, otherwise always require 10 charges
         pWriter.WriteLong();

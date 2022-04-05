@@ -53,7 +53,7 @@ public class Item
     public short RemainingGlamorForges;
     public int GachaDismantleId;
     public int GearScore;
-    public int Enchants;
+    public int EnchantLevel;
     public int LimitBreakLevel;
     public bool DisableEnchant;
 
@@ -156,7 +156,7 @@ public class Item
         UnlockTime = other.UnlockTime;
         RemainingGlamorForges = other.RemainingGlamorForges;
         GachaDismantleId = other.GachaDismantleId;
-        Enchants = other.Enchants;
+        EnchantLevel = other.EnchantLevel;
         EnchantExp = other.EnchantExp;
         RemainingRepackageCount = other.RemainingRepackageCount;
         Charges = other.Charges;
@@ -337,7 +337,7 @@ public class Item
     {
         int gearScoreFactor = ItemMetadataStorage.GetGearScoreFactor(Id);
         ScriptLoader scriptLoader = new("Functions/calcItemValues");
-        DynValue result = scriptLoader.Call("calcItemGearScore", gearScoreFactor, Rarity, (int) Type, Enchants, LimitBreakLevel);
+        DynValue result = scriptLoader.Call("calcItemGearScore", gearScoreFactor, Rarity, (int) Type, EnchantLevel, LimitBreakLevel);
         return (int) result.Tuple[0].Number + (int) result.Tuple[1].Number;
     }
 }

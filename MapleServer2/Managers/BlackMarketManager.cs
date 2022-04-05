@@ -59,8 +59,8 @@ public class BlackMarketManager
                 item.Level < minLevel ||
                 item.Level > maxLevel ||
                 item.Rarity < rarity ||
-                item.Enchants < minEnchantLevel ||
-                item.Enchants > maxEnchantLevel ||
+                item.EnchantLevel < minEnchantLevel ||
+                item.EnchantLevel > maxEnchantLevel ||
                 item.Stats.GemSockets.Count < minSockets ||
                 item.Stats.GemSockets.Count > maxSockets ||
                 !item.Name.ToLower().Contains(name.ToLower()))

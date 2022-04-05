@@ -67,7 +67,7 @@ public class ItemEnchantHandler : GamePacketHandler
         long itemUid = packet.ReadLong();
 
         Item item = session.Player.Inventory.GetByUid(itemUid);
-        if (item is null || item.DisableEnchant || item.Enchants >= 15)
+        if (item is null || item.DisableEnchant || item.EnchantLevel >= 15)
         {
             session.Send(ItemEnchantPacket.Notice((short) ItemEnchantError.ItemCannotBeEnchanted));
             return;
@@ -113,11 +113,11 @@ public class ItemEnchantHandler : GamePacketHandler
 
     private static ItemEnchant GetEnchantInfo(Item item)
     {
-        ItemEnchant itemEnchantStats = new(item.Uid, item.Enchants);
+        ItemEnchant itemEnchantStats = new(item.Uid, item.EnchantLevel);
         ScriptLoader scriptLoader = new("Functions/calcEnchantValues");
-        DynValue statValueScriptResult = scriptLoader.Call("calcEnchantBoostValues", item.Enchants, (int) item.Type, item.Level);
-        DynValue successRateScriptResult = scriptLoader.Call("calcEnchantRates", item.Enchants);
-        DynValue ingredientsResult = scriptLoader.Call("calcEnchantIngredients", item.Enchants, item.Rarity, (int) item.Type, item.Level);
+        DynValue statValueScriptResult = scriptLoader.Call("calcEnchantBoostValues", item.EnchantLevel, (int) item.Type, item.Level);
+        DynValue successRateScriptResult = scriptLoader.Call("calcEnchantRates", item.EnchantLevel);
+        DynValue ingredientsResult = scriptLoader.Call("calcEnchantIngredients", item.EnchantLevel, item.Rarity, (int) item.Type, item.Level);
 
         itemEnchantStats.Rates.BaseSuccessRate = (float) successRateScriptResult.Tuple[0].Number;
         itemEnchantStats.Rates.CatalystRate = (float) successRateScriptResult.Tuple[1].Number;
@@ -172,7 +172,7 @@ public class ItemEnchantHandler : GamePacketHandler
         }
 
         ItemEnchant itemEnchantStats = session.Player.ItemEnchant;
-        if (itemEnchantStats.Level != item.Enchants && itemEnchantStats.ItemUid != item.Uid)
+        if (itemEnchantStats.Level != item.EnchantLevel && itemEnchantStats.ItemUid != item.Uid)
         {
             itemEnchantStats = GetEnchantInfo(item);
         }
@@ -250,7 +250,7 @@ public class ItemEnchantHandler : GamePacketHandler
             item.Stats.Enchants[stat.Attribute].Flat += stat.AddValue;
             item.Stats.Enchants[stat.Attribute].Rate += stat.AddRate;
         }
-        item.Enchants++;
+        item.EnchantLevel++;
         item.Charges -= itemEnchantStats.Rates.ChargesAdded;
         session.Send(ItemEnchantPacket.EnchantSuccess(item, itemEnchantStats.Stats.Values.ToList()));
     }
@@ -273,7 +273,7 @@ public class ItemEnchantHandler : GamePacketHandler
         }
 
         ItemEnchant itemEnchantStats = session.Player.ItemEnchant;
-        if (itemEnchantStats.Level != item.Enchants && itemEnchantStats.ItemUid != item.Uid)
+        if (itemEnchantStats.Level != item.EnchantLevel && itemEnchantStats.ItemUid != item.Uid)
         {
             itemEnchantStats = GetEnchantInfo(item);
         }
@@ -289,7 +289,7 @@ public class ItemEnchantHandler : GamePacketHandler
 
         ConsumeIngredients(session, itemEnchantStats, inventory);
 
-        int neededEnchants = GetNeededEnchantExp(item.Enchants);
+        int neededEnchants = GetNeededEnchantExp(item.EnchantLevel);
         int expGained = (int) Math.Ceiling((double) (10000 / neededEnchants));
 
         item.EnchantExp += expGained;
