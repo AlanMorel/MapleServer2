@@ -18,7 +18,6 @@ public static class BeautyMetadataStorage
         }
 
         using FileStream stream = File.OpenRead(path);
-        ;
         List<BeautyMetadata> shopList = Serializer.Deserialize<List<BeautyMetadata>>(stream);
         foreach (BeautyMetadata shop in shopList)
         {
