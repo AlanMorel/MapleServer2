@@ -10,7 +10,13 @@ public static class PremiumClubPackageMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-premium-club-package-metadata");
+        string path = Path.Combine(Paths.RESOURCES_DIR, $"ms2-{MetadataName.PremiumClubPackage}-metadata");
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException("Metadata not found. Re-run GameDataParser");
+        }
+
+        using FileStream stream = File.OpenRead(path);
         List<PremiumClubPackageMetadata> items = Serializer.Deserialize<List<PremiumClubPackageMetadata>>(stream);
         foreach (PremiumClubPackageMetadata item in items)
         {

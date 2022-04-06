@@ -10,7 +10,13 @@ public static class FishingRodMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-fishing-rod-metadata");
+        string path = Path.Combine(Paths.RESOURCES_DIR, $"ms2-{MetadataName.FishingRod}-metadata");
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException("Metadata not found. Re-run GameDataParser");
+        }
+
+        using FileStream stream = File.OpenRead(path);
         List<FishingRodMetadata> items = Serializer.Deserialize<List<FishingRodMetadata>>(stream);
         foreach (FishingRodMetadata item in items)
         {

@@ -2,13 +2,14 @@
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 public class MeretMarketCategoryParser : Exporter<List<MeretMarketCategoryMetadata>>
 {
-    public MeretMarketCategoryParser(MetadataResources resources) : base(resources, "meret-market-category") { }
+    public MeretMarketCategoryParser(MetadataResources resources) : base(resources, MetadataName.MeretMarketCategory) { }
 
     protected override List<MeretMarketCategoryMetadata> Parse()
     {

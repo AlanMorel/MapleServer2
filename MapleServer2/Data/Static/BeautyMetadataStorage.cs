@@ -11,7 +11,14 @@ public static class BeautyMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-beauty-metadata");
+        string path = Path.Combine(Paths.RESOURCES_DIR, $"ms2-{MetadataName.Beauty}-metadata");
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException("Metadata not found. Re-run GameDataParser");
+        }
+
+        using FileStream stream = File.OpenRead(path);
+        ;
         List<BeautyMetadata> shopList = Serializer.Deserialize<List<BeautyMetadata>>(stream);
         foreach (BeautyMetadata shop in shopList)
         {

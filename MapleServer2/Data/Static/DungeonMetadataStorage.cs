@@ -10,7 +10,13 @@ public static class DungeonStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-dungeon-metadata");
+        string path = Path.Combine(Paths.RESOURCES_DIR, $"ms2-{MetadataName.Dungeon}-metadata");
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException("Metadata not found. Re-run GameDataParser");
+        }
+
+        using FileStream stream = File.OpenRead(path);
         List<DungeonMetadata> dungeons = Serializer.Deserialize<List<DungeonMetadata>>(stream);
         foreach (DungeonMetadata dungeon in dungeons)
         {

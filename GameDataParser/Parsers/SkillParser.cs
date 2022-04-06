@@ -11,7 +11,7 @@ namespace GameDataParser.Parsers;
 
 public class SkillParser : Exporter<List<SkillMetadata>>
 {
-    public SkillParser(MetadataResources resources) : base(resources, "skill") { }
+    public SkillParser(MetadataResources resources) : base(resources, MetadataName.Skill) { }
 
     protected override List<SkillMetadata> Parse()
     {

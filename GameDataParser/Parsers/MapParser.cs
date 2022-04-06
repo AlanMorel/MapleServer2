@@ -18,7 +18,7 @@ public class MapParser : Exporter<List<MapMetadata>>
     private Dictionary<int, string> MapNames;
     private Dictionary<int, Dictionary<int, SpawnMetadata>> SpawnTagMap;
     private Dictionary<int, InteractObjectType> InteractTypes;
-    public MapParser(MetadataResources resources) : base(resources, "map") { }
+    public MapParser(MetadataResources resources) : base(resources, MetadataName.Map) { }
 
     protected override List<MapMetadata> Parse()
     {

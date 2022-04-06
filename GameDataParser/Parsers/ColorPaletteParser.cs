@@ -8,7 +8,7 @@ namespace GameDataParser.Parsers;
 
 public class ColorPaletteParser : Exporter<List<ColorPaletteMetadata>>
 {
-    public ColorPaletteParser(MetadataResources resources) : base(resources, "color-palette") { }
+    public ColorPaletteParser(MetadataResources resources) : base(resources, MetadataName.ColorPalette) { }
 
     protected override List<ColorPaletteMetadata> Parse()
     {

@@ -2,13 +2,14 @@
 using GameDataParser.Files;
 using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 public class FishParser : Exporter<List<FishMetadata>>
 {
-    public FishParser(MetadataResources resources) : base(resources, "fish") { }
+    public FishParser(MetadataResources resources) : base(resources, MetadataName.Fish) { }
 
     protected override List<FishMetadata> Parse()
     {

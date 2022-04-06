@@ -10,7 +10,13 @@ public static class ItemGemstoneUpgradeMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-item-gemstone-upgrade-metadata");
+        string path = Path.Combine(Paths.RESOURCES_DIR, $"ms2-{MetadataName.ItemGemstoneUpgrade}-metadata");
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException("Metadata not found. Re-run GameDataParser");
+        }
+
+        using FileStream stream = File.OpenRead(path);
         List<ItemGemstoneUpgradeMetadata> items = Serializer.Deserialize<List<ItemGemstoneUpgradeMetadata>>(stream);
         foreach (ItemGemstoneUpgradeMetadata item in items)
         {

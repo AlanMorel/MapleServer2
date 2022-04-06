@@ -2,13 +2,14 @@
 using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 public class ItemExchangeScrollParser : Exporter<List<ItemExchangeScrollMetadata>>
 {
-    public ItemExchangeScrollParser(MetadataResources resources) : base(resources, "item-exchange-scroll") { }
+    public ItemExchangeScrollParser(MetadataResources resources) : base(resources, MetadataName.ItemExchangeScroll) { }
 
     protected override List<ItemExchangeScrollMetadata> Parse()
     {

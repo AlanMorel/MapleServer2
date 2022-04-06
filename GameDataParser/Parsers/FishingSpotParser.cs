@@ -1,13 +1,14 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 public class FishingSpotParser : Exporter<List<FishingSpotMetadata>>
 {
-    public FishingSpotParser(MetadataResources resources) : base(resources, "fishing-spot") { }
+    public FishingSpotParser(MetadataResources resources) : base(resources, MetadataName.FishingSpot) { }
 
     protected override List<FishingSpotMetadata> Parse()
     {

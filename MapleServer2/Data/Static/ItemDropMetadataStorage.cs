@@ -10,7 +10,13 @@ public static class ItemDropMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-item-drop-metadata");
+        string path = Path.Combine(Paths.RESOURCES_DIR, $"ms2-{MetadataName.ItemDrop}-metadata");
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException("Metadata not found. Re-run GameDataParser");
+        }
+
+        using FileStream stream = File.OpenRead(path);
         List<ItemDropMetadata> items = Serializer.Deserialize<List<ItemDropMetadata>>(stream);
         foreach (ItemDropMetadata item in items)
         {

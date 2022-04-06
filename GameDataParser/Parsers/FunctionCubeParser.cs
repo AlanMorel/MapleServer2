@@ -1,13 +1,14 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 public class FunctionCubeParser : Exporter<List<FunctionCubeMetadata>>
 {
-    public FunctionCubeParser(MetadataResources resources) : base(resources, "function-cube") { }
+    public FunctionCubeParser(MetadataResources resources) : base(resources, MetadataName.FunctionCube) { }
 
     protected override List<FunctionCubeMetadata> Parse()
     {

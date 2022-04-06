@@ -2,13 +2,14 @@
 using GameDataParser.Files;
 using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 public class ItemRepackageParser : Exporter<List<ItemRepackageMetadata>>
 {
-    public ItemRepackageParser(MetadataResources resources) : base(resources, "item-repackage") { }
+    public ItemRepackageParser(MetadataResources resources) : base(resources, MetadataName.ItemRepackage) { }
 
     protected override List<ItemRepackageMetadata> Parse()
     {

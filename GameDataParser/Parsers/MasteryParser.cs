@@ -1,13 +1,14 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 internal class MasteryParser : Exporter<List<MasteryMetadata>>
 {
-    public MasteryParser(MetadataResources resources) : base(resources, "mastery") { }
+    public MasteryParser(MetadataResources resources) : base(resources, MetadataName.Mastery) { }
 
     protected override List<MasteryMetadata> Parse()
     {

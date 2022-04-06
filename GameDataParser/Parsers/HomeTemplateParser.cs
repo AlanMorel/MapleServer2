@@ -9,7 +9,7 @@ namespace GameDataParser.Parsers;
 
 public class HomeTemplateParser : Exporter<List<HomeTemplateMetadata>>
 {
-    public HomeTemplateParser(MetadataResources resources) : base(resources, "home-template") { }
+    public HomeTemplateParser(MetadataResources resources) : base(resources, MetadataName.HomeTemplate) { }
 
     protected override List<HomeTemplateMetadata> Parse()
     {

@@ -2,13 +2,14 @@
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 public class DefaultItemsParser : Exporter<List<DefaultItemsMetadata>>
 {
-    public DefaultItemsParser(MetadataResources resources) : base(resources, "default-items") { }
+    public DefaultItemsParser(MetadataResources resources) : base(resources, MetadataName.DefaultItems) { }
 
     protected override List<DefaultItemsMetadata> Parse()
     {

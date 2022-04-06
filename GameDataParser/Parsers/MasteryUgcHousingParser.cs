@@ -1,13 +1,14 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 public class MasteryUgcHousingParser : Exporter<List<MasteryUgcHousingMetadata>>
 {
-    public MasteryUgcHousingParser(MetadataResources resources) : base(resources, "mastery-ugc-housing") { }
+    public MasteryUgcHousingParser(MetadataResources resources) : base(resources, MetadataName.MasteryUGCHousing) { }
 
     protected override List<MasteryUgcHousingMetadata> Parse()
     {

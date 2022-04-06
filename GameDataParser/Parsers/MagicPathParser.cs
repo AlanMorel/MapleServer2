@@ -10,7 +10,7 @@ namespace GameDataParser.Parsers;
 
 public class MagicPathParser : Exporter<List<MagicPathMetadata>>
 {
-    public MagicPathParser(MetadataResources resources) : base(resources, "magicpath") { }
+    public MagicPathParser(MetadataResources resources) : base(resources, MetadataName.MagicPath) { }
 
     protected override List<MagicPathMetadata> Parse()
     {

@@ -2,13 +2,14 @@
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 public class ItemOptionPickParser : Exporter<List<ItemOptionPickMetadata>>
 {
-    public ItemOptionPickParser(MetadataResources resources) : base(resources, "item-option-pick") { }
+    public ItemOptionPickParser(MetadataResources resources) : base(resources, MetadataName.ItemOptionPick) { }
 
     protected override List<ItemOptionPickMetadata> Parse()
     {

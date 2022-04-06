@@ -6,7 +6,7 @@ namespace GameDataParser.Parsers;
 
 public class MeshParser : Exporter<object>
 {
-    public MeshParser(MetadataResources resources) : base(resources, "mesh") { }
+    public MeshParser(MetadataResources resources) : base(resources, MetadataName.Mesh) { }
 
     protected override object Parse()
     {

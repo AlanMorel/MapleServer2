@@ -1,13 +1,14 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 public class GachaParser : Exporter<List<GachaMetadata>>
 {
-    public GachaParser(MetadataResources resources) : base(resources, "gacha") { }
+    public GachaParser(MetadataResources resources) : base(resources, MetadataName.Gacha) { }
 
     protected override List<GachaMetadata> Parse()
     {

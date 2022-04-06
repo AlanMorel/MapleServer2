@@ -1,13 +1,14 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 public class FieldWarParser : Exporter<List<FieldWarMetadata>>
 {
-    public FieldWarParser(MetadataResources resources) : base(resources, "fieldwar") { }
+    public FieldWarParser(MetadataResources resources) : base(resources, MetadataName.FieldWar) { }
 
     protected override List<FieldWarMetadata> Parse()
     {

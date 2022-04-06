@@ -10,7 +10,13 @@ public static class BlackMarketTableMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-black-market-table-metadata");
+        string path = Path.Combine(Paths.RESOURCES_DIR, $"ms2-{MetadataName.BlackMarketTable}-metadata");
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException("Metadata not found. Re-run GameDataParser");
+        }
+
+        using FileStream stream = File.OpenRead(path);
         List<BlackMarketTableMetadata> items = Serializer.Deserialize<List<BlackMarketTableMetadata>>(stream);
         foreach (BlackMarketTableMetadata item in items)
         {

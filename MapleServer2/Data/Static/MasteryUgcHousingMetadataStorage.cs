@@ -10,7 +10,13 @@ public static class MasteryUgcHousingMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-mastery-ugc-housing-metadata");
+        string path = Path.Combine(Paths.RESOURCES_DIR, $"ms2-{MetadataName.MasteryUGCHousing}-metadata");
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException("Metadata not found. Re-run GameDataParser");
+        }
+
+        using FileStream stream = File.OpenRead(path);
         List<MasteryUgcHousingMetadata> masteryMetadatas = Serializer.Deserialize<List<MasteryUgcHousingMetadata>>(stream);
         foreach (MasteryUgcHousingMetadata metadata in masteryMetadatas)
         {

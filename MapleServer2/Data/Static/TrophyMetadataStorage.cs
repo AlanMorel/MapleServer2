@@ -10,7 +10,13 @@ public static class TrophyMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-trophy-metadata");
+        string path = Path.Combine(Paths.RESOURCES_DIR, $"ms2-{MetadataName.Trophy}-metadata");
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException("Metadata not found. Re-run GameDataParser");
+        }
+
+        using FileStream stream = File.OpenRead(path);
         List<TrophyMetadata> trophies = Serializer.Deserialize<List<TrophyMetadata>>(stream);
         foreach (TrophyMetadata trophy in trophies)
         {

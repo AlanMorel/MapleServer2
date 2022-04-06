@@ -10,7 +10,13 @@ public static class MagicPathMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-magicpath-metadata");
+        string path = Path.Combine(Paths.RESOURCES_DIR, $"ms2-{MetadataName.MagicPath}-metadata");
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException("Metadata not found. Re-run GameDataParser");
+        }
+
+        using FileStream stream = File.OpenRead(path);
         List<MagicPathMetadata> magicPathList = Serializer.Deserialize<List<MagicPathMetadata>>(stream);
         foreach (MagicPathMetadata magicPath in magicPathList)
         {

@@ -10,7 +10,13 @@ public static class InsigniaMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-insignia-metadata");
+        string path = Path.Combine(Paths.RESOURCES_DIR, $"ms2-{MetadataName.Insignia}-metadata");
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException("Metadata not found. Re-run GameDataParser");
+        }
+
+        using FileStream stream = File.OpenRead(path);
         List<InsigniaMetadata> items = Serializer.Deserialize<List<InsigniaMetadata>>(stream);
         foreach (InsigniaMetadata item in items)
         {

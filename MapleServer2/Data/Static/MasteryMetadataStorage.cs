@@ -11,7 +11,13 @@ public static class MasteryMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-mastery-metadata");
+        string path = Path.Combine(Paths.RESOURCES_DIR, $"ms2-{MetadataName.Mastery}-metadata");
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException("Metadata not found. Re-run GameDataParser");
+        }
+
+        using FileStream stream = File.OpenRead(path);
         List<MasteryMetadata> masteryList = Serializer.Deserialize<List<MasteryMetadata>>(stream);
         foreach (MasteryMetadata mastery in masteryList)
         {

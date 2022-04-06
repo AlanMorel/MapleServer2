@@ -1,13 +1,14 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 public class PremiumClubPackageParser : Exporter<List<PremiumClubPackageMetadata>>
 {
-    public PremiumClubPackageParser(MetadataResources resources) : base(resources, "premium-club-package") { }
+    public PremiumClubPackageParser(MetadataResources resources) : base(resources, MetadataName.PremiumClubPackage) { }
 
     protected override List<PremiumClubPackageMetadata> Parse()
     {

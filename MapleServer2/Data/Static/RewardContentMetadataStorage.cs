@@ -11,7 +11,13 @@ public static class RewardContentMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-reward-content-metadata");
+        string path = Path.Combine(Paths.RESOURCES_DIR, $"ms2-{MetadataName.RewardContent}-metadata");
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException("Metadata not found. Re-run GameDataParser");
+        }
+
+        using FileStream stream = File.OpenRead(path);
         List<RewardContentMetadata> items = Serializer.Deserialize<List<RewardContentMetadata>>(stream);
         foreach (RewardContentMetadata item in items)
         {

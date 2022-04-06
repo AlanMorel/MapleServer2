@@ -13,7 +13,7 @@ namespace GameDataParser.Parsers;
 
 public class ItemParser : Exporter<List<ItemMetadata>>
 {
-    public ItemParser(MetadataResources resources) : base(resources, "item") { }
+    public ItemParser(MetadataResources resources) : base(resources, MetadataName.Item) { }
 
     protected override List<ItemMetadata> Parse()
     {

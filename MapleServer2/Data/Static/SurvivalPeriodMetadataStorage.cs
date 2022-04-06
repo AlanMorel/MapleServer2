@@ -10,7 +10,13 @@ public static class SurvivalPeriodMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-survival-period-metadata");
+        string path = Path.Combine(Paths.RESOURCES_DIR, $"ms2-{MetadataName.SurvivalPeriod}-metadata");
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException("Metadata not found. Re-run GameDataParser");
+        }
+
+        using FileStream stream = File.OpenRead(path);
         List<SurvivalPeriodMetadata> items = Serializer.Deserialize<List<SurvivalPeriodMetadata>>(stream);
         foreach (SurvivalPeriodMetadata item in items)
         {

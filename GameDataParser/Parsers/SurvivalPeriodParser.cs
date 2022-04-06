@@ -1,13 +1,14 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 public class SurvivalPeriodParser : Exporter<List<SurvivalPeriodMetadata>>
 {
-    public SurvivalPeriodParser(MetadataResources resources) : base(resources, "survival-period") { }
+    public SurvivalPeriodParser(MetadataResources resources) : base(resources, MetadataName.SurvivalPeriod) { }
 
     protected override List<SurvivalPeriodMetadata> Parse()
     {

@@ -10,7 +10,13 @@ public static class ItemOptionPickMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-item-option-pick-metadata");
+        string path = Path.Combine(Paths.RESOURCES_DIR, $"ms2-{MetadataName.ItemOptionPick}-metadata");
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException("Metadata not found. Re-run GameDataParser");
+        }
+
+        using FileStream stream = File.OpenRead(path);
         List<ItemOptionPickMetadata> items = Serializer.Deserialize<List<ItemOptionPickMetadata>>(stream);
         foreach (ItemOptionPickMetadata item in items)
         {

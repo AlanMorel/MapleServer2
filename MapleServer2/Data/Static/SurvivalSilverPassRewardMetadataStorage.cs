@@ -10,7 +10,13 @@ public static class SurvivalSilverPassRewardMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-survival-silver-pass-reward-metadata");
+        string path = Path.Combine(Paths.RESOURCES_DIR, $"ms2-{MetadataName.SurvivalSilverPassReward}-metadata");
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException("Metadata not found. Re-run GameDataParser");
+        }
+
+        using FileStream stream = File.OpenRead(path);
         List<SurvivalSilverPassRewardMetadata> items = Serializer.Deserialize<List<SurvivalSilverPassRewardMetadata>>(stream);
         foreach (SurvivalSilverPassRewardMetadata item in items)
         {

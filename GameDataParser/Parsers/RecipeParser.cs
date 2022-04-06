@@ -2,13 +2,14 @@
 using GameDataParser.Files;
 using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 internal class RecipeParser : Exporter<List<RecipeMetadata>>
 {
-    public RecipeParser(MetadataResources resources) : base(resources, "recipe") { }
+    public RecipeParser(MetadataResources resources) : base(resources, MetadataName.Recipe) { }
 
     protected override List<RecipeMetadata> Parse()
     {

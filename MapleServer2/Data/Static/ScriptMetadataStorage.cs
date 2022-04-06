@@ -11,7 +11,13 @@ public static class ScriptMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-script-metadata");
+        string path = Path.Combine(Paths.RESOURCES_DIR, $"ms2-{MetadataName.Script}-metadata");
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException("Metadata not found. Re-run GameDataParser");
+        }
+
+        using FileStream stream = File.OpenRead(path);
         List<ScriptMetadata> items = Serializer.Deserialize<List<ScriptMetadata>>(stream);
         foreach (ScriptMetadata item in items)
         {

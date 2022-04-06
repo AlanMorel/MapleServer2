@@ -10,7 +10,13 @@ public static class GuildBuffMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-guild-buff-metadata");
+        string path = Path.Combine(Paths.RESOURCES_DIR, $"ms2-{MetadataName.GuildBuff}-metadata");
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException("Metadata not found. Re-run GameDataParser");
+        }
+
+        using FileStream stream = File.OpenRead(path);
         List<GuildBuffMetadata> items = Serializer.Deserialize<List<GuildBuffMetadata>>(stream);
         foreach (GuildBuffMetadata item in items)
         {

@@ -10,7 +10,13 @@ public static class AnimationStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-animation-metadata");
+        string path = Path.Combine(Paths.RESOURCES_DIR, $"ms2-{MetadataName.Animation}-metadata");
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException("Metadata not found. Re-run GameDataParser");
+        }
+
+        using FileStream stream = File.OpenRead(path);
         List<AnimationMetadata> animations = Serializer.Deserialize<List<AnimationMetadata>>(stream);
         foreach (AnimationMetadata animation in animations)
         {

@@ -10,7 +10,13 @@ public static class FieldWarMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-fieldwar-metadata");
+        string path = Path.Combine(Paths.RESOURCES_DIR, $"ms2-{MetadataName.FieldWar}-metadata");
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException("Metadata not found. Re-run GameDataParser");
+        }
+
+        using FileStream stream = File.OpenRead(path);
         List<FieldWarMetadata> metadatas = Serializer.Deserialize<List<FieldWarMetadata>>(stream);
         foreach (FieldWarMetadata metadata in metadatas)
         {
