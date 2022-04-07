@@ -2,6 +2,7 @@
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Enums;
+using MapleServer2.Tools;
 using MapleServer2.Types;
 using ProtoBuf;
 
@@ -14,13 +15,7 @@ public static class ItemMetadataStorage
 
     public static void Init()
     {
-        string path = Path.Combine(Paths.RESOURCES_DIR, $"ms2-{MetadataName.Item}-metadata");
-        if (!File.Exists(path))
-        {
-            throw new FileNotFoundException("Metadata not found. Re-run GameDataParser");
-        }
-
-        using FileStream stream = File.OpenRead(path);
+        using FileStream stream = MetadataHelper.GetFileStream(MetadataName.Item);
         List<ItemMetadata> items = Serializer.Deserialize<List<ItemMetadata>>(stream);
         foreach (ItemMetadata item in items)
         {

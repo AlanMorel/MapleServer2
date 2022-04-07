@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Maple2Storage.Tools;
+using Maple2Storage.Types;
 using Serilog;
 
 namespace MapleServer2.Tools;
@@ -28,5 +29,16 @@ public static class MetadataHelper
 
         await Task.WhenAll(tasks);
         Logger.Information("Initializing Data...Complete!");
+    }
+
+    public static FileStream GetFileStream(string metadataName)
+    {
+        string path = Path.Combine(Paths.RESOURCES_DIR, $"ms2-{metadataName}-metadata");
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException("Metadata not found. Re-run GameDataParser");
+        }
+
+        return File.OpenRead(path);
     }
 }

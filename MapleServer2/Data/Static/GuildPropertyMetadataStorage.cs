@@ -1,5 +1,6 @@
 ﻿using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
+using MapleServer2.Tools;
 using ProtoBuf;
 
 namespace MapleServer2.Data.Static;
@@ -10,13 +11,7 @@ public static class GuildPropertyMetadataStorage
 
     public static void Init()
     {
-        string path = Path.Combine(Paths.RESOURCES_DIR, $"ms2-{MetadataName.GuildProperty}-metadata");
-        if (!File.Exists(path))
-        {
-            throw new FileNotFoundException("Metadata not found. Re-run GameDataParser");
-        }
-
-        using FileStream stream = File.OpenRead(path);
+        using FileStream stream = MetadataHelper.GetFileStream(MetadataName.GuildProperty);
         List<GuildPropertyMetadata> items = Serializer.Deserialize<List<GuildPropertyMetadata>>(stream);
         foreach (GuildPropertyMetadata item in items)
         {

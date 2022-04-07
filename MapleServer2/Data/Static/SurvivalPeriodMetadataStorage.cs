@@ -1,5 +1,6 @@
 ﻿using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
+using MapleServer2.Tools;
 using ProtoBuf;
 
 namespace MapleServer2.Data.Static;
@@ -10,13 +11,7 @@ public static class SurvivalPeriodMetadataStorage
 
     public static void Init()
     {
-        string path = Path.Combine(Paths.RESOURCES_DIR, $"ms2-{MetadataName.SurvivalPeriod}-metadata");
-        if (!File.Exists(path))
-        {
-            throw new FileNotFoundException("Metadata not found. Re-run GameDataParser");
-        }
-
-        using FileStream stream = File.OpenRead(path);
+        using FileStream stream = MetadataHelper.GetFileStream(MetadataName.SurvivalPeriod);
         List<SurvivalPeriodMetadata> items = Serializer.Deserialize<List<SurvivalPeriodMetadata>>(stream);
         foreach (SurvivalPeriodMetadata item in items)
         {

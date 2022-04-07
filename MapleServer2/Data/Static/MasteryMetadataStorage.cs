@@ -1,6 +1,7 @@
 ﻿using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Enums;
+using MapleServer2.Tools;
 using ProtoBuf;
 
 namespace MapleServer2.Data.Static;
@@ -11,13 +12,7 @@ public static class MasteryMetadataStorage
 
     public static void Init()
     {
-        string path = Path.Combine(Paths.RESOURCES_DIR, $"ms2-{MetadataName.Mastery}-metadata");
-        if (!File.Exists(path))
-        {
-            throw new FileNotFoundException("Metadata not found. Re-run GameDataParser");
-        }
-
-        using FileStream stream = File.OpenRead(path);
+        using FileStream stream = MetadataHelper.GetFileStream(MetadataName.Mastery);
         List<MasteryMetadata> masteryList = Serializer.Deserialize<List<MasteryMetadata>>(stream);
         foreach (MasteryMetadata mastery in masteryList)
         {
