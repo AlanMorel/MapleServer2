@@ -71,7 +71,7 @@ public class ItemEnchantHandler : GamePacketHandler
         {
             return;
         }
-        
+
         if (item.DisableEnchant || EnchantLimitMetadataStorage.IsEnchantable(item.GetItemType(), item.Level, item.EnchantLevel))
         {
             session.Send(ItemEnchantPacket.Notice((short) ItemEnchantError.ItemCannotBeEnchanted));
@@ -192,7 +192,10 @@ public class ItemEnchantHandler : GamePacketHandler
             return;
         }
 
-        ConsumeIngredients(session, itemEnchantStats, inventory);
+        foreach (EnchantIngredient ingredient in itemEnchantStats.Ingredients)
+        {
+            inventory.ConsumeByTag(session, ingredient.Tag.ToString(), ingredient.Amount);
+        }
 
         Random random = Random.Shared;
         double randomResult = random.NextDouble();

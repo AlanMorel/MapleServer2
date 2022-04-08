@@ -145,7 +145,6 @@ public class ItemStats
         Dictionary<StatAttribute, ItemStat> stats = new();
         foreach ((StatAttribute key, ItemStat value) in otherStats)
         {
-            ItemStat stat = null;
             if (value is BasicStat)
             {
                 stats[key] = new BasicStat(value.ItemAttribute, value.Flat + value.Rate, value.AttributeType);

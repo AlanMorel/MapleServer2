@@ -10,7 +10,7 @@ public class ItemSocketMetadata
     [XmlElement(Order = 2)]
     public List<ItemSocketRarityData> RarityData = new();
 
-    public ItemSocketMetadata(){}
+    public ItemSocketMetadata() { }
 }
 
 [XmlType]
@@ -22,6 +22,6 @@ public class ItemSocketRarityData
     public int MaxCount;
     [XmlElement(Order = 3)]
     public int FixedOpenCount;
-    
-    public  ItemSocketRarityData(){}
+
+    public ItemSocketRarityData() { }
 }

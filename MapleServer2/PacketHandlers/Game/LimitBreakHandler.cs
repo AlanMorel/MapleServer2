@@ -101,7 +101,10 @@ public class LimitBreakHandler : GamePacketHandler
             return;
         }
 
-        ConsumeIngredients(session, ingredients, session.Player.Inventory);
+        foreach (EnchantIngredient ingredient in ingredients)
+        {
+            session.Player.Inventory.ConsumeByTag(session, ingredient.Tag.ToString(), ingredient.Amount);
+        }
 
         Item nextLevelItem = GetNextLevelItem(item);
 
