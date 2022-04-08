@@ -3,6 +3,8 @@ using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 using MoonSharp.Interpreter;
 
+// ReSharper disable UnusedMember.Global
+
 namespace MapleServer2.Managers;
 
 /// <summary>
@@ -15,21 +17,11 @@ public class ScriptManager
     private Player Player => Session.Player;
 
     [MoonSharpHidden]
-    public ScriptManager(GameSession session)
-    {
-        Session = session;
-    }
+    public ScriptManager(GameSession session) => Session = session;
 
-    public int GetItemCount(int itemId)
-    {
-        return Player.Inventory.GetAllById(itemId)
-            .Sum(x => x.Amount);
-    }
+    public int GetItemCount(int itemId) => Player.Inventory.GetAllById(itemId).Sum(x => x.Amount);
 
-    public bool CanHold(int itemId, int amount)
-    {
-        return Player.Inventory.CanHold(itemId, amount);
-    }
+    public bool CanHold(int itemId, int amount) => Player.Inventory.CanHold(itemId, amount);
 
     public int GetFreeSlots(byte inventoryTabId)
     {
@@ -37,18 +29,13 @@ public class ScriptManager
         {
             return -1;
         }
+
         return Player.Inventory.GetFreeSlots(inventoryTab);
     }
 
-    public int GetPlayerJobId()
-    {
-        return (int) Player.Job;
-    }
+    public int GetJobId() => (int) Player.Job;
 
-    public int GetCurrentMapId()
-    {
-        return Player.MapId;
-    }
+    public int GetCurrentMapId() => Player.MapId;
 
     public bool HasQuestStarted(int questId)
     {
@@ -61,6 +48,7 @@ public class ScriptManager
         {
             return Player.QuestData.TryGetValue(questId, out QuestStatus questStatus) && questStatus.State == QuestState.Started;
         }
+
         return false;
     }
 }

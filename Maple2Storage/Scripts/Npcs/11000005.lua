@@ -1,5 +1,5 @@
 function getFirstScriptId()
-    if Helper.HasQuestStarted(91000061) then
+    if PlayerHelper.HasQuestStarted(91000061) then
         return 80
     end
     return 90

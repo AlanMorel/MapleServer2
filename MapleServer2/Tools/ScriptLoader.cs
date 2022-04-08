@@ -32,7 +32,7 @@ public class ScriptLoader
             // Register script manager as an proxy object
             // Documentation: https://www.moonsharp.org/proxy.html
             UserData.RegisterProxyType<ScriptManager, GameSession>(r => new(r));
-            Script.Globals["Helper"] = new ScriptManager(session);
+            Script.Globals["PlayerHelper"] = new ScriptManager(session);
         }
 
         try

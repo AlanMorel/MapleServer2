@@ -1,5 +1,5 @@
 function getFirstScriptId()
-    local jobId = Helper.GetPlayerJobId()
+    local jobId = PlayerHelper.GetJobId()
     if jobId == 1 then
         return 10
     elseif jobId == 80 then
