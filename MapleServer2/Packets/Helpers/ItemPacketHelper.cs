@@ -233,7 +233,7 @@ public static class ItemPacketHelper
         {
             WriteBasicStat(pWriter, stat);
         }
-        
+
         List<SpecialStat> specialLimitBreakStats = stats.LimitBreakEnchants.Values.OfType<SpecialStat>().ToList();
         pWriter.WriteInt(specialLimitBreakStats.Count);
         foreach (SpecialStat stat in specialLimitBreakStats)

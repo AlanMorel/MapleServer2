@@ -15,5 +15,5 @@ public class EnchantLimitMetadata
     [XmlElement(Order = 4)]
     public int MaxEnchantLevel;
 
-    public EnchantLimitMetadata(){}
+    public EnchantLimitMetadata() { }
 }
