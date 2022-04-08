@@ -1,5 +1,6 @@
 ﻿using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
+using MapleServer2.Tools;
 using ProtoBuf;
 
 namespace MapleServer2.Data.Static;
@@ -10,7 +11,7 @@ public static class TitleMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-title-metadata");
+        using FileStream stream = MetadataHelper.GetFileStream(MetadataName.Title);
         List<TitleMetadata> items = Serializer.Deserialize<List<TitleMetadata>>(stream);
         foreach (TitleMetadata item in items)
         {

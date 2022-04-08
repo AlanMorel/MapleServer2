@@ -1,5 +1,6 @@
 ﻿using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
+using MapleServer2.Tools;
 using ProtoBuf;
 
 namespace MapleServer2.Data.Static;
@@ -11,7 +12,7 @@ public static class ScriptMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-script-metadata");
+        using FileStream stream = MetadataHelper.GetFileStream(MetadataName.Script);
         List<ScriptMetadata> items = Serializer.Deserialize<List<ScriptMetadata>>(stream);
         foreach (ScriptMetadata item in items)
         {

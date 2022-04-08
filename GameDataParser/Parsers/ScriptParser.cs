@@ -3,13 +3,14 @@ using GameDataParser.Files;
 using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 public class ScriptParser : Exporter<List<ScriptMetadata>>
 {
-    public ScriptParser(MetadataResources resources) : base(resources, "script") { }
+    public ScriptParser(MetadataResources resources) : base(resources, MetadataName.Script) { }
 
     protected override List<ScriptMetadata> Parse()
     {

@@ -1,5 +1,6 @@
 ﻿using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
+using MapleServer2.Tools;
 using Newtonsoft.Json;
 using ProtoBuf;
 
@@ -11,7 +12,7 @@ public static class ConstantsMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-constants-metadata");
+        using FileStream stream = MetadataHelper.GetFileStream(MetadataName.Constants);
         List<ConstantsMetadata> constantsList = Serializer.Deserialize<List<ConstantsMetadata>>(stream);
         foreach (ConstantsMetadata constant in constantsList)
         {

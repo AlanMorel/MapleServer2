@@ -3,13 +3,14 @@ using GameDataParser.Files;
 using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 public class QuestParser : Exporter<List<QuestMetadata>>
 {
-    public QuestParser(MetadataResources resources) : base(resources, "quest") { }
+    public QuestParser(MetadataResources resources) : base(resources, MetadataName.Quest) { }
 
     protected override List<QuestMetadata> Parse()
     {

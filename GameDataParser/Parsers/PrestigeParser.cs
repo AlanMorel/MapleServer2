@@ -1,13 +1,14 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 public class PrestigeParser : Exporter<PrestigeMetadata>
 {
-    public PrestigeParser(MetadataResources resources) : base(resources, "prestige") { }
+    public PrestigeParser(MetadataResources resources) : base(resources, MetadataName.Prestige) { }
 
     protected override PrestigeMetadata Parse()
     {

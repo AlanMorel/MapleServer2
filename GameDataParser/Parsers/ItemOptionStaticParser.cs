@@ -3,13 +3,14 @@ using GameDataParser.Files;
 using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 public class ItemOptionStaticParser : Exporter<List<ItemOptionStaticMetadata>>
 {
-    public ItemOptionStaticParser(MetadataResources resources) : base(resources, "item-option-static") { }
+    public ItemOptionStaticParser(MetadataResources resources) : base(resources, MetadataName.ItemOptionStatic) { }
 
     protected override List<ItemOptionStaticMetadata> Parse()
     {

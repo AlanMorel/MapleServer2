@@ -1,5 +1,6 @@
 ﻿using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
+using MapleServer2.Tools;
 using ProtoBuf;
 
 namespace MapleServer2.Data.Static;
@@ -10,7 +11,7 @@ public static class GachaMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-gacha-metadata");
+        using FileStream stream = MetadataHelper.GetFileStream(MetadataName.Gacha);
         List<GachaMetadata> items = Serializer.Deserialize<List<GachaMetadata>>(stream);
         foreach (GachaMetadata item in items)
         {

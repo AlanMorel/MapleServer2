@@ -1,13 +1,14 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 public class PremiumClubDailyBenefitParser : Exporter<List<PremiumClubDailyBenefitMetadata>>
 {
-    public PremiumClubDailyBenefitParser(MetadataResources resources) : base(resources, "premium-club-daily-benefit") { }
+    public PremiumClubDailyBenefitParser(MetadataResources resources) : base(resources, MetadataName.PremiumClubDailyBenefit) { }
 
     protected override List<PremiumClubDailyBenefitMetadata> Parse()
     {

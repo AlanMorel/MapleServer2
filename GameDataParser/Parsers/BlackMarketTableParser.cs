@@ -1,13 +1,14 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 public class BlackMarketTableParser : Exporter<List<BlackMarketTableMetadata>>
 {
-    public BlackMarketTableParser(MetadataResources resources) : base(resources, "black-market-table") { }
+    public BlackMarketTableParser(MetadataResources resources) : base(resources, MetadataName.BlackMarketTable) { }
 
     protected override List<BlackMarketTableMetadata> Parse()
     {

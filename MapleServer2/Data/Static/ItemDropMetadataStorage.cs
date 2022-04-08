@@ -1,5 +1,6 @@
 ﻿using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
+using MapleServer2.Tools;
 using ProtoBuf;
 
 namespace MapleServer2.Data.Static;
@@ -10,7 +11,7 @@ public static class ItemDropMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-item-drop-metadata");
+        using FileStream stream = MetadataHelper.GetFileStream(MetadataName.ItemDrop);
         List<ItemDropMetadata> items = Serializer.Deserialize<List<ItemDropMetadata>>(stream);
         foreach (ItemDropMetadata item in items)
         {

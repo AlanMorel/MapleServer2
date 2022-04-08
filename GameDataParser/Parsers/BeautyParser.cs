@@ -1,12 +1,13 @@
 ﻿using GameDataParser.Files;
 using Maple2Storage.Enums;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 public class BeautyParser : Exporter<List<BeautyMetadata>>
 {
-    public BeautyParser() : base(null, "beauty") { }
+    public BeautyParser() : base(null, MetadataName.Beauty) { }
 
     protected override List<BeautyMetadata> Parse()
     {

@@ -1,13 +1,14 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 public class RewardContentParser : Exporter<List<RewardContentMetadata>>
 {
-    public RewardContentParser(MetadataResources resources) : base(resources, "reward-content") { }
+    public RewardContentParser(MetadataResources resources) : base(resources, MetadataName.RewardContent) { }
 
     protected override List<RewardContentMetadata> Parse()
     {

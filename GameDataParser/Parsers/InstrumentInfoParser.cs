@@ -1,13 +1,14 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 public class InstrumentInfoParser : Exporter<List<InstrumentInfoMetadata>>
 {
-    public InstrumentInfoParser(MetadataResources resources) : base(resources, "instrument-info") { }
+    public InstrumentInfoParser(MetadataResources resources) : base(resources, MetadataName.InstrumentInfo) { }
 
     protected override List<InstrumentInfoMetadata> Parse()
     {

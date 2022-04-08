@@ -2,13 +2,14 @@
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 public class ItemOptionConstantParser : Exporter<List<ItemOptionConstantMetadata>>
 {
-    public ItemOptionConstantParser(MetadataResources resources) : base(resources, "item-option-constant") { }
+    public ItemOptionConstantParser(MetadataResources resources) : base(resources, MetadataName.ItemOptionConstant) { }
 
     protected override List<ItemOptionConstantMetadata> Parse()
     {

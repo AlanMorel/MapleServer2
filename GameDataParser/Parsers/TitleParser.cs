@@ -1,13 +1,14 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 public class TitleParser : Exporter<List<TitleMetadata>>
 {
-    public TitleParser(MetadataResources resources) : base(resources, "title") { }
+    public TitleParser(MetadataResources resources) : base(resources, MetadataName.Title) { }
 
     protected override List<TitleMetadata> Parse()
     {

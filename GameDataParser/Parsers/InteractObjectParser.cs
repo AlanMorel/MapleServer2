@@ -3,13 +3,14 @@ using GameDataParser.Files;
 using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 public class InteractObjectParser : Exporter<List<InteractObjectMetadata>>
 {
-    public InteractObjectParser(MetadataResources resources) : base(resources, "interact-object") { }
+    public InteractObjectParser(MetadataResources resources) : base(resources, MetadataName.InteractObject) { }
 
     protected override List<InteractObjectMetadata> Parse()
     {

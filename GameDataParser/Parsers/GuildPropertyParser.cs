@@ -1,13 +1,14 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 public class GuildPropertyParser : Exporter<List<GuildPropertyMetadata>>
 {
-    public GuildPropertyParser(MetadataResources resources) : base(resources, "guild-property") { }
+    public GuildPropertyParser(MetadataResources resources) : base(resources, MetadataName.GuildProperty) { }
 
     protected override List<GuildPropertyMetadata> Parse()
     {

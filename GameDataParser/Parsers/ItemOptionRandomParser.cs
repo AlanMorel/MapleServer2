@@ -3,13 +3,14 @@ using GameDataParser.Files;
 using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 public class ItemOptionRandomParser : Exporter<List<ItemOptionRandomMetadata>>
 {
-    public ItemOptionRandomParser(MetadataResources resources) : base(resources, "item-option-random") { }
+    public ItemOptionRandomParser(MetadataResources resources) : base(resources, MetadataName.ItemOptionRandom) { }
 
     protected override List<ItemOptionRandomMetadata> Parse()
     {

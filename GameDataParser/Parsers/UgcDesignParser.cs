@@ -2,13 +2,14 @@
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 public class UgcDesignParser : Exporter<List<UgcDesignMetadata>>
 {
-    public UgcDesignParser(MetadataResources resources) : base(resources, "ugc-design") { }
+    public UgcDesignParser(MetadataResources resources) : base(resources, MetadataName.UGCDesign) { }
 
     protected override List<UgcDesignMetadata> Parse()
     {

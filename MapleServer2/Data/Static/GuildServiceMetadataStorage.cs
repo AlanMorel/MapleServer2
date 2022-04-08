@@ -1,5 +1,6 @@
 ﻿using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
+using MapleServer2.Tools;
 using ProtoBuf;
 
 namespace MapleServer2.Data.Static;
@@ -10,7 +11,7 @@ public static class GuildServiceMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-guild-service-metadata");
+        using FileStream stream = MetadataHelper.GetFileStream(MetadataName.GuildService);
         List<GuildServiceMetadata> items = Serializer.Deserialize<List<GuildServiceMetadata>>(stream);
         foreach (GuildServiceMetadata item in items)
         {
@@ -20,6 +21,6 @@ public static class GuildServiceMetadataStorage
 
     public static GuildServiceMetadata GetMetadata(int id, int level)
     {
-        return Services.Values.Where(x => x.Id == id && x.Level == level + 1).First();
+        return Services.Values.First(x => x.Id == id && x.Level == level + 1);
     }
 }

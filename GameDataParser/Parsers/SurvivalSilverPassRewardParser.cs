@@ -1,13 +1,14 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 public class SurvivalSilverPassRewardParser : Exporter<List<SurvivalSilverPassRewardMetadata>>
 {
-    public SurvivalSilverPassRewardParser(MetadataResources resources) : base(resources, "survival-silver-pass-reward") { }
+    public SurvivalSilverPassRewardParser(MetadataResources resources) : base(resources, MetadataName.SurvivalSilverPassReward) { }
 
     protected override List<SurvivalSilverPassRewardMetadata> Parse()
     {

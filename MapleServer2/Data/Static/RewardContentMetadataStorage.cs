@@ -1,5 +1,6 @@
 ﻿using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
+using MapleServer2.Tools;
 using MapleServer2.Types;
 using ProtoBuf;
 
@@ -11,7 +12,7 @@ public static class RewardContentMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-reward-content-metadata");
+        using FileStream stream = MetadataHelper.GetFileStream(MetadataName.RewardContent);
         List<RewardContentMetadata> items = Serializer.Deserialize<List<RewardContentMetadata>>(stream);
         foreach (RewardContentMetadata item in items)
         {

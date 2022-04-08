@@ -2,13 +2,14 @@
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
 internal class TrophyParser : Exporter<List<TrophyMetadata>>
 {
-    public TrophyParser(MetadataResources resources) : base(resources, "trophy") { }
+    public TrophyParser(MetadataResources resources) : base(resources, MetadataName.Trophy) { }
 
     protected override List<TrophyMetadata> Parse()
     {

@@ -1,6 +1,7 @@
 ﻿using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Enums;
+using MapleServer2.Tools;
 using ProtoBuf;
 
 namespace MapleServer2.Data.Static;
@@ -11,7 +12,7 @@ public static class JobMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-job-metadata");
+        using FileStream stream = MetadataHelper.GetFileStream(MetadataName.Job);
         List<JobMetadata> jobList = Serializer.Deserialize<List<JobMetadata>>(stream);
         foreach (JobMetadata job in jobList)
         {

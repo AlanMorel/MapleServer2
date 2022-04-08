@@ -10,7 +10,7 @@ namespace GameDataParser.Parsers;
 
 public class NpcParser : Exporter<List<NpcMetadata>>
 {
-    public NpcParser(MetadataResources resources) : base(resources, "npc") { }
+    public NpcParser(MetadataResources resources) : base(resources, MetadataName.Npc) { }
 
     protected override List<NpcMetadata> Parse()
     {
