@@ -165,5 +165,6 @@ public enum RecvOp : ushort
     FieldWar = 0x00B8,
     ChatSticker = 0x00B9,
     FileHash = 0x00BB,
-    Marriage = 0x00BC
+    Marriage = 0x00BC,
+    LimitBreak = 0x00BE
 }

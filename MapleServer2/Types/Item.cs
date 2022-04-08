@@ -53,8 +53,9 @@ public class Item
     public short RemainingGlamorForges;
     public int GachaDismantleId;
     public int GearScore;
-    public int Enchants;
+    public int EnchantLevel;
     public int LimitBreakLevel;
+    public bool DisableEnchant;
 
     // EnchantExp (10000 = 100%) for Peachy
     public int EnchantExp;
@@ -155,7 +156,7 @@ public class Item
         UnlockTime = other.UnlockTime;
         RemainingGlamorForges = other.RemainingGlamorForges;
         GachaDismantleId = other.GachaDismantleId;
-        Enchants = other.Enchants;
+        EnchantLevel = other.EnchantLevel;
         EnchantExp = other.EnchantExp;
         RemainingRepackageCount = other.RemainingRepackageCount;
         Charges = other.Charges;
@@ -219,7 +220,7 @@ public class Item
 
     public bool IsPet()
     {
-        return PetId != 0;
+        return ItemMetadataStorage.GetPetId(Id) != 0;
     }
 
     public bool BindItem(Player player)
@@ -289,6 +290,7 @@ public class Item
         HousingCategory = ItemMetadataStorage.GetHousingCategory(Id);
         BlackMarketCategory = ItemMetadataStorage.GetBlackMarketCategory(Id);
         Category = ItemMetadataStorage.GetCategory(Id);
+        DisableEnchant = ItemMetadataStorage.IsEnchantDisabled(Id);
         Type = GetItemType();
     }
 
@@ -335,7 +337,7 @@ public class Item
     {
         int gearScoreFactor = ItemMetadataStorage.GetGearScoreFactor(Id);
         ScriptLoader scriptLoader = new("Functions/calcItemValues");
-        DynValue result = scriptLoader.Call("calcItemGearScore", gearScoreFactor, Rarity, (int) Type, Enchants, LimitBreakLevel);
+        DynValue result = scriptLoader.Call("calcItemGearScore", gearScoreFactor, Rarity, (int) Type, EnchantLevel, LimitBreakLevel);
         return (int) result.Tuple[0].Number + (int) result.Tuple[1].Number;
     }
 }

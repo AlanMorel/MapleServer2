@@ -1,5 +1,6 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Enums;
 using MapleServer2.Packets.Helpers;
 using MapleServer2.Types;
 
@@ -7,91 +8,125 @@ namespace MapleServer2.Packets;
 
 public static class ItemEnchantPacket
 {
-    // Sent when putting item into enchant window
-    public static PacketWriter BeginEnchant(byte type, Item item)
+    private enum ItemEnchantPacketMode : byte
+    {
+        BeginEnchant = 0x05,
+        UpdateExp = 0x06,
+        UpdateCharges = 0x07,
+        EnchantSuccess = 0x0A,
+        EnchantFail = 0x0B,
+        Notice = 0x0C,
+    }
+
+    public static PacketWriter BeginEnchant(EnchantType type, Item item, ItemEnchant enchantInfo)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemEnchant);
-        pWriter.WriteByte(0x05);
-        pWriter.WriteShort(type);
+        pWriter.Write(ItemEnchantPacketMode.BeginEnchant);
+        pWriter.Write(type);
         pWriter.WriteLong(item.Uid);
-
-        // TODO: Make this dynamic
-        Tuple<int, int>[] requiredItems =
-        {
-            new(100, 1000), // Crystal Fragment
-            new(101, 2000), // Onyx
-            new(102, 3000) // Chaos Onyx
-        };
-        pWriter.WriteByte((byte) requiredItems.Length);
-        foreach ((int item1, int item2) in requiredItems)
+        pWriter.WriteByte((byte) enchantInfo.Ingredients.Count);
+        foreach (EnchantIngredient ingredient in enchantInfo.Ingredients)
         {
             pWriter.WriteInt();
-            pWriter.WriteInt(item1);
-            pWriter.WriteInt(item2);
+            pWriter.Write(ingredient.Tag);
+            pWriter.WriteInt(ingredient.Amount);
         }
 
         pWriter.WriteShort();
-
-        // Enchant stat multipliers
-        int count = 0;
-        pWriter.WriteInt(count);
-        for (int i = 0; i < count; i++)
+        pWriter.WriteInt(enchantInfo.Stats.Count);
+        foreach (EnchantStats stats in enchantInfo.Stats.Values)
         {
-            pWriter.WriteShort();
-            pWriter.WriteInt();
-            pWriter.Write(0f);
+            pWriter.Write(stats.Attribute);
+            pWriter.WriteInt(stats.AddValue);
+            pWriter.WriteFloat(stats.AddRate);
         }
 
-        if (type == 1)
+        if (type is EnchantType.Ophelia)
         {
-            pWriter.Write(90f); // SuccessRate
-            pWriter.Write(0f);
-            pWriter.Write(0f);
-            pWriter.Write(0f);
-            pWriter.Write(0f);
+            WriteEnchantRates(pWriter, enchantInfo.Rates);
             pWriter.WriteLong();
             pWriter.WriteLong();
             pWriter.WriteByte(1);
         }
 
         // Item copies required
-        if (type is 1 or 2)
+        if (type is EnchantType.Ophelia or EnchantType.Peachy)
         {
-            pWriter.WriteInt(); // ItemId
-            pWriter.WriteShort(); // Rarity
-            pWriter.WriteInt(); // Amount
+            pWriter.WriteInt(enchantInfo.CatalystAmountRequired > 0 ? item.Id : 0);
+            pWriter.WriteShort((short) (enchantInfo.CatalystAmountRequired > 0 ? item.Rarity : 0));
+            pWriter.WriteInt(enchantInfo.CatalystAmountRequired > 0 ? item.Amount : 0);
         }
-
         return pWriter;
     }
 
-    public static PacketWriter UpdateCharges(Item item)
+    public static PacketWriter UpdateExp(Item item)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemEnchant);
-        pWriter.WriteByte(0x06);
+        pWriter.Write(ItemEnchantPacketMode.UpdateExp);
         pWriter.WriteLong(item.Uid);
         pWriter.WriteInt(item.EnchantExp);
-
         return pWriter;
     }
 
-    public static PacketWriter EnchantResult(Item item)
+    public static PacketWriter UpdateCharges(ItemEnchant itemEnchant)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemEnchant);
-        pWriter.WriteByte(0x0A);
+        pWriter.Write(ItemEnchantPacketMode.UpdateCharges);
+        pWriter.WriteInt(itemEnchant.Rates.ChargesAdded);
+        pWriter.WriteInt(itemEnchant.CatalystItemUids.Count);
+        pWriter.WriteInt(itemEnchant.CatalystItemUids.Count);
+        foreach (long uid in itemEnchant.CatalystItemUids)
+        {
+            pWriter.WriteLong(uid);
+        }
+        WriteEnchantRates(pWriter, itemEnchant.Rates);
+        return pWriter;
+    }
+
+    public static PacketWriter EnchantSuccess(Item item, List<EnchantStats> enchants)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemEnchant);
+        pWriter.Write(ItemEnchantPacketMode.EnchantSuccess);
         pWriter.WriteLong(item.Uid);
         pWriter.WriteItem(item);
 
-        // These are the stat bonus from enchanting
-        int count = 0;
-        pWriter.WriteInt(count);
-        for (int i = 0; i < count; i++)
+        pWriter.WriteInt(enchants.Count);
+        foreach (EnchantStats enchant in enchants)
         {
-            pWriter.WriteShort();
-            pWriter.WriteInt();
-            pWriter.Write(0f);
+            pWriter.Write(enchant.Attribute);
+            pWriter.WriteInt(enchant.AddValue);
+            pWriter.WriteFloat(enchant.AddRate);
         }
-
         return pWriter;
+    }
+
+    public static PacketWriter EnchantFail(Item item, ItemEnchant enchantInfo)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemEnchant);
+        pWriter.Write(ItemEnchantPacketMode.EnchantFail);
+        pWriter.WriteLong(item.Uid);
+        pWriter.WriteItem(item);
+        pWriter.WriteInt();
+        pWriter.WriteInt();
+        pWriter.WriteLong();
+        pWriter.WriteInt(enchantInfo.PityCharges);
+        return pWriter;
+    }
+
+    public static PacketWriter Notice(short noticeId)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ItemEnchant);
+        pWriter.Write(ItemEnchantPacketMode.Notice);
+        pWriter.WriteShort(noticeId);
+        return pWriter;
+    }
+
+    private static void WriteEnchantRates(PacketWriter pWriter, EnchantRates rate)
+    {
+        pWriter.WriteFloat(rate.BaseSuccessRate);
+        pWriter.WriteFloat();
+        pWriter.WriteFloat();
+        pWriter.WriteFloat(Math.Min(rate.AdditionalCatalysts * rate.CatalystRate, 30));
+        pWriter.WriteFloat(rate.ChargesAdded * rate.ChargesRate);
     }
 }

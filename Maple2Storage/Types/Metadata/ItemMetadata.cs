@@ -109,6 +109,8 @@ public class ItemMetadata
     public int ExpirationTypeDuration;
     [XmlElement(Order = 51)]
     public int GearScoreFactor;
+    [XmlElement(Order = 52)]
+    public bool DisableEnchant;
 
     public override string ToString()
     {

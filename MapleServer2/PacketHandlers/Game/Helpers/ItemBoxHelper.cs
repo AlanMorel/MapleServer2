@@ -31,7 +31,7 @@ public static class ItemBoxHelper
             {
                 Item newItem = new(id)
                 {
-                    Enchants = dropContent.EnchantLevel,
+                    EnchantLevel = dropContent.EnchantLevel,
                     Amount = amount,
                     Rarity = dropContent.Rarity
                 };
@@ -81,7 +81,7 @@ public static class ItemBoxHelper
         {
             Item newItem = new(id)
             {
-                Enchants = dropContents.EnchantLevel,
+                EnchantLevel = dropContents.EnchantLevel,
                 Amount = amount,
                 Rarity = dropContents.Rarity
 
