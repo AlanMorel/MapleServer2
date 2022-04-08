@@ -1,6 +1,7 @@
 ﻿using Maple2Storage.Enums;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -66,7 +67,12 @@ public class ItemEnchantHandler : GamePacketHandler
         long itemUid = packet.ReadLong();
 
         Item item = session.Player.Inventory.GetByUid(itemUid);
-        if (item is null || item.DisableEnchant || item.EnchantLevel >= 15)
+        if (item is null)
+        {
+            return;
+        }
+        
+        if (item.DisableEnchant || EnchantLimitMetadataStorage.IsEnchantable(item.GetItemType(), item.Level, item.EnchantLevel))
         {
             session.Send(ItemEnchantPacket.Notice((short) ItemEnchantError.ItemCannotBeEnchanted));
             return;

@@ -111,6 +111,8 @@ public class ItemMetadata
     public int GearScoreFactor;
     [XmlElement(Order = 52)]
     public bool DisableEnchant;
+    [XmlElement(Order = 53)]
+    public int SocketDataId;
 
     public override string ToString()
     {

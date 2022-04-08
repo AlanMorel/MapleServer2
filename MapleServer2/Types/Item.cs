@@ -157,6 +157,7 @@ public class Item
         RemainingGlamorForges = other.RemainingGlamorForges;
         GachaDismantleId = other.GachaDismantleId;
         EnchantLevel = other.EnchantLevel;
+        LimitBreakLevel = other.LimitBreakLevel;
         EnchantExp = other.EnchantExp;
         RemainingRepackageCount = other.RemainingRepackageCount;
         Charges = other.Charges;

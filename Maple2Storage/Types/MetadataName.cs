@@ -10,6 +10,7 @@ public static class MetadataName
     public const string Constants = "constants";
     public const string DefaultItems = "default-items";
     public const string Dungeon = "dungeon";
+    public const string EnchantLimit = "enchant-limit";
     public const string ExpTable = "exp-table";
     public const string FieldWar = "field-war";
     public const string FishingRod = "fishing-rod";

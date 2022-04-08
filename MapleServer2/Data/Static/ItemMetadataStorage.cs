@@ -188,6 +188,8 @@ public static class ItemMetadataStorage
 
     public static bool IsEnchantDisabled(int itemId) => GetMetadata(itemId).DisableEnchant;
 
+    public static int GetSocketDataId(int itemId) => GetMetadata(itemId).SocketDataId;
+
     public static EquipColor GetEquipColor(int itemId)
     {
         ItemMetadata itemMetadata = GetMetadata(itemId);
