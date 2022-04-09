@@ -16,8 +16,8 @@ public class UgcHandler : GamePacketHandler
 
     private enum UgcMode : byte
     {
-        CreateUgcItem = 0x01,
-        AddUgcItem = 0x03,
+        Upload = 0x01,
+        ConfirmationPacket = 0x03,
         ProfilePicture = 0x0B
     }
 
@@ -26,11 +26,11 @@ public class UgcHandler : GamePacketHandler
         UgcMode function = (UgcMode) packet.ReadByte();
         switch (function)
         {
-            case UgcMode.CreateUgcItem:
-                HandleCreateUgcItem(session, packet);
+            case UgcMode.Upload:
+                HandleUpload(session, packet);
                 break;
-            case UgcMode.AddUgcItem:
-                HandleAddUgcItem(session, packet);
+            case UgcMode.ConfirmationPacket:
+                HandleConfirmationPacket(session, packet);
                 break;
             case UgcMode.ProfilePicture:
                 HandleProfilePicture(session, packet);
@@ -41,7 +41,7 @@ public class UgcHandler : GamePacketHandler
         }
     }
 
-    private static void HandleCreateUgcItem(GameSession session, PacketReader packet)
+    private static void HandleUpload(GameSession session, PacketReader packet)
     {
         packet.ReadLong();
         UgcType type = (UgcType) packet.ReadByte();
@@ -54,55 +54,79 @@ public class UgcHandler : GamePacketHandler
         packet.ReadInt();
         packet.ReadShort();
         packet.ReadShort();
-        long unk = packet.ReadLong(); // some kind of UID
-        int itemId = packet.ReadInt();
-        int amount = packet.ReadInt();
-        string itemName = packet.ReadUnicodeString();
-        packet.ReadByte();
-        long cost = packet.ReadLong();
-        bool useVoucher = packet.ReadBool();
 
-        UgcDesignMetadata metadata = UgcDesignMetadataStorage.GetItem(itemId);
-        if (metadata is null)
+        Ugc newUgc = null;
+        switch (type)
+        {
+            case UgcType.Furniture or UgcType.Item:
+                newUgc = HandleCreateUgcItem();
+                break;
+            case UgcType.GuildEmblem:
+                newUgc = new(session.Player.Guild.Name, characterId, session.Player.Name, accountId, 0, UgcType.GuildEmblem);
+                break;
+            default:
+                Logger.Warning("Unknown UGC type {0}", type);
+                break;
+        }
+
+        if (newUgc is null)
         {
             return;
         }
 
-        if (useVoucher)
+        session.Send(UgcPacket.CreateUgc(newUgc));
+
+        Ugc HandleCreateUgcItem()
         {
-            Item voucher = session.Player.Inventory.GetAllByTag("FreeDesignCoupon").FirstOrDefault();
-            if (voucher is null)
+            long unk = packet.ReadLong(); // some kind of UID
+            int itemId = packet.ReadInt();
+            int amount = packet.ReadInt();
+            string itemName = packet.ReadUnicodeString();
+            packet.ReadByte();
+            long cost = packet.ReadLong();
+            bool useVoucher = packet.ReadBool();
+
+            UgcDesignMetadata metadata = UgcDesignMetadataStorage.GetItem(itemId);
+            if (metadata is null)
             {
-                return;
+                return null;
             }
 
-            session.Player.Inventory.ConsumeItem(session, voucher.Uid, 1);
-        }
-        else
-        {
-            switch (metadata.CurrencyType)
+            if (useVoucher)
             {
-                case CurrencyType.Meso when !session.Player.Wallet.Meso.Modify(-cost):
-                    session.SendNotice("You don't have enough mesos.");
-                    return;
-                case CurrencyType.Meret when !session.Player.Account.Meret.Modify(-cost):
-                    session.SendNotice("You don't have enough merets.");
-                    return;
+                Item voucher = session.Player.Inventory.GetAllByTag("FreeDesignCoupon").FirstOrDefault();
+                if (voucher is null)
+                {
+                    return null;
+                }
+
+                session.Player.Inventory.ConsumeItem(session, voucher.Uid, 1);
             }
+            else
+            {
+                switch (metadata.CurrencyType)
+                {
+                    case CurrencyType.Meso when !session.Player.Wallet.Meso.Modify(-cost):
+                        session.SendNotice("You don't have enough mesos.");
+                        return null;
+                    case CurrencyType.Meret when !session.Player.Account.Meret.Modify(-cost):
+                        session.SendNotice("You don't have enough merets.");
+                        return null;
+                }
+            }
+
+            Item item = new(itemId, amount)
+            {
+                Rarity = metadata.Rarity,
+                Ugc = new(itemName, characterId, session.Player.Name, accountId, metadata.SalePrice, type),
+                IsTemplate = true
+            };
+            DatabaseManager.Items.Update(item);
+            return item.Ugc;
         }
-
-        Item item = new(itemId, amount)
-        {
-            Rarity = metadata.Rarity,
-            Ugc = new(itemName, characterId, session.Player.Name, accountId, metadata.SalePrice, type),
-            IsTemplate = true
-        };
-        DatabaseManager.Items.Update(item);
-
-        session.Send(UgcPacket.CreateUgc(item));
     }
 
-    private static void HandleAddUgcItem(GameSession session, PacketReader packet)
+    private static void HandleConfirmationPacket(GameSession session, PacketReader packet)
     {
         UgcType type = (UgcType) packet.ReadByte();
         packet.ReadByte();
@@ -119,26 +143,64 @@ public class UgcHandler : GamePacketHandler
             return;
         }
 
-        Item item = DatabaseManager.Items.FindByUgcUid(ugcUid);
-        if (item is null)
+        Ugc ugc = null;
+        switch (type)
+        {
+            case UgcType.Furniture or UgcType.Item:
+                ugc = HandleItemPacket();
+                break;
+            case UgcType.GuildEmblem:
+                ugc = HandleGuildPacket();
+                break;
+        }
+
+        if (ugc is null)
         {
             return;
         }
 
-        item.SetMetadataValues();
+        session.Send(UgcPacket.SetUgcUrl(ugc));
 
-        session.Player.Inventory.AddItem(session, item, true);
-        switch (item.Ugc.Type)
+        Ugc HandleGuildPacket()
         {
-            case UgcType.Furniture:
-                session.Send(UgcPacket.UpdateUgcFurnishing(session.Player.FieldPlayer, item));
-                break;
-            default:
-                session.Send(UgcPacket.UpdateUgcItem(session.Player.FieldPlayer, item));
-                break;
+            Ugc ugc2 = DatabaseManager.Ugc.FindByUid(ugcUid);
+            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
+            if (ugc2 is null || guild is null || ugc2.Guid != Guid.Parse(ugcGuid))
+            {
+                return null;
+            }
+
+            guild.Emblem = ugc2.Url;
+            DatabaseManager.Guilds.UpdateEmblem(guild.Id, ugc2.Url);
+
+            guild.BroadcastPacketGuild(GuildPacket.ChangeEmblemUrl(ugc2.Url));
+            guild.BroadcastPacketGuild(GuildPacket.GuildNoticeEmblemChange(session.Player.Name, ugc2.Url));
+            return ugc2;
         }
 
-        session.Send(UgcPacket.SetItemUrl(item));
+        Ugc HandleItemPacket()
+        {
+            Item item = DatabaseManager.Items.FindByUgcUid(ugcUid);
+            if (item is null)
+            {
+                return null;
+            }
+
+            item.SetMetadataValues();
+
+            session.Player.Inventory.AddItem(session, item, true);
+            switch (item.Ugc.Type)
+            {
+                case UgcType.Furniture:
+                    session.Send(UgcPacket.UpdateUgcFurnishing(session.Player.FieldPlayer, item));
+                    break;
+                case UgcType.Item:
+                    session.Send(UgcPacket.UpdateUgcItem(session.Player.FieldPlayer, item));
+                    break;
+            }
+
+            return item.Ugc;
+        }
     }
 
     private static void HandleProfilePicture(GameSession session, PacketReader packet)

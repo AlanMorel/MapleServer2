@@ -77,6 +77,14 @@ public class DatabaseGuild : DatabaseTable
         });
     }
 
+    public void UpdateEmblem(long guildId, string ugc2Url)
+    {
+        QueryFactory.Query(TableName).Where("id", guildId).Update(new
+        {
+            emblem = ugc2Url
+        });
+    }
+
     public bool Delete(long id)
     {
         return QueryFactory.Query(TableName).Where("id", id).Delete() == 1;

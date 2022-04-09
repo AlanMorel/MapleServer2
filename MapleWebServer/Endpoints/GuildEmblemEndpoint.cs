@@ -2,11 +2,11 @@
 
 namespace MapleWebServer.Endpoints;
 
-public static class ItemEndpoint
+public class GuildEmblemEndpoint
 {
-    public static IResult Get(int itemId, string uuid)
+    public static IResult Get(int guildId, string guid)
     {
-        string fullPath = $"{Paths.DATA_DIR}/item/{itemId}/{uuid}.m2u";
+        string fullPath = $"{Paths.DATA_DIR}/guildmark/{guildId}/{guid}.png";
         if (!File.Exists(fullPath))
         {
             return Results.BadRequest();

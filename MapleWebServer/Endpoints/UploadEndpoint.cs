@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-using Maple2Storage.Types;
+﻿using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Database;
 using MapleServer2.Types;
@@ -27,53 +25,56 @@ public static class UploadEndpoint
         PostUgcMode mode = (PostUgcMode) pReader.ReadInt();
         long accountId = pReader.ReadLong();
         long characterId = pReader.ReadLong();
-        long itemUid = pReader.ReadLong();
-        int itemId = pReader.ReadInt();
+        long ugcUid = pReader.ReadLong();
+        int id = pReader.ReadInt(); // item id, guild id, others?
         int flagB = pReader.ReadInt();
-        pReader.Skip(8);
+        long unk = pReader.ReadLong();
 
         byte[]? fileBytes = pReader.ReadBytes(pReader.Available);
 
         return mode switch
         {
             PostUgcMode.ProfileAvatar => HandleProfileAvatar(fileBytes, characterId),
-            PostUgcMode.Item or PostUgcMode.Furnishing => HandleItem(fileBytes, itemId, itemUid),
-            PostUgcMode.ItemIcon => HandleItemIcon(fileBytes, itemId, itemUid),
+            PostUgcMode.Item or PostUgcMode.Furnishing => HandleItem(fileBytes, id, ugcUid),
+            PostUgcMode.ItemIcon => HandleItemIcon(fileBytes, id, ugcUid),
+            PostUgcMode.GuildEmblem => HandleGuildEmblem(fileBytes, ugcUid, id),
             _ => HandleUnknownMode(mode)
         };
     }
 
-    private static IResult HandleItemIcon(byte[] fileBytes, int itemId, long itemUid)
+    private static IResult HandleItemIcon(byte[] fileBytes, int itemId, long ugcUid)
     {
         string filePath = $"{Paths.DATA_DIR}/itemicon/{itemId}/";
         Directory.CreateDirectory(filePath);
 
-        Item item = DatabaseManager.Items.FindByUgcUid(itemUid);
-        if (item is null)
+        Ugc ugc = DatabaseManager.Ugc.FindByUid(ugcUid);
+        if (ugc is null)
         {
+            Log.Logger.Error($"Could not find ugc with uid {ugcUid}");
             return Results.BadRequest();
         }
 
-        File.WriteAllBytes($"{filePath}/{item.Ugc.Guid}-{itemUid}.png", fileBytes);
-        return Results.Text($"0,itemicon/ms2/01/{itemId}/{item.Ugc.Guid}-{itemUid}.png");
+        File.WriteAllBytes($"{filePath}/{ugc.Guid}-{ugcUid}.png", fileBytes);
+        return Results.Text($"0,itemicon/ms2/01/{itemId}/{ugc.Guid}-{ugcUid}.png");
     }
 
-    private static IResult HandleItem(byte[] fileBytes, int itemId, long itemUid)
+    private static IResult HandleItem(byte[] fileBytes, int itemId, long ugcUid)
     {
         string filePath = $"{Paths.DATA_DIR}/item/{itemId}/";
         Directory.CreateDirectory(filePath);
 
-        Item item = DatabaseManager.Items.FindByUgcUid(itemUid);
-        if (item is null)
+        Ugc ugc = DatabaseManager.Ugc.FindByUid(ugcUid);
+        if (ugc is null)
         {
+            Log.Logger.Error($"Could not find ugc with uid {ugcUid}");
             return Results.BadRequest();
         }
 
-        string url = $"item/ms2/01/{itemId}/{item.Ugc.Guid}-{itemUid}.m2u";
-        item.Ugc.Url = url;
-        DatabaseManager.Ugc.Update(item.Ugc);
+        string url = $"item/ms2/01/{itemId}/{ugc.Guid}-{ugcUid}.m2u";
+        ugc.Url = url;
+        DatabaseManager.Ugc.Update(ugc);
 
-        File.WriteAllBytes($"{filePath}/{item.Ugc.Guid}-{itemUid}.m2u", fileBytes);
+        File.WriteAllBytes($"{filePath}/{ugc.Guid}-{ugcUid}.m2u", fileBytes);
         return Results.Text($"0,{url}");
     }
 
@@ -82,8 +83,7 @@ public static class UploadEndpoint
         string filePath = $"{Paths.DATA_DIR}/profiles/{characterId}/";
         Directory.CreateDirectory(filePath);
 
-        // Adding timestamp to the file name to prevent caching, client doesn't refresh the image if the url is already cached
-        string fileHash = CreateMd5(Encoding.UTF8.GetString(fileBytes) + DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+        string uniqueFileName = Guid.NewGuid().ToString();
 
         // Deleting old files in the character folder
         DirectoryInfo di = new(filePath);
@@ -92,13 +92,41 @@ public static class UploadEndpoint
             file.Delete();
         }
 
-        File.WriteAllBytes($"{filePath}/{fileHash}.png", fileBytes);
-        return Results.Text($"0,data/profiles/avatar/{characterId}/{fileHash}.png");
+        File.WriteAllBytes($"{filePath}/{uniqueFileName}.png", fileBytes);
+        return Results.Text($"0,data/profiles/avatar/{characterId}/{uniqueFileName}.png");
+    }
+
+    private static IResult HandleGuildEmblem(byte[] fileBytes, long ugcUid, long guildId)
+    {
+        string filePath = $"{Paths.DATA_DIR}/guildmark/{guildId}/";
+        Directory.CreateDirectory(filePath);
+
+        Ugc ugc = DatabaseManager.Ugc.FindByUid(ugcUid);
+        if (ugc is null)
+        {
+            Log.Logger.Error($"Could not find ugc with uid {ugcUid}");
+            return Results.NotFound();
+        }
+
+        // Deleting old files in the guild folder
+        DirectoryInfo di = new(filePath);
+        foreach (FileInfo file in di.GetFiles())
+        {
+            file.Delete();
+        }
+
+        string url = $"guildmark/ms2/01/{guildId}/{ugc.Guid}.png";
+        ugc.Url = url;
+
+        DatabaseManager.Ugc.Update(ugc);
+
+        File.WriteAllBytes($"{filePath}/{ugc.Guid}.png", fileBytes);
+        return Results.Text($"0,{url}");
     }
 
     private static IResult HandleUnknownMode(PostUgcMode mode)
     {
-        Log.Logger.Information("Unknown upload mode: {mode}", mode);
+        Log.Logger.Warning("Unknown upload mode: {mode}", mode);
         return Results.BadRequest();
     }
 
@@ -113,22 +141,5 @@ public static class UploadEndpoint
         }
 
         return output;
-    }
-
-    private static string CreateMd5(string input)
-    {
-        // Use input string to calculate MD5 hash
-        using MD5 md5 = MD5.Create();
-        byte[] inputBytes = Encoding.ASCII.GetBytes(input);
-        byte[] hashBytes = md5.ComputeHash(inputBytes);
-
-        // Convert the byte array to hexadecimal string
-        StringBuilder sb = new();
-        foreach (byte b in hashBytes)
-        {
-            sb.Append(b.ToString("X2"));
-        }
-
-        return sb.ToString();
     }
 }

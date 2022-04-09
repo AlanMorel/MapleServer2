@@ -35,6 +35,7 @@ WebApplication app = builder.Build();
 
 app.MapGet("/item/ms2/01/{itemId}/{uuid}.m2u", ItemEndpoint.Get);
 app.MapGet("/itemicon/ms2/01/{itemId}/{uuid}.png", ItemIconEndpoint.Get);
+app.MapGet("/guildmark/ms2/01/{guildId}/{guid}.png", GuildEmblemEndpoint.Get);
 app.MapGet("/data/profiles/avatar/{characterId}/{hash}.png", ProfileEndpoint.Get);
 
 app.MapPost("/urq.aspx", UploadEndpoint.Post);

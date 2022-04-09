@@ -225,11 +225,11 @@ CREATE TABLE `game_options`
 DROP TABLE IF EXISTS `macros`;
 CREATE TABLE `macros`
 (
-    `id`                bigint   NOT NULL AUTO_INCREMENT,
-    `character_id`      bigint   NOT NULL,
-    `name`              text,
-    `shortcut_keycode`  int      NOT NULL, 
-    `skill_ids`         text,
+    `id`               bigint NOT NULL AUTO_INCREMENT,
+    `character_id`     bigint NOT NULL,
+    `name`             text,
+    `shortcut_keycode` int    NOT NULL,
+    `skill_ids`        text,
     PRIMARY KEY (`id`),
     KEY `ix_macros_characterid` (`character_id`),
     CONSTRAINT fk_macros_characters_id FOREIGN KEY (`character_id`) REFERENCES `characters` (`character_id`) ON DELETE RESTRICT
@@ -298,7 +298,7 @@ CREATE TABLE `guilds`
     `exp`                 int              NOT NULL,
     `searchable`          tinyint(1)       NOT NULL,
     `buffs`               text,
-    `emblem`              varchar(50)  DEFAULT '',
+    `emblem`              text         DEFAULT '',
     `focus_attributes`    int              NOT NULL,
     `house_rank`          int              NOT NULL,
     `house_theme`         int              NOT NULL,
@@ -321,14 +321,14 @@ CREATE TABLE `guilds`
 DROP TABLE IF EXISTS `clubs`;
 CREATE TABLE `clubs`
 (
-    `id`                            bigint           NOT NULL AUTO_INCREMENT,
-    `name`                          varchar(25)      NOT NULL,
-    `creation_timestamp`            bigint           NOT NULL,
-    `last_name_change_timestamp`    bigint           NOT NULL,
-    `leader_account_id`             bigint           NOT NULL,
-    `leader_character_id`           bigint           NOT NULL,
-    `leader_name`                   varchar(50)      NOT NULL,
-    `is_established`                tinyint(1)       NOT NULL,
+    `id`                         bigint      NOT NULL AUTO_INCREMENT,
+    `name`                       varchar(25) NOT NULL,
+    `creation_timestamp`         bigint      NOT NULL,
+    `last_name_change_timestamp` bigint      NOT NULL,
+    `leader_account_id`          bigint      NOT NULL,
+    `leader_character_id`        bigint      NOT NULL,
+    `leader_name`                varchar(50) NOT NULL,
+    `is_established`             tinyint(1)  NOT NULL,
     PRIMARY KEY (`id`),
     KEY `ix_clubs_leadercharacterid` (`leader_character_id`),
     KEY `ix_clubs_leaderaccountid` (`leader_account_id`),
@@ -345,15 +345,15 @@ CREATE TABLE `clubs`
 DROP TABLE IF EXISTS `club_members`;
 CREATE TABLE `club_members`
 (
-    `character_id`       bigint         NOT NULL,
-    `club_id`            bigint         NOT NULL,
-    `join_timestamp`     bigint         NOT NULL,
-    CONSTRAINT `club_ids_pk` PRIMARY KEY (`club_id`,`character_id`),
-    CONSTRAINT `club_ids_FK` FOREIGN KEY (`character_id`) REFERENCES `characters`(`character_id`)
+    `character_id`   bigint NOT NULL,
+    `club_id`        bigint NOT NULL,
+    `join_timestamp` bigint NOT NULL,
+    CONSTRAINT `club_ids_pk` PRIMARY KEY (`club_id`, `character_id`),
+    CONSTRAINT `club_ids_FK` FOREIGN KEY (`character_id`) REFERENCES `characters` (`character_id`)
 )
-ENGINE=InnoDB
-DEFAULT CHARSET=utf8mb4
-COLLATE=utf8mb4_0900_ai_ci;
+    ENGINE = InnoDB
+    DEFAULT CHARSET = utf8mb4
+    COLLATE = utf8mb4_0900_ai_ci;
 
 --
 -- Table structure for table `homelayouts`
@@ -466,7 +466,7 @@ CREATE TABLE `items`
     `enchant_exp`              int              NOT NULL,
     `enchant_level`            int              NOT NULL,
     `limit_break_level`        int              NOT NULL,
-    `gear_score`                int              NOT NULL,
+    `gear_score`               int              NOT NULL,
     `expiry_time`              bigint           NOT NULL,
     `face_decoration_data`     text,
     `gacha_dismantle_id`       int              NOT NULL,
@@ -582,7 +582,7 @@ CREATE TABLE `quests`
     `character_id`       bigint DEFAULT NULL,
     `tracked`            tinyint(1)       NOT NULL,
     PRIMARY KEY (`uid`),
-    UNIQUE KEY `quests_un` (`id`,`character_id`),
+    UNIQUE KEY `quests_un` (`id`, `character_id`),
     KEY `ix_quests_characterid` (`character_id`),
     CONSTRAINT `fk_quests_characters_characterid` FOREIGN KEY (`character_id`) REFERENCES `characters` (`character_id`) ON DELETE RESTRICT
 ) ENGINE = InnoDB
@@ -721,15 +721,15 @@ CREATE TABLE `meso_market_listings`
 DROP TABLE IF EXISTS `ugc`;
 CREATE TABLE `ugc`
 (
-    `uid`            bigint       NOT NULL AUTO_INCREMENT,
-    `guid`           varchar(100) NOT NULL,
-    `name`           varchar(100) NOT NULL,
-    `url`            varchar(200) NOT NULL,
-    `character_id`   bigint       NOT NULL,
-    `character_name` varchar(100) NOT NULL,
-    `account_id`     bigint       NOT NULL,
-    `creation_time`  bigint       NOT NULL,
-    `sale_price`     bigint       NOT NULL,
+    `uid`            bigint           NOT NULL AUTO_INCREMENT,
+    `guid`           varchar(100)     NOT NULL,
+    `name`           varchar(100)     NOT NULL,
+    `url`            varchar(200)     NOT NULL,
+    `character_id`   bigint           NOT NULL,
+    `character_name` varchar(100)     NOT NULL,
+    `account_id`     bigint           NOT NULL,
+    `creation_time`  bigint           NOT NULL,
+    `sale_price`     bigint           NOT NULL,
     `type`           tinyint unsigned NOT NULL,
     PRIMARY KEY (`uid`),
     KEY `ix_ugc_account_id` (`account_id`),
@@ -798,12 +798,12 @@ CREATE TABLE `ugc_market_sales`
 DROP TABLE IF EXISTS `mushking_royale_stats`;
 CREATE TABLE `mushking_royale_stats`
 (
-    `id`                               bigint       NOT NULL AUTO_INCREMENT,
-    `exp`                              bigint       NOT NULL,
-    `active_gold_pass`                 tinyint(1)   NOT NULL,
-    `royale_level`                     int          NOT NULL,
-    `silver_level_claimed_rewards`     int          NOT NULL,
-    `gold_level_claimed_rewards`       int          NOT NULL,
+    `id`                           bigint     NOT NULL AUTO_INCREMENT,
+    `exp`                          bigint     NOT NULL,
+    `active_gold_pass`             tinyint(1) NOT NULL,
+    `royale_level`                 int        NOT NULL,
+    `silver_level_claimed_rewards` int        NOT NULL,
+    `gold_level_claimed_rewards`   int        NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
@@ -816,13 +816,13 @@ CREATE TABLE `mushking_royale_stats`
 DROP TABLE IF EXISTS `medals`;
 CREATE TABLE `medals`
 (
-    `uid`                              bigint           NOT NULL AUTO_INCREMENT,
-    `effect_id`                        int              NOT NULL,
-    `expiration_time`                  bigint           NOT NULL,
-    `medal_slot`                       tinyint unsigned NOT NULL,
-    `is_equipped`                      tinyint(1)       NOT NULL,
-    `item_uid`                         bigint           NOT NULL,
-    `owner_account_id`                 bigint           NOT NULL,
+    `uid`              bigint           NOT NULL AUTO_INCREMENT,
+    `effect_id`        int              NOT NULL,
+    `expiration_time`  bigint           NOT NULL,
+    `medal_slot`       tinyint unsigned NOT NULL,
+    `is_equipped`      tinyint(1)       NOT NULL,
+    `item_uid`         bigint           NOT NULL,
+    `owner_account_id` bigint           NOT NULL,
     PRIMARY KEY (`uid`),
     KEY `ix_medal_item_uid` (`item_uid`),
     KEY `ix_medal_owner_account_id` (`owner_account_id`),
@@ -839,14 +839,14 @@ CREATE TABLE `medals`
 DROP TABLE IF EXISTS `game_event_user_values`;
 CREATE TABLE `game_event_user_values`
 (
-    `id`                               bigint       NOT NULL AUTO_INCREMENT,
-    `character_id`                     bigint       NOT NULL,
-    `type`                             int          NOT NULL,
-    `event_id`                         int          NOT NULL,
-    `event_value`                      text DEFAULT '',
-    `expiration_timestamp`             bigint       NOT NULL,
+    `id`                   bigint NOT NULL AUTO_INCREMENT,
+    `character_id`         bigint NOT NULL,
+    `type`                 int    NOT NULL,
+    `event_id`             int    NOT NULL,
+    `event_value`          text DEFAULT '',
+    `expiration_timestamp` bigint NOT NULL,
     CONSTRAINT `user_value_id_pk` PRIMARY KEY (`id`),
-    CONSTRAINT `user_value_id_FK` FOREIGN KEY (`character_id`) REFERENCES `characters`(`character_id`)
+    CONSTRAINT `user_value_id_FK` FOREIGN KEY (`character_id`) REFERENCES `characters` (`character_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;

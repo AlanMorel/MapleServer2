@@ -40,4 +40,5 @@ public enum UgcType : byte
 {
     Item = 0x01,
     Furniture = 0x02,
+    GuildEmblem = 0x06
 }
