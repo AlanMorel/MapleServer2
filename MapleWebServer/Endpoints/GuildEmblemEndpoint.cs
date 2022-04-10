@@ -12,7 +12,7 @@ public class GuildEmblemEndpoint
             return Results.BadRequest();
         }
 
-        FileStream profileImage = File.OpenRead(fullPath);
-        return Results.File(profileImage, contentType: "image/png");
+        FileStream guildEmblem = File.OpenRead(fullPath);
+        return Results.File(guildEmblem, contentType: "image/png");
     }
 }
