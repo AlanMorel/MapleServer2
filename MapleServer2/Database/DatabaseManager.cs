@@ -51,7 +51,7 @@ public static class DatabaseManager
     public static DatabaseShopItem ShopItems { get; } = new();
     public static DatabaseSkillTab SkillTabs { get; } = new();
     public static DatabaseTrophy Trophies { get; } = new();
-    public static DatabaseUgc Ugc { get; } = new();
+    public static DatabaseUGC UGC { get; } = new();
     public static DatabaseWallet Wallets { get; } = new();
     public static DatabaseMail Mails { get; } = new();
     public static DatabaseBlackMarketListing BlackMarketListings { get; } = new();
@@ -61,6 +61,8 @@ public static class DatabaseManager
     public static DatabaseServer ServerInfo { get; } = new();
     public static DatabaseMushkingRoyaleStats MushkingRoyaleStats { get; } = new();
     public static DatabaseMedal MushkingRoyaleMedals { get; } = new();
+    public static DatabaseUGCBanner UGCBanner { get; } = new();
+    public static DatabaseBannerSlot BannerSlot { get; } = new();
 
     static DatabaseManager()
     {

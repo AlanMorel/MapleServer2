@@ -15,6 +15,7 @@ using MapleServer2.Tools;
 using MapleServer2.Triggers;
 using MapleServer2.Types;
 using Serilog;
+using TaskScheduler = MapleServer2.Tools.TaskScheduler;
 
 namespace MapleServer2.Managers;
 
@@ -78,6 +79,9 @@ public partial class FieldManager : IDisposable
 
         // Add entities to state from MapEntityStorage
         AddEntitiesToState();
+
+        // Start UGC banner task scheduler, this will run every hour
+        StartUGCBannerScheduler();
 
         // Add to state home cubes
         if (MapId == (int) Map.PrivateResidence)
@@ -1130,6 +1134,14 @@ public partial class FieldManager : IDisposable
                 await Task.Delay(200, ct);
             }
         }, ct);
+    }
+
+    private void StartUGCBannerScheduler()
+    {
+        TaskScheduler.Instance.ScheduleTask(0, 0, 60, () =>
+        {
+            GameServer.UGCBannerManager.UGCBannerLoop(this);
+        });
     }
 
     private Task StartSpawnTimer(IFieldObject<MobSpawn> mobSpawn)

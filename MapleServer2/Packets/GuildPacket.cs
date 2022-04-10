@@ -37,6 +37,7 @@ public static class GuildPacket
         UpdateMemberLocation = 0x1F,
         UpdatePlayer = 0x20,
         GuildNameChange = 0x22,
+        TrophyNotice = 0x23,
         FinishCheckIn = 0x24,
         BattleMatchmaking = 0x2A,
         BattleApplyNotice = 0x2B,
@@ -453,6 +454,18 @@ public static class GuildPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
         pWriter.Write(GuildPacketMode.GuildNameChange);
         pWriter.WriteUnicodeString(newName);
+        return pWriter;
+    }
+
+    public static PacketWriter TrophyNotice()
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
+        pWriter.Write(GuildPacketMode.TrophyNotice);
+        pWriter.WriteUnicodeString(); // character name
+        pWriter.WriteInt(); // trophy id
+        pWriter.WriteInt(); // trophy value
+        pWriter.WriteShort(); // mode: 0 = completed the final stage, 1 = gained a trophy, there is more modes but they make the same message?
+
         return pWriter;
     }
 
