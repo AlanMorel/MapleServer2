@@ -9,9 +9,15 @@ public partial class TriggerContext
 {
     public void SetActor(int actorId, bool isVisible, string stateName, bool arg4, bool arg5)
     {
-        Field.State.TriggerActors[actorId].IsVisible = isVisible;
-        Field.State.TriggerActors[actorId].StateName = stateName;
-        Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerActors[actorId]));
+        if (!Field.State.TriggerActors.TryGetValue(actorId, out TriggerActor stateTriggerActor))
+        {
+            Logger.Warning("SetActor: Actor not found: {0}", actorId);
+            return;
+        }
+
+        stateTriggerActor.IsVisible = isVisible;
+        stateTriggerActor.StateName = stateName;
+        Field.BroadcastPacket(TriggerPacket.UpdateTrigger(stateTriggerActor));
     }
 
     public void SetAgent(int[] arg1, bool arg2)
@@ -49,6 +55,7 @@ public partial class TriggerContext
             {
                 continue;
             }
+
             interactObject.State = objectState;
             Field.BroadcastPacket(InteractObjectPacket.Set(interactObject));
         }
@@ -87,6 +94,7 @@ public partial class TriggerContext
             {
                 continue;
             }
+
             breakable.IsEnabled = isEnabled;
             Field.BroadcastPacket(BreakablePacket.Interact(breakable));
         }
@@ -104,6 +112,7 @@ public partial class TriggerContext
         {
             return;
         }
+
         portal.Value.Update(visible, enabled, minimapVisible);
         Field.BroadcastPacket(FieldPortalPacket.UpdatePortal(portal));
     }

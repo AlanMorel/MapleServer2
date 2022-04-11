@@ -35,24 +35,24 @@ public static class UgcPacket
         return null;
     }
 
-    public static PacketWriter CreateUgc(Item item)
+    public static PacketWriter CreateUgc(Ugc ugc)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
         pWriter.Write(UgcMode.CreateUgc);
-        pWriter.Write(item.Ugc.Type);
-        pWriter.WriteLong(item.Ugc.Uid);
-        pWriter.WriteUnicodeString(item.Ugc.Guid.ToString());
+        pWriter.Write(ugc.Type);
+        pWriter.WriteLong(ugc.Uid);
+        pWriter.WriteUnicodeString(ugc.Guid.ToString());
 
         return pWriter;
     }
 
-    public static PacketWriter SetItemUrl(Item item)
+    public static PacketWriter SetUgcUrl(Ugc ugc)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
         pWriter.Write(UgcMode.SetItemUrl);
-        pWriter.Write(item.Ugc.Type);
-        pWriter.WriteLong(item.Ugc.Uid);
-        pWriter.WriteUnicodeString(item.Ugc.Url);
+        pWriter.Write(ugc.Type);
+        pWriter.WriteLong(ugc.Uid);
+        pWriter.WriteUnicodeString(ugc.Url);
 
         return pWriter;
     }

@@ -31,6 +31,7 @@ public static class GuildPacket
         MemberLoggedOff = 0x18,
         AssignNewLeader = 0x19,
         GuildNoticeChange = 0x1A,
+        GuildNoticeEmblemChange = 0x1B,
         UpdateRankNotice = 0x1D,
         ListGuildUpdate = 0x1E,
         UpdateMemberLocation = 0x1F,
@@ -54,6 +55,7 @@ public static class GuildPacket
         RequestMiniGameWar = 0x3B,
         TransferLeaderConfirm = 0x3D,
         GuildNoticeConfirm = 0x3E,
+        ChangeEmblemUrl = 0x3F,
         UpdateRankConfirm = 0x41,
         ListGuildConfirm = 0x42,
         SendMail = 0x45,
@@ -393,6 +395,17 @@ public static class GuildPacket
         return pWriter;
     }
 
+    public static PacketWriter GuildNoticeEmblemChange(string playerName, string emblemUrl)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
+        pWriter.Write(GuildPacketMode.GuildNoticeEmblemChange);
+        pWriter.WriteByte();
+        pWriter.WriteInt();
+        pWriter.WriteUnicodeString(playerName);
+        pWriter.WriteUnicodeString(emblemUrl);
+        return pWriter;
+    }
+
     public static PacketWriter UpdateRankNotice(Guild guild, byte rankIndex)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
@@ -646,6 +659,14 @@ public static class GuildPacket
         pWriter.Write(GuildPacketMode.GuildNoticeConfirm);
         pWriter.WriteByte(0x1);
         pWriter.WriteUnicodeString(notice);
+        return pWriter;
+    }
+
+    public static PacketWriter ChangeEmblemUrl(string emblemUrl)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
+        pWriter.Write(GuildPacketMode.ChangeEmblemUrl);
+        pWriter.WriteUnicodeString(emblemUrl);
         return pWriter;
     }
 
