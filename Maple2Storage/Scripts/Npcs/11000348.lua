@@ -1,6 +1,6 @@
 function handleGoto(nextScript)
     if nextScript == 61 then
-        jobId = PlayerHelper.GetJobId()
+        jobId = ScriptManager.GetPlayer().JobId
 
         if jobId <= 80 and jobId > 1 then
             return 60 + math.floor(jobId / 10)

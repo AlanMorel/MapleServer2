@@ -10,7 +10,7 @@ public class ScriptLoader
 {
     private readonly ILogger Logger = Log.Logger.ForContext<ScriptLoader>();
 
-    public Script Script;
+    public readonly Script Script;
     private readonly string ScriptName;
 
     /// <summary>
@@ -32,7 +32,7 @@ public class ScriptLoader
             // Register script manager as an proxy object
             // Documentation: https://www.moonsharp.org/proxy.html
             UserData.RegisterProxyType<ScriptManager, GameSession>(r => new(r));
-            Script.Globals["PlayerHelper"] = new ScriptManager(session);
+            Script.Globals["ScriptManager"] = new ScriptManager(session);
         }
 
         try
