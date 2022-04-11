@@ -68,7 +68,6 @@ public sealed class Inventory : IInventory
     public Dictionary<long, Item> TemporaryStorage { get; } = new();
 
     #region Constructors
-
     public Inventory(bool addToDatabase)
     {
         Equips = new();
@@ -130,11 +129,9 @@ public sealed class Inventory : IInventory
             Add(item);
         }
     }
-
     #endregion
 
     #region Public Methods
-
     public void AddItem(GameSession session, Item item, bool isNew)
     {
         switch (item.Type)
@@ -339,6 +336,22 @@ public sealed class Inventory : IInventory
         session.Send(ItemInventoryPacket.Move(dstUid, srcSlot, uid, dstSlot));
     }
 
+    public void ConsumeByTag(GameSession session, string tag, int amount)
+    {
+        IReadOnlyCollection<Item> ingredientTotal = GetAllByTag(tag);
+        foreach (Item item in ingredientTotal)
+        {
+            if (item.Amount >= amount)
+            {
+                ConsumeItem(session, item.Uid, amount);
+                break;
+            }
+
+            amount -= item.Amount;
+            ConsumeItem(session, item.Uid, item.Amount);
+        }
+    }
+
     public bool HasItem(long uid) => Items.ContainsKey(uid);
 
     public bool HasItem(int id) => Items.Values.Any(i => i.Id == id);
@@ -502,11 +515,9 @@ public sealed class Inventory : IInventory
     {
         return GetSlots(tab).Select(kvp => Items[kvp.Value]).ToArray();
     }
-
     #endregion
 
     #region Private Methods
-
     // TODO: precompute next free slot to avoid iteration on Add
     // Returns false if inventory is full
     private bool Add(Item item)
@@ -677,6 +688,5 @@ public sealed class Inventory : IInventory
                 return;
         }
     }
-
     #endregion
 }

@@ -95,6 +95,7 @@ public class ItemStats
     public Dictionary<StatAttribute, ItemStat> Statics;
     public Dictionary<StatAttribute, ItemStat> Randoms;
     public Dictionary<StatAttribute, ItemStat> Enchants;
+    public Dictionary<StatAttribute, ItemStat> LimitBreakEnchants;
     public List<GemSocket> GemSockets;
 
     public ItemStats() { }
@@ -106,10 +107,11 @@ public class ItemStats
 
     public ItemStats(ItemStats other)
     {
-        Constants = new(other.Constants);
-        Statics = new(other.Statics);
-        Randoms = new(other.Randoms);
-        Enchants = new(other.Enchants);
+        Constants = CopyStats(other.Constants);
+        Statics = CopyStats(other.Statics);
+        Randoms = CopyStats(other.Randoms);
+        Enchants = CopyStats(other.Enchants);
+        LimitBreakEnchants = CopyStats(other.LimitBreakEnchants);
         GemSockets = new();
     }
 
@@ -119,6 +121,7 @@ public class ItemStats
         Statics = new();
         Randoms = new();
         Enchants = new();
+        LimitBreakEnchants = new();
         GemSockets = new();
         if (item.Rarity is 0 or > 6)
         {
@@ -137,6 +140,23 @@ public class ItemStats
         GetGemSockets(item, optionLevelFactor);
     }
 
+    private static Dictionary<StatAttribute, ItemStat> CopyStats(Dictionary<StatAttribute, ItemStat> otherStats)
+    {
+        Dictionary<StatAttribute, ItemStat> stats = new();
+        foreach ((StatAttribute key, ItemStat value) in otherStats)
+        {
+            if (value is BasicStat)
+            {
+                stats[key] = new BasicStat(value.ItemAttribute, value.Flat + value.Rate, value.AttributeType);
+            }
+            else
+            {
+                stats[key] = new SpecialStat(value.ItemAttribute, value.Flat + value.Rate, value.AttributeType);
+            }
+        }
+        return stats;
+    }
+
     public float GetTotalStatValue(StatAttribute attribute)
     {
         float statValue = 0;
@@ -152,6 +172,16 @@ public class ItemStats
         if (Randoms.ContainsKey(attribute))
         {
             statValue += Randoms[attribute].GetValue();
+        }
+        if (Enchants.ContainsKey(attribute))
+        {
+            statValue += Enchants[attribute].Flat;
+            statValue += statValue * Enchants[attribute].Rate;
+        }
+        if (LimitBreakEnchants.ContainsKey(attribute))
+        {
+            statValue += LimitBreakEnchants[attribute].Flat;
+            statValue += statValue * LimitBreakEnchants[attribute].Rate;
         }
 
         return statValue;
@@ -175,6 +205,26 @@ public class ItemStats
 
     private void GetGemSockets(Item item, float optionLevelFactor)
     {
+        // Check for predefined sockets
+        int socketId = ItemMetadataStorage.GetSocketDataId(item.Id);
+        if (socketId != 0)
+        {
+            ItemSocketRarityData socketData = ItemSocketMetadataStorage.GetMetadata(socketId, item.Rarity);
+            if (socketData is not null)
+            {
+                for (int i = 0; i < socketData.MaxCount; i++)
+                {
+                    GemSockets.Add(new());
+                }
+
+                for (int j = 0; j < socketData.FixedOpenCount; j++)
+                {
+                    GemSockets[j].IsUnlocked = true;
+                }
+                return;
+            }
+        }
+
         ScriptLoader scriptLoader = new ScriptLoader("Functions/calcItemSocketMaxCount");
         DynValue dynValue = scriptLoader.Call("calcItemSocketMaxCount", (int) item.Type, item.Rarity, optionLevelFactor, (int) item.InventoryTab);
         int slotAmount = (int) dynValue.Number;

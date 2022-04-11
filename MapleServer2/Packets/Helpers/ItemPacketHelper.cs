@@ -35,7 +35,7 @@ public static class ItemPacketHelper
         pWriter.WriteInt();
         pWriter.WriteBool(item.TransferFlag.HasFlag(ItemTransferFlag.Tradeable) || item.RemainingTrades > 0 || item.RemainingRepackageCount > 0);
         pWriter.WriteInt(item.Charges);
-        pWriter.WriteStatDiff(item.Stats);
+        pWriter.WriteEnchantStats(item);
 
         if (item.IsCustomScore)
         {
@@ -213,8 +213,9 @@ public static class ItemPacketHelper
         pWriter.WriteFloat(stat.Flat);
     }
 
-    private static PacketWriter WriteStatDiff(this PacketWriter pWriter, ItemStats stats)
+    private static PacketWriter WriteEnchantStats(this PacketWriter pWriter, Item item)
     {
+        ItemStats stats = item.Stats;
         List<BasicStat> enchantStats = stats.Enchants.Values.OfType<BasicStat>().ToList();
         pWriter.WriteByte((byte) enchantStats.Count);
         foreach (BasicStat stat in enchantStats)
@@ -224,18 +225,18 @@ public static class ItemPacketHelper
             pWriter.WriteFloat(stat.Rate);
         }
 
-        pWriter.WriteInt(); // ???
+        pWriter.WriteInt(item.LimitBreakLevel);
 
-        List<BasicStat> staticStatDiff = new();
-        pWriter.WriteInt(staticStatDiff.Count);
-        foreach (BasicStat stat in staticStatDiff)
+        List<BasicStat> basicLimitBreakStats = stats.LimitBreakEnchants.Values.OfType<BasicStat>().ToList();
+        pWriter.WriteInt(basicLimitBreakStats.Count);
+        foreach (BasicStat stat in basicLimitBreakStats)
         {
             WriteBasicStat(pWriter, stat);
         }
 
-        List<SpecialStat> randomStatDiff = new();
-        pWriter.WriteInt(randomStatDiff.Count);
-        foreach (SpecialStat stat in randomStatDiff)
+        List<SpecialStat> specialLimitBreakStats = stats.LimitBreakEnchants.Values.OfType<SpecialStat>().ToList();
+        pWriter.WriteInt(specialLimitBreakStats.Count);
+        foreach (SpecialStat stat in specialLimitBreakStats)
         {
             WriteSpecialStat(pWriter, stat);
         }

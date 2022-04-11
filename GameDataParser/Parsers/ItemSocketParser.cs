@@ -13,6 +13,8 @@ public class ItemSocketParser : Exporter<List<ItemSocketMetadata>>
     protected override List<ItemSocketMetadata> Parse()
     {
         List<ItemSocketMetadata> itemSockets = new();
+        Dictionary<int, List<ItemSocketRarityData>> socketDictionary = new();
+
         foreach (PackFileEntry entry in Resources.XmlReader.Files)
         {
             if (!entry.Name.StartsWith("table/itemsocket"))
@@ -26,17 +28,37 @@ public class ItemSocketParser : Exporter<List<ItemSocketMetadata>>
 
             foreach (XmlNode property in properties)
             {
-                ItemSocketMetadata metadata = new()
+                int id = int.Parse(property.Attributes["id"].Value);
+                ItemSocketRarityData data = new()
                 {
-                    Id = int.Parse(property.Attributes["id"].Value),
+                    Rarity = int.Parse(property.Attributes["grade"].Value),
                     MaxCount = int.Parse(property.Attributes["maxCount"].Value),
                     FixedOpenCount = int.Parse(property.Attributes["fixOpenCount"].Value)
                 };
 
-                itemSockets.Add(metadata);
+                if (socketDictionary.ContainsKey(id))
+                {
+                    socketDictionary[id].Add(data);
+                }
+                else
+                {
+                    socketDictionary[id] = new()
+                    {
+                        data
+                    };
+                }
             }
         }
 
+        foreach ((int id, List<ItemSocketRarityData> itemSocketRarity) in socketDictionary)
+        {
+            ItemSocketMetadata metadata = new()
+            {
+                Id = id,
+                RarityData = itemSocketRarity
+            };
+            itemSockets.Add(metadata);
+        }
         return itemSockets;
     }
 }

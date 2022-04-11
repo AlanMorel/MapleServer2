@@ -84,6 +84,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                 ExpirationTypeDuration = life.numberOfWeeksMonths,
                 GearScoreFactor = property.gearScore,
                 DisableEnchant = limit.exceptEnchant == 1,
+                SocketDataId = property.socketDataId
             };
 
             // Parse expiration time
