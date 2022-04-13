@@ -1,5 +1,6 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
@@ -27,7 +28,7 @@ public class EnchantScrollParser : Exporter<List<EnchantScrollMetadata>>
 
         foreach (XmlNode node in nodes)
         {
-            List<int> intItemSlots = node.Attributes["slot"].Value.Split(",").ToList().ConvertAll(int.Parse);
+            List<int> intItemSlots = node.Attributes["slot"].Value.SplitAndParseToInt(',').ToList();
             List<ItemType> itemSlots = intItemSlots.Select(itemSlot => (ItemType) itemSlot).ToList();
 
             EnchantScrollMetadata metadata = new()
@@ -37,8 +38,8 @@ public class EnchantScrollParser : Exporter<List<EnchantScrollMetadata>>
                 MaxLevel = short.Parse(node.Attributes["maxLv"].Value),
                 ItemTypes = itemSlots,
                 ScrollType = (EnchantScrollType) int.Parse(node.Attributes["scrollType"].Value),
-                Rarities = node.Attributes["rank"].Value.Split(",").ToList().ConvertAll(int.Parse),
-                EnchantLevels = node.Attributes["grade"].Value.Split(",").ToList().ConvertAll(int.Parse),
+                Rarities = node.Attributes["rank"].Value.SplitAndParseToInt(',').ToList(),
+                EnchantLevels = node.Attributes["grade"].Value.SplitAndParseToInt(',').ToList()
             };
 
             items.Add(metadata);

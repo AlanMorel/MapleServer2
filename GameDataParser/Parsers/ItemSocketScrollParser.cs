@@ -1,5 +1,6 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
@@ -27,7 +28,7 @@ public class ItemSocketScrollParser : Exporter<List<ItemSocketScrollMetadata>>
 
         foreach (XmlNode node in nodes)
         {
-            List<int> intItemSlots = node.Attributes["slot"].Value.Split(",").ToList().ConvertAll(int.Parse);
+            List<int> intItemSlots = node.Attributes["slot"].Value.SplitAndParseToInt(',').ToList();
             List<ItemType> itemSlots = intItemSlots.Select(itemSlot => (ItemType) itemSlot).ToList();
 
             ItemSocketScrollMetadata metadata = new()

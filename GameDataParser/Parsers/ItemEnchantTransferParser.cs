@@ -1,5 +1,6 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
@@ -33,7 +34,7 @@ public class ItemEnchantTransferParser : Exporter<List<ItemEnchantTransferMetada
                 continue;
             }
 
-            List<int> intItemSlots = node.Attributes["inputSlot"].Value.Split(",").ToList().ConvertAll(int.Parse);
+            List<int> intItemSlots = node.Attributes["inputSlot"].Value.SplitAndParseToInt(',').ToList();
             List<ItemType> itemSlots = intItemSlots.Select(itemSlot => (ItemType) itemSlot).ToList();
 
             ItemEnchantTransferMetadata metadata = new()
@@ -42,7 +43,7 @@ public class ItemEnchantTransferParser : Exporter<List<ItemEnchantTransferMetada
                 InputItemLevel = int.Parse(node.Attributes["inputLimitLevel"].Value),
                 InputEnchantLevel = int.Parse(node.Attributes["inputEnchantLevel"].Value),
                 InputSlots = itemSlots,
-                InputItemIds = node.Attributes["inputItemId"].Value.Split(",").ToList().ConvertAll(int.Parse),
+                InputItemIds = node.Attributes["inputItemId"].Value.SplitAndParseToInt(',').ToList(),
                 MesoCost = long.Parse(node.Attributes["needMeso"].Value),
                 OutputItemId = int.Parse(node.Attributes["output1Id"].Value),
                 OutputRarity = int.Parse(node.Attributes["output1Rank"].Value),

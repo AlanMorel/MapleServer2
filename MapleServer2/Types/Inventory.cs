@@ -360,6 +360,15 @@ public sealed class Inventory : IInventory
 
     public Item GetById(int id) => Items.Values.FirstOrDefault(x => x.Id == id);
 
+    public Item GetFromInventoryOrEquipped(GameSession session, long uid)
+    {
+        if (HasItem(uid))
+        {
+            return GetByUid(uid);
+        }
+        return session.Player.ItemIsEquipped(uid) ? session.Player.GetEquippedItem(uid) : null;
+    }
+
     public IEnumerable<Item> GetItemsNotNull() => Items.Values.Where(x => x != null).ToArray();
 
     public IReadOnlyCollection<Item> GetAllById(int id) => Items.Values.Where(x => x.Id == id).ToArray();

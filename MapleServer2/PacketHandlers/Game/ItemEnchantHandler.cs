@@ -157,23 +157,15 @@ public class ItemEnchantHandler : GamePacketHandler
     {
         int chargeCount = packet.ReadInt();
         ItemEnchant itemEnchant = session.Player.ItemEnchant;
-        Item item = null;
 
-        if (session.Player.Inventory.HasItem(itemEnchant.ItemUid))
-        {
-            item = session.Player.Inventory.GetByUid(itemEnchant.ItemUid);
-        }
-        else if (session.Player.ItemIsEquipped(itemEnchant.ItemUid))
-        {
-            item = session.Player.GetEquippedItem(itemEnchant.ItemUid);
-        }
-
+        Player player = session.Player;
+        Item item = player.Inventory.GetFromInventoryOrEquipped(session, itemEnchant.ItemUid);
         if (item == null || item.Charges < chargeCount)
         {
             return;
         }
 
-        session.Player.ItemEnchant.UpdateCharges(chargeCount);
+        player.ItemEnchant.UpdateCharges(chargeCount);
 
         session.Send(ItemEnchantPacket.UpdateCharges(session.Player.ItemEnchant));
     }

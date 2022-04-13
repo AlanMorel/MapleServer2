@@ -41,14 +41,15 @@ public class EnchantScrollHandler : GamePacketHandler
         long scrollUid = packet.ReadLong();
         long equipUid = packet.ReadLong();
 
-        if (!session.Player.Inventory.HasItem(equipUid) && !session.Player.Inventory.HasItem(scrollUid))
+        Player player = session.Player;
+        if (!player.Inventory.HasItem(equipUid) && !player.Inventory.HasItem(scrollUid))
         {
             session.Send(EnchantScrollPacket.UseScroll((short) EnchantScrollError.ItemsNoLongerValid));
             return;
         }
 
-        Item scroll = session.Player.Inventory.GetByUid(scrollUid);
-        Item equip = session.Player.Inventory.GetByUid(equipUid);
+        Item scroll = player.Inventory.GetByUid(scrollUid);
+        Item equip = player.Inventory.GetByUid(equipUid);
 
         EnchantScrollMetadata metadata = EnchantScrollMetadataStorage.GetMetadata(scroll.Function.Id);
         if (metadata is null)
@@ -80,9 +81,7 @@ public class EnchantScrollHandler : GamePacketHandler
             return;
         }
 
-        Random random = Random.Shared;
-
-        int enchantLevelIndex = random.Next(metadata.EnchantLevels.Count);
+        int enchantLevelIndex = Random.Shared.Next(metadata.EnchantLevels.Count);
         Dictionary<StatAttribute, ItemStat> enchantStats = EnchantHelper.GetEnchantStats(metadata.EnchantLevels[enchantLevelIndex], equip.Type, equip.Level);
 
         switch (mode)
@@ -91,7 +90,7 @@ public class EnchantScrollHandler : GamePacketHandler
                 session.Send(EnchantScrollPacket.AddItem(equipUid, enchantStats));
                 break;
             case EnchantScrollMode.UseScroll:
-                HandleUseScroll(session, equip, scroll, enchantStats, random, metadata.EnchantLevels[enchantLevelIndex], metadata.Id);
+                HandleUseScroll(session, equip, scroll, enchantStats, metadata.EnchantLevels[enchantLevelIndex], metadata.Id);
                 break;
             default:
                 IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -99,12 +98,12 @@ public class EnchantScrollHandler : GamePacketHandler
         }
     }
 
-    private static void HandleUseScroll(GameSession session, Item equip, Item scroll, Dictionary<StatAttribute, ItemStat> enchantStats, Random random, int enchantLevel, int scrollId)
+    private static void HandleUseScroll(GameSession session, Item equip, Item scroll, Dictionary<StatAttribute, ItemStat> enchantStats, int enchantLevel, int scrollId)
     {
         ScriptLoader scriptLoader = new("Functions/ItemEnchantScroll/getSuccessRate");
         float successRate = (float) scriptLoader.Call("getSuccessRate", scrollId).Number;
 
-        int randomValue = random.Next(0, 10000 + 1);
+        int randomValue = Random.Shared.Next(0, 10000 + 1);
         bool scrollSuccess = successRate >= randomValue;
 
         if (scrollSuccess)
