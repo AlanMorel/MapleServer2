@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace Maple2Storage.Enums;
+﻿namespace Maple2Storage.Enums;
 
 public enum EnchantScrollType : short
 {
