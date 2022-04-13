@@ -204,6 +204,11 @@ public class ItemEnchantHandler : GamePacketHandler
             inventory.ConsumeByTag(session, ingredient.Tag.ToString(), ingredient.Amount);
         }
 
+        foreach (long catalystUids in itemEnchantStats.CatalystItemUids)
+        {
+            inventory.ConsumeItem(session, catalystUids, 1);
+        }
+
         Random random = Random.Shared;
         double randomResult = random.NextDouble();
 
@@ -228,30 +233,6 @@ public class ItemEnchantHandler : GamePacketHandler
             }
         }
         return itemEnchantStats.CatalystAmountRequired <= itemEnchantStats.CatalystItemUids.Count;
-    }
-
-    private static void ConsumeIngredients(GameSession session, ItemEnchant itemEnchantStats, IInventory inventory)
-    {
-        foreach (EnchantIngredient ingredient in itemEnchantStats.Ingredients)
-        {
-            IReadOnlyCollection<Item> ingredientTotal = inventory.GetAllByTag(ingredient.Tag.ToString());
-            foreach (Item item in ingredientTotal)
-            {
-                if (item.Amount >= ingredient.Amount)
-                {
-                    inventory.ConsumeItem(session, item.Uid, ingredient.Amount);
-                    break;
-                }
-
-                ingredient.Amount -= item.Amount;
-                inventory.ConsumeItem(session, item.Uid, item.Amount);
-            }
-        }
-
-        foreach (long itemUid in itemEnchantStats.CatalystItemUids)
-        {
-            inventory.ConsumeItem(session, itemUid, 1);
-        }
     }
 
     private static void SetEnchantStats(GameSession session, ItemEnchant itemEnchantStats, Item item)
@@ -323,7 +304,15 @@ public class ItemEnchantHandler : GamePacketHandler
             return;
         }
 
-        ConsumeIngredients(session, itemEnchantStats, inventory);
+        foreach (EnchantIngredient ingredient in itemEnchantStats.Ingredients)
+        {
+            inventory.ConsumeByTag(session, ingredient.Tag.ToString(), ingredient.Amount);
+        }
+
+        foreach (long catalystUids in itemEnchantStats.CatalystItemUids)
+        {
+            inventory.ConsumeItem(session, catalystUids, 1);
+        }
 
         int neededEnchants = GetNeededEnchantExp(item.EnchantLevel);
         int expGained = (int) Math.Ceiling((double) (10000 / neededEnchants));
