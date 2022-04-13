@@ -69,16 +69,7 @@ public class ItemEnchantHandler : GamePacketHandler
 
         IInventory inventory = session.Player.Inventory;
 
-        Item item = null;
-        if (inventory.HasItem(itemUid))
-        {
-            item = inventory.GetByUid(itemUid);
-        }
-        else if (inventory.ItemIsEquipped(itemUid))
-        {
-            item = inventory.GetEquippedItem(itemUid);
-        }
-
+        Item item = inventory.GetFromInventoryOrEquipped(itemUid);
         if (item is null)
         {
             return;
@@ -177,14 +168,10 @@ public class ItemEnchantHandler : GamePacketHandler
         long itemUid = packet.ReadLong();
 
         IInventory inventory = session.Player.Inventory;
-        Item item = null;
-        if (inventory.HasItem(itemUid))
+        Item item = inventory.GetFromInventoryOrEquipped(itemUid);
+        if (item is null)
         {
-            item = inventory.GetByUid(itemUid);
-        }
-        else if (inventory.ItemIsEquipped(itemUid))
-        {
-            item = inventory.GetEquippedItem(itemUid);
+            return;
         }
 
         ItemEnchant itemEnchantStats = session.Player.ItemEnchant;
