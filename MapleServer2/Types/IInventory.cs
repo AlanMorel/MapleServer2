@@ -70,7 +70,9 @@ public interface IInventory
     /// <param name="functionId">The Function ID of the item</param>
     /// <remarks>Never returns null, can return empty</remarks>
     IEnumerable<Item> GetAllByFunctionId(int functionId);
-    Item GetFromInventoryOrEquipped(GameSession session, long uid);
+    Item GetFromInventoryOrEquipped(long uid);
+    bool ItemIsEquipped(long uid);
+    Item GetEquippedItem(long uid);
     bool Replace(Item item);
     void SortInventory(GameSession session, InventoryTab tab);
     void LoadInventoryTab(GameSession session, InventoryTab tab);

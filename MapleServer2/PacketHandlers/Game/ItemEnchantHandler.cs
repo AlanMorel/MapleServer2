@@ -67,14 +67,16 @@ public class ItemEnchantHandler : GamePacketHandler
         EnchantType type = (EnchantType) packet.ReadByte();
         long itemUid = packet.ReadLong();
 
+        IInventory inventory = session.Player.Inventory;
+
         Item item = null;
-        if (session.Player.Inventory.HasItem(itemUid))
+        if (inventory.HasItem(itemUid))
         {
-            item = session.Player.Inventory.GetByUid(itemUid);
+            item = inventory.GetByUid(itemUid);
         }
-        else if (session.Player.ItemIsEquipped(itemUid))
+        else if (inventory.ItemIsEquipped(itemUid))
         {
-            item = session.Player.GetEquippedItem(itemUid);
+            item = inventory.GetEquippedItem(itemUid);
         }
 
         if (item is null)
@@ -107,7 +109,7 @@ public class ItemEnchantHandler : GamePacketHandler
         long itemUid = packet.ReadLong();
         bool addCatalyst = packet.ReadBool();
 
-        if (!session.Player.Inventory.HasItem(itemUid) && !session.Player.ItemIsEquipped(itemUid))
+        if (!session.Player.Inventory.HasItem(itemUid) && !session.Player.Inventory.ItemIsEquipped(itemUid))
         {
             return;
         }
@@ -159,7 +161,7 @@ public class ItemEnchantHandler : GamePacketHandler
         ItemEnchant itemEnchant = session.Player.ItemEnchant;
 
         Player player = session.Player;
-        Item item = player.Inventory.GetFromInventoryOrEquipped(session, itemEnchant.ItemUid);
+        Item item = player.Inventory.GetFromInventoryOrEquipped(itemEnchant.ItemUid);
         if (item == null || item.Charges < chargeCount)
         {
             return;
@@ -174,14 +176,15 @@ public class ItemEnchantHandler : GamePacketHandler
     {
         long itemUid = packet.ReadLong();
 
+        IInventory inventory = session.Player.Inventory;
         Item item = null;
-        if (session.Player.Inventory.HasItem(itemUid))
+        if (inventory.HasItem(itemUid))
         {
-            item = session.Player.Inventory.GetByUid(itemUid);
+            item = inventory.GetByUid(itemUid);
         }
-        else if (session.Player.ItemIsEquipped(itemUid))
+        else if (inventory.ItemIsEquipped(itemUid))
         {
-            item = session.Player.GetEquippedItem(itemUid);
+            item = inventory.GetEquippedItem(itemUid);
         }
 
         ItemEnchant itemEnchantStats = session.Player.ItemEnchant;
@@ -189,8 +192,6 @@ public class ItemEnchantHandler : GamePacketHandler
         {
             itemEnchantStats = GetEnchantInfo(item);
         }
-
-        IInventory inventory = session.Player.Inventory;
 
         // Check if player has enough ingredients
         if (!PlayerHasIngredients(itemEnchantStats, inventory))

@@ -28,40 +28,100 @@ public sealed class Inventory : IInventory
 
     private readonly Dictionary<InventoryTab, short> DefaultSize = new()
     {
-        { InventoryTab.Gear, 48 },
-        { InventoryTab.Outfit, 150 },
-        { InventoryTab.Mount, 48 },
-        { InventoryTab.Catalyst, 48 },
-        { InventoryTab.FishingMusic, 48 },
-        { InventoryTab.Quest, 48 },
-        { InventoryTab.Gemstone, 48 },
-        { InventoryTab.Misc, 84 },
-        { InventoryTab.LifeSkill, 126 },
-        { InventoryTab.Pets, 60 },
-        { InventoryTab.Consumable, 84 },
-        { InventoryTab.Currency, 48 },
-        { InventoryTab.Badge, 60 },
-        { InventoryTab.Lapenshard, 48 },
-        { InventoryTab.Fragment, 48 }
+        {
+            InventoryTab.Gear, 48
+        },
+        {
+            InventoryTab.Outfit, 150
+        },
+        {
+            InventoryTab.Mount, 48
+        },
+        {
+            InventoryTab.Catalyst, 48
+        },
+        {
+            InventoryTab.FishingMusic, 48
+        },
+        {
+            InventoryTab.Quest, 48
+        },
+        {
+            InventoryTab.Gemstone, 48
+        },
+        {
+            InventoryTab.Misc, 84
+        },
+        {
+            InventoryTab.LifeSkill, 126
+        },
+        {
+            InventoryTab.Pets, 60
+        },
+        {
+            InventoryTab.Consumable, 84
+        },
+        {
+            InventoryTab.Currency, 48
+        },
+        {
+            InventoryTab.Badge, 60
+        },
+        {
+            InventoryTab.Lapenshard, 48
+        },
+        {
+            InventoryTab.Fragment, 48
+        }
     };
 
     public Dictionary<InventoryTab, short> ExtraSize { get; } = new()
     {
-        { InventoryTab.Gear, 0 },
-        { InventoryTab.Outfit, 0 },
-        { InventoryTab.Mount, 0 },
-        { InventoryTab.Catalyst, 0 },
-        { InventoryTab.FishingMusic, 0 },
-        { InventoryTab.Quest, 0 },
-        { InventoryTab.Gemstone, 0 },
-        { InventoryTab.Misc, 0 },
-        { InventoryTab.LifeSkill, 0 },
-        { InventoryTab.Pets, 0 },
-        { InventoryTab.Consumable, 0 },
-        { InventoryTab.Currency, 0 },
-        { InventoryTab.Badge, 0 },
-        { InventoryTab.Lapenshard, 0 },
-        { InventoryTab.Fragment, 0 }
+        {
+            InventoryTab.Gear, 0
+        },
+        {
+            InventoryTab.Outfit, 0
+        },
+        {
+            InventoryTab.Mount, 0
+        },
+        {
+            InventoryTab.Catalyst, 0
+        },
+        {
+            InventoryTab.FishingMusic, 0
+        },
+        {
+            InventoryTab.Quest, 0
+        },
+        {
+            InventoryTab.Gemstone, 0
+        },
+        {
+            InventoryTab.Misc, 0
+        },
+        {
+            InventoryTab.LifeSkill, 0
+        },
+        {
+            InventoryTab.Pets, 0
+        },
+        {
+            InventoryTab.Consumable, 0
+        },
+        {
+            InventoryTab.Currency, 0
+        },
+        {
+            InventoryTab.Badge, 0
+        },
+        {
+            InventoryTab.Lapenshard, 0
+        },
+        {
+            InventoryTab.Fragment, 0
+        }
     };
 
     // Only use to share information between handler functions. Should always be empty
@@ -360,13 +420,25 @@ public sealed class Inventory : IInventory
 
     public Item GetById(int id) => Items.Values.FirstOrDefault(x => x.Id == id);
 
-    public Item GetFromInventoryOrEquipped(GameSession session, long uid)
+    public Item GetFromInventoryOrEquipped(long uid)
     {
         if (HasItem(uid))
         {
             return GetByUid(uid);
         }
-        return session.Player.ItemIsEquipped(uid) ? session.Player.GetEquippedItem(uid) : null;
+        return ItemIsEquipped(uid) ? GetEquippedItem(uid) : null;
+    }
+    public bool ItemIsEquipped(long itemUid) => Equips.Values.Any(x => x.Uid == itemUid) || Cosmetics.Values.Any(x => x.Uid == itemUid);
+
+    public Item GetEquippedItem(long itemUid)
+    {
+        Item gearItem = Equips.FirstOrDefault(x => x.Value.Uid == itemUid).Value;
+        if (gearItem is not null)
+        {
+            return gearItem;
+        }
+
+        return Cosmetics.FirstOrDefault(x => x.Value.Uid == itemUid).Value;
     }
 
     public IEnumerable<Item> GetItemsNotNull() => Items.Values.Where(x => x != null).ToArray();
