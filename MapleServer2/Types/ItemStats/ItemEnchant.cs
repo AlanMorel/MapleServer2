@@ -5,14 +5,14 @@ namespace MapleServer2.Types;
 
 public class ItemEnchant
 {
-    public long ItemUid;
-    public int Level;
-    public EnchantRates Rates;
-    public List<EnchantIngredient> Ingredients = new();
-    public Dictionary<StatAttribute, EnchantStats> Stats = new();
+    public readonly long ItemUid;
+    public readonly int Level;
+    public readonly EnchantRates Rates;
+    public readonly List<EnchantIngredient> Ingredients = new();
+    public Dictionary<StatAttribute, ItemStat> Stats = new();
     public int CatalystAmountRequired;
     public int PityCharges;
-    public List<long> CatalystItemUids = new();
+    public readonly List<long> CatalystItemUids = new();
 
     public ItemEnchant(long itemUid, int level)
     {
@@ -48,7 +48,7 @@ public class ItemEnchant
 
 public class EnchantIngredient
 {
-    public ItemStringTag Tag;
+    public readonly ItemStringTag Tag;
     public int Amount;
 
     public EnchantIngredient(ItemStringTag tag, int amount)
@@ -71,19 +71,5 @@ public class EnchantRates
     public EnchantRates(float baseSuccessRate)
     {
         BaseSuccessRate = baseSuccessRate;
-    }
-}
-
-public class EnchantStats
-{
-    public StatAttribute Attribute;
-    public int AddValue;
-    public float AddRate;
-
-    public EnchantStats(StatAttribute attribute, int addValue, float addRate)
-    {
-        Attribute = attribute;
-        AddValue = addValue;
-        AddRate = addRate;
     }
 }

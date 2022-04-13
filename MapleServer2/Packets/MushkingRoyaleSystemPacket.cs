@@ -87,7 +87,7 @@ public class MushkingRoyaleSystemPacket
     public static PacketWriter LastStandingNotice()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MushkingRoyaleSystem);
-        pWriter.Write(MushkingRoyaleSystemPacketMode.Results);
+        pWriter.Write(MushkingRoyaleSystemPacketMode.LastStandingNotice);
         pWriter.WriteByte();
         pWriter.WriteInt(); // amount of users
         // start loop

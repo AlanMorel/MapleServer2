@@ -122,7 +122,7 @@ public static class ShopPacket
         pWriter.WriteInt(product.RequiredFameGrade);
         pWriter.WriteBool(product.AutoPreviewEquip);
         pWriter.WriteByte();
-        pWriter.WriteItem(new(product.ItemId, product.Quantity, false));
+        pWriter.WriteItem(new(product.ItemId, product.Quantity, product.ItemRank, false));
 
         return pWriter;
     }

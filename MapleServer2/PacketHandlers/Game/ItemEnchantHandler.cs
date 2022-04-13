@@ -3,6 +3,7 @@ using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
+using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
@@ -66,7 +67,9 @@ public class ItemEnchantHandler : GamePacketHandler
         EnchantType type = (EnchantType) packet.ReadByte();
         long itemUid = packet.ReadLong();
 
-        Item item = session.Player.Inventory.GetByUid(itemUid);
+        IInventory inventory = session.Player.Inventory;
+
+        Item item = inventory.GetFromInventoryOrEquipped(itemUid);
         if (item is null)
         {
             return;
@@ -86,15 +89,18 @@ public class ItemEnchantHandler : GamePacketHandler
 
         session.Player.ItemEnchant = GetEnchantInfo(item);
 
-        session.Send(ItemEnchantPacket.BeginEnchant(type, item, session.Player.ItemEnchant));
+        // Get stat difference between current and next enchant level
+        Dictionary<StatAttribute, ItemStat> statDiff = GetEnchantStatDiff(item.Stats.Enchants, session.Player.ItemEnchant.Stats);
+
+        session.Send(ItemEnchantPacket.BeginEnchant(type, item, session.Player.ItemEnchant, statDiff));
     }
 
     private static void HandleUpdateCatalysts(GameSession session, PacketReader packet)
     {
         long itemUid = packet.ReadLong();
-        bool addCataylst = packet.ReadBool();
+        bool addCatalyst = packet.ReadBool();
 
-        if (!session.Player.Inventory.HasItem(itemUid))
+        if (!session.Player.Inventory.HasItem(itemUid) && !session.Player.Inventory.ItemIsEquipped(itemUid))
         {
             return;
         }
@@ -106,13 +112,13 @@ public class ItemEnchantHandler : GamePacketHandler
         }
 
         float totalCatalystRate = itemEnchant.Rates.AdditionalCatalysts * itemEnchant.Rates.CatalystRate;
-        if (addCataylst && totalCatalystRate >= 30) // 30 being max amount catalysts can boost 
+        if (addCatalyst && totalCatalystRate >= 30) // 30 being max amount catalysts can boost 
         {
             session.Send(ItemEnchantPacket.Notice((short) ItemEnchantError.UnstableItem));
             return;
         }
 
-        itemEnchant.UpdateAdditionalCatalysts(itemUid, 1, addCataylst);
+        itemEnchant.UpdateAdditionalCatalysts(itemUid, 1, addCatalyst);
 
         session.Send(ItemEnchantPacket.UpdateCharges(itemEnchant));
     }
@@ -121,9 +127,8 @@ public class ItemEnchantHandler : GamePacketHandler
     {
         ItemEnchant itemEnchantStats = new(item.Uid, item.EnchantLevel);
         ScriptLoader scriptLoader = new("Functions/calcEnchantValues");
-        DynValue statValueScriptResult = scriptLoader.Call("calcEnchantBoostValues", item.EnchantLevel, (int) item.Type, item.Level);
-        DynValue successRateScriptResult = scriptLoader.Call("calcEnchantRates", item.EnchantLevel);
-        DynValue ingredientsResult = scriptLoader.Call("calcEnchantIngredients", item.EnchantLevel, item.Rarity, (int) item.Type, item.Level);
+        DynValue successRateScriptResult = scriptLoader.Call("calcEnchantRates", item.EnchantLevel + 1);
+        DynValue ingredientsResult = scriptLoader.Call("calcEnchantIngredients", item.EnchantLevel + 1, item.Rarity, (int) item.Type, item.Level);
 
         itemEnchantStats.Rates.BaseSuccessRate = (float) successRateScriptResult.Tuple[0].Number;
         itemEnchantStats.Rates.CatalystRate = (float) successRateScriptResult.Tuple[1].Number;
@@ -137,17 +142,7 @@ public class ItemEnchantHandler : GamePacketHandler
             itemEnchantStats.Ingredients.Add(ingredient);
         }
 
-        for (int i = 0; i < statValueScriptResult.Tuple.Length; i += 2)
-        {
-            if (statValueScriptResult.Tuple[i].Number == 0)
-            {
-                continue;
-            }
-
-            StatAttribute attribute = (StatAttribute) statValueScriptResult.Tuple[i].Number;
-            float boostRate = (float) statValueScriptResult.Tuple[i + 1].Number;
-            itemEnchantStats.Stats[attribute] = new(attribute, 0, boostRate);
-        }
+        itemEnchantStats.Stats = EnchantHelper.GetEnchantStats(item.EnchantLevel + 1, item.Type, item.Level);
         return itemEnchantStats;
     }
 
@@ -155,14 +150,15 @@ public class ItemEnchantHandler : GamePacketHandler
     {
         int chargeCount = packet.ReadInt();
         ItemEnchant itemEnchant = session.Player.ItemEnchant;
-        Item item = session.Player.Inventory.GetByUid(itemEnchant.ItemUid);
 
+        Player player = session.Player;
+        Item item = player.Inventory.GetFromInventoryOrEquipped(itemEnchant.ItemUid);
         if (item == null || item.Charges < chargeCount)
         {
             return;
         }
 
-        session.Player.ItemEnchant.UpdateCharges(chargeCount);
+        player.ItemEnchant.UpdateCharges(chargeCount);
 
         session.Send(ItemEnchantPacket.UpdateCharges(session.Player.ItemEnchant));
     }
@@ -171,8 +167,9 @@ public class ItemEnchantHandler : GamePacketHandler
     {
         long itemUid = packet.ReadLong();
 
-        Item item = session.Player.Inventory.GetByUid(itemUid);
-        if (item == null)
+        IInventory inventory = session.Player.Inventory;
+        Item item = inventory.GetFromInventoryOrEquipped(itemUid);
+        if (item is null)
         {
             return;
         }
@@ -182,8 +179,6 @@ public class ItemEnchantHandler : GamePacketHandler
         {
             itemEnchantStats = GetEnchantInfo(item);
         }
-
-        IInventory inventory = session.Player.Inventory;
 
         // Check if player has enough ingredients
         if (!PlayerHasIngredients(itemEnchantStats, inventory))
@@ -195,6 +190,11 @@ public class ItemEnchantHandler : GamePacketHandler
         foreach (EnchantIngredient ingredient in itemEnchantStats.Ingredients)
         {
             inventory.ConsumeByTag(session, ingredient.Tag.ToString(), ingredient.Amount);
+        }
+
+        foreach (long catalystUids in itemEnchantStats.CatalystItemUids)
+        {
+            inventory.ConsumeItem(session, catalystUids, 1);
         }
 
         Random random = Random.Shared;
@@ -223,46 +223,41 @@ public class ItemEnchantHandler : GamePacketHandler
         return itemEnchantStats.CatalystAmountRequired <= itemEnchantStats.CatalystItemUids.Count;
     }
 
-    private static void ConsumeIngredients(GameSession session, ItemEnchant itemEnchantStats, IInventory inventory)
-    {
-        foreach (EnchantIngredient ingredient in itemEnchantStats.Ingredients)
-        {
-            IReadOnlyCollection<Item> ingredientTotal = inventory.GetAllByTag(ingredient.Tag.ToString());
-            foreach (Item item in ingredientTotal)
-            {
-                if (item.Amount >= ingredient.Amount)
-                {
-                    inventory.ConsumeItem(session, item.Uid, ingredient.Amount);
-                    break;
-                }
-
-                ingredient.Amount -= item.Amount;
-                inventory.ConsumeItem(session, item.Uid, item.Amount);
-            }
-        }
-
-        foreach (long itemUid in itemEnchantStats.CatalystItemUids)
-        {
-            inventory.ConsumeItem(session, itemUid, 1);
-        }
-    }
-
     private static void SetEnchantStats(GameSession session, ItemEnchant itemEnchantStats, Item item)
     {
-        foreach (EnchantStats stat in itemEnchantStats.Stats.Values)
+        Dictionary<StatAttribute, ItemStat> statDiff = GetEnchantStatDiff(item.Stats.Enchants, itemEnchantStats.Stats);
+        foreach (ItemStat stat in itemEnchantStats.Stats.Values)
         {
-            if (!item.Stats.Enchants.ContainsKey(stat.Attribute))
+            if (!item.Stats.Enchants.ContainsKey(stat.ItemAttribute))
             {
-                item.Stats.Enchants[stat.Attribute] = new BasicStat(stat.Attribute, stat.AddRate, StatAttributeType.Rate);
-                item.Stats.Enchants[stat.Attribute].Flat = stat.AddValue;
+                item.Stats.Enchants[stat.ItemAttribute] = new BasicStat(stat.ItemAttribute, stat.Rate, StatAttributeType.Rate);
                 continue;
             }
-            item.Stats.Enchants[stat.Attribute].Flat += stat.AddValue;
-            item.Stats.Enchants[stat.Attribute].Rate += stat.AddRate;
+            item.Stats.Enchants[stat.ItemAttribute].Flat = stat.Flat;
+            item.Stats.Enchants[stat.ItemAttribute].Rate = stat.Rate;
         }
         item.EnchantLevel++;
+        item.EnchantExp = 0;
         item.Charges -= itemEnchantStats.Rates.ChargesAdded;
-        session.Send(ItemEnchantPacket.EnchantSuccess(item, itemEnchantStats.Stats.Values.ToList()));
+
+        session.Send(ItemEnchantPacket.EnchantSuccess(item, statDiff.Values.ToList()));
+        //TODO: If item is equipped, update stats
+    }
+
+    private static Dictionary<StatAttribute, ItemStat> GetEnchantStatDiff(Dictionary<StatAttribute, ItemStat> itemStats, Dictionary<StatAttribute, ItemStat> nextLevelStats)
+    {
+        Dictionary<StatAttribute, ItemStat> statDiffs = new();
+        foreach (ItemStat stat in nextLevelStats.Values)
+        {
+            float currentRate = 0;
+            if (itemStats.ContainsKey(stat.ItemAttribute))
+            {
+                currentRate = itemStats[stat.ItemAttribute].Rate;
+            }
+            statDiffs[stat.ItemAttribute] = new BasicStat(stat.ItemAttribute, stat.Rate - currentRate, StatAttributeType.Rate);
+        }
+
+        return statDiffs;
     }
 
     private static void FailEnchant(GameSession session, ItemEnchant itemEnchantStats, Item item)
@@ -297,7 +292,15 @@ public class ItemEnchantHandler : GamePacketHandler
             return;
         }
 
-        ConsumeIngredients(session, itemEnchantStats, inventory);
+        foreach (EnchantIngredient ingredient in itemEnchantStats.Ingredients)
+        {
+            inventory.ConsumeByTag(session, ingredient.Tag.ToString(), ingredient.Amount);
+        }
+
+        foreach (long catalystUids in itemEnchantStats.CatalystItemUids)
+        {
+            inventory.ConsumeItem(session, catalystUids, 1);
+        }
 
         int neededEnchants = GetNeededEnchantExp(item.EnchantLevel);
         int expGained = (int) Math.Ceiling((double) (10000 / neededEnchants));

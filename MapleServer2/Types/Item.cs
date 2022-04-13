@@ -121,9 +121,10 @@ public class Item
         }
     }
 
-    public Item(int id, int amount, bool saveToDatabase = true) : this(id, saveToDatabase)
+    public Item(int id, int amount, int rarity = 1, bool saveToDatabase = true) : this(id, saveToDatabase)
     {
         Amount = amount;
+        Rarity = rarity;
     }
 
     // Make a copy of item
@@ -241,7 +242,7 @@ public class Item
         OwnerCharacterName = player.Name;
         RemainingTrades = 0;
 
-        player.Session?.Send(ItemInventoryPacket.UpdateBind(this));
+        player.Session?.Send(ItemInventoryPacket.UpdateItem(this));
         return true;
     }
 

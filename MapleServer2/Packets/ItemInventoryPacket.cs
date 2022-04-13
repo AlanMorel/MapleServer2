@@ -144,7 +144,7 @@ public static class ItemInventoryPacket
         return pWriter;
     }
 
-    public static PacketWriter UpdateBind(Item item)
+    public static PacketWriter UpdateItem(Item item)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemInventory);
         pWriter.Write(InventoryMode.UpdateBind);

@@ -101,6 +101,12 @@ public class RequestItemUseHandler : GamePacketHandler
             case "SurvivalLevelExp":
                 HandleSurvivalLevelExp(session, item);
                 break;
+            case "ItemSocketScroll":
+                HandleItemSocketScroll(session, item);
+                break;
+            case "EnchantScroll":
+                HandleEnchantScroll(session, item);
+                break;
             default:
                 Logger.Warning("Unhandled item function: {functionName}", item.Function.Name);
                 break;
@@ -304,7 +310,7 @@ public class RequestItemUseHandler : GamePacketHandler
         return contents;
     }
 
-    public static void HandleOpenCoupleEffectBox(GameSession session, PacketReader packet, Item item)
+    private static void HandleOpenCoupleEffectBox(GameSession session, PacketReader packet, Item item)
     {
         string targetUser = packet.ReadUnicodeString();
 
@@ -370,7 +376,7 @@ public class RequestItemUseHandler : GamePacketHandler
         session.Send(NoticePacket.Notice(SystemNotice.YouMailedBuddyBadgeToOtherPlayer, NoticeType.Chat | NoticeType.FastText, noticeParameters));
     }
 
-    public static void HandlePetExtraction(GameSession session, PacketReader packet, Item item)
+    private static void HandlePetExtraction(GameSession session, PacketReader packet, Item item)
     {
         long petUid = long.Parse(packet.ReadUnicodeString());
         if (!session.Player.Inventory.HasItem(petUid))
@@ -391,14 +397,14 @@ public class RequestItemUseHandler : GamePacketHandler
         session.Send(PetSkinPacket.Extract(petUid, badge));
     }
 
-    public static void HandleCallAirTaxi(GameSession session, PacketReader packet, Item item)
+    private static void HandleCallAirTaxi(GameSession session, PacketReader packet, Item item)
     {
         int fieldID = int.Parse(packet.ReadUnicodeString());
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
         session.Player.Warp(fieldID);
     }
 
-    public static void HandleInstallBillBoard(GameSession session, PacketReader packet, Item item)
+    private static void HandleInstallBillBoard(GameSession session, PacketReader packet, Item item)
     {
         string[] parameters = packet.ReadUnicodeString().Split("'");
         string title = parameters[0];
@@ -414,7 +420,7 @@ public class RequestItemUseHandler : GamePacketHandler
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
     }
 
-    public static void HandleExpandCharacterSlot(GameSession session, Item item)
+    private static void HandleExpandCharacterSlot(GameSession session, Item item)
     {
         Account account = DatabaseManager.Accounts.FindById(session.Player.AccountId);
         int maxSlots = int.Parse(ConstantsMetadataStorage.GetConstant("MaxCharacterSlots"));
@@ -430,7 +436,7 @@ public class RequestItemUseHandler : GamePacketHandler
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
     }
 
-    public static void HandleBeautyVoucher(GameSession session, Item item)
+    private static void HandleBeautyVoucher(GameSession session, Item item)
     {
         if (item.Gender != session.Player.Gender)
         {
@@ -440,12 +446,12 @@ public class RequestItemUseHandler : GamePacketHandler
         session.Send(CouponUsePacket.BeautyCoupon(session.Player.FieldPlayer, item.Uid));
     }
 
-    public static void HandleRepackingScroll(GameSession session, Item item)
+    private static void HandleRepackingScroll(GameSession session, Item item)
     {
         session.Send(ItemRepackagePacket.Open(item.Uid));
     }
 
-    public static void HandleNameVoucher(GameSession session, PacketReader packet, Item item)
+    private static void HandleNameVoucher(GameSession session, PacketReader packet, Item item)
     {
         string newName = packet.ReadUnicodeString();
         string oldName = session.Player.Name;
@@ -526,8 +532,34 @@ public class RequestItemUseHandler : GamePacketHandler
         BeautyHelper.ChangeFace(session, faceId, out _, out _);
     }
 
-    public static void HandleSurvivalLevelExp(GameSession session, Item item)
+    private static void HandleSurvivalLevelExp(GameSession session, Item item)
     {
         session.Player.Account.MushkingRoyaleStats.AddExp(session, item.Function.SurvivalLevelExp.SurvivalExp);
+    }
+
+    private static void HandleItemSocketScroll(GameSession session, Item item)
+    {
+        ItemSocketScrollMetadata metadata = ItemSocketScrollMetadataStorage.GetMetadata(item.Function.Id);
+        if (metadata is null)
+        {
+            return;
+        }
+
+        byte socketCount = ItemSocketScrollHelper.GetSocketCount(metadata.Id);
+        int successRate = (int) ItemSocketScrollHelper.GetSuccessRate(metadata.Id) * 10000;
+        session.Send(ItemSocketScrollPacket.OpenWindow(item.Uid, successRate, socketCount));
+    }
+
+    private static void HandleEnchantScroll(GameSession session, Item item)
+    {
+        EnchantScrollMetadata metadata = EnchantScrollMetadataStorage.GetMetadata(item.Function.Id);
+        if (metadata is null)
+        {
+            return;
+        }
+
+        ScriptLoader scriptLoader = new("Functions/ItemEnchantScroll/getSuccessRate");
+        float successRate = (float) scriptLoader.Call("getSuccessRate", metadata.Id).Number;
+        session.Send(EnchantScrollPacket.OpenWindow(item.Uid, metadata, successRate));
     }
 }

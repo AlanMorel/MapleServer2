@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using Maple2Storage.Enums;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Enums;
 using MapleServer2.Packets.Helpers;
@@ -18,7 +19,7 @@ public static class ItemEnchantPacket
         Notice = 0x0C,
     }
 
-    public static PacketWriter BeginEnchant(EnchantType type, Item item, ItemEnchant enchantInfo)
+    public static PacketWriter BeginEnchant(EnchantType type, Item item, ItemEnchant enchantInfo, Dictionary<StatAttribute, ItemStat> stats)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemEnchant);
         pWriter.Write(ItemEnchantPacketMode.BeginEnchant);
@@ -34,11 +35,11 @@ public static class ItemEnchantPacket
 
         pWriter.WriteShort();
         pWriter.WriteInt(enchantInfo.Stats.Count);
-        foreach (EnchantStats stats in enchantInfo.Stats.Values)
+        foreach (ItemStat stat in stats.Values)
         {
-            pWriter.Write(stats.Attribute);
-            pWriter.WriteInt(stats.AddValue);
-            pWriter.WriteFloat(stats.AddRate);
+            pWriter.Write(stat.ItemAttribute);
+            pWriter.WriteInt(stat.Flat);
+            pWriter.WriteFloat(stat.Rate);
         }
 
         if (type is EnchantType.Ophelia)
@@ -83,7 +84,7 @@ public static class ItemEnchantPacket
         return pWriter;
     }
 
-    public static PacketWriter EnchantSuccess(Item item, List<EnchantStats> enchants)
+    public static PacketWriter EnchantSuccess(Item item, List<ItemStat> enchants)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemEnchant);
         pWriter.Write(ItemEnchantPacketMode.EnchantSuccess);
@@ -91,11 +92,11 @@ public static class ItemEnchantPacket
         pWriter.WriteItem(item);
 
         pWriter.WriteInt(enchants.Count);
-        foreach (EnchantStats enchant in enchants)
+        foreach (ItemStat enchant in enchants)
         {
-            pWriter.Write(enchant.Attribute);
-            pWriter.WriteInt(enchant.AddValue);
-            pWriter.WriteFloat(enchant.AddRate);
+            pWriter.Write(enchant.ItemAttribute);
+            pWriter.WriteInt(enchant.Flat);
+            pWriter.WriteFloat(enchant.Rate);
         }
         return pWriter;
     }

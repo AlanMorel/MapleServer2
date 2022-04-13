@@ -274,7 +274,7 @@ public static class ClubPacket
         pWriter.Write(ClubPacketMode.Rename);
         pWriter.WriteLong(club.Id);
         pWriter.WriteUnicodeString(club.Name);
-        pWriter.WriteLong(); //unk
+        pWriter.WriteLong(club.LastNameChangeTimestamp);
         return pWriter;
     }
 

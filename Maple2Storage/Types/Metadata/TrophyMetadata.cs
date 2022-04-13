@@ -42,6 +42,8 @@ public class TrophyGradeMetadata
     public int RewardCode;
     [XmlElement(Order = 8)]
     public int RewardValue;
+    [XmlElement(Order = 9)]
+    public int RewardRank;
 
     public override string ToString()
     {

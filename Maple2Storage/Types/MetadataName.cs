@@ -11,6 +11,7 @@ public static class MetadataName
     public const string DefaultItems = "default-items";
     public const string Dungeon = "dungeon";
     public const string EnchantLimit = "enchant-limit";
+    public const string EnchantScroll = "enchant-scroll";
     public const string ExpTable = "exp-table";
     public const string FieldWar = "field-war";
     public const string FishingRod = "fishing-rod";
@@ -30,6 +31,7 @@ public static class MetadataName
     public const string InstrumentInfo = "instrument-info";
     public const string InteractObject = "interact-object";
     public const string ItemDrop = "item-drop";
+    public const string ItemEnchantTransfer = "item-enchant-transfer";
     public const string ItemExchangeScroll = "item-exchange-scroll";
     public const string ItemExtraction = "item-extraction";
     public const string ItemGemstoneUpgrade = "item-gemstone-upgrade";
@@ -41,6 +43,7 @@ public static class MetadataName
     public const string Item = "item";
     public const string ItemRepackage = "item-repackage";
     public const string ItemSocket = "item-socket";
+    public const string ItemSocketScroll = "item-socket-scroll";
     public const string Job = "job";
     public const string MagicPath = "magic-path";
     public const string Map = "map";
@@ -53,6 +56,7 @@ public static class MetadataName
     public const string PremiumClubDailyBenefit = "premium-club-daily-benefit";
     public const string PremiumClubPackage = "premium-club-package";
     public const string Prestige = "prestige";
+    public const string PrestigeLevelMission = "prestige-level-mission";
     public const string Quest = "quest";
     public const string Recipe = "recipe";
     public const string RewardContent = "reward-content";

@@ -62,7 +62,8 @@ internal class TrophyParser : Exporter<List<TrophyMetadata>>
                     ConditionTargets = condition.Attributes["target"].Value,
                     RewardType = type,
                     RewardCode = int.Parse(reward.Attributes["code"].Value),
-                    RewardValue = int.Parse(reward.Attributes["value"].Value)
+                    RewardValue = int.Parse(reward.Attributes["value"].Value),
+                    RewardRank = int.Parse(reward.Attributes["rank"].Value)
                 };
 
                 newTrophy.Grades.Add(newGrade);

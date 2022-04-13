@@ -360,6 +360,28 @@ public sealed class Inventory : IInventory
 
     public Item GetById(int id) => Items.Values.FirstOrDefault(x => x.Id == id);
 
+    public Item GetFromInventoryOrEquipped(long uid)
+    {
+        if (HasItem(uid))
+        {
+            return GetByUid(uid);
+        }
+        return ItemIsEquipped(uid) ? GetEquippedItem(uid) : null;
+    }
+
+    public bool ItemIsEquipped(long itemUid) => Equips.Values.Any(x => x.Uid == itemUid) || Cosmetics.Values.Any(x => x.Uid == itemUid);
+
+    public Item GetEquippedItem(long itemUid)
+    {
+        Item gearItem = Equips.FirstOrDefault(x => x.Value.Uid == itemUid).Value;
+        if (gearItem is not null)
+        {
+            return gearItem;
+        }
+
+        return Cosmetics.FirstOrDefault(x => x.Value.Uid == itemUid).Value;
+    }
+
     public IEnumerable<Item> GetItemsNotNull() => Items.Values.Where(x => x != null).ToArray();
 
     public IReadOnlyCollection<Item> GetAllById(int id) => Items.Values.Where(x => x.Id == id).ToArray();

@@ -323,17 +323,6 @@ public class Player
         };
     }
 
-    public Item GetEquippedItem(long itemUid)
-    {
-        Item gearItem = Inventory.Equips.FirstOrDefault(x => x.Value.Uid == itemUid).Value;
-        if (gearItem is not null)
-        {
-            return gearItem;
-        }
-
-        return Inventory.Cosmetics.FirstOrDefault(x => x.Value.Uid == itemUid).Value;
-    }
-
     public Task TimeSyncLoop()
     {
         return Task.Run(async () =>
