@@ -84,7 +84,7 @@ public static class ItemBoxHelper
             {
                 EnchantLevel = dropContents.EnchantLevel,
                 Amount = amount,
-                Rarity = dropContents.Rarity,
+                Rarity = dropContents.Rarity
             };
             newItem.Stats = new(newItem);
             inventory.AddItem(session, newItem, true);

@@ -30,7 +30,6 @@ public class EnchantScrollParser : Exporter<List<EnchantScrollMetadata>>
             List<int> intItemSlots = node.Attributes["slot"].Value.Split(",").ToList().ConvertAll(int.Parse);
             List<ItemType> itemSlots = intItemSlots.Select(itemSlot => (ItemType) itemSlot).ToList();
 
-            
             EnchantScrollMetadata metadata = new()
             {
                 Id = int.Parse(node.Attributes["id"].Value),
