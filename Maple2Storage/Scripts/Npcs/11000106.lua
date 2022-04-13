@@ -1,5 +1,5 @@
 function getFirstScriptId()
-    if Helper.HasQuestStarted(91000020) then
+    if ScriptManager.GetPlayer().HasQuestStarted(91000020) then
         return 50
     end
     return -1

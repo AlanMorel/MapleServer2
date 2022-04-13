@@ -1,5 +1,5 @@
 function getFirstScriptId()
-    if Helper.HasQuestStarted(91000022) then
+    if ScriptManager.GetPlayer().HasQuestStarted(91000022) then
         return 70
     end
     math.randomseed(os.time())
