@@ -1,6 +1,6 @@
 -- Server only scripts
 function calcEnchantBoostValues(enchantLevel, itemSlot, itemLevel)
-    local bonusFactorType1 = EnchantingBonusFactor2[enchantLevel]
+    local bonusFactorType1 = EnchantingBonusFactor[enchantLevel]
     local bonusFactorType2 = bonusFactorType1 -- Flexibility for different stat calculations
     local statType1 = 0 -- values used here are the StatAttributes ids
     local statType2 = 0
@@ -41,8 +41,7 @@ function calcEnchantIngredients(enchantLevel, rarity, itemSlot, itemLevel)
     return catalystCost, ingredient1Tag, ingredient1Cost, ingredient2Tag, ingredient2Cost, ingredient3Tag, ingredient3Cost
 end
 
-EnchantingBonusFactor = { 0.02, 0.02, 0.03, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.1, 0.14, 0.2, 0.28, 0.38, 0.5 }
-EnchantingBonusFactor2 = { 0.02, 0.04, 0.07, 0.1, 0.14, 0.19, 0.25, 0.32, 0.4, 0.5, 0.64, 0.84, 1.12, 1.5, 2 }
+EnchantingBonusFactor = { 0.02, 0.04, 0.07, 0.1, 0.14, 0.19, 0.25, 0.32, 0.4, 0.5, 0.64, 0.84, 1.12, 1.5, 2 }
 EnchantingSuccessRate = { 1, 1, 1, 0.95, 0.90, 0.80, 0.70, 0.60, 0.50, 0.40, 0.30, 0.20, 0.15, 0.10, 0.05 }
 
 EnchantingPityCharges = {}  -- temp values ?
