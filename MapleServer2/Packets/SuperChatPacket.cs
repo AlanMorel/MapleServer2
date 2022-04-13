@@ -17,7 +17,7 @@ public static class SuperChatPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.SuperWorldChat);
         pWriter.Write(SuperChatMode.Select);
         pWriter.WriteInt(player.ObjectId);
-        pWriter.WriteLong(itemId);
+        pWriter.WriteInt(itemId);
         return pWriter;
     }
 

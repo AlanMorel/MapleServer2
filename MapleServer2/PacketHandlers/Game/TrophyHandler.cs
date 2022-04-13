@@ -93,7 +93,7 @@ public class TrophyHandler : GamePacketHandler
             default:
                 break;
             case RewardType.item:
-                session.Player.Inventory.AddItem(session, new(grade.RewardCode, grade.RewardValue), true);
+                session.Player.Inventory.AddItem(session, new(grade.RewardCode, grade.RewardValue, grade.RewardRank), true);
                 break;
             case RewardType.title:
                 session.Player.Titles.Add(grade.RewardCode);

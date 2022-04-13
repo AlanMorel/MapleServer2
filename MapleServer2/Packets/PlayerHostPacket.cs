@@ -57,7 +57,7 @@ public static class PlayerHostPacket
     public static PacketWriter MinigameRewardNotice(int minigameId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.PlayerHost);
-        pWriter.Write(PlayerHostPacketMode.StartMinigame);
+        pWriter.Write(PlayerHostPacketMode.MinigameRewardNotice);
         pWriter.WriteInt(minigameId);
         pWriter.WriteInt(); // amount of players in map
         return pWriter;
@@ -66,7 +66,7 @@ public static class PlayerHostPacket
     public static PacketWriter MinigameRewardReceive(int minigameId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.PlayerHost);
-        pWriter.Write(PlayerHostPacketMode.StartMinigame);
+        pWriter.Write(PlayerHostPacketMode.MinigameRewardReceive);
         pWriter.WriteInt(minigameId);
         pWriter.WriteInt(); // amount of players in map
         return pWriter;
@@ -81,7 +81,7 @@ public static class PlayerHostPacket
         pWriter.WriteUnicodeString(balloon.Owner.ProfileUrl);
         pWriter.WriteUnicodeString(balloon.Owner.Name);
         pWriter.WriteShort(balloon.Owner.Levels.Level);
-        pWriter.WriteInt();
+        pWriter.Write(balloon.Owner.Job);
         pWriter.WriteUnicodeString(balloon.Title);
         pWriter.WriteUnicodeString(balloon.Description);
         pWriter.WriteBool(balloon.PublicHouse);

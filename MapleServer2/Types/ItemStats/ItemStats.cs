@@ -1,6 +1,7 @@
 ﻿using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
+using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Tools;
 using MoonSharp.Interpreter;
 
@@ -137,6 +138,10 @@ public class ItemStats
         Statics = staticStats;
         RandomStats.GetStats(item, out Dictionary<StatAttribute, ItemStat> randomStats);
         Randoms = randomStats;
+        if (item.EnchantLevel > 0)
+        {
+            Enchants = EnchantHelper.GetEnchantStats(item.EnchantLevel, item.Type, item.Level);
+        }
         GetGemSockets(item, optionLevelFactor);
     }
 

@@ -388,6 +388,8 @@ public class ItemParser : Exporter<List<ItemMetadata>>
             case "FishingRod":
             case "ItemChangeBeauty":
             case "ItemRePackingScroll":
+            case "ItemSocketScroll":
+            case "EnchantScroll":
                 metadata.FunctionData.Id = int.Parse(function.parameter);
                 break;
         }

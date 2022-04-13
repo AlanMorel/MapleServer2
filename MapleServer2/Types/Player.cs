@@ -323,6 +323,11 @@ public class Player
         };
     }
 
+    public bool ItemIsEquipped(long itemUid)
+    {
+        return Inventory.Equips.Values.Any(x => x.Uid == itemUid) || Inventory.Cosmetics.Values.Any(x => x.Uid == itemUid);
+    }
+
     public Item GetEquippedItem(long itemUid)
     {
         Item gearItem = Inventory.Equips.FirstOrDefault(x => x.Value.Uid == itemUid).Value;

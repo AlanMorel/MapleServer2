@@ -1,6 +1,6 @@
 -- Server only scripts
 function calcEnchantBoostValues(enchantLevel, itemSlot, itemLevel)
-    local bonusFactorType1 = EnchantingBonusFactor[enchantLevel + 1]
+    local bonusFactorType1 = EnchantingBonusFactor2[enchantLevel]
     local bonusFactorType2 = bonusFactorType1 -- Flexibility for different stat calculations
     local statType1 = 0 -- values used here are the StatAttributes ids
     local statType2 = 0
@@ -19,10 +19,10 @@ function calcEnchantBoostValues(enchantLevel, itemSlot, itemLevel)
 end
 
 function calcEnchantRates(enchantLevel)
-    local successRate = EnchantingSuccessRate[enchantLevel + 1] * 100
-    local additionalCatalystsRate = AdditionalCatalystSuccessRate[enchantLevel + 1] * 100
-    local pityCharges = EnchantingPityCharges[enchantLevel + 1]
-    local chargeRate = ChargeRate[enchantLevel + 1] * 100
+    local successRate = EnchantingSuccessRate[enchantLevel] * 100
+    local additionalCatalystsRate = AdditionalCatalystSuccessRate[enchantLevel] * 100
+    local pityCharges = EnchantingPityCharges[enchantLevel]
+    local chargeRate = ChargeRate[enchantLevel] * 100
     return successRate, additionalCatalystsRate, pityCharges, chargeRate
 end
 
@@ -31,18 +31,18 @@ function calcEnchantIngredients(enchantLevel, rarity, itemSlot, itemLevel)
     local ingredient2Tag = 'CrystalPiece'
     local ingredient3Tag = 'ChaosOnix'
     local catalystCost = 0
-    local nextEnchantLevel = enchantLevel + 1
-    local ingredient1Cost = 100 * nextEnchantLevel -- temp value
-    local ingredient2Cost = 100 * nextEnchantLevel -- temp value
-    local ingredient3Cost = 100 * nextEnchantLevel -- temp value
+    local ingredient1Cost = 100 * enchantLevel -- temp value
+    local ingredient2Cost = 100 * enchantLevel -- temp value
+    local ingredient3Cost = 100 * enchantLevel -- temp value
     -- TODO: // figure out ingredient cost calculation
-    if nextEnchantLevel > 10 then
+    if enchantLevel > 10 then
         catalystCost = 1
     end
     return catalystCost, ingredient1Tag, ingredient1Cost, ingredient2Tag, ingredient2Cost, ingredient3Tag, ingredient3Cost
 end
 
 EnchantingBonusFactor = { 0.02, 0.02, 0.03, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.1, 0.14, 0.2, 0.28, 0.38, 0.5 }
+EnchantingBonusFactor2 = { 0.02, 0.04, 0.07, 0.1, 0.14, 0.19, 0.25, 0.32, 0.4, 0.5, 0.64, 0.84, 1.12, 1.5, 2 }
 EnchantingSuccessRate = { 1, 1, 1, 0.95, 0.90, 0.80, 0.70, 0.60, 0.50, 0.40, 0.30, 0.20, 0.15, 0.10, 0.05 }
 
 EnchantingPityCharges = {}  -- temp values ?
