@@ -5,6 +5,7 @@ using Maple2.PathEngine.Utils;
 using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
+using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Managers;
 using MapleServer2.Network;
@@ -175,11 +176,22 @@ public static class MapleServer
                 DatabaseManager.GameEventUserValue.Delete(userValue);
                 player.EventUserValues.Remove(userValue);
             }
+
+            // Weekly reset
+            if (DateTime.Now.DayOfWeek == DayOfWeek.Friday)
+            {
+                WeeklyReset(player);
+            }
         }
 
         DatabaseManager.RunQuery("UPDATE `characters` SET gathering_count = '[]'");
 
         DatabaseManager.ServerInfo.SetLastDailyReset(TimeInfo.CurrentDate());
+    }
+
+    private static void WeeklyReset(Player player)
+    {
+        player.PrestigeMissions = PrestigeLevelMissionMetadataStorage.GetPrestigeMissions;
     }
 
     public static void BroadcastPacketAll(PacketWriter packet, GameSession sender = null)

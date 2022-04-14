@@ -1,5 +1,6 @@
 ﻿using Maple2Storage.Enums;
 using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 using MapleServer2.Enums;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -32,6 +33,7 @@ public class DatabaseCharacter : DatabaseTable
             insignia_id = player.InsigniaId,
             titles = JsonConvert.SerializeObject(player.Titles),
             prestige_rewards_claimed = JsonConvert.SerializeObject(player.PrestigeRewardsClaimed),
+            prestige_missions = JsonConvert.SerializeObject(player.PrestigeMissions),
             gear_score = player.GearScore,
             max_skill_tabs = player.MaxSkillTabs,
             active_skill_tab_id = player.ActiveSkillTabId,
@@ -122,6 +124,7 @@ public class DatabaseCharacter : DatabaseTable
             InsigniaId = data.insignia_id,
             Titles = JsonConvert.DeserializeObject<List<int>>(data.titles),
             PrestigeRewardsClaimed = JsonConvert.DeserializeObject<List<int>>(data.prestige_rewards_claimed),
+            PrestigeMissions = JsonConvert.DeserializeObject<List<PrestigeMission>>(data.prestige_missions),
             GearScore = data.gear_score,
             MaxSkillTabs = data.max_skill_tabs,
             ActiveSkillTabId = data.active_skill_tab_id,
@@ -266,6 +269,7 @@ public class DatabaseCharacter : DatabaseTable
             insignia_id = player.InsigniaId,
             titles = JsonConvert.SerializeObject(player.Titles),
             prestige_rewards_claimed = JsonConvert.SerializeObject(player.PrestigeRewardsClaimed),
+            prestige_missions = JsonConvert.SerializeObject(player.PrestigeMissions),
             gear_score = player.GearScore,
             max_skill_tabs = player.MaxSkillTabs,
             active_skill_tab_id = player.ActiveSkillTabId,

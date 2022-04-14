@@ -129,6 +129,7 @@ CREATE TABLE `characters`
     `insignia_id`              smallint         NOT NULL,
     `titles`                   text,
     `prestige_rewards_claimed` text,
+    `prestige_missions`        text,
     `gear_score`               int              NOT NULL,
     `max_skill_tabs`           int              NOT NULL,
     `active_skill_tab_id`      bigint           NOT NULL,

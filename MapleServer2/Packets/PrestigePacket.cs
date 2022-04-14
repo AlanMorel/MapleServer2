@@ -12,6 +12,7 @@ public static class PrestigePacket
         Exp = 0x01,
         LevelUp = 0x02,
         Reward = 0x04,
+        UpdateMissions = 0x06,
         WeeklyMissions = 0x07
     }
 
@@ -19,9 +20,9 @@ public static class PrestigePacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Prestige);
         pWriter.Write(PrestigePacketMode.SetLevels);
-        pWriter.WriteLong(player.Levels.PrestigeExp); // PrestigeExp
-        pWriter.WriteInt(player.Levels.PrestigeLevel); // PrestigeLevel
-        pWriter.WriteLong(player.Levels.PrestigeExp); // Same Prestige Exp??
+        pWriter.WriteLong(player.Levels.PrestigeExp);
+        pWriter.WriteInt(player.Levels.PrestigeLevel);
+        pWriter.WriteLong(player.Levels.PrestigeExp);
 
         List<int> rankRewardsClaimed = player.PrestigeRewardsClaimed;
         pWriter.WriteInt(rankRewardsClaimed.Count);
@@ -67,16 +68,33 @@ public static class PrestigePacket
         return pWriter;
     }
 
-    public static PacketWriter WeeklyMissions()
+    public static PacketWriter UpdateMissions(List<PrestigeMission> missions)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Prestige);
         pWriter.Write(PrestigePacketMode.WeeklyMissions);
-        pWriter.WriteInt(3); // Amount of missions
-        for (int i = 1; i <= 3; i++)
+        pWriter.WriteInt(missions.Count);
+
+        foreach (PrestigeMission mission in missions)
         {
-            pWriter.WriteLong(i); // id?
-            pWriter.WriteLong();
-            pWriter.WriteBool(false); // completed
+            pWriter.WriteLong(mission.Id);
+            pWriter.WriteLong(mission.LevelCount);
+            pWriter.WriteBool(mission.Claimed);
+        }
+
+        return pWriter;
+    }
+
+    public static PacketWriter WeeklyMissions(List<PrestigeMission> missions)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Prestige);
+        pWriter.Write(PrestigePacketMode.WeeklyMissions);
+        pWriter.WriteInt(missions.Count);
+
+        foreach (PrestigeMission mission in missions)
+        {
+            pWriter.WriteLong(mission.Id);
+            pWriter.WriteLong(mission.LevelCount + 1);
+            pWriter.WriteBool(mission.Claimed);
         }
 
         return pWriter;

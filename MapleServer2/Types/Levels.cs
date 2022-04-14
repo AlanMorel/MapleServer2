@@ -101,6 +101,10 @@ public class Levels
     public void PrestigeLevelUp()
     {
         PrestigeLevel++;
+        foreach (PrestigeMission mission in Session.Player.PrestigeMissions)
+        {
+            mission.LevelCount++;
+        }
         Session.Send(PrestigePacket.LevelUp(FieldPlayer.ObjectId, PrestigeLevel));
     }
 

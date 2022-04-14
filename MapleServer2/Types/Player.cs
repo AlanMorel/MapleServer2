@@ -61,6 +61,7 @@ public class Player
     public int GearScore;
     public List<int> Titles { get; set; }
     public List<int> PrestigeRewardsClaimed { get; set; }
+    public List<PrestigeMission> PrestigeMissions = new();
 
     public Stats Stats;
     public IFieldObject<Mount> Mount;
@@ -229,6 +230,7 @@ public class Player
         TrophyCount = new int[3];
         ReturnMapId = (int) Map.Tria;
         ReturnCoord = MapEntityMetadataStorage.GetRandomPlayerSpawn(ReturnMapId).Coord.ToFloat();
+        PrestigeMissions = PrestigeLevelMissionMetadataStorage.GetPrestigeMissions;
         SkinColor = skinColor;
         UnlockedTaxis = new();
         UnlockedMaps = new();
