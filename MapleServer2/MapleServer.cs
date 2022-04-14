@@ -13,6 +13,7 @@ using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
 using MapleServer2.Tools;
 using MapleServer2.Types;
+using Newtonsoft.Json;
 using Serilog;
 using Serilog.Events;
 using Serilog.Templates;
@@ -176,12 +177,12 @@ public static class MapleServer
                 DatabaseManager.GameEventUserValue.Delete(userValue);
                 player.EventUserValues.Remove(userValue);
             }
+        }
 
-            // Weekly reset
-            if (DateTime.Now.DayOfWeek == DayOfWeek.Friday)
-            {
-                WeeklyReset(player);
-            }
+        // Weekly reset
+        if (DateTime.Now.DayOfWeek == DayOfWeek.Friday)
+        {
+            WeeklyReset(players);
         }
 
         DatabaseManager.RunQuery("UPDATE `characters` SET gathering_count = '[]'");
@@ -189,9 +190,15 @@ public static class MapleServer
         DatabaseManager.ServerInfo.SetLastDailyReset(TimeInfo.CurrentDate());
     }
 
-    private static void WeeklyReset(Player player)
+    private static void WeeklyReset(List<Player> players)
     {
-        player.PrestigeMissions = PrestigeLevelMissionMetadataStorage.GetPrestigeMissions;
+        foreach (Player player in players)
+        {
+            player.PrestigeMissions = PrestigeLevelMissionMetadataStorage.GetPrestigeMissions;
+        }
+
+        string missions = JsonConvert.SerializeObject(PrestigeLevelMissionMetadataStorage.GetPrestigeMissions);
+        DatabaseManager.RunQuery($"UPDATE `characters` SET prestige_missions = {missions}");
     }
 
     public static void BroadcastPacketAll(PacketWriter packet, GameSession sender = null)

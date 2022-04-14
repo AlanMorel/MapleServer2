@@ -1,6 +1,5 @@
 ﻿using Maple2Storage.Enums;
 using Maple2Storage.Types;
-using Maple2Storage.Types.Metadata;
 using MapleServer2.Enums;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
