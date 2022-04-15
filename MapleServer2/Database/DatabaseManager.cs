@@ -61,7 +61,6 @@ public static class DatabaseManager
     public static DatabaseServer ServerInfo { get; } = new();
     public static DatabaseMushkingRoyaleStats MushkingRoyaleStats { get; } = new();
     public static DatabaseMedal MushkingRoyaleMedals { get; } = new();
-    public static DatabaseUGCBanner UGCBanner { get; } = new();
     public static DatabaseBannerSlot BannerSlot { get; } = new();
 
     static DatabaseManager()

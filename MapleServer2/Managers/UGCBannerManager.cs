@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Types;
@@ -13,13 +14,18 @@ public class UGCBannerManager
     public UGCBannerManager()
     {
         DateTimeOffset utcNow = DateTimeOffset.UtcNow;
-        List<UGCBanner> banners = DatabaseManager.UGCBanner.GetAll();
-        foreach (UGCBanner banner in banners)
+        Dictionary<int, List<int>> bannerIds = MapEntityMetadataStorage.GetAdBannerIds();
+        foreach ((int mapId, List<int> ids) in bannerIds)
         {
-            DeleteOldBannerSlots(banner, utcNow);
-            ActivateBannerSlots(banner, utcNow);
+            foreach (int id in ids)
+            {
+                UGCBanner banner = new(id, mapId);
 
-            UGCBanners.TryAdd(banner.Id, banner);
+                DeleteOldBannerSlots(banner, utcNow);
+                ActivateBannerSlots(banner, utcNow);
+
+                UGCBanners.TryAdd(banner.Id, banner);
+            }
         }
     }
 

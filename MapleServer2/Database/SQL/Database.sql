@@ -852,20 +852,6 @@ CREATE TABLE `game_event_user_values`
   COLLATE = utf8mb4_0900_ai_ci;
 
 --
--- Table structure for table `ad_banners`
---
-
-DROP TABLE IF EXISTS `ad_banners`;
-CREATE TABLE `ad_banners`
-(
-    `id`     bigint NOT NULL,
-    `map_id` int    NOT NULL,
-    CONSTRAINT `ad_banners_pk` PRIMARY KEY (`id`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci;
-
---
 -- Table structure for table `banner_slot`
 --
 
@@ -878,7 +864,6 @@ CREATE TABLE `ad_banner_slots`
     `active`    TINYINT UNSIGNED      NOT NULL,
     `ugc_uid`   bigint,
     CONSTRAINT `banner_slots_pk` PRIMARY KEY (`id`),
-    CONSTRAINT `banner_slots_ad_banners_FK` FOREIGN KEY (`banner_id`) REFERENCES `ad_banners` (`id`),
     CONSTRAINT `banner_slots_ugc_FK` FOREIGN KEY (`ugc_uid`) REFERENCES `ugc` (`uid`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4

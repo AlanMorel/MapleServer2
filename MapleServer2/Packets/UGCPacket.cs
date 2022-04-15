@@ -205,7 +205,6 @@ public static class UGCPacket
         return pWriter;
     }
 
-
     public static PacketWriter ReserveBannerSlots(long bannerId, List<BannerSlot> bannerSlots)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
@@ -297,9 +296,9 @@ public static class UGCPacket
         pWriter.WriteByte(3);
         pWriter.WriteByte(1);
         pWriter.WriteLong(activeSlot.BannerId);
-        const int LoopCounter = 1; // not sure when more than 1 is used
-        pWriter.WriteByte(LoopCounter);
-        for (int i = 0; i < LoopCounter; i++)
+        byte loopCounter = 1; // not sure when more than 1 is used
+        pWriter.WriteByte(loopCounter);
+        for (byte i = 0; i < loopCounter; i++)
         {
             pWriter.WriteLong(activeSlot.Id);
             pWriter.WriteInt(2);
@@ -311,5 +310,4 @@ public static class UGCPacket
 
         pWriter.WriteUnicodeString(activeSlot.UGC.Url);
     }
-
 }

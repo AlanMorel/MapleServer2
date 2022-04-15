@@ -285,15 +285,8 @@ public class UgcHandler : GamePacketHandler
         UGCBanner ugcBanner = GameServer.UGCBannerManager.GetBanner(bannerId);
         if (ugcBanner is null)
         {
-            ugcBanner = new()
-            {
-                Id = bannerId,
-                MapId = session.FieldManager.MapId,
-                Slots = new()
-            };
-
-            DatabaseManager.UGCBanner.Insert(ugcBanner);
-            GameServer.UGCBannerManager.AddBanner(ugcBanner);
+            Logger.Error("Banner not found: " + bannerId);
+            return;
         }
 
         List<BannerSlot> newSlots = new();
