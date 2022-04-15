@@ -84,7 +84,7 @@ public class PrestigeHandler : GamePacketHandler
 
         mission.Claimed = true;
         Item reward = new(metadata.RewardItemId, metadata.RewardItemAmount, metadata.RewardItemRarity);
-        
+
         session.Player.Inventory.AddItem(session, reward, true);
         session.Send(PrestigePacket.UpdateMissions(session.Player.PrestigeMissions));
     }
