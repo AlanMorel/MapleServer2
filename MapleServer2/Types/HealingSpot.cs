@@ -4,12 +4,10 @@ namespace MapleServer2.Types;
 
 public class HealingSpot
 {
-    public int ObjectId { get; set; }
-    public CoordS Coord { get; set; }
+    public CoordS Coord { get; }
 
-    public HealingSpot(int objectId, CoordS coord)
+    public HealingSpot(CoordS coord)
     {
-        ObjectId = objectId;
         Coord = coord;
     }
 }

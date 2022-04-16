@@ -4,30 +4,27 @@ using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Types;
 
-namespace MapleServer2.Managers;
+namespace MapleServer2.Managers.Actors;
 
-public partial class FieldManager
+public class Npc : FieldActor<NpcMetadata>, INpc
 {
-    private partial class Npc : FieldActor<NpcMetadata>, INpc
+    public NpcState State { get; set; }
+    public NpcAction Action { get; set; }
+    public MobMovement Movement { get; set; }
+
+    public Npc(int objectId, int npcId) : this(objectId, NpcMetadataStorage.GetNpcMetadata(npcId)) { }
+
+    public Npc(int objectId, NpcMetadata metadata) : base(objectId, metadata)
     {
-        public NpcState State { get; set; }
-        public NpcAction Action { get; set; }
-        public MobMovement Movement { get; set; }
+        Animation = 255;
+        Stats = new(metadata);
+        State = NpcState.Normal;
+        Action = NpcAction.Idle;
+    }
 
-        public Npc(int objectId, int npcId) : this(objectId, NpcMetadataStorage.GetNpcMetadata(npcId)) { }
-
-        public Npc(int objectId, NpcMetadata metadata) : base(objectId, metadata)
-        {
-            Animation = 255;
-            Stats = new(metadata);
-            State = NpcState.Normal;
-            Action = NpcAction.Idle;
-        }
-
-        public override void Animate(string sequenceName)
-        {
-            Animation = AnimationStorage.GetSequenceIdBySequenceName(Value.Model, sequenceName);
-            // TODO implement stopping animation
-        }
+    public override void Animate(string sequenceName)
+    {
+        Animation = AnimationStorage.GetSequenceIdBySequenceName(Value.Model, sequenceName);
+        // TODO implement stopping animation
     }
 }

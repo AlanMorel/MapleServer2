@@ -9,6 +9,7 @@ using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
+using MapleServer2.Managers.Actors;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
@@ -110,7 +111,7 @@ public partial class FieldManager : IDisposable
         return WrapObject(wrappingObject);
     }
 
-    public IFieldActor<Player> RequestCharacter(Player player)
+    public Character RequestCharacter(Player player)
     {
         if (player.FieldPlayer is null)
         {
@@ -119,7 +120,7 @@ public partial class FieldManager : IDisposable
 
         // Bind existing character to this map.
         int objectId = Interlocked.Increment(ref Counter);
-        ((FieldActor<Player>) player.FieldPlayer).ObjectId = objectId;
+        player.FieldPlayer.ObjectId = objectId;
         return player.FieldPlayer;
     }
 
@@ -240,13 +241,13 @@ public partial class FieldManager : IDisposable
             sender.Send(FieldItemPacket.AddItem(existingItem, 123456));
         }
 
-        foreach (IFieldActor<NpcMetadata> existingNpc in State.Npcs.Values)
+        foreach (Npc existingNpc in State.Npcs.Values)
         {
             sender.Send(FieldNpcPacket.AddNpc(existingNpc));
             sender.Send(FieldObjectPacket.LoadNpc(existingNpc));
         }
 
-        foreach (IFieldActor<NpcMetadata> existingMob in State.Mobs.Values)
+        foreach (Mob existingMob in State.Mobs.Values)
         {
             sender.Send(FieldNpcPacket.AddMob(existingMob));
             sender.Send(FieldObjectPacket.LoadMob(existingMob));
@@ -369,7 +370,7 @@ public partial class FieldManager : IDisposable
             session.Send(FieldObjectPacket.RemovePlayer(player.FieldPlayer));
         });
 
-        ((FieldObject<Player>) player.FieldPlayer).ObjectId = -1; // Reset object id
+        player.FieldPlayer.ObjectId = -1; // Reset object id
     }
 
     public static bool IsPlayerInBox(MapTriggerBox box, IFieldObject<Player> player)
@@ -391,7 +392,7 @@ public partial class FieldManager : IDisposable
     }
 
     // Spawned NPCs will not appear until controlled
-    private void AddNpc(IFieldActor<NpcMetadata> fieldNpc)
+    private void AddNpc(Npc fieldNpc)
     {
         State.AddNpc(fieldNpc);
 
@@ -561,14 +562,9 @@ public partial class FieldManager : IDisposable
 
     public void AddMapTimer(MapTimer timer)
     {
-        MapTimer existingTimer = MapTimers.FirstOrDefault(x => x.Id == timer.Id);
-        if (existingTimer != null)
-        {
-            existingTimer = timer;
-            return;
-        }
+        MapTimer existingTimer = MapTimers.FirstOrDefault(x => x.Id == timer.Id) ?? timer;
 
-        MapTimers.Add(timer);
+        MapTimers.Add(existingTimer);
     }
 
     public MapTimer GetMapTimer(string id)
@@ -669,14 +665,14 @@ public partial class FieldManager : IDisposable
         return new(objectId, player);
     }
 
-    // Initializes a FieldActor with an objectId for this field.
+    // Initializes a Npc with an objectId for this field.
     private Npc WrapNpc(int npcId)
     {
         int objectId = Interlocked.Increment(ref Counter);
         return new(objectId, npcId);
     }
 
-    // Initializes a FieldActor with an objectId for this field.
+    // Initializes a Mob with an objectId for this field.
     private Mob WrapMob(int mobId)
     {
         int objectId = Interlocked.Increment(ref Counter);
@@ -803,93 +799,48 @@ public partial class FieldManager : IDisposable
             AddPortal(fieldPortal);
         }
 
-        foreach (MapTriggerMesh mapTriggerMesh in MapEntityMetadataStorage.GetTriggerMeshes(MapId))
+        foreach (MapTriggerMesh mapTriggerMesh in MapEntityMetadataStorage.GetTriggerMeshes(MapId).Where(x => x is not null))
         {
-            if (mapTriggerMesh is null)
-            {
-                continue;
-            }
-
             State.AddTriggerObject(new TriggerMesh(mapTriggerMesh.Id, mapTriggerMesh.IsVisible));
         }
 
-        foreach (MapTriggerEffect mapTriggerEffect in MapEntityMetadataStorage.GetTriggerEffects(MapId))
+        foreach (MapTriggerEffect mapTriggerEffect in MapEntityMetadataStorage.GetTriggerEffects(MapId).Where(x => x is not null))
         {
-            if (mapTriggerEffect is null)
-            {
-                continue;
-            }
-
             State.AddTriggerObject(new TriggerEffect(mapTriggerEffect.Id, mapTriggerEffect.IsVisible));
         }
 
-        foreach (MapTriggerActor mapTriggerActor in MapEntityMetadataStorage.GetTriggerActors(MapId))
+        foreach (MapTriggerActor mapTriggerActor in MapEntityMetadataStorage.GetTriggerActors(MapId).Where(x => x is not null))
         {
-            if (mapTriggerActor is null)
-            {
-                continue;
-            }
-
             State.AddTriggerObject(new TriggerActor(mapTriggerActor.Id, mapTriggerActor.IsVisible, mapTriggerActor.InitialSequence));
         }
 
-        foreach (MapTriggerCamera mapTriggerCamera in MapEntityMetadataStorage.GetTriggerCameras(MapId))
+        foreach (MapTriggerCamera mapTriggerCamera in MapEntityMetadataStorage.GetTriggerCameras(MapId).Where(x => x is not null))
         {
-            if (mapTriggerCamera is null)
-            {
-                continue;
-            }
-
             State.AddTriggerObject(new TriggerCamera(mapTriggerCamera.Id, mapTriggerCamera.IsEnabled));
         }
 
-        foreach (MapTriggerCube mapTriggerCube in MapEntityMetadataStorage.GetTriggerCubes(MapId))
+        foreach (MapTriggerCube mapTriggerCube in MapEntityMetadataStorage.GetTriggerCubes(MapId).Where(x => x is not null))
         {
-            if (mapTriggerCube is null)
-            {
-                continue;
-            }
-
             State.AddTriggerObject(new TriggerCube(mapTriggerCube.Id, mapTriggerCube.IsVisible));
         }
 
-        foreach (MapTriggerLadder mapTriggerLadder in MapEntityMetadataStorage.GetTriggerLadders(MapId))
+        foreach (MapTriggerLadder mapTriggerLadder in MapEntityMetadataStorage.GetTriggerLadders(MapId).Where(x => x is not null))
         {
-            if (mapTriggerLadder is null)
-            {
-                continue;
-            }
-
             State.AddTriggerObject(new TriggerLadder(mapTriggerLadder.Id, mapTriggerLadder.IsVisible));
         }
 
-        foreach (MapTriggerRope mapTriggerRope in MapEntityMetadataStorage.GetTriggerRopes(MapId))
+        foreach (MapTriggerRope mapTriggerRope in MapEntityMetadataStorage.GetTriggerRopes(MapId).Where(x => x is not null))
         {
-            if (mapTriggerRope is null)
-            {
-                continue;
-            }
-
             State.AddTriggerObject(new TriggerRope(mapTriggerRope.Id, mapTriggerRope.IsVisible));
         }
 
-        foreach (MapTriggerSound mapTriggerSound in MapEntityMetadataStorage.GetTriggerSounds(MapId))
+        foreach (MapTriggerSound mapTriggerSound in MapEntityMetadataStorage.GetTriggerSounds(MapId).Where(x => x is not null))
         {
-            if (mapTriggerSound is null)
-            {
-                continue;
-            }
-
             State.AddTriggerObject(new TriggerSound(mapTriggerSound.Id, mapTriggerSound.IsEnabled));
         }
 
-        foreach (MapTriggerSkill mapTriggerSkill in MapEntityMetadataStorage.GetTriggerSkills(MapId))
+        foreach (MapTriggerSkill mapTriggerSkill in MapEntityMetadataStorage.GetTriggerSkills(MapId).Where(x => x is not null))
         {
-            if (mapTriggerSkill is null)
-            {
-                continue;
-            }
-
             TriggerSkill triggerSkill = new(mapTriggerSkill.Id,
                 mapTriggerSkill.SkillId,
                 mapTriggerSkill.SkillLevel,
@@ -902,54 +853,29 @@ public partial class FieldManager : IDisposable
         }
 
         // Load breakables
-        foreach (MapBreakableActorObject mapActor in MapEntityMetadataStorage.GetBreakableActors(MapId))
+        foreach (MapBreakableActorObject mapActor in MapEntityMetadataStorage.GetBreakableActors(MapId).Where(x => x is not null))
         {
-            if (mapActor is null)
-            {
-                continue;
-            }
-
             State.AddBreakable(new(mapActor.EntityId, mapActor.IsEnabled, mapActor.HideDuration, mapActor.ResetDuration));
         }
 
-        foreach (MapBreakableNifObject mapNif in MapEntityMetadataStorage.GetBreakableNifs(MapId))
+        foreach (MapBreakableNifObject mapNif in MapEntityMetadataStorage.GetBreakableNifs(MapId).Where(x => x is not null))
         {
-            if (mapNif is null)
-            {
-                continue;
-            }
-
             State.AddBreakable(new BreakableNifObject(mapNif.EntityId, mapNif.IsEnabled, mapNif.TriggerId, mapNif.HideDuration, mapNif.ResetDuration));
         }
 
         // Load interact objects
-        foreach (MapInteractObject mapInteract in MapEntityMetadataStorage.GetInteractObjects(MapId))
+        foreach (MapInteractObject mapInteract in MapEntityMetadataStorage.GetInteractObjects(MapId).Where(x => x is not null))
         {
-            if (mapInteract is null)
-            {
-                continue;
-            }
-
             State.AddInteractObject(new(mapInteract.EntityId, mapInteract.InteractId, mapInteract.Type, InteractObjectState.Default));
         }
 
-        foreach (MapLiftableObject liftable in MapEntityMetadataStorage.GetLiftablesObjects(MapId))
+        foreach (MapLiftableObject liftable in MapEntityMetadataStorage.GetLiftablesObjects(MapId).Where(x => x is not null))
         {
-            if (liftable is null)
-            {
-                continue;
-            }
-
             State.AddLiftableObject(new(liftable.EntityId, liftable));
         }
 
-        foreach (MapChestMetadata mapChest in MapEntityMetadataStorage.GetMapChests(MapId))
+        foreach (MapChestMetadata mapChest in MapEntityMetadataStorage.GetMapChests(MapId).Where(x => x is not null))
         {
-            if (mapChest is null)
-            {
-                continue;
-            }
-
             // TODO: Create a chest manager to spawn chests randomly and
             // TODO: Golden chests ids should always increase by 1 when a new chest is added
             // For more details about chests, see https://github.com/AlanMorel/MapleServer2/issues/513
@@ -970,7 +896,7 @@ public partial class FieldManager : IDisposable
 
         foreach (CoordS coord in MapEntityMetadataStorage.GetHealingSpot(MapId))
         {
-            State.AddHealingSpot(RequestFieldObject(new HealingSpot(GuidGenerator.Int(), coord)));
+            State.AddHealingSpot(RequestFieldObject(new HealingSpot(coord)));
         }
 
         foreach (MapVibrateObject mapVibrateObject in MapEntityMetadataStorage.GetVibrateObjects(MapId))
@@ -1147,43 +1073,6 @@ public partial class FieldManager : IDisposable
     }
 
     #endregion
-
-    // This class is private to ensure that callers must first request entry.
-    private class FieldObject<T> : IFieldObject<T>
-    {
-        public int ObjectId { get; set; }
-        public T Value { get; }
-
-        public virtual CoordF Coord { get; set; }
-        public CoordF Rotation { get; set; }
-        public short LookDirection
-        {
-            get => (short) (Rotation.Z * 10);
-            set => Rotation = CoordF.From(Rotation.X, Rotation.Y, value / 10);
-        }
-
-        public FieldObject(int objectId, T value)
-        {
-            ObjectId = objectId;
-            Value = value;
-        }
-    }
-
-    private abstract partial class FieldActor<T>
-    {
-    }
-
-    private partial class Character
-    {
-    }
-
-    private partial class Mob
-    {
-    }
-
-    private partial class Npc
-    {
-    }
 
     public void Dispose()
     {

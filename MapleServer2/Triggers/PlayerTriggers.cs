@@ -4,6 +4,7 @@ using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Managers;
+using MapleServer2.Managers.Actors;
 using MapleServer2.Packets;
 using MapleServer2.Types;
 
@@ -45,13 +46,13 @@ public partial class TriggerContext
                 continue;
             }
 
-            if (Field.State.Npcs.TryGetValue(id, out IFieldActor<NpcMetadata> npc))
+            if (Field.State.Npcs.TryGetValue(id, out Npc npc))
             {
                 Field.BroadcastPacket(TriggerPacket.SetFaceEmotion(npc.ObjectId, emotionName));
                 return;
             }
 
-            if (Field.State.Mobs.TryGetValue(id, out IFieldActor<NpcMetadata> mob))
+            if (Field.State.Mobs.TryGetValue(id, out Mob mob))
             {
                 Field.BroadcastPacket(TriggerPacket.SetFaceEmotion(mob.ObjectId, emotionName));
                 return;
