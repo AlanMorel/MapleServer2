@@ -8,7 +8,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class ItemEnchantTransferHandler : GamePacketHandler
+public class ItemEnchantTransferHandler : GamePacketHandler<ItemEnchantTransferHandler>
 {
     public override RecvOp OpCode => RecvOp.ItemEnchantTransform;
 

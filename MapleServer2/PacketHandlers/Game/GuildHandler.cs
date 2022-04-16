@@ -12,7 +12,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class GuildHandler : GamePacketHandler
+public class GuildHandler : GamePacketHandler<GuildHandler>
 {
     public override RecvOp OpCode => RecvOp.Guild;
 
@@ -170,7 +170,7 @@ public class GuildHandler : GamePacketHandler
                 HandleServices(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

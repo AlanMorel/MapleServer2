@@ -9,7 +9,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class MesoMarketHandler : GamePacketHandler
+public class MesoMarketHandler : GamePacketHandler<MesoMarketHandler>
 {
     public override RecvOp OpCode => RecvOp.MesoMarket;
 
@@ -61,7 +61,7 @@ public class MesoMarketHandler : GamePacketHandler
                 HandlePurchase(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

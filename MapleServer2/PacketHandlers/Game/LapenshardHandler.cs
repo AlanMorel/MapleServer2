@@ -8,7 +8,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class LapenshardHandler : GamePacketHandler
+public class LapenshardHandler : GamePacketHandler<LapenshardHandler>
 {
     public override RecvOp OpCode => RecvOp.ItemLapenshard;
 
@@ -49,7 +49,7 @@ public class LapenshardHandler : GamePacketHandler
                 HandleFusion(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

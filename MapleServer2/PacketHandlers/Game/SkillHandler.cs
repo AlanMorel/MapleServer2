@@ -10,10 +10,8 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class SkillHandler : GamePacketHandler
+public class SkillHandler : GamePacketHandler<SkillHandler>
 {
-    private static readonly Random Rand = Random.Shared;
-
     public override RecvOp OpCode => RecvOp.Skill;
 
     private enum SkillHandlerMode : byte
@@ -46,7 +44,7 @@ public class SkillHandler : GamePacketHandler
                 HandleCancelSkill(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }
@@ -151,7 +149,7 @@ public class SkillHandler : GamePacketHandler
         RegionSkill = 0x2
     }
 
-    private static void HandleDamageMode(GameSession session, PacketReader packet)
+    private void HandleDamageMode(GameSession session, PacketReader packet)
     {
         DamagingMode mode = (DamagingMode) packet.ReadByte();
         switch (mode)
@@ -166,7 +164,7 @@ public class SkillHandler : GamePacketHandler
                 HandleRegionSkills(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

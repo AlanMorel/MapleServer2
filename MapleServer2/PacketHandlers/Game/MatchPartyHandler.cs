@@ -7,7 +7,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class MatchPartyHandler : GamePacketHandler
+public class MatchPartyHandler : GamePacketHandler<MatchPartyHandler>
 {
     public override RecvOp OpCode => RecvOp.MatchParty;
 
@@ -41,7 +41,7 @@ public class MatchPartyHandler : GamePacketHandler
                 HandleRefresh(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

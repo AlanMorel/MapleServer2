@@ -5,7 +5,7 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class StateHandler : GamePacketHandler
+public class StateHandler : GamePacketHandler<StateHandler>
 {
     public override RecvOp OpCode => RecvOp.State;
 
@@ -27,7 +27,7 @@ public class StateHandler : GamePacketHandler
             case StateHandlerMode.Land:
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

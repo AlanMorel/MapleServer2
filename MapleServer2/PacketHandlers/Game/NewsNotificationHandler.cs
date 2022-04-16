@@ -5,7 +5,7 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class NewsNotificationHandler : GamePacketHandler
+public class NewsNotificationHandler : GamePacketHandler<NewsNotificationHandler>
 {
     public override RecvOp OpCode => RecvOp.NewsNotification;
 
@@ -29,7 +29,7 @@ public class NewsNotificationHandler : GamePacketHandler
                 HandleOpenSidebar(session);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

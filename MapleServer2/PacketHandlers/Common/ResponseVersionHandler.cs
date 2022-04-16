@@ -7,7 +7,7 @@ using MapleServer2.Servers.Login;
 
 namespace MapleServer2.PacketHandlers.Common;
 
-public class ResponseVersionHandler : CommonPacketHandler
+public class ResponseVersionHandler : CommonPacketHandler<ResponseVersionHandler>
 {
     public override RecvOp OpCode => RecvOp.ResponseVersion;
 

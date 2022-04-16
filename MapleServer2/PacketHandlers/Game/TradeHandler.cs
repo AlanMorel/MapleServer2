@@ -7,7 +7,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class TradeHandler : GamePacketHandler
+public class TradeHandler : GamePacketHandler<TradeHandler>
 {
     public override RecvOp OpCode => RecvOp.Trade;
 
@@ -61,7 +61,7 @@ public class TradeHandler : GamePacketHandler
                 HandleFinalizeTrade(session);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

@@ -4,7 +4,7 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class FileHashHandler : GamePacketHandler
+public class FileHashHandler : GamePacketHandler<FileHashHandler>
 {
     public override RecvOp OpCode => RecvOp.FileHash;
 

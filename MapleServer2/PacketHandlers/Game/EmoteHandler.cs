@@ -6,7 +6,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class EmoteHandler : GamePacketHandler
+public class EmoteHandler : GamePacketHandler<EmoteHandler>
 {
     public override RecvOp OpCode => RecvOp.Emotion;
 
@@ -29,7 +29,7 @@ public class EmoteHandler : GamePacketHandler
                 HandleUseEmote(packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

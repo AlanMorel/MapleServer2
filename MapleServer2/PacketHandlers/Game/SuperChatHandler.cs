@@ -6,7 +6,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class SuperChatHandler : GamePacketHandler
+public class SuperChatHandler : GamePacketHandler<SuperChatHandler>
 {
     public override RecvOp OpCode => RecvOp.SuperWorldChat;
 
@@ -29,7 +29,7 @@ public class SuperChatHandler : GamePacketHandler
                 HandleDeselect(session);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

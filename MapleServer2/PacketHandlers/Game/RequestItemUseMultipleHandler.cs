@@ -9,7 +9,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestItemUseMultipleHandler : GamePacketHandler
+public class RequestItemUseMultipleHandler : GamePacketHandler<RequestItemUseMultipleHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestItemUseMultiple;
 

@@ -6,7 +6,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestHomeBankHandler : GamePacketHandler
+public class RequestHomeBankHandler : GamePacketHandler<RequestHomeBankHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestHomeBank;
 
@@ -28,7 +28,7 @@ public class RequestHomeBankHandler : GamePacketHandler
                 HandleOpen(session);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

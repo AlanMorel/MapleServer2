@@ -5,7 +5,7 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestItemBreakHandler : GamePacketHandler
+public class RequestItemBreakHandler : GamePacketHandler<RequestItemBreakHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestItemBreak;
 
@@ -40,7 +40,7 @@ public class RequestItemBreakHandler : GamePacketHandler
                 HandleAutoAdd(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

@@ -11,7 +11,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class AttendanceHandler : GamePacketHandler
+public class AttendanceHandler : GamePacketHandler<AttendanceHandler>
 {
     public override RecvOp OpCode => RecvOp.Attendance;
 
@@ -47,7 +47,7 @@ public class AttendanceHandler : GamePacketHandler
                 HandleEarlyParticipation(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

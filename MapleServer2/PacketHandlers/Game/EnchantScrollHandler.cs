@@ -11,7 +11,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class EnchantScrollHandler : GamePacketHandler
+public class EnchantScrollHandler : GamePacketHandler<EnchantScrollHandler>
 {
     public override RecvOp OpCode => RecvOp.EnchantScroll;
 
@@ -93,7 +93,7 @@ public class EnchantScrollHandler : GamePacketHandler
                 HandleUseScroll(session, equip, scroll, enchantStats, metadata.EnchantLevels[enchantLevelIndex], metadata.Id);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

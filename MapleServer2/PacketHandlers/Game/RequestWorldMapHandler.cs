@@ -5,7 +5,7 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestWorldMapHandler : GamePacketHandler
+public class RequestWorldMapHandler : GamePacketHandler<RequestWorldMapHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestWorldMap;
 
@@ -23,7 +23,7 @@ public class RequestWorldMapHandler : GamePacketHandler
                 HandleOpen(session);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
 

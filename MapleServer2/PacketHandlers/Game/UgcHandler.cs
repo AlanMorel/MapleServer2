@@ -10,7 +10,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class UgcHandler : GamePacketHandler
+public class UgcHandler : GamePacketHandler<UgcHandler>
 {
     public override RecvOp OpCode => RecvOp.UGC;
 
@@ -36,7 +36,7 @@ public class UgcHandler : GamePacketHandler
                 HandleProfilePicture(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(function);
+                LogUnknownMode(function);
                 break;
         }
     }

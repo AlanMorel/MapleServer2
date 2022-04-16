@@ -9,7 +9,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RideHandler : GamePacketHandler
+public class RideHandler : GamePacketHandler<RideHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestRide;
 
@@ -44,7 +44,7 @@ public class RideHandler : GamePacketHandler
                 HandleStopMultiPersonRide(session);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

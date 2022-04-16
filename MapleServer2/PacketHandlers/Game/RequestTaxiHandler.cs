@@ -9,7 +9,7 @@ using MoonSharp.Interpreter;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-internal class RequestTaxiHandler : GamePacketHandler
+internal class RequestTaxiHandler : GamePacketHandler<RequestTaxiHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestTaxi;
 
@@ -48,7 +48,7 @@ internal class RequestTaxiHandler : GamePacketHandler
                 HandleDiscoverTaxi(session);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

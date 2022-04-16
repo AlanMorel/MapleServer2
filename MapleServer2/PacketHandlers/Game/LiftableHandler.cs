@@ -7,7 +7,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class LiftableHandler : GamePacketHandler
+public class LiftableHandler : GamePacketHandler<LiftableHandler>
 {
     private enum LiftableMode : byte
     {
@@ -26,7 +26,7 @@ public class LiftableHandler : GamePacketHandler
                 HandlePickUp(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

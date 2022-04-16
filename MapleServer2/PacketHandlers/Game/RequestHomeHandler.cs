@@ -6,7 +6,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestHomeHandler : GamePacketHandler
+public class RequestHomeHandler : GamePacketHandler<RequestHomeHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestHome;
 
@@ -28,7 +28,7 @@ public class RequestHomeHandler : GamePacketHandler
                 HandleMoveToHome(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

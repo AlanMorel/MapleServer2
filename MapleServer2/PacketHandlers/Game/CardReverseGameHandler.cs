@@ -8,7 +8,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class CardReverseGameHandler : GamePacketHandler
+public class CardReverseGameHandler : GamePacketHandler<CardReverseGameHandler>
 {
     public override RecvOp OpCode => RecvOp.CardReverseGame;
 
@@ -35,7 +35,7 @@ public class CardReverseGameHandler : GamePacketHandler
                 HandleSelect(session);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

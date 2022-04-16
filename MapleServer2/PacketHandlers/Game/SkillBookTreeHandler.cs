@@ -7,7 +7,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class SkillBookTreeHandler : GamePacketHandler
+public class SkillBookTreeHandler : GamePacketHandler<SkillBookTreeHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestSkillBookTree;
 
@@ -37,7 +37,7 @@ public class SkillBookTreeHandler : GamePacketHandler
                 HandleAddTab(session);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

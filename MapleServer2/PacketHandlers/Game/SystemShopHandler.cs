@@ -8,7 +8,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class SystemShopHandler : GamePacketHandler
+public class SystemShopHandler : GamePacketHandler<SystemShopHandler>
 {
     public override RecvOp OpCode => RecvOp.SystemShop;
 
@@ -35,7 +35,7 @@ public class SystemShopHandler : GamePacketHandler
                 HandleMapleArenaShop(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

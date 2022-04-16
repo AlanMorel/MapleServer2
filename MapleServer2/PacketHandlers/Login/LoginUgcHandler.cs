@@ -6,7 +6,7 @@ using MapleServer2.Servers.Login;
 
 namespace MapleServer2.PacketHandlers.Login;
 
-public class LoginUgcHandler : LoginPacketHandler
+public class LoginUgcHandler : LoginPacketHandler<LoginUgcHandler>
 {
     public override RecvOp OpCode => RecvOp.UGC;
 
@@ -24,7 +24,7 @@ public class LoginUgcHandler : LoginPacketHandler
                 HandleProfilePicture(session, packet);
                 break;
             default:
-                IPacketHandler<LoginSession>.LogUnknownMode(function);
+                LogUnknownMode(function);
                 break;
         }
     }

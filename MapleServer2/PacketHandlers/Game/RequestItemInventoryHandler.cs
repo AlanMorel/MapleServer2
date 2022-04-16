@@ -6,7 +6,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestItemInventoryHandler : GamePacketHandler
+public class RequestItemInventoryHandler : GamePacketHandler<RequestItemInventoryHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestItemInventory;
 
@@ -41,7 +41,7 @@ public class RequestItemInventoryHandler : GamePacketHandler
                 HandleExpand(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

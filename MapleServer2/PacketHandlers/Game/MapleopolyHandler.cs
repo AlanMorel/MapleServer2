@@ -11,7 +11,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class MapleopolyHandler : GamePacketHandler
+public class MapleopolyHandler : GamePacketHandler<MapleopolyHandler>
 {
     public override RecvOp OpCode => RecvOp.Mapleopoly;
 
@@ -59,7 +59,7 @@ public class MapleopolyHandler : GamePacketHandler
                 HandleProcessTile(session, totalTileValue, freeRollValue, totalTripValue);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

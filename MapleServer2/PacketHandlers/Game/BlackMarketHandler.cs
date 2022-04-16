@@ -12,7 +12,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class BlackMarketHandler : GamePacketHandler
+public class BlackMarketHandler : GamePacketHandler<BlackMarketHandler>
 {
     public override RecvOp OpCode => RecvOp.BlackMarket;
 
@@ -65,7 +65,7 @@ public class BlackMarketHandler : GamePacketHandler
                 HandlePrepareListing(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

@@ -7,7 +7,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RideSyncHandler : GamePacketHandler
+public class RideSyncHandler : GamePacketHandler<RideSyncHandler>
 {
     public override RecvOp OpCode => RecvOp.RideSync;
 

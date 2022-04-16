@@ -7,7 +7,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class GlobalPortalHandler : GamePacketHandler
+public class GlobalPortalHandler : GamePacketHandler<GlobalPortalHandler>
 {
     public override RecvOp OpCode => RecvOp.GlobalPortal;
 
@@ -26,7 +26,7 @@ public class GlobalPortalHandler : GamePacketHandler
                 HandleEnter(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

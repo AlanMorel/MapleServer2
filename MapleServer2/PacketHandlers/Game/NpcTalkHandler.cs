@@ -12,7 +12,7 @@ using MoonSharp.Interpreter;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class NpcTalkHandler : GamePacketHandler
+public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
 {
     public override RecvOp OpCode => RecvOp.NpcTalk;
 
@@ -48,7 +48,7 @@ public class NpcTalkHandler : GamePacketHandler
                 HandleNextQuest(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(function);
+                LogUnknownMode(function);
                 break;
         }
     }

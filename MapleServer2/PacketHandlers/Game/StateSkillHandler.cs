@@ -5,7 +5,7 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class StateSkillHandler : GamePacketHandler
+public class StateSkillHandler : GamePacketHandler<StateSkillHandler>
 {
     public override RecvOp OpCode => RecvOp.StateSkill;
 

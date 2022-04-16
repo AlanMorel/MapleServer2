@@ -14,7 +14,7 @@ using MoonSharp.Interpreter;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class MeretMarketHandler : GamePacketHandler
+public class MeretMarketHandler : GamePacketHandler<MeretMarketHandler>
 {
     public override RecvOp OpCode => RecvOp.MeretMarket;
 
@@ -89,7 +89,7 @@ public class MeretMarketHandler : GamePacketHandler
                 HandleSendMarketRequest(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

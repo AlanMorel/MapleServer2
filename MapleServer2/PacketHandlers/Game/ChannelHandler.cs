@@ -6,7 +6,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class ChannelHandler : GamePacketHandler
+public class ChannelHandler : GamePacketHandler<ChannelHandler>
 {
     public override RecvOp OpCode => RecvOp.Channel;
 

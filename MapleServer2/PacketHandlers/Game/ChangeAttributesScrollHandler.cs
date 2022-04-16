@@ -6,7 +6,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class ChangeAttributesScrollHandler : GamePacketHandler
+public class ChangeAttributesScrollHandler : GamePacketHandler<ChangeAttributesScrollHandler>
 {
     public override RecvOp OpCode => RecvOp.ChangeAttributeScroll;
 
@@ -28,7 +28,7 @@ public class ChangeAttributesScrollHandler : GamePacketHandler
                 HandleSelectNewAttributes(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

@@ -9,7 +9,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class LoadUgcMapHandler : GamePacketHandler
+public class LoadUgcMapHandler : GamePacketHandler<LoadUgcMapHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestLoadUGCMap;
 

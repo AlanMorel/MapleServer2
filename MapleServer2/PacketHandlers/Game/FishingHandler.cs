@@ -10,7 +10,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class FishingHandler : GamePacketHandler
+public class FishingHandler : GamePacketHandler<FishingHandler>
 {
     public override RecvOp OpCode => RecvOp.Fishing;
 
@@ -55,7 +55,7 @@ public class FishingHandler : GamePacketHandler
                 HandleFailMinigame();
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

@@ -13,7 +13,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class BeautyHandler : GamePacketHandler
+public class BeautyHandler : GamePacketHandler<BeautyHandler>
 {
     public override RecvOp OpCode => RecvOp.Beauty;
 
@@ -76,7 +76,7 @@ public class BeautyHandler : GamePacketHandler
                 HandleBeautyVoucher(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }
@@ -105,6 +105,7 @@ public class BeautyHandler : GamePacketHandler
                 session.Send(BeautyPacket.LoadDyeShop(beautyShop));
                 return;
             }
+
             session.Send(BeautyPacket.LoadBeautyShop(beautyShop));
             return;
         }
@@ -208,6 +209,7 @@ public class BeautyHandler : GamePacketHandler
         session.Player.SkinColor = skinColor;
         session.FieldManager.BroadcastPacket(SkinColorPacket.Update(session.Player.FieldPlayer, skinColor));
     }
+
     private static void HandleRandomHair(GameSession session, PacketReader packet)
     {
         int shopId = packet.ReadInt();
@@ -499,6 +501,7 @@ public class BeautyHandler : GamePacketHandler
                     voucherTag = "beauty_hair_special";
                     break;
                 }
+
                 voucherTag = "beauty_hair";
                 break;
             case BeautyShopType.Face:
@@ -572,10 +575,12 @@ public class BeautyHandler : GamePacketHandler
                 {
                     return false;
                 }
+
                 if (itemCost.Amount < tokenCost)
                 {
                     return false;
                 }
+
                 session.Player.Inventory.ConsumeItem(session, itemCost.Uid, tokenCost);
                 return true;
             default:

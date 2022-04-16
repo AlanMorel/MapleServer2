@@ -6,7 +6,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class KeyTableHandler : GamePacketHandler
+public class KeyTableHandler : GamePacketHandler<KeyTableHandler>
 {
     public override RecvOp OpCode => RecvOp.KeyTable;
 
@@ -43,7 +43,7 @@ public class KeyTableHandler : GamePacketHandler
                 SetActiveHotbar(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(requestType);
+                LogUnknownMode(requestType);
                 break;
         }
     }
