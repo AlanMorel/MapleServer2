@@ -108,8 +108,8 @@ public class ItemSocketSystemHandler : GamePacketHandler
             return;
         }
 
-        ScriptLoader scriptLoader = new("Functions/calcItemSocketUnlockIngredient");
-        DynValue scriptResult = scriptLoader.Call("calcItemSocketUnlockIngredient", equip.Rarity, slot, (int) equip.InventoryTab);
+        Script script = ScriptLoader.GetScript("Functions/calcItemSocketUnlockIngredient");
+        DynValue scriptResult = script.RunFunction("calcItemSocketUnlockIngredient", equip.Rarity, slot, (int) equip.InventoryTab);
 
         string ingredientTag = scriptResult.Tuple[0].String;
         int ingredientCost = (int) scriptResult.Tuple[1].Number;
@@ -400,8 +400,8 @@ public class ItemSocketSystemHandler : GamePacketHandler
 
         int gemLevel = ItemGemstoneUpgradeMetadataStorage.GetGemLevel(gemstone.Id);
 
-        ScriptLoader scriptLoader = new("Functions/calcGetGemStonePutOffPrice");
-        DynValue scriptResult = scriptLoader.Call("calcGetGemStonePutOffPrice", gemLevel, (int) equipItem.InventoryTab);
+        Script script = ScriptLoader.GetScript("Functions/calcGetGemStonePutOffPrice");
+        DynValue scriptResult = script.RunFunction("calcGetGemStonePutOffPrice", gemLevel, (int) equipItem.InventoryTab);
 
         string itemTag = scriptResult.Tuple[0].String;
         int ingredientCost = (int) scriptResult.Tuple[1].Number;

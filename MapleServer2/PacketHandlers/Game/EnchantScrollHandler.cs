@@ -8,6 +8,7 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
+using MoonSharp.Interpreter;
 
 namespace MapleServer2.PacketHandlers.Game;
 
@@ -100,8 +101,8 @@ public class EnchantScrollHandler : GamePacketHandler
 
     private static void HandleUseScroll(GameSession session, Item equip, Item scroll, Dictionary<StatAttribute, ItemStat> enchantStats, int enchantLevel, int scrollId)
     {
-        ScriptLoader scriptLoader = new("Functions/ItemEnchantScroll/getSuccessRate");
-        float successRate = (float) scriptLoader.Call("getSuccessRate", scrollId).Number;
+        Script script = ScriptLoader.GetScript("Functions/ItemEnchantScroll/getSuccessRate");
+        float successRate = (float) script.RunFunction("getSuccessRate", scrollId).Number;
 
         int randomValue = Random.Shared.Next(0, 10000 + 1);
         bool scrollSuccess = successRate >= randomValue;

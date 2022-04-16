@@ -338,8 +338,8 @@ public class Item
     public int GetGearScore()
     {
         int gearScoreFactor = ItemMetadataStorage.GetGearScoreFactor(Id);
-        ScriptLoader scriptLoader = new("Functions/calcItemValues");
-        DynValue result = scriptLoader.Call("calcItemGearScore", gearScoreFactor, Rarity, (int) Type, EnchantLevel, LimitBreakLevel);
+        Script script = ScriptLoader.GetScript("Functions/calcItemValues");
+        DynValue result = script.RunFunction("calcItemGearScore", gearScoreFactor, Rarity, (int) Type, EnchantLevel, LimitBreakLevel);
         return (int) result.Tuple[0].Number + (int) result.Tuple[1].Number;
     }
 }

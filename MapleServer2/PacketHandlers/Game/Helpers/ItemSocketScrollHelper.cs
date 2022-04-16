@@ -1,4 +1,5 @@
 ﻿using MapleServer2.Tools;
+using MoonSharp.Interpreter;
 
 namespace MapleServer2.PacketHandlers.Game.Helpers;
 
@@ -6,13 +7,13 @@ public static class ItemSocketScrollHelper
 {
     public static float GetSuccessRate(int scrollId)
     {
-        ScriptLoader scriptLoader = new("Functions/ItemSocketScroll/getSuccessRate");
-        return (float) scriptLoader.Call("getSuccessRate", scrollId).Number;
+        Script script = ScriptLoader.GetScript("Functions/ItemSocketScroll/getSuccessRate");
+        return (float) script.RunFunction("getSuccessRate", scrollId).Number;
     }
 
     public static byte GetSocketCount(int scrollId)
     {
-        ScriptLoader scriptLoader = new("Functions/ItemSocketScroll/getSocketCount");
-        return (byte) scriptLoader.Call("getSocketCount", scrollId).Number;
+        Script script = ScriptLoader.GetScript("Functions/ItemSocketScroll/getSocketCount");
+        return (byte) script.RunFunction("getSocketCount", scrollId).Number;
     }
 }

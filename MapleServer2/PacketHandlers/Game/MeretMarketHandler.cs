@@ -154,8 +154,8 @@ public class MeretMarketHandler : GamePacketHandler
     private static long GetListingFee(long characterId, bool promote)
     {
         int activeListingsCount = GameServer.UgcMarketManager.GetItemsByCharacterId(characterId).Count;
-        ScriptLoader scriptLoader = new("Functions/calcMeretMarketRegisterFee");
-        DynValue feeDynValue = scriptLoader.Call("calcMeretMarketRegisterFee", activeListingsCount);
+        Script script = ScriptLoader.GetScript("Functions/calcMeretMarketRegisterFee");
+        DynValue feeDynValue = script.RunFunction("calcMeretMarketRegisterFee", activeListingsCount);
         long fee = (long) feeDynValue.Number;
 
         if (promote)

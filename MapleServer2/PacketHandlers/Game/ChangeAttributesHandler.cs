@@ -58,8 +58,8 @@ public class ChangeAttributesHandler : GamePacketHandler
             return;
         }
 
-        ScriptLoader scriptLoader = new("Functions/calcGetItemRemakeIngredient");
-        DynValue scriptResults = scriptLoader.Call("calcGetItemRemakeIngredientNew", (int) gear.Type, gear.TimesAttributesChanged, gear.Rarity, gear.Level);
+        Script script = ScriptLoader.GetScript("Functions/calcGetItemRemakeIngredient");
+        DynValue scriptResults = script.RunFunction("calcGetItemRemakeIngredientNew", (int) gear.Type, gear.TimesAttributesChanged, gear.Rarity, gear.Level);
 
         IReadOnlyCollection<Item> ingredient1 = inventory.GetAllByTag(scriptResults.Tuple[0].String);
         int ingredient1Cost = (int) scriptResults.Tuple[1].Number;
