@@ -81,7 +81,7 @@ public class Item
     public MusicScore Score;
     public ItemStats Stats;
 
-    public Ugc Ugc;
+    public UGC Ugc;
 
     public long InventoryId;
     public long BankInventoryId;

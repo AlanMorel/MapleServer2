@@ -2,14 +2,14 @@
 
 namespace MapleServer2.Types;
 
-public class Ugc
+public class UGC
 {
     public long Uid;
 
     public Guid Guid;
     public string Name;
     public string Url;
-    public UgcType Type;
+    public UGCType Type;
 
     public long CharacterId;
     public string CharacterName;
@@ -19,9 +19,9 @@ public class Ugc
     public long CreationTime;
     public long SalePrice;
 
-    public Ugc() { }
+    public UGC() { }
 
-    public Ugc(string name, long characterId, string characterName, long accountId, long salePrice, UgcType type)
+    public UGC(string name, long characterId, string characterName, long accountId, long salePrice, UGCType type)
     {
         Guid = Guid.NewGuid();
         Name = name;
@@ -32,13 +32,24 @@ public class Ugc
         SalePrice = salePrice;
         Url = string.Empty;
         Type = type;
-        Uid = DatabaseManager.Ugc.Insert(this);
+        Uid = DatabaseManager.UGC.Insert(this);
     }
 }
 
-public enum UgcType : byte
+// All valid UGC types
+public enum UGCType : byte
 {
     Item = 0x01,
     Furniture = 0x02,
-    GuildEmblem = 0x06
+    Banner = 0x03,
+    Unk = 0x04,
+    Unk2 = 0x05,
+    GuildEmblem = 0x06,
+    Unk3 = 0x07,
+    Unk4 = 0x08,
+    Unk5 = 0x09,
+    Unk6 = 0x0A,
+    Unk7 = 0xC9,
+    Unk8 = 0xCA,
+    Unk9 = 0xD1
 }

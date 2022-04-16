@@ -38,6 +38,7 @@ public static class UploadEndpoint
             PostUgcMode.Item or PostUgcMode.Furnishing => HandleItem(fileBytes, id, ugcUid),
             PostUgcMode.ItemIcon => HandleItemIcon(fileBytes, id, ugcUid),
             PostUgcMode.GuildEmblem => HandleGuildEmblem(fileBytes, ugcUid, id),
+            PostUgcMode.Banner => HandleBanner(fileBytes, ugcUid, id),
             _ => HandleUnknownMode(mode)
         };
     }
@@ -47,7 +48,7 @@ public static class UploadEndpoint
         string filePath = $"{Paths.DATA_DIR}/itemicon/{itemId}/";
         Directory.CreateDirectory(filePath);
 
-        Ugc ugc = DatabaseManager.Ugc.FindByUid(ugcUid);
+        UGC ugc = DatabaseManager.UGC.FindByUid(ugcUid);
         if (ugc is null)
         {
             Log.Logger.Error($"Could not find ugc with uid {ugcUid}");
@@ -63,7 +64,7 @@ public static class UploadEndpoint
         string filePath = $"{Paths.DATA_DIR}/item/{itemId}/";
         Directory.CreateDirectory(filePath);
 
-        Ugc ugc = DatabaseManager.Ugc.FindByUid(ugcUid);
+        UGC ugc = DatabaseManager.UGC.FindByUid(ugcUid);
         if (ugc is null)
         {
             Log.Logger.Error($"Could not find ugc with uid {ugcUid}");
@@ -72,7 +73,7 @@ public static class UploadEndpoint
 
         string url = $"item/ms2/01/{itemId}/{ugc.Guid}-{ugcUid}.m2u";
         ugc.Url = url;
-        DatabaseManager.Ugc.Update(ugc);
+        DatabaseManager.UGC.Update(ugc);
 
         File.WriteAllBytes($"{filePath}/{ugc.Guid}-{ugcUid}.m2u", fileBytes);
         return Results.Text($"0,{url}");
@@ -101,7 +102,7 @@ public static class UploadEndpoint
         string filePath = $"{Paths.DATA_DIR}/guildmark/{guildId}/";
         Directory.CreateDirectory(filePath);
 
-        Ugc ugc = DatabaseManager.Ugc.FindByUid(ugcUid);
+        UGC ugc = DatabaseManager.UGC.FindByUid(ugcUid);
         if (ugc is null)
         {
             Log.Logger.Error($"Could not find ugc with uid {ugcUid}");
@@ -118,9 +119,30 @@ public static class UploadEndpoint
         string url = $"guildmark/ms2/01/{guildId}/{ugc.Guid}.png";
         ugc.Url = url;
 
-        DatabaseManager.Ugc.Update(ugc);
+        DatabaseManager.UGC.Update(ugc);
 
         File.WriteAllBytes($"{filePath}/{ugc.Guid}.png", fileBytes);
+        return Results.Text($"0,{url}");
+    }
+
+    private static IResult HandleBanner(byte[] fileBytes, long ugcUid, int bannerId)
+    {
+        string filePath = $"{Paths.DATA_DIR}/banner/{bannerId}/";
+        Directory.CreateDirectory(filePath);
+
+        UGC ugc = DatabaseManager.UGC.FindByUid(ugcUid);
+        if (ugc is null)
+        {
+            Log.Logger.Error($"Could not find ugc with uid {ugcUid}");
+            return Results.BadRequest();
+        }
+
+        string url = $"banner/ms2/01/{bannerId}/{ugc.Guid}-{ugcUid}.m2u";
+        ugc.Url = url;
+
+        DatabaseManager.UGC.Update(ugc);
+
+        File.WriteAllBytes($"{filePath}/{ugc.Guid}-{ugcUid}.m2u", fileBytes);
         return Results.Text($"0,{url}");
     }
 

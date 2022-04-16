@@ -852,6 +852,25 @@ CREATE TABLE `game_event_user_values`
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
 
+--
+-- Table structure for table `banner_slot`
+--
+
+DROP TABLE IF EXISTS `ad_banner_slots`;
+CREATE TABLE `ad_banner_slots`
+(
+    `id`        bigint auto_increment NOT NULL,
+    `datetime`  bigint                NOT NULL,
+    `banner_id` bigint                NOT NULL,
+    `active`    TINYINT UNSIGNED      NOT NULL,
+    `ugc_uid`   bigint,
+    CONSTRAINT `banner_slots_pk` PRIMARY KEY (`id`),
+    CONSTRAINT `banner_slots_ugc_FK` FOREIGN KEY (`ugc_uid`) REFERENCES `ugc` (`uid`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci;
+
+
 /*!40103 SET TIME_ZONE = @OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE = @OLD_SQL_MODE */;

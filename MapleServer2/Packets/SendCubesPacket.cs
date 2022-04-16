@@ -31,7 +31,7 @@ public static class SendCubesPacket
             pWriter.WriteBool(cube.Item.Ugc is not null);
             if (cube.Item.Ugc is not null)
             {
-                pWriter.WriteUgcTemplate(cube.Item.Ugc);
+                pWriter.WriteUGCTemplate(cube.Item.Ugc);
             }
             pWriter.WriteInt(cube.PlotNumber);
             pWriter.WriteInt();

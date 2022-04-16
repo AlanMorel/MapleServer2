@@ -114,7 +114,7 @@ public class LoginHandler : LoginPacketHandler
 
         Logger.Debug("Initializing login with account id: {AccountId}", session.AccountId);
         session.Send(LoginResultPacket.InitLogin(session.AccountId));
-        session.Send(UgcPacket.SetEndpoint($"{url}/ws.asmx?wsdl", url));
+        session.Send(UGCPacket.SetEndpoint($"{url}/ws.asmx?wsdl", url));
         session.Send(CharacterListPacket.SetMax(account.CharacterSlots));
         session.Send(CharacterListPacket.StartList());
         // Send each character data

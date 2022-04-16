@@ -4,23 +4,26 @@ using MapleServer2.Types;
 
 namespace MapleServer2.Packets;
 
-public static class UgcPacket
+public static class UGCPacket
 {
-    private enum UgcMode : byte
+    private enum UGCMode : byte
     {
         CreateUgc = 0x02,
         SetItemUrl = 0x04,
+        ActivateBanner = 0x07,
+        UpdateUGCBanner = 0x08,
         ProfilePicture = 0x0B,
         UpdateUgcItem = 0x0D,
         UpdateUgcFurnishing = 0x0E,
         SetEndpoint = 0x11,
-        Mode12 = 0x12
+        LoadBanners = 0x12,
+        UpdateBanner = 0x14
     }
 
     public static PacketWriter SetEndpoint(string uploadEndpoint, string resourceEndpoint, string locale = "na")
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.Write(UgcMode.SetEndpoint); // Function
+        pWriter.Write(UGCMode.SetEndpoint); // Function
         pWriter.WriteUnicodeString(uploadEndpoint); // Serves some random irrq.aspx
         pWriter.WriteUnicodeString(resourceEndpoint); // Serves resources
         pWriter.WriteUnicodeString(locale); // locale
@@ -35,10 +38,10 @@ public static class UgcPacket
         return null;
     }
 
-    public static PacketWriter CreateUgc(Ugc ugc)
+    public static PacketWriter CreateUGC(UGC ugc)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.Write(UgcMode.CreateUgc);
+        pWriter.Write(UGCMode.CreateUgc);
         pWriter.Write(ugc.Type);
         pWriter.WriteLong(ugc.Uid);
         pWriter.WriteUnicodeString(ugc.Guid.ToString());
@@ -46,10 +49,10 @@ public static class UgcPacket
         return pWriter;
     }
 
-    public static PacketWriter SetUgcUrl(Ugc ugc)
+    public static PacketWriter SetUgcUrl(UGC ugc)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.Write(UgcMode.SetItemUrl);
+        pWriter.Write(UGCMode.SetItemUrl);
         pWriter.Write(ugc.Type);
         pWriter.WriteLong(ugc.Uid);
         pWriter.WriteUnicodeString(ugc.Url);
@@ -57,25 +60,20 @@ public static class UgcPacket
         return pWriter;
     }
 
-    public static PacketWriter Unknown7()
+    public static PacketWriter ActivateBanner(UGCBanner ugcBanner)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.WriteByte(0x07);
-        pWriter.WriteLong();
-        pWriter.WriteByte(); // condition
-        // If byte == 1
-        SharedSubUgc(pWriter);
-        // EndIf
-        // ???
+        pWriter.Write(UGCMode.ActivateBanner);
+        pWriter.WriteActiveBannerSlot(ugcBanner);
 
         return pWriter;
     }
 
-    public static PacketWriter Unknown8()
+    public static PacketWriter UpdateUGCBanner(UGCBanner ugcBanner)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.WriteByte(0x08);
-        SharedSubUgc2(pWriter);
+        pWriter.Write(UGCMode.UpdateUGCBanner);
+        pWriter.WriteUGCBanner(ugcBanner.Id, ugcBanner.Slots);
 
         return pWriter;
     }
@@ -97,7 +95,7 @@ public static class UgcPacket
     public static PacketWriter SetProfilePictureUrl(int objectId, long characterId, string url)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.Write(UgcMode.ProfilePicture);
+        pWriter.Write(UGCMode.ProfilePicture);
         pWriter.WriteInt(objectId);
         pWriter.WriteLong(characterId);
         pWriter.WriteUnicodeString(url);
@@ -105,10 +103,10 @@ public static class UgcPacket
         return pWriter;
     }
 
-    public static PacketWriter UpdateUgcItem(IFieldObject<Player> fieldPlayer, Item item)
+    public static PacketWriter UpdateUGCItem(IFieldObject<Player> fieldPlayer, Item item)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.Write(UgcMode.UpdateUgcItem);
+        pWriter.Write(UGCMode.UpdateUgcItem);
         pWriter.WriteInt(fieldPlayer.ObjectId);
         pWriter.WriteLong(item.Uid);
         pWriter.WriteInt(item.Id);
@@ -117,15 +115,15 @@ public static class UgcPacket
         pWriter.WriteByte(1); // unknown
         pWriter.WriteLong(item.Ugc.SalePrice);
         pWriter.WriteBool(false); // unknown
-        pWriter.WriteUgcTemplate(item.Ugc);
+        pWriter.WriteUGCTemplate(item.Ugc);
 
         return pWriter;
     }
 
-    public static PacketWriter UpdateUgcFurnishing(IFieldObject<Player> fieldPlayer, Item item)
+    public static PacketWriter UpdateUGCFurnishing(IFieldObject<Player> fieldPlayer, Item item)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.Write(UgcMode.UpdateUgcFurnishing);
+        pWriter.Write(UGCMode.UpdateUgcFurnishing);
         pWriter.WriteInt(fieldPlayer.ObjectId);
         pWriter.WriteLong(item.Uid);
         pWriter.WriteInt(item.Id);
@@ -134,7 +132,7 @@ public static class UgcPacket
         pWriter.WriteByte(1); // unknown
         pWriter.WriteLong(item.Ugc.SalePrice);
         pWriter.WriteBool(false); // unknown
-        pWriter.WriteUgcTemplate(item.Ugc);
+        pWriter.WriteUGCTemplate(item.Ugc);
 
         return pWriter;
     }
@@ -150,7 +148,7 @@ public static class UgcPacket
         pWriter.WriteInt();
         pWriter.WriteUnicodeString("StrW");
         // sub2
-        pWriter.WriteUgcTemplate(null);
+        pWriter.WriteUGCTemplate(null);
 
         return pWriter;
     }
@@ -167,10 +165,10 @@ public static class UgcPacket
         return pWriter;
     }
 
-    public static PacketWriter Mode12()
+    public static PacketWriter LoadUGCBanner(List<UGCBanner> banners)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.Write(UgcMode.Mode12);
+        pWriter.Write(UGCMode.LoadBanners);
 
         int counter1 = 0;
         pWriter.WriteInt(counter1);
@@ -192,54 +190,34 @@ public static class UgcPacket
             }
         }
 
-        int counter2 = 0;
-        pWriter.WriteInt(counter2);
-        for (int i = 0; i < counter2; i++)
+        pWriter.WriteInt(banners.Count);
+        foreach (UGCBanner ugcBanner in banners)
         {
-            bool flagB = false;
-            pWriter.WriteLong();
-            pWriter.WriteBool(flagB);
-            if (flagB)
-            {
-                pWriter.WriteByte();
-                pWriter.WriteInt();
-                pWriter.WriteLong();
-                pWriter.WriteLong();
-                pWriter.WriteUnicodeString();
-                pWriter.WriteUnicodeString();
-                pWriter.WriteLong();
-                pWriter.WriteUnicodeString();
-                pWriter.WriteByte();
-                pWriter.WriteByte();
-                pWriter.WriteLong();
-                pWriter.WriteByte();
-                pWriter.WriteUnicodeString();
-            }
+            pWriter.WriteActiveBannerSlot(ugcBanner);
         }
 
-        int counter3 = 0;
-        pWriter.WriteInt(counter3);
-        for (int i = 0; i < counter3; i++)
+        pWriter.WriteInt(banners.Count);
+        foreach (UGCBanner ugcBanner in banners)
         {
-            SharedSubUgc2(pWriter);
+            pWriter.WriteUGCBanner(ugcBanner.Id, ugcBanner.Slots);
         }
 
         return pWriter;
     }
 
-    public static PacketWriter Unknown20()
+    public static PacketWriter ReserveBannerSlots(long bannerId, List<BannerSlot> bannerSlots)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.WriteByte(0x14);
-        pWriter.WriteLong();
-        pWriter.WriteInt(); // some count for loop
-        for (int i = 0; i < 0; i++)
+        pWriter.Write(UGCMode.UpdateBanner);
+        pWriter.WriteLong(bannerId);
+        pWriter.WriteInt(bannerSlots.Count);
+        foreach (BannerSlot slot in bannerSlots)
         {
-            pWriter.WriteLong();
-            pWriter.WriteInt();
-            pWriter.WriteLong();
-            pWriter.WriteInt();
-            pWriter.WriteInt();
+            pWriter.WriteLong(slot.Id);
+            pWriter.WriteInt(1);
+            pWriter.WriteLong(slot.BannerId);
+            pWriter.WriteInt(slot.Date);
+            pWriter.WriteInt(slot.Hour);
             pWriter.WriteLong();
         }
 
@@ -269,7 +247,7 @@ public static class UgcPacket
         return pWriter;
     }
 
-    public static void WriteUgcTemplate(this PacketWriter pWriter, Ugc ugc)
+    public static void WriteUGCTemplate(this PacketWriter pWriter, UGC ugc)
     {
         pWriter.WriteLong(ugc?.Uid ?? 0);
         pWriter.WriteUnicodeString(ugc?.Guid.ToString() ?? ""); // UUID (filename)
@@ -284,23 +262,52 @@ public static class UgcPacket
         pWriter.WriteByte();
     }
 
-    private static void SharedSubUgc(PacketWriter pWriter)
+    private static void WriteUGCBanner(this PacketWriter pWriter, long bannerId, List<BannerSlot> banners)
     {
-        pWriter.WriteByte();
-        pWriter.WriteUnicodeString("WstrA");
-        // unknown call to invalid memory using packet
+        pWriter.WriteLong(bannerId);
+        pWriter.WriteInt(banners.Count);
+        foreach (BannerSlot bannerSlot in banners)
+        {
+            long bannerSlotDate = long.Parse($"{bannerSlot.Date}00000") + bannerSlot.Hour; // yes. this is stupid. Who approved this?
+            pWriter.WriteLong(bannerSlotDate);
+            pWriter.WriteUnicodeString(bannerSlot.UGC.CharacterName);
+            pWriter.WriteBool(true); //  true = reserved, false = awaiting reservation, not sure when false is used
+        }
     }
 
-    private static void SharedSubUgc2(PacketWriter pWriter)
+    private static void WriteActiveBannerSlot(this PacketWriter pWriter, UGCBanner ugcBanner)
     {
-        pWriter.WriteLong();
-        pWriter.WriteInt(); // counter for loop
-        for (int i = 0; i < 0; i++)
+        pWriter.WriteLong(ugcBanner.Id);
+        BannerSlot activeSlot = ugcBanner.Slots.FirstOrDefault(x => x.Active);
+        pWriter.WriteBool(activeSlot is not null);
+        if (activeSlot is null)
         {
-            pWriter.WriteLong();
-            pWriter.WriteUnicodeString("StrW");
-            // unknown call to invalid memory using packet
-            pWriter.WriteByte();
+            return;
         }
+
+        pWriter.Write(UGCType.Banner);
+        pWriter.WriteInt(2);
+        pWriter.WriteLong(activeSlot.UGC.AccountId);
+        pWriter.WriteLong(activeSlot.UGC.CharacterId);
+        pWriter.WriteUnicodeString(); // unknown
+        pWriter.WriteUnicodeString(activeSlot.UGC.CharacterName);
+        pWriter.WriteLong(activeSlot.UGC.Uid);
+        pWriter.WriteUnicodeString(activeSlot.UGC.Guid.ToString());
+        pWriter.WriteByte(3);
+        pWriter.WriteByte(1);
+        pWriter.WriteLong(activeSlot.BannerId);
+        byte loopCounter = 1; // not sure when more than 1 is used
+        pWriter.WriteByte(loopCounter);
+        for (byte i = 0; i < loopCounter; i++)
+        {
+            pWriter.WriteLong(activeSlot.Id);
+            pWriter.WriteInt(2);
+            pWriter.WriteLong(activeSlot.BannerId);
+            pWriter.WriteInt(activeSlot.Date);
+            pWriter.WriteInt(activeSlot.Hour);
+            pWriter.WriteLong();
+        }
+
+        pWriter.WriteUnicodeString(activeSlot.UGC.Url);
     }
 }

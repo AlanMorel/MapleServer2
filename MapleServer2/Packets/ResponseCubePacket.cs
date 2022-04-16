@@ -63,7 +63,7 @@ public static class ResponseCubePacket
         pWriter.WriteBool(item?.Ugc is not null);
         if (item?.Ugc is not null)
         {
-            pWriter.WriteUgcTemplate(item.Ugc);
+            pWriter.WriteUGCTemplate(item.Ugc);
         }
 
         return pWriter;
@@ -139,7 +139,7 @@ public static class ResponseCubePacket
         pWriter.WriteBool(cube.Value.Item.Ugc is not null);
         if (cube.Value.Item.Ugc is not null)
         {
-            pWriter.WriteUgcTemplate(cube.Value.Item.Ugc);
+            pWriter.WriteUGCTemplate(cube.Value.Item.Ugc);
         }
 
         pWriter.WriteByte();
@@ -235,7 +235,7 @@ public static class ResponseCubePacket
         pWriter.WriteBool(newCube.Value.Item.Ugc is not null);
         if (newCube.Value.Item.Ugc is not null)
         {
-            pWriter.WriteUgcTemplate(newCube.Value.Item.Ugc);
+            pWriter.WriteUGCTemplate(newCube.Value.Item.Ugc);
         }
 
         pWriter.WriteByte();
