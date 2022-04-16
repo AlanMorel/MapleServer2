@@ -22,7 +22,7 @@ namespace MapleServer2.Managers;
 // TODO: This needs to be thread safe
 // TODO: FieldManager probably needs its own thread to send updates about user position
 // This seems to be done every ~2s rather than on every update.
-public partial class FieldManager : IDisposable
+public class FieldManager : IDisposable
 {
     private readonly ILogger Logger = Log.Logger.ForContext<FieldManager>();
 
