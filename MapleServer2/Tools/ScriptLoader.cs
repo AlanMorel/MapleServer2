@@ -59,12 +59,12 @@ public static class ScriptLoader
         }
         catch (ArgumentException ex)
         {
-            Logger.Error("Error on script {name}. {message}", script.ToString(), ex.Message);
+            Logger.Error("Exception while running function {functionName}. {message}", functionName, ex.Message);
             return null;
         }
         catch (Exception ex)
         {
-            Logger.Error("Error on script {name}. {message}", script.ToString(), ex.Message);
+            Logger.Error("Exception while running function {functionName}. {message}", functionName, ex.Message);
             return null;
         }
     }
