@@ -10,7 +10,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class UgcHandler : GamePacketHandler
+public class UgcHandler : GamePacketHandler<UgcHandler>
 {
     public override RecvOp OpCode => RecvOp.UGC;
 
@@ -250,6 +250,7 @@ public class UgcHandler : GamePacketHandler
                 {
                     return;
                 }
+
                 session.Send(UGCPacket.UpdateUGCBanner(ugcBanner));
                 // TrophyManager.OnReserveBanner();
                 break;
