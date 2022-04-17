@@ -10,7 +10,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RockPaperScissorsHandler : GamePacketHandler
+public class RockPaperScissorsHandler : GamePacketHandler<RockPaperScissorsHandler>
 {
     public override RecvOp OpCode => RecvOp.RockPaperScissors;
 
@@ -64,7 +64,7 @@ public class RockPaperScissorsHandler : GamePacketHandler
                 HandleConfirmMatch2(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

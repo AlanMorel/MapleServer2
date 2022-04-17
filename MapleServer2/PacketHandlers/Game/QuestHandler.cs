@@ -11,7 +11,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class QuestHandler : GamePacketHandler
+public class QuestHandler : GamePacketHandler<QuestHandler>
 {
     public override RecvOp OpCode => RecvOp.Quest;
 
@@ -54,7 +54,7 @@ public class QuestHandler : GamePacketHandler
                 HandleToggleTracking(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

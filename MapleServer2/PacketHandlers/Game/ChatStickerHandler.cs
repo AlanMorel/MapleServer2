@@ -6,7 +6,7 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class ChatStickerHandler : GamePacketHandler
+public class ChatStickerHandler : GamePacketHandler<ChatStickerHandler>
 {
     public override RecvOp OpCode => RecvOp.ChatSticker;
 
@@ -41,7 +41,7 @@ public class ChatStickerHandler : GamePacketHandler
                 HandleUnfavorite(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

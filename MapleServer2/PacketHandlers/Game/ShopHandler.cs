@@ -11,7 +11,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class ShopHandler : GamePacketHandler
+public class ShopHandler : GamePacketHandler<ShopHandler>
 {
     public override RecvOp OpCode => RecvOp.Shop;
 
@@ -42,7 +42,7 @@ public class ShopHandler : GamePacketHandler
                 HandleOpenViaItem(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

@@ -8,7 +8,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class ClubHandler : GamePacketHandler
+public class ClubHandler : GamePacketHandler<ClubHandler>
 {
     public override RecvOp OpCode => RecvOp.Club;
 
@@ -71,7 +71,7 @@ public class ClubHandler : GamePacketHandler
                 HandleRename(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

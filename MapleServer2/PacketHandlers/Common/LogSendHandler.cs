@@ -7,7 +7,7 @@ using MapleServer2.Tools;
 namespace MapleServer2.PacketHandlers.Common;
 
 // Note: socket_exception debug offset includes +6 bytes from encrypted header
-public class LogSendHandler : CommonPacketHandler
+public class LogSendHandler : CommonPacketHandler<LogSendHandler>
 {
     public override RecvOp OpCode => RecvOp.LogSend;
 

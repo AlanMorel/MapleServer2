@@ -7,7 +7,7 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Common;
 
-public class QuitHandler : CommonPacketHandler
+public class QuitHandler : CommonPacketHandler<QuitHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestQuit;
     private readonly IPEndPoint LoginEndpoint;
@@ -45,7 +45,7 @@ public class QuitHandler : CommonPacketHandler
                 session.Dispose();
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

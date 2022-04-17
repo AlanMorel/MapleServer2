@@ -7,7 +7,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class JobHandler : GamePacketHandler
+public class JobHandler : GamePacketHandler<JobHandler>
 {
     public override RecvOp OpCode => RecvOp.Job;
 
@@ -37,7 +37,7 @@ public class JobHandler : GamePacketHandler
                 HandlePresetSkillTree(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

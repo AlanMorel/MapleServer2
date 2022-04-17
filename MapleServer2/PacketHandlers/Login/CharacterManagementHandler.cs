@@ -12,7 +12,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Login;
 
-public class CharacterManagementHandler : LoginPacketHandler
+public class CharacterManagementHandler : LoginPacketHandler<CharacterManagementHandler>
 {
     public override RecvOp OpCode => RecvOp.CharManagement;
 
@@ -38,7 +38,7 @@ public class CharacterManagementHandler : LoginPacketHandler
                 HandleDelete(session, packet);
                 break;
             default:
-                IPacketHandler<LoginSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

@@ -9,7 +9,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class InstrumentHandler : GamePacketHandler
+public class InstrumentHandler : GamePacketHandler<InstrumentHandler>
 {
     public override RecvOp OpCode => RecvOp.PlayInstrument;
 
@@ -64,7 +64,7 @@ public class InstrumentHandler : GamePacketHandler
                 HandleAudienceEmote(packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

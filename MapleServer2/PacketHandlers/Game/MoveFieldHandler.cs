@@ -12,7 +12,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class MoveFieldHandler : GamePacketHandler
+public class MoveFieldHandler : GamePacketHandler<MoveFieldHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestMoveField;
 
@@ -47,7 +47,7 @@ public class MoveFieldHandler : GamePacketHandler
                 HandleEnterDecorPlaner(session);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

@@ -9,7 +9,7 @@ using MoonSharp.Interpreter;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class ChangeAttributesHandler : GamePacketHandler
+public class ChangeAttributesHandler : GamePacketHandler<ChangeAttributesHandler>
 {
     public override RecvOp OpCode => RecvOp.ChangeAttribute;
 
@@ -32,7 +32,7 @@ public class ChangeAttributesHandler : GamePacketHandler
                 HandleSelectNewAttributes(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(function);
+                LogUnknownMode(function);
                 break;
         }
     }

@@ -6,7 +6,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestGemEquipmentHandler : GamePacketHandler
+public class RequestGemEquipmentHandler : GamePacketHandler<RequestGemEquipmentHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestGemEquipment;
 
@@ -33,7 +33,7 @@ public class RequestGemEquipmentHandler : GamePacketHandler
                 HandleTransparency(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

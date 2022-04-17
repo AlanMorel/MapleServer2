@@ -10,7 +10,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class TrophyHandler : GamePacketHandler
+public class TrophyHandler : GamePacketHandler<TrophyHandler>
 {
     public override RecvOp OpCode => RecvOp.Trophy;
 
@@ -33,7 +33,7 @@ public class TrophyHandler : GamePacketHandler
                 HandleFavorite(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

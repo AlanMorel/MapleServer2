@@ -7,7 +7,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestTutorialItemHandler : GamePacketHandler
+public class RequestTutorialItemHandler : GamePacketHandler<RequestTutorialItemHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestTutorialItem;
 

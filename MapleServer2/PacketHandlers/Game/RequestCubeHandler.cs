@@ -14,7 +14,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestCubeHandler : GamePacketHandler
+public class RequestCubeHandler : GamePacketHandler<RequestCubeHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestCube;
 
@@ -151,7 +151,7 @@ public class RequestCubeHandler : GamePacketHandler
                 HandleRemoveBuildingPermission(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

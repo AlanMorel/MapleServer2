@@ -8,7 +8,7 @@ using static MapleServer2.Packets.TriggerPacket;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class TriggerHandler : GamePacketHandler
+public class TriggerHandler : GamePacketHandler<TriggerHandler>
 {
     public override RecvOp OpCode => RecvOp.Trigger;
 
@@ -31,7 +31,7 @@ public class TriggerHandler : GamePacketHandler
                 HandleUpdateWidget(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

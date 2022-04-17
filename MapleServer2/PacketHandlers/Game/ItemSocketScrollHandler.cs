@@ -9,7 +9,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class ItemSocketScrollHandler : GamePacketHandler
+public class ItemSocketScrollHandler : GamePacketHandler<ItemSocketScrollHandler>
 {
     public override RecvOp OpCode => RecvOp.ItemSocketScroll;
 
@@ -40,7 +40,7 @@ public class ItemSocketScrollHandler : GamePacketHandler
                 HandleUseScroll(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

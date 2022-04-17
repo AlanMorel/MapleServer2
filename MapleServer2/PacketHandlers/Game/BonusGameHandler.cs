@@ -5,7 +5,7 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class BonusGameHandler : GamePacketHandler
+public class BonusGameHandler : GamePacketHandler<BonusGameHandler>
 {
     public override RecvOp OpCode => RecvOp.BonusGame;
 
@@ -30,7 +30,7 @@ public class BonusGameHandler : GamePacketHandler
             case BonusGameType.Close:
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

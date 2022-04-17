@@ -6,7 +6,7 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class EnterEventFieldHandler : GamePacketHandler
+public class EnterEventFieldHandler : GamePacketHandler<EnterEventFieldHandler>
 {
     public override RecvOp OpCode => RecvOp.EnterEventField;
 

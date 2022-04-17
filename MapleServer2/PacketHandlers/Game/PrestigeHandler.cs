@@ -9,7 +9,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class PrestigeHandler : GamePacketHandler
+public class PrestigeHandler : GamePacketHandler<PrestigeHandler>
 {
     public override RecvOp OpCode => RecvOp.Prestige;
 
@@ -31,7 +31,7 @@ public class PrestigeHandler : GamePacketHandler
                 HandleClaimMissionReward(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

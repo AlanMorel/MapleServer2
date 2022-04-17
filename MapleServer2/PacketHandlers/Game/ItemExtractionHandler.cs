@@ -8,7 +8,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class ItemExtractionHandler : GamePacketHandler
+public class ItemExtractionHandler : GamePacketHandler<ItemExtractionHandler>
 {
     public override RecvOp OpCode => RecvOp.ItemExtraction;
 

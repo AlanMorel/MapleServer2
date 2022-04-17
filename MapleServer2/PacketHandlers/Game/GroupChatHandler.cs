@@ -6,7 +6,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class GroupChatHandler : GamePacketHandler
+public class GroupChatHandler : GamePacketHandler<GroupChatHandler>
 {
     public override RecvOp OpCode => RecvOp.GroupChat;
 
@@ -37,7 +37,7 @@ public class GroupChatHandler : GamePacketHandler
                 HandleChat(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

@@ -9,7 +9,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class PremiumClubHandler : GamePacketHandler
+public class PremiumClubHandler : GamePacketHandler<PremiumClubHandler>
 {
     public override RecvOp OpCode => RecvOp.PremiumClub;
 
@@ -40,7 +40,7 @@ public class PremiumClubHandler : GamePacketHandler
                 HandlePurchaseMembership(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

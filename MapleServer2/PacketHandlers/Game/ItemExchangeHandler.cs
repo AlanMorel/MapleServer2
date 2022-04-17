@@ -8,7 +8,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class ItemExchangeHandler : GamePacketHandler
+public class ItemExchangeHandler : GamePacketHandler<ItemExchangeHandler>
 {
     public override RecvOp OpCode => RecvOp.ItemExchange;
 
@@ -27,7 +27,7 @@ public class ItemExchangeHandler : GamePacketHandler
                 HandleUse(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

@@ -11,7 +11,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class HomeActionHandler : GamePacketHandler
+public class HomeActionHandler : GamePacketHandler<HomeActionHandler>
 {
     public override RecvOp OpCode => RecvOp.HomeAction;
 
@@ -47,7 +47,7 @@ public class HomeActionHandler : GamePacketHandler
                 HandleSendPortalSettings(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

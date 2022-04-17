@@ -6,7 +6,7 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class InsigniaHandler : GamePacketHandler
+public class InsigniaHandler : GamePacketHandler<InsigniaHandler>
 {
     public override RecvOp OpCode => RecvOp.Insignia;
 

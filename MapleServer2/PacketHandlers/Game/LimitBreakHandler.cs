@@ -10,7 +10,7 @@ using MoonSharp.Interpreter;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class LimitBreakHandler : GamePacketHandler
+public class LimitBreakHandler : GamePacketHandler<LimitBreakHandler>
 {
     public override RecvOp OpCode => RecvOp.LimitBreak;
 
@@ -40,7 +40,7 @@ public class LimitBreakHandler : GamePacketHandler
                 HandleLimitBreakItem(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

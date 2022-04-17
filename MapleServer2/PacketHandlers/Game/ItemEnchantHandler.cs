@@ -12,7 +12,7 @@ using MoonSharp.Interpreter;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class ItemEnchantHandler : GamePacketHandler
+public class ItemEnchantHandler : GamePacketHandler<ItemEnchantHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestItemEnchant;
 
@@ -57,7 +57,7 @@ public class ItemEnchantHandler : GamePacketHandler
                 HandlePeachyEnchant(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

@@ -10,7 +10,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class MasteryHandler : GamePacketHandler
+public class MasteryHandler : GamePacketHandler<MasteryHandler>
 {
     public override RecvOp OpCode => RecvOp.ConstructRecipe;
 
@@ -41,7 +41,7 @@ public class MasteryHandler : GamePacketHandler
                 HandleCraftItem(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

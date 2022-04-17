@@ -10,7 +10,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class MushkingRoyaleSystemHandler : GamePacketHandler
+public class MushkingRoyaleSystemHandler : GamePacketHandler<MushkingRoyaleSystemHandler>
 {
     public override RecvOp OpCode => RecvOp.MushkingRoyale;
 
@@ -37,7 +37,7 @@ public class MushkingRoyaleSystemHandler : GamePacketHandler
                 HandleClaimRewards(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

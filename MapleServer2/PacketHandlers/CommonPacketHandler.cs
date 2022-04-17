@@ -5,13 +5,13 @@ using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
 using Serilog;
 
-namespace MapleServer2.PacketHandlers.Common;
+namespace MapleServer2.PacketHandlers;
 
-public abstract class CommonPacketHandler : IPacketHandler<LoginSession>, IPacketHandler<GameSession>
+public abstract class CommonPacketHandler<T> : IPacketHandler<LoginSession>, IPacketHandler<GameSession>
 {
     public abstract RecvOp OpCode { get; }
 
-    protected readonly ILogger Logger = Log.Logger.ForContext<CommonPacketHandler>();
+    protected readonly ILogger Logger = Log.Logger.ForContext<T>();
 
     public virtual void Handle(GameSession session, PacketReader packet)
     {
@@ -28,5 +28,10 @@ public abstract class CommonPacketHandler : IPacketHandler<LoginSession>, IPacke
     public override string ToString()
     {
         return $"[{OpCode}] Common.{GetType().Name}";
+    }
+
+    protected void LogUnknownMode(Enum mode)
+    {
+        Logger.Warning("New Unknown {0}: 0x{1}", mode.GetType().Name, mode.ToString("X"));
     }
 }

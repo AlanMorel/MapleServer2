@@ -5,7 +5,7 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestUserEnvHandler : GamePacketHandler
+public class RequestUserEnvHandler : GamePacketHandler<RequestUserEnvHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestUserEnvironment;
 
@@ -28,7 +28,7 @@ public class RequestUserEnvHandler : GamePacketHandler
                 HandleTrophy(session);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

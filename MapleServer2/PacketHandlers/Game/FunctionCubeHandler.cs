@@ -11,7 +11,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class FunctionCubeHandler : GamePacketHandler
+public class FunctionCubeHandler : GamePacketHandler<FunctionCubeHandler>
 {
     public override RecvOp OpCode => RecvOp.FunctionCube;
 
@@ -29,7 +29,7 @@ public class FunctionCubeHandler : GamePacketHandler
                 HandleUseCube(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

@@ -6,7 +6,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class FieldWarHandler : GamePacketHandler
+public class FieldWarHandler : GamePacketHandler<FieldWarHandler>
 {
     public override RecvOp OpCode => RecvOp.FieldWar;
 

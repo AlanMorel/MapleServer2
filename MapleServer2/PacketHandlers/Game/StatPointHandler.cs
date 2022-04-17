@@ -6,7 +6,7 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class StatPointHandler : GamePacketHandler
+public class StatPointHandler : GamePacketHandler<StatPointHandler>
 {
     public override RecvOp OpCode => RecvOp.StatPoint;
 
@@ -29,7 +29,7 @@ public class StatPointHandler : GamePacketHandler
                 HandleResetStatDistribution(session);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

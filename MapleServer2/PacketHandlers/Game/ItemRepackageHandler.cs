@@ -7,7 +7,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class ItemRepackageHandler : GamePacketHandler
+public class ItemRepackageHandler : GamePacketHandler<ItemRepackageHandler>
 {
     public override RecvOp OpCode => RecvOp.ItemRepackage;
 
@@ -35,7 +35,7 @@ public class ItemRepackageHandler : GamePacketHandler
                 HandleRepackage(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

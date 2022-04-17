@@ -5,7 +5,7 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class CharacterInfoHandler : GamePacketHandler
+public class CharacterInfoHandler : GamePacketHandler<CharacterInfoHandler>
 {
     public override RecvOp OpCode => RecvOp.CharInfo;
 

@@ -10,7 +10,7 @@ using MoonSharp.Interpreter;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class ItemSocketSystemHandler : GamePacketHandler
+public class ItemSocketSystemHandler : GamePacketHandler<ItemSocketSystemHandler>
 {
     public override RecvOp OpCode => RecvOp.ItemSocketSystem;
 
@@ -57,7 +57,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
                 HandleExtractGem(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

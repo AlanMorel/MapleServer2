@@ -12,7 +12,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-internal class InteractObjectHandler : GamePacketHandler
+internal class InteractObjectHandler : GamePacketHandler<InteractObjectHandler>
 {
     public override RecvOp OpCode => RecvOp.InteractObject;
 
@@ -35,7 +35,7 @@ internal class InteractObjectHandler : GamePacketHandler
                 HandleInteract(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

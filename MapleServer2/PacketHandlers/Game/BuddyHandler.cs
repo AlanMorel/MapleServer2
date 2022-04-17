@@ -9,7 +9,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class BuddyHandler : GamePacketHandler
+public class BuddyHandler : GamePacketHandler<BuddyHandler>
 {
     public override RecvOp OpCode => RecvOp.Buddy;
 
@@ -70,7 +70,7 @@ public class BuddyHandler : GamePacketHandler
                 HandleCancelRequest(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

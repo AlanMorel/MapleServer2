@@ -13,7 +13,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class UserChatHandler : GamePacketHandler
+public class UserChatHandler : GamePacketHandler<UserChatHandler>
 {
     public override RecvOp OpCode => RecvOp.UserChat;
 
@@ -68,7 +68,7 @@ public class UserChatHandler : GamePacketHandler
                 HandleChat(session, message, type, itemLinkPacket);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(type);
+                LogUnknownMode(type);
                 break;
         }
     }

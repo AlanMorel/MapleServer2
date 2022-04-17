@@ -14,7 +14,7 @@ using MapleServer2.Types;
 namespace MapleServer2.PacketHandlers.Login;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public class LoginHandler : LoginPacketHandler
+public class LoginHandler : LoginPacketHandler<LoginHandler>
 {
     public override RecvOp OpCode => RecvOp.ResponseLogin;
 
@@ -91,7 +91,7 @@ public class LoginHandler : LoginPacketHandler
                 SendCharacters(session, account);
                 break;
             default:
-                IPacketHandler<LoginSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

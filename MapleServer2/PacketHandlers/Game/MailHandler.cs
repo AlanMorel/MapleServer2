@@ -10,7 +10,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class MailHandler : GamePacketHandler
+public class MailHandler : GamePacketHandler<MailHandler>
 {
     public override RecvOp OpCode => RecvOp.Mail;
 
@@ -74,7 +74,7 @@ public class MailHandler : GamePacketHandler
                 HandleCollectBatch(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }

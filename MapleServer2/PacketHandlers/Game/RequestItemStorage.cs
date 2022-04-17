@@ -6,7 +6,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestItemStorage : GamePacketHandler
+public class RequestItemStorage : GamePacketHandler<RequestItemStorage>
 {
     public override RecvOp OpCode => RecvOp.RequestItemStorage;
 
@@ -53,7 +53,7 @@ public class RequestItemStorage : GamePacketHandler
                 HandleClose(session.Player.Account.BankInventory);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                LogUnknownMode(mode);
                 break;
         }
     }
