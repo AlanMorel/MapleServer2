@@ -44,7 +44,7 @@ public class UgcHandler : GamePacketHandler<UgcHandler>
                 HandleUpdateBanner(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(function);
+                LogUnknownMode(function);
                 break;
         }
     }
