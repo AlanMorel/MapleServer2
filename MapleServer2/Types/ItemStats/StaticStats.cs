@@ -15,6 +15,7 @@ public static class StaticStats
         {
             return;
         }
+
         int staticId = ItemMetadataStorage.GetOptionStatic(item.Id);
 
         ItemOptionsStatic staticOptions = ItemOptionStaticMetadataStorage.GetMetadata(staticId, item.Rarity);
@@ -28,6 +29,7 @@ public static class StaticStats
         {
             staticStats[stat.Attribute] = new BasicStat(stat);
         }
+
         foreach (ParserSpecialStat stat in staticOptions.SpecialStats)
         {
             staticStats[stat.Attribute] = new SpecialStat(stat);
@@ -46,43 +48,42 @@ public static class StaticStats
             return;
         }
 
-        ScriptLoader scriptLoader = new("Functions/calcItemValues");
+        Script script = ScriptLoader.GetScript("Functions/calcItemValues");
         foreach (StaticPick staticPickFlat in baseOptions.StaticValues)
         {
-            SetStat(stats, staticPickFlat, item, scriptLoader, optionLevelFactor);
+            SetStat(stats, staticPickFlat, item, script, optionLevelFactor);
         }
 
         foreach (StaticPick staticPickRate in baseOptions.StaticRates)
         {
-            SetStat(stats, staticPickRate, item, scriptLoader, optionLevelFactor);
+            SetStat(stats, staticPickRate, item, script, optionLevelFactor);
         }
     }
 
-    private static void SetStat(Dictionary<StatAttribute, ItemStat> stats, StaticPick staticPick, Item item, ScriptLoader scriptLoader, float optionLevelFactor)
+    private static void SetStat(Dictionary<StatAttribute, ItemStat> stats, StaticPick staticPick, Item item, Script script, float optionLevelFactor)
     {
         if (!stats.ContainsKey(staticPick.Stat))
         {
             stats[staticPick.Stat] = new BasicStat(staticPick.Stat, 0, StatAttributeType.Flat);
         }
+
         float currentStatValue = stats[staticPick.Stat].GetValue();
 
-        double statValue = CalculateStat(item, optionLevelFactor, staticPick, scriptLoader, currentStatValue);
+        double statValue = CalculateStat(item, optionLevelFactor, staticPick, script, currentStatValue);
 
         stats[staticPick.Stat].SetValue((float) statValue);
 
         if (stats[staticPick.Stat].GetValue() <= 0.0000f)
         {
             stats.Remove(staticPick.Stat);
-            ;
         }
     }
 
-    private static double CalculateStat(Item item, float optionLevelFactor, StaticPick staticPick, ScriptLoader scriptLoader, float currentStatValue)
+    private static double CalculateStat(Item item, float optionLevelFactor, StaticPick staticPick, Script script, float currentStatValue)
     {
-
         Random random = Random.Shared;
-        ;
-        string calcScript = "";
+
+        string calcScript;
         switch (staticPick.Stat)
         {
             case StatAttribute.Hp:
@@ -113,8 +114,7 @@ public static class StaticStats
                 return 0;
         }
 
-
-        DynValue result = scriptLoader.Call(calcScript, currentStatValue, staticPick.DeviationValue, (int) item.Type,
+        DynValue result = script.RunFunction(calcScript, currentStatValue, staticPick.DeviationValue, (int) item.Type,
             (int) item.RecommendJobs.First(), optionLevelFactor, item.Rarity, item.Level);
 
         if (result.Tuple.Length < 2)

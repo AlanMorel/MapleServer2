@@ -44,11 +44,11 @@ public static class ConstantStats
             return;
         }
 
-        ScriptLoader scriptLoader = new("Functions/calcItemValues");
+        Script script = ScriptLoader.GetScript("Functions/calcItemValues");
 
         foreach (ConstantPick constantPick in baseOptions.Constants)
         {
-            string calcScript = "";
+            string calcScript;
             switch (constantPick.Stat)
             {
                 case StatAttribute.Hp:
@@ -97,7 +97,7 @@ public static class ConstantStats
             }
 
             float statValue = constantStats[constantPick.Stat].GetValue();
-            DynValue result = scriptLoader.Call(calcScript, statValue, constantPick.DeviationValue, (int) item.Type,
+            DynValue result = script.RunFunction(calcScript, statValue, constantPick.DeviationValue, (int) item.Type,
                 (int) item.RecommendJobs.First(), optionLevelFactor, item.Rarity, item.Level);
 
             constantStats[constantPick.Stat].SetValue((float) result.Number);

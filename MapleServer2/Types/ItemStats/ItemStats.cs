@@ -230,8 +230,8 @@ public class ItemStats
             }
         }
 
-        ScriptLoader scriptLoader = new ScriptLoader("Functions/calcItemSocketMaxCount");
-        DynValue dynValue = scriptLoader.Call("calcItemSocketMaxCount", (int) item.Type, item.Rarity, optionLevelFactor, (int) item.InventoryTab);
+        Script script = ScriptLoader.GetScript("Functions/calcItemSocketMaxCount");
+        DynValue dynValue = script.RunFunction("calcItemSocketMaxCount", (int) item.Type, item.Rarity, optionLevelFactor, (int) item.InventoryTab);
         int slotAmount = (int) dynValue.Number;
         if (slotAmount <= 0)
         {

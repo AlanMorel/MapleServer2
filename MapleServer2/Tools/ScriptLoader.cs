@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Types;
+﻿using System.Collections.Concurrent;
+using Maple2Storage.Types;
 using MapleServer2.Managers;
 using MapleServer2.Servers.Game;
 using MoonSharp.Interpreter;
@@ -6,69 +7,98 @@ using Serilog;
 
 namespace MapleServer2.Tools;
 
-public class ScriptLoader
+public static class ScriptLoader
 {
-    private readonly ILogger Logger = Log.Logger.ForContext<ScriptLoader>();
-
-    public readonly Script Script;
-    private readonly string ScriptName;
+    private static readonly ConcurrentDictionary<string, Script> Scripts = new();
+    private static readonly ILogger Logger = Log.Logger.ForContext(typeof(ScriptLoader));
 
     /// <summary>
-    /// Loads an script from the Scripts folder.
+    /// Get the script from the cache or load it if it's not in the cache.
+    /// If a session is provided, it'll create a new script every time.
     /// </summary>
-    public ScriptLoader(string scriptName, GameSession session = null)
+    /// <returns><see cref="Script"/></returns>
+    public static Script GetScript(string scriptName, GameSession session = null)
     {
-        string scriptPath = $"{Paths.SCRIPTS_DIR}/{scriptName}.lua";
-        if (!File.Exists(scriptPath))
+        // If session is not null, create a new script every time.
+        if (session is not null)
         {
-            return;
+            NewScript(scriptName, out Script newScript, session);
+            return newScript;
         }
 
-        ScriptName = scriptName;
-        Script = new();
-
-        if (session != null)
+        // If session is null, use the cached script.
+        if (Scripts.TryGetValue(scriptName, out Script script))
         {
-            // Register script manager as an proxy object
-            // Documentation: https://www.moonsharp.org/proxy.html
-            UserData.RegisterProxyType<ScriptManager, GameSession>(r => new(r));
-            Script.Globals["ScriptManager"] = new ScriptManager(session);
+            return script;
         }
 
-        try
+        // If the script is not in the cache, create a new script.
+        if (!NewScript(scriptName, out script))
         {
-            Script.DoFile(scriptPath);
+            return null;
         }
-        catch (Exception ex)
-        {
-            Logger.Error(ex.Message);
-        }
+
+        Scripts.TryAdd(scriptName, script);
+        return script;
     }
 
     /// <summary>
     /// Calls the specified function.
     /// </summary>
     /// <exception cref="ArgumentException"></exception>
-    public DynValue Call(string functionName, params object[] args)
+    public static DynValue RunFunction(this Script script, string functionName, params object[] args)
     {
-        if (Script.Globals[functionName] == null)
+        if (script.Globals[functionName] == null)
         {
             return null;
         }
 
         try
         {
-            return Script.Call(Script.Globals[functionName], args);
+            return script.Call(script.Globals[functionName], args);
         }
         catch (ArgumentException ex)
         {
-            Logger.Error("Error on script {name}. {message}", ScriptName, ex.Message);
+            Logger.Error("Exception while running function {functionName}. {message}", functionName, ex.Message);
             return null;
         }
         catch (Exception ex)
         {
-            Logger.Error("Error on script {name}. {message}", ScriptName, ex.Message);
+            Logger.Error("Exception while running function {functionName}. {message}", functionName, ex.Message);
             return null;
         }
+    }
+
+    private static bool NewScript(string scriptName, out Script script, GameSession session = null)
+    {
+        script = null;
+        string scriptPath = $"{Paths.SCRIPTS_DIR}/{scriptName}.lua";
+        if (!File.Exists(scriptPath))
+        {
+            Logger.Error("Script {scriptName} does not exist.", scriptName);
+            return false;
+        }
+
+        script = new();
+
+        if (session is not null)
+        {
+            // Register script manager as an proxy object
+            // Documentation: https://www.moonsharp.org/proxy.html
+            UserData.RegisterProxyType<ScriptManager, GameSession>(r => new(r));
+            script.Globals["ScriptManager"] = new ScriptManager(session);
+        }
+
+        try
+        {
+            script.DoFile(scriptPath);
+        }
+        catch (Exception ex)
+        {
+            Logger.Error("Error on script {scriptName}. {message}", scriptName, ex.Message);
+            return false;
+        }
+
+        return true;
     }
 }

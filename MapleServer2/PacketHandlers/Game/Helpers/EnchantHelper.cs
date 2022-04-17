@@ -10,8 +10,8 @@ public static class EnchantHelper
     public static Dictionary<StatAttribute, ItemStat> GetEnchantStats(int enchantLevel, ItemType itemType, int itemLevel)
     {
         Dictionary<StatAttribute, ItemStat> enchantStats = new();
-        ScriptLoader scriptLoader = new("Functions/calcEnchantValues");
-        DynValue statValueScriptResult = scriptLoader.Call("calcEnchantBoostValues", enchantLevel, (int) itemType, itemLevel);
+        Script script = ScriptLoader.GetScript("Functions/calcEnchantValues");
+        DynValue statValueScriptResult = script.RunFunction("calcEnchantBoostValues", enchantLevel, (int) itemType, itemLevel);
 
         for (int i = 0; i < statValueScriptResult.Tuple.Length; i += 2)
         {
