@@ -148,8 +148,7 @@ public class MapParser : Exporter<List<MapMetadata>>
                                 CoordF.FromVector3(eventSpawnNpc.Position), CoordF.FromVector3(eventSpawnNpc.Rotation)));
                             break;
                         case ISpawnPointPC pcSpawn:
-                            mapEntity.PlayerSpawns.Add(
-                                new(CoordS.FromVector3(pcSpawn.Position), CoordS.FromVector3(pcSpawn.Rotation)));
+                            mapEntity.PlayerSpawns.Add(new(CoordS.FromVector3(pcSpawn.Position), CoordS.FromVector3(pcSpawn.Rotation)));
                             break;
                         case ISpawnPointNPC npcSpawn:
                             // These tend to be vendors, shops, etc.
@@ -272,6 +271,9 @@ public class MapParser : Exporter<List<MapMetadata>>
                 case IMS2PhysXProp physXProp:
                     switch (physXProp)
                     {
+                        case IMS2UccAD adBanner:
+                            mapEntity.AdBannerIds.Add(adBanner.UccID);
+                            break;
                         case IMS2CubeProp prop:
                             if (!prop.IsObjectWeapon)
                             {
@@ -281,6 +283,7 @@ public class MapParser : Exporter<List<MapMetadata>>
                             List<int> weaponIds = prop.ObjectWeaponItemCode.SplitAndParseToInt(',').ToList();
                             mapEntity.WeaponObjects.Add(new(CoordB.FromVector3(prop.Position), weaponIds));
                             break;
+
                         case IMS2Liftable liftable:
                             mapEntity.LiftableObjects.Add(new(liftable.EntityId, (int) liftable.ItemID, liftable.EffectQuestID, liftable.EffectQuestState,
                                 liftable.ItemLifeTime, liftable.LiftableRegenCheckTime));

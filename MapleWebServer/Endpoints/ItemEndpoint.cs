@@ -13,6 +13,6 @@ public static class ItemEndpoint
         }
 
         FileStream profileImage = File.OpenRead(fullPath);
-        return Results.File(profileImage, contentType: "image/png");
+        return Results.File(profileImage, contentType: "application/octet-stream");
     }
 }

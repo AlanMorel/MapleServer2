@@ -61,9 +61,9 @@ internal class RequestTaxiHandler : GamePacketHandler<RequestTaxiHandler>
             return;
         }
 
-        ScriptLoader scriptLoader = new("Functions/calcTaxiCost");
+        Script script = ScriptLoader.GetScript("Functions/calcTaxiCost");
 
-        DynValue result = scriptLoader.Call("calcTaxiCost", mapCount, session.Player.Levels.Level);
+        DynValue result = script.RunFunction("calcTaxiCost", mapCount, session.Player.Levels.Level);
         if (result == null)
         {
             return;
@@ -86,9 +86,9 @@ internal class RequestTaxiHandler : GamePacketHandler<RequestTaxiHandler>
             return;
         }
 
-        ScriptLoader scriptLoader = new("Functions/calcAirTaxiCost");
+        Script script = ScriptLoader.GetScript("Functions/calcAirTaxiCost");
 
-        DynValue result = scriptLoader.Call("calcAirTaxiCost", session.Player.Levels.Level);
+        DynValue result = script.RunFunction("calcAirTaxiCost", session.Player.Levels.Level);
         if (result == null)
         {
             return;

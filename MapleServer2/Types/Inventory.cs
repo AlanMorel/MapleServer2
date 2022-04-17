@@ -664,7 +664,7 @@ public sealed class Inventory : IInventory
             return;
         }
 
-        if (item.Ugc?.Type is UgcType.Furniture)
+        if (item.Ugc?.Type is UGCType.Furniture)
         {
             _ = home.AddWarehouseUgcItem(session, item);
             return;

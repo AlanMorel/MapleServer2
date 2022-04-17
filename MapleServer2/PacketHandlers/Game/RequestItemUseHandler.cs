@@ -11,6 +11,7 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
+using MoonSharp.Interpreter;
 
 namespace MapleServer2.PacketHandlers.Game;
 
@@ -558,8 +559,8 @@ public class RequestItemUseHandler : GamePacketHandler<RequestItemUseHandler>
             return;
         }
 
-        ScriptLoader scriptLoader = new("Functions/ItemEnchantScroll/getSuccessRate");
-        float successRate = (float) scriptLoader.Call("getSuccessRate", metadata.Id).Number;
+        Script script = ScriptLoader.GetScript("Functions/ItemEnchantScroll/getSuccessRate");
+        float successRate = (float) script.RunFunction("getSuccessRate", metadata.Id).Number;
         session.Send(EnchantScrollPacket.OpenWindow(item.Uid, metadata, successRate));
     }
 }

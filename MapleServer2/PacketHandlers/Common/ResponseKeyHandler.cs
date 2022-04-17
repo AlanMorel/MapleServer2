@@ -113,7 +113,7 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
         session.Send(DynamicChannelPacket.DynamicChannel(short.Parse(ConstantsMetadataStorage.GetConstant("ChannelCount"))));
 
         session.Send(ServerEnterPacket.Enter(session));
-        session.Send(UgcPacket.Unknown22());
+        session.Send(UGCPacket.Unknown22());
         session.Send(CashPacket.Unknown09());
 
         // SendContentShutdown f(0x01, 0x04)

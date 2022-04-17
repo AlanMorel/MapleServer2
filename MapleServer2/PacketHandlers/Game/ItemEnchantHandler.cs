@@ -126,9 +126,9 @@ public class ItemEnchantHandler : GamePacketHandler<ItemEnchantHandler>
     private static ItemEnchant GetEnchantInfo(Item item)
     {
         ItemEnchant itemEnchantStats = new(item.Uid, item.EnchantLevel);
-        ScriptLoader scriptLoader = new("Functions/calcEnchantValues");
-        DynValue successRateScriptResult = scriptLoader.Call("calcEnchantRates", item.EnchantLevel + 1);
-        DynValue ingredientsResult = scriptLoader.Call("calcEnchantIngredients", item.EnchantLevel + 1, item.Rarity, (int) item.Type, item.Level);
+        Script script = ScriptLoader.GetScript("Functions/calcEnchantValues");
+        DynValue successRateScriptResult = script.RunFunction("calcEnchantRates", item.EnchantLevel + 1);
+        DynValue ingredientsResult = script.RunFunction("calcEnchantIngredients", item.EnchantLevel + 1, item.Rarity, (int) item.Type, item.Level);
 
         itemEnchantStats.Rates.BaseSuccessRate = (float) successRateScriptResult.Tuple[0].Number;
         itemEnchantStats.Rates.CatalystRate = (float) successRateScriptResult.Tuple[1].Number;

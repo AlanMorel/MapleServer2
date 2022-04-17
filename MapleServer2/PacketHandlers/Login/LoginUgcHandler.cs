@@ -34,6 +34,6 @@ public class LoginUgcHandler : LoginPacketHandler<LoginUgcHandler>
         string path = packet.ReadUnicodeString();
         DatabaseManager.Characters.UpdateProfileUrl(session.CharacterId, path);
 
-        session.Send(UgcPacket.SetProfilePictureUrl(0, session.CharacterId, path));
+        session.Send(UGCPacket.SetProfilePictureUrl(0, session.CharacterId, path));
     }
 }

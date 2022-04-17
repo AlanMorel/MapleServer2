@@ -72,8 +72,8 @@ public class MailHelper
 
     private static void SendBlackMarketSoldMail(BlackMarketListing listing, Item item, long price, bool removeListing)
     {
-        ScriptLoader scriptLoader = new("Functions/calcBlackMarketCostRate");
-        DynValue scriptResults = scriptLoader.Call("calcBlackMarketCostRate");
+        Script script = ScriptLoader.GetScript("Functions/calcBlackMarketCostRate");
+        DynValue scriptResults = script.RunFunction("calcBlackMarketCostRate");
         float salesFeeRate = (float) scriptResults.Number;
         long tax = (long) (salesFeeRate * (item.Amount * price));
         long revenue = item.Amount * price - tax;

@@ -243,7 +243,7 @@ public class DatabaseItem : DatabaseTable
             Category = data.category,
             MailId = data.mail_id ?? 0,
             HomeId = data.home_id ?? 0,
-            Ugc = data.ugc_uid == null ? null : DatabaseManager.Ugc.FindByUid(data.ugc_uid)
+            Ugc = data.ugc_uid == null ? null : DatabaseManager.UGC.FindByUid(data.ugc_uid)
         };
     }
 }

@@ -61,8 +61,8 @@ public class LimitBreakHandler : GamePacketHandler<LimitBreakHandler>
             return;
         }
 
-        ScriptLoader scriptLoader = new("Functions/calcLimitBreakValues");
-        DynValue scriptResultCosts = scriptLoader.Call("calcLimitBreakCost", item.LimitBreakLevel);
+        Script script = ScriptLoader.GetScript("Functions/calcLimitBreakValues");
+        DynValue scriptResultCosts = script.RunFunction("calcLimitBreakCost", item.LimitBreakLevel);
         long mesoCost = (long) scriptResultCosts.Tuple[0].Number;
 
         List<EnchantIngredient> ingredients = GetIngredients(scriptResultCosts);
@@ -85,8 +85,8 @@ public class LimitBreakHandler : GamePacketHandler<LimitBreakHandler>
             session.Send(LimitBreakPacket.Notice((short) LimitBreakError.ItemCannotLimitBreak));
             return;
         }
-        ScriptLoader scriptLoader = new("Functions/calcLimitBreakValues");
-        DynValue scriptResultCosts = scriptLoader.Call("calcLimitBreakCost", item.LimitBreakLevel);
+        Script script = ScriptLoader.GetScript("Functions/calcLimitBreakValues");
+        DynValue scriptResultCosts = script.RunFunction("calcLimitBreakCost", item.LimitBreakLevel);
         if (!session.Player.Wallet.Meso.Modify((long) scriptResultCosts.Tuple[0].Number))
         {
             session.Send(LimitBreakPacket.Notice((short) LimitBreakError.InsufficientMesos));
@@ -159,9 +159,9 @@ public class LimitBreakHandler : GamePacketHandler<LimitBreakHandler>
 
     private static Item GetNextLevelItem(Item item)
     {
-        ScriptLoader scriptLoader = new("Functions/calcLimitBreakValues");
-        DynValue scriptResultRates = scriptLoader.Call("calcLimitBreakStatRateValues", item.LimitBreakLevel);
-        DynValue scriptResultFlats = scriptLoader.Call("calcLimitBreakStatFlatValues", item.LimitBreakLevel);
+        Script script = ScriptLoader.GetScript("Functions/calcLimitBreakValues");
+        DynValue scriptResultRates = script.RunFunction("calcLimitBreakStatRateValues", item.LimitBreakLevel);
+        DynValue scriptResultFlats = script.RunFunction("calcLimitBreakStatFlatValues", item.LimitBreakLevel);
 
         Item nextLevelItem = new(item)
         {
