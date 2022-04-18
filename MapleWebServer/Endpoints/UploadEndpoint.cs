@@ -1,8 +1,8 @@
-﻿using Maple2Storage.Types;
+﻿using Maple2Storage.Enums;
+using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Database;
 using MapleServer2.Types;
-using MapleWebServer.Enums;
 using Serilog;
 
 namespace MapleWebServer.Endpoints;
@@ -22,7 +22,7 @@ public static class UploadEndpoint
         PacketReader pReader = new(memoryStream.ToArray());
 
         int flagA = pReader.ReadInt();
-        PostUgcMode mode = (PostUgcMode) pReader.ReadInt();
+        UGCType mode = (UGCType) pReader.ReadInt();
         long accountId = pReader.ReadLong();
         long characterId = pReader.ReadLong();
         long ugcUid = pReader.ReadLong();
@@ -34,11 +34,11 @@ public static class UploadEndpoint
 
         return mode switch
         {
-            PostUgcMode.ProfileAvatar => HandleProfileAvatar(fileBytes, characterId),
-            PostUgcMode.Item or PostUgcMode.Furnishing => HandleItem(fileBytes, id, ugcUid),
-            PostUgcMode.ItemIcon => HandleItemIcon(fileBytes, id, ugcUid),
-            PostUgcMode.GuildEmblem => HandleGuildEmblem(fileBytes, ugcUid, id),
-            PostUgcMode.Banner => HandleBanner(fileBytes, ugcUid, id),
+            UGCType.ProfileAvatar => HandleProfileAvatar(fileBytes, characterId),
+            UGCType.Item or UGCType.Furniture or UGCType.Mount => HandleItem(fileBytes, id, ugcUid),
+            UGCType.ItemIcon => HandleItemIcon(fileBytes, id, ugcUid),
+            UGCType.GuildEmblem => HandleGuildEmblem(fileBytes, ugcUid, id),
+            UGCType.Banner => HandleBanner(fileBytes, ugcUid, id),
             _ => HandleUnknownMode(mode)
         };
     }
@@ -146,7 +146,7 @@ public static class UploadEndpoint
         return Results.Text($"0,{url}");
     }
 
-    private static IResult HandleUnknownMode(PostUgcMode mode)
+    private static IResult HandleUnknownMode(UGCType mode)
     {
         Log.Logger.Warning("Unknown upload mode: {mode}", mode);
         return Results.BadRequest();

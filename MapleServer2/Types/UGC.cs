@@ -1,4 +1,5 @@
-﻿using MapleServer2.Database;
+﻿using Maple2Storage.Enums;
+using MapleServer2.Database;
 
 namespace MapleServer2.Types;
 
@@ -34,22 +35,4 @@ public class UGC
         Type = type;
         Uid = DatabaseManager.UGC.Insert(this);
     }
-}
-
-// All valid UGC types
-public enum UGCType : byte
-{
-    Item = 0x01,
-    Furniture = 0x02,
-    Banner = 0x03,
-    Unk = 0x04,
-    Unk2 = 0x05,
-    GuildEmblem = 0x06,
-    Unk3 = 0x07,
-    Unk4 = 0x08,
-    Unk5 = 0x09,
-    Unk6 = 0x0A,
-    Unk7 = 0xC9,
-    Unk8 = 0xCA,
-    Unk9 = 0xD1
 }

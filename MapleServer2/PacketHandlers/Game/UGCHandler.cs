@@ -66,7 +66,7 @@ public class UgcHandler : GamePacketHandler<UgcHandler>
         UGC newUGC = null;
         switch (type)
         {
-            case UGCType.Furniture or UGCType.Item:
+            case UGCType.Furniture or UGCType.Item or UGCType.Mount:
                 newUGC = HandleCreateUGCItem(packet, session, characterId, accountId, type);
                 break;
             case UGCType.GuildEmblem:
@@ -210,11 +210,11 @@ public class UgcHandler : GamePacketHandler<UgcHandler>
             return;
         }
 
-        session.Send(UGCPacket.SetUgcUrl(ugc));
+        session.Send(UGCPacket.SetUGCUrl(ugc));
 
         switch (type)
         {
-            case UGCType.Furniture or UGCType.Item:
+            case UGCType.Furniture or UGCType.Item or UGCType.Mount:
                 Item item = DatabaseManager.Items.FindByUgcUid(ugcUid);
                 if (item is null)
                 {
@@ -231,6 +231,9 @@ public class UgcHandler : GamePacketHandler<UgcHandler>
                         break;
                     case UGCType.Item:
                         session.Send(UGCPacket.UpdateUGCItem(player.FieldPlayer, item));
+                        break;
+                    case UGCType.Mount:
+                        session.Send(UGCPacket.UpdateUGCMount(player.FieldPlayer, item));
                         break;
                 }
 

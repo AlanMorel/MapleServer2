@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using Maple2Storage.Enums;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
 
@@ -13,8 +14,9 @@ public static class UGCPacket
         ActivateBanner = 0x07,
         UpdateUGCBanner = 0x08,
         ProfilePicture = 0x0B,
-        UpdateUgcItem = 0x0D,
-        UpdateUgcFurnishing = 0x0E,
+        UpdateUGCItem = 0x0D,
+        UpdateUGCFurnishing = 0x0E,
+        UpdateUGCMount = 0x0F,
         SetEndpoint = 0x11,
         LoadBanners = 0x12,
         UpdateBanner = 0x14
@@ -49,7 +51,7 @@ public static class UGCPacket
         return pWriter;
     }
 
-    public static PacketWriter SetUgcUrl(UGC ugc)
+    public static PacketWriter SetUGCUrl(UGC ugc)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
         pWriter.Write(UGCMode.SetItemUrl);
@@ -106,15 +108,9 @@ public static class UGCPacket
     public static PacketWriter UpdateUGCItem(IFieldObject<Player> fieldPlayer, Item item)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.Write(UGCMode.UpdateUgcItem);
+        pWriter.Write(UGCMode.UpdateUGCItem);
         pWriter.WriteInt(fieldPlayer.ObjectId);
-        pWriter.WriteLong(item.Uid);
-        pWriter.WriteInt(item.Id);
-        pWriter.WriteInt(item.Amount);
-        pWriter.WriteUnicodeString(item.Ugc.Name);
-        pWriter.WriteByte(1); // unknown
-        pWriter.WriteLong(item.Ugc.SalePrice);
-        pWriter.WriteBool(false); // unknown
+        pWriter.WriteUGCItem(item);
         pWriter.WriteUGCTemplate(item.Ugc);
 
         return pWriter;
@@ -123,15 +119,20 @@ public static class UGCPacket
     public static PacketWriter UpdateUGCFurnishing(IFieldObject<Player> fieldPlayer, Item item)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.Write(UGCMode.UpdateUgcFurnishing);
+        pWriter.Write(UGCMode.UpdateUGCFurnishing);
         pWriter.WriteInt(fieldPlayer.ObjectId);
-        pWriter.WriteLong(item.Uid);
-        pWriter.WriteInt(item.Id);
-        pWriter.WriteInt(item.Amount);
-        pWriter.WriteUnicodeString(item.Ugc.Name);
-        pWriter.WriteByte(1); // unknown
-        pWriter.WriteLong(item.Ugc.SalePrice);
-        pWriter.WriteBool(false); // unknown
+        pWriter.WriteUGCItem(item);
+        pWriter.WriteUGCTemplate(item.Ugc);
+
+        return pWriter;
+    }
+
+    public static PacketWriter UpdateUGCMount(IFieldObject<Player> fieldPlayer, Item item)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
+        pWriter.Write(UGCMode.UpdateUGCMount);
+        pWriter.WriteInt(fieldPlayer.ObjectId);
+        pWriter.WriteUGCItem(item);
         pWriter.WriteUGCTemplate(item.Ugc);
 
         return pWriter;
@@ -250,15 +251,15 @@ public static class UGCPacket
     public static void WriteUGCTemplate(this PacketWriter pWriter, UGC ugc)
     {
         pWriter.WriteLong(ugc?.Uid ?? 0);
-        pWriter.WriteUnicodeString(ugc?.Guid.ToString() ?? ""); // UUID (filename)
-        pWriter.WriteUnicodeString(ugc?.Name ?? ""); // Name (itemname)
+        pWriter.WriteUnicodeString(ugc?.Guid.ToString() ?? "");
+        pWriter.WriteUnicodeString(ugc?.Name ?? "");
         pWriter.WriteByte(1);
-        pWriter.WriteInt(1);
-        pWriter.WriteLong(ugc?.AccountId ?? 0); // AccountId
-        pWriter.WriteLong(ugc?.CharacterId ?? 0); // CharacterId
-        pWriter.WriteUnicodeString(ugc?.CharacterName ?? ""); // CharacterName
-        pWriter.WriteLong(ugc?.CreationTime ?? 0); // CreationTime
-        pWriter.WriteUnicodeString(ugc?.Url ?? ""); // URL (no domain)
+        pWriter.WriteInt(1); // sometimes 2
+        pWriter.WriteLong(ugc?.AccountId ?? 0);
+        pWriter.WriteLong(ugc?.CharacterId ?? 0);
+        pWriter.WriteUnicodeString(ugc?.CharacterName ?? "");
+        pWriter.WriteLong(ugc?.CreationTime ?? 0);
+        pWriter.WriteUnicodeString(ugc?.Url ?? "");
         pWriter.WriteByte();
     }
 
@@ -309,5 +310,16 @@ public static class UGCPacket
         }
 
         pWriter.WriteUnicodeString(activeSlot.UGC.Url);
+    }
+
+    private static void WriteUGCItem(this PacketWriter pWriter, Item item)
+    {
+        pWriter.WriteLong(item.Uid);
+        pWriter.WriteInt(item.Id);
+        pWriter.WriteInt(item.Amount);
+        pWriter.WriteUnicodeString(item.Ugc.Name);
+        pWriter.WriteByte(1); // unknown
+        pWriter.WriteLong(item.Ugc.SalePrice);
+        pWriter.WriteByte(1); // unknown
     }
 }

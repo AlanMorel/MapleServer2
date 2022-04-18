@@ -1,4 +1,5 @@
-﻿using MapleServer2.Types;
+﻿using Maple2Storage.Enums;
+using MapleServer2.Types;
 using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes;

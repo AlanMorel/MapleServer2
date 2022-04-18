@@ -73,7 +73,8 @@ public class RideHandler : GamePacketHandler<RideHandler>
             {
                 Type = type,
                 Id = mountId,
-                Uid = mountUid
+                Uid = mountUid,
+                Ugc = item.Ugc
             });
 
         fieldMount.Value.Players[0] = session.Player.FieldPlayer;
