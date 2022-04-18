@@ -156,7 +156,7 @@ public class Player
 
     public List<PlayerTrigger> Triggers = new();
 
-    public IFieldActor<Player> FieldPlayer;
+    public Character FieldPlayer;
 
     public Player() { }
 

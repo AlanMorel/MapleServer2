@@ -4,6 +4,7 @@ using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Managers;
+using MapleServer2.Managers.Actors;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
@@ -59,7 +60,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
         int objectId = packet.ReadInt();
 
         // Find if npc object id exists in field manager
-        if (!session.FieldManager.State.Npcs.TryGetValue(objectId, out IFieldActor<NpcMetadata> npc))
+        if (!session.FieldManager.State.Npcs.TryGetValue(objectId, out Npc npc))
         {
             return;
         }
