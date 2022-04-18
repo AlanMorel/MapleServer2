@@ -320,6 +320,6 @@ public static class UGCPacket
         pWriter.WriteUnicodeString(item.Ugc.Name);
         pWriter.WriteByte(1); // unknown
         pWriter.WriteLong(item.Ugc.SalePrice);
-        pWriter.WriteByte(1); // unknown
+        pWriter.WriteByte(); // unknown
     }
 }
