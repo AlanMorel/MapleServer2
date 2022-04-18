@@ -20,9 +20,11 @@ public class UGC
     public long CreationTime;
     public long SalePrice;
 
+    public int GuildPosterId;
+
     public UGC() { }
 
-    public UGC(string name, long characterId, string characterName, long accountId, long salePrice, UGCType type)
+    public UGC(string name, long characterId, string characterName, long accountId, long salePrice, UGCType type, int guildPosterId = 0)
     {
         Guid = Guid.NewGuid();
         Name = name;
@@ -33,6 +35,7 @@ public class UGC
         SalePrice = salePrice;
         Url = string.Empty;
         Type = type;
+        GuildPosterId = guildPosterId;
         Uid = DatabaseManager.UGC.Insert(this);
     }
 }

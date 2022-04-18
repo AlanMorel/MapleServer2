@@ -39,6 +39,7 @@ public static class UploadEndpoint
             UGCType.ItemIcon => HandleItemIcon(fileBytes, id, ugcUid),
             UGCType.GuildEmblem => HandleGuildEmblem(fileBytes, ugcUid, id),
             UGCType.Banner => HandleBanner(fileBytes, ugcUid, id),
+            UGCType.GuildBanner => HandleGuildBanner(fileBytes, ugcUid, id),
             _ => HandleUnknownMode(mode)
         };
     }
@@ -117,6 +118,27 @@ public static class UploadEndpoint
         }
 
         string url = $"guildmark/ms2/01/{guildId}/{ugc.Guid}.png";
+        ugc.Url = url;
+
+        DatabaseManager.UGC.Update(ugc);
+
+        File.WriteAllBytes($"{filePath}/{ugc.Guid}.png", fileBytes);
+        return Results.Text($"0,{url}");
+    }
+
+    private static IResult HandleGuildBanner(byte[] fileBytes, long ugcUid, long guildId)
+    {
+        string filePath = $"{Paths.DATA_DIR}/guildmark/{guildId}/banner";
+        Directory.CreateDirectory(filePath);
+
+        UGC ugc = DatabaseManager.UGC.FindByUid(ugcUid);
+        if (ugc is null)
+        {
+            Log.Logger.Error($"Could not find ugc with uid {ugcUid}");
+            return Results.NotFound();
+        }
+
+        string url = $"guildmark/ms2/01/{guildId}/banner/{ugc.Guid}.png";
         ugc.Url = url;
 
         DatabaseManager.UGC.Update(ugc);

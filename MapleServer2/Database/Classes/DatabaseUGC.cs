@@ -21,7 +21,8 @@ public class DatabaseUGC : DatabaseTable
             account_id = ugc.AccountId,
             creation_time = ugc.CreationTime,
             sale_price = ugc.SalePrice,
-            type = ugc.Type
+            type = ugc.Type,
+            guild_poster_id = ugc.GuildPosterId
         });
     }
 
@@ -57,7 +58,8 @@ public class DatabaseUGC : DatabaseTable
             AccountId = result.account_id,
             CreationTime = result.creation_time,
             SalePrice = result.sale_price,
-            Type = (UGCType) result.type
+            Type = (UGCType) result.type,
+            GuildPosterId = result.guild_poster_id
         };
     }
 

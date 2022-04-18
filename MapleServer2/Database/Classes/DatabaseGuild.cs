@@ -10,6 +10,7 @@ public class DatabaseGuild : DatabaseTable
 
     public long Insert(Guild guild)
     {
+        List<long> ugcUids = guild.Banners.Select(x => x.Uid).ToList();
         return QueryFactory.Query(TableName).InsertGetId<long>(new
         {
             guild.Name,
@@ -23,6 +24,7 @@ public class DatabaseGuild : DatabaseTable
             guild.Searchable,
             buffs = JsonConvert.SerializeObject(guild.Buffs),
             guild.Emblem,
+            banners = JsonConvert.SerializeObject(ugcUids),
             focus_attributes = guild.FocusAttributes,
             house_rank = guild.HouseRank,
             house_theme = guild.HouseTheme,
@@ -50,6 +52,7 @@ public class DatabaseGuild : DatabaseTable
         {
             guilds.Add(ReadGuild(data));
         }
+
         return guilds;
     }
 
@@ -77,11 +80,20 @@ public class DatabaseGuild : DatabaseTable
         });
     }
 
-    public void UpdateEmblem(long guildId, string ugc2Url)
+    public void UpdateEmblem(long guildId, string emblemUrl)
     {
         QueryFactory.Query(TableName).Where("id", guildId).Update(new
         {
-            emblem = ugc2Url
+            emblem = emblemUrl
+        });
+    }
+
+    public void UpdateBanners(long guildId, List<UGC> guildBanners)
+    {
+        List<long> ugcUids = guildBanners.Select(x => x.Uid).ToList();
+        QueryFactory.Query(TableName).Where("id", guildId).Update(new
+        {
+            banners = JsonConvert.SerializeObject(ugcUids)
         });
     }
 
@@ -92,6 +104,12 @@ public class DatabaseGuild : DatabaseTable
 
     private static Guild ReadGuild(dynamic data)
     {
+        List<UGC> banners = new();
+        foreach (long ugcUid in JsonConvert.DeserializeObject<List<long>>(data.banners))
+        {
+            banners.Add(DatabaseManager.UGC.FindByUid(ugcUid));
+        }
+
         return new()
         {
             Id = data.id,
@@ -106,6 +124,7 @@ public class DatabaseGuild : DatabaseTable
             Searchable = data.searchable,
             Buffs = JsonConvert.DeserializeObject<List<GuildBuff>>(data.buffs),
             Emblem = data.emblem,
+            Banners = banners,
             FocusAttributes = data.focus_attributes,
             HouseRank = data.house_rank,
             HouseTheme = data.house_theme,

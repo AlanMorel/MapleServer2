@@ -10,7 +10,7 @@ public static class UGCPacket
     private enum UGCMode : byte
     {
         CreateUgc = 0x02,
-        SetItemUrl = 0x04,
+        SetUGCUrl = 0x04,
         ActivateBanner = 0x07,
         UpdateUGCBanner = 0x08,
         ProfilePicture = 0x0B,
@@ -54,7 +54,7 @@ public static class UGCPacket
     public static PacketWriter SetUGCUrl(UGC ugc)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.Write(UGCMode.SetItemUrl);
+        pWriter.Write(UGCMode.SetUGCUrl);
         pWriter.Write(ugc.Type);
         pWriter.WriteLong(ugc.Uid);
         pWriter.WriteUnicodeString(ugc.Url);
