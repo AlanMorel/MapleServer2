@@ -150,7 +150,7 @@ public class FieldNavigator : IDisposable
     }
 
     /// <summary>
-    /// Find the nearest position on the mesh to the given coordS.
+    /// Find the first valid position below the given coordS.
     /// </summary>
     public bool FindFirstPositionBelow(CoordS coordF, out Position position)
     {
