@@ -180,7 +180,7 @@ public class FieldManager : IDisposable
         {
             if (!Navigator.FindFirstPositionBelow(spawnPoint.Coord, out spawnPointPosition))
             {
-                Logger.Error("Could not find a random position around spawn point {0}", spawnPoint.Coord);
+                Logger.Error("Could not find a random position around spawn point {0}, in map ID {1} for mob ID {2}", spawnPoint.Coord, MapId, mob.Value.Id);
                 return null;
             }
         }
@@ -188,7 +188,7 @@ public class FieldManager : IDisposable
         CoordS? randomPositionAround = Navigator.FindClosestUnobstructedCoordS(shape, spawnPointPosition, spawnPoint.Value.SpawnRadius);
         if (randomPositionAround is null)
         {
-            Logger.Error("Could not find a random position around position {0}", spawnPointPosition);
+            Logger.Error("Could not find a random position around spawn point {0}, in map ID {1} for mob ID {2}", spawnPoint.Coord, MapId, mob.Value.Id);
             return null;
         }
 
