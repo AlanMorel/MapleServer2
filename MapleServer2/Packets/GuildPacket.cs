@@ -52,6 +52,7 @@ public static class GuildPacket
         UpgradeBuff = 0x35,
         StartMiniGame = 0x36,
         ChangeHouse = 0x37,
+        UpdateBannerUrl = 0x38,
         UpgradeService = 0x39,
         RequestMiniGameWar = 0x3B,
         TransferLeaderConfirm = 0x3D,
@@ -144,18 +145,24 @@ public static class GuildPacket
             pWriter.WriteLong(buff.StartTimestamp);
         }
 
-        pWriter.WriteByte(0x4); // another loop. unk
-        pWriter.WriteInt(1);
-        pWriter.WriteInt();
-        pWriter.WriteInt(2);
-        pWriter.WriteInt();
-        pWriter.WriteInt(3);
-        pWriter.WriteInt();
-        pWriter.WriteInt(4);
-        pWriter.WriteInt();
+        byte events = 4;
+        pWriter.WriteByte(events);
+        for (int i = 0; i < events; i++)
+        {
+            pWriter.WriteInt(i + 1);
+            pWriter.WriteInt();
+        }
+
         pWriter.WriteInt(guild.HouseRank);
         pWriter.WriteInt(guild.HouseTheme);
-        pWriter.WriteInt(); // for guild posters
+        pWriter.WriteInt(guild.Banners.Count);
+        foreach (UGC ugcBanner in guild.Banners)
+        {
+            pWriter.WriteInt(ugcBanner.GuildPosterId);
+            pWriter.WriteUnicodeString(ugcBanner.Url);
+            pWriter.WriteLong(ugcBanner.CharacterId);
+            pWriter.WriteUnicodeString(ugcBanner.CharacterName);
+        }
 
         pWriter.WriteByte((byte) guild.Services.Count);
         foreach (GuildService service in guild.Services)
@@ -164,8 +171,37 @@ public static class GuildPacket
             pWriter.WriteInt(service.Level);
         }
 
-        pWriter.WriteByte();
-        pWriter.WriteShort();
+        bool flag = false;
+        pWriter.WriteBool(flag); // GuildNpcShopProducts
+        if (flag)
+        {
+            short count = 0;
+            pWriter.WriteShort(count);
+            for (int i = 0; i < count; i++)
+            {
+                bool flag2 = false;
+                pWriter.WriteBool(flag2);
+                if (flag2)
+                {
+                    pWriter.WriteShort();
+                    pWriter.WriteLong();
+                    short count2 = 0;
+                    pWriter.WriteShort(count2);
+                    for (int j = 0; j < count2; j++)
+                    {
+                        bool flag3 = false;
+                        pWriter.WriteBool(flag3);
+                        if (flag3)
+                        {
+                            pWriter.WriteInt();
+                            pWriter.WriteByte();
+                            pWriter.WriteInt();
+                            pWriter.WriteInt();
+                        }
+                    }
+                }
+            }
+        }
 
         pWriter.WriteInt(guild.GiftBank.Count);
         foreach (Item item in guild.GiftBank)
@@ -621,6 +657,17 @@ public static class GuildPacket
         return pWriter;
     }
 
+    public static PacketWriter UpdateBannerUrl(Player player, UGC ugc)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
+        pWriter.Write(GuildPacketMode.UpdateBannerUrl);
+        pWriter.WriteLong(player.CharacterId);
+        pWriter.WriteUnicodeString(player.Name);
+        pWriter.WriteInt(ugc.GuildPosterId);
+        pWriter.WriteUnicodeString(ugc.Url);
+        return pWriter;
+    }
+
     public static PacketWriter RequestMiniGameWar(bool request)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
@@ -855,7 +902,7 @@ public static class GuildPacket
         pWriter.WriteLong(member.AccountId);
         pWriter.WriteLong(member.CharacterId);
         pWriter.WriteUnicodeString(member.Name);
-        pWriter.WriteByte();
+        pWriter.Write(member.Gender);
         pWriter.Write(member.Job);
         pWriter.Write(member.JobCode);
         pWriter.WriteShort(member.Levels.Level);

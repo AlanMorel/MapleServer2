@@ -6,7 +6,7 @@ namespace MapleServer2.Packets.Helpers;
 
 public static class MountPacketHelper
 {
-    public static PacketWriter WriteMount(this PacketWriter pWriter, IFieldObject<Mount> mount)
+    public static void WriteMount(this PacketWriter pWriter, IFieldObject<Mount> mount)
     {
         pWriter.WriteByte((byte) mount.Value.Type);
 
@@ -26,7 +26,5 @@ public static class MountPacketHelper
                 pWriter.WriteShort();
                 break;
         }
-
-        return pWriter;
     }
 }

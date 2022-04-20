@@ -66,11 +66,16 @@ public class UgcHandler : GamePacketHandler<UgcHandler>
         UGC newUGC = null;
         switch (type)
         {
-            case UGCType.Furniture or UGCType.Item:
+            case UGCType.Furniture or UGCType.Item or UGCType.Mount:
                 newUGC = HandleCreateUGCItem(packet, session, characterId, accountId, type);
                 break;
             case UGCType.GuildEmblem:
-                newUGC = new(session.Player.Guild.Name, characterId, session.Player.Name, accountId, 0, UGCType.GuildEmblem);
+                newUGC = new($"{session.Player.Guild.Name} Emblem", characterId, session.Player.Name, accountId, 0, type);
+                break;
+            case UGCType.GuildBanner:
+                packet.ReadLong(); // guild id
+                int bannerId = packet.ReadInt();
+                newUGC = new($"{session.Player.Guild.Name} Banner", characterId, session.Player.Name, accountId, 0, type, bannerId);
                 break;
             case UGCType.Banner:
                 newUGC = HandleCreateUGCBanner(session, packet);
@@ -210,11 +215,11 @@ public class UgcHandler : GamePacketHandler<UgcHandler>
             return;
         }
 
-        session.Send(UGCPacket.SetUgcUrl(ugc));
+        session.Send(UGCPacket.SetUGCUrl(ugc));
 
         switch (type)
         {
-            case UGCType.Furniture or UGCType.Item:
+            case UGCType.Furniture or UGCType.Item or UGCType.Mount:
                 Item item = DatabaseManager.Items.FindByUgcUid(ugcUid);
                 if (item is null)
                 {
@@ -232,18 +237,40 @@ public class UgcHandler : GamePacketHandler<UgcHandler>
                     case UGCType.Item:
                         session.Send(UGCPacket.UpdateUGCItem(player.FieldPlayer, item));
                         break;
+                    case UGCType.Mount:
+                        session.Send(UGCPacket.UpdateUGCMount(player.FieldPlayer, item));
+                        break;
                 }
 
                 break;
             case UGCType.GuildEmblem:
-                Guild guild = GameServer.GuildManager.GetGuildById(player.Guild.Id);
+                {
+                    Guild guild = GameServer.GuildManager.GetGuildById(player.Guild.Id);
 
-                guild.Emblem = ugc.Url;
-                DatabaseManager.Guilds.UpdateEmblem(guild.Id, ugc.Url);
+                    guild.Emblem = ugc.Url;
+                    DatabaseManager.Guilds.UpdateEmblem(guild.Id, ugc.Url);
 
-                guild.BroadcastPacketGuild(GuildPacket.ChangeEmblemUrl(ugc.Url));
-                guild.BroadcastPacketGuild(GuildPacket.GuildNoticeEmblemChange(player.Name, ugc.Url));
-                break;
+                    guild.BroadcastPacketGuild(GuildPacket.ChangeEmblemUrl(ugc.Url));
+                    guild.BroadcastPacketGuild(GuildPacket.GuildNoticeEmblemChange(player.Name, ugc.Url));
+                    break;
+                }
+            case UGCType.GuildBanner:
+                {
+                    Guild guild = GameServer.GuildManager.GetGuildById(player.Guild.Id);
+
+                    UGC oldUGCBanner = guild.Banners.FirstOrDefault(x => x.GuildPosterId == ugc.GuildPosterId);
+                    if (oldUGCBanner is not null)
+                    {
+                        guild.Banners.Remove(oldUGCBanner);
+                        DatabaseManager.UGC.Delete(oldUGCBanner.Uid);
+                    }
+
+                    guild.Banners.Add(ugc);
+                    DatabaseManager.Guilds.UpdateBanners(guild.Id, guild.Banners);
+
+                    guild.BroadcastPacketGuild(GuildPacket.UpdateBannerUrl(player, ugc));
+                    break;
+                }
             case UGCType.Banner:
                 UGCBanner ugcBanner = GameServer.UGCBannerManager.UpdateBannerSlots(ugc);
                 if (ugcBanner is null)
