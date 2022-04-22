@@ -33,7 +33,6 @@ public static class MapEntityMetadataStorage
     private static readonly Dictionary<int, List<MapLiftableObject>> LiftableObjects = new();
     private static readonly Dictionary<int, List<MapLiftableTarget>> LiftableTargets = new();
     private static readonly Dictionary<int, List<MapChestMetadata>> MapChests = new();
-    private static readonly Dictionary<int, List<int>> AdBannerIds = new();
 
     public static void AddToStorage(int mapId, MapEntityMetadata entity)
     {
@@ -67,7 +66,6 @@ public static class MapEntityMetadataStorage
         LiftableObjects.Add(mapId, entity.LiftableObjects);
         LiftableTargets.Add(mapId, entity.LiftableTargets);
         MapChests.Add(mapId, entity.MapChests);
-        AdBannerIds.Add(mapId, entity.AdBannerIds);
     }
 
     public static IEnumerable<MapNpc> GetNpcs(int mapId) => Npcs.GetValueOrDefault(mapId);
@@ -177,6 +175,4 @@ public static class MapEntityMetadataStorage
     public static IEnumerable<MapLiftableTarget> GetLiftablesTargets(int mapId) => LiftableTargets.GetValueOrDefault(mapId);
 
     public static IEnumerable<MapChestMetadata> GetMapChests(int mapId) => MapChests.GetValueOrDefault(mapId);
-
-    public static Dictionary<int, List<int>> GetAdBannerIds() => AdBannerIds.Where(x => x.Value.Count > 0).ToDictionary(x => x.Key, x => x.Value);
 }

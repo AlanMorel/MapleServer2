@@ -63,8 +63,6 @@ public class MapEntityMetadata
     public readonly List<MapLiftableTarget> LiftableTargets = new();
     [XmlElement(Order = 28)]
     public readonly List<MapChestMetadata> MapChests = new();
-    [XmlElement(Order = 29)]
-    public readonly List<int> AdBannerIds = new();
 
     public MapEntityMetadata() { }
 }

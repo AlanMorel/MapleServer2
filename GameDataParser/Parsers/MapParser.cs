@@ -271,9 +271,6 @@ public class MapParser : Exporter<List<MapMetadata>>
                 case IMS2PhysXProp physXProp:
                     switch (physXProp)
                     {
-                        case IMS2UccAD adBanner:
-                            mapEntity.AdBannerIds.Add(adBanner.UccID);
-                            break;
                         case IMS2CubeProp prop:
                             if (!prop.IsObjectWeapon)
                             {

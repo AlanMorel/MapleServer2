@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Packets;
@@ -14,24 +15,16 @@ public class UGCBannerManager
     public UGCBannerManager()
     {
         DateTimeOffset utcNow = DateTimeOffset.UtcNow;
-        Dictionary<int, List<int>> bannerIds = MapEntityMetadataStorage.GetAdBannerIds();
-        foreach ((int mapId, List<int> ids) in bannerIds)
+        IEnumerable<AdBannerMetadata> bannerIds = AdBannerMetadataStorage.GetMetadataList();
+        foreach (AdBannerMetadata adBanner in bannerIds)
         {
-            foreach (int id in ids)
-            {
-                UGCBanner banner = new(id, mapId);
+            UGCBanner banner = new(adBanner.Id, adBanner.MapId);
 
-                DeleteOldBannerSlots(banner, utcNow);
-                ActivateBannerSlots(banner, utcNow);
+            DeleteOldBannerSlots(banner, utcNow);
+            ActivateBannerSlots(banner, utcNow);
 
-                UGCBanners.TryAdd(banner.Id, banner);
-            }
+            UGCBanners.TryAdd(banner.Id, banner);
         }
-    }
-
-    public void AddBanner(UGCBanner banner)
-    {
-        UGCBanners.TryAdd(banner.Id, banner);
     }
 
     public UGCBanner GetBanner(long id)
