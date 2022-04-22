@@ -198,7 +198,7 @@ public static class MapleServer
         }
 
         string missions = JsonConvert.SerializeObject(PrestigeLevelMissionMetadataStorage.GetPrestigeMissions);
-        DatabaseManager.RunQuery($"UPDATE `characters` SET prestige_missions = {missions}");
+        DatabaseManager.RunQuery($"UPDATE `characters` SET prestige_missions = '{missions}'");
     }
 
     public static void BroadcastPacketAll(PacketWriter packet, GameSession sender = null)
