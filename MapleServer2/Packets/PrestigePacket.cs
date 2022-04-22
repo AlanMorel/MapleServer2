@@ -71,7 +71,7 @@ public static class PrestigePacket
     public static PacketWriter UpdateMissions(List<PrestigeMission> missions)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Prestige);
-        pWriter.Write(PrestigePacketMode.WeeklyMissions);
+        pWriter.Write(PrestigePacketMode.UpdateMissions);
         pWriter.WriteInt(missions.Count);
 
         foreach (PrestigeMission mission in missions)
@@ -93,7 +93,7 @@ public static class PrestigePacket
         foreach (PrestigeMission mission in missions)
         {
             pWriter.WriteLong(mission.Id);
-            pWriter.WriteLong(mission.LevelCount + 1);
+            pWriter.WriteLong(mission.LevelCount);
             pWriter.WriteBool(mission.Claimed);
         }
 

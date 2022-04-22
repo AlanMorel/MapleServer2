@@ -2,6 +2,7 @@
 
 public static class MetadataName
 {
+    public const string AdBanner = "ad-banner";
     public const string Animation = "animation";
     public const string Beauty = "beauty";
     public const string BlackMarketTable = "black-market-table";
