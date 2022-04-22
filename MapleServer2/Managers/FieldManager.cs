@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Maple2.PathEngine;
+using Maple2.PathEngine.Types;
 using Maple2.Trigger;
 using Maple2.Trigger.Enum;
 using Maple2Storage.Enums;
@@ -174,10 +175,20 @@ public class FieldManager : IDisposable
         mob.OriginSpawn = spawnPoint;
 
         Shape shape = Navigator.AddShape(mob.Value.NpcMetadataCapsule);
-        CoordS? randomPositionAround = Navigator.FindClosestUnobstructedCoordS(shape, spawnPoint.Coord, spawnPoint.Value.SpawnRadius);
+        Position spawnPointPosition = Navigator.FindPositionFromCoordS(spawnPoint.Coord);
+        if (!Navigator.PositionIsValid(spawnPointPosition))
+        {
+            if (!Navigator.FindFirstPositionBelow(spawnPoint.Coord, out spawnPointPosition))
+            {
+                Logger.Error("Could not find a random position around spawn point {0}, in map ID {1} for mob ID {2}", spawnPoint.Coord, MapId, mob.Value.Id);
+                return null;
+            }
+        }
+
+        CoordS? randomPositionAround = Navigator.FindClosestUnobstructedCoordS(shape, spawnPointPosition, spawnPoint.Value.SpawnRadius);
         if (randomPositionAround is null)
         {
-            Logger.Error("Could not find a random position around spawn point {0}", spawnPoint.Coord);
+            Logger.Error("Could not find a random position around spawn point {0}, in map ID {1} for mob ID {2}", spawnPoint.Coord, MapId, mob.Value.Id);
             return null;
         }
 

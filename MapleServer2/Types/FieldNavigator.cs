@@ -149,6 +149,28 @@ public class FieldNavigator : IDisposable
         return Mesh.positionIsValid(position);
     }
 
+    /// <summary>
+    /// Find the first valid position below the given coordS.
+    /// </summary>
+    public bool FindFirstPositionBelow(CoordS coordF, out Position position)
+    {
+        position = default;
+        CoordS tempCoord = coordF;
+        // Check 10 times below the given coordS
+        for (int i = 0; i < 10; i++)
+        {
+            position = Mesh.positionNear3DPoint(tempCoord.X, tempCoord.Y, tempCoord.Z, horizontalRange: 15, verticalRange: 15);
+            if (position.Cell != -1)
+            {
+                return true;
+            }
+
+            tempCoord.Z -= Block.BLOCK_SIZE;
+        }
+
+        return false;
+    }
+
     public Position? FindClosestUnobstructedPosition(Shape shape, Position position, int radius)
     {
         Position unobstructedPosition;
