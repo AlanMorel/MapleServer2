@@ -102,7 +102,6 @@ public partial class TriggerContext : ITriggerContext
             return Field.State.Players.Values.Count;
         }
 
-        ICollection<IFieldActor<Player>> players = Field.State.Players.Values;
         MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
         if (box is null)
         {
@@ -110,8 +109,7 @@ public partial class TriggerContext : ITriggerContext
         }
 
         int userCount = 0;
-
-        foreach (IFieldActor<Player> player in players)
+        foreach (IFieldActor<Player> player in Field.State.Players.Values)
         {
             if (FieldManager.IsPlayerInBox(box, player))
             {
