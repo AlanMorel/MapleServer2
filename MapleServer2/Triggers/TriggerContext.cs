@@ -97,31 +97,37 @@ public partial class TriggerContext : ITriggerContext
 
     public int GetUserCount(int boxId, int userTagId)
     {
-        if (boxId != 0)
+        if (boxId == 0)
         {
-            List<IFieldActor<Player>> players = Field.State.Players.Values.ToList();
-            MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
-            int userCount = 0;
-
-            foreach (IFieldActor<Player> player in players)
-            {
-                if (FieldManager.IsPlayerInBox(box, player))
-                {
-                    userCount++;
-                }
-            }
-            return userCount;
+            return Field.State.Players.Values.Count;
         }
-        return Field.State.Players.Values.Count;
+
+        MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
+        if (box is null)
+        {
+            return 0;
+        }
+
+        int userCount = 0;
+        foreach (IFieldActor<Player> player in Field.State.Players.Values)
+        {
+            if (FieldManager.IsPlayerInBox(box, player))
+            {
+                userCount++;
+            }
+        }
+
+        return userCount;
     }
 
     public int GetUserValue(string key)
     {
-        IFieldObject<Player> player = Field.State.Players.Values.FirstOrDefault(x => x.Value.Triggers.Any(x => x.Key == key));
+        IFieldObject<Player> player = Field.State.Players.Values.FirstOrDefault(x => x.Value.Triggers.Any(y => y.Key == key));
         if (player == null)
         {
             return 0;
         }
-        return player.Value.Triggers.FirstOrDefault(x => x.Key == key).Value;
+
+        return player.Value.Triggers.FirstOrDefault(x => x.Key == key)?.Value ?? 0;
     }
 }
