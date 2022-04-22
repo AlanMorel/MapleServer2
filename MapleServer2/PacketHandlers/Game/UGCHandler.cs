@@ -124,10 +124,8 @@ public class UgcHandler : GamePacketHandler<UgcHandler>
             switch (metadata.CurrencyType)
             {
                 case CurrencyType.Meso when !session.Player.Wallet.Meso.Modify(-cost):
-                    session.SendNotice("You don't have enough mesos.");
                     return null;
                 case CurrencyType.Meret when !session.Player.Account.Meret.Modify(-cost):
-                    session.SendNotice("You don't have enough merets.");
                     return null;
             }
         }
@@ -145,11 +143,6 @@ public class UgcHandler : GamePacketHandler<UgcHandler>
     private static UGC HandleCreateUGCBanner(GameSession session, PacketReader packet)
     {
         Player player = session.Player;
-        if (!int.TryParse(ConstantsMetadataStorage.GetConstant("UGCShopAdFeeMerat"), out int cost))
-        {
-            Logger.Error("Failed to parse UGCShopAdFeeMerat constant.");
-            return null;
-        }
 
         long bannerId = packet.ReadLong();
         UGCBanner banner = GameServer.UGCBannerManager.GetBanner(bannerId);
@@ -159,13 +152,15 @@ public class UgcHandler : GamePacketHandler<UgcHandler>
             return null;
         }
 
-        byte count = packet.ReadByte();
-
-        if (!player.Account.Meret.Modify(-(cost * count)))
+        // get metadata for prices
+        AdBannerMetadata metadata = AdBannerMetadataStorage.GetMetadata(bannerId);
+        if (metadata is null)
         {
-            session.SendNotice("You don't have enough merets.");
-            return null;
+            Logger.Warning("Banner {0} metadata not found.", bannerId);
         }
+
+
+        byte count = packet.ReadByte();
 
         UGC newUgc = new($"AD Banner {bannerId}", player.CharacterId, player.Name, player.Account.Id, 0, UGCType.Banner);
 
@@ -177,6 +172,12 @@ public class UgcHandler : GamePacketHandler<UgcHandler>
             packet.ReadInt(); // date as YYYYMMDD
             int hour = packet.ReadInt();
             packet.ReadLong();
+
+            if (!player.Account.Meret.Modify(-metadata.Prices[hour]))
+            {
+                return null;
+            }
+
             BannerSlot bannerSlot = banner.Slots.FirstOrDefault(x => x.Id == id);
             if (bannerSlot is null)
             {
