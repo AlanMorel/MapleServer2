@@ -102,7 +102,7 @@ public partial class TriggerContext : ITriggerContext
             return Field.State.Players.Values.Count;
         }
 
-        List<IFieldActor<Player>> players = Field.State.Players.Values.ToList();
+        ICollection<IFieldActor<Player>> players = Field.State.Players.Values;
         MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
         if (box is null)
         {
@@ -124,12 +124,12 @@ public partial class TriggerContext : ITriggerContext
 
     public int GetUserValue(string key)
     {
-        IFieldObject<Player> player = Field.State.Players.Values.FirstOrDefault(x => x.Value.Triggers.Any(x => x.Key == key));
+        IFieldObject<Player> player = Field.State.Players.Values.FirstOrDefault(x => x.Value.Triggers.Any(y => y.Key == key));
         if (player == null)
         {
             return 0;
         }
 
-        return player.Value.Triggers.FirstOrDefault(x => x.Key == key).Value;
+        return player.Value.Triggers.FirstOrDefault(x => x.Key == key)?.Value ?? 0;
     }
 }
