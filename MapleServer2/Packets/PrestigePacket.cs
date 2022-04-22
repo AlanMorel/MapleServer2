@@ -93,7 +93,7 @@ public static class PrestigePacket
         foreach (PrestigeMission mission in missions)
         {
             pWriter.WriteLong(mission.Id);
-            pWriter.WriteLong(mission.LevelCount + 1);
+            pWriter.WriteLong(mission.LevelCount);
             pWriter.WriteBool(mission.Claimed);
         }
 
