@@ -174,12 +174,22 @@ public class BeautyHandler : GamePacketHandler<BeautyHandler>
 
         Item beautyItem = session.Player.Inventory.GetEquippedItem(beautyItemUid);
 
-        if (beautyItem.ItemSlot == ItemSlot.CP)
+        switch (beautyItem.ItemSlot)
         {
-            HatData hatData = packet.Read<HatData>();
-            beautyItem.HatData = hatData;
-            session.FieldManager.BroadcastPacket(ItemExtraDataPacket.Update(session.Player.FieldPlayer, beautyItem));
-            return;
+            case ItemSlot.CP:
+                {
+                    HatData hatData = packet.Read<HatData>();
+                    beautyItem.HatData = hatData;
+                    session.FieldManager.BroadcastPacket(ItemExtraDataPacket.Update(session.Player.FieldPlayer, beautyItem));
+                    return;
+                }
+            case ItemSlot.FA:
+                {
+                    byte[] faceDecoration = packet.ReadBytes(16);
+                    beautyItem.FaceDecorationData = faceDecoration;
+                    session.FieldManager.BroadcastPacket(ItemExtraDataPacket.Update(session.Player.FieldPlayer, beautyItem));
+                    return;
+                }
         }
 
         BeautyMetadata beautyShop = BeautyMetadataStorage.GetShopById(session.Player.ShopId);
