@@ -26,6 +26,7 @@ public class Player
     public long CharacterId { get; set; }
     public long CreationTime { get; set; }
     public long LastLogTime { get; set; }
+    public long Birthday { get; set; } // Currently just uses the creation time from account
     private long OnlineTime { get; set; }
     public bool IsDeleted;
 
@@ -192,6 +193,7 @@ public class Player
         ProfileUrl = "";
         CreationTime = TimeInfo.Now();
         LastLogTime = TimeInfo.Now();
+        Birthday = account.CreationTime;
         TitleId = 0;
         InsigniaId = 0;
         Titles = new();

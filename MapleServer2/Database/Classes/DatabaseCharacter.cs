@@ -19,6 +19,7 @@ public class DatabaseCharacter : DatabaseTable
             account_id = player.AccountId,
             creation_time = player.CreationTime,
             last_log_time = player.LastLogTime,
+            birthday = player.Birthday,
             player.Name,
             gender = (byte) player.Gender,
             player.Awakened,
@@ -109,6 +110,7 @@ public class DatabaseCharacter : DatabaseTable
             AccountId = data.account_id,
             Account = new(data.account_id, data, bankInventory, royaleStats, medals, authData, session),
             CreationTime = data.creation_time,
+            Birthday = data.birthday,
             Name = data.name,
             Gender = (Gender) data.gender,
             Awakened = data.awakened,
@@ -233,6 +235,7 @@ public class DatabaseCharacter : DatabaseTable
                 AccountId = data.account_id,
                 CharacterId = data.character_id,
                 CreationTime = data.creation_time,
+                Birthday = data.birthday,
                 Name = data.name,
                 Gender = (Gender) data.gender,
                 Awakened = data.awakened,
@@ -257,6 +260,8 @@ public class DatabaseCharacter : DatabaseTable
         QueryFactory.Query(TableName).Where("character_id", player.CharacterId).Update(new
         {
             player.Name,
+            last_log_time = player.LastLogTime,
+            birthday = player.Birthday,
             gender = (byte) player.Gender,
             player.Awakened,
             channel_id = player.ChannelId,
@@ -377,6 +382,7 @@ public class DatabaseCharacter : DatabaseTable
                 Home = home
             },
             CreationTime = data.creation_time,
+            LastLogTime = data.last_log_time,
             Name = data.name,
             Gender = (Gender) data.gender,
             Awakened = data.awakened,
