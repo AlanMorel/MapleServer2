@@ -20,6 +20,7 @@ public static class CharacterListPacket
         DeleteCancel = 0x06,
         NameChange = 0x07
     }
+
     public static PacketWriter AddEntries(List<Player> players)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.CharList);
@@ -160,7 +161,7 @@ public static class CharacterListPacket
                 pWriter.WriteUnicodeString(club.Name);
             }
         }
-        
+
         pWriter.WriteByte();
         pWriter.WriteInt();
         foreach (MasteryExp mastery in player.Levels.MasteryExp)
