@@ -24,7 +24,7 @@ public static class PCCafeBonusPacket
         pWriter.WriteInt();
         pWriter.WriteInt(100000006); // benefit buff ID
         pWriter.WriteInt(1); // login time reward count
-        
+
         // loop
         pWriter.WriteInt(20001752); // item ID
         pWriter.WriteShort(1); // item rarity
@@ -37,9 +37,9 @@ public static class PCCafeBonusPacket
         pWriter.WriteInt(60000); // login time required in ms
         pWriter.WriteInt();
         // end loop
-        
+
         pWriter.WriteInt(1); // pc cafe only item count
-        
+
         // loop
         pWriter.WriteInt(20300298); // item ID
         pWriter.WriteShort(2); // item rarity
@@ -50,11 +50,11 @@ public static class PCCafeBonusPacket
         pWriter.WriteByte();
         pWriter.WriteInt();
         // end loop
-        
+
         pWriter.WriteByte(1); // PCCafe enabled ?
         return pWriter;
     }
-    
+
     public static PacketWriter ClaimLoginTimeReward(byte index)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.PCCafeBonus);
@@ -71,7 +71,7 @@ public static class PCCafeBonusPacket
         pWriter.WriteInt(index);
         return pWriter;
     }
-    
+
     public static PacketWriter Unk()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.PCCafeBonus);
