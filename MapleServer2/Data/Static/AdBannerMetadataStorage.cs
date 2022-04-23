@@ -23,4 +23,6 @@ public static class AdBannerMetadataStorage
     {
         return AdBanner.GetValueOrDefault(bannerId);
     }
+
+    public static IEnumerable<AdBannerMetadata> GetMetadataList() => AdBanner.Values;
 }
