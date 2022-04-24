@@ -23,7 +23,7 @@ public class RequestCubeHandler : GamePacketHandler<RequestCubeHandler>
         LoadFurnishingItem = 0x1,
         BuyPlot = 0x2,
         ForfeitPlot = 0x6,
-        HandleAddFurnishing = 0xA,
+        AddCube = 0xA,
         RemoveCube = 0xC,
         RotateCube = 0xE,
         ReplaceCube = 0xF,
@@ -70,8 +70,8 @@ public class RequestCubeHandler : GamePacketHandler<RequestCubeHandler>
             case RequestCubeMode.ForfeitPlot:
                 HandleForfeitPlot(session);
                 break;
-            case RequestCubeMode.HandleAddFurnishing:
-                HandleAddFurnishing(session, packet);
+            case RequestCubeMode.AddCube:
+                HandleAddCube(session, packet);
                 break;
             case RequestCubeMode.RemoveCube:
                 HandleRemoveCube(session, packet);
@@ -269,7 +269,7 @@ public class RequestCubeHandler : GamePacketHandler<RequestCubeHandler>
         // 54 00 0E 01 00 00 00 01 01 00 00 00, send mail
     }
 
-    private static void HandleAddFurnishing(GameSession session, PacketReader packet)
+    private static void HandleAddCube(GameSession session, PacketReader packet)
     {
         CoordB coord = packet.Read<CoordB>();
         byte padding = packet.ReadByte();

@@ -490,6 +490,9 @@ public class FieldManager : IDisposable
 
     public void AddCube(IFieldObject<Cube> cube, int houseOwnerObjectId, int fieldPlayerObjectId)
     {
+        State.AddCube(cube);
+        BroadcastPacket(ResponseCubePacket.PlaceFurnishing(cube, houseOwnerObjectId, fieldPlayerObjectId, false));
+
         if (cube.Value.Item.HousingCategory is ItemHousingCategory.Ranching or ItemHousingCategory.Farming)
         {
             BroadcastPacket(FunctionCubePacket.UpdateFunctionCube(cube.Coord.ToByte(), 1, 0));
@@ -500,9 +503,6 @@ public class FieldManager : IDisposable
         {
             BroadcastPacket(FunctionCubePacket.UpdateFunctionCube(cube.Coord.ToByte(), 0, 0));
         }
-
-        State.AddCube(cube);
-        BroadcastPacket(ResponseCubePacket.PlaceFurnishing(cube, houseOwnerObjectId, fieldPlayerObjectId, false));
     }
 
     public void RemoveCube(IFieldObject<Cube> cube, int houseOwnerObjectId, int fieldPlayerObjectId)
