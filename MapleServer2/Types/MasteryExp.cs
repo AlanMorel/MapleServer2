@@ -4,7 +4,7 @@ namespace MapleServer2.Types;
 
 public class MasteryExp
 {
-    public MasteryType Type { get; private set; }
+    public MasteryType Type { get; }
     public int Level;
     public long CurrentExp { get; set; }
 

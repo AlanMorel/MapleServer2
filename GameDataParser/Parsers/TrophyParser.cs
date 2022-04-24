@@ -53,12 +53,16 @@ internal class TrophyParser : Exporter<List<TrophyMetadata>>
                 XmlNode reward = grade.SelectSingleNode("reward");
                 Enum.TryParse(reward.Attributes["type"].Value, true, out RewardType type);
 
+                if (string.IsNullOrEmpty(newTrophy.ConditionType) || string.IsNullOrEmpty(newTrophy.ConditionCodes))
+                {
+                    newTrophy.ConditionType = condition.Attributes["type"].Value;
+                    newTrophy.ConditionCodes = condition.Attributes["code"].Value;
+                }
+
                 TrophyGradeMetadata newGrade = new()
                 {
                     Grade = int.Parse(grade.Attributes["value"].Value),
                     Condition = long.Parse(condition.Attributes["value"].Value),
-                    ConditionType = condition.Attributes["type"].Value,
-                    ConditionCodes = condition.Attributes["code"].Value,
                     ConditionTargets = condition.Attributes["target"].Value,
                     RewardType = type,
                     RewardCode = int.Parse(reward.Attributes["code"].Value),
