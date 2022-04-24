@@ -20,6 +20,7 @@ public static class CharacterListPacket
         DeleteCancel = 0x06,
         NameChange = 0x07
     }
+
     public static PacketWriter AddEntries(List<Player> players)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.CharList);
@@ -150,18 +151,17 @@ public static class CharacterListPacket
 
         pWriter.WriteUnicodeString(player.ProfileUrl);
 
-        byte clubCount = 0;
-        pWriter.WriteByte(clubCount); // # Clubs
-        for (int i = 0; i < clubCount; i++)
+        pWriter.WriteByte((byte) player.Clubs.Count);
+        foreach (Club club in player.Clubs)
         {
-            bool clubBool = true;
-            pWriter.WriteBool(clubBool);
-            if (clubBool)
+            pWriter.WriteBool(club.IsEstablished);
+            if (club.IsEstablished)
             {
-                pWriter.WriteLong();
-                pWriter.WriteUnicodeString("club name");
+                pWriter.WriteLong(club.Id);
+                pWriter.WriteUnicodeString(club.Name);
             }
         }
+
         pWriter.WriteByte();
         pWriter.WriteInt();
         foreach (MasteryExp mastery in player.Levels.MasteryExp)
@@ -185,7 +185,7 @@ public static class CharacterListPacket
 
         pWriter.WriteByte();
         pWriter.WriteByte();
-        pWriter.WriteLong();
+        pWriter.WriteLong(player.Birthday);
         pWriter.WriteInt();
         pWriter.WriteInt();
         pWriter.WriteLong(); // Timestamp

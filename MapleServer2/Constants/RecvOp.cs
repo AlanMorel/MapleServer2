@@ -100,7 +100,7 @@ public enum RecvOp : ushort
     SmartRecommendBilling = 0x0065,
     SystemShop = 0x0066,
     Attendance = 0x0067,
-    PCBangBonus = 0x0068,
+    PCCafeBonus = 0x0068,
     RequestManufacturer = 0x0069,
     RequestUserEnvironment = 0x006A,
     Cash = 0x006B,

@@ -116,6 +116,7 @@ CREATE TABLE `characters`
     `account_id`               bigint           NOT NULL,
     `creation_time`            bigint           NOT NULL,
     `last_log_time`            bigint           NOT NULL,
+    `birthday`                 bigint           NOT NULL,
     `name`                     varchar(25)      NOT NULL,
     `gender`                   tinyint unsigned NOT NULL,
     `awakened`                 tinyint(1)       NOT NULL,
