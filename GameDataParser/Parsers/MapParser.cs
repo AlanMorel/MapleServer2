@@ -356,21 +356,24 @@ public class MapParser : Exporter<List<MapMetadata>>
     {
         InteractTypes = new();
 
-        PackFileEntry interactObjectTable = Resources.XmlReader.Files.FirstOrDefault(x => x.Name.StartsWith("table/interactobject"));
-        XmlDocument interactObjectTableXml = Resources.XmlReader.GetXmlDocument(interactObjectTable);
-        XmlNodeList interactNodes = interactObjectTableXml.GetElementsByTagName("interact");
-        foreach (XmlNode node in interactNodes)
+        IEnumerable<PackFileEntry> interactObjectTables = Resources.XmlReader.Files.Where(x => x.Name.StartsWith("table/interactobject"));
+        foreach (PackFileEntry interactObjectTable in interactObjectTables)
         {
-            string locale = node.Attributes["locale"]?.Value ?? "";
-            if (locale != "NA" && locale != "")
+            XmlDocument interactObjectTableXml = Resources.XmlReader.GetXmlDocument(interactObjectTable);
+            XmlNodeList interactNodes = interactObjectTableXml.GetElementsByTagName("interact");
+            foreach (XmlNode node in interactNodes)
             {
-                continue;
+                string locale = node.Attributes["locale"]?.Value ?? "";
+                if (locale != "NA" && locale != "")
+                {
+                    continue;
+                }
+
+                int interactId = int.Parse(node.Attributes["id"].Value);
+                _ = Enum.TryParse(node.Attributes["type"].Value, out InteractObjectType objectType);
+
+                InteractTypes[interactId] = objectType;
             }
-
-            int interactId = int.Parse(node.Attributes["id"].Value);
-            _ = Enum.TryParse(node.Attributes["type"].Value, out InteractObjectType objectType);
-
-            InteractTypes[interactId] = objectType;
         }
     }
 
