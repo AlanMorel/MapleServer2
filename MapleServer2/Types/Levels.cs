@@ -182,6 +182,6 @@ public class Levels
         }
 
         masteryExp.Level = currLevel;
-        TrophyManager.OnGainMasteryLevel(Player);
+        TrophyManager.OnGainMasteryLevel(Player, masteryExp.Type);
     }
 }
