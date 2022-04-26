@@ -304,7 +304,7 @@ public class FishingHandler : GamePacketHandler<FishingHandler>
         CoordB coord = packet.Read<CoordB>();
         CoordS fishingBlock = coord.ToShort();
         MapBlock block = MapMetadataStorage.GetMapBlock(session.Player.MapId, fishingBlock);
-        if (block == null || MapMetadataStorage.IsLiquidBlock(block))
+        if (block == null || !MapMetadataStorage.IsLiquidBlock(block))
         {
             return;
         }
