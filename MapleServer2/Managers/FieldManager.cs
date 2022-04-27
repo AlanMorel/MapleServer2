@@ -42,8 +42,9 @@ public class FieldManager : IDisposable
     private readonly List<Widget> Widgets = new();
     private Task MapLoopTask;
     private Task TriggerTask;
+    private Task MobMovementTask;
     private static readonly TriggerLoader TriggerLoader = new();
-    private readonly FieldNavigator Navigator;
+    public readonly FieldNavigator Navigator;
     private readonly CancellationTokenSource CancellationToken = new();
 
     #region Constructors
@@ -152,13 +153,12 @@ public class FieldManager : IDisposable
         return npc;
     }
 
-    public IFieldActor<NpcMetadata> RequestMob(int mobId, CoordF coord = default, CoordF rotation = default, short animation = default)
+    public Mob RequestMob(int mobId, CoordF coord = default, CoordF rotation = default, short animation = default)
     {
         Mob mob = WrapMob(mobId);
         mob.Coord = coord;
         mob.Rotation = rotation;
         mob.Agent = Navigator.AddAgent(mob, Navigator.AddShape(mob.Value.NpcMetadataCapsule));
-        mob.Navigator = Navigator;
 
         if (animation != default)
         {
@@ -196,7 +196,6 @@ public class FieldManager : IDisposable
         mob.Rotation = default;
         mob.Animation = default;
         mob.Agent = Navigator.AddAgent(mob, shape);
-        mob.Navigator = Navigator;
 
         mob.OriginSpawn.Value.Mobs.Add(mob);
         AddMob(mob);
@@ -677,21 +676,21 @@ public class FieldManager : IDisposable
     private Character WrapPlayer(Player player)
     {
         int objectId = Interlocked.Increment(ref Counter);
-        return new(objectId, player);
+        return new(objectId, player, fieldManager: this);
     }
 
     // Initializes a Npc with an objectId for this field.
     private Npc WrapNpc(int npcId)
     {
         int objectId = Interlocked.Increment(ref Counter);
-        return new(objectId, npcId);
+        return new(objectId, npcId, fieldManager: this);
     }
 
     // Initializes a Mob with an objectId for this field.
     private Mob WrapMob(int mobId)
     {
         int objectId = Interlocked.Increment(ref Counter);
-        return new(objectId, mobId);
+        return new(objectId, mobId, fieldManager: this);
     }
 
     #endregion
@@ -924,17 +923,36 @@ public class FieldManager : IDisposable
 
     private Task StartMapLoop()
     {
+        MobMovementTask = StartMobLoop();
         CancellationToken ct = CancellationToken.Token;
         return Task.Run(async () =>
         {
             while (!State.Players.IsEmpty)
             {
-                UpdatePhysics();
                 UpdateEvents();
                 UpdateObjects();
                 HealingSpot();
                 SendUpdates();
                 await Task.Delay(1000, ct);
+            }
+        }, ct);
+    }
+
+    private Task StartMobLoop()
+    {
+        CancellationToken ct = CancellationToken.Token;
+        return Task.Run(async () =>
+        {
+            while (!State.Players.IsEmpty)
+            {
+                foreach (Mob mob in State.Mobs.Values)
+                {
+                    mob.UpdateVelocity();
+                    BroadcastPacket(FieldObjectPacket.ControlMob(mob));
+                    mob.UpdateCoord();
+                }
+
+                await Task.Delay(300, ct);
             }
         }, ct);
     }
@@ -966,24 +984,7 @@ public class FieldManager : IDisposable
             updates.Add(FieldObjectPacket.UpdatePlayer(player));
         }
 
-        foreach (Mob mob in State.Mobs.Values)
-        {
-            updates.Add(FieldObjectPacket.ControlMob(mob));
-            if (mob.IsDead)
-            {
-                RemoveMob(mob);
-            }
-        }
-
         return updates;
-    }
-
-    private void UpdatePhysics()
-    {
-        foreach (Mob mob in State.Mobs.Values)
-        {
-            mob.Coord += mob.Velocity; // Set current position (given to ControlMob Packet)
-        }
     }
 
     private void UpdateEvents()
@@ -1102,9 +1103,11 @@ public class FieldManager : IDisposable
         CancellationToken.Cancel();
         TaskUtils.WaitForTask(MapLoopTask);
         TaskUtils.WaitForTask(TriggerTask);
+        TaskUtils.WaitForTask(MobMovementTask);
 
         MapLoopTask?.Dispose();
         TriggerTask?.Dispose();
+        MobMovementTask?.Dispose();
         Navigator?.Dispose();
         GC.SuppressFinalize(this);
     }

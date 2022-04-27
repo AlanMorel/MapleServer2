@@ -126,21 +126,33 @@ public struct CoordF
         return left.X * right.X + left.Y * right.Y + left.Z * right.Z;
     }
 
-    public static CoordF operator *(CoordF coord, double zRotation)
+    public static CoordF operator *(CoordF left, float right)
     {
-        double angle = Math.PI * ((zRotation - 900) / 1800);
-        double cos = Math.Cos(angle);
-        double sin = Math.Sin(angle);
-        return From((float) (coord.X * cos - coord.Y * sin),
-            (float) (coord.X * sin + coord.Y * cos),
-            coord.Z);
+        return From(
+            right * left.X,
+            right * left.Y,
+            right * left.Z);
+    }
+
+    public static CoordF operator /(CoordF value1, float value2)
+    {
+        return value1 / From(value2, value2, value2);
+    }
+
+    public static CoordF operator /(CoordF left, CoordF right)
+    {
+        return From(
+            left.X / right.X,
+            left.Y / right.Y,
+            left.Z / right.Z
+        );
     }
 
     #endregion
 
-    public float Length()
+    public readonly float Length()
     {
-        return (float) Math.Sqrt(X * X + Y * Y + Z * Z);
+        return MathF.Sqrt(LengthSquared());
     }
 
     public static float Distance(CoordF left, CoordF right)
@@ -148,9 +160,25 @@ public struct CoordF
         return (left - right).Length();
     }
 
+    // ReSharper disable once InconsistentNaming
     public double XYAngle()
     {
         return 1800 * Math.Atan2(Y, X) / Math.PI + 900;
+    }
+
+    public CoordF Normalize()
+    {
+        return this / Length();
+    }
+
+    public static float Dot(CoordF coord1, CoordF coord2)
+    {
+        return coord1.X * coord2.X + coord1.Y * coord2.Y + coord1.Z * coord2.Z;
+    }
+
+    public readonly float LengthSquared()
+    {
+        return Dot(this, this);
     }
 
     #region Overrides

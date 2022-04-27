@@ -1,9 +1,8 @@
 ﻿using Maple2Storage.Enums;
-using MapleServer2.Managers.Actors;
 using MapleServer2.Packets;
 using MapleServer2.Types;
 
-namespace MapleServer2.Managers;
+namespace MapleServer2.Managers.Actors;
 
 public class Character : FieldActor<Player>
 {
@@ -19,7 +18,7 @@ public class Character : FieldActor<Player>
     private Task SpRegenThread;
     private Task StaRegenThread;
 
-    public Character(int objectId, Player value) : base(objectId, value)
+    public Character(int objectId, Player value, FieldManager fieldManager) : base(objectId, value, fieldManager)
     {
         if (HpRegenThread == null || HpRegenThread.IsCompleted)
         {

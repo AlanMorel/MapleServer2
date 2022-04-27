@@ -7,25 +7,31 @@ using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
+using Serilog;
 
 namespace MapleServer2.Managers.Actors;
 
 public class Mob : FieldActor<NpcMetadata>, INpc
 {
     private static readonly Random Rand = Random.Shared;
+    private static readonly ILogger Logger = Log.Logger.ForContext<Mob>();
+
     private readonly MobAI AI;
     public IFieldObject<MobSpawn> OriginSpawn;
-
-    private CoordF SpawnDistance;
-
     public NpcState State { get; set; }
     public NpcAction Action { get; set; }
     public MobMovement Movement { get; set; }
     public IFieldActor<Player> Target;
 
-    public Mob(int objectId, int mobId) : this(objectId, NpcMetadataStorage.GetNpcMetadata(mobId)) { }
+    private CoordS NextMovementTarget;
+    private float Distance;
 
-    public Mob(int objectId, NpcMetadata metadata) : base(objectId, metadata)
+    private int LastMovementTime;
+    private float BaseVelocity => Movement is MobMovement.Follow ? Value.NpcMetadataSpeed.RunSpeed : Value.NpcMetadataSpeed.WalkSpeed;
+
+    public Mob(int objectId, int mobId, FieldManager fieldManager) : this(objectId, NpcMetadataStorage.GetNpcMetadata(mobId), fieldManager) { }
+
+    public Mob(int objectId, NpcMetadata metadata, FieldManager fieldManager) : base(objectId, metadata, fieldManager)
     {
         Animation = AnimationStorage.GetSequenceIdBySequenceName(metadata.Model, "Idle_A");
         AI = MobAIManager.GetAI(metadata.AiInfo);
@@ -98,7 +104,6 @@ public class Mob : FieldActor<NpcMetadata>, INpc
                 Move(Movement);
                 break;
             case NpcAction.Jump:
-            default:
                 break;
         }
     }
@@ -109,45 +114,43 @@ public class Mob : FieldActor<NpcMetadata>, INpc
         {
             case MobMovement.Patrol:
                 {
-                    int moveDistance = Rand.Next(1, Value.MoveRange);
+                    int moveDistance = Rand.Next(150, Value.MoveRange * 2);
 
                     CoordF originSpawnCoord = OriginSpawn?.Coord ?? Coord;
-                    IEnumerable<CoordS> path = Navigator.GenerateRandomPathAroundCoord(Agent, originSpawnCoord.ToShort(), moveDistance);
-                    if (path is null)
+                    List<CoordS> coordSPath = Navigator.GenerateRandomPathAroundCoord(Agent, originSpawnCoord, moveDistance);
+                    if (coordSPath is null)
                     {
                         return;
                     }
 
-                    CoordS coordF = path.Last();
-                    Position newPosition = Navigator.FindPositionFromCoordS(coordF);
-                    if (Navigator.PositionIsValid(newPosition))
+                    CoordS nextMovementTarget = coordSPath.Skip(1).FirstOrDefault();
+                    if (nextMovementTarget == default)
                     {
-                        Agent.moveTo(newPosition);
+                        return;
                     }
 
-                    MoveTo(coordF.ToFloat());
-                    LookDirection = (short) Velocity.XYAngle(); // looking direction of the monster
+                    NextMovementTarget = nextMovementTarget;
+                    Distance = (nextMovementTarget - Coord.ToShort()).Length();
                 }
                 break;
             case MobMovement.Follow: // move towards target
-                // {
-                //     IEnumerable<CoordS> path = Navigator.FindPath(Agent, Target.Coord.ToShort());
-                //     if (path is null)
-                //     {
-                //         Console.WriteLine("Path is null");
-                //         return;
-                //     }
-                //
-                //     CoordS coordF = path.Last();
-                //     Position newPosition = Navigator.FindPositionFromCoordS(coordF);
-                //     if (Navigator.PositionIsValid(newPosition))
-                //     {
-                //         Agent.moveTo(newPosition);
-                //     }
-                //
-                //     MoveTo(coordF.ToFloat());
-                //     LookDirection = (short) Velocity.XYAngle();
-                // }
+                {
+                    IEnumerable<CoordS> path = Navigator.FindPath(Agent, Target.Coord.ToShort());
+                    if (path is null)
+                    {
+                        Logger.Debug("Path for mob {0} towards target {1} is null.", Value.Id, Target.Value.Name);
+                        return;
+                    }
+
+                    CoordS coordF = path.Skip(1).FirstOrDefault();
+                    if (coordF == default)
+                    {
+                        return;
+                    }
+
+                    NextMovementTarget = coordF;
+                    Distance = (coordF - Coord.ToShort()).Length();
+                }
                 break;
             case MobMovement.Strafe: // move around target
             case MobMovement.Run: // move away from target
@@ -157,8 +160,6 @@ public class Mob : FieldActor<NpcMetadata>, INpc
                 Velocity = CoordF.From(0, 0, 0);
                 break;
         }
-
-        SpawnDistance -= Velocity;
     }
 
     public override void Damage(DamageHandler damage, GameSession session)
@@ -224,5 +225,60 @@ public class Mob : FieldActor<NpcMetadata>, INpc
 
         // Quest Check
         QuestManager.OnNpcKill(session.Player, mob.Value.Id, session.Player.MapId);
+    }
+
+    public void UpdateVelocity()
+    {
+        if (NextMovementTarget == default)
+        {
+            Velocity = default;
+            return;
+        }
+
+        if (Distance < 0)
+        {
+            Coord = NextMovementTarget;
+            NextMovementTarget = default;
+            Velocity = default;
+            MoveAgent();
+            return;
+        }
+
+        CoordF difference = NextMovementTarget.ToFloat() - Coord;
+
+        LookDirection = (short) difference.XYAngle();
+
+        Velocity = difference.Normalize() * BaseVelocity;
+    }
+
+    public void UpdateCoord()
+    {
+        if (Velocity == default)
+        {
+            return;
+        }
+
+        int tickNow = Environment.TickCount;
+        int timeDelta = Math.Clamp(tickNow - LastMovementTime, 0, 400);
+
+        CoordF difference = NextMovementTarget.ToFloat() - Coord;
+
+        const float UnitPerMs = 0.001f; // Velocity in which all NPCs move per ms. 150 units per second.
+        CoordF addCoord = difference.Normalize() * (UnitPerMs * BaseVelocity * timeDelta);
+        Coord += addCoord;
+
+        Distance -= addCoord.Length();
+
+        MoveAgent();
+        LastMovementTime = tickNow;
+    }
+
+    private void MoveAgent()
+    {
+        Position position = Navigator.FindPositionFromCoordS(Coord);
+        if (Navigator.PositionIsValid(position))
+        {
+            Agent.moveTo(position);
+        }
     }
 }
