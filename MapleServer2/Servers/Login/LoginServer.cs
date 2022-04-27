@@ -35,6 +35,7 @@ public class LoginServer : Server<LoginSession>
 
     public IEnumerable<LoginSession> GetSessions()
     {
+        Sessions.RemoveAll(x => !x.Connected());
         return Sessions;
     }
 }
