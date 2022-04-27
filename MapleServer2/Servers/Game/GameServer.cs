@@ -65,6 +65,7 @@ public class GameServer : Server<GameSession>
 
     public IEnumerable<GameSession> GetSessions()
     {
+        Sessions.RemoveAll(x => !x.Connected());
         return Sessions;
     }
 }

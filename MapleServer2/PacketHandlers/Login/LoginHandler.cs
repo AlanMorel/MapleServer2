@@ -59,7 +59,7 @@ public class LoginHandler : LoginPacketHandler<LoginHandler>
             Session loggedInAccount = MapleServer.GetSessions(MapleServer.GetLoginServer(), MapleServer.GetGameServer()).FirstOrDefault(p => p switch
             {
                 LoginSession s => s.AccountId == account.Id,
-                GameSession s => s.Player.AccountId == account.Id,
+                GameSession s => s.Player?.AccountId == account.Id,
                 _ => false
             });
 

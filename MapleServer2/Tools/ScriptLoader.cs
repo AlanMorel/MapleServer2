@@ -75,7 +75,7 @@ public static class ScriptLoader
         string scriptPath = $"{Paths.SCRIPTS_DIR}/{scriptName}.lua";
         if (!File.Exists(scriptPath))
         {
-            Logger.Error("Script {scriptName} does not exist.", scriptName);
+            Logger.Information("Script {scriptName} does not exist.", scriptName);
             return false;
         }
 
