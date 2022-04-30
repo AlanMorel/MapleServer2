@@ -31,7 +31,7 @@ public class FieldNavigator : IDisposable
     {
         Position randomPositionLocally = Mesh.generateRandomPositionLocally(agent.getPosition(), radius);
 
-        if (!Mesh.positionIsValid(randomPositionLocally))
+        if (!PositionIsValid(randomPositionLocally))
         {
             return null;
         }
@@ -71,7 +71,7 @@ public class FieldNavigator : IDisposable
     {
         Position end = FindPositionFromCoordS(endCoord);
 
-        if (!Mesh.positionIsValid(end))
+        if (!PositionIsValid(end))
         {
             return null;
         }
@@ -119,13 +119,13 @@ public class FieldNavigator : IDisposable
     public Agent AddAgent(IFieldActor actor, Shape shape)
     {
         Position position = FindPositionFromCoordS(actor.Coord.ToShort());
-        if (!Mesh.positionIsValid(position))
+        if (!PositionIsValid(position))
         {
             return null;
         }
 
         Position unobstructedPosition = Mesh.findClosestUnobstructedPosition(shape, CollisionContext, position, 200);
-        if (!Mesh.positionIsValid(unobstructedPosition))
+        if (!PositionIsValid(unobstructedPosition))
         {
             return null;
         }
