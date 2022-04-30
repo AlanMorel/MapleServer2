@@ -47,16 +47,14 @@ public class FieldNavigator : IDisposable
     /// <returns>List of CoordS or null if path is not possible</returns>
     public List<CoordS> GenerateRandomPathAroundCoord(Agent agent, CoordS centerCoord, int radius)
     {
-        Position position = FindPositionFromCoordS(centerCoord);
-
-        if (!Mesh.positionIsValid(position))
+        Position randomPositionLocally;
+        try
         {
-            return null;
+            Position position = FindPositionFromCoordS(centerCoord);
+
+            randomPositionLocally = Mesh.generateRandomPositionLocally(position, radius);
         }
-
-        Position randomPositionLocally = Mesh.generateRandomPositionLocally(position, radius);
-
-        if (!Mesh.positionIsValid(randomPositionLocally))
+        catch (InvalidPositionException)
         {
             return null;
         }
@@ -126,7 +124,13 @@ public class FieldNavigator : IDisposable
             return null;
         }
 
-        Agent agent = Mesh.placeAgent(shape, position);
+        Position unobstructedPosition = Mesh.findClosestUnobstructedPosition(shape, CollisionContext, position, 200);
+        if (!Mesh.positionIsValid(unobstructedPosition))
+        {
+            return null;
+        }
+
+        Agent agent = Mesh.placeAgent(shape, unobstructedPosition);
         agent.setUserData(actor.ObjectId);
 
         CollisionContext.addAgent(agent);
@@ -204,6 +208,11 @@ public class FieldNavigator : IDisposable
             unobstructedPosition = Mesh.findClosestUnobstructedPosition(shape, CollisionContext, randomPosition, radius);
         }
         catch (InvalidPositionException)
+        {
+            return null;
+        }
+
+        if (!PositionIsValid(unobstructedPosition))
         {
             return null;
         }

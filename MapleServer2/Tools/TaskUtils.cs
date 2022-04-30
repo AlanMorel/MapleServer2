@@ -6,6 +6,11 @@ public static class TaskUtils
 {
     public static void WaitForTask(Task task)
     {
+        if (task is null)
+        {
+            return;
+        }
+
         try
         {
             task.Wait();
