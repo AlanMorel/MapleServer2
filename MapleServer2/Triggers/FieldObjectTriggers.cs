@@ -63,10 +63,15 @@ public partial class TriggerContext
 
     public void SetLadder(int ladderId, bool isVisible, bool animationEffect, byte animationDelay)
     {
-        Field.State.TriggerLadders[ladderId].IsVisible = isVisible;
-        Field.State.TriggerLadders[ladderId].AnimationEffect = animationEffect;
-        Field.State.TriggerLadders[ladderId].AnimationDelay = animationDelay;
-        Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerLadders[ladderId]));
+        if (!Field.State.TriggerLadders.TryGetValue(ladderId, out TriggerLadder ladder))
+        {
+            return;
+        }
+
+        ladder.IsVisible = isVisible;
+        ladder.AnimationEffect = animationEffect;
+        ladder.AnimationDelay = animationDelay;
+        Field.BroadcastPacket(TriggerPacket.UpdateTrigger(ladder));
     }
 
     public void SetMesh(int[] meshIds, bool isVisible, int arg3, int arg4, float arg5)
