@@ -246,7 +246,7 @@ public class Player
         // Add initial quests
         foreach (QuestMetadata questMetadata in QuestMetadataStorage.GetAvailableQuests(Levels.Level, job))
         {
-            QuestData.Add(questMetadata.Basic.Id, new(this, questMetadata));
+            QuestData.Add(questMetadata.Basic.Id, new(CharacterId, questMetadata));
         }
 
         // Get account trophies, only used for the OnLevelUp event
@@ -302,6 +302,11 @@ public class Player
         {
             club?.BroadcastPacketClub(ClubPacket.UpdateMemberLocation(club.Id, Name, MapId));
         }
+    }
+
+    public void Warp(Map mapId, CoordF? coord = null, CoordF? rotation = null, long instanceId = 1)
+    {
+        Warp((int) mapId, coord, rotation, instanceId);
     }
 
     public void WarpGameToGame(int mapId, long instanceId, CoordF? coord = null, CoordF? rotation = null)

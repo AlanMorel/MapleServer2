@@ -42,7 +42,7 @@ public class GlobalPortalHandler : GamePacketHandler<GlobalPortalHandler>
             return;
         }
 
-        Map map = Map.Tria;
+        Map map;
         switch (globalEvent.Events[selectionIndex])
         {
             case GlobalEventType.oxquiz:
@@ -91,6 +91,6 @@ public class GlobalPortalHandler : GamePacketHandler<GlobalPortalHandler>
 
         session.Player.Mount = null;
         MapPortal portal = MapEntityMetadataStorage.GetPortals((int) map).FirstOrDefault(portal => portal.Id == 1);
-        session.Player.Warp((int) map, portal.Coord.ToFloat(), portal.Rotation.ToFloat());
+        session.Player.Warp(map, portal.Coord.ToFloat(), portal.Rotation.ToFloat());
     }
 }

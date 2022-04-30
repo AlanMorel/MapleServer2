@@ -82,11 +82,9 @@ public static class QuestManager
         {
             quest.Condition.Where(condition => ConditionHelper.IsMatching(condition.Type, conditionType)
                                                && ConditionHelper.IsMatching(condition.Code, code)
-                                               && ConditionHelper.IsMatching(condition.Target, target)
+                                               && (ConditionHelper.IsMatching(condition.Target, target) || ConditionHelper.IsMatching(condition.Target, "0"))
                                                && !condition.Completed)
                 .UpdateConditions(session, quest);
-
-            DatabaseManager.Quests.Update(quest);
         }
     }
 
@@ -117,12 +115,15 @@ public static class QuestManager
                 continue;
             }
 
-            quest.State = QuestState.Finished;
+            quest.State = QuestState.Completed;
+            quest.AmountCompleted++;
             quest.CompleteTimestamp = TimeInfo.Now();
 
             session.Player.Levels.GainExp(quest.Reward.Exp);
             session.Player.Wallet.Meso.Modify(quest.Reward.Money);
             session.Send(QuestPacket.CompleteQuest(quest.Basic.Id, false));
+
+            DatabaseManager.Quests.Update(quest);
         }
     }
 

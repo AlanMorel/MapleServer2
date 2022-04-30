@@ -32,6 +32,7 @@ public partial class TriggerContext
                 {
                     // TODO
                 }
+
                 break;
             case WidgetType.OxQuiz:
                 switch (name)
@@ -55,6 +56,7 @@ public partial class TriggerContext
                         {
                             widget.State = "Incorrect";
                         }
+
                         break;
                     case "ShowAnswer":
                         Field.BroadcastPacket(QuizEventPacket.Answer(widget.OXQuizQuestion.Answer, widget.OXQuizQuestion.AnswerText, int.Parse(args)));
@@ -62,6 +64,7 @@ public partial class TriggerContext
                     case "Judge":
                         break;
                 }
+
                 break;
             default:
                 Logger.Warning("Non implemented Widget Action. WidgetType: {type}", type);
@@ -94,6 +97,10 @@ public partial class TriggerContext
             foreach (int boxId in boxIds)
             {
                 MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
+                if (box is null)
+                {
+                    return;
+                }
 
                 foreach (IFieldObject<Player> player in Field.State.Players.Values)
                 {
@@ -103,8 +110,10 @@ public partial class TriggerContext
                     }
                 }
             }
+
             return;
         }
+
         Field.BroadcastPacket(SystemSoundPacket.Play(sound));
     }
 
@@ -131,6 +140,7 @@ public partial class TriggerContext
                 Field.BroadcastPacket(MassiveEventPacket.RoundBar(int.Parse(ids[0]), int.Parse(ids[1]), 1));
                 return;
             }
+
             Field.BroadcastPacket(MassiveEventPacket.RoundBar(int.Parse(ids[0]), int.Parse(ids[1]), int.Parse(ids[2])));
             return;
         }
@@ -159,12 +169,17 @@ public partial class TriggerContext
         }
 
         MapTriggerBox triggerBox;
-        int boxId = 0;
+        int boxId;
         if (box.Contains('!'))
         {
             box = box[1..];
             boxId = int.Parse(box);
             triggerBox = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
+            if (triggerBox is null)
+            {
+                return;
+            }
+
             foreach (IFieldObject<Player> player in Field.State.Players.Values)
             {
                 if (!FieldManager.IsPlayerInBox(triggerBox, player))
@@ -172,11 +187,17 @@ public partial class TriggerContext
                     player.Value.Session.Send(MassiveEventPacket.TextBanner(type, script, duration));
                 }
             }
+
             return;
         }
 
         boxId = int.Parse(box);
         triggerBox = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
+        if (triggerBox is null)
+        {
+            return;
+        }
+
         foreach (IFieldObject<Player> player in Field.State.Players.Values)
         {
             if (FieldManager.IsPlayerInBox(triggerBox, player))

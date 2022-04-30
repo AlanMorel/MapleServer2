@@ -43,10 +43,11 @@ public class CompleteQuestCommand : InGameCommand
         Player player = trigger.Session.Player;
         if (!player.QuestData.TryGetValue(questId, out QuestStatus questStatus))
         {
-            questStatus = new(player, QuestMetadataStorage.GetMetadata(questId));
+            questStatus = new(player.CharacterId, questId);
             player.QuestData.Add(questId, questStatus);
         }
-        questStatus.State = QuestState.Finished;
+        questStatus.State = QuestState.Completed;
+        questStatus.AmountCompleted++;
         questStatus.StartTimestamp = TimeInfo.Now();
         questStatus.CompleteTimestamp = TimeInfo.Now();
         player.Levels.GainExp(questStatus.Reward.Exp);
@@ -71,7 +72,7 @@ public class CompleteQuestCommand : InGameCommand
         IEnumerable<KeyValuePair<int, QuestMetadata>> questList = QuestMetadataStorage.GetAllQuests().Where(x => x.Value.Require.RequiredQuests.Contains(questId));
         foreach ((int id, QuestMetadata quest) in questList)
         {
-            player.QuestData.Add(id, new(player, quest));
+            player.QuestData.Add(id, new(player.CharacterId, quest));
         }
     }
 }
@@ -105,14 +106,16 @@ public class StartQuestCommand : InGameCommand
             trigger.Session.Send(NoticePacket.Notice($"Quest not found with id: {questId.ToString().Color(Color.Aquamarine)}.", NoticeType.Chat));
             return;
         }
-        if (trigger.Session.Player.QuestData.ContainsKey(questId))
+
+        Player player = trigger.Session.Player;
+        if (player.QuestData.ContainsKey(questId))
         {
             trigger.Session.Send(NoticePacket.Notice($"You already have quest: {questId.ToString().Color(Color.Aquamarine)}.", NoticeType.Chat));
             return;
         }
 
-        QuestStatus questStatus = new(trigger.Session.Player, quest, QuestState.Started, TimeInfo.Now());
-        trigger.Session.Player.QuestData.Add(questId, questStatus);
+        QuestStatus questStatus = new(player.CharacterId, questId, QuestState.Started, TimeInfo.Now());
+        player.QuestData.Add(questId, questStatus);
         trigger.Session.Send(QuestPacket.AcceptQuest(questStatus));
     }
 }

@@ -18,6 +18,7 @@ public class DatabaseQuest : DatabaseTable
             start_timestamp = questStatus.StartTimestamp,
             complete_timestamp = questStatus.CompleteTimestamp,
             questStatus.Tracked,
+            amount_completed = questStatus.AmountCompleted,
             condition = JsonConvert.SerializeObject(questStatus.Condition),
             character_id = questStatus.CharacterId
         });
@@ -45,7 +46,8 @@ public class DatabaseQuest : DatabaseTable
             complete_timestamp = questStatus.CompleteTimestamp,
             questStatus.Tracked,
             condition = JsonConvert.SerializeObject(questStatus.Condition),
-            character_id = questStatus.CharacterId
+            character_id = questStatus.CharacterId,
+            amount_completed = questStatus.AmountCompleted,
         });
     }
 
@@ -56,6 +58,6 @@ public class DatabaseQuest : DatabaseTable
 
     private static QuestStatus ReadQuest(dynamic data)
     {
-        return new QuestStatus(data.uid, data.id, data.character_id, data.tracked, data.start_timestamp, data.complete_timestamp, JsonConvert.DeserializeObject<List<Condition>>(data.condition), (QuestState) data.state);
+        return new QuestStatus(data.uid, data.id, data.character_id, data.tracked, data.start_timestamp, data.complete_timestamp, JsonConvert.DeserializeObject<List<Condition>>(data.condition), (QuestState) data.state, data.amount_completed);
     }
 }
