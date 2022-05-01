@@ -31,7 +31,7 @@ public class FieldNavigator : IDisposable
     {
         Position randomPositionLocally = Mesh.generateRandomPositionLocally(agent.getPosition(), radius);
 
-        if (!Mesh.positionIsValid(randomPositionLocally))
+        if (!PositionIsValid(randomPositionLocally))
         {
             return null;
         }
@@ -47,16 +47,14 @@ public class FieldNavigator : IDisposable
     /// <returns>List of CoordS or null if path is not possible</returns>
     public List<CoordS> GenerateRandomPathAroundCoord(Agent agent, CoordS centerCoord, int radius)
     {
-        Position position = FindPositionFromCoordS(centerCoord);
-
-        if (!Mesh.positionIsValid(position))
+        Position randomPositionLocally;
+        try
         {
-            return null;
+            Position position = FindPositionFromCoordS(centerCoord);
+
+            randomPositionLocally = Mesh.generateRandomPositionLocally(position, radius);
         }
-
-        Position randomPositionLocally = Mesh.generateRandomPositionLocally(position, radius);
-
-        if (!Mesh.positionIsValid(randomPositionLocally))
+        catch (InvalidPositionException)
         {
             return null;
         }
@@ -73,7 +71,7 @@ public class FieldNavigator : IDisposable
     {
         Position end = FindPositionFromCoordS(endCoord);
 
-        if (!Mesh.positionIsValid(end))
+        if (!PositionIsValid(end))
         {
             return null;
         }
@@ -121,12 +119,18 @@ public class FieldNavigator : IDisposable
     public Agent AddAgent(IFieldActor actor, Shape shape)
     {
         Position position = FindPositionFromCoordS(actor.Coord.ToShort());
-        if (!Mesh.positionIsValid(position))
+        if (!PositionIsValid(position))
         {
             return null;
         }
 
-        Agent agent = Mesh.placeAgent(shape, position);
+        Position unobstructedPosition = Mesh.findClosestUnobstructedPosition(shape, CollisionContext, position, 200);
+        if (!PositionIsValid(unobstructedPosition))
+        {
+            return null;
+        }
+
+        Agent agent = Mesh.placeAgent(shape, unobstructedPosition);
         agent.setUserData(actor.ObjectId);
 
         CollisionContext.addAgent(agent);
@@ -204,6 +208,11 @@ public class FieldNavigator : IDisposable
             unobstructedPosition = Mesh.findClosestUnobstructedPosition(shape, CollisionContext, randomPosition, radius);
         }
         catch (InvalidPositionException)
+        {
+            return null;
+        }
+
+        if (!PositionIsValid(unobstructedPosition))
         {
             return null;
         }
