@@ -21,21 +21,28 @@ public partial class TriggerContext
     public void EndMiniGame(int winnerBoxId, MiniGame type, bool isOnlyWinner)
     {
         MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, winnerBoxId);
-        List<IFieldObject<Player>> players = new();
+        if (box is null)
+        {
+            return;
+        }
+
         foreach (IFieldObject<Player> player in Field.State.Players.Values)
         {
-            if (FieldManager.IsPlayerInBox(box, player))
+            if (!FieldManager.IsPlayerInBox(box, player))
             {
-                if (type == MiniGame.LudibriumEscape)
-                {
+                continue;
+            }
+
+            switch (type)
+            {
+                case MiniGame.LudibriumEscape:
                     PlayerTrigger trigger = player.Value.Triggers.FirstOrDefault(x => x.Key == "gameStart");
                     player.Value.Triggers.Remove(trigger);
                     player.Value.Session.Send(ResultsPacket.Rounds(1, 1));
-                }
-                else if (type == MiniGame.OXQuiz)
-                {
+                    break;
+                case MiniGame.OXQuiz:
                     player.Value.Session.Send(ResultsPacket.Rounds(10, 10));
-                }
+                    break;
             }
         }
     }
@@ -43,6 +50,11 @@ public partial class TriggerContext
     public void EndMiniGameRound(int winnerBoxId, float expRate, bool isOnlyWinner, bool isGainLoserBonus, bool meso, MiniGame type)
     {
         MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, winnerBoxId);
+        if (box is null)
+        {
+            return;
+        }
+
         foreach (IFieldObject<Player> player in Field.State.Players.Values)
         {
             if (FieldManager.IsPlayerInBox(box, player))
@@ -78,6 +90,11 @@ public partial class TriggerContext
     public void MiniGameGiveReward(int winnerBoxId, string contentType, MiniGame type)
     {
         MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, winnerBoxId);
+        if (box is null)
+        {
+            return;
+        }
+
         List<IFieldObject<Player>> players = new();
         foreach (IFieldObject<Player> player in Field.State.Players.Values)
         {

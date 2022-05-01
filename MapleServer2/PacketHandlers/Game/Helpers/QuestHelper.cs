@@ -1,6 +1,5 @@
 ﻿using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
-using MapleServer2.Packets;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game.Helpers;
@@ -17,9 +16,7 @@ public static class QuestHelper
                 continue;
             }
 
-            player.QuestData.Add(quest.Basic.Id, new(player, quest));
+            player.QuestData.Add(quest.Basic.Id, new(player.CharacterId, quest.Basic.Id));
         }
-
-        player.Session.Send(QuestPacket.SendQuests(player.QuestData.Values.ToList()));
     }
 }

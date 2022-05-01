@@ -21,6 +21,7 @@ public class QuestHandler : GamePacketHandler<QuestHandler>
         CompleteQuest = 0x04,
         ExplorationQuests = 0x08,
         ToggleTracking = 0x09,
+        SkyFortress = 0x0E,
         ResumeDungeon = 0x13,
         DispatchMode = 0x14,
         CompleteNavigator = 0x18
@@ -53,10 +54,18 @@ public class QuestHandler : GamePacketHandler<QuestHandler>
             case QuestMode.ToggleTracking:
                 HandleToggleTracking(session, packet);
                 break;
+            case QuestMode.SkyFortress:
+                HandleSkyFortressTeleport(session);
+                break;
             default:
                 LogUnknownMode(mode);
                 break;
         }
+    }
+
+    private static void HandleSkyFortressTeleport(GameSession session)
+    {
+        session.Player.Warp(Map.SkyFortressBridge);
     }
 
     private static void HandleAcceptQuest(GameSession session, PacketReader packet)
@@ -81,12 +90,13 @@ public class QuestHandler : GamePacketHandler<QuestHandler>
         int questId = packet.ReadInt();
         int objectId = packet.ReadInt();
 
-        if (!session.Player.QuestData.TryGetValue(questId, out QuestStatus questStatus) || questStatus.State is QuestState.Finished)
+        if (!session.Player.QuestData.TryGetValue(questId, out QuestStatus questStatus) || questStatus.State is QuestState.Completed)
         {
             return;
         }
 
-        questStatus.State = QuestState.Finished;
+        questStatus.State = QuestState.Completed;
+        questStatus.AmountCompleted++;
         questStatus.CompleteTimestamp = TimeInfo.Now();
 
         session.Player.Levels.GainExp(questStatus.Reward.Exp);
@@ -118,7 +128,7 @@ public class QuestHandler : GamePacketHandler<QuestHandler>
                 continue;
             }
 
-            session.Player.QuestData.Add(questMetadata.Basic.Id, new(session.Player, questMetadata));
+            session.Player.QuestData.Add(questMetadata.Basic.Id, new(session.Player.CharacterId, questMetadata));
         }
     }
 
@@ -126,7 +136,7 @@ public class QuestHandler : GamePacketHandler<QuestHandler>
     {
         int questId = packet.ReadInt();
 
-        if (!session.Player.QuestData.TryGetValue(questId, out QuestStatus questStatus) || questStatus.State is QuestState.Finished)
+        if (!session.Player.QuestData.TryGetValue(questId, out QuestStatus questStatus) || questStatus.State is QuestState.Completed)
         {
             return;
         }
@@ -145,7 +155,8 @@ public class QuestHandler : GamePacketHandler<QuestHandler>
         firstCondition.Current++;
         firstCondition.Completed = true;
 
-        questStatus.State = QuestState.Finished;
+        questStatus.State = QuestState.Completed;
+        questStatus.AmountCompleted++;
         questStatus.CompleteTimestamp = TimeInfo.Now();
         DatabaseManager.Quests.Update(questStatus);
         session.Send(QuestPacket.CompleteQuest(questId, false));
@@ -161,8 +172,7 @@ public class QuestHandler : GamePacketHandler<QuestHandler>
 
             if (questStatus is null)
             {
-                QuestMetadata metadata = QuestMetadataStorage.GetMetadata(questId);
-                questStatus = new(session.Player, metadata, QuestState.Started, TimeInfo.Now());
+                questStatus = new(session.Player.CharacterId, questId, QuestState.Started, TimeInfo.Now());
                 session.Player.QuestData.Add(questId, questStatus);
                 session.Send(QuestPacket.AcceptQuest(questStatus));
                 continue;
@@ -178,7 +188,7 @@ public class QuestHandler : GamePacketHandler<QuestHandler>
     {
         int questId = packet.ReadInt();
 
-        if (!session.Player.QuestData.TryGetValue(questId, out QuestStatus questStatus) || questStatus.State is QuestState.Finished)
+        if (!session.Player.QuestData.TryGetValue(questId, out QuestStatus questStatus) || questStatus.State is QuestState.Completed)
         {
             return;
         }
@@ -192,7 +202,7 @@ public class QuestHandler : GamePacketHandler<QuestHandler>
         int questId = packet.ReadInt();
         short mode = packet.ReadShort();
 
-        if (!session.Player.QuestData.TryGetValue(questId, out QuestStatus questStatus) || questStatus.State is QuestState.Finished)
+        if (!session.Player.QuestData.TryGetValue(questId, out QuestStatus questStatus) || questStatus.State is QuestState.Completed)
         {
             return;
         }

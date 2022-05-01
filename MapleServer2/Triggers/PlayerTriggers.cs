@@ -90,6 +90,11 @@ public partial class TriggerContext
         if (boxId != 0)
         {
             MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
+            if (box is null)
+            {
+                return;
+            }
+
             List<IFieldActor<Player>> boxedPlayers = new();
             foreach (IFieldActor<Player> player in players)
             {
@@ -188,6 +193,11 @@ public partial class TriggerContext
         if (boxId != 0)
         {
             MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
+            if (box is null)
+            {
+                return;
+            }
+
             List<IFieldActor<Player>> boxedPlayers = new();
             foreach (IFieldActor<Player> player in players)
             {

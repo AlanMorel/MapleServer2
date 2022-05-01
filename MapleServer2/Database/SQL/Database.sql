@@ -584,6 +584,7 @@ CREATE TABLE `quests`
     `condition`          text,
     `character_id`       bigint DEFAULT NULL,
     `tracked`            tinyint(1)       NOT NULL,
+    `amount_completed`   int              NOT NULL,
     PRIMARY KEY (`uid`),
     UNIQUE KEY `quests_un` (`id`, `character_id`),
     KEY `ix_quests_characterid` (`character_id`),

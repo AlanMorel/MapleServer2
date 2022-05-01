@@ -98,7 +98,7 @@ public class MasteryHandler : GamePacketHandler<MasteryHandler>
         {
             foreach (int questId in recipe.RequireQuest)
             {
-                if (session.Player.QuestData.TryGetValue(questId, out QuestStatus quest) && quest.State is not QuestState.Finished)
+                if (session.Player.QuestData.TryGetValue(questId, out QuestStatus quest) && quest.State is not QuestState.Completed)
                 {
                     session.Send(MasteryPacket.MasteryNotice((short) MasteryNotice.RequiredQuestIsNotCompleted));
                     return;

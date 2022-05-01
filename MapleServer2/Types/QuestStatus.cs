@@ -7,22 +7,25 @@ namespace MapleServer2.Types;
 
 public class QuestStatus
 {
-    public long Uid { get; private set; }
-    public int Id { get; private set; }
-    public QuestBasic Basic { get; private set; }
+    public long Uid { get; }
+    public int Id { get; }
     public long StartTimestamp { get; set; }
     public long CompleteTimestamp { get; set; }
+    public bool Tracked { get; set; }
+    public List<Condition> Condition { get; }
+    public QuestState State { get; set; }
+    public int AmountCompleted { get; set; }
+
+    public QuestBasic Basic { get; private set; }
     public long StartNpcId { get; private set; }
     public long CompleteNpcId { get; private set; }
-    public bool Tracked { get; set; }
-    public List<Condition> Condition { get; set; }
     public QuestReward Reward { get; private set; }
-    public List<QuestRewardItem> RewardItems { get; private set; }
-    public QuestState State;
 
+    public List<QuestRewardItem> RewardItems { get; private set; }
     public readonly long CharacterId;
 
-    public QuestStatus(long uid, int id, long characterId, bool tracked, long startTimestamp, long completeTimestamp, List<Condition> conditions, QuestState state)
+    public QuestStatus(long uid, int id, long characterId, bool tracked, long startTimestamp, long completeTimestamp, List<Condition> conditions,
+        QuestState state, int amountCompleted)
     {
         Uid = uid;
         Id = id;
@@ -32,33 +35,34 @@ public class QuestStatus
         Condition = conditions;
         State = state;
         Tracked = tracked;
-        SetMetadataValues();
+        AmountCompleted = amountCompleted;
+        SetMetadataValues(QuestMetadataStorage.GetMetadata(Id));
     }
 
-    public QuestStatus(Player player, QuestMetadata metadata, QuestState state = QuestState.None, long startTimestamp = 0)
+    public QuestStatus(long characterId, int questId, QuestState state = QuestState.None, long startTimestamp = 0)
+        : this(characterId, QuestMetadataStorage.GetMetadata(questId), state, startTimestamp) { }
+
+    public QuestStatus(long characterId, QuestMetadata metadata, QuestState state = QuestState.None, long startTimestamp = 0)
     {
-        CharacterId = player.CharacterId;
+        SetMetadataValues(metadata);
+
+        CharacterId = characterId;
         Id = metadata.Basic.Id;
-        Basic = metadata.Basic;
-        StartNpcId = metadata.StartNpc;
-        CompleteNpcId = metadata.CompleteNpc;
         Condition = new();
         foreach (QuestCondition condition in metadata.Condition)
         {
             Condition.Add(new(condition.Type, condition.Code, condition.Goal, 0, condition.Target));
         }
 
-        Reward = metadata.Reward;
-        RewardItems = metadata.RewardItem;
         State = state;
         StartTimestamp = startTimestamp;
         Tracked = metadata.Basic.UseNavigation;
+        AmountCompleted = 0;
         Uid = DatabaseManager.Quests.Insert(this);
     }
 
-    private void SetMetadataValues()
+    private void SetMetadataValues(QuestMetadata metadata)
     {
-        QuestMetadata metadata = QuestMetadataStorage.GetMetadata(Id);
         Basic = metadata.Basic;
         StartNpcId = metadata.StartNpc;
         CompleteNpcId = metadata.CompleteNpc;

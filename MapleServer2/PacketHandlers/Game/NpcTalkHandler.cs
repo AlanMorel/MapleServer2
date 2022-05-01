@@ -66,7 +66,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
         }
 
         // Get all quests for this npc
-        foreach (QuestStatus item in session.Player.QuestData.Values.Where(x => x.State is not QuestState.Finished))
+        foreach (QuestStatus item in session.Player.QuestData.Values.Where(x => x.State is not QuestState.Completed))
         {
             if (npc.Value.Id == item.StartNpcId)
             {
@@ -245,7 +245,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
             session.Player.QuestData.TryGetValue(questId, out QuestStatus quest);
             session.Player.NpcTalk.Quests = quest is not null
                 ? new() { quest }
-                : new() { new(session.Player, QuestMetadataStorage.GetMetadata(questId)) };
+                : new() { new(session.Player.CharacterId, questId) };
         }
 
         session.Player.NpcTalk.ScriptId = 0;

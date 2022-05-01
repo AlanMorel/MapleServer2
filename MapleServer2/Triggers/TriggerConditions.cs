@@ -140,7 +140,7 @@ public partial class TriggerContext
 
     public bool QuestUserDetected(int[] boxes, int[] questIds, byte[] modes, byte arg4)
     {
-        QuestState mode = (QuestState) modes[0];
+        byte mode = modes[0];
         foreach (int boxId in boxes)
         {
             MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
@@ -162,12 +162,12 @@ public partial class TriggerContext
 
                     switch (mode)
                     {
-                        case QuestState.Started:
+                        case 1: // started
                             return quest.State is QuestState.Started;
-                        case QuestState.ConditionCompleted:
+                        case 2: // conditions completed
                             return quest.State is not QuestState.None && quest.Condition.All(condition => condition.Completed);
-                        case QuestState.Finished:
-                            return quest.State is QuestState.Finished;
+                        case 3: // completed
+                            return quest.State is QuestState.Completed;
                     }
                 }
             }
