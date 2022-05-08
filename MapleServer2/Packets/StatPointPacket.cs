@@ -44,7 +44,7 @@ public static class StatPointPacket
 
         foreach ((StatAttribute statType, int amount) in character.StatPointDistribution.AllocatedStats)
         {
-            pWriter.Write(statType);
+            pWriter.WriteByte((byte) statType);
             pWriter.WriteInt(amount);
         }
 
