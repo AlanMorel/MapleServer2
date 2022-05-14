@@ -32,6 +32,7 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
         if (authData is null)
         {
             Logger.Error("AuthData with account ID {accountId} was not found in database.", accountId);
+            session.Send(LoginResultPacket.SendLoginMode(LoginMode.SystemErrorDB));
             return;
         }
 
