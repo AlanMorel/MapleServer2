@@ -55,8 +55,8 @@ public enum LoginMode : byte
     IncorrectId = 0x01, // Incorrect id
     IncorrectId2 = 0x02, // Incorrect id
     IncorrectPassword = 0x03, // Incorrect password
-    AccountAlreadyLoggedIn = 0x04, // Account already logged in. Previous session will be aborted, clicking ok trys to relog
-    AccountAlreadyLoggedIn2 = 0x05, // Account already logged in. Previous session will be aborted, clicking ok trys to relog
+    AccountAlreadyLoggedIn = 0x04, // Account already logged in. Previous session will be aborted, clicking ok tries to relog
+    AccountAlreadyLoggedIn2 = 0x05, // Account already logged in. Previous session will be aborted, clicking ok tries to relog
     MemberLimit = 0x06, // Member limit reached
     AccountSuspended = 0x07, // Account suspended, shows date and reason.
     SystemErrorDB = 0x08, // System Error: DB
@@ -66,11 +66,11 @@ public enum LoginMode : byte
     MessageBoxAndCloseClient = 0x0C, // Custom message box, clicking OK closes client.
     SystemError2 = 0x0D, // System error
     AccountInProtectionMode = 0x0E, // Account is in protection mode because it is suspected of being unauthorized. Clicking ok closes client and opens nxn website
-    IpBanned = 0x0F, // Connection is restriced for this IP. A connection is not possible. Clicking ok closes client.
+    IpBanned = 0x0F, // Connection is restricted for this IP. A connection is not possible. Clicking ok closes client.
     GameVerificationFailed = 0x10, // Game verification has failed. Please try again later.
     SystemError3 = 0x11, // System error
     AccountNotInBeta = 0x12, // This account cannot participate in the test. A connection is not possible. Clicking ok closes client.
-    AccountNotVerified = 0x13, // Currently, this service is only available for players whose identities have been vefiried. Clicking ok closes client.
+    AccountNotVerified = 0x13, // Currently, this service is only available for players whose identities have been verified. Clicking ok closes client.
     AccountOld = 0x14, // This account is an old account. An old account must complete identity verification at least once. Clicking ok closes client and opens nxn website
     SystemVerificationFailed = 0x15, // Session verification failed. A connection is not possible. Clicking ok closes client.
     GameVerificationFailed2 = 0x16, // Game verification failed. Please restart the game.
