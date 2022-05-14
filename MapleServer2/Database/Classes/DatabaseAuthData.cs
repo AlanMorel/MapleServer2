@@ -29,6 +29,11 @@ public class DatabaseAuthData : DatabaseTable
     public AuthData GetByAccountId(long accountId)
     {
         dynamic result = QueryFactory.Query(TableName).Where("account_id", accountId).FirstOrDefault();
+        if (result is null)
+        {
+            return null;
+        }
+
         return new(result.token_a, result.token_b, result.account_id, result.online_character_id ?? 0);
     }
 }

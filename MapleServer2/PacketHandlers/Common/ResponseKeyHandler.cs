@@ -21,7 +21,18 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
     public override void Handle(GameSession session, PacketReader packet)
     {
         long accountId = packet.ReadLong();
+        if (accountId is 0)
+        {
+            Logger.Error("Account ID was 0. Login has failed or connection was made directly to game server.");
+            return;
+        }
+
         AuthData authData = DatabaseManager.AuthData.GetByAccountId(accountId);
+        if (authData is null)
+        {
+            Logger.Error("AuthData with account ID {accountId} was not found in database.", accountId);
+            return;
+        }
 
         Player dbPlayer = DatabaseManager.Characters.FindPlayerById(authData.OnlineCharacterId, session);
 
