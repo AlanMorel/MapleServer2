@@ -62,11 +62,10 @@ public enum LoginMode : byte
     SystemErrorDB = 0x08, // System Error: DB
     SystemError = 0x09, // System Error
     ChannelFull = 0x0A, // Channel is full
-    MessageBox = 0x0B, // Blank message
-    MessageBoxAndCloseClient = 0x0C, // Blank Message, clicking OK closes client.
+    MessageBox = 0x0B, // Custom message box
+    MessageBoxAndCloseClient = 0x0C, // Custom message box, clicking OK closes client.
     SystemError2 = 0x0D, // System error
-    AccountInProtectionMode =
-        0x0E, // Account is in protection mode because it is suspected of being unauthorized. Clicking ok closes client and opens nxn website
+    AccountInProtectionMode = 0x0E, // Account is in protection mode because it is suspected of being unauthorized. Clicking ok closes client and opens nxn website
     IpBanned = 0x0F, // Connection is restriced for this IP. A connection is not possible. Clicking ok closes client.
     GameVerificationFailed = 0x10, // Game verification has failed. Please try again later.
     SystemError3 = 0x11, // System error
