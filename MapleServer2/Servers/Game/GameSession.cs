@@ -73,6 +73,11 @@ public class GameSession : Session
 
     protected override void EndSession(bool logoutNotice)
     {
+        if (Player is null || FieldManager is null || FieldManagerFactory is null)
+        {
+            return;
+        }
+
         FieldManagerFactory.Release(FieldManager.MapId, FieldManager.InstanceId, Player);
 
         FieldManager.RemovePlayer(this);

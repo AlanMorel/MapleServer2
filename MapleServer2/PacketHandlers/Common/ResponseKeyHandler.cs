@@ -24,6 +24,7 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
         if (accountId is 0)
         {
             Logger.Error("Account ID was 0. Login has failed or connection was made directly to game server.");
+            session.Send(LoginResultPacket.SendMessage("Account ID was 0. Login has failed or connection was made directly to game server.", closeClient: true));
             return;
         }
 
