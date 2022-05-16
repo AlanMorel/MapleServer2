@@ -69,14 +69,17 @@ public class FieldNavigator : IDisposable
     /// <returns>List of CoordS or null if path is not possible</returns>
     public List<CoordS> FindPath(Agent agent, CoordS endCoord)
     {
-        Position end = FindPositionFromCoordS(endCoord);
-
-        if (!PositionIsValid(end))
+        if (!FindFirstPositionBelow(endCoord, out Position position))
         {
             return null;
         }
 
-        using Path path = agent.findShortestPathTo(CollisionContext, end);
+        if (!Mesh.positionIsValid(position))
+        {
+            return null;
+        }
+
+        using Path path = agent.findShortestPathTo(CollisionContext, position);
         return PathToCoordS(path);
     }
 
@@ -236,10 +239,15 @@ public class FieldNavigator : IDisposable
                 continue;
             }
 
-            coordS.Add(CoordS.From(position.X, position.Y, Mesh.heightAtPosition(position)));
+            coordS.Add(GetCoordSFromPosition(position));
         }
 
         return coordS;
+    }
+
+    private CoordS GetCoordSFromPosition(Position position)
+    {
+        return CoordS.From(position.X, position.Y, Mesh.heightAtPosition(position));
     }
 
     public void Dispose()

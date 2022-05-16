@@ -18,26 +18,20 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>, IDisposabl
     public List<Status> Statuses { get; set; }
     public SkillCast SkillCast { get; set; }
     public bool OnCooldown { get; set; }
-    public FieldNavigator Navigator { get; set; }
     public Agent Agent { get; set; }
 
-    public FieldActor(int objectId, T value) : base(objectId, value) { }
+    public FieldManager FieldManager { get; }
+    public FieldNavigator Navigator { get; }
+
+    protected FieldActor(int objectId, T value, FieldManager fieldManager) : base(objectId, value)
+    {
+        FieldManager = fieldManager;
+        Navigator = fieldManager.Navigator;
+    }
 
     public virtual void UpdateFixed() { }
 
     public virtual void Update() { }
-
-    public virtual void MoveBy(CoordF displacement)
-    {
-        // TODO: Break displacement into segments, then set path.
-        Velocity = displacement;
-    }
-
-    public virtual void MoveTo(CoordF target)
-    {
-        // TODO: Perform pathfinding, then set path.
-        Velocity = target - Coord;
-    }
 
     public virtual void Cast(SkillCast skillCast)
     {

@@ -1,4 +1,5 @@
 ﻿using Maple2Storage.Types;
+using MapleServer2.Managers;
 using MapleServer2.Servers.Game;
 
 namespace MapleServer2.Types;
@@ -15,8 +16,9 @@ public interface IFieldActor : IFieldObject
     public SkillCast SkillCast { get; }
     public bool OnCooldown { get; set; }
 
-    public void MoveBy(CoordF displacement);
-    public void MoveTo(CoordF to);
+    public FieldManager FieldManager { get; }
+    public FieldNavigator Navigator { get; }
+
     public void Cast(SkillCast skillCast);
     public void Damage(DamageHandler damage, GameSession session);
     public void Heal(GameSession session, Status status, int amount);

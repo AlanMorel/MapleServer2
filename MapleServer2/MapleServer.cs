@@ -25,7 +25,8 @@ namespace MapleServer2;
 
 public static class MapleServer
 {
-    public static readonly PathEngine PathEngine = new(new PrintErrorHandler(Console.Out));
+    private static readonly PrintErrorHandler Handler = new(Console.Out); // Assigning to a static variable so it doesn't get GC'd
+    public static readonly PathEngine PathEngine = new(Handler);
 
     private static GameServer _gameServer;
     private static LoginServer _loginServer;

@@ -12,9 +12,9 @@ public class Npc : FieldActor<NpcMetadata>, INpc
     public NpcAction Action { get; set; }
     public MobMovement Movement { get; set; }
 
-    public Npc(int objectId, int npcId) : this(objectId, NpcMetadataStorage.GetNpcMetadata(npcId)) { }
+    public Npc(int objectId, int npcId, FieldManager fieldManager) : this(objectId, NpcMetadataStorage.GetNpcMetadata(npcId), fieldManager) { }
 
-    public Npc(int objectId, NpcMetadata metadata) : base(objectId, metadata)
+    public Npc(int objectId, NpcMetadata metadata, FieldManager fieldManager) : base(objectId, metadata, fieldManager)
     {
         Animation = 255;
         Stats = new(metadata);
