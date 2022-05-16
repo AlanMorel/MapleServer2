@@ -72,7 +72,7 @@ public enum LoginMode : byte
     AccountNotInBeta = 0x12, // This account cannot participate in the test. A connection is not possible. Clicking ok closes client.
     AccountNotVerified = 0x13, // Currently, this service is only available for players whose identities have been verified. Clicking ok closes client.
     AccountOld = 0x14, // This account is an old account. An old account must complete identity verification at least once. Clicking ok closes client and opens nxn website
-    SystemVerificationFailed = 0x15, // Session verification failed. A connection is not possible. Clicking ok closes client.
+    SessionVerificationFailed = 0x15, // Session verification failed. A connection is not possible. Clicking ok closes client.
     GameVerificationFailed2 = 0x16, // Game verification failed. Please restart the game.
     SystemError4 = 0x17, // System error
     IpCannotConnect = 0x18, // Connecting from an IP that cannot connect. Clicking ok closes client.
