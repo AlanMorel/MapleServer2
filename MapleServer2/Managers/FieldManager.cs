@@ -952,6 +952,7 @@ public class FieldManager : IDisposable
                     mob.UpdateCoord();
                 }
 
+                // Mob update can be any delay, just make sure to not eat all the CPU. Default is 300ms
                 await Task.Delay(300, ct);
             }
         }, ct);
