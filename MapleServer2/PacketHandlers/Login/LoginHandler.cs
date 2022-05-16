@@ -52,7 +52,7 @@ public class LoginHandler : LoginPacketHandler<LoginHandler>
         {
             if (!DatabaseManager.Accounts.Authenticate(username, password, out account))
             {
-                session.Send(LoginResultPacket.IncorrectPassword());
+                session.Send(LoginResultPacket.SendLoginMode(Packets.LoginMode.IncorrectPassword));
                 return;
             }
 
@@ -66,7 +66,7 @@ public class LoginHandler : LoginPacketHandler<LoginHandler>
             if (loggedInAccount != null)
             {
                 loggedInAccount.Disconnect(logoutNotice: true);
-                session.Send(LoginResultPacket.AccountAlreadyLoggedIn());
+                session.Send(LoginResultPacket.SendLoginMode(Packets.LoginMode.AccountAlreadyLoggedIn));
                 return;
             }
         }
