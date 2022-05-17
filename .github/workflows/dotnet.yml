@@ -39,5 +39,8 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
-      - name: Run dotnet format
-        run: dotnet format --verify-no-changes
+      - name: Install dotnet-format tool
+        run: dotnet tool install -g dotnet-format
+
+      - name: Run dotnet-format
+        run: dotnet-format --check --no-restore
