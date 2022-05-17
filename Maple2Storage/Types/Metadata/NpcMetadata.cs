@@ -193,33 +193,33 @@ public class NpcMetadataEffect
 [XmlType]
 public class NpcMetadataCombat
 {
-    [XmlElement]
+    [XmlElement(Order = 1)]
     public uint CombatAbandonTick; // 0, or 999999
-    [XmlElement]
+    [XmlElement(Order = 2)]
     public uint CombatAbandonImpossibleTick; // 0, or 999999
-    [XmlElement]
+    [XmlElement(Order = 3)]
     public bool CanIgnoreExtendedLifetime; // "true" or "false" in xml. Coerced to bool here.
-    [XmlElement]
+    [XmlElement(Order = 4)]
     public bool CanShowHiddenTarget; // "true" or "false' in xml. Coerced to bool here.
 }
 
 [XmlType]
 public class NpcMetadataDead
 {
-    [XmlElement]
+    [XmlElement(Order = 1)]
     public float Time;
-    [XmlElement]
+    [XmlElement(Order = 2)]
     public string[] Actions = Array.Empty<string>();
 }
 
 [XmlType]
 public class NpcMetadataInteract
 {
-    [XmlElement]
+    [XmlElement(Order = 1)]
     public string InteractFunction; // UseSkill,50100501,1
-    [XmlElement]
+    [XmlElement(Order = 2)]
     public ushort InteractCastingTime; // 0, 500, 800, 1000, 2000, 4000
-    [XmlElement]
+    [XmlElement(Order = 3)]
     public ushort InteractCooldownTime; // 0, 5400, 7000, 8000, 12000
 }
 

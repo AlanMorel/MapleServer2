@@ -467,13 +467,19 @@ public class FieldManager : IDisposable
             }
         }
 
-        Broadcast(session =>
+        BroadcastPacket(FieldObjectPacket.ControlMob(mob));
+        Task.Run(async () =>
         {
-            session.Send(FieldNpcPacket.RemoveNpc(mob));
-            session.Send(FieldObjectPacket.RemoveMob(mob));
+            await Task.Delay(TimeSpan.FromSeconds(mob.Value.NpcMetadataDead.Time));
+            Broadcast(session =>
+            {
+                session.Send(FieldNpcPacket.RemoveNpc(mob));
+                session.Send(FieldObjectPacket.RemoveMob(mob));
+            });
+
+            mob.Dispose();
         });
 
-        mob.Dispose();
         return true;
     }
 
@@ -947,6 +953,12 @@ public class FieldManager : IDisposable
             {
                 foreach (Mob mob in State.Mobs.Values)
                 {
+                    if (mob.IsDead)
+                    {
+                        RemoveMob(mob);
+                        continue;
+                    }
+
                     mob.UpdateVelocity();
                     BroadcastPacket(FieldObjectPacket.ControlMob(mob));
                     mob.UpdateCoord();

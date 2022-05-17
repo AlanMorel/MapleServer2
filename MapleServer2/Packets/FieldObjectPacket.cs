@@ -174,7 +174,7 @@ public static class FieldObjectPacket
         npcBuffer.WriteShort(100); // Unknown
         if (mob.Value.IsBoss())
         {
-            npcBuffer.WriteInt(); // Unknown but is required for Boss, but not for normal mobs.
+            npcBuffer.WriteInt(); // Player target id, only used for bosses. Agro?
         }
 
         npcBuffer.WriteByte(1); // Flag ?
