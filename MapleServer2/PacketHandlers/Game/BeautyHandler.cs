@@ -174,7 +174,7 @@ public class BeautyHandler : GamePacketHandler<BeautyHandler>
 
         Item beautyItem = session.Player.Inventory.GetEquippedItem(beautyItemUid);
 
-        if (beautyItem.ItemSlot is ItemSlot.CP)
+        if (beautyItem.ItemSlot is ItemSlot.CP) // This should only work with the mirror shop
         {
             HatData hatData = packet.Read<HatData>();
             beautyItem.HatData = hatData;
