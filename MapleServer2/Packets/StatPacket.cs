@@ -41,7 +41,7 @@ public static class StatPacket
         pWriter.WriteInt(actor.ObjectId);
         pWriter.WriteByte(); // Unknown (0x00/0x01)
         pWriter.Write(StatsMode.SendAllStats);
-        for (int i = 0; i < 35; i++)  // Always 35.
+        for (int i = 0; i < (int) StatsMode.SendAllStats; i++)
         {
             StatAttribute statAttribute = (StatAttribute) i;
             pWriter.WriteStat(statAttribute, actor.Stats.Data[statAttribute]);
