@@ -12,7 +12,7 @@ internal static class Program
 {
     private static async Task Main()
     {
-        CultureInfo.CurrentCulture = new("en-US");
+                    CultureInfo.CurrentCulture = new("en-US");
 
         // Create Resources folders if they don't exist
         Directory.CreateDirectory(Paths.RESOURCES_INPUT_DIR);
