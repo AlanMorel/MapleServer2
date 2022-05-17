@@ -144,14 +144,14 @@ public class Mob : FieldActor<NpcMetadata>, INpc
                         return;
                     }
 
-                    CoordS coordF = path.Skip(1).FirstOrDefault();
-                    if (coordF == default)
+                    CoordS coordS = path.Skip(1).FirstOrDefault();
+                    if (coordS == default)
                     {
                         return;
                     }
 
-                    NextMovementTarget = coordF;
-                    Distance = (coordF.ToFloat() - Coord).Length();
+                    NextMovementTarget = coordS;
+                    Distance = (coordS.ToFloat() - Coord).Length();
                 }
                 break;
             case MobMovement.Strafe: // move around target
