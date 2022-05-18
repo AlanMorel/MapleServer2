@@ -174,25 +174,19 @@ public class BeautyHandler : GamePacketHandler<BeautyHandler>
 
         Item beautyItem = session.Player.Inventory.GetEquippedItem(beautyItemUid);
 
-        switch (beautyItem.ItemSlot)
+        if (beautyItem.ItemSlot is ItemSlot.CP) // This should only work with the mirror shop
         {
-            case ItemSlot.CP:
-                {
-                    HatData hatData = packet.Read<HatData>();
-                    beautyItem.HatData = hatData;
-                    session.FieldManager.BroadcastPacket(ItemExtraDataPacket.Update(session.Player.FieldPlayer, beautyItem));
-                    return;
-                }
-            case ItemSlot.FA:
-                {
-                    byte[] faceDecoration = packet.ReadBytes(16);
-                    beautyItem.FaceDecorationData = faceDecoration;
-                    session.FieldManager.BroadcastPacket(ItemExtraDataPacket.Update(session.Player.FieldPlayer, beautyItem));
-                    return;
-                }
+            HatData hatData = packet.Read<HatData>();
+            beautyItem.HatData = hatData;
+            session.FieldManager.BroadcastPacket(ItemExtraDataPacket.Update(session.Player.FieldPlayer, beautyItem));
+            return;
         }
 
         BeautyMetadata beautyShop = BeautyMetadataStorage.GetShopById(session.Player.ShopId);
+        if (beautyShop is null)
+        {
+            return;
+        }
 
         if (!HandleShopPay(session, beautyShop, useVoucher))
         {
