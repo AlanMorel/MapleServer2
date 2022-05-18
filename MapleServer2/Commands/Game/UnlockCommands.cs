@@ -30,7 +30,7 @@ public class UnlockAll : InGameCommand
         player.Stats.AddBaseStats(player, 89);
 
         trigger.Session.Send(StatPacket.SetStats(player.FieldPlayer));
-        trigger.Session.FieldManager.BroadcastPacket(StatPacket.UpdateFieldStats(player.FieldPlayer), trigger.Session);
+        trigger.Session.FieldManager.BroadcastPacket(StatPacket.SetStats(player.FieldPlayer), trigger.Session);
 
         player.Levels.SetLevel(90);
         player.Levels.SetPrestigeLevel(100);

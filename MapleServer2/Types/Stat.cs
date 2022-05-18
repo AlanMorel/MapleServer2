@@ -2,11 +2,11 @@
 
 namespace MapleServer2.Types;
 
-/* Max = Base + stat allocations + bonuses.
- * Min = Base stat amount.
- * Current = Final value (e.g. capped Damage, current Hp, active CritRate, ...)
+/* Bonus = Base + stat allocations + bonuses.
+ * Base = Base stat amount.
+ * Total = Final value (e.g. capped Damage, current Hp, active CritRate, ...)
  *
- * Change PlayerStat.Current for temporary changes.
+ * Change Stat.Bonus for temporary changes.
  */
 public class Stat
 {

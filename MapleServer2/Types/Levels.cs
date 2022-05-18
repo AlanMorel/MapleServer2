@@ -78,7 +78,7 @@ public class Levels
         Session.FieldManager.BroadcastPacket(JobPacket.UpdateSkillTab(FieldPlayer, newSkillIds));
 
         Session.Send(StatPacket.SetStats(FieldPlayer));
-        Session.FieldManager.BroadcastPacket(StatPacket.UpdateFieldStats(FieldPlayer), Session);
+        Session.FieldManager.BroadcastPacket(StatPacket.SetStats(FieldPlayer), Session);
 
         Session.Send(KeyTablePacket.SendFullOptions(Player.GameOptions));
 

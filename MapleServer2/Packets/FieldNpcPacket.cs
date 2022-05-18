@@ -7,7 +7,7 @@ namespace MapleServer2.Packets;
 
 public static class FieldNpcPacket
 {
-    public static PacketWriter AddNpc(IFieldObject<NpcMetadata> npc)
+    public static PacketWriter AddNpc(IFieldActor<NpcMetadata> npc)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.FieldAddNPC);
         pWriter.WriteInt(npc.ObjectId);
@@ -16,7 +16,7 @@ public static class FieldNpcPacket
         pWriter.Write(npc.Rotation);
         // If NPC is not valid, the packet seems to stop here
 
-        pWriter.DefaultStatsNpc();
+        pWriter.DefaultStatsMob(npc);
 
         pWriter.WriteByte();
 

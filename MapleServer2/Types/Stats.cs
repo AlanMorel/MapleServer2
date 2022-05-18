@@ -7,6 +7,7 @@ namespace MapleServer2.Types;
 public class Stats
 {
     // TODO: Handle stat allocation in here?
+    // ReSharper disable once FieldCanBeMadeReadOnly.Global - JsonConvert.DeserializeObject can't set values if it's readonly
     public Dictionary<StatAttribute, Stat> Data;
 
     public Stats() { }
@@ -34,7 +35,7 @@ public class Stats
             {
                 StatAttribute.Hp,
                 new(metadata.Stats.Hp)
-            }, // Max = 0 on login
+            },
             {
                 StatAttribute.HpRegen,
                 new(metadata.Stats.HpRegen)
@@ -46,7 +47,7 @@ public class Stats
             {
                 StatAttribute.Spirit,
                 new(metadata.Stats.Sp)
-            }, // Max = 0 on login
+            },
             {
                 StatAttribute.SpRegen,
                 new(metadata.Stats.SpRegen)
@@ -58,7 +59,7 @@ public class Stats
             {
                 StatAttribute.Stamina,
                 new(metadata.Stats.Ep)
-            }, // Max = 0 on login
+            },
             {
                 StatAttribute.StaminaRegen,
                 new(metadata.Stats.EpRegen)
@@ -82,11 +83,11 @@ public class Stats
             {
                 StatAttribute.Evasion,
                 new(metadata.Stats.Evasion)
-            }, // changes with job
+            },
             {
                 StatAttribute.CritRate,
                 new(metadata.Stats.CritRate)
-            }, // changes with job
+            },
             {
                 StatAttribute.CritDamage,
                 new(metadata.Stats.CritDamage)
@@ -98,7 +99,7 @@ public class Stats
             {
                 StatAttribute.Defense,
                 new(metadata.Stats.Defense)
-            }, // base affected by something?
+            },
             {
                 StatAttribute.PerfectGuard,
                 new(metadata.Stats.Guard)
@@ -110,11 +111,11 @@ public class Stats
             {
                 StatAttribute.PhysicalAtk,
                 new(metadata.Stats.PhysAtk)
-            }, // base for mage, 74 thief
+            },
             {
                 StatAttribute.MagicAtk,
                 new(metadata.Stats.MagAtk)
-            }, // base for thief, 216 mage
+            },
             {
                 StatAttribute.PhysicalRes,
                 new(metadata.Stats.PhysRes)
@@ -181,8 +182,8 @@ public class Stats
             },
             {
                 StatAttribute.Hp,
-                new(hpBase)
-            }, // Max = 0 on login
+                new(hpBase) // Max = 0 on login
+            },
             {
                 StatAttribute.HpRegen,
                 new(10)
@@ -193,8 +194,8 @@ public class Stats
             },
             {
                 StatAttribute.Spirit,
-                new(100)
-            }, // Max = 0 on login
+                new(100) // Max = 0 on login
+            },
             {
                 StatAttribute.SpRegen,
                 new(1)
@@ -205,8 +206,8 @@ public class Stats
             },
             {
                 StatAttribute.Stamina,
-                new(120) // base 120 (20 = 1 block)
-            }, // Max = 0 on login
+                new(120) // base 120 (20 = 1 block) / Max = 0 on login
+            },
             {
                 StatAttribute.StaminaRegen,
                 new(10) // base 10  (10 = 0.5 block)
@@ -229,12 +230,12 @@ public class Stats
             },
             {
                 StatAttribute.Evasion,
-                new(70)
-            }, // changes with job
+                new(70) // TODO: changes with job
+            },
             {
                 StatAttribute.CritRate,
-                new(critBase)
-            }, // changes with job
+                new(critBase) // TODO: changes with job
+            },
             {
                 StatAttribute.CritDamage,
                 new(250)
@@ -245,8 +246,8 @@ public class Stats
             },
             {
                 StatAttribute.Defense,
-                new(16)
-            }, // base affected by something?
+                new(16) // // base affected by something?
+            },
             {
                 StatAttribute.PerfectGuard,
                 new(0)
@@ -257,12 +258,12 @@ public class Stats
             },
             {
                 StatAttribute.PhysicalAtk,
-                new(10)
-            }, // base for mage, 74 thief
+                new(10) // TODO: changes with job (base for mage, 74 thief)
+            },
             {
                 StatAttribute.MagicAtk,
-                new(2)
-            }, // base for thief, 216 mage
+                new(2) // TODO: changes with job (base for thief, 216 mage)
+            },
             {
                 StatAttribute.PhysicalRes,
                 new(5)
@@ -311,7 +312,6 @@ public class Stats
         }
     }
 
-
     public Stat this[StatAttribute statIndex]
     {
         get
@@ -320,20 +320,9 @@ public class Stats
             {
                 Data[statIndex] = new(0);
             }
+
             return Data[statIndex];
         }
-
-        private set => Data[statIndex] = value;
-    }
-
-    public void InitializePools(int hp, int spirit, int stamina)
-    {
-        Stat hpStat = this[StatAttribute.Hp];
-        Stat spiritStat = this[StatAttribute.Spirit];
-        Stat staStat = this[StatAttribute.Stamina];
-        Data[StatAttribute.Hp] = new(hpStat.Bonus, hpStat.Base, hp);
-        Data[StatAttribute.Spirit] = new(spiritStat.Bonus, spiritStat.Base, spirit);
-        Data[StatAttribute.Stamina] = new(staStat.Bonus, staStat.Base, stamina);
     }
 
     public void Allocate(StatAttribute statAttribute)

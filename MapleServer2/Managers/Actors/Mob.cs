@@ -120,6 +120,8 @@ public class Mob : FieldActor<NpcMetadata>, INpc
                     List<CoordS> coordSPath = Navigator.GenerateRandomPathAroundCoord(Agent, originSpawnCoord, moveDistance);
                     if (coordSPath is null)
                     {
+                        NextMovementTarget = default;
+                        Velocity = default;
                         return;
                     }
 
@@ -130,7 +132,7 @@ public class Mob : FieldActor<NpcMetadata>, INpc
                     }
 
                     NextMovementTarget = nextMovementTarget;
-                    Distance = (nextMovementTarget - Coord.ToShort()).Length();
+                    Distance = (nextMovementTarget.ToFloat() - Coord).Length();
                 }
                 break;
             case MobMovement.Follow: // move towards target
@@ -142,14 +144,14 @@ public class Mob : FieldActor<NpcMetadata>, INpc
                         return;
                     }
 
-                    CoordS coordF = path.Skip(1).FirstOrDefault();
-                    if (coordF == default)
+                    CoordS coordS = path.Skip(1).FirstOrDefault();
+                    if (coordS == default)
                     {
                         return;
                     }
 
-                    NextMovementTarget = coordF;
-                    Distance = (coordF - Coord.ToShort()).Length();
+                    NextMovementTarget = coordS;
+                    Distance = (coordS.ToFloat() - Coord).Length();
                 }
                 break;
             case MobMovement.Strafe: // move around target
@@ -166,7 +168,7 @@ public class Mob : FieldActor<NpcMetadata>, INpc
     {
         base.Damage(damage, session);
 
-        session.FieldManager.BroadcastPacket(StatPacket.UpdateMobStats(this));
+        session.FieldManager.BroadcastPacket(StatPacket.UpdateStats(this, StatAttribute.Hp));
         if (IsDead)
         {
             HandleMobKill(session, this);
@@ -177,8 +179,8 @@ public class Mob : FieldActor<NpcMetadata>, INpc
     {
         IsDead = true;
         State = NpcState.Dead;
-        int randAnim = Random.Shared.Next(Value.StateActions[NpcState.Dead].Length);
-        Animation = AnimationStorage.GetSequenceIdBySequenceName(Value.Model, Value.StateActions[NpcState.Dead][randAnim].Item1);
+        Animation = -1;
+        Velocity = default;
     }
 
     private static void HandleMobKill(GameSession session, IFieldObject<NpcMetadata> mob)
@@ -229,18 +231,8 @@ public class Mob : FieldActor<NpcMetadata>, INpc
 
     public void UpdateVelocity()
     {
-        if (NextMovementTarget == default)
+        if (Distance <= 0)
         {
-            Velocity = default;
-            return;
-        }
-
-        if (Distance < 0)
-        {
-            Coord = NextMovementTarget;
-            NextMovementTarget = default;
-            Velocity = default;
-            MoveAgent();
             return;
         }
 
@@ -253,15 +245,20 @@ public class Mob : FieldActor<NpcMetadata>, INpc
 
     public void UpdateCoord()
     {
-        if (Velocity == default)
+        if (Distance <= 0)
         {
+            return;
+        }
+
+        CoordF difference = NextMovementTarget.ToFloat() - Coord;
+        if (difference.Length() < 0.1f)
+        {
+            Distance = 0;
             return;
         }
 
         int tickNow = Environment.TickCount;
         int timeDelta = Math.Clamp(tickNow - LastMovementTime, 0, 400);
-
-        CoordF difference = NextMovementTarget.ToFloat() - Coord;
 
         const float UnitPerMs = 0.001f; // Velocity in which all NPCs move per ms. 150 units per second.
         CoordF addCoord = difference.Normalize() * (UnitPerMs * BaseVelocity * timeDelta);
@@ -271,6 +268,16 @@ public class Mob : FieldActor<NpcMetadata>, INpc
 
         MoveAgent();
         LastMovementTime = tickNow;
+
+        if (Distance > 0)
+        {
+            return;
+        }
+
+        Coord = NextMovementTarget;
+        NextMovementTarget = default;
+        Velocity = default;
+        Distance = 0;
     }
 
     private void MoveAgent()

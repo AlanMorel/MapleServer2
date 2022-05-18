@@ -3,6 +3,7 @@ using Maple2.PathEngine.Exception;
 using Maple2.PathEngine.Types;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
+using Serilog;
 using Path = Maple2.PathEngine.Path;
 
 namespace MapleServer2.Types;
@@ -12,6 +13,7 @@ public class FieldNavigator : IDisposable
     private readonly Mesh Mesh;
     private readonly CollisionContext CollisionContext;
     private readonly Dictionary<(int, int), Shape> Shapes;
+    private readonly ILogger Logger = Log.Logger.ForContext<FieldNavigator>();
 
     public FieldNavigator(string mapName)
     {
@@ -47,19 +49,29 @@ public class FieldNavigator : IDisposable
     /// <returns>List of CoordS or null if path is not possible</returns>
     public List<CoordS> GenerateRandomPathAroundCoord(Agent agent, CoordS centerCoord, int radius)
     {
-        Position randomPositionLocally;
+        Path path;
         try
         {
             Position position = FindPositionFromCoordS(centerCoord);
 
-            randomPositionLocally = Mesh.generateRandomPositionLocally(position, radius);
+            Position randomPositionLocally = Mesh.generateRandomPositionLocally(position, radius);
+
+            Position findClosestUnobstructedPosition = agent.findClosestUnobstructedPosition(CollisionContext, 500);
+            agent.moveTo(findClosestUnobstructedPosition);
+
+            path = agent.findShortestPathTo(CollisionContext, randomPositionLocally);
         }
         catch (InvalidPositionException)
         {
             return null;
         }
+        catch (Exception e)
+        {
+            Logger.Error("Error in GenerateRandomPathAroundCoord. Agent position: {0}. Center coord: {1}. {2}",
+                agent.getPosition(), centerCoord, e.Message);
+            return null;
+        }
 
-        using Path path = agent.findShortestPathTo(CollisionContext, randomPositionLocally);
         return PathToCoordS(path);
     }
 
@@ -69,17 +81,27 @@ public class FieldNavigator : IDisposable
     /// <returns>List of CoordS or null if path is not possible</returns>
     public List<CoordS> FindPath(Agent agent, CoordS endCoord)
     {
-        if (!FindFirstPositionBelow(endCoord, out Position position))
+        Path path;
+        try
+        {
+            if (!FindFirstPositionBelow(endCoord, out Position position))
+            {
+                return null;
+            }
+
+            path = agent.findShortestPathTo(CollisionContext, position);
+        }
+        catch (InvalidPositionException)
         {
             return null;
         }
-
-        if (!Mesh.positionIsValid(position))
+        catch (Exception e)
         {
+            Logger.Error("Error in FindPath. Agent position: {0}. End coord: {1}. {2}",
+                agent.getPosition(), endCoord, e.Message);
             return null;
         }
 
-        using Path path = agent.findShortestPathTo(CollisionContext, position);
         return PathToCoordS(path);
     }
 
@@ -176,23 +198,6 @@ public class FieldNavigator : IDisposable
         }
 
         return false;
-    }
-
-    public Position? FindClosestUnobstructedPosition(Shape shape, Position position, int radius)
-    {
-        Position unobstructedPosition;
-        try
-        {
-            Position randomPosition = Mesh.generateRandomPositionLocally(position, radius);
-
-            unobstructedPosition = Mesh.findClosestUnobstructedPosition(shape, CollisionContext, randomPosition, radius);
-        }
-        catch (InvalidPositionException)
-        {
-            return null;
-        }
-
-        return unobstructedPosition;
     }
 
     public CoordS? FindClosestUnobstructedCoordS(Shape shape, CoordS coordS, int radius)

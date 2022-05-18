@@ -161,7 +161,7 @@ public class LevelCommand : InGameCommand
         player.Stats.AddBaseStats(player, level - 1);
 
         trigger.Session.Send(StatPacket.SetStats(player.FieldPlayer));
-        trigger.Session.FieldManager.BroadcastPacket(StatPacket.UpdateFieldStats(player.FieldPlayer), trigger.Session);
+        trigger.Session.FieldManager.BroadcastPacket(StatPacket.SetStats(player.FieldPlayer), trigger.Session);
 
         player.Levels.SetLevel(level);
     }
