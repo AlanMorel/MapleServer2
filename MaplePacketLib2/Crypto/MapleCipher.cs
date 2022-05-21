@@ -38,6 +38,7 @@ public class MapleCipher
             {
                 cryptSeq.Add(crypter);
             }
+
             blockIV /= 10;
         }
 
@@ -136,7 +137,7 @@ public class MapleCipher
             short decSeq = DecodeSeqBase(encSeq);
             if (decSeq != Cipher.Version)
             {
-                throw new ArgumentException($"Packet has invalid sequence header: {decSeq}");
+                throw new IncorrectHeaderException($"Packet has invalid sequence header: {decSeq}");
             }
 
             byte[] data = ArrayProvider.Rent(packetSize);
@@ -176,4 +177,9 @@ public class MapleCipher
             return new(packet);
         }
     }
+}
+
+public class IncorrectHeaderException : Exception
+{
+    public IncorrectHeaderException(string message) : base(message) { }
 }
