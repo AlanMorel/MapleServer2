@@ -267,6 +267,13 @@ public abstract class Session : IDisposable
                 reader.AdvanceTo(buffer.Start, buffer.End);
             } while (!Disposed && !result.IsCompleted);
         }
+        catch (IncorrectHeaderException ex)
+        {
+            if (!Disposed)
+            {
+                Logger.Warning("Exception in recv PipeScheduler: {ex}", ex);
+            }
+        }
         catch (Exception ex)
         {
             if (!Disposed)
