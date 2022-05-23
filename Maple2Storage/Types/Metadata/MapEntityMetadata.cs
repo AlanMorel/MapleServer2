@@ -103,7 +103,7 @@ public class MapNpc
     [XmlElement(Order = 5)]
     public readonly CoordS Rotation;
     [XmlElement(Order = 6)]
-    public string PatrolDataUuid = "00000000-0000-0000-0000-000000000000";
+    public string PatrolDataUuid;
     [XmlElement(Order = 7)]
     public bool IsSpawnOnFieldCreate;
     [XmlElement(Order = 8)]
@@ -113,7 +113,8 @@ public class MapNpc
 
     public MapNpc() { }
 
-    public MapNpc(int id, string modelName, string instanceName, CoordS coord, CoordS rotation, bool isSpawnOnFieldCreate, bool isDayDie, bool isNightDie)
+    public MapNpc(int id, string modelName, string instanceName, CoordS coord, CoordS rotation, bool isSpawnOnFieldCreate, bool isDayDie, bool isNightDie,
+        string patrolDataUuid)
     {
         Id = id;
         ModelName = modelName;
@@ -123,6 +124,7 @@ public class MapNpc
         IsSpawnOnFieldCreate = isSpawnOnFieldCreate;
         IsDayDie = isDayDie;
         IsNightDie = isNightDie;
+        PatrolDataUuid = patrolDataUuid;
     }
 
     public override string ToString()
@@ -273,35 +275,28 @@ public class SpawnMetadata
 public class PatrolData
 {
     [XmlElement(Order = 1)]
-    public string Name;
+    public string Uuid;
     [XmlElement(Order = 2)]
-    public List<string> WayPointIds;
+    public string Name;
     [XmlElement(Order = 3)]
-    public int PatrolSpeed;
-    [XmlElement(Order = 4)]
-    public bool IsLoop;
-    [XmlElement(Order = 5)]
     public bool IsAirWayPoint;
+    [XmlElement(Order = 4)]
+    public int PatrolSpeed;
+    [XmlElement(Order = 5)]
+    public bool IsLoop;
     [XmlElement(Order = 6)]
-    public List<string> ArriveAnimations;
-    [XmlElement(Order = 7)]
-    public List<string> ApproachAnimations;
-    [XmlElement(Order = 8)]
-    public List<int> ArriveAnimationTimes;
+    public List<WayPoint> WayPoints;
 
     public PatrolData() { }
 
-    public PatrolData(string name, List<string> wayPointIds, int patrolSpeed, bool isLoop, bool isAirWayPoint, List<string> arriveAnimations,
-        List<string> approachAnimations, List<int> arriveAnimationTimes)
+    public PatrolData(string uuid, string name, bool isAirWayPoint, int patrolSpeed, bool isLoop, List<WayPoint> wayPoints)
     {
+        Uuid = uuid;
         Name = name;
-        WayPointIds = wayPointIds;
+        IsAirWayPoint = isAirWayPoint;
         PatrolSpeed = patrolSpeed;
         IsLoop = isLoop;
-        IsAirWayPoint = isAirWayPoint;
-        ArriveAnimations = arriveAnimations;
-        ApproachAnimations = approachAnimations;
-        ArriveAnimationTimes = arriveAnimationTimes;
+        WayPoints = wayPoints;
     }
 
     public override string ToString()
@@ -321,15 +316,24 @@ public class WayPoint
     public CoordS Position;
     [XmlElement(Order = 4)]
     public CoordS Rotation;
+    [XmlElement(Order = 5)]
+    public string ApproachAnimation;
+    [XmlElement(Order = 6)]
+    public string ArriveAnimation;
+    [XmlElement(Order = 7)]
+    public int ArriveAnimationTime;
 
     public WayPoint() { }
 
-    public WayPoint(string id, bool isVisible, CoordS position, CoordS rotation)
+    public WayPoint(string id, bool isVisible, CoordS position, CoordS rotation, string approachAnimation, string arriveAnimation, int arriveAnimationTime)
     {
         Id = id;
         IsVisible = isVisible;
         Position = position;
         Rotation = rotation;
+        ApproachAnimation = approachAnimation;
+        ArriveAnimation = arriveAnimation;
+        ArriveAnimationTime = arriveAnimationTime;
     }
 
     public override string ToString()

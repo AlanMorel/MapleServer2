@@ -54,6 +54,8 @@ public class MapParser : Exporter<List<MapMetadata>>
 
         MapEntityMetadata mapEntity = mapMetadata.Entities;
 
+        List<IMS2WayPoint> tempWaypoints = new();
+        List<IMS2PatrolData> tempPatrolData = new();
         foreach (IMapEntity entity in mapEntities)
         {
             if (entity is IMS2CubeProp cube)
@@ -83,21 +85,10 @@ public class MapParser : Exporter<List<MapMetadata>>
 
                     break;
                 case IMS2PatrolData patrolData:
-                    string patrolDataName = patrolData.EntityName.Replace("-", string.Empty);
-                    List<string> wayPointIds = patrolData.WayPoints.Select(entry => entry.Value.Replace("-", string.Empty)).ToList();
-
-                    List<string> arriveAnimations = patrolData.ArriveAnims.Select(entry => entry.Value).ToList();
-
-                    List<string> approachAnimations = patrolData.ApproachAnims.Select(entry => entry.Value).ToList();
-
-                    List<int> arriveAnimationTimes = patrolData.ArriveAnimsTime.Select(entry => (int) entry.Value).ToList();
-
-                    mapEntity.PatrolDatas.Add(new(patrolDataName, wayPointIds, (int) patrolData.PatrolSpeed, patrolData.IsLoop, patrolData.IsAirWayPoint,
-                        arriveAnimations, approachAnimations, arriveAnimationTimes));
+                    tempPatrolData.Add(patrolData);
                     break;
                 case IMS2WayPoint wayPoint:
-                    mapEntity.WayPoints.Add(new(wayPoint.EntityId, wayPoint.IsVisible, CoordS.FromVector3(wayPoint.Position),
-                        CoordS.FromVector3(wayPoint.Rotation)));
+                    tempWaypoints.Add(wayPoint);
                     break;
                 // TODO: This can probably be more generally handled as IMS2RegionSkill
                 case IMS2HealingRegionSkillSound healingRegion:
@@ -160,7 +151,7 @@ public class MapParser : Exporter<List<MapMetadata>>
                             }
 
                             MapNpc npc = new(npcId, npcSpawn.ModelName, npcSpawn.EntityName, CoordS.FromVector3(npcSpawn.Position),
-                                CoordS.FromVector3(npcSpawn.Rotation), npcSpawn.IsSpawnOnFieldCreate, npcSpawn.dayDie, npcSpawn.nightDie);
+                                CoordS.FromVector3(npcSpawn.Rotation), npcSpawn.IsSpawnOnFieldCreate, npcSpawn.dayDie, npcSpawn.nightDie, npcSpawn.PatrolData);
                             // Parse some additional flat supplemented data about this NPC.
 
                             mapEntity.Npcs.Add(npc);
@@ -292,6 +283,51 @@ public class MapParser : Exporter<List<MapMetadata>>
 
                     break;
             }
+        }
+
+        BuildWaypoints(tempPatrolData, tempWaypoints, mapEntity);
+    }
+
+    private static void BuildWaypoints(List<IMS2PatrolData> tempPatrolData, List<IMS2WayPoint> tempWaypoints, MapEntityMetadata mapEntity)
+    {
+        foreach (IMS2PatrolData patrolData in tempPatrolData)
+        {
+            List<string> wayPointIds = patrolData.WayPoints.Select(entry => entry.Value.Replace("-", string.Empty)).ToList();
+
+            List<string> approachAnimations = patrolData.ApproachAnims.Select(entry => entry.Value).ToList();
+
+            List<string> arriveAnimations = patrolData.ArriveAnims.Select(entry => entry.Value).ToList();
+
+            List<int> arriveAnimationTimes = patrolData.ArriveAnimsTime.Select(entry => (int) entry.Value).ToList();
+
+            List<WayPoint> wayPoints = new();
+            for (int i = 0; i < wayPointIds.Count; i++)
+            {
+                string wayPointId = wayPointIds.ElementAtOrDefault(i);
+                string approachAnimation = approachAnimations.ElementAtOrDefault(i);
+                string arriveAnimation = arriveAnimations.ElementAtOrDefault(i);
+                int arriveAnimationTime = arriveAnimationTimes.ElementAtOrDefault(i);
+
+                IMS2WayPoint waypoint = tempWaypoints.FirstOrDefault(x => x.EntityId == wayPointId);
+                if (waypoint is null)
+                {
+                    continue;
+                }
+
+                wayPoints.Add(new(wayPointId, waypoint.IsVisible,
+                    CoordS.FromVector3(waypoint.Position),
+                    CoordS.FromVector3(waypoint.Rotation),
+                    approachAnimation,
+                    arriveAnimation,
+                    arriveAnimationTime));
+            }
+
+            mapEntity.PatrolDatas.Add(new(patrolData.EntityId,
+                patrolData.EntityName,
+                patrolData.IsAirWayPoint,
+                (int) patrolData.PatrolSpeed,
+                patrolData.IsLoop,
+                wayPoints));
         }
     }
 

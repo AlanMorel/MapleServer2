@@ -106,17 +106,19 @@ public static class MapEntityMetadataStorage
 
     public static List<CoordS> GetHealingSpot(int mapId) => HealthSpot.GetValueOrDefault(mapId);
 
-    public static (PatrolData, List<WayPoint>) GetPatrolData(int mapId, string patrolDataName)
+    public static PatrolData GetPatrolData(int mapId, string patrolDataName)
     {
-        PatrolData patrolData = PatrolDatas.GetValueOrDefault(mapId)?.FirstOrDefault(x => x.Name == patrolDataName);
-        if (patrolData is null)
-        {
-            return (null, null);
-        }
+        return GetPatrolData(mapId)?.FirstOrDefault(x => x.Name == patrolDataName);
+    }
 
-        List<WayPoint> wayPoints = patrolData.WayPointIds.Select(wayPointId => GetWayPoint(mapId, wayPointId)).ToList();
+    public static PatrolData GetPatrolDataByUuid(int mapId, string uuid)
+    {
+        return GetPatrolData(mapId)?.FirstOrDefault(x => x.Uuid == uuid);
+    }
 
-        return (patrolData, wayPoints);
+    private static IEnumerable<PatrolData> GetPatrolData(int mapId)
+    {
+        return PatrolDatas.GetValueOrDefault(mapId);
     }
 
     public static WayPoint GetWayPoint(int mapId, string id) => WayPoints.GetValueOrDefault(mapId)?.FirstOrDefault(x => x.Id == id);
