@@ -1,6 +1,7 @@
 ﻿using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
+using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 
@@ -8,12 +9,12 @@ namespace MapleServer2.Types;
 
 public class DismantleInventory
 {
-    public Tuple<long, int>[] Slots;
+    public (long Uid, int Amount)[] Slots;
     public Dictionary<int, int> Rewards;
 
     public void Dismantle(GameSession session)
     {
-        foreach ((long uid, int amount) in Slots.Where(i => i != null))
+        foreach ((long uid, int amount) in Slots)
         {
             session.Player.Inventory.ConsumeItem(session, uid, amount);
         }
@@ -28,7 +29,7 @@ public class DismantleInventory
             session.Player.Inventory.AddItem(session, item, true);
         }
 
-        Slots = new Tuple<long, int>[100];
+        Slots = new (long, int)[100];
         session.Send(ItemBreakPacket.ShowRewards(Rewards));
     }
 
@@ -38,7 +39,7 @@ public class DismantleInventory
 
         foreach (Item item in items)
         {
-            if (item.InventoryTab != inventoryTab || item.Rarity > rarityType || !item.EnableBreak || Slots.Any(x => x != null && x.Item1 == item.Uid))
+            if (item.InventoryTab != inventoryTab || item.Rarity > rarityType || !item.EnableBreak || Slots.Any(x => x.Uid == item.Uid))
             {
                 continue;
             }
@@ -51,9 +52,9 @@ public class DismantleInventory
     {
         if (slot >= 0)
         {
-            if (Slots[slot] == null)
+            if (Slots[slot] == (0, 0))
             {
-                Slots[slot] = new(uid, amount);
+                Slots[slot] = (uid, amount);
                 session.Send(ItemBreakPacket.Add(uid, slot, amount));
                 UpdateRewards(session);
                 return;
@@ -62,41 +63,43 @@ public class DismantleInventory
             slot = -1;
         }
 
-        if (slot == -1)
+        if (slot != -1)
         {
-            for (slot = 0; slot < Slots.Length; slot++)
-            {
-                if (Slots[slot] != null)
-                {
-                    continue;
-                }
+            return;
+        }
 
-                Slots[slot] = new(uid, amount);
-                session.Send(ItemBreakPacket.Add(uid, slot, amount));
-                UpdateRewards(session);
-                return;
+        for (slot = 0; slot < Slots.Length; slot++)
+        {
+            if (Slots[slot] != (0, 0))
+            {
+                continue;
             }
+
+            Slots[slot] = (uid, amount);
+            session.Send(ItemBreakPacket.Add(uid, slot, amount));
+            UpdateRewards(session);
+            return;
         }
     }
 
     public void Remove(GameSession session, long uid)
     {
-        int index = Array.FindIndex(Slots, 0, Slots.Length, x => x != null && x.Item1 == uid);
+        int index = Array.FindIndex(Slots, 0, Slots.Length, x => x.Uid == uid);
 
         if (index == -1)
         {
             return;
         }
 
-        Slots[index] = null;
+        Slots[index] = (0, 0);
         session.Send(ItemBreakPacket.Remove(uid));
         UpdateRewards(session);
     }
 
-    public void UpdateRewards(GameSession session)
+    private void UpdateRewards(GameSession session)
     {
         Rewards = new();
-        foreach ((long uid, int amount) in Slots.Where(x => x != null))
+        foreach ((long uid, int amount) in Slots.Where(x => x != default))
         {
             Item item = session.Player.Inventory.GetByUid(uid);
             if (!ItemMetadataStorage.IsValid(item.Id))
@@ -105,33 +108,48 @@ public class DismantleInventory
             }
 
             List<ItemBreakReward> breakRewards = ItemMetadataStorage.GetBreakRewards(item.Id);
-            if (breakRewards == null)
+            if (breakRewards != null)
             {
-                continue;
-            }
-
-            foreach (ItemBreakReward ingredient in breakRewards)
-            {
-                if (ingredient.Id == 0)
+                foreach (ItemBreakReward ingredient in breakRewards)
                 {
-                    continue;
-                }
+                    if (ingredient.Id == 0)
+                    {
+                        continue;
+                    }
 
-                if (Rewards.ContainsKey(ingredient.Id))
-                {
-                    Rewards[ingredient.Id] += ingredient.Count;
+                    AddReward(ingredient.Id, ingredient.Count, amount);
                 }
-                else
-                {
-                    Rewards[ingredient.Id] = ingredient.Count;
-                }
-
-                Rewards[ingredient.Id] *= amount;
             }
             // TODO: Add Onyx Crystal (40100023) and Chaos Onyx Crystal (40100024) to rewards if InventoryTab = Gear, based on level and rarity
-            // TODO: Add rewards for outfits
+
+            // Cosmetics gacha coins
+            GachaMetadata gachaMetadata = GachaMetadataStorage.GetMetadata(item.GachaDismantleId);
+            if (gachaMetadata is not null)
+            {
+                int ingredientCount = item.Rarity switch
+                {
+                    (int) RarityType.Epic => 3,
+                    (int) RarityType.Legendary => 5,
+                    _ => 1
+                };
+                AddReward(gachaMetadata.CoinId, ingredientCount, amount);
+            }
         }
 
         session.Send(ItemBreakPacket.Results(Rewards));
+    }
+
+    private void AddReward(int ingredientId, int ingredientCount, int multiplier)
+    {
+        if (Rewards.ContainsKey(ingredientId))
+        {
+            Rewards[ingredientId] += ingredientCount;
+        }
+        else
+        {
+            Rewards[ingredientId] = ingredientCount;
+        }
+
+        Rewards[ingredientId] *= multiplier;
     }
 }
