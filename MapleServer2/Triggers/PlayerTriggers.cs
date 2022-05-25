@@ -155,7 +155,7 @@ public partial class TriggerContext
     public void MoveUserPath(string movePath)
     {
         PatrolData patrolData = MapEntityMetadataStorage.GetPatrolData(Field.MapId, movePath);
-        Field.MoveUserTroughPatrolData(Field.State.Players.First().Value, patrolData);
+        Field.MovePlayer(Field.State.Players.First().Value, patrolData);
     }
 
     public void MoveUserToBox(int boxId, bool portalId)

@@ -184,11 +184,6 @@ public class FieldManager : IDisposable
         }
 
         npc.Coord = randomPositionAround.Value.ToFloat();
-        if (npc.Coord.X == 0 && npc.Coord.Y == 0 && npc.Coord.Z == 0)
-        {
-            return;
-        }
-
         npc.Rotation = default;
         npc.Animation = default;
         npc.Agent = Navigator.AddAgent(npc, shape);
@@ -613,21 +608,22 @@ public class FieldManager : IDisposable
         return true;
     }
 
-    public void MoveUserTroughPatrolData(IFieldActor<Player> player, PatrolData patrolData)
+    public void MovePlayer(IFieldActor<Player> player, PatrolData patrolData)
     {
-        int dummyNpcId = player.Value.Gender is Gender.Male ? 2040998 : 2040999;
+        int dummyNpcId = player.Value.Gender is Gender.Male ? 2040998 : 2040999; // dummy npc must match player gender
+
         Npc dummyNpc = RequestNpc(dummyNpcId, player.Coord, player.Rotation);
         dummyNpc.SetPatrolData(patrolData);
 
-        BroadcastPacket(FollowNpcPacket.FollowNpc(dummyNpc.ObjectId));
+        player.Value.Session.Send(FollowNpcPacket.FollowNpc(dummyNpc.ObjectId));
 
         Task.Run(async () =>
         {
             while (true)
             {
                 await Task.Delay(1000);
-                WayPoint lastWayPoint = patrolData.WayPoints.Last();
-                CoordF coord = lastWayPoint.Position.ToFloat();
+
+                CoordF coord = patrolData.WayPoints.Last().Position.ToFloat();
                 float distance = CoordF.Distance(dummyNpc.Coord, coord);
                 if (distance > 0.2)
                 {
