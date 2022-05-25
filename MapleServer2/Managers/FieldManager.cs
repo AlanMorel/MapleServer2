@@ -608,7 +608,7 @@ public class FieldManager : IDisposable
         return true;
     }
 
-    public void MovePlayer(IFieldActor<Player> player, PatrolData patrolData)
+    public void MovePlayerAlongPath(IFieldActor<Player> player, PatrolData patrolData)
     {
         int dummyNpcId = player.Value.Gender is Gender.Male ? 2040998 : 2040999; // dummy npc must match player gender
 
