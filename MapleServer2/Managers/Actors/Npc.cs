@@ -97,14 +97,9 @@ public class Npc : FieldActor<NpcMetadata>, INpc
     /// <returns>True if the NPC is moving.</returns>
     public bool UpdateVelocity()
     {
-        if (WayPointQueue.Count > 0 && Distance <= 0)
-        {
-            return GetNextPath();
-        }
-
         if (Distance <= 0)
         {
-            return false;
+            return WayPointQueue.Count > 0 && GetNextPath();
         }
 
         CoordF difference = NextMovementTarget.ToFloat() - Coord;
@@ -159,11 +154,6 @@ public class Npc : FieldActor<NpcMetadata>, INpc
     /// <returns>True if NextMovementTarget was set.</returns>
     private bool GetNextPath()
     {
-        if (WayPointQueue.Count == 0)
-        {
-            return false;
-        }
-
         if (WaitForAnimation)
         {
             return false;
