@@ -24,7 +24,7 @@ public class RequestItemBreakHandler : GamePacketHandler<RequestItemBreakHandler
         switch (mode)
         {
             case ItemBreakMode.Open:
-                session.Player.DismantleInventory.Slots = new Tuple<long, int>[100];
+                session.Player.DismantleInventory.Slots = new (long, int)[100];
                 session.Player.DismantleInventory.Rewards = new();
                 break;
             case ItemBreakMode.Add:
