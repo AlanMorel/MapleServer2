@@ -68,6 +68,7 @@ public sealed class Inventory : IInventory
     public Dictionary<long, Item> TemporaryStorage { get; } = new();
 
     #region Constructors
+
     public Inventory(bool addToDatabase)
     {
         Equips = new();
@@ -129,9 +130,11 @@ public sealed class Inventory : IInventory
             Add(item);
         }
     }
+
     #endregion
 
     #region Public Methods
+
     public void AddItem(GameSession session, Item item, bool isNew)
     {
         switch (item.Type)
@@ -182,6 +185,7 @@ public sealed class Inventory : IInventory
                     {
                         session.Send(ItemInventoryPacket.MarkItemNew(existingItem, item.Amount));
                     }
+
                     return;
                 }
 
@@ -366,6 +370,7 @@ public sealed class Inventory : IInventory
         {
             return GetByUid(uid);
         }
+
         return ItemIsEquipped(uid) ? GetEquippedItem(uid) : null;
     }
 
@@ -421,15 +426,9 @@ public sealed class Inventory : IInventory
         // Add items that can't be grouped
         groupedItems.AddRange(tabItems.Where(x => x.StackLimit == 1));
 
-        // Sort by item id
-        groupedItems.Sort((x, y) => x.Id.CompareTo(y.Id));
-
         // Update the slot mapping
         slots.Clear();
         short slotId = 0;
-
-        // Items that overflow stack limit
-        List<Item> itemList = new();
 
         // Delete items that got grouped
         foreach (Item oldItem in tabItems)
@@ -442,48 +441,55 @@ public sealed class Inventory : IInventory
                 continue;
             }
 
-            if (newItem.Amount > newItem.StackLimit)
+            if (newItem.Amount <= newItem.StackLimit)
             {
-                // how many times can we split the item?
-                int splitAmount = newItem.Amount / newItem.StackLimit;
-                // how many items are left over?
-                int remainder = newItem.Amount % newItem.StackLimit;
+                continue;
+            }
 
-                // split the item
-                for (int i = 0; i < splitAmount; i++)
+            // how many times can we split the item?
+            int splitAmount = newItem.Amount / newItem.StackLimit;
+            // how many items are left over?
+            int remainder = newItem.Amount % newItem.StackLimit;
+
+            // split the item
+            for (int i = 0; i < splitAmount; i++)
+            {
+                if (!newItem.TrySplit(newItem.StackLimit, out Item splitItem))
                 {
-                    if (!newItem.TrySplit(newItem.StackLimit, out Item splitItem))
-                    {
-                        continue;
-                    }
-
-                    itemList.Add(splitItem);
-                }
-
-                // Delete the original item if remainder is 0
-                if (remainder <= 0)
-                {
-                    Items.Remove(oldItem.Uid);
-                    DatabaseManager.Items.Delete(oldItem.Uid);
                     continue;
                 }
 
-                // set the remainder
-                newItem.Amount = remainder;
+                groupedItems.Add(splitItem);
             }
 
+            // Delete the original item if remainder is 0
+            if (remainder <= 0)
+            {
+                Items.Remove(oldItem.Uid);
+                DatabaseManager.Items.Delete(oldItem.Uid);
+                continue;
+            }
+
+            // set the remainder
+            newItem.Amount = remainder;
+        }
+
+        // Sort by item id, then by rarity, then by amount and creation time
+        groupedItems = groupedItems.OrderBy(x => x.Id)
+            .ThenBy(x => x.Rarity)
+            .ThenByDescending(x => x.Amount)
+            .ThenBy(x => x.CreationTime).ToList();
+
+        foreach (Item newItem in groupedItems)
+        {
             // Update the slot mapping
-            slots.Add(slotId++, newItem.Uid);
+            slots.Add(slotId, newItem.Uid);
             newItem.Slot = slotId;
+            slotId++;
 
             // Update the item
             Items[newItem.Uid] = newItem;
             DatabaseManager.Items.Update(newItem);
-        }
-
-        foreach (Item item in itemList)
-        {
-            AddNewItem(session, item, false);
         }
 
         session.Send(ItemInventoryPacket.ResetTab(tab));
@@ -537,9 +543,11 @@ public sealed class Inventory : IInventory
     {
         return GetSlots(tab).Select(kvp => Items[kvp.Value]).ToArray();
     }
+
     #endregion
 
     #region Private Methods
+
     // TODO: precompute next free slot to avoid iteration on Add
     // Returns false if inventory is full
     private bool Add(Item item)
@@ -710,5 +718,6 @@ public sealed class Inventory : IInventory
                 return;
         }
     }
+
     #endregion
 }
