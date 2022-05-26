@@ -14,7 +14,7 @@ public class DismantleInventory
 
     public void Dismantle(GameSession session)
     {
-        foreach ((long uid, int amount) in Slots)
+        foreach ((long uid, int amount) in Slots.Where(x => x != default))
         {
             session.Player.Inventory.ConsumeItem(session, uid, amount);
         }
