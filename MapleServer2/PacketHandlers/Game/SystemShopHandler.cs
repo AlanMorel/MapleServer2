@@ -1,10 +1,11 @@
-﻿using MaplePacketLib2.Tools;
+﻿using Maple2Storage.Types.Metadata;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Database.Types;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
@@ -49,16 +50,16 @@ public class SystemShopHandler : GamePacketHandler<SystemShopHandler>
             return;
         }
 
-        int itemId = packet.ReadInt();
+        int coinId = packet.ReadInt();
 
-        Item item = session.Player.Inventory.GetById(itemId);
-        if (item == null)
+        ItemMetadata item = ItemMetadataStorage.GetMetadata(coinId);
+        if (item is null)
         {
             return;
         }
 
         Shop shop = DatabaseManager.Shops.FindById(item.ShopID);
-        if (shop == null)
+        if (shop is null)
         {
             Logger.Warning("Unknown shop ID: {shopID}", item.ShopID);
             return;
