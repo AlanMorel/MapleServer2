@@ -16,12 +16,12 @@ public static class NpcTalkPacket
         Action = 0x03
     }
 
-    public static PacketWriter Respond(IFieldObject<NpcMetadata> npc, NpcType npcType, DialogType dialogType, int scriptId)
+    public static PacketWriter Respond(IFieldObject<NpcMetadata> npc, NpcTalkType npcTalkType, DialogType dialogType, int scriptId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.NPCTalk);
         pWriter.Write(NpcTalkMode.Respond);
         pWriter.WriteInt(npc.ObjectId);
-        pWriter.Write(npcType);
+        pWriter.Write(npcTalkType);
         pWriter.WriteInt(scriptId);
         pWriter.WriteInt();
         pWriter.Write(dialogType);

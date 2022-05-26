@@ -2,6 +2,7 @@
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
+using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
@@ -69,7 +70,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
 
     public override void Damage(DamageHandler damage, GameSession session)
     {
-        if (Value.Friendly == 2) // Attacking friendly NPC
+        if (Value.Type is NpcType.Friendly)
         {
             return;
         }
@@ -130,8 +131,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
         int tickNow = Environment.TickCount;
         int timeDelta = Math.Clamp(tickNow - LastMovementTime, 0, 400);
 
-        const float UnitPerMs = 0.001f; // Velocity in which all NPCs move per ms. 150 units per second.
-        CoordF addCoord = difference.Normalize() * (UnitPerMs * BaseVelocity * timeDelta);
+        CoordF addCoord = difference.Normalize() * (Constant.UnitPerMs * BaseVelocity * timeDelta);
         Coord += addCoord;
 
         Distance -= addCoord.Length();

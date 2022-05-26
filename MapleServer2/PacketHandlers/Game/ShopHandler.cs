@@ -64,7 +64,7 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
             session.Send(ShopPacket.LoadProducts(shopItem));
         }
         session.Send(ShopPacket.Reload());
-        session.Send(NpcTalkPacket.Respond(npcFieldObject, NpcType.Default, DialogType.None, 0));
+        session.Send(NpcTalkPacket.Respond(npcFieldObject, NpcTalkType.Default, DialogType.None, 0));
         session.Player.ShopId = shop.Id;
     }
 

@@ -398,13 +398,13 @@ public class FieldManager : IDisposable
     // Spawned NPCs will not appear until controlled
     private void AddNpc(Npc fieldNpc)
     {
-        if (fieldNpc.Value.Friendly != 2)
+        if (fieldNpc.Value.Type is NpcType.Friendly)
         {
-            State.AddMob(fieldNpc);
+            State.AddNpc(fieldNpc);
         }
         else
         {
-            State.AddNpc(fieldNpc);
+            State.AddMob(fieldNpc);
         }
 
         Broadcast(session =>

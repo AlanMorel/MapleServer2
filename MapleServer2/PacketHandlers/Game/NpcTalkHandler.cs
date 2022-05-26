@@ -102,12 +102,12 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
             NpcMetadata npcTarget = NpcMetadataStorage.GetNpcMetadata(npcTalk.Npc.Id);
             if (npcTarget.ShopId == 507) // mirror
             {
-                session.Send(NpcTalkPacket.Respond(npc, NpcType.Default, DialogType.Beauty, 0));
+                session.Send(NpcTalkPacket.Respond(npc, NpcTalkType.Default, DialogType.Beauty, 0));
                 HandleBeauty(session);
                 return;
             }
 
-            session.Send(NpcTalkPacket.Respond(npc, NpcType.Default, DialogType.Beauty, 1));
+            session.Send(NpcTalkPacket.Respond(npc, NpcTalkType.Default, DialogType.Beauty, 1));
             return;
         }
 
@@ -122,7 +122,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
             {
                 npcTalk.ScriptId = 0;
                 session.Send(QuestPacket.SendDialogQuest(objectId, npcQuests));
-                session.Send(NpcTalkPacket.Respond(npc, NpcType.QuestOptions, DialogType.TalkOption, npcTalk.ScriptId));
+                session.Send(NpcTalkPacket.Respond(npc, NpcTalkType.QuestOptions, DialogType.TalkOption, npcTalk.ScriptId));
                 return;
             }
 
@@ -134,7 +134,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
             npcTalk.ScriptId = GetNextScript(questScript, npcTalk, 0, script, session.Player);
 
             session.Send(QuestPacket.SendDialogQuest(objectId, npcQuests));
-            session.Send(NpcTalkPacket.Respond(npc, NpcType.Quest, DialogType.CloseNext, npcTalk.ScriptId));
+            session.Send(NpcTalkPacket.Respond(npc, NpcTalkType.Quest, DialogType.CloseNext, npcTalk.ScriptId));
             return;
         }
 
@@ -151,7 +151,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
 
         DialogType dialogType = option.Contents[0].Distractor is null ? DialogType.Close1 : DialogType.CloseNextWithDistractor;
 
-        session.Send(NpcTalkPacket.Respond(npc, NpcType.NormalTalk, dialogType, firstScriptId));
+        session.Send(NpcTalkPacket.Respond(npc, NpcTalkType.NormalTalk, dialogType, firstScriptId));
 
         // If npc has buttonset roulette, send roulette id 13.
         // TODO: Send the correct roulette id
