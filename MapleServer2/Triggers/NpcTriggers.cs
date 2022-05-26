@@ -3,6 +3,7 @@ using Maple2.Trigger.Enum;
 using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
+using MapleServer2.Managers.Actors;
 using MapleServer2.Packets;
 using MapleServer2.Types;
 
@@ -99,14 +100,14 @@ public partial class TriggerContext
                     continue;
                 }
 
-                IFieldActor<NpcMetadata> fieldNpc = Field.State.Npcs.Values.FirstOrDefault(x => x.Value.Id == id);
+                Npc fieldNpc = Field.State.Npcs.Values.FirstOrDefault(x => x.Value.Id == id);
                 if (fieldNpc is not null)
                 {
                     Field.RemoveNpc(fieldNpc);
                     continue;
                 }
 
-                IFieldActor<NpcMetadata> fieldMob = Field.State.Mobs.Values.FirstOrDefault(x => x.Value.Id == id);
+                Npc fieldMob = Field.State.Mobs.Values.FirstOrDefault(x => x.Value.Id == id);
                 if (fieldMob is not null)
                 {
                     Field.RemoveMob(fieldMob);
@@ -129,7 +130,7 @@ public partial class TriggerContext
 
     public void MoveNpc(int spawnTriggerId, string patrolDataName)
     {
-        (PatrolData, List<WayPoint>) patrolData = MapEntityMetadataStorage.GetPatrolData(Field.MapId, patrolDataName);
+        PatrolData patrolData = MapEntityMetadataStorage.GetPatrolData(Field.MapId, patrolDataName);
 
         MapEventNpcSpawnPoint spawnPoint = MapEntityMetadataStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnTriggerId);
         if (spawnPoint is null)
@@ -144,15 +145,7 @@ public partial class TriggerContext
                 continue;
             }
 
-            IFieldActor<NpcMetadata> fieldNpc = Field.State.Npcs.Values.FirstOrDefault(x => x.Value.Id == id);
-            if (fieldNpc is null)
-            {
-                continue;
-            }
-
-            // Just setting the coord as the last waypoint for now, replace with moveTo later
-            // fieldNpc.MoveTo(patrolData.Item2.Last().Position);
-            fieldNpc.Coord = patrolData.Item2.Last().Position.ToFloat();
+            Field.State.Npcs.Values.FirstOrDefault(x => x.Value.Id == id)?.SetPatrolData(patrolData);
         }
     }
 

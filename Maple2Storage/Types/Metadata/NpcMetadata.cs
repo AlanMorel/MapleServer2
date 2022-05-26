@@ -15,7 +15,7 @@ public class NpcMetadata
     [XmlElement(Order = 4)]
     public int TemplateId;
     [XmlElement(Order = 5)]
-    public byte Friendly;
+    public NpcType Type;
     [XmlElement(Order = 6)]
     public byte Level;
     [XmlElement(Order = 7)]
@@ -61,7 +61,7 @@ public class NpcMetadata
 
     public override string ToString()
     {
-        return $"Npc:(Id:{Id},Position:{Coord},Model:{Model},Friendly:{Friendly},IsShop:{Kind == 13},ShopId:{ShopId})";
+        return $"Npc:(Id:{Id},Position:{Coord},Model:{Model},Friendly:{Type},IsShop:{Kind == 13},ShopId:{ShopId})";
     }
 
     public bool IsShop() => Kind == 13;
@@ -80,7 +80,7 @@ public class NpcMetadata
 
     public bool IsMirror() => Kind == 35;
 
-    public bool IsBoss() => NpcMetadataBasic.Class >= 3 && Friendly != 2;
+    public bool IsBoss() => NpcMetadataBasic.Class >= 3 && Type is not NpcType.Friendly;
 }
 
 [XmlType]

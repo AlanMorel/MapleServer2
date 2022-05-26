@@ -1,6 +1,6 @@
 ﻿namespace Maple2Storage.Enums;
 
-public enum NpcType : byte
+public enum NpcTalkType : byte
 {
     Default = 1,
     NormalTalk = 2,

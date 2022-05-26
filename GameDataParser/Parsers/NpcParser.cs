@@ -105,7 +105,7 @@ public class NpcParser : Exporter<List<NpcMetadata>>
 
             // Parse basic attribs.
             metadata.TemplateId = int.TryParse(npcBasicNode.Attributes["illust"]?.Value, out _) ? int.Parse(npcBasicNode.Attributes["illust"].Value) : 0;
-            metadata.Friendly = byte.Parse(npcBasicNode.Attributes["friendly"].Value);
+            metadata.Type = (NpcType) byte.Parse(npcBasicNode.Attributes["friendly"].Value);
             metadata.Level = byte.Parse(npcBasicNode.Attributes["level"].Value);
 
             metadata.NpcMetadataBasic.NpcAttackGroup = sbyte.Parse(npcBasicNode.Attributes["npcAttackGroup"]?.Value ?? "0");
