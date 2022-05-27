@@ -11,37 +11,39 @@ public class ScriptMetadata
     [XmlElement(Order = 2)]
     public int Id;
     [XmlElement(Order = 3)]
-    public List<Option> Options = new();
+    public List<NpcScript> NpcScripts = new();
+    
+    public ScriptMetadata(){}
 
     public override string ToString()
     {
-        return $"IsQuestScript: {IsQuestScript}, Id: {Id}, Options: ({string.Join(", ", Options)})";
+        return $"IsQuestScript: {IsQuestScript}, Id: {Id}, Options: ({string.Join(", ", NpcScripts)})";
     }
 }
 
 [XmlType]
-public class Option
+public class NpcScript
 {
     [XmlElement(Order = 1)]
     public ScriptType Type;
     [XmlElement(Order = 2)]
     public int Id;
     [XmlElement(Order = 3)]
-    public List<Content> Contents = new();
+    public List<ScriptContent> Contents = new();
     [XmlElement(Order = 4)]
-    public string ButtonSet;
-    [XmlElement(Order = 5)]
     public int JobId;
+    [XmlElement(Order = 5)]
+    public bool RandomPick;
 
-    public Option() { }
+    public NpcScript() { }
 
-    public Option(ScriptType type, int id, List<Content> contents, string buttonSet, int jobId)
+    public NpcScript(ScriptType type, int id, List<ScriptContent> contents, int jobId, bool randomPick)
     {
         Type = type;
         Id = id;
         Contents = contents;
-        ButtonSet = buttonSet;
         JobId = jobId;
+        RandomPick = randomPick;
     }
 
     public override string ToString()
@@ -51,20 +53,23 @@ public class Option
 }
 
 [XmlType]
-public class Content
+public class ScriptContent
 {
     [XmlElement(Order = 1)]
-    public string FunctionId;
+    public int FunctionId;
     [XmlElement(Order = 2)]
-    public DialogType ButtonSet;
+    public ResponseSelection ButtonSet;
     [XmlElement(Order = 3)]
-    public List<Distractor> Distractor;
+    public List<ScriptDistractor> Distractor = new();
+    [XmlElement(Order = 4)]
+    public List<ScriptEvent> Events = new();
+    
+    public ScriptContent() { }
 
-    public Content() { }
-
-    public Content(string functionId, DialogType buttonSet, List<Distractor> distractor)
+    public ScriptContent(int functionId, ResponseSelection buttonSet, List<ScriptEvent> events, List<ScriptDistractor> distractor)
     {
         Distractor = distractor;
+        Events = events;
         FunctionId = functionId;
         ButtonSet = buttonSet;
     }
@@ -76,16 +81,52 @@ public class Content
 }
 
 [XmlType]
-public class Distractor
+public class ScriptEvent
+{
+    [XmlElement(Order = 1)]
+    public int Id;
+    [XmlElement(Order = 2)]
+    public List<EventContent> Contents = new();
+
+    public ScriptEvent(){}
+    
+    public ScriptEvent(int id, List<EventContent> contents)
+    {
+        Id = id;
+        Contents = contents;
+    }
+}
+
+[XmlType]
+public class EventContent
+{
+    [XmlElement(Order = 1)]
+    public string VoiceId;
+    [XmlElement(Order = 2)]
+    public string Illustration;
+    [XmlElement(Order = 3)]
+    public string Text;
+
+    public EventContent(){}
+    public EventContent(string voiceId, string illustration, string text)
+    {
+        VoiceId = voiceId;
+        Illustration = illustration;
+        Text = text;
+    }
+}
+
+[XmlType]
+public class ScriptDistractor
 {
     [XmlElement(Order = 1)]
     public List<int> Goto = new();
     [XmlElement(Order = 2)]
     public List<int> GotoFail = new();
 
-    public Distractor() { }
+    public ScriptDistractor() { }
 
-    public Distractor(List<int> gotos, List<int> gotoFail)
+    public ScriptDistractor(List<int> gotos, List<int> gotoFail)
     {
         Goto = gotos;
         GotoFail = gotoFail;
@@ -100,5 +141,6 @@ public class Distractor
 public enum ScriptType
 {
     Select = 0,
-    Script = 1
+    Script = 1,
+    Job = 2
 }

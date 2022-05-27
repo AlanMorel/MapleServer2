@@ -12,7 +12,7 @@ public class FieldState
     public readonly ConcurrentDictionary<int, IFieldObject<MobSpawn>> MobSpawns = new();
     public readonly ConcurrentDictionary<int, IFieldActor<Player>> Players = new();
     public readonly ConcurrentDictionary<int, Npc> Npcs = new();
-    public readonly ConcurrentDictionary<int, Npc> Mobs = new();
+    public readonly ConcurrentDictionary<int, Mob> Mobs = new();
     public readonly ConcurrentDictionary<int, IFieldObject<GuideObject>> Guide = new();
     public readonly ConcurrentDictionary<int, IFieldObject<Cube>> Cubes = new();
     public readonly ConcurrentDictionary<int, IFieldObject<HealingSpot>> HealingSpots = new();
@@ -126,7 +126,7 @@ public class FieldState
         return MobSpawns.Remove(objectId, out _);
     }
 
-    public void AddMob(Npc mob)
+    public void AddMob(Mob mob)
     {
         Mobs[mob.ObjectId] = mob;
     }

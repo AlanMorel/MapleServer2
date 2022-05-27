@@ -130,7 +130,40 @@ public static class FieldObjectPacket
         return pWriter;
     }
 
-    public static PacketWriter ControlNpc(IFieldActor<NpcMetadata> mob)
+    public static PacketWriter LoadMob(IFieldObject<NpcMetadata> mob)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FieldObject);
+        pWriter.Write(FieldObjectMode.LoadNpc);
+        pWriter.WriteInt(mob.ObjectId);
+        pWriter.WriteInt(mob.Value.Id);
+        pWriter.WriteByte();
+        pWriter.WriteInt(200); // also 99 for boss
+        pWriter.Write(mob.Coord);
+        return pWriter;
+    }
+
+    public static PacketWriter ControlNpc(IFieldActor<NpcMetadata> npc)
+    {
+        PacketWriter npcBuffer = new();
+        npcBuffer.WriteInt(npc.ObjectId);
+        npcBuffer.WriteByte();
+        npcBuffer.Write(npc.Coord.ToShort());
+        npcBuffer.WriteShort(npc.LookDirection);
+        npcBuffer.Write(npc.Velocity.ToShort()); // Target Position's Displacement
+        npcBuffer.WriteShort(100); // Unknown
+        npcBuffer.WriteByte(1); // Flag ?
+        npcBuffer.WriteShort(npc.Animation);
+        npcBuffer.WriteShort(1); // counter (increments every packet)
+        // There can be more to this packet, probably dependent on Flag.
+
+        PacketWriter pWriter = PacketWriter.Of(SendOp.NpcControl);
+        pWriter.WriteShort(1); // Segments
+        pWriter.WriteShort((short) npcBuffer.Length);
+        pWriter.WriteBytes(npcBuffer.ToArray());
+        return pWriter;
+    }
+
+    public static PacketWriter ControlMob(IFieldActor<NpcMetadata> mob)
     {
         PacketWriter npcBuffer = new();
         npcBuffer.WriteInt(mob.ObjectId);
@@ -171,6 +204,14 @@ public static class FieldObjectPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.FieldObject);
         pWriter.Write(FieldObjectMode.RemoveNpc);
         pWriter.WriteInt(npc.ObjectId);
+        return pWriter;
+    }
+
+    public static PacketWriter RemoveMob(IFieldObject<NpcMetadata> mob)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FieldObject);
+        pWriter.Write(FieldObjectMode.RemoveNpc);
+        pWriter.WriteInt(mob.ObjectId);
         return pWriter;
     }
 

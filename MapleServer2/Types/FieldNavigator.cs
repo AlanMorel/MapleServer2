@@ -89,9 +89,6 @@ public class FieldNavigator : IDisposable
                 return null;
             }
 
-            Position findClosestUnobstructedPosition = agent.findClosestUnobstructedPosition(CollisionContext, 500);
-            agent.moveTo(findClosestUnobstructedPosition);
-
             path = agent.findShortestPathTo(CollisionContext, position);
         }
         catch (InvalidPositionException)
@@ -123,7 +120,7 @@ public class FieldNavigator : IDisposable
 
         int halfWidth = width / 2;
         int halfHeight = height / 2;
-        List<Point> vertices = new()
+        List<Point> rectArray = new()
         {
             new(-halfWidth, -halfHeight),
             new(-halfWidth, halfHeight),
@@ -131,7 +128,7 @@ public class FieldNavigator : IDisposable
             new(halfWidth, -halfHeight)
         };
 
-        Shape shape = MapleServer.PathEngine.newShape(vertices);
+        Shape shape = MapleServer.PathEngine.newShape(rectArray);
 
         Shapes.Add((width, height), shape);
 
@@ -228,7 +225,7 @@ public class FieldNavigator : IDisposable
             return null;
         }
 
-        return GetCoordSFromPosition(unobstructedPosition);
+        return CoordS.From(unobstructedPosition.X, unobstructedPosition.Y, Mesh.heightAtPosition(unobstructedPosition));
     }
 
     private List<CoordS> PathToCoordS(Path path)
@@ -253,7 +250,7 @@ public class FieldNavigator : IDisposable
         return coordS;
     }
 
-    public CoordS GetCoordSFromPosition(Position position)
+    private CoordS GetCoordSFromPosition(Position position)
     {
         return CoordS.From(position.X, position.Y, Mesh.heightAtPosition(position));
     }

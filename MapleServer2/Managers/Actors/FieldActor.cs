@@ -168,11 +168,5 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>, IDisposabl
     public void Dispose()
     {
         Agent?.Dispose();
-        GC.SuppressFinalize(this);
-    }
-
-    ~FieldActor()
-    {
-        Dispose();
     }
 }

@@ -12,10 +12,10 @@ public class DatabaseShopItem : DatabaseTable
         return ReadShopItem(QueryFactory.Query(TableName).Where("uid", uid).Get().FirstOrDefault());
     }
 
-    public List<ShopItem> FindAllByShopUid(long shopUid)
+    public List<ShopItem> FindAllByShopId(int shopId)
     {
         List<ShopItem> items = new();
-        IEnumerable<dynamic> results = QueryFactory.Query(TableName).Where("shop_uid", shopUid).Get();
+        IEnumerable<dynamic> results = QueryFactory.Query(TableName).Where("shop_id", shopId).Get();
         foreach (dynamic result in results)
         {
             items.Add(ReadShopItem(result));

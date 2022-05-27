@@ -15,7 +15,7 @@ public class NpcMetadata
     [XmlElement(Order = 4)]
     public int TemplateId;
     [XmlElement(Order = 5)]
-    public NpcType Type;
+    public byte Friendly;
     [XmlElement(Order = 6)]
     public byte Level;
     [XmlElement(Order = 7)]
@@ -53,34 +53,16 @@ public class NpcMetadata
     [XmlElement(Order = 23)]
     public NpcStats Stats;
     [XmlElement(Order = 24)]
-    public short Kind; // 13 = Shop
-    [XmlElement(Order = 25)]
     public int ShopId;
-    [XmlElement(Order = 26)]
+    [XmlElement(Order = 25)]
     public NpcMetadataCapsule NpcMetadataCapsule;
 
     public override string ToString()
     {
-        return $"Npc:(Id:{Id},Position:{Coord},Model:{Model},Friendly:{Type},IsShop:{Kind == 13},ShopId:{ShopId})";
+        return $"Npc:(Id:{Id},Position:{Coord},Model:{Model},Friendly:{Friendly},ShopId:{ShopId})";
     }
 
-    public bool IsShop() => Kind == 13;
-
-    public bool IsBank() => Kind == 2;
-
-    public bool IsBeauty() => IsHair() || IsMakeUp() || IsSkin() || IsDye() || IsMirror();
-
-    public bool IsMakeUp() => Kind == 30;
-
-    public bool IsSkin() => Kind == 32;
-
-    public bool IsHair() => Kind == 33;
-
-    public bool IsDye() => Kind == 34;
-
-    public bool IsMirror() => Kind == 35;
-
-    public bool IsBoss() => NpcMetadataBasic.Class >= 3 && Type is not NpcType.Friendly;
+    public bool IsBoss() => NpcMetadataBasic.Class >= 3 && Friendly != 2;
 }
 
 [XmlType]
@@ -99,7 +81,7 @@ public class NpcMetadataBasic
     [XmlElement(Order = 6)]
     public byte Class; // Most things are 0 or 1. normalman4 (11000150) is "5"
     [XmlElement(Order = 7)]
-    public ushort Kind;
+    public NpcKind Kind;
     [XmlElement(Order = 8)]
     public byte HpBar;
     [XmlElement(Order = 9)]
@@ -131,6 +113,11 @@ public class NpcMetadataBasic
     {
         return $"NpcMetadataBasic:(NpcAttackGroup:{NpcAttackGroup},NpcDefenseGroup:{NpcDefenseGroup},AttackDamage:{AttackDamage},Difficulty:{Difficulty}," +
                $"MaxSpawnCount:{MaxSpawnCount},GroupSpawnCount:{GroupSpawnCount})";
+    }
+
+    public bool IsShop()
+    {
+        return Kind is NpcKind.BalmyShop or NpcKind.FixedShop or NpcKind.RotatingShop;
     }
 }
 

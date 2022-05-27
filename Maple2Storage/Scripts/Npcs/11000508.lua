@@ -1,0 +1,83 @@
+function getBeginEventId(itemRarity, enchantLevel)
+    if enchantLevel == 0 then
+        if itemRarity <= 4 then
+            return 1100
+        elseif itemRarity == 5 then
+            return 1000
+        elseif itemRarity == 6 then
+            return 1001
+        end
+    elseif enchantLevel <= 2 then
+        return 1200
+    elseif enchantLevel == 3 then
+        return 1201
+    elseif enchantLevel == 4 then
+        return 1202
+    elseif enchantLevel == 5 then
+        return 1203
+    elseif enchantLevel == 6 then
+        return 1204
+    elseif enchantLevel == 7 then
+        return 1205
+    elseif enchantLevel == 8 then
+        return 1206
+    elseif enchantLevel == 9 then
+        return 1207
+    elseif enchantLevel == 10 then
+        return 1208
+    elseif enchantLevel == 11 then
+        return 1209
+    elseif enchantLevel == 12 then
+        return 1210
+    elseif enchantLevel == 13 then
+        return 1211
+    elseif enchantLevel == 14 then
+        return 1212
+    else
+        return 1213
+    end
+end
+
+function getProcessEventId(hasEnoughMaterials, hasEnoughCatalysts)
+    if hasEnoughMaterials == false then
+        return 3
+    elseif hasEnoughCatalysts == false then
+        return 4
+    else
+        return 0
+    end
+end
+
+function getExcessCatalystEventId() 
+    return 6
+end
+
+function getResultEventId(enchantLevel, success)
+    if success == true then
+        if enchantLevel <= 4 then
+            return 2000
+        elseif enchantLevel >= 5 and enchantLevel <= 7 then
+            return 2001
+        elseif enchantLevel == 8 or enchantLevel == 9 then
+            return 2002
+        elseif enchantLevel == 10 then
+            return 2003
+        elseif enchantLevel == 11 then
+            return 2004
+        elseif enchantLevel == 12 then
+            return 2005
+        elseif enchantLevel == 13 then
+            return 2006
+        elseif enchantLevel == 14 then
+            return 2007
+        else
+            return 2008
+        end
+    else
+        if enchantLevel <= 5 then
+            return 2300
+        else
+            return 2203
+        end
+    end
+end

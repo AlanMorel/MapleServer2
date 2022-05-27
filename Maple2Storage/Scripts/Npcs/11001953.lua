@@ -11,3 +11,11 @@
     end
     return 0
 end
+
+function preTalkActions()
+    return 4
+end
+
+function actionWindow()
+    return "RouletteDialog", "13"
+end

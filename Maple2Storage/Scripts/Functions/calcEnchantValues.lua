@@ -35,7 +35,7 @@ function calcEnchantIngredients(enchantLevel, rarity, itemSlot, itemLevel)
     local ingredient2Cost = 100 * enchantLevel -- temp value
     local ingredient3Cost = 100 * enchantLevel -- temp value
     -- TODO: // figure out ingredient cost calculation
-    if enchantLevel > 10 then
+    if enchantLevel > 10 and rarity > 3 then
         catalystCost = 1
     end
     return catalystCost, ingredient1Tag, ingredient1Cost, ingredient2Tag, ingredient2Cost, ingredient3Tag, ingredient3Cost
@@ -44,7 +44,7 @@ end
 EnchantingBonusFactor = { 0.02, 0.04, 0.07, 0.1, 0.14, 0.19, 0.25, 0.32, 0.4, 0.5, 0.64, 0.84, 1.12, 1.5, 2 }
 EnchantingSuccessRate = { 1, 1, 1, 0.95, 0.90, 0.80, 0.70, 0.60, 0.50, 0.40, 0.30, 0.20, 0.15, 0.10, 0.05 }
 
-EnchantingPityCharges = {}  -- temp values ?
+EnchantingPityCharges = {}
 for i = 0, 15 do
     EnchantingPityCharges[i] = 0
 end
@@ -58,21 +58,15 @@ AdditionalCatalystSuccessRate = {}
 for i = 0, 15 do
     AdditionalCatalystSuccessRate[i] = 0
 end
-AdditionalCatalystSuccessRate[10] = 0.1
-AdditionalCatalystSuccessRate[11] = 0.08
 AdditionalCatalystSuccessRate[12] = 0.07
 AdditionalCatalystSuccessRate[13] = 0.05
 AdditionalCatalystSuccessRate[14] = 0.04
 AdditionalCatalystSuccessRate[15] = 0.02
 
-ChargeRate = {} -- temp values ?
+ChargeRate = {}
 for i = 0, 15 do
     ChargeRate[i] = 0.1
 end
-ChargeRate[12] = 0.07
-ChargeRate[13] = 0.05
-ChargeRate[14] = 0.04
-ChargeRate[15] = 0.02
 
 -- Slot Type values
 Weapon = 0

@@ -105,16 +105,16 @@ public class EnchantScrollHandler : GamePacketHandler<EnchantScrollHandler>
         float successRate = (float) script.RunFunction("getSuccessRate", scrollId).Number;
 
         int randomValue = Random.Shared.Next(0, 10000 + 1);
-        bool scrollSuccess = successRate >= randomValue;
+        bool scrollSuccess = successRate * 10000 >= randomValue;
+
+        session.Player.Inventory.ConsumeItem(session, scroll.Uid, 1);
 
         if (scrollSuccess)
         {
             equip.EnchantLevel = enchantLevel;
             equip.EnchantExp = 0;
             equip.Stats.Enchants = enchantStats;
+            session.Send(EnchantScrollPacket.UseScroll((short) EnchantScrollError.None, equip));
         }
-
-        session.Player.Inventory.ConsumeItem(session, scroll.Uid, 1);
-        session.Send(EnchantScrollPacket.UseScroll((short) EnchantScrollError.None, equip));
     }
 }

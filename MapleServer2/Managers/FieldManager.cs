@@ -130,11 +130,16 @@ public class FieldManager : IDisposable
         return player.FieldPlayer;
     }
 
-    public Npc RequestNpc(int npcId, CoordF coord = default, CoordF rotation = default, short animation = default)
+    public IFieldActor<NpcMetadata> RequestNpc(int npcId, CoordF coord = default, CoordF rotation = default, short animation = default)
     {
         NpcMetadata meta = NpcMetadataStorage.GetNpcMetadata(npcId);
 
-        Npc npc = WrapNpc(meta);
+        if (meta.Friendly != 2)
+        {
+            return RequestMob(npcId, coord, rotation, animation);
+        }
+
+        Npc npc = WrapNpc(npcId);
         npc.Coord = coord;
         npc.Rotation = rotation;
         npc.Agent = Navigator.AddAgent(npc, Navigator.AddShape(meta.NpcMetadataCapsule));
@@ -148,48 +153,53 @@ public class FieldManager : IDisposable
         return npc;
     }
 
-    private void RequestNpc(MapNpc mapNpc, CoordF coord, CoordF rotation)
+    public Mob RequestMob(int mobId, CoordF coord = default, CoordF rotation = default, short animation = default)
     {
-        Npc npc = RequestNpc(mapNpc.Id, coord, rotation);
+        Mob mob = WrapMob(mobId);
+        mob.Coord = coord;
+        mob.Rotation = rotation;
+        mob.Agent = Navigator.AddAgent(mob, Navigator.AddShape(mob.Value.NpcMetadataCapsule));
 
-        if (string.IsNullOrEmpty(mapNpc.PatrolDataUuid))
+        if (animation != default)
         {
-            return;
+            mob.Animation = animation;
         }
 
-        npc.SetPatrolData(MapEntityMetadataStorage.GetPatrolDataByUuid(MapId, mapNpc.PatrolDataUuid!.Replace("-", string.Empty)));
+        AddMob(mob);
+        return mob;
     }
 
-    private void RequestMob(int mobId, IFieldObject<MobSpawn> spawnPoint)
+    public IFieldActor<NpcMetadata> RequestMob(int mobId, IFieldObject<MobSpawn> spawnPoint)
     {
-        Npc npc = WrapMob(mobId);
-        npc.OriginSpawn = spawnPoint;
+        Mob mob = WrapMob(mobId);
+        mob.OriginSpawn = spawnPoint;
 
-        Shape shape = Navigator.AddShape(npc.Value.NpcMetadataCapsule);
+        Shape shape = Navigator.AddShape(mob.Value.NpcMetadataCapsule);
         Position spawnPointPosition = Navigator.FindPositionFromCoordS(spawnPoint.Coord);
         if (!Navigator.PositionIsValid(spawnPointPosition))
         {
             if (!Navigator.FindFirstPositionBelow(spawnPoint.Coord, out spawnPointPosition))
             {
-                Logger.Warning("Could not find a random position around spawn point {0}, in map ID {1} for mob ID {2}", spawnPoint.Coord, MapId, npc.Value.Id);
-                return;
+                Logger.Error("Could not find a random position around spawn point {0}, in map ID {1} for mob ID {2}", spawnPoint.Coord, MapId, mob.Value.Id);
+                return null;
             }
         }
 
         CoordS? randomPositionAround = Navigator.FindClosestUnobstructedCoordS(shape, spawnPointPosition, spawnPoint.Value.SpawnRadius);
-        if (randomPositionAround is null || randomPositionAround.Value == CoordS.From(0, 0, 0))
+        if (randomPositionAround is null)
         {
-            Logger.Warning("Could not find a random position around spawn point {0}, in map ID {1} for mob ID {2}", spawnPoint.Coord, MapId, npc.Value.Id);
-            return;
+            Logger.Error("Could not find a random position around spawn point {0}, in map ID {1} for mob ID {2}", spawnPoint.Coord, MapId, mob.Value.Id);
+            return null;
         }
 
-        npc.Coord = randomPositionAround.Value.ToFloat();
-        npc.Rotation = default;
-        npc.Animation = default;
-        npc.Agent = Navigator.AddAgent(npc, shape);
+        mob.Coord = randomPositionAround.Value.ToFloat();
+        mob.Rotation = default;
+        mob.Animation = default;
+        mob.Agent = Navigator.AddAgent(mob, shape);
 
-        npc.OriginSpawn.Value.Mobs.Add(npc);
-        AddNpc(npc);
+        mob.OriginSpawn.Value.Mobs.Add(mob);
+        AddMob(mob);
+        return mob;
     }
 
     #endregion
@@ -251,10 +261,10 @@ public class FieldManager : IDisposable
             sender.Send(FieldObjectPacket.LoadNpc(existingNpc));
         }
 
-        foreach (Npc existingMob in State.Mobs.Values)
+        foreach (Mob existingMob in State.Mobs.Values)
         {
-            sender.Send(FieldNpcPacket.AddNpc(existingMob));
-            sender.Send(FieldObjectPacket.LoadNpc(existingMob));
+            sender.Send(FieldNpcPacket.AddMob(existingMob));
+            sender.Send(FieldObjectPacket.LoadMob(existingMob));
 
             // TODO: Determine if buffs are sent on Field Enter
         }
@@ -398,26 +408,12 @@ public class FieldManager : IDisposable
     // Spawned NPCs will not appear until controlled
     private void AddNpc(Npc fieldNpc)
     {
-        if (fieldNpc.Value.Type is NpcType.Friendly)
-        {
-            State.AddNpc(fieldNpc);
-        }
-        else
-        {
-            State.AddMob(fieldNpc);
-        }
+        State.AddNpc(fieldNpc);
 
         Broadcast(session =>
         {
             session.Send(FieldNpcPacket.AddNpc(fieldNpc));
             session.Send(FieldObjectPacket.LoadNpc(fieldNpc));
-
-            // TODO: Find a better place to do this when buffs are implemented
-            for (int i = 0; i < fieldNpc.Value.NpcMetadataEffect.EffectIds.Length; i++)
-            {
-                SkillCast effectCast = new(fieldNpc.Value.NpcMetadataEffect.EffectIds[i], fieldNpc.Value.NpcMetadataEffect.EffectLevels[i]);
-                session.Send(BuffPacket.SendBuff(0, new(effectCast, fieldNpc.ObjectId, fieldNpc.ObjectId, 1)));
-            }
         });
     }
 
@@ -438,26 +434,48 @@ public class FieldManager : IDisposable
         return true;
     }
 
-    public bool RemoveMob(Npc mob)
+    private void AddMob(Mob fieldMob)
+    {
+        State.AddMob(fieldMob);
+
+        Broadcast(session =>
+        {
+            session.Send(FieldNpcPacket.AddMob(fieldMob));
+
+            session.Send(FieldObjectPacket.LoadMob(fieldMob));
+            for (int i = 0; i < fieldMob.Value.NpcMetadataEffect.EffectIds.Length; i++)
+            {
+                SkillCast effectCast = new(fieldMob.Value.NpcMetadataEffect.EffectIds[i], fieldMob.Value.NpcMetadataEffect.EffectLevels[i]);
+                session.Send(BuffPacket.SendBuff(0, new(effectCast, fieldMob.ObjectId, fieldMob.ObjectId, 1)));
+            }
+        });
+    }
+
+    public bool RemoveMob(IFieldActor<NpcMetadata> mob)
     {
         if (!State.RemoveMob(mob.ObjectId))
         {
             return false;
         }
 
-        IFieldObject<MobSpawn> originSpawn = mob.OriginSpawn;
-        if (originSpawn is not null && originSpawn.Value.Mobs.Remove(mob) && originSpawn.Value.Mobs.Count == 0)
+        if (mob is Mob fieldMob)
         {
-            StartSpawnTimer(originSpawn);
+            IFieldObject<MobSpawn> originSpawn = fieldMob.OriginSpawn;
+            if (originSpawn != null && originSpawn.Value.Mobs.Remove(mob) && originSpawn.Value.Mobs.Count == 0)
+            {
+                StartSpawnTimer(originSpawn);
+            }
         }
 
-        BroadcastPacket(FieldObjectPacket.ControlNpc(mob));
+        BroadcastPacket(FieldObjectPacket.ControlMob(mob));
         Task.Run(async () =>
         {
             await Task.Delay(TimeSpan.FromSeconds(mob.Value.NpcMetadataDead.Time));
-
-            BroadcastPacket(FieldNpcPacket.RemoveNpc(mob));
-            BroadcastPacket(FieldObjectPacket.RemoveNpc(mob));
+            Broadcast(session =>
+            {
+                session.Send(FieldNpcPacket.RemoveNpc(mob));
+                session.Send(FieldObjectPacket.RemoveMob(mob));
+            });
 
             mob.Dispose();
         });
@@ -608,34 +626,6 @@ public class FieldManager : IDisposable
         return true;
     }
 
-    public void MovePlayerAlongPath(IFieldActor<Player> player, PatrolData patrolData)
-    {
-        int dummyNpcId = player.Value.Gender is Gender.Male ? 2040998 : 2040999; // dummy npc must match player gender
-
-        Npc dummyNpc = RequestNpc(dummyNpcId, player.Coord, player.Rotation);
-        dummyNpc.SetPatrolData(patrolData);
-
-        player.Value.Session.Send(FollowNpcPacket.FollowNpc(dummyNpc.ObjectId));
-
-        Task.Run(async () =>
-        {
-            while (true)
-            {
-                await Task.Delay(1000);
-
-                CoordF coord = patrolData.WayPoints.Last().Position.ToFloat();
-                float distance = CoordF.Distance(dummyNpc.Coord, coord);
-                if (distance > 0.2)
-                {
-                    continue;
-                }
-
-                RemoveNpc(dummyNpc);
-                break;
-            }
-        });
-    }
-
     #endregion
 
     #region Broadcast Methods
@@ -695,14 +685,15 @@ public class FieldManager : IDisposable
         return new(objectId, player, fieldManager: this);
     }
 
-    private Npc WrapNpc(NpcMetadata metadata)
+    // Initializes a Npc with an objectId for this field.
+    private Npc WrapNpc(int npcId)
     {
         int objectId = Interlocked.Increment(ref Counter);
-        return new(objectId, metadata, fieldManager: this);
+        return new(objectId, npcId, fieldManager: this);
     }
 
     // Initializes a Mob with an objectId for this field.
-    private Npc WrapMob(int mobId)
+    private Mob WrapMob(int mobId)
     {
         int objectId = Interlocked.Increment(ref Counter);
         return new(objectId, mobId, fieldManager: this);
@@ -792,7 +783,7 @@ public class FieldManager : IDisposable
         // Load default npcs for map from config
         foreach (MapNpc npc in MapEntityMetadataStorage.GetNpcs(MapId))
         {
-            RequestNpc(npc, npc.Coord.ToFloat(), npc.Rotation.ToFloat());
+            RequestNpc(npc.Id, npc.Coord.ToFloat(), npc.Rotation.ToFloat());
         }
 
         // Spawn map's mobs at the mob spawners
@@ -938,7 +929,7 @@ public class FieldManager : IDisposable
 
     private Task StartMapLoop()
     {
-        MobMovementTask = StartNpcLoop();
+        MobMovementTask = StartMobLoop();
         CancellationToken ct = CancellationToken.Token;
         return Task.Run(async () =>
         {
@@ -953,42 +944,27 @@ public class FieldManager : IDisposable
         }, ct);
     }
 
-    private Task StartNpcLoop()
+    private Task StartMobLoop()
     {
         CancellationToken ct = CancellationToken.Token;
         return Task.Run(async () =>
         {
             while (!State.Players.IsEmpty)
             {
-                try
+                foreach (Mob mob in State.Mobs.Values)
                 {
-                    foreach (Npc mob in State.Mobs.Values)
+                    if (mob.IsDead)
                     {
-                        if (mob.IsDead)
-                        {
-                            RemoveMob(mob);
-                            continue;
-                        }
-
-                        mob.UpdateVelocity();
-                        BroadcastPacket(FieldObjectPacket.ControlNpc(mob)); // TODO: Optimize this to only send packets when needed
-                        mob.UpdateCoord();
+                        RemoveMob(mob);
+                        continue;
                     }
 
-                    foreach (Npc npc in State.Npcs.Values)
-                    {
-                        npc.UpdateVelocity();
-                        BroadcastPacket(FieldObjectPacket.ControlNpc(npc)); // TODO: Optimize this to only send packets when needed
-                        npc.UpdateCoord();
-                    }
-                }
-                catch (Exception e)
-                {
-                    Logger.Error("Error in mob loop {0}", e);
-                    throw;
+                    mob.UpdateVelocity();
+                    BroadcastPacket(FieldObjectPacket.ControlMob(mob));
+                    mob.UpdateCoord();
                 }
 
-                // Npc update can be theoretically any delay, just make sure to not eat all the CPU. Default is 300ms
+                // Mob update can be any delay, just make sure to not eat all the CPU. Default is 300ms
                 await Task.Delay(300, ct);
             }
         }, ct);
@@ -1009,6 +985,12 @@ public class FieldManager : IDisposable
     private IEnumerable<PacketWriter> GetUpdates()
     {
         List<PacketWriter> updates = new();
+        // Update NPCs
+        foreach (Npc npc in State.Npcs.Values)
+        {
+            updates.Add(FieldObjectPacket.ControlNpc(npc));
+        }
+
         // Update players state
         foreach (IFieldActor<Player> player in State.Players.Values)
         {
@@ -1023,7 +1005,7 @@ public class FieldManager : IDisposable
         // Manage mob aggro + targets
         foreach (IFieldActor<Player> player in State.Players.Values)
         {
-            foreach (Npc mob in State.Mobs.Values)
+            foreach (Mob mob in State.Mobs.Values)
             {
                 float playerMobDist = CoordF.Distance(player.Coord, mob.Coord);
                 if (playerMobDist <= mob.Value.NpcMetadataDistance.Sight)
@@ -1046,7 +1028,7 @@ public class FieldManager : IDisposable
 
     private void UpdateObjects()
     {
-        foreach (Npc mob in State.Mobs.Values)
+        foreach (Mob mob in State.Mobs.Values)
         {
             mob.Act();
         }

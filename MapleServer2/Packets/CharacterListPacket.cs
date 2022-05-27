@@ -140,7 +140,7 @@ public static class CharacterListPacket
         pWriter.Write(player.ReturnCoord);
         pWriter.WriteInt(player.GearScore);
         pWriter.Write(player.SkinColor);
-        pWriter.WriteLong(player.CreationTime + Environment.TickCount64);
+        pWriter.WriteLong(player.CreationTime);
         foreach (int trophyCount in player.TrophyCount)
         {
             pWriter.WriteInt(trophyCount);

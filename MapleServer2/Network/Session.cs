@@ -346,7 +346,7 @@ public abstract class Session : IDisposable
             case SendOp.DungeonList:
             case SendOp.ServerEnter:
             case SendOp.Quest:
-            case SendOp.StorageInventory:
+            //case SendOp.StorageInventory:
             case SendOp.Trophy:
             case SendOp.ResponseTimeSync:
             case SendOp.Vibrate:

@@ -65,7 +65,7 @@ public class SystemShopHandler : GamePacketHandler<SystemShopHandler>
             return;
         }
 
-        session.Send(ShopPacket.Open(shop));
+        session.Send(ShopPacket.Open(shop, 0));
         foreach (ShopItem shopItem in shop.Items)
         {
             session.Send(ShopPacket.LoadProducts(shopItem));
@@ -82,7 +82,7 @@ public class SystemShopHandler : GamePacketHandler<SystemShopHandler>
             return;
         }
 
-        OpenSystemShop(session, 161);
+        OpenSystemShop(session, 161, 11001609);
     }
 
     private static void HandleMapleArenaShop(GameSession session, PacketReader packet)
@@ -94,14 +94,14 @@ public class SystemShopHandler : GamePacketHandler<SystemShopHandler>
             return;
         }
 
-        OpenSystemShop(session, 168);
+        OpenSystemShop(session, 168, 11001562);
     }
 
-    private static void OpenSystemShop(GameSession session, int shopId)
+    private static void OpenSystemShop(GameSession session, int shopId, int npcId)
     {
         Shop shop = DatabaseManager.Shops.FindById(shopId);
 
-        session.Send(ShopPacket.Open(shop));
+        session.Send(ShopPacket.Open(shop, npcId));
         foreach (ShopItem shopItem in shop.Items)
         {
             session.Send(ShopPacket.LoadProducts(shopItem));

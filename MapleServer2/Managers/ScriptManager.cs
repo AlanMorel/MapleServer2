@@ -73,6 +73,7 @@ public class ScriptManager
             return false;
         }
 
+        public bool HasSufficientMesos(long amount) => Wallet.Meso.Amount >= amount;
         public bool ModifyMeso(long amount) => Wallet.Meso.Modify(amount);
         public bool ModifyRue(long amount) => Wallet.Rue.Modify(amount);
         public bool ModifyTreva(long amount) => Wallet.Treva.Modify(amount);
