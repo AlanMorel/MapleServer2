@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using Maple2Storage.Enums;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
 
@@ -40,7 +41,7 @@ public static class QuestPacket
         pWriter.Write(QuestMode.AcceptQuest);
         pWriter.WriteInt(quest.Id);
         pWriter.WriteLong(TimeInfo.Now());
-        pWriter.WriteBool(quest.Tracked);
+        pWriter.WriteBool(quest.Accepted);
         pWriter.WriteInt(quest.Condition.Count);
         foreach (Condition condition in quest.Condition)
         {
@@ -108,7 +109,7 @@ public static class QuestPacket
             pWriter.WriteInt(quest.AmountCompleted);
             pWriter.WriteLong(quest.StartTimestamp);
             pWriter.WriteLong(quest.CompleteTimestamp);
-            pWriter.WriteBool(quest.Tracked);
+            pWriter.WriteBool(quest.Accepted);
             pWriter.WriteInt(quest.Condition.Count);
 
             foreach (Condition condition in quest.Condition)

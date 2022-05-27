@@ -433,8 +433,6 @@ public class FieldManager : IDisposable
             session.Send(FieldNpcPacket.RemoveNpc(fieldNpc));
             session.Send(FieldObjectPacket.RemoveNpc(fieldNpc));
         });
-
-        fieldNpc.Dispose();
         return true;
     }
 
@@ -452,15 +450,14 @@ public class FieldManager : IDisposable
         }
 
         BroadcastPacket(FieldObjectPacket.ControlNpc(mob));
+        CancellationToken ct = CancellationToken.Token;
         Task.Run(async () =>
         {
-            await Task.Delay(TimeSpan.FromSeconds(mob.Value.NpcMetadataDead.Time));
+            await Task.Delay(TimeSpan.FromSeconds(mob.Value.NpcMetadataDead.Time), ct);
 
             BroadcastPacket(FieldNpcPacket.RemoveNpc(mob));
             BroadcastPacket(FieldObjectPacket.RemoveNpc(mob));
-
-            mob.Dispose();
-        });
+        }, ct);
 
         return true;
     }
@@ -1100,7 +1097,7 @@ public class FieldManager : IDisposable
                     }
                 }
 
-                await Task.Delay(200, ct);
+                await Task.Delay(30, ct);
             }
         }, ct);
     }

@@ -80,6 +80,7 @@ public class QuestHandler : GamePacketHandler<QuestHandler>
 
         questStatus.State = QuestState.Started;
         questStatus.StartTimestamp = TimeInfo.Now();
+        questStatus.Accepted = true;
         DatabaseManager.Quests.Update(questStatus);
         session.Send(QuestPacket.AcceptQuest(questStatus));
         TrophyManager.OnAcceptQuest(session.Player, questId);
@@ -172,15 +173,17 @@ public class QuestHandler : GamePacketHandler<QuestHandler>
 
             if (questStatus is null)
             {
-                questStatus = new(session.Player.CharacterId, questId, QuestState.Started, TimeInfo.Now());
+                questStatus = new(session.Player.CharacterId, questId, QuestState.Started, TimeInfo.Now(), accepted: true);
                 session.Player.QuestData.Add(questId, questStatus);
                 session.Send(QuestPacket.AcceptQuest(questStatus));
                 continue;
             }
 
-            session.Send(QuestPacket.AcceptQuest(questStatus));
             questStatus.State = QuestState.Started;
+            questStatus.StartTimestamp = TimeInfo.Now();
+            questStatus.Accepted = true;
             DatabaseManager.Quests.Update(questStatus);
+            session.Send(QuestPacket.AcceptQuest(questStatus));
         }
     }
 
@@ -221,7 +224,7 @@ public class QuestHandler : GamePacketHandler<QuestHandler>
             return;
         }
 
-        questStatus.Tracked = tracked;
+        questStatus.Accepted = tracked;
         DatabaseManager.Quests.Update(questStatus);
         session.Send(QuestPacket.ToggleTracking(questId, tracked));
     }

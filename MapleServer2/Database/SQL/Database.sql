@@ -583,7 +583,7 @@ CREATE TABLE `quests`
     `complete_timestamp` bigint           NOT NULL,
     `condition`          text,
     `character_id`       bigint DEFAULT NULL,
-    `tracked`            tinyint(1)       NOT NULL,
+    `accepted`           tinyint(1)       NOT NULL,
     `amount_completed`   int              NOT NULL,
     PRIMARY KEY (`uid`),
     UNIQUE KEY `quests_un` (`id`, `character_id`),

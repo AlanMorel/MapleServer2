@@ -13,9 +13,27 @@ public static class FieldPropertyPacket
     public static PacketWriter ChangeGravity(float value)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.FieldProperty);
-        pWriter.Write(FieldPropertyMode.ChangeGravity);
         pWriter.WriteByte(1);
+        pWriter.Write(FieldPropertyMode.ChangeGravity);
         pWriter.WriteFloat(value);
+
+        return pWriter;
+    }
+
+    public static PacketWriter SetCharacterInvisible()
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FieldProperty);
+        pWriter.WriteByte(1);
+        pWriter.WriteByte(3);
+
+        return pWriter;
+    }
+
+    public static PacketWriter SetCharacterVisible()
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FieldProperty);
+        pWriter.WriteByte(2);
+        pWriter.WriteByte(3);
 
         return pWriter;
     }
