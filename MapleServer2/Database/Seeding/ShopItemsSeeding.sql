@@ -24,7 +24,7 @@ CREATE TABLE `shop_items`
     `required_item_id`                 int      NOT NULL,
     `required_quest_alliance`          smallint NOT NULL,
     `sale_price`                       int      NOT NULL,
-    `shop_id`                         int         DEFAULT NULL,
+    `shop_id`                          int         DEFAULT NULL,
     `stock_count`                      int      NOT NULL,
     `stock_purchased`                  int      NOT NULL,
     `template_name`                    varchar(25) DEFAULT NULL,

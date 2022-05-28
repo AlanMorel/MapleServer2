@@ -1,7 +1,6 @@
 -- Jane
 function handleGoto(nextScript)
     local itemCount = ScriptManager.GetPlayer().GetItemCount(39000014);
-    print(itemCount)
     if nextScript == 61 and itemCount >= 1 then
         return 62
     else

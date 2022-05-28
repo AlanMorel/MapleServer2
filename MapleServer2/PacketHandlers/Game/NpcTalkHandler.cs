@@ -316,6 +316,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
         }
         session.Send(NpcTalkPacket.ContinueChat(npcTalk.ScriptId, npcTalk.DialogType, responseSelection, npcTalk.ContentIndex, npcTalk.QuestId));
     }
+
     private static NpcScript GoToScript(GameSession session, int selectedIndex, NpcScript currentScript, NpcTalk npcTalk, ScriptMetadata metadata)
     {
 
@@ -337,7 +338,6 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
 
     private static DialogType GetDialogType(NpcScript npcScript, NpcTalk npcTalk)
     {
-
         if (npcScript.Type == ScriptType.Job)
         {
             return DialogType.UI;

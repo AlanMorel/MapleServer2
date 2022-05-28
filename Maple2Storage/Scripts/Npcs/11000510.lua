@@ -7,35 +7,8 @@ function getBeginEventId(itemRarity, enchantLevel)
         elseif itemRarity == 6 then
             return 1001
         end
-    elseif enchantLevel <= 2 then
-        return 1200
-    elseif enchantLevel == 3 then
-        return 1201
-    elseif enchantLevel == 4 then
-        return 1202
-    elseif enchantLevel == 5 then
-        return 1203
-    elseif enchantLevel == 6 then
-        return 1204
-    elseif enchantLevel == 7 then
-        return 1205
-    elseif enchantLevel == 8 then
-        return 1206
-    elseif enchantLevel == 9 then
-        return 1207
-    elseif enchantLevel == 10 then
-        return 1208
-    elseif enchantLevel == 11 then
-        return 1209
-    elseif enchantLevel == 12 then
-        return 1210
-    elseif enchantLevel == 13 then
-        return 1211
-    elseif enchantLevel == 14 then
-        return 1212
-    else
-        return 1198
     end
+    return 1998 + enchantLevel
 end
 
 function getProcessEventId(hasEnoughMaterials, hasEnoughCatalysts, additionalCatalystRate)
