@@ -89,7 +89,7 @@ public class NpcTalk
                         Amount = (int) itemResults.Tuple[2].Number
                     };
                     session.Player.Inventory.AddItem(session, item, true);
-                    session.Send(NpcTalkPacket.Action(action, "","", 0, item));
+                    session.Send(NpcTalkPacket.Action(action, "", "", 0, item));
                     break;
             }
         }

@@ -12,8 +12,8 @@ public class ScriptMetadata
     public int Id;
     [XmlElement(Order = 3)]
     public List<NpcScript> NpcScripts = new();
-    
-    public ScriptMetadata(){}
+
+    public ScriptMetadata() { }
 
     public override string ToString()
     {
@@ -63,7 +63,7 @@ public class ScriptContent
     public List<ScriptDistractor> Distractor = new();
     [XmlElement(Order = 4)]
     public List<ScriptEvent> Events = new();
-    
+
     public ScriptContent() { }
 
     public ScriptContent(int functionId, ResponseSelection buttonSet, List<ScriptEvent> events, List<ScriptDistractor> distractor)
@@ -88,8 +88,8 @@ public class ScriptEvent
     [XmlElement(Order = 2)]
     public List<EventContent> Contents = new();
 
-    public ScriptEvent(){}
-    
+    public ScriptEvent() { }
+
     public ScriptEvent(int id, List<EventContent> contents)
     {
         Id = id;
@@ -107,7 +107,7 @@ public class EventContent
     [XmlElement(Order = 3)]
     public string Text;
 
-    public EventContent(){}
+    public EventContent() { }
     public EventContent(string voiceId, string illustration, string text)
     {
         VoiceId = voiceId;

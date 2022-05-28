@@ -67,7 +67,7 @@ public static class StorageInventoryPacket
 
         return pWriter;
     }
-    
+
     public static PacketWriter ItemCount(short itemCount)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.StorageInventory);

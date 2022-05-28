@@ -31,7 +31,7 @@ public static class EnchantHelper
         }
         return enchantStats;
     }
-    
+
     public static bool PlayerHasIngredients(ItemEnchant itemEnchantStats, IInventory inventory)
     {
         foreach (EnchantIngredient ingredient in itemEnchantStats.Ingredients)
@@ -63,16 +63,16 @@ public static class EnchantHelper
         {
             return;
         }
-        
+
         Script script = ScriptLoader.GetScript($"Npcs/{npcId}", session);
-        int eventId = (int) script.RunFunction("getProcessEventId", PlayerHasIngredients(itemEnchant, session.Player.Inventory), 
+        int eventId = (int) script.RunFunction("getProcessEventId", PlayerHasIngredients(itemEnchant, session.Player.Inventory),
             PlayerHasRequiredCatalysts(itemEnchant)).Number;
-        
+
         if (eventId == 0)
         {
             return;
         }
-        
+
         HandleNpcTalkEventType(session, npcScript, eventId);
     }
 
@@ -89,15 +89,15 @@ public static class EnchantHelper
         {
             return;
         }
-        
+
         Script script = ScriptLoader.GetScript($"Npcs/{npcId}", session);
         int eventId = (int) script.RunFunction("getExcessCatalystEventId").Number;
-        
+
         if (eventId == 0)
         {
             return;
         }
-        
+
         HandleNpcTalkEventType(session, npcScript, eventId);
     }
 
