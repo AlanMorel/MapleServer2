@@ -214,10 +214,10 @@ public class BankInventory
 
     public void LoadBank(GameSession session)
     {
-        session.Send(StorageInventoryPacket.Expand(ExtraSize)); // 0x0D
-        session.Send(StorageInventoryPacket.Update()); // 0x0B
-        session.Send(StorageInventoryPacket.Expand(ExtraSize)); // 0x0D
-        session.Send(StorageInventoryPacket.UpdateMesos(Mesos.Amount)); // 0x03
+        session.Send(StorageInventoryPacket.Expand(ExtraSize));
+        session.Send(StorageInventoryPacket.Update());
+        session.Send(StorageInventoryPacket.Expand(ExtraSize));
+        session.Send(StorageInventoryPacket.UpdateMesos(Mesos.Amount));
         session.Send(StorageInventoryPacket.ItemCount((short) Items.Length));
         LoadItems(session);
     }

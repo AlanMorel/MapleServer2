@@ -52,7 +52,7 @@ public partial class TriggerContext
                 return;
             }
 
-            if (Field.State.Mobs.TryGetValue(id, out Mob mob))
+            if (Field.State.Mobs.TryGetValue(id, out Npc mob))
             {
                 Field.BroadcastPacket(TriggerPacket.SetFaceEmotion(mob.ObjectId, emotionName));
                 return;
@@ -152,8 +152,10 @@ public partial class TriggerContext
         }
     }
 
-    public void MoveUserPath(string arg1)
+    public void MoveUserPath(string movePath)
     {
+        PatrolData patrolData = MapEntityMetadataStorage.GetPatrolData(Field.MapId, movePath);
+        Field.MovePlayerAlongPath(Field.State.Players.First().Value, patrolData);
     }
 
     public void MoveUserToBox(int boxId, bool portalId)

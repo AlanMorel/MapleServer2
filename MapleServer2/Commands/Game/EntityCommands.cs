@@ -80,6 +80,6 @@ public class MobCommand : InGameCommand
             coord = trigger.Session.Player.FieldPlayer.Coord;
         }
 
-        trigger.Session.FieldManager.RequestMob(mobId, coord, CoordF.From(0.0f, 0.0f, trigger.Get<short>("dir")), trigger.Get<short>("ani"));
+        trigger.Session.FieldManager.RequestNpc(mobId, coord, CoordF.From(0.0f, 0.0f, trigger.Get<short>("dir")), trigger.Get<short>("ani"));
     }
 }
