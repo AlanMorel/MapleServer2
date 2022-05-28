@@ -51,8 +51,7 @@ public class ChangeAttributesHandler : GamePacketHandler<ChangeAttributesHandler
         }
 
         IInventory inventory = session.Player.Inventory;
-        Item gear = inventory.GetByUid(itemUid);
-        // Check if gear exist in inventory
+        Item gear = inventory.GetFromInventoryOrEquipped(itemUid);
         if (gear is null)
         {
             return;

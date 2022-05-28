@@ -227,7 +227,13 @@ public class ItemEnchantHandler : GamePacketHandler<ItemEnchantHandler>
         item.EnchantLevel++;
         item.EnchantExp = 0;
         item.Charges -= itemEnchantStats.Rates.ChargesAdded;
-
+        if (item.EnchantLevel > 11)
+        {
+            string message = $"3,{item.Uid},{ChatLinkType.Enchant},{session.Player.Name}"; //unk what 3 is
+            MapleServer.BroadcastPacketAll(ItemLinkPacket.SendLinkItem(new(){item}));
+            MapleServer.BroadcastPacketAll(ChatPacket.Send(session.Player, message, ChatType.ItemEnchant));
+        }
+        
         session.Send(ItemEnchantPacket.EnchantSuccess(item, statDiff.Values.ToList()));
         //TODO: If item is equipped, update stats
     }

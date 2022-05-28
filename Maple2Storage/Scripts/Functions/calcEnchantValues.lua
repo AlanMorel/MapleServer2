@@ -65,7 +65,7 @@ AdditionalCatalystSuccessRate[15] = 0.02
 
 ChargeRate = {}
 for i = 0, 15 do
-    ChargeRate[i] = 0.1
+    ChargeRate[i] = 0.01
 end
 
 -- Slot Type values
