@@ -98,6 +98,8 @@ public class BeautyHandler : GamePacketHandler<BeautyHandler>
             return;
         }
 
+        session.Player.ShopId = beautyNpc.ShopId;
+
         if (beautyShop.BeautyCategory == BeautyCategory.Dye)
         {
             if (beautyShop.BeautyType == BeautyShopType.Dye)
