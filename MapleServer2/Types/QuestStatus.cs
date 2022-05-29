@@ -11,7 +11,7 @@ public class QuestStatus
     public int Id { get; }
     public long StartTimestamp { get; set; }
     public long CompleteTimestamp { get; set; }
-    public bool Tracked { get; set; }
+    public bool Accepted { get; set; }
     public List<Condition> Condition { get; }
     public QuestState State { get; set; }
     public int AmountCompleted { get; set; }
@@ -24,7 +24,7 @@ public class QuestStatus
     public List<QuestRewardItem> RewardItems { get; private set; }
     public readonly long CharacterId;
 
-    public QuestStatus(long uid, int id, long characterId, bool tracked, long startTimestamp, long completeTimestamp, List<Condition> conditions,
+    public QuestStatus(long uid, int id, long characterId, bool accepted, long startTimestamp, long completeTimestamp, List<Condition> conditions,
         QuestState state, int amountCompleted)
     {
         Uid = uid;
@@ -34,15 +34,15 @@ public class QuestStatus
         CompleteTimestamp = completeTimestamp;
         Condition = conditions;
         State = state;
-        Tracked = tracked;
+        Accepted = accepted;
         AmountCompleted = amountCompleted;
         SetMetadataValues(QuestMetadataStorage.GetMetadata(Id));
     }
 
-    public QuestStatus(long characterId, int questId, QuestState state = QuestState.None, long startTimestamp = 0)
-        : this(characterId, QuestMetadataStorage.GetMetadata(questId), state, startTimestamp) { }
+    public QuestStatus(long characterId, int questId, QuestState state = QuestState.None, long startTimestamp = 0, bool accepted = false)
+        : this(characterId, QuestMetadataStorage.GetMetadata(questId), state, startTimestamp, accepted) { }
 
-    public QuestStatus(long characterId, QuestMetadata metadata, QuestState state = QuestState.None, long startTimestamp = 0)
+    public QuestStatus(long characterId, QuestMetadata metadata, QuestState state = QuestState.None, long startTimestamp = 0, bool accepted = false)
     {
         SetMetadataValues(metadata);
 
@@ -56,7 +56,7 @@ public class QuestStatus
 
         State = state;
         StartTimestamp = startTimestamp;
-        Tracked = metadata.Basic.UseNavigation;
+        Accepted = accepted;
         AmountCompleted = 0;
         Uid = DatabaseManager.Quests.Insert(this);
     }

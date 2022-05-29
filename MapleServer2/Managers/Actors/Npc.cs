@@ -31,9 +31,11 @@ public class Npc : FieldActor<NpcMetadata>, INpc
     private float BaseVelocity => Movement is MobMovement.Follow or MobMovement.Run ? Value.NpcMetadataSpeed.RunSpeed : Value.NpcMetadataSpeed.WalkSpeed;
 
     private PatrolData PatrolData;
-    public Queue<WayPoint> WayPointQueue = new();
+    private Queue<WayPoint> WayPointQueue = new();
     private WayPoint CurrentWayPoint;
     private bool WaitForAnimation;
+
+    public int SpawnPointId;
 
     public Npc(int objectId, int mobId, FieldManager fieldManager) : this(objectId, NpcMetadataStorage.GetNpcMetadata(mobId), fieldManager) { }
 
@@ -338,7 +340,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
         Position position = Navigator.FindPositionFromCoordS(Coord);
         if (Navigator.PositionIsValid(position))
         {
-            Agent.moveTo(position);
+            Agent?.moveTo(position);
         }
     }
 

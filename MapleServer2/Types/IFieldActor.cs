@@ -33,8 +33,6 @@ public interface IFieldActor : IFieldObject
     public void Perish();
 
     public void Animate(string sequenceName);
-
-    public void Dispose();
 }
 
 public interface IFieldActor<out T> : IFieldActor, IFieldObject<T>
