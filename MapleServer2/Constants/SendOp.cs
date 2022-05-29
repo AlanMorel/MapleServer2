@@ -121,7 +121,7 @@ public enum SendOp : ushort
     ResponseRide = 0x007B,
     RideSync = 0x007C,
     FittingDoll = 0x007D,
-    BonusGame = 0x007E,
+    RouletteGame = 0x007E,
     LoadUGCMap = 0x007F,
     FieldObject = 0x0080,
     Gem = 0x0081,
