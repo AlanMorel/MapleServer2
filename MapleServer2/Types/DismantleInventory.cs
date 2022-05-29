@@ -141,15 +141,13 @@ public class DismantleInventory
 
     private void AddReward(int ingredientId, int ingredientCount, int multiplier)
     {
+        int reward = ingredientCount * multiplier;
         if (Rewards.ContainsKey(ingredientId))
         {
-            Rewards[ingredientId] += ingredientCount;
-        }
-        else
-        {
-            Rewards[ingredientId] = ingredientCount;
+            Rewards[ingredientId] += reward;
+            return;
         }
 
-        Rewards[ingredientId] *= multiplier;
+        Rewards[ingredientId] = reward;
     }
 }
