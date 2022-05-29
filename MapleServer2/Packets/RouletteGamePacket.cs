@@ -6,7 +6,7 @@ namespace MapleServer2.Packets;
 
 public static class RouletteGamePacket
 {
-    private enum BonusGameMode : byte
+    private enum RouletteGameMode : byte
     {
         OpenWheel = 0x01,
         SpinWheel = 0x02
@@ -15,7 +15,7 @@ public static class RouletteGamePacket
     public static PacketWriter OpenWheel(List<RouletteGameItem> items)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.RouletteGame);
-        pWriter.Write(BonusGameMode.OpenWheel);
+        pWriter.Write(RouletteGameMode.OpenWheel);
         pWriter.WriteByte();
         pWriter.WriteInt(items.Count);
         foreach (RouletteGameItem item in items)
@@ -31,7 +31,7 @@ public static class RouletteGamePacket
     public static PacketWriter SpinWheel(List<int> indexes, List<RouletteGameItem> items)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.RouletteGame);
-        pWriter.Write(BonusGameMode.SpinWheel);
+        pWriter.Write(RouletteGameMode.SpinWheel);
         pWriter.WriteInt(indexes.Count);
         for (int i = 0; i < indexes.Count; i++)
         {
