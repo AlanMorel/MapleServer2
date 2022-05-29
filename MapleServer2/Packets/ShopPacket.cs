@@ -18,15 +18,15 @@ public static class ShopPacket
         Reload = 0x6
     }
 
-    public static PacketWriter Open(Shop shop)
+    public static PacketWriter Open(Shop shop, int npcId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Shop);
         pWriter.Write(ShopMode.Open);
-        pWriter.WriteInt(shop.Uid);
+        pWriter.WriteInt(npcId);
         pWriter.WriteInt(shop.Id);
         pWriter.WriteLong(shop.NextRestock);
         pWriter.WriteInt();
-        pWriter.WriteShort(15);
+        pWriter.WriteShort(4);
         pWriter.WriteInt(shop.Category);
         pWriter.WriteBool(false);
         pWriter.WriteBool(shop.RestrictSales);

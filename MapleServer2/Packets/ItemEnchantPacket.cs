@@ -127,7 +127,7 @@ public static class ItemEnchantPacket
         pWriter.WriteFloat(rate.BaseSuccessRate);
         pWriter.WriteFloat();
         pWriter.WriteFloat();
-        pWriter.WriteFloat(Math.Min(rate.AdditionalCatalysts * rate.CatalystRate, 30));
-        pWriter.WriteFloat(rate.ChargesAdded * rate.ChargesRate);
+        pWriter.WriteFloat(rate.CatalystTotalRate());
+        pWriter.WriteFloat(rate.ChargeTotalRate());
     }
 }

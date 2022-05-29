@@ -82,7 +82,7 @@ public static class QuestManager
         {
             quest.Condition.Where(condition => ConditionHelper.IsMatching(condition.Type, conditionType)
                                                && ConditionHelper.IsMatching(condition.Code, code)
-                                               && (ConditionHelper.IsMatching(condition.Target, target) || ConditionHelper.IsMatching(condition.Target, "0"))
+                                               && (ConditionHelper.IsMatching(condition.Target, target) || ConditionHelper.IsMatching(condition.Target, code.ToString()))
                                                && !condition.Completed)
                 .UpdateConditions(session, quest);
         }

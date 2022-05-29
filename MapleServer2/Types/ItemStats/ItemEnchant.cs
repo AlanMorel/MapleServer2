@@ -5,17 +5,20 @@ namespace MapleServer2.Types;
 
 public class ItemEnchant
 {
+    public readonly EnchantType Type;
     public readonly long ItemUid;
-    public readonly int Level;
+    public int Level;
     public readonly EnchantRates Rates;
     public readonly List<EnchantIngredient> Ingredients = new();
     public Dictionary<StatAttribute, ItemStat> Stats = new();
     public int CatalystAmountRequired;
     public int PityCharges;
     public readonly List<long> CatalystItemUids = new();
+    public bool Success;
 
-    public ItemEnchant(long itemUid, int level)
+    public ItemEnchant(EnchantType type, long itemUid, int level)
     {
+        Type = type;
         ItemUid = itemUid;
         Level = level;
         Rates = new();
@@ -26,23 +29,28 @@ public class ItemEnchant
         Rates.ChargesAdded = charges;
     }
 
-    public void UpdateAdditionalCatalysts(long itemUid, int addCatalyst, bool add)
+    public bool UpdateAdditionalCatalysts(long itemUid, bool add)
     {
         if (add)
         {
-            CatalystItemUids.Add(itemUid);
-            if (CatalystItemUids.Count > CatalystAmountRequired)
+            if (CatalystItemUids.Count >= CatalystAmountRequired)
             {
+                if (Rates.BaseSuccessRate + Rates.CatalystTotalRate() >= 30)
+                {
+                    return false;
+                }
                 Rates.AdditionalCatalysts++;
             }
-            return;
+            CatalystItemUids.Add(itemUid);
+            return true;
         }
 
-        if (CatalystItemUids.Count >= CatalystAmountRequired)
+        if (CatalystItemUids.Count > CatalystAmountRequired)
         {
             Rates.AdditionalCatalysts--;
         }
         CatalystItemUids.Remove(itemUid);
+        return true;
     }
 }
 
@@ -68,8 +76,22 @@ public class EnchantRates
 
     public EnchantRates() { }
 
-    public EnchantRates(float baseSuccessRate)
+    public float ChargeTotalRate()
     {
-        BaseSuccessRate = baseSuccessRate;
+        return ChargesAdded * ChargesRate;
+    }
+
+    public float CatalystTotalRate()
+    {
+        if (BaseSuccessRate >= 30)
+        {
+            return 0;
+        }
+        return Math.Min(30 - BaseSuccessRate, CatalystRate * AdditionalCatalysts);
+    }
+
+    public float TotalSuccessRate()
+    {
+        return BaseSuccessRate + CatalystTotalRate() + ChargeTotalRate();
     }
 }

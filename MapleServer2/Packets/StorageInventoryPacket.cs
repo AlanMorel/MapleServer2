@@ -13,6 +13,7 @@ public static class StorageInventoryPacket
         Remove = 0x01,
         Move = 0x02,
         Mesos = 0x03,
+        ItemCount = 0x04,
         LoadItems = 0x05,
         ExpandAnim = 0x07,
         Sort = 0x08,
@@ -63,6 +64,16 @@ public static class StorageInventoryPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.StorageInventory);
         pWriter.Write(ItemStorageMode.Mesos);
         pWriter.WriteLong(amount);
+
+        return pWriter;
+    }
+
+    public static PacketWriter ItemCount(short itemCount)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.StorageInventory);
+        pWriter.Write(ItemStorageMode.ItemCount);
+        pWriter.WriteLong();
+        pWriter.WriteShort(itemCount);
 
         return pWriter;
     }

@@ -4,7 +4,6 @@ namespace MapleServer2.Database.Types;
 
 public class Shop
 {
-    public int Uid { get; set; }
     public int Id { get; set; }
     public int Category { get; set; }
     public string Name { get; set; }
@@ -17,9 +16,8 @@ public class Shop
 
     public Shop() { }
 
-    public Shop(int uid, int id, int category, string name, byte shop_type, bool restrict_sales, bool can_restock, long next_restock, bool allow_buyback)
+    public Shop(int id, int category, string name, byte shop_type, bool restrict_sales, bool can_restock, long next_restock, bool allow_buyback)
     {
-        Uid = uid;
         Id = id;
         Category = category;
         Name = name;

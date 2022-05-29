@@ -47,7 +47,7 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
         }
     }
 
-    public static void HandleOpen(GameSession session, IFieldObject<NpcMetadata> npcFieldObject)
+    public static void HandleOpen(GameSession session, IFieldObject<NpcMetadata> npcFieldObject, int npcId)
     {
         NpcMetadata metadata = npcFieldObject.Value;
 
@@ -58,13 +58,12 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
             return;
         }
 
-        session.Send(ShopPacket.Open(shop));
+        session.Send(ShopPacket.Open(shop, npcId));
         foreach (ShopItem shopItem in shop.Items)
         {
             session.Send(ShopPacket.LoadProducts(shopItem));
         }
         session.Send(ShopPacket.Reload());
-        session.Send(NpcTalkPacket.Respond(npcFieldObject, NpcTalkType.Default, DialogType.None, 0));
         session.Player.ShopId = shop.Id;
     }
 
@@ -167,7 +166,7 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
             return;
         }
 
-        session.Send(ShopPacket.Open(shop));
+        session.Send(ShopPacket.Open(shop, 0));
         foreach (ShopItem shopItem in shop.Items)
         {
             session.Send(ShopPacket.LoadProducts(shopItem));

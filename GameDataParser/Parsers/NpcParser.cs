@@ -117,7 +117,7 @@ public class NpcParser : Exporter<List<NpcMetadata>>
             metadata.NpcMetadataBasic.MainTags = npcBasicNode.Attributes["mainTags"]?.Value.Split(",").Select(p => p.Trim()).ToArray() ?? Array.Empty<string>();
             metadata.NpcMetadataBasic.SubTags = npcBasicNode.Attributes["subTags"]?.Value.Split(",").Select(p => p.Trim()).ToArray() ?? Array.Empty<string>();
             metadata.NpcMetadataBasic.Class = byte.Parse(npcBasicNode.Attributes["class"].Value);
-            metadata.NpcMetadataBasic.Kind = ushort.Parse(npcBasicNode.Attributes["kind"].Value);
+            metadata.NpcMetadataBasic.Kind = (NpcKind) ushort.Parse(npcBasicNode.Attributes["kind"].Value);
             metadata.NpcMetadataBasic.HpBar = byte.Parse(npcBasicNode.Attributes["hpBar"].Value);
             metadata.NpcMetadataBasic.MinimapIconName = npcBasicNode.Attributes["minimapIconName"]?.Value ?? "";
 
@@ -203,7 +203,6 @@ public class NpcParser : Exporter<List<NpcMetadata>>
             metadata.NpcMetadataDead.Time = float.Parse(npcDeadNode.Attributes["time"].Value);
             metadata.NpcMetadataDead.Actions = npcDeadNode.Attributes["defaultaction"].Value.Split(",");
             metadata.GlobalDropBoxIds = npcDropItemNode.Attributes["globalDropBoxId"].Value.SplitAndParseToInt(',').ToArray();
-            metadata.Kind = short.Parse(npcBasicNode.Attributes["kind"].Value);
             metadata.ShopId = int.Parse(npcBasicNode.Attributes["shopId"].Value);
 
             // Parse capsule
