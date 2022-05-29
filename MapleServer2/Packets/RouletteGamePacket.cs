@@ -25,7 +25,6 @@ public static class RouletteGamePacket
             pWriter.WriteInt(item.ItemAmount);
         }
         pWriter.WriteInt();
-
         return pWriter;
     }
 
