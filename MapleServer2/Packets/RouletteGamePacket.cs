@@ -33,7 +33,7 @@ public static class RouletteGamePacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.RouletteGame);
         pWriter.Write(BonusGameMode.SpinWheel);
         pWriter.WriteInt(indexes.Count);
-        for(int i = 0; i < indexes.Count; i++)
+        for (int i = 0; i < indexes.Count; i++)
         {
             pWriter.WriteInt(indexes[i]);
             pWriter.WriteInt(items[indexes[i]].ItemId);
