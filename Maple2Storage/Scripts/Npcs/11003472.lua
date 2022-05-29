@@ -1,12 +1,12 @@
-﻿TokenItemId = 30000610;
+﻿TokenItemId = 30000869;
 
 function handleGoto(nextScript)
     local itemCount = ScriptManager.GetPlayer().GetItemCount(TokenItemId);
-    if nextScript == 31 and itemCount >= 1 then
+    if nextScript == 31 and itemCount >= 5 then
         return 31
-    elseif nextScript == 10 and itemCount >= 10 then
+    elseif nextScript == 10 and itemCount >= 50 then
         return 10
-    elseif nextScript == 100 and itemCount >= 100 then
+    elseif nextScript == 100 and itemCount >= 500 then
         return 100
     else
         return 32
@@ -15,7 +15,7 @@ function handleGoto(nextScript)
 end
 
 function rouletteSpin(scriptId)
-    local tokenSpinCost = 1
+    local tokenSpinCost = 5
     local spinCount = 0
     if scriptId == 31 then
         spinCount = 1
@@ -34,5 +34,5 @@ function preTalkActions()
 end
 
 function actionWindow()
-    return "RouletteDialog", "13"
+    return "RouletteDialog", "20"
 end

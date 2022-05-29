@@ -62,6 +62,7 @@ public static class DatabaseManager
     public static DatabaseMushkingRoyaleStats MushkingRoyaleStats { get; } = new();
     public static DatabaseMedal MushkingRoyaleMedals { get; } = new();
     public static DatabaseBannerSlot BannerSlot { get; } = new();
+    public static DatabaseRouletteGameItem RouletteGameItems { get; } = new();
 
     static DatabaseManager()
     {
@@ -87,7 +88,7 @@ public static class DatabaseManager
 
         string[] seeds =
         {
-            "Shops", "ShopItems", "MeretMarket", "Mapleopoly", "Events", "CardReverseGame"
+            "Shops", "ShopItems", "MeretMarket", "Mapleopoly", "Events", "CardReverseGame", "RouletteGameItems"
         };
 
         foreach (string seed in seeds)

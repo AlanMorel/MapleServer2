@@ -64,7 +64,7 @@ public enum RecvOp : ushort
     RequestRide = 0x0041,
     RideSync = 0x0042,
     FittingDoll = 0x0043,
-    BonusGame = 0x0044,
+    RouletteGame = 0x0044,
     ResolvePenalty = 0x0045,
     TakeBoat = 0x0046,
     Trophy = 0x0047,

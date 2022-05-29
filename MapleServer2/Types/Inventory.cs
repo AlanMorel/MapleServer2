@@ -170,7 +170,7 @@ public sealed class Inventory : IInventory
 
             // If slot is occupied
             // Finds item in inventory with same id, rarity and a stack not full
-            Item existingItem = Items.Values.FirstOrDefault(x => x.Id == item.Id && x.Amount < x.StackLimit && x.Rarity == item.Rarity);
+            Item existingItem = Items.Values.FirstOrDefault(x => x.Id == item.Id && x.Amount < x.StackLimit && x.Rarity == item.Rarity && x.ExpiryTime == item.ExpiryTime);
             if (existingItem is not null)
             {
                 // Updates item amount

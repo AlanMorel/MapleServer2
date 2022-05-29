@@ -115,6 +115,7 @@ public class Item
         Score = new();
         GearScore = GetGearScore();
         Stats = new(this);
+        ExpiryTime = ItemMetadataStorage.GetExpiration(id);
         if (saveToDatabase)
         {
             Uid = DatabaseManager.Items.Insert(this);
