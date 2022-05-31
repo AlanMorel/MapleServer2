@@ -41,7 +41,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
 
     public Npc(int objectId, NpcMetadata metadata, FieldManager fieldManager) : base(objectId, metadata, fieldManager)
     {
-        Animation = AnimationStorage.GetSequenceIdBySequenceName(metadata.Model, "Idle_A");
+        Animation = GetDefaultAnimation();
         AI = MobAIManager.GetAI(metadata.AiInfo);
         Stats = new(metadata);
         State = NpcState.Normal;
@@ -64,10 +64,25 @@ public class Npc : FieldActor<NpcMetadata>, INpc
         }
     }
 
-    public override void Animate(string sequenceName)
+    public override void Animate(string sequenceName, float duration = -1f)
     {
-        Animation = AnimationStorage.GetSequenceIdBySequenceName(Value.Model, sequenceName);
-        // TODO implement stopping animation
+        SequenceMetadata metadata = AnimationStorage.GetSequenceMetadataByName(Value.Model, sequenceName);
+        Animation = metadata.SequenceId;
+
+        // Wait for animation to finish and set to idle.
+        Task.Run(async () =>
+        {
+            if (duration != -1)
+            {
+                await Task.Delay(TimeSpan.FromMilliseconds(duration));
+            }
+
+            KeyMetadata keyMetadata = metadata.Keys.FirstOrDefault(x => x.KeyName == "end");
+            await Task.Delay(TimeSpan.FromSeconds(keyMetadata?.KeyTime ?? 0));
+
+            Animation = AnimationStorage.GetSequenceIdBySequenceName(Value.Model, "Idle_A");
+        });
+
     }
 
     public override void Damage(DamageHandler damage, GameSession session)
@@ -90,7 +105,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
     {
         IsDead = true;
         State = NpcState.Dead;
-        Animate(Value.NpcMetadataDead.Actions.ElementAtOrDefault(0));
+        Animation = AnimationStorage.GetSequenceIdBySequenceName(Value.Model, Value.NpcMetadataDead.Actions.ElementAtOrDefault(0));
         Velocity = default;
     }
 
@@ -170,12 +185,12 @@ public class Npc : FieldActor<NpcMetadata>, INpc
         if (!string.IsNullOrEmpty(CurrentWayPoint.ApproachAnimation)) // If approach animation is defined, use it.
         {
             Movement = CurrentWayPoint.ApproachAnimation == "Run_A" ? MobMovement.Run : MobMovement.Patrol;
-            Animate(CurrentWayPoint.ApproachAnimation);
+            Animation = AnimationStorage.GetSequenceIdBySequenceName(Value.Model, CurrentWayPoint.ApproachAnimation);
         }
         else // use default animation for walk.
         {
             Movement = MobMovement.Patrol;
-            Animate("Walk_A"); // TODO: remove "Walk_A" hardcode?
+            Animation = AnimationStorage.GetSequenceIdBySequenceName(Value.Model, "Walk_A"); // TODO: remove "Walk_A" hardcode?
         }
 
         // TODO: Here we should pathfind to the next movement target. Pathfinder is having trouble with stairs so we need to find a way to fix it.
@@ -368,7 +383,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
         SequenceMetadata metadata = AnimationStorage.GetSequenceMetadataByName(Value.Model, CurrentWayPoint.ArriveAnimation);
         if (metadata is null)
         {
-            Animate("Idle_A");
+            Animation = AnimationStorage.GetSequenceIdBySequenceName(Value.Model, "Idle_A");
             return;
         }
 
@@ -403,5 +418,16 @@ public class Npc : FieldActor<NpcMetadata>, INpc
         {
             WayPointQueue.Enqueue(node);
         }
+    }
+
+    private short GetDefaultAnimation()
+    {
+        NpcMetadata npcMetadata = NpcMetadataStorage.GetNpcMetadata(Value.Id);
+        if (npcMetadata is null || !npcMetadata.StateActions.TryGetValue(NpcState.Normal, out (string, NpcAction, short)[] stateAction))
+        {
+            return AnimationStorage.GetSequenceIdBySequenceName(Value.Model, "Idle_A");
+        }
+
+        return AnimationStorage.GetSequenceIdBySequenceName(Value.Model, stateAction.Length == 0 ? "Idle_A" : stateAction[0].Item1);
     }
 }

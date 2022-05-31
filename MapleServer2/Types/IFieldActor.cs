@@ -32,7 +32,7 @@ public interface IFieldActor : IFieldObject
 
     public void Perish();
 
-    public void Animate(string sequenceName);
+    public void Animate(string sequenceName, float duration = -1);
 }
 
 public interface IFieldActor<out T> : IFieldActor, IFieldObject<T>

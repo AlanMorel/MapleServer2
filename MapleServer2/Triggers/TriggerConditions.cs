@@ -144,6 +144,11 @@ public partial class TriggerContext
         foreach (int boxId in boxes)
         {
             MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
+            if (box is null)
+            {
+                return false;
+            }
+
             List<IFieldActor<Player>> players = Field.State.Players.Values.ToList();
 
             foreach (IFieldObject<Player> player in players)

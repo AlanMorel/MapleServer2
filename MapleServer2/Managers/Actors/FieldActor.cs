@@ -7,7 +7,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.Managers.Actors;
 
-public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>, IDisposable
+public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
 {
     public CoordF Velocity { get; set; }
     public short Animation { get; set; }
@@ -28,10 +28,6 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>, IDisposabl
         FieldManager = fieldManager;
         Navigator = fieldManager.Navigator;
     }
-
-    public virtual void UpdateFixed() { }
-
-    public virtual void Update() { }
 
     public virtual void Cast(SkillCast skillCast)
     {
@@ -161,18 +157,7 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>, IDisposabl
         IsDead = true;
     }
 
-    public virtual void Animate(string sequenceName)
+    public virtual void Animate(string sequenceName, float duration = -1)
     {
-    }
-
-    public void Dispose()
-    {
-        Agent?.Dispose();
-        GC.SuppressFinalize(this);
-    }
-
-    ~FieldActor()
-    {
-        Dispose();
     }
 }

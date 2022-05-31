@@ -74,16 +74,23 @@ public partial class TriggerContext
         Field.BroadcastPacket(TriggerPacket.UpdateTrigger(ladder));
     }
 
-    public void SetMesh(int[] meshIds, bool isVisible, int arg3, int arg4, float arg5)
+    public void SetMesh(int[] meshIds, bool isVisible, int arg3, int delay, float arg5)
     {
-        foreach (int triggerMeshId in meshIds)
+        Task.Run(async () =>
         {
-            if (Field.State.TriggerMeshes.TryGetValue(triggerMeshId, out TriggerMesh triggerMesh))
+            foreach (int triggerMeshId in meshIds)
             {
+                if (!Field.State.TriggerMeshes.TryGetValue(triggerMeshId, out TriggerMesh triggerMesh))
+                {
+                    continue;
+                }
+
                 triggerMesh.IsVisible = isVisible;
                 Field.BroadcastPacket(TriggerPacket.UpdateTrigger(triggerMesh));
+                await Task.Delay(delay);
             }
-        }
+        });
+
     }
 
     public void SetMeshAnimation(int[] arg1, bool arg2, byte arg3, byte arg4)

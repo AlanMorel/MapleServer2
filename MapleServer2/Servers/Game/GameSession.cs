@@ -49,8 +49,6 @@ public class GameSession : Session
         // If moving maps, need to get the FieldManager for new map
         if (player.MapId != FieldManager.MapId || player.InstanceId != FieldManager.InstanceId)
         {
-            FieldManager.RemovePlayer(this); // Leave previous field
-
             if (FieldManagerFactory.Release(FieldManager.MapId, FieldManager.InstanceId, player))
             {
                 //If instance is destroyed, reset dungeonSession

@@ -68,6 +68,11 @@ public partial class TriggerContext
     public void MiniGameCameraDirection(int boxId, int cameraId)
     {
         MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
+        if (box is null)
+        {
+            return;
+        }
+
         List<IFieldObject<Player>> boxPlayers = new();
         foreach (IFieldObject<Player> player in Field.State.Players.Values)
         {

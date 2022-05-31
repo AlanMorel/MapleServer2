@@ -130,16 +130,24 @@ public class FieldManager : IDisposable
         return player.FieldPlayer;
     }
 
-    public Npc RequestNpc(int npcId, CoordF coord = default, CoordF rotation = default, short animation = default)
+    public Npc RequestNpc(int npcId, CoordF coord = default, CoordF rotation = default, short animation = -1)
     {
         NpcMetadata meta = NpcMetadataStorage.GetNpcMetadata(npcId);
 
         Npc npc = WrapNpc(meta);
-        npc.Coord = coord;
+        if (Navigator.FindFirstCoordSBelow(coord, out CoordS coordBelow))
+        {
+            npc.Coord = coordBelow;
+        }
+        else
+        {
+            npc.Coord = coord;
+        }
+
         npc.Rotation = rotation;
         npc.Agent = Navigator.AddAgent(npc, Navigator.AddShape(meta.NpcMetadataCapsule));
 
-        if (animation != default)
+        if (animation != -1)
         {
             npc.Animation = animation;
         }
@@ -379,6 +387,11 @@ public class FieldManager : IDisposable
 
     public static bool IsPlayerInBox(MapTriggerBox box, IFieldObject<Player> player)
     {
+        if (box is null)
+        {
+            return false;
+        }
+
         CoordF minCoord = CoordF.From(
             box.Position.X - box.Dimension.X / 2,
             box.Position.Y - box.Dimension.Y / 2,
@@ -1097,7 +1110,7 @@ public class FieldManager : IDisposable
                     }
                 }
 
-                await Task.Delay(30, ct);
+                await Task.Delay(100, ct);
             }
         }, ct);
     }
