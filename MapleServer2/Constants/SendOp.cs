@@ -239,6 +239,7 @@ public enum SendOp : ushort
     Fireworks = 0x00F7,
     Club = 0x00F8,
     InviteToHome = 0x00FA,
+    ChangeBackground = 0x0100,
     ItemExchange = 0x0104,
     Item = 0x0105,
     ItemEnchantTransform = 0x0106,

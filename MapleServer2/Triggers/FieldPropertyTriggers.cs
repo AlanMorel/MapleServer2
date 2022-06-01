@@ -8,6 +8,7 @@ public partial class TriggerContext
 {
     public void ChangeBackground(string dds)
     {
+        Field.BroadcastPacket(ChangeBackgroundPacket.ChangeBackground(dds));
     }
 
     public void EnableLocalCamera(bool isEnable)

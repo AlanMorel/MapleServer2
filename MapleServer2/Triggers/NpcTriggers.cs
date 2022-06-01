@@ -58,7 +58,7 @@ public partial class TriggerContext
                         continue;
                     }
 
-                    short animation = default;
+                    short animation = -1;
                     if (spawnAnimation)
                     {
                         NpcMetadata npcMetadata = NpcMetadataStorage.GetNpcMetadata(id);
@@ -144,7 +144,7 @@ public partial class TriggerContext
     {
         IFieldActor<NpcMetadata> fieldNpc = Field.State.Npcs.Values.FirstOrDefault(x => x.SpawnPointId == spawnTriggerId);
 
-        fieldNpc?.Animate(sequenceName);
+        fieldNpc?.Animate(sequenceName, duration);
     }
 
     public void SetNpcEmotionSequence(int spawnTriggerId, string sequenceName, int arg3)

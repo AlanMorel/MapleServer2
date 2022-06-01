@@ -203,6 +203,29 @@ public class FieldNavigator : IDisposable
         return false;
     }
 
+    /// <summary>
+    /// Find the first valid position below the given coordS.
+    /// </summary>
+    public bool FindFirstCoordSBelow(CoordS coordF, out CoordS result)
+    {
+        result = default;
+        CoordS tempCoord = coordF;
+        // Check 3 times below the given coordS
+        for (int i = 0; i < 3; i++)
+        {
+            Position position = Mesh.positionNear3DPoint(tempCoord.X, tempCoord.Y, tempCoord.Z, horizontalRange: 15, verticalRange: 150);
+            if (position.Cell != -1)
+            {
+                result = GetCoordSFromPosition(position);
+                return true;
+            }
+
+            tempCoord.Z -= Block.BLOCK_SIZE;
+        }
+
+        return false;
+    }
+
     public CoordS? FindClosestUnobstructedCoordS(Shape shape, CoordS coordS, int radius)
     {
         Position position = FindPositionFromCoordS(coordS);

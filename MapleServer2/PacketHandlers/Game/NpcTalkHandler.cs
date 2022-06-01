@@ -458,7 +458,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
             if (questStatus.State is QuestState.Started && questStatus.StartNpcId == npcTalk.Npc.Id)
             {
                 // Talking to npc that start the quest and condition is not completed
-                if (questStatus.Condition.Count != questStatus.Condition.Count(x => x.Completed) || questStatus.Condition.Count == 0)
+                if (questStatus.Condition.Count != questStatus.Condition.Count(x => x.Completed))
                 {
                     return scriptMetadata.NpcScripts.FirstOrDefault(x => x.Id is >= 200 and <= 299 && x.JobId == (int) session.Player.Job) ??
                            scriptMetadata.NpcScripts.FirstOrDefault(x => x.Id == 200);
