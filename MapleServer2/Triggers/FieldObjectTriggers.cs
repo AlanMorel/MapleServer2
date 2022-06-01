@@ -90,7 +90,6 @@ public partial class TriggerContext
                 await Task.Delay(delay);
             }
         });
-
     }
 
     public void SetMeshAnimation(int[] arg1, bool arg2, byte arg3, byte arg4)

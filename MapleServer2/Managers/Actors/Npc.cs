@@ -82,7 +82,6 @@ public class Npc : FieldActor<NpcMetadata>, INpc
 
             Animation = AnimationStorage.GetSequenceIdBySequenceName(Value.Model, "Idle_A");
         });
-
     }
 
     public override void Damage(DamageHandler damage, GameSession session)
