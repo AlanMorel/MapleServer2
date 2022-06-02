@@ -654,7 +654,7 @@ public class Stats
         return (strIncrease, dexIncrease, intIncrease, lukIncrease, hpIncrease);
     }
 
-    // TODO: 50+ has a different formula
+    // TODO: level 50+ has a different formula
     public void AddBaseStats(Player player, int repeat = 1)
     {
         repeat = Math.Clamp(repeat, 1, 49);
