@@ -8,14 +8,12 @@ function getBeginEventId(itemRarity, enchantLevel)
             return 1001
         end
     end
-    return 1998 + enchantLevel
+    return 1198 + enchantLevel
 end
 
 function getProcessEventId(hasEnoughMaterials, hasEnoughCatalysts, additionalCatalystRate)
     if hasEnoughMaterials == false then
         return 3
-    elseif hasEnoughCatalysts == false then
-        return 4
     else
         return 0
     end
