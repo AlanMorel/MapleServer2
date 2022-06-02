@@ -12,7 +12,7 @@ function getBeginEventId(itemRarity, enchantLevel)
 end
 
 function getProcessEventId(hasEnoughMaterials, hasEnoughCatalysts, additionalCatalystRate)
-    if hasEnoughMaterials == false then
+    if not hasEnoughMaterials then
         return 3
     else
         return 0
@@ -20,7 +20,7 @@ function getProcessEventId(hasEnoughMaterials, hasEnoughCatalysts, additionalCat
 end
 
 function getResultEventId(enchantLevel, success)
-    if success == true then
+    if success then
         if enchantLevel <= 4 then
             return 2000
         elseif enchantLevel >= 5 and enchantLevel <= 7 then
