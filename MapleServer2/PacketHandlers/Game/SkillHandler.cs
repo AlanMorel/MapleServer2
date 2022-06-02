@@ -232,7 +232,6 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             return;
         }
 
-        // TODO: roll crit inside CalculateDamage
         bool isCrit = DamageHandler.RollCrit(session.Player.Stats[StatAttribute.CritRate].Total);
         List<DamageHandler> damages = new();
         for (int i = 0; i < count; i++)
