@@ -232,8 +232,9 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             return;
         }
 
+        // TODO: roll crit inside CalculateDamage
         bool isCrit = DamageHandler.RollCrit(session.Player.Stats[StatAttribute.CritRate].Total);
-        List<(int targetId, byte damageType, double damage)> damages = new();
+        List<DamageHandler> damages = new();
         for (int i = 0; i < count; i++)
         {
             int entityId = packet.ReadInt();
@@ -241,7 +242,6 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
 
             if (entityId == playerObjectId)
             {
-                damages.Add(new(playerObjectId, 0, 0));
                 continue;
             }
 
@@ -256,7 +256,7 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
 
             mob.Damage(damage, session);
 
-            damages.Add(new(damage.Target.ObjectId, (byte) (isCrit ? 1 : 0), damage.Damage));
+            damages.Add(damage);
 
             // TODO: Check if the skill is a debuff for an entity
             if (!skillCast.IsDebuffElement() && !skillCast.IsDebuffToEntity() && !skillCast.IsDebuffElement())

@@ -1,13 +1,15 @@
 ﻿using Maple2Storage.Enums;
+using MapleServer2.Enums;
 
 namespace MapleServer2.Types;
 
 public class DamageHandler
 {
-    public IFieldActor Source { get; init; }
-    public IFieldActor Target { get; init; }
-    public double Damage { get; private set; }
-    public bool IsCrit { get; private set; }
+    public IFieldActor Source { get; }
+    public IFieldActor Target { get; }
+    public double Damage { get; }
+    public bool IsCrit { get; }
+    public HitType HitType { get; }
 
     private DamageHandler(double damage, bool isCrit)
     {
@@ -15,39 +17,20 @@ public class DamageHandler
         IsCrit = isCrit;
     }
 
-    private DamageHandler(IFieldActor source, IFieldActor target, double damage, bool isCrit)
+    private DamageHandler(IFieldActor source, IFieldActor target, double damage, bool isCrit, HitType hitType)
     {
         Source = source;
         Target = target;
         Damage = damage;
         IsCrit = isCrit;
-    }
-
-    public static DamageHandler CalculateSkillDamage(SkillCast skillCast)
-    {
-        return new(skillCast.GetDamageRate(), false);
-    }
-
-    public static List<DamageHandler> CalculateDamage(SkillCast skill, IFieldActor<Player> source, IEnumerable<IFieldActor> targets, bool isCrit = false)
-    {
-        if (source.Value.GmFlags.Contains("oneshot"))
-        {
-            return targets.Select(t => new DamageHandler(t.Stats[StatAttribute.Hp].Total, true)).ToList();
-        }
-
-        return CalculateDamage(skill, source, targets, isCrit);
-    }
-
-    public static List<DamageHandler> CalculateDamage(SkillCast skill, IFieldActor source, IEnumerable<IFieldActor> targets, bool isCrit = false)
-    {
-        return targets.Select(t => CalculateDamage(skill, source, t, isCrit)).ToList();
+        HitType = hitType;
     }
 
     public static DamageHandler CalculateDamage(SkillCast skill, IFieldActor<Player> source, IFieldActor target, bool isCrit = false)
     {
         if (source.Value.GmFlags.Contains("oneshot"))
         {
-            return new(source, target, target.Stats[StatAttribute.Hp].Total, true);
+            return new(source, target, target.Stats[StatAttribute.Hp].Total, true, HitType.Critical);
         }
 
         return CalculateDamage(skill, (IFieldActor) source, target, isCrit);
@@ -68,7 +51,7 @@ public class DamageHandler
         // TODO: Find correct enemy defense stats
         double denominator = target.Stats[StatAttribute.CritEvasion].Total * pierceCoeff * 15;
 
-        return new(source, target, numerator / denominator, isCrit);
+        return new(source, target, numerator / denominator, isCrit, HitType.Normal);
     }
 
     public static bool RollCrit(int critRate = 0)

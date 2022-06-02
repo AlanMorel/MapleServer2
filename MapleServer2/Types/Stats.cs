@@ -305,11 +305,6 @@ public class Stats
                 new(0) // base 0 (bonuses can be added)
             }
         };
-
-        if (job is Job.Runeblade)
-        {
-            Data[StatAttribute.Int].IncreaseBonus(5);
-        }
     }
 
     public Stat this[StatAttribute statIndex]
@@ -467,7 +462,6 @@ public class Stats
     private static (int strIncrease, int dexIncrease, int intIncrease, int lukIncrease, int hpIncrease) GetJobStatIncrease(Player player)
     {
         Job job = player.Job;
-        int level = player.Levels.Level;
         Dictionary<StatAttribute, Stat> stats = player.Stats.Data;
 
         // TODO: Find HP formula
@@ -477,7 +471,7 @@ public class Stats
             case Job.Beginner:
                 strIncrease = 7;
                 dexIncrease = 1;
-                if (level % 2 == 0)
+                if (stats[StatAttribute.Int].Base > stats[StatAttribute.Luk].Base)
                 {
                     lukIncrease = 1;
                 }
@@ -491,7 +485,7 @@ public class Stats
             case Job.Knight:
                 strIncrease = 7;
                 dexIncrease = 1;
-                if (level % 2 == 0)
+                if (stats[StatAttribute.Luk].Base > stats[StatAttribute.Int].Base)
                 {
                     intIncrease = 1;
                 }
@@ -505,7 +499,7 @@ public class Stats
             case Job.Berserker:
                 strIncrease = 7;
                 dexIncrease = 1;
-                if (level % 2 == 0)
+                if (stats[StatAttribute.Luk].Base > stats[StatAttribute.Int].Base)
                 {
                     intIncrease = 1;
                 }
@@ -553,7 +547,7 @@ public class Stats
             case Job.Archer:
                 dexIncrease = 7;
                 strIncrease = 1;
-                if (level % 2 == 0)
+                if (stats[StatAttribute.Int].Base > stats[StatAttribute.Luk].Base)
                 {
                     lukIncrease = 1;
                 }
@@ -567,7 +561,7 @@ public class Stats
             case Job.HeavyGunner:
                 dexIncrease = 7;
                 lukIncrease = 1;
-                if (level % 2 == 0)
+                if (stats[StatAttribute.Int].Base > stats[StatAttribute.Dex].Base)
                 {
                     strIncrease = 1;
                 }
@@ -581,7 +575,7 @@ public class Stats
             case Job.Thief:
                 lukIncrease = 7;
                 strIncrease = 1;
-                if (level % 2 == 0)
+                if (stats[StatAttribute.Int].Base > stats[StatAttribute.Dex].Base)
                 {
                     dexIncrease = 1;
                 }
@@ -595,7 +589,7 @@ public class Stats
             case Job.Assassin:
                 lukIncrease = 7;
                 dexIncrease = 1;
-                if (level % 2 == 0)
+                if (stats[StatAttribute.Int].Base > stats[StatAttribute.Str].Base)
                 {
                     strIncrease = 1;
                 }
@@ -609,7 +603,7 @@ public class Stats
             case Job.Runeblade:
                 strIncrease = 7;
                 dexIncrease = 1;
-                if (level % 2 == 0)
+                if (stats[StatAttribute.Int].Base > stats[StatAttribute.Luk].Base)
                 {
                     lukIncrease = 1;
                 }
@@ -623,7 +617,7 @@ public class Stats
             case Job.Striker:
                 dexIncrease = 7;
                 strIncrease = 1;
-                if (level % 2 == 0)
+                if (stats[StatAttribute.Luk].Base > stats[StatAttribute.Int].Base)
                 {
                     intIncrease = 1;
                 }
@@ -660,13 +654,18 @@ public class Stats
         return (strIncrease, dexIncrease, intIncrease, lukIncrease, hpIncrease);
     }
 
+    // TODO: 50+ has a different formula
     public void AddBaseStats(Player player, int repeat = 1)
     {
-        (int strIncrease, int dexIncrease, int intIncrease, int lukIncrease, int hpIncrease) = GetJobStatIncrease(player);
-        Data[StatAttribute.Str].IncreaseBase(strIncrease * repeat);
-        Data[StatAttribute.Dex].IncreaseBase(dexIncrease * repeat);
-        Data[StatAttribute.Int].IncreaseBase(intIncrease * repeat);
-        Data[StatAttribute.Luk].IncreaseBase(lukIncrease * repeat);
-        Data[StatAttribute.Hp].IncreaseBase(hpIncrease * repeat);
+        repeat = Math.Clamp(repeat, 1, 49);
+        for (int i = 0; i < repeat; i++)
+        {
+            (int strIncrease, int dexIncrease, int intIncrease, int lukIncrease, int hpIncrease) = GetJobStatIncrease(player);
+            Data[StatAttribute.Str].IncreaseBase(strIncrease);
+            Data[StatAttribute.Dex].IncreaseBase(dexIncrease);
+            Data[StatAttribute.Int].IncreaseBase(intIncrease);
+            Data[StatAttribute.Luk].IncreaseBase(lukIncrease);
+            Data[StatAttribute.Hp].IncreaseBase(hpIncrease);
+        }
     }
 }

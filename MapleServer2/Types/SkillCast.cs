@@ -2,26 +2,9 @@
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
+using MapleServer2.Enums;
 
 namespace MapleServer2.Types;
-
-public enum DamageType : byte
-{
-    None = 0x00,
-    Physical = 0x01,
-    Magic = 0x02
-}
-
-public enum Element : byte
-{
-    None = 0x00,
-    Fire = 0x01,
-    Ice = 0x02,
-    Electric = 0x03,
-    Holy = 0x04,
-    Dark = 0x05,
-    Poison = 0x06
-}
 
 public class SkillCast
 {
