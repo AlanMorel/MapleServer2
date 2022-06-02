@@ -15,6 +15,23 @@ public class QuestParser : Exporter<List<QuestMetadata>>
     protected override List<QuestMetadata> Parse()
     {
         List<QuestMetadata> quests = new();
+        Dictionary<int, string> questNames = new();
+        foreach (PackFileEntry entry in Resources.XmlReader.Files)
+        {
+            if (!entry.Name.StartsWith("string/en/questdescription_"))
+            {
+                continue;
+            }
+
+            XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
+            foreach (XmlNode quest in document.DocumentElement.ChildNodes)
+            {
+                int id = int.Parse(quest.Attributes["questID"].Value);
+                string name = quest.Attributes["name"].Value;
+                questNames[id] = name;
+            }
+        }
+
         foreach (PackFileEntry entry in Resources.XmlReader.Files)
         {
             if (!entry.Name.StartsWith("quest/"))
@@ -178,6 +195,7 @@ public class QuestParser : Exporter<List<QuestMetadata>>
                     }
                 }
 
+                questNames.TryGetValue(metadata.Basic.Id, out metadata.Name);
                 quests.Add(metadata);
             }
         }
