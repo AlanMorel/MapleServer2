@@ -1,11 +1,17 @@
 ﻿namespace Maple2Storage.Enums;
 
+/// <summary>
+/// Active = 0,
+/// Passive = 1,
+/// GM = 3
+/// </summary>
 public enum SkillType
 {
     Active = 0,
     Passive = 1,
     GM = 3
 }
+
 public enum SkillSubType
 {
     None = 0,
@@ -13,12 +19,14 @@ public enum SkillSubType
     GM = 5,
     Global = 6
 }
+
 public enum BuffType
 {
     None = 0,
     Buff = 1,
     Debuff = 2
 }
+
 public enum BuffSubType
 {
     None = 0,
@@ -31,6 +39,7 @@ public enum BuffSubType
     Unknown2 = 64,
     Unknown3 = 1024
 }
+
 public enum BuffCategroy
 {
     Stun = 7,

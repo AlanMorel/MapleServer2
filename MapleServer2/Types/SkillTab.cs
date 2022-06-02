@@ -84,9 +84,22 @@ public class SkillTab
         }
     }
 
-    public List<int> GetSkillsByType(SkillType type)
+    /// <summary>
+    /// Returns all skills by type.
+    /// </summary>
+    /// <param name="type"><see cref="SkillType"/></param>
+    /// <returns>List of skill id and skill level</returns>
+    public List<(int skillId, short skillLevel)> GetSkillsByType(SkillType type)
     {
-        return SkillJob.Where(x => x.Value.Type == type).Select(x => x.Key).ToList();
+        List<(int, short)> skills = new();
+        foreach ((int skillId, SkillMetadata metadata) in SkillJob.Where(x => x.Value.Type == type))
+        {
+            short level = SkillLevels.GetValueOrDefault(skillId);
+            skills.Add((skillId, level));
+            skills.AddRange(metadata.SubSkills.Select(metadataSubSkill => (metadataSubSkill, level)));
+        }
+
+        return skills;
     }
 
     private static Dictionary<int, SkillMetadata> GetSkillsMetadata(Job job)
