@@ -82,12 +82,24 @@ public class DamageHandler
 
         switch (skill.GetElement())
         {
-            case Element.Fire: damageBonus += source.Stats[StatAttribute.FireDamage].Total; break;
-            case Element.Ice: damageBonus += source.Stats[StatAttribute.IceDamage].Total; break;
-            case Element.Electric: damageBonus += source.Stats[StatAttribute.ElectricDamage].Total; break;
-            case Element.Holy: damageBonus += source.Stats[StatAttribute.HolyDamage].Total; break;
-            case Element.Dark: damageBonus += source.Stats[StatAttribute.DarkDamage].Total; break;
-            case Element.Poison: damageBonus += source.Stats[StatAttribute.PoisonDamage].Total; break;
+            case Element.Fire:
+                damageBonus += source.Stats[StatAttribute.FireDamage].Total;
+                break;
+            case Element.Ice:
+                damageBonus += source.Stats[StatAttribute.IceDamage].Total;
+                break;
+            case Element.Electric:
+                damageBonus += source.Stats[StatAttribute.ElectricDamage].Total;
+                break;
+            case Element.Holy:
+                damageBonus += source.Stats[StatAttribute.HolyDamage].Total;
+                break;
+            case Element.Dark:
+                damageBonus += source.Stats[StatAttribute.DarkDamage].Total;
+                break;
+            case Element.Poison:
+                damageBonus += source.Stats[StatAttribute.PoisonDamage].Total;
+                break;
         }
 
         // TODO: properly check for melee vs ranged. new skill attribute recommended
@@ -116,7 +128,7 @@ public class DamageHandler
         const double enemyPierceResistance = 1;
         double defensePierce = 1 - Math.Min(30, enemyPierceResistance * source.Stats[StatAttribute.Pierce].Total) / 100;
         damageMultiplier *= 100 / (target.Stats[StatAttribute.Defense].Total * defensePierce);
-        
+
         double targetRes = (skill.GetSkillDamageType() == DamageType.Physical) ? target.Stats[StatAttribute.PhysicalRes].Total : target.Stats[StatAttribute.MagicRes].Total;
         double attackType = (skill.GetSkillDamageType() == DamageType.Physical) ? source.Stats[StatAttribute.PhysicalAtk].Total : source.Stats[StatAttribute.MagicAtk].Total;
         double resPierce = (skill.GetSkillDamageType() == DamageType.Physical) ? source.Stats[StatAttribute.PhysicalPiercing].Total : source.Stats[StatAttribute.MagicPiercing].Total;
