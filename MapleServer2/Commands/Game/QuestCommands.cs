@@ -44,9 +44,19 @@ public class CompleteQuestCommand : InGameCommand
         Player player = trigger.Session.Player;
         if (!player.QuestData.TryGetValue(questId, out QuestStatus questStatus))
         {
-            questStatus = new(player.CharacterId, questId, QuestState.Started, TimeInfo.Now(), true);
+            questStatus = new(player.CharacterId, questId);
             player.QuestData.Add(questId, questStatus);
+        }
+
+        if (questStatus.State is QuestState.None)
+        {
+            questStatus.Accepted = true;
+            questStatus.State = QuestState.Started;
+            questStatus.StartTimestamp = TimeInfo.Now();
             trigger.Session.Send(QuestPacket.AcceptQuest(questStatus));
+
+            trigger.Session.Send(NoticePacket.Notice($"Quest {questId} started. Do it again to complete.", NoticeType.Chat));
+            return;
         }
 
         questStatus.State = QuestState.Completed;
