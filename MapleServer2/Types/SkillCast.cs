@@ -12,6 +12,13 @@ public enum DamageType : byte
     Magic = 0x02
 }
 
+public enum DamageRangeType : byte
+{
+    Status = 0x00,
+    Melee = 0x01,
+    Ranged = 0x02
+}
+
 public enum Element : byte
 {
     None = 0x00,
@@ -106,6 +113,8 @@ public class SkillCast
     public Element GetElement() => (Element) GetSkillMetadata().Element;
 
     public bool IsSpRecovery() => GetSkillMetadata().IsSpRecovery;
+
+    public bool IsGuaranteedCrit() => false;
 
     public int DurationTick()
     {
