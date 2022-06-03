@@ -62,7 +62,9 @@ public class DamageHandler
         double hitRate = (source.Stats[StatAttribute.Accuracy].Total + accuracyWeakness) / Math.Max(target.Stats[StatAttribute.Evasion].Total, 0.1);
 
         if (Random.Shared.Next(1000) > hitRate)
+        {
             return new(source, target, 0, false); // we missed
+        }
 
         bool isCrit = skill.IsGuaranteedCrit() || RollCrit(source, target, luckCoefficient);
 
@@ -111,7 +113,9 @@ public class DamageHandler
         bool isBoss = false;
 
         if (target is INpc npc)
+        {
             isBoss = npc.Value.IsBoss();
+        }
 
         damageBonus += isBoss ? source.Stats[StatAttribute.BossDamage].Total : 0;
 
