@@ -61,7 +61,7 @@ public class DamageHandler
         double accuracyWeakness = 0;
         double hitRate = (source.Stats[StatAttribute.Accuracy].Total + accuracyWeakness) / Math.Max(target.Stats[StatAttribute.Evasion].Total, 0.1);
 
-        if (Random.Shared.Next(1000) > hitRate)
+        if (Random.Shared.NextDouble() > hitRate)
         {
             return new(source, target, 0, false); // we missed
         }
@@ -164,7 +164,7 @@ public class DamageHandler
 
         attackDamage *= damageMultiplier;
 
-        return new(source, target, attackDamage, isCrit);
+        return new(source, target, Math.Max(1, attackDamage), isCrit);
     }
 
     public static bool RollCrit(IFieldActor source, IFieldActor target, double luckCoefficient)
