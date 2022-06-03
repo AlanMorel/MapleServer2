@@ -34,6 +34,7 @@ public class CompleteQuestCommand : InGameCommand
             trigger.Session.SendNotice("Please type an quest id");
             return;
         }
+
         if (!QuestMetadataStorage.IsValid(questId))
         {
             trigger.Session.Send(NoticePacket.Notice($"Quest not found with id: {questId.ToString().Color(Color.Aquamarine)}.", NoticeType.Chat));
@@ -46,8 +47,25 @@ public class CompleteQuestCommand : InGameCommand
             questStatus = new(player.CharacterId, questId);
             player.QuestData.Add(questId, questStatus);
         }
+
+        if (questStatus.State is QuestState.None)
+        {
+            questStatus.Accepted = true;
+            questStatus.State = QuestState.Started;
+            questStatus.StartTimestamp = TimeInfo.Now();
+            trigger.Session.Send(QuestPacket.AcceptQuest(questStatus));
+
+            trigger.Session.Send(NoticePacket.Notice($"Quest {questId} started. Do it again to complete.", NoticeType.Chat));
+            return;
+        }
+
         questStatus.State = QuestState.Completed;
         questStatus.AmountCompleted++;
+        questStatus.Condition.ForEach(x =>
+        {
+            x.Completed = true;
+            x.Current = x.Goal;
+        });
         questStatus.StartTimestamp = TimeInfo.Now();
         questStatus.CompleteTimestamp = TimeInfo.Now();
         player.Levels.GainExp(questStatus.Reward.Exp);
@@ -65,17 +83,25 @@ public class CompleteQuestCommand : InGameCommand
                 player.Inventory.AddItem(trigger.Session, newItem, true);
             }
         }
+
         DatabaseManager.Quests.Update(questStatus);
         trigger.Session.Send(QuestPacket.CompleteQuest(questId, true));
 
         // Add next quest
-        IEnumerable<KeyValuePair<int, QuestMetadata>> questList = QuestMetadataStorage.GetAllQuests().Where(x => x.Value.Require.RequiredQuests.Contains(questId));
+        IEnumerable<KeyValuePair<int, QuestMetadata>> questList =
+            QuestMetadataStorage.GetAllQuests().Where(x => x.Value.Require.RequiredQuests.Contains(questId));
         foreach ((int id, QuestMetadata quest) in questList)
         {
+            if (player.QuestData.ContainsKey(id))
+            {
+                continue;
+            }
+
             player.QuestData.Add(id, new(player.CharacterId, quest));
         }
     }
 }
+
 public class StartQuestCommand : InGameCommand
 {
     public StartQuestCommand()
@@ -87,19 +113,22 @@ public class StartQuestCommand : InGameCommand
         Description = "Start a Quest by id.";
         Parameters = new()
         {
-            new Parameter<int>("id", "The id of the Quest.")
+            new Parameter<int>("id", "The id of the Quest."),
+            new Parameter<bool>("force", "Force the Quest to start.")
         };
-        Usage = "/startquest [id]";
+        Usage = "/startquest [id] [force start]";
     }
 
     public override void Execute(GameCommandTrigger trigger)
     {
         int questId = trigger.Get<int>("id");
+        bool forceStart = trigger.Get<bool>("force");
         if (questId == 0)
         {
             trigger.Session.SendNotice("Type an quest id.");
             return;
         }
+
         QuestMetadata quest = QuestMetadataStorage.GetMetadata(questId);
         if (quest == null)
         {
@@ -108,13 +137,21 @@ public class StartQuestCommand : InGameCommand
         }
 
         Player player = trigger.Session.Player;
-        if (player.QuestData.ContainsKey(questId))
+        if (player.QuestData.TryGetValue(questId, out QuestStatus questStatus) && !forceStart)
         {
-            trigger.Session.Send(NoticePacket.Notice($"You already have quest: {questId.ToString().Color(Color.Aquamarine)}.", NoticeType.Chat));
+            trigger.Session.Send(NoticePacket.Notice(
+                $"You already have quest: {questId.ToString().Color(Color.Aquamarine)}. \r\tUse '/startquest {questId} true' to start it again.",
+                NoticeType.Chat));
             return;
         }
 
-        QuestStatus questStatus = new(player.CharacterId, questId, QuestState.Started, TimeInfo.Now(), accepted: true);
+        if (questStatus is not null)
+        {
+            player.QuestData.Remove(questId, out _);
+            DatabaseManager.Quests.Delete(questStatus.Uid);
+        }
+
+        questStatus = new(player.CharacterId, questId, QuestState.Started, TimeInfo.Now(), accepted: true);
         player.QuestData.Add(questId, questStatus);
         trigger.Session.Send(QuestPacket.AcceptQuest(questStatus));
     }

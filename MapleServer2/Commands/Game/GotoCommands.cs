@@ -82,7 +82,7 @@ public class MapCommand : InGameCommand
 
         if (!int.TryParse(mapName, out int mapId))
         {
-            MapMetadata mapMetadata = MapMetadataStorage.GetAll().FirstOrDefault(x => x.Name.ToLower() == mapName.ToLower());
+            MapMetadata mapMetadata = MapMetadataStorage.GetAll().FirstOrDefault(x => string.Equals(x.Name, mapName, StringComparison.CurrentCultureIgnoreCase));
             if (mapMetadata is null)
             {
                 trigger.Session.SendNotice($"Map '{mapName}' not found.");
