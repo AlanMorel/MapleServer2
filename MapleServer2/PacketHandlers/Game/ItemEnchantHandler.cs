@@ -311,6 +311,7 @@ public class ItemEnchantHandler : GamePacketHandler<ItemEnchantHandler>
 
         itemEnchantStats.Success = true;
         itemEnchantStats.Level++;
+        itemEnchantStats.CatalystItemUids.Clear();
         session.Send(ItemEnchantPacket.UpdateExp(item));
     }
 
