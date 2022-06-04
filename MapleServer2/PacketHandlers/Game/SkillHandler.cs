@@ -232,7 +232,6 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             return;
         }
 
-        bool isCrit = DamageHandler.RollCrit(session.Player.Stats[StatAttribute.CritRate].Total);
         List<DamageHandler> damages = new();
         for (int i = 0; i < count; i++)
         {
@@ -249,9 +248,10 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             {
                 continue;
             }
+
             skillCast.Target = mob;
 
-            DamageHandler damage = DamageHandler.CalculateDamage(skillCast, fieldPlayer, mob, isCrit);
+            DamageHandler damage = DamageHandler.CalculateDamage(skillCast, fieldPlayer, mob);
 
             mob.Damage(damage, session);
 

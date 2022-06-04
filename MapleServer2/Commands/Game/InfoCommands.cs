@@ -161,7 +161,7 @@ public class FindCommand : InGameCommand
 {
     private readonly string[] Options =
     {
-        "item", "map", "npc", "mob", "trophy"
+        "item", "map", "npc", "mob", "trophy", "quest"
     };
 
     public FindCommand()
@@ -284,6 +284,27 @@ public class FindCommand : InGameCommand
                 foreach (TrophyMetadata trophy in trophyMetadatas)
                 {
                     stringBuilder.Append($"{trophy.Name} - {trophy.Id}\n".Color(Color.Wheat));
+                }
+
+                break;
+            case "quest":
+                List<QuestMetadata> questMetadata = QuestMetadataStorage.GetAllQuests().Values
+                    .Where(x => x.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
+
+                switch (questMetadata.Count)
+                {
+                    case 0:
+                        trigger.Session.SendNotice($"Quest '{name}' not found.");
+                        return;
+                    case > 50:
+                        trigger.Session.SendNotice($"Too many results for '{name}', found {questMetadata.Count}, limit it to 50.");
+                        return;
+                }
+
+                stringBuilder.Append($"Found {questMetadata.Count} quests with name '{name}':".Color(Color.DarkOrange).Bold() + "\n");
+                foreach (QuestMetadata quest in questMetadata)
+                {
+                    stringBuilder.Append($"{quest.Name} - {quest.Basic.Id}\n".Color(Color.Wheat));
                 }
 
                 break;

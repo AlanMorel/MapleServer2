@@ -46,6 +46,8 @@ public class QuestMetadata
     public List<QuestNavigation> Navigation = new();
     [XmlElement(Order = 20)]
     public QuestDispatch Dispatch = new();
+    [XmlElement(Order = 21)]
+    public string Name = "";
 
     public override string ToString()
     {

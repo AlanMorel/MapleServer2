@@ -90,6 +90,8 @@ public class SkillCast
 
     public bool IsSpRecovery() => GetSkillMetadata().IsSpRecovery;
 
+    public bool IsGuaranteedCrit() => false;
+
     public int DurationTick()
     {
         int? durationTick = GetAdditionalData()?.Duration;

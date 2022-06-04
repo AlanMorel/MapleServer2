@@ -9,8 +9,9 @@ indent_style = space
 charset = utf-8-bom
 end_of_line = crlf
 trim_trailing_whitespace = false
-insert_final_newline = false
+insert_final_newline = true
 indent_size = 4
+tab_width = 4
 
 # Microsoft .NET properties
 csharp_preferred_modifier_order = public, private, protected, internal, new, static, abstract, virtual, sealed, readonly, override, extern, unsafe, volatile, async:suggestion
@@ -18,26 +19,18 @@ csharp_space_after_cast = true
 csharp_style_var_elsewhere = false:suggestion
 csharp_style_var_for_built_in_types = false:suggestion
 csharp_style_var_when_type_is_apparent = false:suggestion
-dotnet_naming_rule.private_constants_rule.import_to_resharper = as_predefined
 dotnet_naming_rule.private_constants_rule.severity = warning
 dotnet_naming_rule.private_constants_rule.style = upper_camel_case_style
 dotnet_naming_rule.private_constants_rule.symbols = private_constants_symbols
-dotnet_naming_rule.private_instance_fields_rule.import_to_resharper = as_predefined
 dotnet_naming_rule.private_instance_fields_rule.severity = warning
 dotnet_naming_rule.private_instance_fields_rule.style = upper_camel_case_style
 dotnet_naming_rule.private_instance_fields_rule.symbols = private_instance_fields_symbols
-dotnet_naming_rule.private_static_fields_rule.import_to_resharper = as_predefined
 dotnet_naming_rule.private_static_fields_rule.severity = warning
 dotnet_naming_rule.private_static_fields_rule.style = lower_camel_case_style_1
 dotnet_naming_rule.private_static_fields_rule.symbols = private_static_fields_symbols
-dotnet_naming_rule.private_static_readonly_rule.import_to_resharper = as_predefined
-dotnet_naming_rule.private_static_readonly_rule.resharper_style = AaBb, aaBb
 dotnet_naming_rule.private_static_readonly_rule.severity = warning
 dotnet_naming_rule.private_static_readonly_rule.style = upper_camel_case_style
 dotnet_naming_rule.private_static_readonly_rule.symbols = private_static_readonly_symbols
-dotnet_naming_rule.unity_serialized_field_rule.import_to_resharper = True
-dotnet_naming_rule.unity_serialized_field_rule.resharper_description = Unity serialized field
-dotnet_naming_rule.unity_serialized_field_rule.resharper_guid = 5f0fdb63-c892-4d2c-9324-15c80b22a7ef
 dotnet_naming_rule.unity_serialized_field_rule.severity = warning
 dotnet_naming_rule.unity_serialized_field_rule.style = lower_camel_case_style
 dotnet_naming_rule.unity_serialized_field_rule.symbols = unity_serialized_field_symbols
@@ -55,11 +48,9 @@ dotnet_naming_symbols.private_static_fields_symbols.applicable_kinds = field
 dotnet_naming_symbols.private_static_fields_symbols.required_modifiers = static
 dotnet_naming_symbols.private_static_readonly_symbols.applicable_accessibilities = private
 dotnet_naming_symbols.private_static_readonly_symbols.applicable_kinds = field
-dotnet_naming_symbols.private_static_readonly_symbols.required_modifiers = static,readonly
+dotnet_naming_symbols.private_static_readonly_symbols.required_modifiers = static, readonly
 dotnet_naming_symbols.unity_serialized_field_symbols.applicable_accessibilities = *
-dotnet_naming_symbols.unity_serialized_field_symbols.applicable_kinds = 
-dotnet_naming_symbols.unity_serialized_field_symbols.resharper_applicable_kinds = unity_serialised_field
-dotnet_naming_symbols.unity_serialized_field_symbols.resharper_required_modifiers = instance
+dotnet_naming_symbols.unity_serialized_field_symbols.applicable_kinds =
 dotnet_style_parentheses_in_arithmetic_binary_operators = never_if_unnecessary:none
 dotnet_style_parentheses_in_other_binary_operators = never_if_unnecessary:none
 dotnet_style_parentheses_in_relational_binary_operators = never_if_unnecessary:none
@@ -72,7 +63,6 @@ dotnet_style_qualification_for_property = false:suggestion
 dotnet_style_require_accessibility_modifiers = for_non_interface_members:suggestion
 
 # ReSharper properties
-resharper_autodetect_indent_settings = true
 resharper_blank_lines_after_start_comment = 0
 resharper_blank_lines_around_auto_property = 0
 resharper_blank_lines_around_property = 0
@@ -85,90 +75,12 @@ resharper_max_initializer_elements_on_line = 1
 resharper_object_creation_when_type_not_evident = target_typed
 resharper_place_attribute_on_same_line = false
 resharper_place_simple_initializer_on_single_line = false
-resharper_show_autodetect_configure_formatting_tip = false
 resharper_space_within_single_line_array_initializer_braces = false
-resharper_use_indent_from_vs = false
 resharper_wrap_array_initializer_style = chop_if_long
-
-# ReSharper inspection severities
-resharper_arrange_redundant_parentheses_highlighting = hint
-resharper_arrange_this_qualifier_highlighting = hint
-resharper_arrange_type_member_modifiers_highlighting = hint
-resharper_arrange_type_modifiers_highlighting = hint
-resharper_built_in_type_reference_style_for_member_access_highlighting = hint
-resharper_built_in_type_reference_style_highlighting = hint
-resharper_redundant_base_qualifier_highlighting = warning
-resharper_suggest_base_type_for_parameter_highlighting = none
-resharper_suggest_var_or_type_built_in_types_highlighting = hint
-resharper_suggest_var_or_type_elsewhere_highlighting = hint
-resharper_suggest_var_or_type_simple_types_highlighting = hint
-resharper_unused_type_global_highlighting = hint
-resharper_web_config_module_not_resolved_highlighting = warning
-resharper_web_config_type_not_resolved_highlighting = warning
-resharper_web_config_wrong_module_highlighting = warning
-# (Please don't specify an indent_size here; that has too many unintended consequences.)
-
-# Code files
-[*.{cs,csx,vb,vbx}]
-indent_size = 4
-insert_final_newline = true
-charset = utf-8-bom
-
-# XML project files
-[*.{csproj,vbproj,vcxproj,vcxproj.filters,proj,projitems,shproj}]
-indent_size = 2
-
-# XML config files
-[*.{props,targets,ruleset,config,nuspec,resx,vsixmanifest,vsct}]
-indent_size = 2
-
-# JSON files
-[*.json]
-indent_size = 2
-
-# Powershell files
-[*.ps1]
-indent_size = 2
-
-# Shell script files
-[*.sh]
-end_of_line = lf
-indent_size = 2
-
-# Dotnet code style settings:
-[*.{cs,vb}]
-
-# IDE0005: Remove unnecessary import
-dotnet_diagnostic.ide0005.severity = warning
-
-# IDE0017: Simplify object initialization
-dotnet_diagnostic.ide0017.severity = none
-
-# IDE0051: Remove unused private member
-dotnet_diagnostic.ide0051.severity = none
-
-# IDE0052: Remove unread private member
-dotnet_diagnostic.ide0052.severity = none
-
-# IDE0055: Fix formatting
-dotnet_diagnostic.ide0055.severity = warning
-
-# IDE0090: Simplify new expression
-dotnet_diagnostic.ide0090.severity = warning
 
 # Sort using and Import directives with System.* appearing first
 dotnet_sort_system_directives_first = true
 dotnet_separate_import_directive_groups = false
-
-# Avoid "this." and "Me." if not necessary
-dotnet_style_qualification_for_field = false:refactoring
-dotnet_style_qualification_for_property = false:refactoring
-dotnet_style_qualification_for_method = false:refactoring
-dotnet_style_qualification_for_event = false:refactoring
-
-# Use language keywords instead of framework type names for type references
-dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion
-dotnet_style_predefined_type_for_member_access = true:suggestion
 
 # Suggest more modern language features when available
 dotnet_style_object_initializer = true:suggestion
@@ -255,28 +167,6 @@ dotnet_naming_symbols.all_members.applicable_kinds = *
 
 dotnet_naming_style.pascal_case_style.capitalization = pascal_case
 
-# error RS2008: Enable analyzer release tracking for the analyzer project containing rule '{0}'
-dotnet_diagnostic.rs2008.severity = none
-
-# IDE0035: Remove unreachable code
-dotnet_diagnostic.ide0035.severity = warning
-
-# IDE0036: Order modifiers
-dotnet_diagnostic.ide0036.severity = warning
-
-# IDE0043: Format string contains invalid placeholder
-dotnet_diagnostic.ide0043.severity = warning
-
-# IDE0044: Make field readonly
-dotnet_diagnostic.ide0044.severity = warning
-
-# RS0016: Only enable if API files are present
-dotnet_public_api_analyzer.require_api_files = true
-
-# IDE0003: Prefer fields to be prefaced with "this"
-dotnet_diagnostic.ide0003.severity = warning
-dotnet_style_qualification_for_field = false
-
 # CSharp code style settings:
 [*.cs]
 # Newline settings
@@ -296,11 +186,6 @@ csharp_indent_case_contents_when_block = true
 csharp_indent_switch_labels = true
 csharp_indent_labels = flush_left
 
-# Prefer "var" everywhere
-csharp_style_var_for_built_in_types = false:suggestion
-csharp_style_var_when_type_is_apparent = false:suggestion
-csharp_style_var_elsewhere = false:suggestion
-
 # Prefer method-like constructs to have a block body
 csharp_style_expression_bodied_methods = false:none
 csharp_style_expression_bodied_constructors = false:none
@@ -319,14 +204,13 @@ csharp_style_throw_expression = true:suggestion
 csharp_style_conditional_delegate_call = true:suggestion
 
 # Space preferences
-csharp_space_after_cast = true
 csharp_space_after_colon_in_inheritance_clause = true
 csharp_space_after_comma = true
 csharp_space_after_dot = false
 csharp_space_after_keywords_in_control_flow_statements = true
 csharp_space_after_semicolon_in_for_statement = true
 csharp_space_around_binary_operators = before_and_after
-csharp_space_around_declaration_statements = do_not_ignore
+csharp_space_around_declaration_statements = unset
 csharp_space_before_colon_in_inheritance_clause = true
 csharp_space_before_comma = false
 csharp_space_before_dot = false
@@ -348,7 +232,6 @@ csharp_preserve_single_line_blocks = true
 csharp_preserve_single_line_statements = false
 
 # Prefer implicit object creation syntax
-csharp_style_implicit_object_creation_when_type_is_apparent = false
 
 # Prefer index operator
 csharp_style_prefer_index_operator = false
@@ -359,56 +242,7 @@ csharp_prefer_simple_using_statement = false
 # Remove unused variable assignment
 csharp_style_unused_value_assignment_preference = unused_local_variable
 
-[src/CodeStyle/**.{cs,vb}]
-# warning RS0005: Do not use generic CodeAction.Create to create CodeAction
-dotnet_diagnostic.rs0005.severity = none
-
-[src/{Analyzers,CodeStyle,Features,Workspaces,EditorFeatures, VisualStudio}/**/*.{cs,vb}]
-
-# IDE0011: Add braces
-csharp_prefer_braces = when_multiline:warning
-# NOTE: We need the below severity entry for Add Braces due to https://github.com/dotnet/roslyn/issues/44201
-dotnet_diagnostic.ide0011.severity = warning
-
-# IDE0017: Simplify object initialization
-dotnet_diagnostic.ide0017.severity = none
-
-# IDE0040: Add accessibility modifiers
-dotnet_diagnostic.ide0040.severity = warning
-
-# CONSIDER: Are IDE0051 and IDE0052 too noisy to be warnings for IDE editing scenarios? Should they be made build-only warnings?
-# IDE0051: Remove unused private member
-dotnet_diagnostic.ide0051.severity = none
-
-# IDE0052: Remove unread private member
-dotnet_diagnostic.ide0052.severity = none
-
-# IDE0059: Unnecessary assignment to a value
-dotnet_diagnostic.ide0059.severity = none
-
-# IDE0060: Remove unused parameter
-dotnet_diagnostic.ide0060.severity = warning
-
-# CA1822: Make member static
-dotnet_diagnostic.ca1822.severity = warning
-
 # Prefer "var" everywhere
-dotnet_diagnostic.ide0007.severity = warning
 csharp_style_var_for_built_in_types = false:warning
 csharp_style_var_when_type_is_apparent = false:warning
 csharp_style_var_elsewhere = false:warning
-
-[src/{VisualStudio}/**/*.{cs,vb}]
-# CA1822: Make member static
-# Not enforced as a build 'warning' for 'VisualStudio' layer due to large number of false positives from https://github.com/dotnet/roslyn-analyzers/issues/3857 and https://github.com/dotnet/roslyn-analyzers/issues/3858
-# Additionally, there is a risk of accidentally breaking an internal API that partners rely on though IVT.
-dotnet_diagnostic.ca1822.severity = suggestion
-
-[{*.har,*.inputactions,*.jsb2,*.jsb3,*.json,.babelrc,.eslintrc,.stylelintrc,bowerrc,jest.config}]
-indent_style = space
-indent_size = 2
-
-[*.{appxmanifest,asax,ascx,aspx,axaml,build,cg,cginc,compute,cs,cshtml,dtd,fs,fsi,fsscript,fsx,hlsl,hlsli,hlslinc,master,ml,mli,nuspec,paml,razor,resw,resx,shader,skin,usf,ush,vb,xaml,xamlx,xoml,xsd}]
-indent_style = space
-indent_size = 4
-tab_width = 4

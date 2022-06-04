@@ -29,6 +29,7 @@ public static class EnchantHelper
             float boostRate = (float) statValueScriptResult.Tuple[i + 1].Number;
             enchantStats[attribute] = new BasicStat(attribute, boostRate, StatAttributeType.Rate);
         }
+
         return enchantStats;
     }
 
@@ -42,6 +43,7 @@ public static class EnchantHelper
                 return false;
             }
         }
+
         return true;
     }
 
@@ -91,7 +93,13 @@ public static class EnchantHelper
         }
 
         Script script = ScriptLoader.GetScript($"Npcs/{npcId}", session);
-        int eventId = (int) script.RunFunction("getExcessCatalystEventId").Number;
+        DynValue excessCatalystFunction = script.RunFunction("getExcessCatalystEventId");
+        if (excessCatalystFunction is null)
+        {
+            return;
+        }
+
+        int eventId = (int) excessCatalystFunction.Number;
 
         if (eventId == 0)
         {
@@ -104,6 +112,11 @@ public static class EnchantHelper
     public static void HandleNpcTalkEventType(GameSession session, NpcScript npcScript, int eventId)
     {
         ScriptEvent scriptEvent = npcScript.Contents.First().Events.FirstOrDefault(x => x.Id == eventId);
+        if (scriptEvent is null)
+        {
+            return;
+        }
+
         int indexContent = Random.Shared.Next(scriptEvent.Contents.Count);
         EventContent eventContents = scriptEvent.Contents[indexContent];
         session.Send(NpcTalkPacket.CustomText(eventContents.Text, eventContents.VoiceId, eventContents.Illustration));
