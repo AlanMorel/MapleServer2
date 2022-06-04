@@ -7,6 +7,13 @@ public enum HitType : byte
     Miss = 2
 }
 
+public enum DamageRangeType : byte
+{
+    Status = 0x00,
+    Melee = 0x01,
+    Ranged = 0x02
+}
+
 public enum DamageType : byte
 {
     None = 0x00,
