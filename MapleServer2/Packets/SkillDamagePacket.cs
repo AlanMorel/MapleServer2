@@ -1,6 +1,7 @@
 ﻿using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Enums;
 using MapleServer2.Types;
 
 namespace MapleServer2.Packets;
@@ -48,8 +49,7 @@ public static class SkillDamagePacket
         return pWriter;
     }
 
-    public static PacketWriter Damage(SkillCast skillCast, int attackCount, CoordF position, CoordF rotation,
-        List<(int targetId, byte damageType, double damage)> damages)
+    public static PacketWriter Damage(SkillCast skillCast, int attackCount, CoordF position, CoordF rotation, List<DamageHandler> damages)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.SkillDamage);
 
@@ -67,11 +67,11 @@ public static class SkillDamagePacket
         pWriter.Write(rotation.ToShort());
         // TODO: Check if is a player or mob
         pWriter.WriteByte((byte) damages.Count);
-        foreach ((int targetId, byte damageType, double damage) in damages)
+        foreach (DamageHandler handler in damages)
         {
-            pWriter.WriteInt(targetId);
+            pWriter.WriteInt(handler.Target.ObjectId);
 
-            bool flag = damage > 0;
+            bool flag = handler.Damage > 0;
 
             pWriter.WriteBool(flag);
             if (!flag)
@@ -79,8 +79,8 @@ public static class SkillDamagePacket
                 continue;
             }
 
-            pWriter.WriteByte(damageType); // 0 = normal, 1 = critical, 2 = miss
-            pWriter.WriteLong(-1 * (long) damage);
+            pWriter.Write(handler.HitType);
+            pWriter.WriteLong(-1 * (long) handler.Damage);
         }
 
         return pWriter;
@@ -139,7 +139,7 @@ public static class SkillDamagePacket
 
             pWriter.Write(damageHandler.Target.Coord.ToShort());
             pWriter.Write(damageHandler.Target.Velocity);
-            pWriter.WriteByte(); // 0 = normal, 1 = critical, 2 = miss
+            pWriter.Write(damageHandler.HitType);
             pWriter.WriteLong((long) (-1 * damageHandler.Damage));
         }
 
