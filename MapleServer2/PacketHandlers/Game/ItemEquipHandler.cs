@@ -46,23 +46,24 @@ public class ItemEquipHandler : GamePacketHandler<ItemEquipHandler>
             return;
         }
 
-        Item item = session.Player.Inventory.GetByUid(itemUid);
+        Player player = session.Player;
+        Item item = player.Inventory.GetByUid(itemUid);
         if (item is null || item.IsExpired())
         {
             return;
         }
 
-        if (item.TransferFlag.HasFlag(ItemTransferFlag.Binds) && item.TransferType == TransferType.BindOnEquip && !item.BindItem(session.Player))
+        if (item.TransferFlag.HasFlag(ItemTransferFlag.Binds) && item.TransferType == TransferType.BindOnEquip && !item.BindItem(player))
         {
             return;
         }
 
         // Remove the item from the users inventory
-        IInventory inventory = session.Player.Inventory;
+        IInventory inventory = player.Inventory;
         inventory.RemoveItem(session, itemUid, out item);
 
         // Get correct equipped inventory
-        Dictionary<ItemSlot, Item> equippedInventory = session.Player.GetEquippedInventory(item.InventoryTab);
+        Dictionary<ItemSlot, Item> equippedInventory = player.GetEquippedInventory(item.InventoryTab);
         if (equippedInventory == null)
         {
             Logger.Warning("equippedInventory was null: {inventoryTab}", item.InventoryTab);
@@ -75,11 +76,11 @@ public class ItemEquipHandler : GamePacketHandler<ItemEquipHandler>
             prevItem.Slot = item.Slot;
             prevItem.IsEquipped = false;
             inventory.AddItem(session, prevItem, false);
-            session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.Player.FieldPlayer, prevItem));
+            session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(player.FieldPlayer, prevItem));
 
             if (prevItem.InventoryTab == InventoryTab.Gear)
             {
-                DecreaseStats(session, prevItem);
+                player.DecreaseStats(prevItem);
             }
         }
 
@@ -97,7 +98,7 @@ public class ItemEquipHandler : GamePacketHandler<ItemEquipHandler>
 
                 prevItem2.IsEquipped = false;
                 inventory.AddItem(session, prevItem2, false);
-                session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.Player.FieldPlayer, prevItem2));
+                session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(player.FieldPlayer, prevItem2));
             }
         }
 
@@ -115,7 +116,7 @@ public class ItemEquipHandler : GamePacketHandler<ItemEquipHandler>
                         prevItem2.Slot = item.Slot;
                         prevItem2.IsEquipped = false;
                         inventory.AddItem(session, prevItem2, false);
-                        session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.Player.FieldPlayer, prevItem2));
+                        session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(player.FieldPlayer, prevItem2));
                     }
                 }
             }
@@ -125,19 +126,20 @@ public class ItemEquipHandler : GamePacketHandler<ItemEquipHandler>
         item.IsEquipped = true;
         item.ItemSlot = equipSlot;
         equippedInventory[equipSlot] = item;
-        session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.Player.FieldPlayer, item, equipSlot));
+        session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(player.FieldPlayer, item, equipSlot));
 
         // Add stats if gear
         if (item.InventoryTab == InventoryTab.Gear)
         {
-            IncreaseStats(session, item);
+            player.IncreaseStats(item);
         }
     }
 
     private static void HandleUnequipItem(GameSession session, PacketReader packet)
     {
         long itemUid = packet.ReadLong();
-        IInventory inventory = session.Player.Inventory;
+        Player player = session.Player;
+        IInventory inventory = player.Inventory;
 
         // Unequip gear
         (ItemSlot itemSlot, Item item) = inventory.Equips.FirstOrDefault(x => x.Value.Uid == itemUid);
@@ -151,9 +153,9 @@ public class ItemEquipHandler : GamePacketHandler<ItemEquipHandler>
             unequipItem.Slot = -1;
             unequipItem.IsEquipped = false;
             inventory.AddItem(session, unequipItem, false);
-            session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.Player.FieldPlayer, unequipItem));
+            session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(player.FieldPlayer, unequipItem));
 
-            DecreaseStats(session, unequipItem);
+            player.DecreaseStats(unequipItem);
             return;
         }
 
@@ -172,67 +174,6 @@ public class ItemEquipHandler : GamePacketHandler<ItemEquipHandler>
         unequipItem2.Slot = -1;
         unequipItem2.IsEquipped = false;
         inventory.AddItem(session, unequipItem2, false);
-        session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.Player.FieldPlayer, unequipItem2));
-    }
-
-    private static void DecreaseStats(GameSession session, Item item)
-    {
-        Player player = session.Player;
-        foreach (ItemStat stat in item.Stats.Constants.Values)
-        {
-            if (stat.ItemAttribute > (StatAttribute) 11000)
-            {
-                continue;
-            }
-
-            player.Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat + (int) stat.Rate);
-        }
-
-        foreach (ItemStat stat in item.Stats.Statics.Values)
-        {
-            if (stat.ItemAttribute > (StatAttribute) 11000)
-            {
-                continue;
-            }
-
-            player.Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat + (int) stat.Rate);
-        }
-
-        foreach (ItemStat stat in item.Stats.Randoms.Values)
-        {
-            if (stat.ItemAttribute > (StatAttribute) 11000)
-            {
-                continue;
-            }
-
-            player.Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat + (int) stat.Rate);
-        }
-
-        player.UpdateGearScore(item, -item.GearScore);
-
-        session.Send(StatPacket.SetStats(player.FieldPlayer));
-    }
-
-    private static void IncreaseStats(GameSession session, Item item)
-    {
-        Player player = session.Player;
-        foreach (ItemStat stat in item.Stats.Constants.Values)
-        {
-            player.Stats[stat.ItemAttribute].IncreaseBonus(stat.Flat + (int) stat.Rate);
-        }
-
-        foreach (ItemStat stat in item.Stats.Statics.Values)
-        {
-            player.Stats[stat.ItemAttribute].IncreaseBonus(stat.Flat + (int) stat.Rate);
-        }
-
-        foreach (ItemStat stat in item.Stats.Randoms.Values)
-        {
-            player.Stats[stat.ItemAttribute].IncreaseBonus(stat.Flat + (int) stat.Rate);
-        }
-
-        player.UpdateGearScore(item, item.GearScore);
-
-        session.Send(StatPacket.SetStats(player.FieldPlayer));
+        session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(player.FieldPlayer, unequipItem2));
     }
 }
