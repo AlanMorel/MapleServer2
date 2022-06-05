@@ -40,11 +40,6 @@ public class BankInventory
     {
         Item item = session.Player.Inventory.GetByUid(uid);
 
-        if (ItemMetadataStorage.IsTradeDisabledWithinAccount(item.Id))
-        {
-            return;
-        }
-
         if (amount < item.Amount)
         {
             item.TrySplit(amount, out Item splitItem);
@@ -107,6 +102,12 @@ public class BankInventory
 
         int outItemIndex = Array.FindIndex(Items, 0, Items.Length, x => x is not null && x.Uid == uid);
         outItem = Items[outItemIndex];
+
+        if (ItemMetadataStorage.IsTradeDisabledWithinAccount(outItem.Id) && outItem.IsBound() && !outItem.IsSelfBound(session.Player.CharacterId))
+        {
+            return false;
+        }
+
         if (amount >= outItem.Amount)
         {
             Items[outItemIndex] = null;
