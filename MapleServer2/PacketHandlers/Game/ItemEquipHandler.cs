@@ -47,7 +47,8 @@ public class ItemEquipHandler : GamePacketHandler<ItemEquipHandler>
         }
 
         Player player = session.Player;
-        Item item = player.Inventory.GetByUid(itemUid);
+        IInventory inventory = player.Inventory;
+        Item item = inventory.GetByUid(itemUid);
         if (item is null || item.IsExpired())
         {
             return;
@@ -59,7 +60,6 @@ public class ItemEquipHandler : GamePacketHandler<ItemEquipHandler>
         }
 
         // Remove the item from the users inventory
-        IInventory inventory = player.Inventory;
         inventory.RemoveItem(session, itemUid, out item);
 
         // Get correct equipped inventory
