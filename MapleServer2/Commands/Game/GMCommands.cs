@@ -1,7 +1,11 @@
 ﻿using System.Drawing;
+using Maple2Storage.Enums;
 using MapleServer2.Commands.Core;
 using MapleServer2.Database;
 using MapleServer2.Enums;
+using MapleServer2.Extensions;
+using MapleServer2.PacketHandlers.Game;
+using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Types;
 
@@ -126,5 +130,167 @@ public class NoticeCommand : InGameCommand
         }
 
         trigger.Session.Send(NoticePacket.Notice((SystemNotice) noticeId, NoticeType.Chat));
+    }
+}
+
+public class AttributeCommand : InGameCommand
+{
+    public AttributeCommand()
+    {
+        Aliases = new()
+        {
+            "attribute"
+        };
+        Description = "Add attribute to selected item.";
+        Parameters = new()
+        {
+            new Parameter<string>("equipSlot", "Equip slot, e.g.: RH (ItemSlot.cs)"),
+            new Parameter<string>("newAttributeId", "New Attribute, e.g.: Dex (StatAttribute.cs)"),
+            new Parameter<float>("value", "Value, e.g.: 10 / 0.002"),
+            new Parameter<byte>("isPercentage", "Is percentage, e.g.: 1 / 0")
+        };
+        Usage = "/attribute [equipSlot] [attributeId] [value] [isPercentage]";
+    }
+
+    public override void Execute(GameCommandTrigger trigger)
+    {
+        string equipSlot = trigger.Get<string>("equipSlot");
+        string newAttributeId = trigger.Get<string>("newAttributeId");
+        float value = trigger.Get<float>("value");
+        byte isPercentage = trigger.Get<byte>("isPercentage");
+
+        if (string.IsNullOrEmpty(equipSlot))
+        {
+            trigger.Session.SendNotice($"Type '/info {Aliases.First()}' for more details.");
+            return;
+        }
+
+        if (!Enum.TryParse(equipSlot, out ItemSlot itemSlot) || itemSlot == ItemSlot.NONE)
+        {
+            trigger.Session.SendNotice($"{equipSlot} is not a valid equip slot.");
+            string slots = "";
+            foreach (object slot in Enum.GetValues(typeof(ItemSlot)))
+            {
+                slots += $"{slot} - {((ItemSlot) slot).GetEnumDescription()}, ";
+            }
+
+            trigger.Session.SendNotice($"Available slots: {slots.TrimEnd(',', ' ')}");
+            return;
+        }
+
+        if (!Enum.TryParse(newAttributeId, out StatAttribute newAttribute))
+        {
+            trigger.Session.SendNotice($"{newAttributeId} is not a valid attribute. Check StatAttribute.cs");
+            return;
+        }
+
+        if (value == 0)
+        {
+            trigger.Session.SendNotice("Value cannot be 0.");
+            return;
+        }
+
+        Player player = trigger.Session.Player;
+        if (!player.Inventory.Equips.TryGetValue(itemSlot, out Item item))
+        {
+            trigger.Session.SendNotice($"You don't have an item in slot {itemSlot}.");
+            return;
+        }
+
+        ItemStat itemStat;
+        StatAttributeType attributeType = isPercentage == 1 ? StatAttributeType.Rate : StatAttributeType.Flat;
+        if ((int) newAttribute > 11000)
+        {
+            itemStat = new SpecialStat(newAttribute, value, attributeType);
+        }
+        else
+        {
+            itemStat = new BasicStat(newAttribute, value, attributeType);
+        }
+
+        player.DecreaseStats(item);
+        item.Stats.Constants[newAttribute] = itemStat;
+
+        trigger.Session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(player.FieldPlayer, item, itemSlot));
+
+        player.IncreaseStats(item);
+
+        DatabaseManager.Items.Update(item);
+    }
+}
+
+public class ClearStatsCommand : InGameCommand
+{
+    public ClearStatsCommand()
+    {
+        Aliases = new()
+        {
+            "clearstats"
+        };
+        Description = "Removes all stats from selected item.";
+        Parameters = new()
+        {
+            new Parameter<string>("equipSlot", "Equip slot, e.g.: RH (ItemSlot.cs)")
+        };
+        Usage = "/clearstats [equipSlot]";
+    }
+
+    public override void Execute(GameCommandTrigger trigger)
+    {
+        string equipSlot = trigger.Get<string>("equipSlot");
+
+        if (string.IsNullOrEmpty(equipSlot))
+        {
+            trigger.Session.SendNotice($"Type '/info {Aliases.First()}' for more details.");
+            return;
+        }
+
+        if (!Enum.TryParse(equipSlot, out ItemSlot itemSlot) || itemSlot == ItemSlot.NONE)
+        {
+            trigger.Session.SendNotice($"{equipSlot} is not a valid equip slot.");
+            string slots = "";
+            foreach (object slot in Enum.GetValues(typeof(ItemSlot)))
+            {
+                slots += $"{slot} - {((ItemSlot) slot).GetEnumDescription()}, ";
+            }
+
+            trigger.Session.SendNotice($"Available slots: {slots.TrimEnd(',', ' ')}");
+            return;
+        }
+
+        Player player = trigger.Session.Player;
+        if (!player.Inventory.Equips.TryGetValue(itemSlot, out Item item))
+        {
+            trigger.Session.SendNotice($"You don't have an item in slot {itemSlot}.");
+            return;
+        }
+
+        player.DecreaseStats(item);
+
+        item.Stats.Constants.Clear();
+        item.Stats.Randoms.Clear();
+        item.Stats.Statics.Clear();
+
+        trigger.Session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(player.FieldPlayer, item, itemSlot));
+
+        DatabaseManager.Items.Update(item);
+    }
+}
+
+public class GMShopCommand : InGameCommand
+{
+    public GMShopCommand()
+    {
+        Aliases = new()
+        {
+            "gmshop"
+        };
+        Description = "Opens the GM shop.";
+        Usage = "/gmshop";
+    }
+
+    public override void Execute(GameCommandTrigger trigger)
+    {
+        ShopHelper.OpenSystemShop(trigger.Session, 999999, 29000307);
     }
 }
