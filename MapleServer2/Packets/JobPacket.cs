@@ -86,7 +86,7 @@ public static class JobPacket
             pWriter.WriteBool(newSkillsId?.Contains(skillId) ?? false);
             pWriter.WriteBool(skillLevel > 0); // Is it learned?
             pWriter.WriteInt(skillId);
-            pWriter.WriteInt(skillLevel);
+            pWriter.WriteInt(Math.Max((int) skillLevel, 1));
             pWriter.WriteByte();
         }
     }

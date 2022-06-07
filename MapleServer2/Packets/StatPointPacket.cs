@@ -38,7 +38,7 @@ public static class StatPointPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.StatPoint);
 
-        pWriter.WriteByte((byte) StatPointPacketMode.StatDistribution);
+        pWriter.Write(StatPointPacketMode.StatDistribution);
         pWriter.WriteInt(character.StatPointDistribution.TotalStatPoints);
         pWriter.WriteInt(character.StatPointDistribution.GetStatTypeCount());
 
