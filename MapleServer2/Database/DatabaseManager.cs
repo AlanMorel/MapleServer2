@@ -49,6 +49,8 @@ public static class DatabaseManager
     public static DatabaseQuest Quests { get; } = new();
     public static DatabaseShop Shops { get; } = new();
     public static DatabaseShopItem ShopItems { get; } = new();
+    public static DatabaseBeautyShop BeautyShops { get; } = new();
+    public static DatabaseBeautyShopItem BeautyShopItems { get; } = new();
     public static DatabaseSkillTab SkillTabs { get; } = new();
     public static DatabaseTrophy Trophies { get; } = new();
     public static DatabaseUGC UGC { get; } = new();
@@ -88,7 +90,7 @@ public static class DatabaseManager
 
         string[] seeds =
         {
-            "Shops", "ShopItems", "MeretMarket", "Mapleopoly", "Events", "CardReverseGame", "RouletteGameItems"
+            "Shops", "ShopItems", "BeautyShops", "BeautyShopItems", "MeretMarket", "Mapleopoly", "Events", "CardReverseGame", "RouletteGameItems"
         };
 
         foreach (string seed in seeds)
