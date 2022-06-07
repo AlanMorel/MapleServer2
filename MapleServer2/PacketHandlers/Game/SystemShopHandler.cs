@@ -4,6 +4,7 @@ using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Database.Types;
+using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 
@@ -58,21 +59,9 @@ public class SystemShopHandler : GamePacketHandler<SystemShopHandler>
             return;
         }
 
-        Shop shop = DatabaseManager.Shops.FindById(item.ShopID);
-        if (shop is null)
-        {
-            Logger.Warning("Unknown shop ID: {shopID}", item.ShopID);
-            return;
-        }
-
-        session.Send(ShopPacket.Open(shop, 0));
-        foreach (ShopItem shopItem in shop.Items)
-        {
-            session.Send(ShopPacket.LoadProducts(shopItem));
-        }
-        session.Send(ShopPacket.Reload());
-        session.Send(SystemShopPacket.Open());
+        ShopHelper.OpenSystemShop(session, item.ShopID, 0);
     }
+
     private static void HandleFishingShop(GameSession session, PacketReader packet)
     {
         bool openShop = packet.ReadBool();
@@ -82,7 +71,7 @@ public class SystemShopHandler : GamePacketHandler<SystemShopHandler>
             return;
         }
 
-        OpenSystemShop(session, 161, 11001609);
+        ShopHelper.OpenSystemShop(session, 161, 11001609);
     }
 
     private static void HandleMapleArenaShop(GameSession session, PacketReader packet)
@@ -94,19 +83,8 @@ public class SystemShopHandler : GamePacketHandler<SystemShopHandler>
             return;
         }
 
-        OpenSystemShop(session, 168, 11001562);
+        ShopHelper.OpenSystemShop(session, 168, 11001562);
     }
 
-    private static void OpenSystemShop(GameSession session, int shopId, int npcId)
-    {
-        Shop shop = DatabaseManager.Shops.FindById(shopId);
 
-        session.Send(ShopPacket.Open(shop, npcId));
-        foreach (ShopItem shopItem in shop.Items)
-        {
-            session.Send(ShopPacket.LoadProducts(shopItem));
-        }
-        session.Send(ShopPacket.Reload());
-        session.Send(SystemShopPacket.Open());
-    }
 }

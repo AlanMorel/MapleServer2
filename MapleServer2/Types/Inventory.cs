@@ -716,6 +716,12 @@ public sealed class Inventory : IInventory
                 session.Player.Guild.BroadcastPacketGuild(GuildPacket.UpdateGuildFunds(session.Player.Guild.Funds));
                 DatabaseManager.Guilds.Update(session.Player.Guild);
                 return;
+            case 90000022: // reverse coin
+            case 90000023: // mentor point
+            case 90000024: // mentee point
+            case 90000027: // meso token
+                // TODO: Handle these coins
+                break;
         }
     }
 

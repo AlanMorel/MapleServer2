@@ -531,6 +531,67 @@ public class Player
             case ItemType.Spellbook:
                 return;
         }
+
         GearScore += value;
+    }
+
+    public void DecreaseStats(Item item)
+    {
+        foreach (ItemStat stat in item.Stats.Constants.Values)
+        {
+            Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat + (int) stat.Rate);
+        }
+
+        foreach (ItemStat stat in item.Stats.Statics.Values)
+        {
+            Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat + (int) stat.Rate);
+        }
+
+        foreach (ItemStat stat in item.Stats.Randoms.Values)
+        {
+            Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat + (int) stat.Rate);
+        }
+
+        foreach (ItemStat stat in item.Stats.Enchants.Values)
+        {
+            int constantValue = item.Stats.Constants.TryGetValue(stat.ItemAttribute, out ItemStat itemStat) ? itemStat.Flat : 0;
+            int staticValue = item.Stats.Statics.TryGetValue(stat.ItemAttribute, out ItemStat itemStat2) ? itemStat2.Flat : 0;
+            int totalStat = constantValue + staticValue;
+            Stats[stat.ItemAttribute].DecreaseBonus((int) (totalStat * stat.Rate));
+        }
+
+        UpdateGearScore(item, -item.GearScore);
+
+        Session.Send(StatPacket.SetStats(FieldPlayer));
+    }
+
+    public void IncreaseStats(Item item)
+    {
+        foreach (ItemStat stat in item.Stats.Constants.Values)
+        {
+            Stats[stat.ItemAttribute].IncreaseBonus(stat.Flat + (int) stat.Rate);
+        }
+
+        foreach (ItemStat stat in item.Stats.Statics.Values)
+        {
+            Stats[stat.ItemAttribute].IncreaseBonus(stat.Flat + (int) stat.Rate);
+        }
+
+        foreach (ItemStat stat in item.Stats.Randoms.Values)
+        {
+            Stats[stat.ItemAttribute].IncreaseBonus(stat.Flat + (int) stat.Rate);
+        }
+
+        foreach (ItemStat stat in item.Stats.Enchants.Values)
+        {
+            int constantValue = item.Stats.Constants.TryGetValue(stat.ItemAttribute, out ItemStat itemStat) ? itemStat.Flat : 0;
+            int staticValue = item.Stats.Statics.TryGetValue(stat.ItemAttribute, out ItemStat itemStat2) ? itemStat2.Flat : 0;
+            int totalStat = constantValue + staticValue;
+            Stats[stat.ItemAttribute].IncreaseBonus((int) (totalStat * stat.Rate));
+        }
+
+        UpdateGearScore(item, item.GearScore);
+
+        Session.Send(StatPacket.SetStats(FieldPlayer));
     }
 }
