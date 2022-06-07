@@ -5221,6 +5221,24 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
                 }
             }
         };
+        
+        BeautyMetadata voucher625 = new()
+        {
+            ShopId = 625,
+            BeautyCategory = BeautyCategory.Standard,
+            BeautyType = BeautyShopType.Hair,
+            TokenType = ShopCurrencyType.Meso,
+            Items = new()
+            {
+                new()
+                {
+                    ItemId = 10200242,
+                    TokenType = ShopCurrencyType.EventMeret
+                }
+            }
+        };
+
+        shops.Add(voucher625);
 
         shops.Add(voucher626);
 
@@ -7059,24 +7077,6 @@ public class BeautyParser : Exporter<List<BeautyMetadata>>
         };
 
         shops.Add(voucher744);
-
-        BeautyMetadata voucher625 = new()
-        {
-            ShopId = 625,
-            BeautyCategory = BeautyCategory.Standard,
-            BeautyType = BeautyShopType.Hair,
-            TokenType = ShopCurrencyType.Meso,
-            Items = new()
-            {
-                new()
-                {
-                    ItemId = 10200242,
-                    TokenType = ShopCurrencyType.EventMeret
-                }
-            }
-        };
-
-        shops.Add(voucher626);
 
         BeautyMetadata voucher900 = new()
         {
