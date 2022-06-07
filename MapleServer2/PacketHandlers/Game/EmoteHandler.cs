@@ -64,4 +64,3 @@ public class EmoteHandler : GamePacketHandler<EmoteHandler>
         // animationName is the name in /Xml/anikeytext.xml
     }
 }
-    
