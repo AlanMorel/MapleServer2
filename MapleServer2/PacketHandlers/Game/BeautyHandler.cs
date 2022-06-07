@@ -330,6 +330,12 @@ public class BeautyHandler : GamePacketHandler<BeautyHandler>
                 return;
         }
 
+        if ((int) mapId == session.Player.MapId)
+        {
+            session.Send(NoticePacket.Notice(SystemNotice.BeautyGotoMapInvalidSamefield, NoticeType.Chat | NoticeType.FastText));
+            return;
+        }
+
         session.Player.Warp(mapId, instanceId: session.Player.CharacterId);
     }
 
