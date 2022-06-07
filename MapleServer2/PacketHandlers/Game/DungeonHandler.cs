@@ -59,8 +59,7 @@ public class DungeonHandler : GamePacketHandler<DungeonHandler>
 
     public static void HandleEnterDungeonPortal(GameSession session)
     {
-        long instanceId = session.Player.InstanceId;
-        DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSessionByInstanceId(instanceId);
+        DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSessionBySessionId(session.Player.DungeonSessionId);
         if (dungeonSession == null)
         {
             return;

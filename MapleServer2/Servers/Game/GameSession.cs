@@ -51,11 +51,11 @@ public class GameSession : Session
         {
             if (FieldManagerFactory.Release(FieldManager.MapId, FieldManager.InstanceId, player))
             {
+                DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSessionBySessionId(player.DungeonSessionId);
+
                 //If instance is destroyed, reset dungeonSession
-                DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSessionByInstanceId(FieldManager.InstanceId);
-                //check if the destroyed map was a dungeon map
-                if (dungeonSession != null && FieldManager.InstanceId == dungeonSession.DungeonInstanceId
-                                           && dungeonSession.IsDungeonSessionMap(FieldManager.MapId))
+                //further conditions for dungeon completion could be checked here.
+                if (dungeonSession != null && dungeonSession.IsDungeonSessionMap(FieldManager.MapId)) //check if the destroyed map was a dungeon map
                 {
                     GameServer.DungeonManager.ResetDungeonSession(player, dungeonSession);
                 }
