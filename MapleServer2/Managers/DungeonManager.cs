@@ -66,16 +66,11 @@ public class DungeonManager
         return !DungeonSessionList.ContainsKey(dungeonSessionId) ? null : DungeonSessionList[dungeonSessionId];
     }
 
-    public DungeonSession GetDungeonSessionByInstanceId(long instanceId)
-    {
-        return DungeonSessionList.FirstOrDefault(session => session.Value.DungeonInstanceId == instanceId).Value;
-    }
-
     public bool IsDungeonUsingFieldInstance(FieldManager fieldManager, Player player) //alternatively this could be: IsFieldInstanceUsed in FieldManagerFactory
     {
         //fieldManager.MapId: left map that is to be destroyed
         //player.MapId: travel destination of the player
-        DungeonSession currentDungeonSession = GetDungeonSessionByInstanceId(fieldManager.InstanceId);
+        DungeonSession currentDungeonSession = GetDungeonSessionBySessionId(player.DungeonSessionId);
         if (currentDungeonSession == null) //is not null after entering dungeon via directory
         {
             return false; //no dungeonsession -> the map is unused by dungeon

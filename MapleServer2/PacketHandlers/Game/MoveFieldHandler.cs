@@ -74,7 +74,7 @@ public class MoveFieldHandler : GamePacketHandler<MoveFieldHandler>
             case PortalTypes.Field:
                 break;
             case PortalTypes.DungeonReturnToLobby:
-                DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSessionByInstanceId(session.Player.InstanceId);
+                DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSessionBySessionId(session.Player.DungeonSessionId);
                 if (dungeonSession == null)
                 {
                     return;
