@@ -360,7 +360,7 @@ public sealed class Inventory : IInventory
 
     public bool HasItem(int id) => Items.Values.Any(i => i.Id == id);
 
-    public Item GetByUid(long uid) => Items[uid];
+    public Item GetByUid(long uid) => Items.TryGetValue(uid, out Item item) ? item : null;
 
     public Item GetById(int id) => Items.Values.FirstOrDefault(x => x.Id == id);
 
