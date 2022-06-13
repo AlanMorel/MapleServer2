@@ -4,6 +4,7 @@ using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Managers;
+using MapleServer2.Managers.Actors;
 using MapleServer2.Types;
 
 namespace MapleServer2.Triggers;
@@ -149,9 +150,9 @@ public partial class TriggerContext
                 return false;
             }
 
-            List<IFieldActor<Player>> players = Field.State.Players.Values.ToList();
+            List<Character> players = Field.State.Players.Values.ToList();
 
-            foreach (IFieldObject<Player> player in players)
+            foreach (Character player in players)
             {
                 if (!FieldManager.IsPlayerInBox(box, player))
                 {
@@ -192,7 +193,7 @@ public partial class TriggerContext
     public bool UserDetected(int[] boxIds, byte jobId)
     {
         Job job = (Job) jobId;
-        List<IFieldActor<Player>> players = Field.State.Players.Values.ToList();
+        List<Character> players = Field.State.Players.Values.ToList();
         if (job != Job.None)
         {
             players = players.Where(x => x.Value.Job == job).ToList();
@@ -206,12 +207,9 @@ public partial class TriggerContext
                 return false;
             }
 
-            foreach (IFieldObject<Player> player in players)
+            if (players.Any(player => FieldManager.IsPlayerInBox(box, player)))
             {
-                if (FieldManager.IsPlayerInBox(box, player))
-                {
-                    return true;
-                }
+                return true;
             }
         }
 

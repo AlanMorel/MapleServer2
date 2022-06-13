@@ -16,14 +16,14 @@ public static class GatheringHelper
             return;
         }
 
-        long currentMastery = session.Player.Levels.MasteryExp.FirstOrDefault(x => x.Type == (MasteryType) recipe.MasteryType).CurrentExp;
+        long currentMastery = session.Player.Levels.MasteryExp.First(x => x.Type == (MasteryType) recipe.MasteryType).CurrentExp;
         if (currentMastery < recipe.RequireMastery)
         {
             return;
         }
 
         session.Player.IncrementGatheringCount(recipe.Id, 0);
-        int numCount = session.Player.GatheringCount.FirstOrDefault(x => x.RecipeId == recipe.Id).CurrentCount;
+        int numCount = session.Player.GatheringCount.FirstOrDefault(x => x.RecipeId == recipe.Id)?.CurrentCount ?? 0;
 
         List<RecipeItem> items = recipe.RewardItems;
         int masteryDiffFactor = numCount switch
@@ -47,7 +47,7 @@ public static class GatheringHelper
                 continue;
             }
 
-            session.FieldManager.AddItem(session, new(item.ItemId)
+            session.FieldManager.AddItem(session.Player.FieldPlayer, new(item.ItemId)
             {
                 Rarity = item.Rarity,
                 Amount = item.Amount

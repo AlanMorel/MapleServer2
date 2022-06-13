@@ -3,6 +3,7 @@ using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Managers;
+using MapleServer2.Managers.Actors;
 using MapleServer2.Packets;
 using MapleServer2.Tools;
 using Serilog;
@@ -241,7 +242,7 @@ public static class RegionSkillHandler
 
     private static void HandleRegionDamage(FieldManager field, SkillCast skillCast)
     {
-        if (!field.State.Players.TryGetValue(skillCast.CasterObjectId, out IFieldActor<Player> caster))
+        if (!field.State.Players.TryGetValue(skillCast.CasterObjectId, out Character caster))
         {
             // Handle NPCs/Triggers sending skills
             return;

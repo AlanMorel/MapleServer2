@@ -1,6 +1,5 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 
@@ -18,20 +17,13 @@ public class RequestMoneyPickupHandler : GamePacketHandler<RequestMoneyPickupHan
         {
             int objectId = packet.ReadInt();
 
-            bool foundItem = session.FieldManager.State.TryGetItem(objectId, out IFieldObject<Item> fieldItem);
-            if (!foundItem || fieldItem.Value.Id is < 90000001 or > 90000003)
-            {
-                continue;
-            }
-
-            if (!session.FieldManager.RemoveItem(objectId, out Item item))
+            if (!session.FieldManager.PickupItem(objectId, session.Player.FieldPlayer.ObjectId, out IFieldObject<Item> fieldItem)
+                || fieldItem.Value.Id is < 90000001 or > 90000003)
             {
                 continue;
             }
 
             session.Player.Wallet.Meso.Modify(fieldItem.Value.Amount);
-            session.FieldManager.BroadcastPacket(FieldItemPacket.PickupItem(objectId, item, session.Player.FieldPlayer.ObjectId));
-            session.FieldManager.BroadcastPacket(FieldItemPacket.RemoveItem(objectId));
         }
     }
 }

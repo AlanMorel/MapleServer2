@@ -10,7 +10,7 @@ public class FieldState
     public readonly ConcurrentDictionary<int, IFieldObject<Item>> Items = new();
     public readonly ConcurrentDictionary<int, IFieldObject<Portal>> Portals = new();
     public readonly ConcurrentDictionary<int, IFieldObject<MobSpawn>> MobSpawns = new();
-    public readonly ConcurrentDictionary<int, IFieldActor<Player>> Players = new();
+    public readonly ConcurrentDictionary<int, Character> Players = new();
     public readonly ConcurrentDictionary<int, Npc> Npcs = new();
     public readonly ConcurrentDictionary<int, Npc> Mobs = new();
     public readonly ConcurrentDictionary<int, IFieldObject<GuideObject>> Guide = new();
@@ -33,25 +33,17 @@ public class FieldState
     public readonly ConcurrentDictionary<long, SkillCast> SkillCasts = new();
     public readonly ConcurrentDictionary<string, MapVibrateObject> VibrateObjects = new();
 
-    public bool TryGetItem(int objectId, out IFieldObject<Item> item)
-    {
-        return Items.TryGetValue(objectId, out item);
-    }
-
     public void AddItem(IFieldObject<Item> item)
     {
         Items[item.ObjectId] = item;
     }
 
-    public bool RemoveItem(int objectId, out Item item)
+    public bool RemoveItem(int objectId, out IFieldObject<Item> fieldItem)
     {
-        bool result = Items.Remove(objectId, out IFieldObject<Item> fieldItem);
-        item = fieldItem?.Value;
-
-        return result;
+        return Items.Remove(objectId, out fieldItem);
     }
 
-    public void AddPlayer(IFieldActor<Player> player)
+    public void AddPlayer(Character player)
     {
         Players[player.ObjectId] = player;
     }

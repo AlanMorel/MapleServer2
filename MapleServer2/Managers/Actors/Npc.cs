@@ -303,7 +303,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
         }
     }
 
-    private static void HandleMobKill(GameSession session, IFieldObject<NpcMetadata> mob)
+    private static void HandleMobKill(GameSession session, Npc npc)
     {
         // TODO: Add trophy + item drops
         // Drop Money
@@ -312,7 +312,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
         {
             // TODO: Calculate meso drop rate
             Item meso = new(90000001, Rand.Next(2, 800));
-            session.FieldManager.AddResource(meso, mob, session.Player.FieldPlayer);
+            session.FieldManager.AddItem(session.Player.FieldPlayer, meso, npc);
         }
 
         // Drop Meret
@@ -320,7 +320,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
         if (dropMeret)
         {
             Item meret = new(90000004, 20);
-            session.FieldManager.AddResource(meret, mob, session.Player.FieldPlayer);
+            session.FieldManager.AddItem(session.Player.FieldPlayer, meret, npc);
         }
 
         // Drop SP
@@ -328,7 +328,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
         if (dropSP)
         {
             Item spBall = new(90000009, 20);
-            session.FieldManager.AddResource(spBall, mob, session.Player.FieldPlayer);
+            session.FieldManager.AddItem(session.Player.FieldPlayer, spBall, npc);
         }
 
         // Drop EP
@@ -336,17 +336,17 @@ public class Npc : FieldActor<NpcMetadata>, INpc
         if (dropEP)
         {
             Item epBall = new(90000010, 20);
-            session.FieldManager.AddResource(epBall, mob, session.Player.FieldPlayer);
+            session.FieldManager.AddItem(session.Player.FieldPlayer, epBall, npc);
         }
 
         // Drop Items
         // Send achieves (?)
         // Gain Mob EXP
-        session.Player.Levels.GainExp(mob.Value.Experience);
+        session.Player.Levels.GainExp(npc.Value.Experience);
         // Send achieves (2)
 
         // Quest Check
-        QuestManager.OnNpcKill(session.Player, mob.Value.Id, session.Player.MapId);
+        QuestManager.OnNpcKill(session.Player, npc.Value.Id, session.Player.MapId);
     }
 
     private void MoveAgent()

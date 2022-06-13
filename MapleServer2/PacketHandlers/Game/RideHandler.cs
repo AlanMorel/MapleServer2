@@ -3,6 +3,7 @@ using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Enums;
 using MapleServer2.Managers;
+using MapleServer2.Managers.Actors;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -129,7 +130,7 @@ public class RideHandler : GamePacketHandler<RideHandler>
     {
         int otherPlayerObjectId = packet.ReadInt();
 
-        if (!session.FieldManager.State.Players.TryGetValue(otherPlayerObjectId, out IFieldActor<Player> otherPlayer) || otherPlayer.Value.Mount == null)
+        if (!session.FieldManager.State.Players.TryGetValue(otherPlayerObjectId, out Character otherPlayer) || otherPlayer.Value.Mount == null)
         {
             return;
         }
@@ -138,9 +139,7 @@ public class RideHandler : GamePacketHandler<RideHandler>
         bool isGuildMember = session.Player != null && otherPlayer.Value.Guild != null && session.Player.Guild.Id == otherPlayer.Value.Guild.Id;
         bool isPartyMember = session.Player.Party == otherPlayer.Value.Party;
 
-        if (!isFriend &&
-            !isGuildMember &&
-            !isPartyMember)
+        if (!isFriend && !isGuildMember && !isPartyMember)
         {
             return;
         }

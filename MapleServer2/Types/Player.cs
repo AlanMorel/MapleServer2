@@ -296,7 +296,7 @@ public class Player
             GetSpawnCoords(mapId);
         }
 
-        Session.FieldManager.RemovePlayer(Session);
+        Session.FieldManager.RemovePlayer(this);
         DatabaseManager.Characters.Update(this);
         Session.Send(RequestFieldEnterPacket.RequestEnter(FieldPlayer));
         Party?.BroadcastPacketParty(PartyPacket.UpdateMemberLocation(this));

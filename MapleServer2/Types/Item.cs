@@ -88,6 +88,9 @@ public class Item
     public long HomeId;
     public long MailId;
 
+    // For items that are in the field
+    public DropInformation DropInformation = new();
+
     public Item() { }
 
     public Item(int id, bool saveToDatabase = true)
@@ -182,6 +185,7 @@ public class Item
         Score = new();
         Stats = new(other.Stats);
         Ugc = other.Ugc;
+        DropInformation = other.DropInformation;
         SetMetadataValues();
     }
 
@@ -343,4 +347,14 @@ public class Item
         DynValue result = script.RunFunction("calcItemGearScore", gearScoreFactor, Rarity, (int) Type, EnchantLevel, LimitBreakLevel);
         return (int) result.Tuple[0].Number + (int) result.Tuple[1].Number;
     }
+}
+
+public class DropInformation
+{
+    public int SourceObjectId;
+
+    public long BoundToCharacterId;
+
+    // Used to stop fadeout task
+    public readonly CancellationTokenSource CancellationToken = new();
 }

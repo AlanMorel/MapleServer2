@@ -52,8 +52,6 @@ public class QuitHandler : CommonPacketHandler<QuitHandler>
 
     private void HandleChangeCharacter(GameSession session)
     {
-        session.FieldManager.RemovePlayer(session);
-
         session.SendFinal(MigrationPacket.GameToLogin(LoginEndpoint, session.Player.Account.AuthData), logoutNotice: true);
     }
 
