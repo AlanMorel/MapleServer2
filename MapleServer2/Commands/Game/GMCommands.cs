@@ -1,9 +1,12 @@
 ﻿using System.Drawing;
+using Maple2.Trigger.Enum;
 using Maple2Storage.Enums;
+using MaplePacketLib2.Tools;
 using MapleServer2.Commands.Core;
 using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Extensions;
+using MapleServer2.Managers.Actors;
 using MapleServer2.PacketHandlers.Game;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
@@ -292,5 +295,225 @@ public class GMShopCommand : InGameCommand
     public override void Execute(GameCommandTrigger trigger)
     {
         ShopHelper.OpenSystemShop(trigger.Session, 999999, 29000307);
+    }
+}
+
+public class TimeScaleCommand : InGameCommand
+{
+    public TimeScaleCommand()
+    {
+        Aliases = new()
+        {
+            "timescale"
+        };
+        Description = "Sets the time scale.";
+        Parameters = new()
+        {
+            new Parameter<byte>("enable", "Enabled, e.g.: 1 (true) / 0 (false)"),
+            new Parameter<float>("startScale", "Start scale, e.g.: 0.0 ~ 1.0"),
+            new Parameter<float>("endScale", "End scale, e.g.: 0.0 ~ 1.0"),
+            new Parameter<float>("duration", "Duration, e.g.: 10.0 (seconds)"),
+            new Parameter<byte>("interpolator", "Enable fade between start and end scale, e.g.: 1 (true) / 0 (false)"),
+            new Parameter<byte>("broadcast", "Broadcast to all players in the field, e.g.: 1 (true) / 0 (false)")
+        };
+        Usage = "/timescale [enable] [startScale] [endScale] [duration] [interpolator] [broadcast]";
+    }
+
+    public override void Execute(GameCommandTrigger trigger)
+    {
+        bool enable = trigger.Get<byte>("enable") == 1;
+        if (!enable)
+        {
+            trigger.Session.Send(TimeScalePacket.SetTimeScale(false, 0, 0, 0, 0));
+            return;
+        }
+
+        float startScale = trigger.Get<float>("startScale");
+        float endScale = trigger.Get<float>("endScale");
+        float duration = trigger.Get<float>("duration");
+        byte interpolator = trigger.Get<byte>("interpolator");
+        bool broadcast = trigger.Get<byte>("broadcast") == 1;
+        PacketWriter packet = TimeScalePacket.SetTimeScale(true, startScale, endScale, duration, interpolator);
+        if (broadcast)
+        {
+            trigger.Session.FieldManager.BroadcastPacket(packet);
+            return;
+        }
+
+        trigger.Session.Send(packet);
+    }
+}
+
+public class WeatherCommand : InGameCommand
+{
+    private readonly string WeatherTypes = "";
+
+    public WeatherCommand()
+    {
+        foreach (object slot in Enum.GetValues(typeof(WeatherType)))
+        {
+            WeatherTypes += $"{slot}, ";
+        }
+
+        WeatherTypes = WeatherTypes.TrimEnd(',', ' ');
+
+        Aliases = new()
+        {
+            "weather"
+        };
+        Description = "Sets the weather.";
+        Parameters = new()
+        {
+            new Parameter<string>("weatherType", $"Weather type, e.g.: Rain ({WeatherTypes})"),
+        };
+        Usage = "/weather [weatherType]";
+    }
+
+    public override void Execute(GameCommandTrigger trigger)
+    {
+        string weather = trigger.Get<string>("weatherType");
+
+        if (!Enum.TryParse(weather, out WeatherType weatherType))
+        {
+            trigger.Session.SendNotice($"Available weathers: {WeatherTypes}");
+            return;
+        }
+
+        trigger.Session.Send(FieldPropertyPacket.ChangeWeather(weatherType));
+    }
+}
+
+public class FreeCamCommand : InGameCommand
+{
+    public FreeCamCommand()
+    {
+        Aliases = new()
+        {
+            "freecam"
+        };
+        Description = "Enables free camera mode.";
+        Usage = "/freecam";
+    }
+
+    public override void Execute(GameCommandTrigger trigger)
+    {
+        trigger.Session.Send(FieldPropertyPacket.FreeCam(true));
+    }
+}
+
+public class LightCommand : InGameCommand
+{
+    public LightCommand()
+    {
+        Aliases = new()
+        {
+            "light"
+        };
+        Description = "Changes light settings.";
+        Parameters = new()
+        {
+            new Parameter<byte>("option", "0 (Ambient) / 1 (Directional)"),
+            new Parameter<byte>("red", "Red, e.g.: 0 ~ 255"),
+            new Parameter<byte>("green", "Green, e.g.: 0 ~ 255"),
+            new Parameter<byte>("blue", "Blue, e.g.: 0 ~ 255"),
+        };
+        Usage = "/light [option] [red] [green] [blue]";
+    }
+
+    public override void Execute(GameCommandTrigger trigger)
+    {
+        byte option = trigger.Get<byte>("option");
+        byte red = trigger.Get<byte>("red");
+        byte green = trigger.Get<byte>("green");
+        byte blue = trigger.Get<byte>("blue");
+
+        if (red is 0 && green is 0 && blue is 0)
+        {
+            trigger.Session.SendNotice(Usage);
+            return;
+        }
+
+        switch (option)
+        {
+            case 0:
+                trigger.Session.Send(FieldPropertyPacket.ChangeAmbientLight(red, green, blue));
+                break;
+            case 1:
+                trigger.Session.Send(FieldPropertyPacket.ChangeDirectionalLight(red, green, blue));
+                break;
+            default:
+                trigger.Session.SendNotice($"Invalid option: {option}");
+                break;
+        }
+    }
+}
+
+public class ChangeBackgroundCommand : InGameCommand
+{
+    public ChangeBackgroundCommand()
+    {
+        Aliases = new()
+        {
+            "background"
+        };
+        Description = "Changes the background. Invalid background will turn background pure black.";
+        Parameters = new()
+        {
+            new Parameter<string>("background", "Background dds")
+        };
+        Usage = "/background [background]";
+    }
+
+    public override void Execute(GameCommandTrigger trigger)
+    {
+        string background = trigger.Get<string>("background");
+        trigger.Session.FieldManager.BroadcastPacket(ChangeBackgroundPacket.ChangeBackground(background));
+    }
+}
+
+public class MountCommand : InGameCommand
+{
+    public MountCommand()
+    {
+        Aliases = new()
+        {
+            "mount"
+        };
+        Description = "Mounts on an specific ID.";
+        Parameters = new()
+        {
+            new Parameter<int>("mountId", "Mount ID"),
+            new Parameter<byte>("enable", "Enter or leave mount, e.g.: 1 (enter) / 0 (leave)")
+        };
+        Usage = "/mount [mountId] [enable]";
+    }
+
+    public override void Execute(GameCommandTrigger trigger)
+    {
+        Player player = trigger.Session.Player;
+        Character fieldPlayer = player.FieldPlayer;
+
+        int mountId = trigger.Get<int>("mountId");
+        byte enable = trigger.Get<byte>("enable");
+
+        if (enable is 0)
+        {
+            player.Mount = null; // Remove mount from player
+            trigger.Session.FieldManager.BroadcastPacket(MountPacket.StopRide(fieldPlayer, true));
+            trigger.Session.Send(KeyTablePacket.SendHotbars(player.GameOptions));
+            return;
+        }
+
+        IFieldObject<Mount> fieldMount = trigger.Session.FieldManager.RequestFieldObject(new Mount
+        {
+            Type = RideType.Default,
+            Id = mountId,
+            Uid = 0
+        });
+
+        fieldMount.Value.Players[0] = fieldPlayer;
+        player.Mount = fieldMount;
+
+        trigger.Session.FieldManager.BroadcastPacket(MountPacket.StartRide(fieldPlayer));
     }
 }
