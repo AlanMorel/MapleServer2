@@ -189,10 +189,7 @@ public class ItemSocketSystemHandler : GamePacketHandler<ItemSocketSystemHandler
 
             inventory.ConsumeItem(session, gem.Uid, 1);
 
-            Item upgradeGem = new(metadata.NextItemId)
-            {
-                Rarity = gem.Rarity
-            };
+            Item upgradeGem = new(metadata.NextItemId, rarity: gem.Rarity);
             inventory.AddItem(session, upgradeGem, true);
             session.Send(ItemSocketSystemPacket.UpgradeGem(equipUid, slot, upgradeGem));
             return;
@@ -411,11 +408,10 @@ public class ItemSocketSystemHandler : GamePacketHandler<ItemSocketSystemHandler
             return;
         }
 
-        Item gemstoneItem = new(gemstone.Id)
+        Item gemstoneItem = new(gemstone.Id, rarity: 4)
         {
             IsLocked = gemstone.IsLocked,
             UnlockTime = gemstone.UnlockTime,
-            Rarity = 4
         };
 
         if (gemstone.OwnerId != 0)

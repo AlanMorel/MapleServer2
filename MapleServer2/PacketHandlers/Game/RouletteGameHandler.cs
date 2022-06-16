@@ -87,11 +87,7 @@ public class RouletteGameHandler : GamePacketHandler<RouletteGameHandler>
         {
             int randomIndex = Random.Shared.Next(0, items.Count);
             randomIndexes.Add(randomIndex);
-            Item item = new(items[randomIndex].ItemId)
-            {
-                Amount = items[randomIndex].ItemAmount,
-                Rarity = items[randomIndex].ItemRarity
-            };
+            Item item = new(items[randomIndex].ItemId, items[randomIndex].ItemAmount, items[randomIndex].ItemRarity);
             session.Player.Inventory.AddItem(session, item, true);
         }
 

@@ -447,11 +447,7 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
         member.AttendanceTimestamp = TimeInfo.Now() + Environment.TickCount;
         session.Send(GuildPacket.CheckInBegin());
 
-        Item guildCoins = new(30000861)
-        {
-            Rarity = 4,
-            Amount = property.AttendGuildCoin
-        };
+        Item guildCoins = new(id: 30000861, amount: property.AttendGuildCoin, rarity: 4);
 
         session.Player.Inventory.AddItem(session, guildCoins, true);
         guild.AddExp(session, property.AttendExp);
@@ -894,11 +890,7 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
             return;
         }
 
-        Item coins = new(30000861)
-        {
-            Rarity = 4,
-            Amount = guildProperty.DonateGuildCoin * donateQuantity
-        };
+        Item coins = new(id: 30000861, amount: guildProperty.DonateGuildCoin * donateQuantity, rarity: 4);
 
         session.Player.Inventory.AddItem(session, coins, true);
 

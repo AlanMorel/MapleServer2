@@ -153,11 +153,7 @@ public class MasteryHandler : GamePacketHandler<MasteryHandler>
         List<RecipeItem> resultItems = recipe.RewardItems;
         foreach (RecipeItem resultItem in resultItems)
         {
-            Item rewardItem = new(resultItem.ItemId)
-            {
-                Rarity = resultItem.Rarity,
-                Amount = resultItem.Amount
-            };
+            Item rewardItem = new(resultItem.ItemId, resultItem.Amount, resultItem.Rarity);
             session.Player.Inventory.AddItem(session, rewardItem, true);
             session.Send(MasteryPacket.GetCraftedItem((MasteryType) recipe.MasteryType, rewardItem));
         }

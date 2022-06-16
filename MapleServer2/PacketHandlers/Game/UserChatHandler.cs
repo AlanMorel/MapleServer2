@@ -309,7 +309,7 @@ public class UserChatHandler : GamePacketHandler<UserChatHandler>
             {
                 if (ItemMetadataStorage.IsValid((int) itemUid))
                 {
-                    item = new((int) itemUid, false)
+                    item = new((int) itemUid, saveToDatabase: false)
                     {
                         Uid = itemUid
                     };

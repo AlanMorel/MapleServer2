@@ -30,6 +30,7 @@ public class NpcTalk
         {
             return ScriptMetadataStorage.GetQuestScriptMetadata(QuestId)?.NpcScripts.First(x => x.Id == ScriptId);
         }
+
         return ScriptMetadataStorage.GetNpcScriptMetadata(Npc.Id).NpcScripts.First(x => x.Id == ScriptId);
     }
 
@@ -58,6 +59,7 @@ public class NpcTalk
                 {
                     actions.Add((ActionType) value.Number);
                 }
+
                 break;
             default:
                 return;
@@ -79,15 +81,14 @@ public class NpcTalk
                     {
                         return;
                     }
+
                     session.Send(NpcTalkPacket.Action(ActionType.Portal, "", "", portal.Id));
                     break;
                 case ActionType.ItemReward:
                     DynValue itemResults = npcScript.RunFunction("actionItemReward"); // TODO: Support > 1 item
-                    Item item = new((int) itemResults.Tuple[0].Number)
-                    {
-                        Rarity = (int) itemResults.Tuple[1].Number,
-                        Amount = (int) itemResults.Tuple[2].Number
-                    };
+                    Item item = new(id: (int) itemResults.Tuple[0].Number,
+                        amount: (int) itemResults.Tuple[2].Number,
+                        rarity: (int) itemResults.Tuple[1].Number);
                     session.Player.Inventory.AddItem(session, item, true);
                     session.Send(NpcTalkPacket.Action(action, "", "", 0, item));
                     break;

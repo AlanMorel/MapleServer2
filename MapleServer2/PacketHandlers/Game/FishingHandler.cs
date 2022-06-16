@@ -361,11 +361,7 @@ public class FishingHandler : GamePacketHandler<FishingHandler>
 
         FishingRewardItem fishingItem = FishingRewardsMetadataStorage.GetFishingRewardItem(type);
 
-        Item item = new(fishingItem.Id)
-        {
-            Amount = fishingItem.Amount,
-            Rarity = fishingItem.Rarity
-        };
+        Item item = new(fishingItem.Id, fishingItem.Amount, fishingItem.Rarity);
         List<Item> items = new()
         {
             item

@@ -37,14 +37,7 @@ public class ItemCommand : InGameCommand
         rarity = Math.Min(rarity, 6);
         rarity = Math.Max(rarity, 1);
 
-        Item item = new(itemId)
-        {
-            Rarity = rarity,
-            TransferFlag = ItemMetadataStorage.GetTransferFlag(itemId, rarity),
-            Amount = Math.Max(1, amount)
-        };
-        item.Stats = new(item);
-        item.GearScore = item.GetGearScore();
+        Item item = new(itemId, Math.Max(1, amount), rarity);
 
         // Simulate looting item
         trigger.Session.Player.Inventory.AddItem(trigger.Session, item, true);

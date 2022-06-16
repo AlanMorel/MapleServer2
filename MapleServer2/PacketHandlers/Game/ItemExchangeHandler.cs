@@ -76,11 +76,7 @@ public class ItemExchangeHandler : GamePacketHandler<ItemExchangeHandler>
             return;
         }
 
-        Item exchangeRewardItem = new(exchange.RewardId)
-        {
-            Rarity = exchange.RewardRarity,
-            Amount = exchange.RewardAmount * quantity
-        };
+        Item exchangeRewardItem = new(exchange.RewardId, exchange.RewardAmount * quantity, exchange.RewardRarity);
 
         session.Player.Inventory.AddItem(session, exchangeRewardItem, true);
         session.Send(ItemExchangePacket.Notice((short) ExchangeNotice.Success));

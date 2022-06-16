@@ -261,10 +261,8 @@ public class RequestItemUseHandler : GamePacketHandler<RequestItemUseHandler>
 
             int itemAmount = Random.Shared.Next(contents.MinAmount, contents.MaxAmount);
 
-            Item gachaItem = new(contents.ItemId)
+            Item gachaItem = new(contents.ItemId, itemAmount, contents.Rarity)
             {
-                Rarity = contents.Rarity,
-                Amount = itemAmount,
                 GachaDismantleId = gacha.GachaId
             };
             items.Add(gachaItem);
@@ -339,16 +337,14 @@ public class RequestItemUseHandler : GamePacketHandler<RequestItemUseHandler>
             return;
         }
 
-        Item badge = new(item.Function.OpenCoupleEffectBox.Id)
+        Item badge = new(item.Function.OpenCoupleEffectBox.Id, rarity: item.Function.OpenCoupleEffectBox.Rarity)
         {
-            Rarity = item.Function.OpenCoupleEffectBox.Rarity,
             PairedCharacterId = otherPlayer.CharacterId,
             PairedCharacterName = otherPlayer.Name
         };
 
-        Item otherUserBadge = new(item.Function.OpenCoupleEffectBox.Id)
+        Item otherUserBadge = new(item.Function.OpenCoupleEffectBox.Id, item.Function.OpenCoupleEffectBox.Rarity)
         {
-            Rarity = item.Function.OpenCoupleEffectBox.Rarity,
             PairedCharacterId = session.Player.CharacterId,
             PairedCharacterName = session.Player.Name
         };

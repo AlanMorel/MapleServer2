@@ -69,11 +69,7 @@ public class CardReverseGameHandler : GamePacketHandler<CardReverseGameHandler>
         int index = Random.Shared.Next(cards.Count);
 
         CardReverseGame card = cards[index];
-        Item item = new(card.ItemId)
-        {
-            Amount = card.ItemAmount,
-            Rarity = card.ItemRarity
-        };
+        Item item = new(card.ItemId, card.ItemAmount, card.ItemRarity);
 
         session.Send(CardReverseGamePacket.Select(index));
         session.Player.Inventory.AddItem(session, item, true);

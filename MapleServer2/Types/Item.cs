@@ -17,7 +17,7 @@ public class Item
     public InventoryTab InventoryTab { get; private set; }
     public ItemSlot ItemSlot { get; set; }
     public GemSlot GemSlot { get; set; }
-    public int Rarity { get; set; }
+    public int Rarity { get; init; }
     public int StackLimit { get; private set; }
     public bool EnableBreak { get; private set; }
     public bool IsTwoHand { get; private set; }
@@ -93,12 +93,16 @@ public class Item
 
     public Item() { }
 
-    public Item(int id, bool saveToDatabase = true)
+    public Item(int id, int amount = 1, int rarity = -1, bool saveToDatabase = true)
     {
         Id = id;
+        Amount = amount;
+        Rarity = rarity == -1 ? ItemMetadataStorage.GetRarity(id) : rarity;
+
         ItemPropertyMetadata property = ItemMetadataStorage.GetPropertyMetadata(Id);
         ItemMusicMetadata music = ItemMetadataStorage.GetMusicMetadata(Id);
         ItemLimitMetadata limit = ItemMetadataStorage.GetLimitMetadata(Id);
+
         SetMetadataValues();
         Name = ItemMetadataStorage.GetName(id);
         Level = limit.LevelLimitMin;
@@ -108,12 +112,12 @@ public class Item
             Ugc = new();
             Ugc.Uid = DatabaseManager.UGC.Insert(Ugc);
         }
+
         if (GemSlot == GemSlot.TRANS)
         {
             TransparencyBadgeBools = new byte[10];
         }
 
-        Rarity = ItemMetadataStorage.GetRarity(id);
         PlayCount = music.PlayCount;
         Color = ItemMetadataStorage.GetEquipColor(id);
         CreationTime = TimeInfo.Now();
@@ -123,19 +127,13 @@ public class Item
         Slot = -1;
         Amount = 1;
         Score = new();
-        GearScore = GetGearScore();
         Stats = new(this);
+        GearScore = GetGearScore();
         ExpiryTime = ItemMetadataStorage.GetExpiration(id);
         if (saveToDatabase)
         {
             Uid = DatabaseManager.Items.Insert(this);
         }
-    }
-
-    public Item(int id, int amount, int rarity = 1, bool saveToDatabase = true) : this(id, saveToDatabase)
-    {
-        Amount = amount;
-        Rarity = rarity;
     }
 
     // Make a copy of item
@@ -443,6 +441,7 @@ public class Item
         {
             return maxLevel >= session.Player.Levels.Level;
         }
+
         return true;
     }
 

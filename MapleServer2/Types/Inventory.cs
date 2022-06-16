@@ -158,6 +158,11 @@ public sealed class Inventory : IInventory
             item.OwnerCharacterName = session.Player.Name;
         }
 
+        if (item.Uid is 0) // If item has no uid, generate one
+        {
+            item.Uid = DatabaseManager.Items.Insert(item);
+        }
+
         // Checks if item is stackable or not
         if (item.StackLimit > 1)
         {

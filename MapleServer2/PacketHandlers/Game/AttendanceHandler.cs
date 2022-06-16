@@ -169,11 +169,7 @@ public class AttendanceHandler : GamePacketHandler<AttendanceHandler>
             return;
         }
 
-        Item item = new(attendGift.ItemId)
-        {
-            Rarity = attendGift.ItemRarity,
-            Amount = attendGift.ItemAmount
-        };
+        Item item = new(attendGift.ItemId, attendGift.ItemAmount, attendGift.ItemRarity);
 
         MailHelper.SendAttendanceMail(item, session.Player.CharacterId);
     }
