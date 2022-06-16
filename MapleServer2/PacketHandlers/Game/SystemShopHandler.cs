@@ -85,6 +85,4 @@ public class SystemShopHandler : GamePacketHandler<SystemShopHandler>
 
         ShopHelper.OpenSystemShop(session, 168, 11001562);
     }
-
-
 }
