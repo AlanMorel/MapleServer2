@@ -95,12 +95,12 @@ public static class FieldPropertyPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.FieldProperty);
         pWriter.WriteByte(1);
         pWriter.Write(FieldPropertyMode.SightRange);
-        pWriter.WriteFloat(900); // radius
+        pWriter.WriteFloat(); // radius
         pWriter.WriteFloat(); // these 3 floats control some kind of fade in/out
         pWriter.WriteFloat();
         pWriter.WriteFloat();
         pWriter.WriteByte(); // unknown
-        pWriter.WriteByte(75); // opacity of the sight (blackness)
+        pWriter.WriteByte(); // opacity of the sight (blackness)
         pWriter.WriteBool(true); // should objects block light?
 
         return pWriter;
