@@ -129,7 +129,7 @@ public class MeretMarketHandler : GamePacketHandler<MeretMarketHandler>
             return;
         }
 
-        if (item.Ugc is null || item.Ugc.CharacterId != session.Player.CharacterId)
+        if (item.Ugc is null || item.Ugc.CharacterId != session.Player.CharacterId || ItemMetadataStorage.GetLimitMetadata(item.Id).MeretMarketListable)
         {
             return;
         }

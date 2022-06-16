@@ -250,16 +250,16 @@ public static class UGCPacket
 
     public static void WriteUGCTemplate(this PacketWriter pWriter, UGC ugc)
     {
-        pWriter.WriteLong(ugc?.Uid ?? 0);
-        pWriter.WriteUnicodeString(ugc?.Guid.ToString() ?? "");
-        pWriter.WriteUnicodeString(ugc?.Name ?? "");
+        pWriter.WriteLong(ugc.Uid);
+        pWriter.WriteUnicodeString(ugc.Guid.ToString());
+        pWriter.WriteUnicodeString(ugc.Name);
         pWriter.WriteByte(1);
         pWriter.WriteInt(1); // sometimes 2
-        pWriter.WriteLong(ugc?.AccountId ?? 0);
-        pWriter.WriteLong(ugc?.CharacterId ?? 0);
-        pWriter.WriteUnicodeString(ugc?.CharacterName ?? "");
-        pWriter.WriteLong(ugc?.CreationTime ?? 0);
-        pWriter.WriteUnicodeString(ugc?.Url ?? "");
+        pWriter.WriteLong(ugc.AccountId);
+        pWriter.WriteLong(ugc.CharacterId);
+        pWriter.WriteUnicodeString(ugc.CharacterName);
+        pWriter.WriteLong(ugc.CreationTime);
+        pWriter.WriteUnicodeString(ugc.Url);
         pWriter.WriteByte();
     }
 

@@ -16,17 +16,17 @@ public static class BeautyHelper
         Random random = Random.Shared;
 
         //Grab a preset hair and length of hair
-        ItemMetadata beautyItemData = ItemMetadataStorage.GetMetadata(hairId);
-        int indexPreset = random.Next(beautyItemData.HairPresets.Count);
-        HairPresets chosenPreset = beautyItemData.HairPresets[indexPreset];
+        ItemCustomizeMetadata customize = ItemMetadataStorage.GetMetadata(hairId).Customize;
+        int indexPreset = random.Next(customize.HairPresets.Count);
+        HairPresets chosenPreset = customize.HairPresets[indexPreset];
 
         //Grab random front hair length
         double chosenFrontLength = random.NextDouble() *
-            (beautyItemData.HairPresets[indexPreset].MaxScale - beautyItemData.HairPresets[indexPreset].MinScale) + beautyItemData.HairPresets[indexPreset].MinScale;
+            (customize.HairPresets[indexPreset].MaxScale - customize.HairPresets[indexPreset].MinScale) + customize.HairPresets[indexPreset].MinScale;
 
         //Grab random back hair length
         double chosenBackLength = random.NextDouble() *
-            (beautyItemData.HairPresets[indexPreset].MaxScale - beautyItemData.HairPresets[indexPreset].MinScale) + beautyItemData.HairPresets[indexPreset].MinScale;
+            (customize.HairPresets[indexPreset].MaxScale - customize.HairPresets[indexPreset].MinScale) + customize.HairPresets[indexPreset].MinScale;
 
         // Grab random preset color
         ColorPaletteMetadata palette = ColorPaletteMetadataStorage.GetMetadata(2); // pick from palette 2. Seems like it's the correct palette for basic hair colors
@@ -38,7 +38,6 @@ public static class BeautyHelper
         {
             Color = EquipColor.Argb(color, indexColor, palette.PaletteId),
             HairData = new((float) chosenBackLength, (float) chosenFrontLength, chosenPreset.BackPositionCoord, chosenPreset.BackPositionRotation, chosenPreset.FrontPositionCoord, chosenPreset.FrontPositionRotation),
-            IsTemplate = false,
             IsEquipped = true,
             OwnerCharacterId = session.Player.CharacterId,
             OwnerCharacterName = session.Player.Name
@@ -70,7 +69,6 @@ public static class BeautyHelper
         newFace = new(faceId)
         {
             Color = EquipColor.Argb(color, indexColor, palette.PaletteId),
-            IsTemplate = false,
             IsEquipped = true,
             OwnerCharacterId = session.Player.CharacterId,
             OwnerCharacterName = session.Player.Name

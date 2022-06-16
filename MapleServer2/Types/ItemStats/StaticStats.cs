@@ -16,7 +16,7 @@ public static class StaticStats
             return;
         }
 
-        int staticId = ItemMetadataStorage.GetOptionStatic(item.Id);
+        int staticId = ItemMetadataStorage.GetOptionMetadata(item.Id).Static;
 
         ItemOptionsStatic staticOptions = ItemOptionStaticMetadataStorage.GetMetadata(staticId, item.Rarity);
         if (staticOptions == null)

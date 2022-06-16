@@ -11,7 +11,7 @@ public static class ConstantStats
     public static void GetStats(Item item, int optionId, float optionLevelFactor, out Dictionary<StatAttribute, ItemStat> constantStats)
     {
         constantStats = new();
-        int constantId = ItemMetadataStorage.GetOptionConstant(item.Id);
+        int constantId = ItemMetadataStorage.GetOptionMetadata(item.Id).Constant;
         ItemOptionsConstant basicOptions = ItemOptionConstantMetadataStorage.GetMetadata(constantId, item.Rarity);
         if (basicOptions == null)
         {

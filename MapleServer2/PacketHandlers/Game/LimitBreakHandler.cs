@@ -87,7 +87,7 @@ public class LimitBreakHandler : GamePacketHandler<LimitBreakHandler>
         }
         Script script = ScriptLoader.GetScript("Functions/calcLimitBreakValues");
         DynValue scriptResultCosts = script.RunFunction("calcLimitBreakCost", item.LimitBreakLevel);
-        if (!session.Player.Wallet.Meso.Modify((long) scriptResultCosts.Tuple[0].Number))
+        if (!session.Player.Wallet.Meso.Modify((long) -scriptResultCosts.Tuple[0].Number))
         {
             session.Send(LimitBreakPacket.Notice((short) LimitBreakError.InsufficientMesos));
             return;
@@ -136,25 +136,6 @@ public class LimitBreakHandler : GamePacketHandler<LimitBreakHandler>
             }
         }
         return true;
-    }
-
-    private static void ConsumeIngredients(GameSession session, List<EnchantIngredient> ingredients, IInventory inventory)
-    {
-        foreach (EnchantIngredient ingredient in ingredients)
-        {
-            IReadOnlyCollection<Item> ingredientTotal = inventory.GetAllByTag(ingredient.Tag.ToString());
-            foreach (Item item in ingredientTotal)
-            {
-                if (item.Amount >= ingredient.Amount)
-                {
-                    inventory.ConsumeItem(session, item.Uid, ingredient.Amount);
-                    break;
-                }
-
-                ingredient.Amount -= item.Amount;
-                inventory.ConsumeItem(session, item.Uid, item.Amount);
-            }
-        }
     }
 
     private static Item GetNextLevelItem(Item item)

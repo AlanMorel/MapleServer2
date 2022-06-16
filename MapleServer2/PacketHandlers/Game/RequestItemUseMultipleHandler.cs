@@ -26,7 +26,7 @@ public class RequestItemUseMultipleHandler : GamePacketHandler<RequestItemUseMul
         int amount = packet.ReadInt();
         BoxType boxType = (BoxType) packet.ReadShort();
 
-        string functionName = ItemMetadataStorage.GetFunction(itemId).Name;
+        string functionName = ItemMetadataStorage.GetFunctionMetadata(itemId).Name;
         if (functionName != "SelectItemBox" && functionName != "OpenItemBox")
         {
             return;
@@ -46,12 +46,12 @@ public class RequestItemUseMultipleHandler : GamePacketHandler<RequestItemUseMul
             {
                 return;
             }
-            SelectItemBox selectBox = ItemMetadataStorage.GetFunction(itemId).SelectItemBox;
+            SelectItemBox selectBox = ItemMetadataStorage.GetFunctionMetadata(itemId).SelectItemBox;
             HandleSelectBox(session, items, selectBox, index, amount);
             return;
         }
 
-        OpenItemBox openBox = ItemMetadataStorage.GetFunction(itemId).OpenItemBox;
+        OpenItemBox openBox = ItemMetadataStorage.GetFunctionMetadata(itemId).OpenItemBox;
         HandleOpenBox(session, items, /*openBox,*/ amount);
     }
 

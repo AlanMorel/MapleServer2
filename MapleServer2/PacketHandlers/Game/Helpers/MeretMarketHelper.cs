@@ -37,7 +37,7 @@ public static class MeretMarketHelper
             return true;
         }
 
-        Gender itemGender = ItemMetadataStorage.GetGender(itemId);
+        Gender itemGender = ItemMetadataStorage.GetLimitMetadata(itemId).Gender;
 
         return (itemGender == Gender.Male && genderFlag.HasFlag(GenderFlag.Male)) || (itemGender == Gender.Female && genderFlag.HasFlag(GenderFlag.Female));
     }

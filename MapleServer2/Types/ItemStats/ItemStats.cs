@@ -129,8 +129,8 @@ public class ItemStats
             return;
         }
 
-        int optionId = ItemMetadataStorage.GetOptionId(item.Id);
-        float optionLevelFactor = ItemMetadataStorage.GetOptionLevelFactor(item.Id);
+        int optionId = ItemMetadataStorage.GetOptionMetadata(item.Id).OptionId;
+        float optionLevelFactor = ItemMetadataStorage.GetOptionMetadata(item.Id).OptionLevelFactor;
 
         ConstantStats.GetStats(item, optionId, optionLevelFactor, out Dictionary<StatAttribute, ItemStat> constantStats);
         Constants = constantStats;
@@ -211,7 +211,7 @@ public class ItemStats
     private void GetGemSockets(Item item, float optionLevelFactor)
     {
         // Check for predefined sockets
-        int socketId = ItemMetadataStorage.GetSocketDataId(item.Id);
+        int socketId = ItemMetadataStorage.GetPropertyMetadata(item.Id).SocketDataId;
         if (socketId != 0)
         {
             ItemSocketRarityData socketData = ItemSocketMetadataStorage.GetMetadata(socketId, item.Rarity);

@@ -58,7 +58,7 @@ public class ItemRepackageHandler : GamePacketHandler<ItemRepackageHandler>
             session.Send(ItemRepackagePacket.Notice((int) ItemRepackageNotice.CannotBePackaged));
         }
 
-        int ribbonRequirementAmount = ItemMetadataStorage.GetRepackageConsumeCount(ribbon.Id);
+        int ribbonRequirementAmount = ItemMetadataStorage.GetPropertyMetadata(ribbon.Id).RepackageItemConsumeCount;
         if (ribbonRequirementAmount > ribbon.Amount)
         {
             session.Send(ItemRepackagePacket.Notice((int) ItemRepackageNotice.CannotBePackaged));

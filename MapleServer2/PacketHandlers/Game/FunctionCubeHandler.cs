@@ -56,7 +56,7 @@ public class FunctionCubeHandler : GamePacketHandler<FunctionCubeHandler>
             return;
         }
 
-        int objectId = ItemMetadataStorage.GetObjectId(fieldCube.Value.Item.Id);
+        int objectId = ItemMetadataStorage.GetInstallMetadata(fieldCube.Value.Item.Id).ObjectId;
         TrophyManager.OnObjectInteract(session.Player, objectId);
 
         switch (fieldCube.Value.Item.HousingCategory)
