@@ -10,17 +10,27 @@ namespace MapleServer2.PacketHandlers.Game.Helpers;
 
 public static class ItemBoxHelper
 {
-    public static List<Item> GetItemsFromDropGroup(DropGroupContent dropContent, Gender playerGender, Item sourceItem)
+    public static List<Item> GetItemsFromDropGroup(DropGroupContent dropContent, Player player, Item sourceItem)
     {
         List<Item> items = new();
         Random rng = Random.Shared;
         int amount = rng.Next((int) dropContent.MinAmount, (int) dropContent.MaxAmount);
+
         foreach (int id in dropContent.ItemIds)
         {
+            if (dropContent.SmartDropRate == 100)
+            {
+                List<Job> recommendJobs = ItemMetadataStorage.GetRecommendJobs(id);
+                if (!recommendJobs.Contains(player.Job) && !recommendJobs.Contains(Job.None))
+                {
+                    continue;
+                }
+            }
+
             if (dropContent.SmartGender)
             {
                 Gender itemGender = ItemMetadataStorage.GetLimitMetadata(id).Gender;
-                if (itemGender != playerGender && itemGender is not Gender.Neutral)
+                if (itemGender != player.Gender && itemGender is not Gender.Neutral)
                 {
                     continue;
                 }
@@ -33,6 +43,7 @@ public static class ItemBoxHelper
             {
                 rarity = constant;
             }
+
             Item newItem = new(id)
             {
                 EnchantLevel = dropContent.EnchantLevel,
@@ -41,8 +52,8 @@ public static class ItemBoxHelper
             };
             newItem.Stats = new(newItem);
             items.Add(newItem);
-
         }
+
         return items;
     }
 
@@ -72,8 +83,10 @@ public static class ItemBoxHelper
                     {
                         dropContentsList.Add(dropGroupContent);
                     }
+
                     continue;
                 }
+
                 dropContentsList.Add(dropGroupContent);
             }
         }
@@ -125,20 +138,31 @@ public static class ItemBoxHelper
         inventory.ConsumeItem(session, item.Uid, box.AmountRequired);
 
         Random rng = Random.Shared;
-
-        // Receive one item from each drop group
         if (box.ReceiveOneItem)
         {
             foreach (DropGroup group in metadata.DropGroups)
             {
-                //randomize the contents
-                DropGroupContent dropContent = group.Contents.OrderBy(x => rng.Next()).First();
-                List<Item> items = GetItemsFromDropGroup(dropContent, session.Player.Gender, item);
-                foreach (Item newItem in items)
+                bool receivedItem = false;
+
+                // Randomize the contents
+                IOrderedEnumerable<DropGroupContent> dropContent = group.Contents.OrderBy(_ => rng.Next());
+                foreach (DropGroupContent content in dropContent)
                 {
-                    inventory.AddItem(session, newItem, true);
+                    // Receive one item from each drop group
+                    if (box.ReceiveOneItem && receivedItem)
+                    {
+                        continue;
+                    }
+
+                    List<Item> items = GetItemsFromDropGroup(content, session.Player, item);
+                    foreach (Item newItem in items)
+                    {
+                        inventory.AddItem(session, newItem, true);
+                        receivedItem = true;
+                    }
                 }
             }
+
             return;
         }
 
@@ -147,7 +171,7 @@ public static class ItemBoxHelper
         {
             foreach (DropGroupContent dropContent in group.Contents)
             {
-                List<Item> items = GetItemsFromDropGroup(dropContent, session.Player.Gender, item);
+                List<Item> items = GetItemsFromDropGroup(dropContent, session.Player, item);
                 foreach (Item newItem in items)
                 {
                     inventory.AddItem(session, newItem, true);
