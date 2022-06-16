@@ -379,7 +379,7 @@ public class WeatherCommand : InGameCommand
             return;
         }
 
-        trigger.Session.Send(FieldPropertyPacket.ChangeWeather(weatherType));
+        trigger.Session.FieldManager.BroadcastPacket(FieldPropertyPacket.ChangeWeather(weatherType));
     }
 }
 
@@ -436,10 +436,10 @@ public class LightCommand : InGameCommand
         switch (option)
         {
             case 0:
-                trigger.Session.Send(FieldPropertyPacket.ChangeAmbientLight(red, green, blue));
+                trigger.Session.FieldManager.BroadcastPacket(FieldPropertyPacket.ChangeAmbientLight(red, green, blue));
                 break;
             case 1:
-                trigger.Session.Send(FieldPropertyPacket.ChangeDirectionalLight(red, green, blue));
+                trigger.Session.FieldManager.BroadcastPacket(FieldPropertyPacket.ChangeDirectionalLight(red, green, blue));
                 break;
             default:
                 trigger.Session.SendNotice($"Invalid option: {option}");
