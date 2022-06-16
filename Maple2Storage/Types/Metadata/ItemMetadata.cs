@@ -12,141 +12,201 @@ public class ItemMetadata
     [XmlElement(Order = 2)]
     public string Name;
     [XmlElement(Order = 3)]
-    public ItemSlot Slot;
+    public InventoryTab Tab;
     [XmlElement(Order = 4)]
-    public GemSlot Gem;
+    public ItemSlot Slot;
     [XmlElement(Order = 5)]
     public MedalSlot Medal;
     [XmlElement(Order = 6)]
-    public InventoryTab Tab;
-    [XmlElement(Order = 7)]
-    public int Rarity;
-    [XmlElement(Order = 8)]
-    public int StackLimit;
-    [XmlElement(Order = 9)]
-    public bool EnableBreak;
-    [XmlElement(Order = 10)]
-    public bool Sellable;
-    [XmlElement(Order = 11)]
-    public TransferType TransferType;
-    [XmlElement(Order = 12)]
-    public int TradeLimitByRarity;
-    [XmlElement(Order = 13)]
-    public byte TradeableCount;
-    [XmlElement(Order = 14)]
-    public bool DisableTradeWithinAccount;
-    [XmlElement(Order = 15)]
-    public byte RepackageCount;
-    [XmlElement(Order = 16)]
-    public byte RepackageItemConsumeCount;
-    [XmlElement(Order = 17)]
     public bool IsTwoHand;
-    [XmlElement(Order = 18)]
+    [XmlElement(Order = 7)]
     public bool IsDress;
+    [XmlElement(Order = 8)]
+    public int Rarity;
+    [XmlElement(Order = 9)]
+    public ItemGemMetadata Gem;
+    [XmlElement(Order = 10)]
+    public ItemUgcMetadata UGC;
+    [XmlElement(Order = 11)]
+    public ItemLifeMetadata Life;
+    [XmlElement(Order = 12)]
+    public ItemPetMetadata Pet;
+    [XmlElement(Order = 13)]
+    public ItemBasicMetadata Basic;
+    [XmlElement(Order = 14)]
+    public ItemLimitMetadata Limit;
+    [XmlElement(Order = 15)]
+    public ItemSkillMetadata Skill;
+    [XmlElement(Order = 16)]
+    public ItemFusionMetadata Fusion;
+    [XmlElement(Order = 17)]
+    public ItemInstallMetadata Install;
+    [XmlElement(Order = 18)]
+    public ItemPropertyMetadata Property;
     [XmlElement(Order = 19)]
-    public bool IsTemplate;
+    public ItemCustomizeMetadata Customize;
     [XmlElement(Order = 20)]
-    public Gender Gender;
+    public ItemFunctionMetadata Function;
     [XmlElement(Order = 21)]
-    public int PlayCount;
+    public ItemOptionMetadata Option;
     [XmlElement(Order = 22)]
-    public bool IsCustomScore;
+    public ItemMusicMetadata Music;
     [XmlElement(Order = 23)]
-    public List<long> SellPrice = new();
+    public ItemHousingMetadata Housing;
     [XmlElement(Order = 24)]
-    public List<long> SellPriceCustom = new();
+    public ItemShopMetadata Shop;
     [XmlElement(Order = 25)]
-    public string FileName;
-    [XmlElement(Order = 26)]
-    public int SkillID;
-    [XmlElement(Order = 27)]
-    public List<int> RecommendJobs = new();
-    [XmlElement(Order = 28)]
     public List<ItemBreakReward> BreakRewards = new();
-    [XmlElement(Order = 29)]
-    public ItemFunction FunctionData = new();
-    [XmlElement(Order = 30)]
-    public string Tag;
-    [XmlElement(Order = 31)]
-    public int ShopID;
-    [XmlElement(Order = 32)]
-    public int PetId;
-    [XmlElement(Order = 33)]
-    public int Level;
-    [XmlElement(Order = 34)]
-    public List<HairPresets> HairPresets = new();
-    [XmlElement(Order = 35)]
-    public int ColorIndex;
-    [XmlElement(Order = 36)]
-    public int ColorPalette;
-    [XmlElement(Order = 37)]
-    public int OptionStatic;
-    [XmlElement(Order = 38)]
-    public int OptionRandom;
-    [XmlElement(Order = 39)]
-    public int OptionConstant;
-    [XmlElement(Order = 40)]
-    public float OptionLevelFactor;
-    [XmlElement(Order = 41)]
-    public int OptionId;
-    [XmlElement(Order = 42)]
-    public bool IsCubeSolid;
-    [XmlElement(Order = 43)]
-    public ItemHousingCategory HousingCategory;
-    [XmlElement(Order = 44)]
-    public int ObjectId;
-    [XmlElement(Order = 45)]
-    public string BlackMarketCategory;
-    [XmlElement(Order = 46)]
-    public string Category;
-    [XmlElement(Order = 47)]
-    public int DurationPeriod;
-    [XmlElement(Order = 48)]
-    public DateTime ExpirationTime;
-    [XmlElement(Order = 49)]
-    public ItemExpirationType ExpirationType;
-    [XmlElement(Order = 50)]
-    public int ExpirationTypeDuration;
-    [XmlElement(Order = 51)]
-    public int GearScoreFactor;
-    [XmlElement(Order = 52)]
-    public bool DisableEnchant;
-    [XmlElement(Order = 53)]
-    public int SocketDataId;
-
-    public override string ToString()
-    {
-        return
-            $"ItemMetadata(Id:{Id},Slot:{Slot},GemSlot:{Gem},Tab:{Tab},Rarity:{Rarity},StackLimit:{StackLimit},IsTwoHand:{IsTwoHand},IsTemplate:{IsTemplate},Gender{Gender},PlayCount:{PlayCount}," +
-            $"IsCustomScore:{IsCustomScore},FileName:{FileName},SkillID:{SkillID},RecommendJobs:{string.Join(",", RecommendJobs)},Function:{FunctionData}," +
-            $"Tag:{Tag},ShopID:{ShopID}";
-    }
 }
 
 [XmlType]
-public class ItemBreakReward
+public class ItemGemMetadata
 {
     [XmlElement(Order = 1)]
-    public int Id;
-    [XmlElement(Order = 2)]
-    public int Count;
-
-    public ItemBreakReward() { }
-
-    public ItemBreakReward(int id, int count)
-    {
-        Id = id;
-        Count = count;
-    }
-
-    public override string ToString()
-    {
-        return $"Id: {Id}, Amount: {Count}";
-    }
+    public GemSlot Gem;
 }
 
 [XmlType]
-public class ItemFunction
+public class ItemUgcMetadata
+{
+    [XmlElement(Order = 1)]
+    public string Mesh;
+}
+
+[XmlType]
+public class ItemLifeMetadata
+{
+    [XmlElement(Order = 1)]
+    public int DurationPeriod;
+    [XmlElement(Order = 2)]
+    public DateTime ExpirationTime;
+    [XmlElement(Order = 3)]
+    public ItemExpirationType ExpirationType;
+    [XmlElement(Order = 4)]
+    public int ExpirationTypeDuration;
+}
+
+[XmlType]
+public class ItemPetMetadata
+{
+    [XmlElement(Order = 1)]
+    public int PetId;
+}
+
+[XmlType]
+public class ItemBasicMetadata
+{
+    [XmlElement(Order = 1)]
+    public string Tag;
+}
+
+[XmlType]
+public class ItemLimitMetadata
+{
+    [XmlElement(Order = 1)]
+    public List<int> JobRequirements;
+    [XmlElement(Order = 2)]
+    public List<int> JobRecommendations;
+    [XmlElement(Order = 3)]
+    public int LevelLimitMin;
+    [XmlElement(Order = 4)]
+    public int LevelLimitMax;
+    [XmlElement(Order = 5)]
+    public Gender Gender;
+    [XmlElement(Order = 6)]
+    public TransferType TransferType;
+    [XmlElement(Order = 7)]
+    public bool Sellable;
+    [XmlElement(Order = 8)]
+    public bool Breakable;
+    [XmlElement(Order = 9)]
+    public bool MeretMarketListable;
+    [XmlElement(Order = 10)]
+    public bool DisableEnchant;
+    [XmlElement(Order = 11)]
+    public int TradeLimitByRarity;
+    [XmlElement(Order = 12)]
+    public bool VipOnly;
+}
+
+[XmlType]
+public class ItemSkillMetadata
+{
+    [XmlElement(Order = 1)]
+    public int SkillId;
+    [XmlElement(Order = 2)]
+    public int SkillLevel;
+}
+
+[XmlType]
+public class ItemFusionMetadata
+{
+    [XmlElement(Order = 1)]
+    public bool Fusionable;
+}
+
+[XmlType]
+public class ItemInstallMetadata
+{
+    [XmlElement(Order = 1)]
+    public bool IsCubeSolid;
+    [XmlElement(Order = 2)]
+    public int ObjectId;
+}
+
+[XmlType]
+public class ItemPropertyMetadata
+{
+    [XmlElement(Order = 1)]
+    public int StackLimit;
+    [XmlElement(Order = 2)]
+    public ItemSkinType SkinType;
+    [XmlElement(Order = 3)]
+    public string Category;
+    [XmlElement(Order = 4)]
+    public string BlackMarketCategory;
+    [XmlElement(Order = 5)]
+    public bool DisableAttributeChange;
+    [XmlElement(Order = 6)]
+    public int GearScoreFactor;
+    [XmlElement(Order = 7)]
+    public int TradeableCount;
+    [XmlElement(Order = 8)]
+    public byte RepackageCount;
+    [XmlElement(Order = 9)]
+    public byte RepackageItemConsumeCount;
+    [XmlElement(Order = 10)]
+    public bool DisableTradeWithinAccount;
+    [XmlElement(Order = 11)]
+    public bool DisableDrop;
+    [XmlElement(Order = 12)]
+    public int SocketDataId;
+    [XmlElement(Order = 13)]
+    public ItemSellMetadata Sell;
+}
+
+[XmlType]
+public class ItemSellMetadata
+{
+    [XmlElement(Order = 1)]
+    public List<long> SellPrice = new();
+    [XmlElement(Order = 2)]
+    public List<long> SellPriceCustom = new();
+}
+
+[XmlType]
+public class ItemCustomizeMetadata
+{
+    [XmlElement(Order = 1)]
+    public int ColorPalette;
+    [XmlElement(Order = 2)]
+    public int ColorIndex;
+    [XmlElement(Order = 3)]
+    public List<HairPresets> HairPresets = new();
+}
+
+[XmlType]
+public class ItemFunctionMetadata
 {
     [XmlElement(Order = 1)]
     public string Name;
@@ -174,10 +234,77 @@ public class ItemFunction
     public SurvivalSkin SurvivalSkin;
     [XmlElement(Order = 13)]
     public SurvivalLevelExp SurvivalLevelExp;
+}
+
+[XmlType]
+public class ItemOptionMetadata
+{
+    [XmlElement(Order = 1)]
+    public int Static;
+    [XmlElement(Order = 2)]
+    public int Random;
+    [XmlElement(Order = 3)]
+    public int Constant;
+    [XmlElement(Order = 4)]
+    public float OptionLevelFactor;
+    [XmlElement(Order = 5)]
+    public int OptionId;
+}
+
+[XmlType]
+public class ItemMusicMetadata
+{
+    [XmlElement(Order = 1)]
+    public int PlayCount;
+    [XmlElement(Order = 2)]
+    public int MasteryValue;
+    [XmlElement(Order = 3)]
+    public int MasteryValueMax;
+    [XmlElement(Order = 4)]
+    public bool IsCustomScore;
+    [XmlElement(Order = 5)]
+    public string FileName;
+    [XmlElement(Order = 6)]
+    public int PlayTime;
+}
+
+[XmlType]
+public class ItemHousingMetadata
+{
+    [XmlElement(Order = 1)]
+    public ItemHousingCategory HousingCategory;
+    [XmlElement(Order = 2)]
+    public int TrophyId;
+    [XmlElement(Order = 3)]
+    public int TrophyLevel;
+}
+
+[XmlType]
+public class ItemShopMetadata
+{
+    [XmlElement(Order = 1)]
+    public int ShopId;
+}
+
+[XmlType]
+public class ItemBreakReward
+{
+    [XmlElement(Order = 1)]
+    public int Id;
+    [XmlElement(Order = 2)]
+    public int Count;
+
+    public ItemBreakReward() { }
+
+    public ItemBreakReward(int id, int count)
+    {
+        Id = id;
+        Count = count;
+    }
 
     public override string ToString()
     {
-        return $"Function(Name: {Name}, Id: {Id}";
+        return $"Id: {Id}, Amount: {Count}";
     }
 }
 

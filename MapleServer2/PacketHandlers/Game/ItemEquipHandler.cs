@@ -49,12 +49,7 @@ public class ItemEquipHandler : GamePacketHandler<ItemEquipHandler>
         Player player = session.Player;
         IInventory inventory = player.Inventory;
         Item item = inventory.GetByUid(itemUid);
-        if (item is null || item.IsExpired())
-        {
-            return;
-        }
-
-        if (item.TransferFlag.HasFlag(ItemTransferFlag.Binds) && item.TransferType == TransferType.BindOnEquip && !item.BindItem(player))
+        if (item is null || !item.CanEquip(session))
         {
             return;
         }

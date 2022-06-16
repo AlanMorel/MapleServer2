@@ -133,9 +133,9 @@ public class UgcHandler : GamePacketHandler<UgcHandler>
         Item item = new(itemId, amount)
         {
             Rarity = metadata.Rarity,
-            Ugc = new(itemName, characterId, session.Player.Name, accountId, metadata.SalePrice, type),
-            IsTemplate = true
         };
+
+        item.Ugc.UpdateItem(itemName, characterId, session.Player.Name, accountId, metadata.SalePrice, type);
         DatabaseManager.Items.Update(item);
         return item.Ugc;
     }

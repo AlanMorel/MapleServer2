@@ -481,7 +481,6 @@ CREATE TABLE `items`
     `inventory_id`             bigint      DEFAULT NULL,
     `is_equipped`              tinyint(1)       NOT NULL,
     `is_locked`                tinyint(1)       NOT NULL,
-    `is_template`              tinyint(1)       NOT NULL,
     `mail_id`                  bigint      DEFAULT NULL,
     `owner_account_id`         bigint      DEFAULT NULL,
     `owner_character_id`       bigint      DEFAULT NULL,
@@ -516,8 +515,7 @@ CREATE TABLE `items`
     CONSTRAINT `fk_items_guilds_guildid` FOREIGN KEY (`guild_id`) REFERENCES `guilds` (`id`) ON DELETE RESTRICT,
     CONSTRAINT `fk_items_homes_homeid` FOREIGN KEY (`home_id`) REFERENCES `homes` (`id`) ON DELETE RESTRICT,
     CONSTRAINT `fk_items_inventories_inventoryid` FOREIGN KEY (`inventory_id`) REFERENCES `inventories` (`id`) ON DELETE RESTRICT,
-    CONSTRAINT `fk_items_mails_mailid` FOREIGN KEY (`mail_id`) REFERENCES `mails` (`id`) ON DELETE RESTRICT,
-    CONSTRAINT `fk_items_ugc_ugcuid` FOREIGN KEY (`ugc_uid`) REFERENCES `ugc` (`uid`) ON DELETE RESTRICT
+    CONSTRAINT `fk_items_mails_mailid` FOREIGN KEY (`mail_id`) REFERENCES `mails` (`id`) ON DELETE RESTRICT
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
@@ -736,11 +734,7 @@ CREATE TABLE `ugc`
     `sale_price`      bigint           NOT NULL,
     `type`            tinyint unsigned NOT NULL,
     `guild_poster_id` integer,
-    PRIMARY KEY (`uid`),
-    KEY `ix_ugc_account_id` (`account_id`),
-    KEY `ix_ugc_character_id` (`character_id`),
-    CONSTRAINT `ugc_FK` FOREIGN KEY (`character_id`) REFERENCES `characters` (`character_id`),
-    CONSTRAINT `ugc_FK_1` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`)
+    PRIMARY KEY (`uid`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci

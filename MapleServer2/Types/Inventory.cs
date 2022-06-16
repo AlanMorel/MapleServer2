@@ -257,6 +257,12 @@ public sealed class Inventory : IInventory
 
     public void DropItem(GameSession session, Item item, int amount)
     {
+        if (ItemMetadataStorage.GetPropertyMetadata(item.Id).DisableDrop)
+        {
+            session.Send(NoticePacket.Notice(SystemNotice.ItemErrDrop));
+            return;
+        }
+
         // Drops item not bound
         if (!item.TransferFlag.HasFlag(ItemTransferFlag.Tradeable))
         {

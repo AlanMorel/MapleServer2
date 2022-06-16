@@ -42,7 +42,7 @@ public static class ItemPacketHelper
             pWriter.WriteMusicScore(item);
         }
 
-        if (item.IsTemplate)
+        if (item.Ugc != null)
         {
             pWriter.WriteTemplate(item.Ugc);
         }

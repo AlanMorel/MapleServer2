@@ -29,7 +29,7 @@ public class RequestItemUseHandler : GamePacketHandler<RequestItemUseHandler>
         }
 
         Item item = session.Player.Inventory.GetByUid(itemUid);
-        if (item.IsExpired())
+        if (item is null || !item.CanUse(session))
         {
             return;
         }
@@ -290,7 +290,7 @@ public class RequestItemUseHandler : GamePacketHandler<RequestItemUseHandler>
             return contents;
         }
 
-        Gender itemGender = ItemMetadataStorage.GetGender(contents.ItemId);
+        Gender itemGender = ItemMetadataStorage.GetLimitMetadata(contents.ItemId).Gender;
         if (playerGender != itemGender || itemGender != Gender.Neutral) // if it's not the same gender or unisex, roll again
         {
             bool sameGender = false;
@@ -299,7 +299,7 @@ public class RequestItemUseHandler : GamePacketHandler<RequestItemUseHandler>
                 int indexReroll = random.Next(gacha.Contents.Count);
 
                 GachaContent rerollContents = gacha.Contents[indexReroll];
-                Gender rerollContentsGender = ItemMetadataStorage.GetGender(rerollContents.ItemId);
+                Gender rerollContentsGender = ItemMetadataStorage.GetLimitMetadata(rerollContents.ItemId).Gender;
 
                 if (rerollContentsGender == playerGender || rerollContentsGender == Gender.Neutral)
                 {

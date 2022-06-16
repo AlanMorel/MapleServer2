@@ -5,6 +5,7 @@ using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
+using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MoonSharp.Interpreter;
 
@@ -21,14 +22,13 @@ public class Item
     public bool EnableBreak { get; private set; }
     public bool IsTwoHand { get; private set; }
     public bool IsDress { get; private set; }
-    public bool IsTemplate { get; set; }
     public bool IsCustomScore { get; set; }
     public int PlayCount { get; set; }
     public Gender Gender { get; private set; }
     public string FileName { get; set; }
     public int SkillId { get; set; }
     public List<Job> RecommendJobs { get; set; }
-    public ItemFunction Function { get; set; }
+    public ItemFunctionMetadata Function { get; set; }
     public string Tag { get; set; }
     public int ShopID { get; set; }
     public int PetId { get; set; }
@@ -93,22 +93,29 @@ public class Item
     public Item(int id, bool saveToDatabase = true)
     {
         Id = id;
+        ItemPropertyMetadata property = ItemMetadataStorage.GetPropertyMetadata(Id);
+        ItemMusicMetadata music = ItemMetadataStorage.GetMusicMetadata(Id);
+        ItemLimitMetadata limit = ItemMetadataStorage.GetLimitMetadata(Id);
         SetMetadataValues();
         Name = ItemMetadataStorage.GetName(id);
-        Level = ItemMetadataStorage.GetLevel(id);
+        Level = limit.LevelLimitMin;
         ItemSlot = ItemMetadataStorage.GetSlot(id);
-        IsTemplate = ItemMetadataStorage.GetIsTemplate(id);
+        if (ItemMetadataStorage.GetIsUGC(id))
+        {
+            Ugc = new();
+            Ugc.Uid = DatabaseManager.UGC.Insert(Ugc);
+        }
         if (GemSlot == GemSlot.TRANS)
         {
             TransparencyBadgeBools = new byte[10];
         }
 
         Rarity = ItemMetadataStorage.GetRarity(id);
-        PlayCount = ItemMetadataStorage.GetPlayCount(id);
+        PlayCount = music.PlayCount;
         Color = ItemMetadataStorage.GetEquipColor(id);
         CreationTime = TimeInfo.Now();
-        RemainingTrades = ItemMetadataStorage.GetTradeableCount(Id);
-        RemainingRepackageCount = ItemMetadataStorage.GetRepackageCount(Id);
+        RemainingTrades = property.TradeableCount;
+        RemainingRepackageCount = property.RepackageCount;
         RemainingGlamorForges = ItemExtractionMetadataStorage.GetExtractionCount(id);
         Slot = -1;
         Amount = 1;
@@ -143,7 +150,6 @@ public class Item
         EnableBreak = other.EnableBreak;
         IsTwoHand = other.IsTwoHand;
         IsDress = other.IsDress;
-        IsTemplate = other.IsTemplate;
         IsCustomScore = other.IsCustomScore;
         PlayCount = other.PlayCount;
         FileName = other.FileName;
@@ -254,7 +260,7 @@ public class Item
 
     public bool IsSelfBound(long characterId)
     {
-        return OwnerAccountId == characterId;
+        return OwnerCharacterId == characterId;
     }
 
     public bool IsExpired()
@@ -274,26 +280,31 @@ public class Item
 
     public void SetMetadataValues()
     {
+        ItemPropertyMetadata property = ItemMetadataStorage.GetPropertyMetadata(Id);
+        ItemLimitMetadata limit = ItemMetadataStorage.GetLimitMetadata(Id);
+        ItemMusicMetadata music = ItemMetadataStorage.GetMusicMetadata(Id);
+        ItemSkillMetadata skill = ItemMetadataStorage.GetSkillMetadata(Id);
+        ItemHousingMetadata housing = ItemMetadataStorage.GetHousingMetadata(Id);
         InventoryTab = ItemMetadataStorage.GetTab(Id);
         GemSlot = ItemMetadataStorage.GetGem(Id);
-        StackLimit = ItemMetadataStorage.GetStackLimit(Id);
-        EnableBreak = ItemMetadataStorage.GetEnableBreak(Id);
+        StackLimit = property.StackLimit;
+        EnableBreak = limit.Breakable;
         IsTwoHand = ItemMetadataStorage.GetIsTwoHand(Id);
         IsDress = ItemMetadataStorage.GetIsDress(Id);
-        IsCustomScore = ItemMetadataStorage.GetIsCustomScore(Id);
-        Gender = ItemMetadataStorage.GetGender(Id);
-        FileName = ItemMetadataStorage.GetFileName(Id);
-        SkillId = ItemMetadataStorage.GetSkillID(Id);
+        IsCustomScore = music.IsCustomScore;
+        FileName = music.FileName;
+        Gender = limit.Gender;
+        SkillId = skill.SkillId;
         RecommendJobs = ItemMetadataStorage.GetRecommendJobs(Id);
-        Function = ItemMetadataStorage.GetFunction(Id);
+        Function = ItemMetadataStorage.GetFunctionMetadata(Id);
         Tag = ItemMetadataStorage.GetTag(Id);
         ShopID = ItemMetadataStorage.GetShopID(Id);
-        TransferType = ItemMetadataStorage.GetTransferType(Id);
+        TransferType = limit.TransferType;
         TransferFlag = ItemMetadataStorage.GetTransferFlag(Id, Rarity);
-        HousingCategory = ItemMetadataStorage.GetHousingCategory(Id);
-        BlackMarketCategory = ItemMetadataStorage.GetBlackMarketCategory(Id);
-        Category = ItemMetadataStorage.GetCategory(Id);
-        DisableEnchant = ItemMetadataStorage.IsEnchantDisabled(Id);
+        HousingCategory = housing.HousingCategory;
+        BlackMarketCategory = property.BlackMarketCategory;
+        Category = property.Category;
+        DisableEnchant = limit.DisableEnchant;
         Type = GetItemType();
     }
 
@@ -336,9 +347,104 @@ public class Item
         };
     }
 
+    public bool CanEquip(GameSession session)
+    {
+        NoticeType noticeType = NoticeType.Chat | NoticeType.FastText;
+        if (ItemMetadataStorage.GetLimitMetadata(Id).VipOnly && !session.Player.Account.IsVip())
+        {
+            return false;
+        }
+
+        if (Gender != Gender.Neutral && Gender != session.Player.Gender)
+        {
+            session.Send(NoticePacket.Notice(SystemNotice.ErrorGender, noticeType));
+            return false;
+        }
+
+        if (IsBound() && !IsSelfBound(session.Player.CharacterId))
+        {
+            session.Send(NoticePacket.Notice(SystemNotice.ItemErrPutonInvalidBinding, noticeType));
+            return false;
+        }
+
+        List<Job> jobs = ItemMetadataStorage.GetRequiredJobs(Id);
+        if (!jobs.Contains(Job.None) && !jobs.Contains(session.Player.Job))
+        {
+            session.Send(NoticePacket.Notice(SystemNotice.ItemErrPutonJob, noticeType));
+            return false;
+        }
+
+        if (IsExpired())
+        {
+            session.Send(NoticePacket.Notice(SystemNotice.ItemErrPutonExpired, noticeType));
+            return false;
+        }
+
+        // TODO: Handle PC Bang
+
+        if (Level > session.Player.Levels.Level)
+        {
+            session.Send(NoticePacket.Notice(SystemNotice.ItemErrPutonLowLevel, noticeType));
+            return false;
+        }
+
+        int maxLevel = ItemMetadataStorage.GetLimitMetadata(Id).LevelLimitMax;
+        return maxLevel == 0 || maxLevel >= session.Player.Levels.Level;
+    }
+
+    public bool CanUse(GameSession session)
+    {
+        NoticeType noticeType = NoticeType.Chat | NoticeType.FastText;
+
+        if (ItemMetadataStorage.GetLimitMetadata(Id).VipOnly && !session.Player.Account.IsVip())
+        {
+            return false;
+        }
+
+        if (Gender != Gender.Neutral && Gender != session.Player.Gender)
+        {
+            session.Send(NoticePacket.Notice(SystemNotice.ErrorGender, noticeType));
+            return false;
+        }
+
+        if (IsBound() && !IsSelfBound(session.Player.CharacterId))
+        {
+            session.Send(NoticePacket.Notice(SystemNotice.ItemErrUseInvalidBinding, noticeType));
+            return false;
+        }
+
+        List<Job> jobs = ItemMetadataStorage.GetRequiredJobs(Id);
+        if (!jobs.Contains(Job.None) && !jobs.Contains(session.Player.Job))
+        {
+            session.Send(NoticePacket.Notice(SystemNotice.ItemErrDisableJob, noticeType));
+            return false;
+        }
+
+        if (IsExpired())
+        {
+            session.Send(NoticePacket.Notice(SystemNotice.ItemErrPutonExpired, noticeType));
+            return false;
+        }
+
+        // TODO: Handle PC Bang
+
+        if (Level > session.Player.Levels.Level)
+        {
+            session.Send(NoticePacket.Notice(SystemNotice.ItemErrUseLowLevel, noticeType));
+            return false;
+        }
+
+        int maxLevel = ItemMetadataStorage.GetLimitMetadata(Id).LevelLimitMax;
+        if (maxLevel != 0)
+        {
+            return maxLevel >= session.Player.Levels.Level;
+        }
+        return true;
+    }
+
     public int GetGearScore()
     {
-        int gearScoreFactor = ItemMetadataStorage.GetGearScoreFactor(Id);
+        int gearScoreFactor = ItemMetadataStorage.GetPropertyMetadata(Id).GearScoreFactor;
         Script script = ScriptLoader.GetScript("Functions/calcItemValues");
         DynValue result = script.RunFunction("calcItemGearScore", gearScoreFactor, Rarity, (int) Type, EnchantLevel, LimitBreakLevel);
         return (int) result.Tuple[0].Number + (int) result.Tuple[1].Number;

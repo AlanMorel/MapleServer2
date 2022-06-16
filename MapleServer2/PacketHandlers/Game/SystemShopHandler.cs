@@ -59,7 +59,7 @@ public class SystemShopHandler : GamePacketHandler<SystemShopHandler>
             return;
         }
 
-        ShopHelper.OpenSystemShop(session, item.ShopID, 0);
+        ShopHelper.OpenSystemShop(session, item.Shop.ShopId, 0);
     }
 
     private static void HandleFishingShop(GameSession session, PacketReader packet)
@@ -85,6 +85,4 @@ public class SystemShopHandler : GamePacketHandler<SystemShopHandler>
 
         ShopHelper.OpenSystemShop(session, 168, 11001562);
     }
-
-
 }

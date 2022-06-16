@@ -30,96 +30,160 @@ public class ItemParser : Exporter<List<ItemMetadata>>
         foreach ((int id, string name, ItemData data) in parser.Parse())
         {
             Limit limit = data.limit;
+            Skill skill = data.skill;
+            Fusion fusion = data.fusion;
             Property property = data.property;
             Function function = data.function;
             Install install = data.install;
             MusicScore musicScore = data.MusicScore;
             Life life = data.life;
-
+            Housing housing = data.housing;
             ItemMetadata metadata = new()
             {
                 Id = id,
                 Name = name,
-                Tag = data.basic.stringTag,
-                ColorIndex = data.customize.defaultColorIndex,
-                ColorPalette = data.customize.colorPalette,
-                Gem = (GemSlot) data.gem.system,
                 Tab = GetTab(property.type, property.subtype, property.skin != 0),
-                IsTemplate = property.skinType == 99,
-                TradeableCount = (byte) property.tradableCount,
-                DisableTradeWithinAccount = property.moveDisable == 1,
-                RepackageCount = (byte) property.rePackingLimitCount,
-                RepackageItemConsumeCount = (byte) property.rePackingItemConsumeCount,
-                BlackMarketCategory = property.blackMarketCategory,
-                Category = property.category,
-                SellPrice = property.sell.price.ToList(),
-                SellPriceCustom = property.sell.priceCustom.ToList(),
-                StackLimit = property.slotMax,
-                OptionStatic = data.option.@static,
-                OptionRandom = data.option.random,
-                OptionConstant = data.option.constant,
-                OptionLevelFactor = data.option.optionLevelFactor,
-                OptionId = data.option.optionID,
-                FunctionData =
+                Gem = new()
+                {
+                    Gem = (GemSlot) data.gem.system
+                },
+                UGC = new()
+                {
+                    Mesh = data.ucc.mesh
+                },
+                Life = new()
+                {
+                    DurationPeriod = life.usePeriod,
+                    ExpirationType = (ItemExpirationType) life.expirationType,
+                    ExpirationTypeDuration = life.numberOfWeeksMonths
+                },
+                Pet = new()
+                {
+                    PetId = data.pet?.petID ?? 0,
+                },
+                Basic = new()
+                {
+                    Tag = data.basic.stringTag
+                },
+                Limit = new()
+                {
+                    JobRequirements = limit.jobLimit.ToList(),
+                    JobRecommendations = limit.recommendJobs.ToList(),
+                    LevelLimitMin = limit.levelLimit,
+                    LevelLimitMax = limit.levelLimitMax,
+                    Gender = (Gender) limit.genderLimit,
+                    TransferType = (TransferType) limit.transferType,
+                    Sellable = limit.shopSell == 1,
+                    Breakable = limit.enableBreak == 1,
+                    MeretMarketListable = limit.enableRegisterMeratMarket == 1,
+                    DisableEnchant = limit.exceptEnchant == 1,
+                    TradeLimitByRarity = limit.tradeLimitRank,
+                    VipOnly = limit.vip == 1
+                },
+                Skill = new()
+                {
+                    SkillId = skill.skillID,
+                    SkillLevel = skill.skillLevel
+                },
+                Fusion = new()
+                {
+                    Fusionable = fusion.fusionable == 1,
+                },
+                Install = new()
+                {
+                    IsCubeSolid = install.cubeProp == 1,
+                    ObjectId = install.objCode,
+                },
+                Property = new()
+                {
+                    StackLimit = property.slotMax,
+                    SkinType = (ItemSkinType) property.skinType,
+                    Category = property.category,
+                    BlackMarketCategory = property.blackMarketCategory,
+                    DisableAttributeChange = property.remakeDisable,
+                    GearScoreFactor = property.gearScore,
+                    TradeableCount = (byte) property.tradableCount,
+                    RepackageCount = (byte) property.rePackingLimitCount,
+                    RepackageItemConsumeCount = (byte) property.rePackingItemConsumeCount,
+                    DisableTradeWithinAccount = property.moveDisable == 1,
+                    DisableDrop = property.disableDrop,
+                    SocketDataId = property.socketDataId,
+                    Sell = new()
+                    {
+                        SellPrice = property.sell.price.ToList(),
+                        SellPriceCustom = property.sell.priceCustom.ToList(),
+                    }
+                },
+                Customize = new()
+                {
+                    ColorIndex = data.customize.defaultColorIndex,
+                    ColorPalette = data.customize.colorPalette,
+                },
+                Function = new()
                 {
                     Name = function.name
                 },
-                PlayCount = musicScore.playCount,
-                FileName = musicScore.fileName,
-                IsCustomScore = musicScore.isCustomNote,
-                ShopID = data.Shop?.systemShopID ?? 0,
-                PetId = data.pet?.petID ?? 0,
-                SkillID = data.skill.skillID,
-                EnableBreak = limit.enableBreak != 0,
-                Level = limit.levelLimit,
-                TransferType = (TransferType) limit.transferType,
-                TradeLimitByRarity = limit.tradeLimitRank,
-                Sellable = limit.shopSell != 0,
-                RecommendJobs = limit.recommendJobs.ToList(),
-                Gender = (Gender) limit.genderLimit,
-                IsCubeSolid = install.cubeProp != 0,
-                ObjectId = install.objCode,
-                DurationPeriod = life.usePeriod,
-                ExpirationType = (ItemExpirationType) life.expirationType,
-                ExpirationTypeDuration = life.numberOfWeeksMonths,
-                GearScoreFactor = property.gearScore,
-                DisableEnchant = limit.exceptEnchant == 1,
-                SocketDataId = property.socketDataId
+                Option = new()
+                {
+                    Static = data.option.@static,
+                    Random = data.option.random,
+                    Constant = data.option.constant,
+                    OptionLevelFactor = data.option.optionLevelFactor,
+                    OptionId = data.option.optionID,
+                },
+                Music = new()
+                {
+                    PlayCount = musicScore.playCount,
+                    MasteryValue = musicScore.masteryValue,
+                    MasteryValueMax = musicScore.masteryValueMax,
+                    IsCustomScore = musicScore.isCustomNote,
+                    FileName = musicScore.fileName,
+                    PlayTime = musicScore.playTime
+                },
+                Housing = new()
+                {
+                    TrophyId = housing.trophyID,
+                    TrophyLevel = housing.trophyLevel
+                },
+                Shop = new()
+                {
+                    ShopId = data.Shop?.systemShopID ?? 0
+                }
             };
 
             // Parse expiration time
             if (life.expirationPeriod.Length > 0)
             {
-                metadata.ExpirationTime = new(life.expirationPeriod[0], life.expirationPeriod[1], life.expirationPeriod[2], life.expirationPeriod[3],
+                metadata.Life.ExpirationTime = new(life.expirationPeriod[0], life.expirationPeriod[1], life.expirationPeriod[2], life.expirationPeriod[3],
                     life.expirationPeriod[4], life.expirationPeriod[5]);
             }
 
             // if globalOptionLevelFactor is present, override with these values
             if (data.option.globalOptionLevelFactor is not null)
             {
-                metadata.OptionLevelFactor = (float) data.option.globalOptionLevelFactor;
+                metadata.Option.OptionLevelFactor = (float) data.option.globalOptionLevelFactor;
             }
             // if globalTransferType is present, override with these values
             if (limit.globalTransferType is not null)
             {
-                metadata.TransferType = (TransferType) limit.globalTransferType;
+                metadata.Limit.TransferType = (TransferType) limit.globalTransferType;
             }
 
             // if globalTransferTypeNA is present, override with these values
             if (limit.globalTransferTypeNA is not null)
             {
-                metadata.TransferType = (TransferType) limit.globalTransferTypeNA;
+                metadata.Limit.TransferType = (TransferType) limit.globalTransferTypeNA;
             }
 
             // if globalRePackingLimit is present, override repacking with these values
             if (property.globalRePackingLimitCount is not null)
             {
-                metadata.RepackageCount = (byte) property.globalRePackingLimitCount;
-                metadata.RepackageItemConsumeCount = (byte) property.globalRePackingItemConsumeCount;
+                metadata.Property.RepackageCount = (byte) property.globalRePackingLimitCount;
+                metadata.Property.RepackageItemConsumeCount = (byte) property.globalRePackingItemConsumeCount;
             }
 
-            // Item boxes
-            ParseBoxes(function, metadata);
+            // Item functions
+            ParseFunctions(function, metadata);
 
             Slot firstSlot = data.slots.slot.First();
             bool slotResult = Enum.TryParse(firstSlot.name, out metadata.Slot);
@@ -146,11 +210,11 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                 ParseHair(firstSlot, metadata);
             }
 
-            if (!string.IsNullOrEmpty(data.housing.categoryTag))
+            if (!string.IsNullOrEmpty(housing.categoryTag))
             {
-                string[] tags = data.housing.categoryTag.Split(',');
+                string[] tags = housing.categoryTag.Split(',');
                 _ = short.TryParse(tags[0], out short category);
-                metadata.HousingCategory = (ItemHousingCategory) category;
+                metadata.Housing.HousingCategory = (ItemHousingCategory) category;
             }
 
             // Item breaking ingredients
@@ -171,7 +235,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
         return items;
     }
 
-    private static void ParseBoxes(Function function, ItemMetadata metadata)
+    private static void ParseFunctions(Function function, ItemMetadata metadata)
     {
         switch (function.name)
         {
@@ -195,7 +259,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                         box.AmountRequired = int.Parse(parameters[4]);
                     }
 
-                    metadata.FunctionData.OpenItemBox = box;
+                    metadata.Function.OpenItemBox = box;
                     break;
                 }
             case "SelectItemBox" when function.parameter.Contains('l'):
@@ -209,7 +273,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                         GroupId = int.Parse(parameters[0]),
                         BoxId = int.Parse(parameters[1])
                     };
-                    metadata.FunctionData.SelectItemBox = box;
+                    metadata.Function.SelectItemBox = box;
                     break;
                 }
             case "ChatEmoticonAdd":
@@ -227,7 +291,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                         Duration = int.Parse(functionParameters.Attributes["durationSec"]?.Value ?? "0")
                     };
 
-                    metadata.FunctionData.ChatEmoticonAdd = sticker;
+                    metadata.Function.ChatEmoticonAdd = sticker;
                     break;
                 }
             case "OpenMassive":
@@ -246,7 +310,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                         Duration = int.Parse(functionParameters.Attributes["portalDurationTick"].Value),
                         Capacity = byte.Parse(functionParameters.Attributes["maxCount"].Value)
                     };
-                    metadata.FunctionData.OpenMassiveEvent = massiveEvent;
+                    metadata.Function.OpenMassiveEvent = massiveEvent;
                     break;
                 }
             case "LevelPotion":
@@ -262,7 +326,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                     {
                         TargetLevel = byte.Parse(functionParameters.Attributes["targetLevel"].Value)
                     };
-                    metadata.FunctionData.LevelPotion = levelPotion;
+                    metadata.Function.LevelPotion = levelPotion;
                     break;
                 }
             case "VIPCoupon":
@@ -278,7 +342,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                     {
                         Duration = int.Parse(functionParameters.Attributes["period"].Value)
                     };
-                    metadata.FunctionData.VIPCoupon = coupon;
+                    metadata.Function.VIPCoupon = coupon;
                     break;
                 }
             case "HongBao":
@@ -297,19 +361,19 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                         TotalUsers = byte.Parse(functionParameters.Attributes["totalUser"].Value),
                         Duration = int.Parse(functionParameters.Attributes["durationSec"].Value)
                     };
-                    metadata.FunctionData.HongBao = hongBao;
+                    metadata.Function.HongBao = hongBao;
                     break;
                 }
             case "SuperWorldChat":
                 {
                     string[] parameters = function.parameter.Split(",");
-                    metadata.FunctionData.Id = int.Parse(parameters[0]); // only storing the first parameter. Not sure if the server uses the other 2. 
+                    metadata.Function.Id = int.Parse(parameters[0]); // only storing the first parameter. Not sure if the server uses the other 2. 
                     break;
                 }
             case "OpenGachaBox":
                 {
                     string[] parameters = function.parameter.Split(",");
-                    metadata.FunctionData.Id = int.Parse(parameters[0]); // only storing the first parameter. Unknown what the second parameter is used for.
+                    metadata.Function.Id = int.Parse(parameters[0]); // only storing the first parameter. Unknown what the second parameter is used for.
                     break;
                 }
             case "OpenCoupleEffectBox":
@@ -320,7 +384,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                         Id = int.Parse(parameters[0]),
                         Rarity = byte.Parse(parameters[1])
                     };
-                    metadata.FunctionData.OpenCoupleEffectBox = box;
+                    metadata.Function.OpenCoupleEffectBox = box;
                     break;
                 }
             case "InstallBillBoard":
@@ -342,7 +406,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                         Reactable = functionParameters.Attributes["reactable"].Value,
                         Scale = float.Parse(functionParameters.Attributes["scale"]?.Value ?? "0")
                     };
-                    metadata.FunctionData.InstallBillboard = balloon;
+                    metadata.Function.InstallBillboard = balloon;
                     break;
                 }
             case "SurvivalSkin":
@@ -360,7 +424,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                         "gliding" => MedalSlot.Glider,
                         _ => throw new ArgumentException($"Unknown slot for: {functionParameters.Attributes["type"].Value}")
                     };
-                    metadata.FunctionData.SurvivalSkin = new()
+                    metadata.Function.SurvivalSkin = new()
                     {
                         Id = int.Parse(functionParameters.Attributes["id"].Value),
                         Slot = medalSlot
@@ -375,7 +439,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                     XmlDocument xmlParameter = new();
                     xmlParameter.LoadXml(decodedParameter);
                     XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
-                    metadata.FunctionData.SurvivalLevelExp = new()
+                    metadata.Function.SurvivalLevelExp = new()
                     {
                         SurvivalExp = int.Parse(functionParameters.Attributes["SurvivalExp"].Value)
                     };
@@ -390,7 +454,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
             case "ItemRePackingScroll":
             case "ItemSocketScroll":
             case "EnchantScroll":
-                metadata.FunctionData.Id = int.Parse(function.parameter);
+                metadata.Function.Id = int.Parse(function.parameter);
                 break;
         }
     }
@@ -501,7 +565,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                             MaxScale = scaleNode?.max ?? 0
                         };
 
-                        metadata.HairPresets.Add(hairPresets);
+                        metadata.Customize.HairPresets.Add(hairPresets);
                     }
 
                     break;
@@ -534,7 +598,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                             MaxScale = scaleNode?.max ?? 0
                         };
 
-                        metadata.HairPresets.Add(hairPresets);
+                        metadata.Customize.HairPresets.Add(hairPresets);
                     }
 
                     break;
@@ -552,18 +616,23 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                         MaxScale = scaleNode?.max ?? 0
                     };
 
-                    metadata.HairPresets.Add(hairPresets);
+                    metadata.Customize.HairPresets.Add(hairPresets);
                     break;
                 }
         }
     }
 
     // This is an approximation and may not be 100% correct
-    private static InventoryTab GetTab(int type, int subType, bool skin = false)
+    private static InventoryTab GetTab(int type, int subType, bool skin = false, bool survival = false)
     {
         if (skin)
         {
             return InventoryTab.Outfit;
+        }
+
+        if (survival)
+        {
+            //return InventoryTab.Survival;
         }
 
         switch (type)

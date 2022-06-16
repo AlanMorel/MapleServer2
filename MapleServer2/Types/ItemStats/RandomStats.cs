@@ -9,7 +9,7 @@ public static class RandomStats
     public static void GetStats(Item item, out Dictionary<StatAttribute, ItemStat> randomStats)
     {
         randomStats = new();
-        int randomId = ItemMetadataStorage.GetOptionRandom(item.Id);
+        int randomId = ItemMetadataStorage.GetOptionMetadata(item.Id).Random;
         ItemOptionRandom randomOptions = ItemOptionRandomMetadataStorage.GetMetadata(randomId, item.Rarity);
         if (randomOptions == null)
         {
@@ -74,7 +74,7 @@ public static class RandomStats
     {
         int id = item.Id;
 
-        int randomId = ItemMetadataStorage.GetOptionRandom(id);
+        int randomId = ItemMetadataStorage.GetOptionMetadata(id).Random;
         ItemOptionRandom randomOptions = ItemOptionRandomMetadataStorage.GetMetadata(randomId, item.Rarity);
         if (randomOptions == null)
         {
@@ -209,7 +209,7 @@ public static class RandomStats
     // Returns index 8~15 for equip level 70+
     private static int Roll(int itemId)
     {
-        float itemLevelFactor = ItemMetadataStorage.GetOptionLevelFactor(itemId);
+        float itemLevelFactor = ItemMetadataStorage.GetOptionMetadata(itemId).OptionLevelFactor;
         Random random = Random.Shared;
         if (itemLevelFactor >= 70)
         {

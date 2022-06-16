@@ -8,12 +8,12 @@ public class UGC
     public long Uid;
 
     public Guid Guid;
-    public string Name;
-    public string Url;
+    public string Name = "";
+    public string Url = "";
     public UGCType Type;
 
     public long CharacterId;
-    public string CharacterName;
+    public string CharacterName = "";
 
     public long AccountId;
 
@@ -37,5 +37,18 @@ public class UGC
         Type = type;
         GuildPosterId = guildPosterId;
         Uid = DatabaseManager.UGC.Insert(this);
+    }
+
+    public void UpdateItem(string name, long characterId, string characterName, long accountId, long salePrice, UGCType type)
+    {
+        Guid = Guid.NewGuid();
+        Name = name;
+        CharacterId = characterId;
+        CharacterName = characterName;
+        CreationTime = TimeInfo.Now();
+        AccountId = accountId;
+        SalePrice = salePrice;
+        Type = type;
+        DatabaseManager.UGC.Update(this);
     }
 }

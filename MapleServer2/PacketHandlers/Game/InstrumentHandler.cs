@@ -152,9 +152,18 @@ public class InstrumentHandler : GamePacketHandler<InstrumentHandler>
 
     private static void HandleStopScore(GameSession session)
     {
-        int masteryExpGain = (session.ServerTick - session.Player.Instrument.Value.InstrumentTick) / 1000;
-        // TODO: Find any exp cap
+        // get Mastery exp
+        ItemMusicMetadata metadata = ItemMetadataStorage.GetMetadata(session.Player.Instrument.Value.Score.Id)?.Music;
+        int masteryExpGain = Math.Min(((session.ServerTick - session.Player.Instrument.Value.InstrumentTick) * metadata.MasteryValue) / 1000, metadata.MasteryValueMax);
         session.Player.Levels.GainMasteryExp(MasteryType.Performance, masteryExpGain);
+
+        // get prestige exp
+        int prestigeExpGain = (session.ServerTick - session.Player.Instrument.Value.InstrumentTick) / 1000 * 250;
+        session.Player.Levels.GainPrestigeExp(prestigeExpGain);
+
+        //TODO: get exp for normal level
+
+        // remove instrument from field
         session.FieldManager.BroadcastPacket(InstrumentPacket.StopScore(session.Player.Instrument));
         session.FieldManager.RemoveInstrument(session.Player.Instrument);
         session.Player.Instrument = null;

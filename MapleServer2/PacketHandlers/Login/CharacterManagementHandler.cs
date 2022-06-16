@@ -130,7 +130,6 @@ public class CharacterManagementHandler : LoginPacketHandler<CharacterManagement
                     {
                         Color = equipColor,
                         HairData = new(backLength, frontLength, backPositionCoord, backPositionRotation, frontPositionCoord, frontPositionRotation),
-                        IsTemplate = false,
                         IsEquipped = true
                     });
                     break;
@@ -143,7 +142,6 @@ public class CharacterManagementHandler : LoginPacketHandler<CharacterManagement
                     newCharacter.Inventory.Cosmetics.Add(ItemSlot.FA, new(id)
                     {
                         Color = equipColor,
-                        IsTemplate = false,
                         IsEquipped = true
                     });
                     break;
@@ -159,7 +157,6 @@ public class CharacterManagementHandler : LoginPacketHandler<CharacterManagement
                     {
                         Color = equipColor,
                         FaceDecorationData = faceDecoration,
-                        IsTemplate = false,
                         IsEquipped = true
                     });
                     break;
@@ -172,7 +169,6 @@ public class CharacterManagementHandler : LoginPacketHandler<CharacterManagement
                     newCharacter.Inventory.Cosmetics.Add(ItemSlot.CL, new(id)
                     {
                         Color = equipColor,
-                        IsTemplate = false,
                         IsEquipped = true
                     });
                     break;
@@ -185,7 +181,6 @@ public class CharacterManagementHandler : LoginPacketHandler<CharacterManagement
                     newCharacter.Inventory.Cosmetics.Add(ItemSlot.PA, new(id)
                     {
                         Color = equipColor,
-                        IsTemplate = false,
                         IsEquipped = true
                     });
                     break;
@@ -198,7 +193,6 @@ public class CharacterManagementHandler : LoginPacketHandler<CharacterManagement
                     newCharacter.Inventory.Cosmetics.Add(ItemSlot.SH, new(id)
                     {
                         Color = equipColor,
-                        IsTemplate = false,
                         IsEquipped = true
                     });
                     break;
@@ -211,7 +205,6 @@ public class CharacterManagementHandler : LoginPacketHandler<CharacterManagement
                     newCharacter.Inventory.Cosmetics.Add(ItemSlot.ER, new(id)
                     {
                         Color = equipColor,
-                        IsTemplate = false,
                         IsEquipped = true
                     });
                     break;

@@ -16,7 +16,7 @@ public enum InventoryTab : byte
     Consumable = 11,
     Currency = 12,
     Badge = 13,
-    // 14 Removed
+    // Survival = 14,
     Lapenshard = 15,
     Fragment = 16
 }

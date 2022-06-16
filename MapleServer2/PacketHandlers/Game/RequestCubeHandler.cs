@@ -499,7 +499,7 @@ public class RequestCubeHandler : GamePacketHandler<RequestCubeHandler>
             return;
         }
 
-        bool isCubeSolid = ItemMetadataStorage.GetIsCubeSolid(replacementItemId);
+        bool isCubeSolid = ItemMetadataStorage.GetInstallMetadata(replacementItemId).IsCubeSolid;
         if (!isCubeSolid && coord.Z == groundHeight?.Z)
         {
             session.Send(ResponseCubePacket.CantPlaceHere(fieldPlayerObjectId));
@@ -1012,7 +1012,7 @@ public class RequestCubeHandler : GamePacketHandler<RequestCubeHandler>
         }
 
         List<Item> items = home.FurnishingInventory.Values.Select(x => x.Item).ToList();
-        items.ForEach(x => x.HousingCategory = ItemMetadataStorage.GetHousingCategory(x.Id));
+        items.ForEach(x => x.HousingCategory = ItemMetadataStorage.GetHousingMetadata(x.Id).HousingCategory);
 
         Dictionary<ItemHousingCategory, int> current = items.GroupBy(x => x.HousingCategory).ToDictionary(x => x.Key, x => x.Count());
 

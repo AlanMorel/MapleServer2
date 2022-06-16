@@ -143,7 +143,6 @@ public class BeautyHandler : GamePacketHandler<BeautyHandler>
         Item beautyItem = new(beautyItemId)
         {
             Color = equipColor,
-            IsTemplate = false,
             IsEquipped = true,
             OwnerCharacterId = session.Player.CharacterId,
             OwnerCharacterName = session.Player.Name

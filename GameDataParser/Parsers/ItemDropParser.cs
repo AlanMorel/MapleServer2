@@ -59,7 +59,7 @@ public class ItemDropParser : Exporter<List<ItemDropMetadata>>
                 contents.MaxAmount = float.Parse(node.Attributes["maxCount"].Value);
                 contents.Rarity = 1;
 
-                _ = byte.TryParse(node.Attributes["PackageUIShowGrade"]?.Value ?? "1", out contents.Rarity);
+                _ = byte.TryParse(node.Attributes["PackageUIShowGrade"]?.Value ?? "0", out contents.Rarity);
 
                 contents.ItemIds.AddRange(itemIds);
                 DropGroup newGroup = new();

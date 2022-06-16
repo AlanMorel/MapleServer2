@@ -148,7 +148,7 @@ public class MushkingRoyaleSystemHandler : GamePacketHandler<MushkingRoyaleSyste
                 List<int> counts = count.Split(",").Select(int.Parse).ToList();
                 for (int i = 0; i < ids.Count; i++)
                 {
-                    Gender gender = ItemMetadataStorage.GetGender(ids[i]);
+                    Gender gender = ItemMetadataStorage.GetLimitMetadata(ids[i]).Gender;
                     if (gender != session.Player.Gender)
                     {
                         continue;
