@@ -5,16 +5,16 @@ using MapleServer2.Types;
 
 namespace MapleServer2.Tools;
 
-public class FieldManagerFactory
+public static class FieldManagerFactory
 {
-    private readonly ConcurrentDictionary<int, List<FieldManager>> Managers;
+    private static readonly ConcurrentDictionary<int, List<FieldManager>> Managers;
 
-    public FieldManagerFactory()
+    static FieldManagerFactory()
     {
         Managers = new();
     }
 
-    public FieldManager GetManager(Player player)
+    public static FieldManager GetManager(Player player)
     {
         if (!Managers.TryGetValue(player.MapId, out List<FieldManager> list))
         {
@@ -33,5 +33,15 @@ public class FieldManagerFactory
         }
 
         return manager;
+    }
+
+    public static void ReleaseManager(FieldManager manager)
+    {
+        if (!Managers.TryGetValue(manager.MapId, out List<FieldManager> list))
+        {
+            return;
+        }
+
+        list.Remove(manager);
     }
 }

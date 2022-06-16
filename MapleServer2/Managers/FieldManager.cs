@@ -495,12 +495,14 @@ public class FieldManager
             return;
         }
 
+        player.Triggers.Clear();
+
         if (Decrement() <= 0)
         {
             FreezeField(player);
+            player.FieldPlayer.ObjectId = -1;
+            return;
         }
-
-        player.Triggers.Clear();
 
         // Remove player
         Broadcast(session =>
@@ -952,6 +954,17 @@ public class FieldManager
         MapLoopTask = null;
         TriggerTask = null;
         NpcMovementTask = null;
+
+        if (Capacity == 0)
+        {
+            foreach (IFieldObject<Item> item in State.Items.Values)
+            {
+                // Cancel all item fadeout tasks so field can be released.
+                item.Value.DropInformation.CancellationToken.Cancel();
+            }
+
+            FieldManagerFactory.ReleaseManager(this);
+        }
 
         // --- Dungeon Session ---
         // Is only called if the leaving player is the last player on the map

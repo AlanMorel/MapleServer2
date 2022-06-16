@@ -21,12 +21,6 @@ public class GameSession : Session
     public Player Player;
 
     public FieldManager FieldManager { get; private set; }
-    private readonly FieldManagerFactory FieldManagerFactory;
-
-    public GameSession(FieldManagerFactory fieldManagerFactory)
-    {
-        FieldManagerFactory = fieldManagerFactory;
-    }
 
     public void SendNotice(string message)
     {
@@ -59,7 +53,7 @@ public class GameSession : Session
 
     protected override void EndSession(bool logoutNotice)
     {
-        if (Player is null || FieldManager is null || FieldManagerFactory is null)
+        if (Player is null || FieldManager is null)
         {
             return;
         }

@@ -19,9 +19,6 @@ public static class GameContainerConfig
             .SingleInstance();
         builder.RegisterType<GameSession>()
             .AsSelf();
-        builder.RegisterType<FieldManagerFactory>()
-            .AsSelf()
-            .SingleInstance();
 
         // Make all packet handlers available to PacketRouter
         builder.RegisterAssemblyTypes(Assembly.Load(nameof(MapleServer2)))
