@@ -61,7 +61,7 @@ public class RequestItemInventoryHandler : GamePacketHandler<RequestItemInventor
         {
             return;
         }
-        
+
         Item item = session.Player.Inventory.GetByUid(uid);
         session.Player.Inventory.DropItem(session, item, amount);
     }

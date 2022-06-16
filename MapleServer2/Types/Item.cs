@@ -395,12 +395,12 @@ public class Item
     public bool CanUse(GameSession session)
     {
         NoticeType noticeType = NoticeType.Chat | NoticeType.FastText;
-        
+
         if (ItemMetadataStorage.GetLimitMetadata(Id).VipOnly && !session.Player.Account.IsVip())
         {
             return false;
         }
-        
+
         if (Gender != Gender.Neutral && Gender != session.Player.Gender)
         {
             session.Send(NoticePacket.Notice(SystemNotice.ErrorGender, noticeType));
