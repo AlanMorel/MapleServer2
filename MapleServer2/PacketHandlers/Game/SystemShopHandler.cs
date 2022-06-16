@@ -54,7 +54,7 @@ public class SystemShopHandler : GamePacketHandler<SystemShopHandler>
         int coinId = packet.ReadInt();
 
         ItemMetadata item = ItemMetadataStorage.GetMetadata(coinId);
-        if (item is null || item.Shop.ShopId != 0)
+        if (item is null)
         {
             return;
         }
