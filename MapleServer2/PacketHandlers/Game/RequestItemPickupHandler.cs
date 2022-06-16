@@ -14,7 +14,7 @@ public class RequestItemPickupHandler : GamePacketHandler<RequestItemPickupHandl
     {
         int objectId = packet.ReadInt();
 
-        if (!session.FieldManager.State.TryGetItem(objectId, out IFieldObject<Item> fieldItem))
+        if (!session.FieldManager.PickupItem(objectId, session.Player.FieldPlayer.ObjectId, out IFieldObject<Item> fieldItem))
         {
             return;
         }
@@ -49,15 +49,8 @@ public class RequestItemPickupHandler : GamePacketHandler<RequestItemPickupHandl
                 break;
         }
 
-        if (session.FieldManager.RemoveItem(objectId, out Item item))
-        {
-            session.FieldManager.BroadcastPacket(FieldItemPacket.PickupItem(objectId, item, session.Player.FieldPlayer.ObjectId));
-            session.FieldManager.BroadcastPacket(FieldItemPacket.RemoveItem(objectId));
-        }
-
         int countExtra = packet.ReadByte();
         for (int i = 0; i < countExtra; i++)
-        {
-        }
+        { }
     }
 }

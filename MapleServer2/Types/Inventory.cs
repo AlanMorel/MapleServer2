@@ -291,7 +291,7 @@ public sealed class Inventory : IInventory
                 break;
         }
 
-        session.FieldManager.AddItem(session, droppedItem); // Drops item onto floor
+        session.FieldManager.AddItem(session.Player.FieldPlayer, droppedItem, source: session.Player.FieldPlayer);
     }
 
     public void MoveItem(GameSession session, long uid, short dstSlot)

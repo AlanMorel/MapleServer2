@@ -1,4 +1,5 @@
-﻿using MapleServer2.Tools;
+﻿using MapleServer2.Managers.Actors;
+using MapleServer2.Tools;
 
 namespace MapleServer2.Types;
 
@@ -34,7 +35,7 @@ public class HomeSurvey
         Public = publicQuestion;
     }
 
-    public void Start(long characterId, List<IFieldActor<Player>> players)
+    public void Start(long characterId, List<Character> players)
     {
         OwnerId = characterId;
         Started = true;

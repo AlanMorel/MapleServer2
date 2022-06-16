@@ -4,11 +4,9 @@ namespace MapleServer2.Types;
 
 public class UGCBanner
 {
-    public long Id;
-    public int MapId;
-    public List<BannerSlot> Slots;
-
-    public UGCBanner() { }
+    public readonly long Id;
+    public readonly int MapId;
+    public readonly List<BannerSlot> Slots;
 
     public UGCBanner(long id, int mapId)
     {

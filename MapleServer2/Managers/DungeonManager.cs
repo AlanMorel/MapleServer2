@@ -4,10 +4,11 @@ namespace MapleServer2.Managers;
 
 public class DungeonManager
 {
-    public readonly Dictionary<int, DungeonSession> DungeonSessionList;
-    private int SessionId;
+    private readonly Dictionary<int, DungeonSession> DungeonSessionList;
     private readonly List<int> RecyclableSessionIds;
     private readonly List<int> RecyclableMapInstanceIds;
+
+    private int SessionId;
     private int MapInstanceId;
 
     public DungeonManager()
@@ -19,21 +20,26 @@ public class DungeonManager
 
     public int GetMapInstanceId()
     {
-        if (RecyclableMapInstanceIds.Count > 0)
+        if (RecyclableMapInstanceIds.Count <= 0)
         {
-            int mapInstanceId = RecyclableMapInstanceIds.First();
-            RecyclableMapInstanceIds.Remove(mapInstanceId);
-            return mapInstanceId;
+            return MapInstanceId++;
         }
-        return MapInstanceId++;
+
+        int mapInstanceId = RecyclableMapInstanceIds.First();
+
+        RecyclableMapInstanceIds.Remove(mapInstanceId);
+
+        return mapInstanceId;
     }
 
     public DungeonSession CreateDungeonSession(int dungeonId, DungeonType dungeonType)
     {
         int dungeonSessionId = GetUniqueSessionId();
         int dungeonInstanceId = GetMapInstanceId();
+
         DungeonSession dungeonSession = new(dungeonSessionId, dungeonId, dungeonInstanceId, dungeonType);
         DungeonSessionList.Add(dungeonSessionId, dungeonSession);
+
         return dungeonSession;
     }
 
@@ -43,8 +49,10 @@ public class DungeonManager
         {
             return;
         }
+
         int currentDungeonSessionId = DungeonSessionList[dungeonSessionId].SessionId;
         int currentDungeonInstanceId = DungeonSessionList[dungeonSessionId].DungeonInstanceId;
+
         RecyclableSessionIds.Add(currentDungeonSessionId);
         RecyclableMapInstanceIds.Add(currentDungeonInstanceId);
         DungeonSessionList.Remove(dungeonSessionId);
@@ -52,13 +60,15 @@ public class DungeonManager
 
     public int GetUniqueSessionId()
     {
-        if (RecyclableSessionIds.Count > 0)
+        if (RecyclableSessionIds.Count <= 0)
         {
-            int sessionId = RecyclableSessionIds.First();
-            RecyclableSessionIds.Remove(sessionId);
-            return sessionId;
+            return SessionId++;
         }
-        return SessionId++;
+
+        int sessionId = RecyclableSessionIds.First();
+
+        RecyclableSessionIds.Remove(sessionId);
+        return sessionId;
     }
 
     public DungeonSession GetDungeonSessionBySessionId(int dungeonSessionId)
@@ -68,46 +78,45 @@ public class DungeonManager
 
     public bool IsDungeonUsingFieldInstance(FieldManager fieldManager, Player player) //alternatively this could be: IsFieldInstanceUsed in FieldManagerFactory
     {
-        //fieldManager.MapId: left map that is to be destroyed
-        //player.MapId: travel destination of the player
+        // fieldManager.MapId: left map that is to be destroyed
+        // player.MapId: travel destination of the player
         DungeonSession currentDungeonSession = GetDungeonSessionBySessionId(player.DungeonSessionId);
-        if (currentDungeonSession == null) //is not null after entering dungeon via directory
+        if (currentDungeonSession == null) // is not null after entering dungeon via directory
         {
-            return false; //no dungeonsession -> the map is unused by dungeon
+            return false; // no dungeon session -> the map is unused by dungeon
         }
-        //check map that is left: 
-        if (!currentDungeonSession.IsDungeonSessionMap(fieldManager.MapId)) //left map is not dungeon map e.g. tria
+
+        // check map that is left: 
+        if (!currentDungeonSession.IsDungeonSessionMap(fieldManager.MapId)) // left map is not dungeon map e.g. tria
         {
             return false;
         }
-        //travel destination is a dungeon map: lobby to dungeon or dungeon to lobby
+
+        // travel destination is a dungeon map: lobby to dungeon or dungeon to lobby
         if (!currentDungeonSession.IsDungeonSessionMap(player.MapId))
         {
             return false;
         }
-        //if travel destination is a dungeon it has to be the same instance or it does not pertain to the same DungeonSession.
-        if (player.InstanceId != currentDungeonSession.DungeonInstanceId)
-        {
-            return false;
-        }
-        return true;
+
+        // if travel destination is a dungeon it has to be the same instance or it does not pertain to the same DungeonSession.
+        return player.InstanceId == currentDungeonSession.DungeonInstanceId;
     }
 
     public void ResetDungeonSession(Player player, DungeonSession dungeonSession)
     {
-        if (dungeonSession == null)
+        if (dungeonSession is null)
         {
             return;
         }
+
         RemoveDungeonSession(dungeonSession.SessionId);
-        //if last player leaves lobby or dungeonmap -> destroy dungeonSession.
-        if (dungeonSession.DungeonType == DungeonType.Group && player.Party != null)
+        // if last player leaves lobby or dungeon map -> destroy dungeonSession.
+        if (dungeonSession.DungeonType is DungeonType.Group && player.Party is not null)
         {
             player.Party.DungeonSessionId = -1;
+            return;
         }
-        else
-        {
-            player.DungeonSessionId = -1;
-        }
+
+        player.DungeonSessionId = -1;
     }
 }

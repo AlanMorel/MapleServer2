@@ -21,12 +21,6 @@ public class GameSession : Session
     public Player Player;
 
     public FieldManager FieldManager { get; private set; }
-    private readonly FieldManagerFactory FieldManagerFactory;
-
-    public GameSession(FieldManagerFactory fieldManagerFactory)
-    {
-        FieldManagerFactory = fieldManagerFactory;
-    }
 
     public void SendNotice(string message)
     {
@@ -49,18 +43,6 @@ public class GameSession : Session
         // If moving maps, need to get the FieldManager for new map
         if (player.MapId != FieldManager.MapId || player.InstanceId != FieldManager.InstanceId)
         {
-            if (FieldManagerFactory.Release(FieldManager.MapId, FieldManager.InstanceId, player))
-            {
-                DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSessionBySessionId(player.DungeonSessionId);
-
-                //If instance is destroyed, reset dungeonSession
-                //further conditions for dungeon completion could be checked here.
-                if (dungeonSession != null && dungeonSession.IsDungeonSessionMap(FieldManager.MapId)) //check if the destroyed map was a dungeon map
-                {
-                    GameServer.DungeonManager.ResetDungeonSession(player, dungeonSession);
-                }
-            }
-
             // Initialize for new Map
             FieldManager = FieldManagerFactory.GetManager(player);
             player.FieldPlayer = FieldManager.RequestCharacter(player);
@@ -71,14 +53,12 @@ public class GameSession : Session
 
     protected override void EndSession(bool logoutNotice)
     {
-        if (Player is null || FieldManager is null || FieldManagerFactory is null)
+        if (Player is null || FieldManager is null)
         {
             return;
         }
 
-        FieldManagerFactory.Release(FieldManager.MapId, FieldManager.InstanceId, Player);
-
-        FieldManager.RemovePlayer(this);
+        FieldManager.RemovePlayer(Player);
         GameServer.PlayerManager.RemovePlayer(Player);
 
         Player.OnlineCTS.Cancel();

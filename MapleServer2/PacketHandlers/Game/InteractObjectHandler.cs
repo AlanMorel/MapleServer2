@@ -149,7 +149,7 @@ internal class InteractObjectHandler : GamePacketHandler<InteractObjectHandler>
                                 Rarity = dropGroupContent.Rarity
                             };
 
-                            session.FieldManager.AddItem(session, item);
+                            session.FieldManager.AddItem(session.Player.FieldPlayer, item);
                         }
                     }
                 }
@@ -175,7 +175,7 @@ internal class InteractObjectHandler : GamePacketHandler<InteractObjectHandler>
                                 Rarity = dropGroupContent.Rarity
                             };
 
-                            session.FieldManager.AddItem(session, item);
+                            session.FieldManager.AddItem(session.Player.FieldPlayer, item);
                         }
                     }
                 }

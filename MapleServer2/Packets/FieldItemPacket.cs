@@ -8,99 +8,41 @@ namespace MapleServer2.Packets;
 
 public static class FieldItemPacket
 {
-    public static PacketWriter AddItem(IFieldObject<Item> item, int userObjectId)
+    public static PacketWriter AddItem(IFieldObject<Item> fieldItem)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FieldAddItem);
-        pWriter.Write(item.ObjectId); // object id
-        pWriter.Write(item.Value.Id);
-        pWriter.Write(item.Value.Amount);
+        Item item = fieldItem.Value;
 
-        bool flag = true;
-        pWriter.WriteBool(flag);
-        if (flag)
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FieldAddItem);
+        pWriter.WriteInt(fieldItem.ObjectId);
+        pWriter.WriteInt(item.Id);
+        pWriter.WriteInt(item.Amount);
+
+        pWriter.WriteBool(true);
+        if (true)
         {
-            pWriter.WriteLong();
+            pWriter.WriteLong(item.DropInformation.BoundToCharacterId);
         }
 
-        pWriter.Write(item.Coord); // drop location
-        pWriter.WriteInt(userObjectId);
+        pWriter.Write(fieldItem.Coord); // drop location
+        pWriter.WriteInt(item.DropInformation.SourceObjectId);
         pWriter.WriteInt();
         pWriter.WriteByte(2);
-        pWriter.WriteInt(item.Value.Rarity);
+        pWriter.WriteInt(item.Rarity);
         pWriter.WriteShort(1005);
         pWriter.WriteByte();
         pWriter.WriteByte();
-        pWriter.WriteItem(item.Value);
+        pWriter.WriteItem(item);
 
         return pWriter;
     }
 
-    public static PacketWriter AddItem(IFieldObject<Item> item, IFieldObject<NpcMetadata> sourceMob, IFieldObject<Player> targetPlayer)
-    {
-        // Works for meso
-
-        PacketWriter pWriter = PacketWriter.Of(SendOp.FieldAddItem);
-        pWriter.WriteInt(item.ObjectId);
-        pWriter.WriteInt(item.Value.Id);
-        pWriter.WriteInt(item.Value.Amount);
-
-        pWriter.WriteByte(1); // Unknown (GMS2) (character lock flag?)
-        pWriter.WriteLong(targetPlayer.Value.CharacterId); // Lock drop to character
-
-        pWriter.Write(item.Coord);
-        pWriter.WriteInt(sourceMob.ObjectId);
-        pWriter.WriteInt(); // Unknown (GMS2)
-        pWriter.WriteByte();
-        pWriter.WriteInt(item.Value.Rarity);
-        pWriter.WriteInt(21);
-
-        if (item.Value.Id >= 90000004 && item.Value.Id <= 90000011)
-        {
-            // Extra for special items
-            pWriter.WriteInt(1); // 0 = SP/EP, 1 = quest item?
-            pWriter.WriteInt();
-            pWriter.WriteInt(-1);
-            pWriter.WriteInt(targetPlayer.ObjectId); // Unknown
-            for (int i = 0; i < 14; i++)
-            {
-                pWriter.WriteInt();
-            }
-            pWriter.WriteInt(-1);
-            for (int i = 0; i < 24; i++)
-            {
-                pWriter.WriteInt();
-            }
-            pWriter.WriteInt();
-            pWriter.WriteShort();
-            pWriter.WriteInt(1);
-            pWriter.WriteInt();
-            pWriter.WriteInt();
-            pWriter.WriteInt();
-            pWriter.WriteShort();
-            pWriter.WriteInt(6);
-            pWriter.WriteInt();
-            pWriter.WriteInt();
-            pWriter.WriteShort();
-            pWriter.WriteInt(1);
-            pWriter.WriteInt();
-            pWriter.WriteInt();
-            pWriter.WriteInt();
-            pWriter.WriteInt();
-            pWriter.WriteShort();
-        }
-        //pWriter.Write(sourceMob.Coord);
-        //pWriter.WriteItem(item.Value);
-
-        return pWriter;
-    }
-
-    public static PacketWriter PickupItem(int objectId, Item item, int userObjectId)
+    public static PacketWriter PickupItem(IFieldObject<Item> fieldItem, int receiverObjectId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.FieldPickupItem);
         pWriter.WriteByte(0x01);
-        pWriter.WriteInt(objectId);
-        pWriter.WriteInt(userObjectId);
-        pWriter.WriteLong(item.Amount); // Amount (GUI)
+        pWriter.WriteInt(fieldItem.ObjectId);
+        pWriter.WriteInt(receiverObjectId);
+        pWriter.WriteLong(fieldItem.Value.Amount);
 
         return pWriter;
     }
