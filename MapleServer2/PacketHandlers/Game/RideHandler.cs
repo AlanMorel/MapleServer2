@@ -68,26 +68,23 @@ public class RideHandler : GamePacketHandler<RideHandler>
             return;
         }
 
-        IFieldObject<Mount> fieldMount =
-            session.FieldManager.RequestFieldObject(new Mount
-            {
-                Type = type,
-                Id = mountId,
-                Uid = mountUid,
-                Ugc = item.Ugc
-            });
+        IFieldObject<Mount> fieldMount = session.FieldManager.RequestFieldObject(new Mount
+        {
+            Type = type,
+            Id = mountId,
+            Uid = mountUid,
+            Ugc = item.Ugc
+        });
 
         fieldMount.Value.Players[0] = session.Player.FieldPlayer;
         session.Player.Mount = fieldMount;
-
-        PacketWriter startPacket = MountPacket.StartRide(session.Player.FieldPlayer);
 
         if (item.TransferFlag.HasFlag(ItemTransferFlag.Binds) && !item.IsBound())
         {
             item.BindItem(session.Player);
         }
 
-        session.FieldManager.BroadcastPacket(startPacket);
+        session.FieldManager.BroadcastPacket(MountPacket.StartRide(session.Player.FieldPlayer));
     }
 
     private static void HandleStopRide(GameSession session, PacketReader packet)
@@ -96,8 +93,7 @@ public class RideHandler : GamePacketHandler<RideHandler>
         bool forced = packet.ReadBool(); // Going into water without amphibious riding
 
         session.Player.Mount = null; // Remove mount from player
-        PacketWriter stopPacket = MountPacket.StopRide(session.Player.FieldPlayer, forced);
-        session.FieldManager.BroadcastPacket(stopPacket);
+        session.FieldManager.BroadcastPacket(MountPacket.StopRide(session.Player.FieldPlayer, forced));
     }
 
     private static void HandleChangeRide(GameSession session, PacketReader packet)
