@@ -38,27 +38,25 @@ public class RequestItemUseMultipleHandler : GamePacketHandler<RequestItemUseMul
             return;
         }
 
-        int index = 0;
         if (boxType == BoxType.Select)
         {
-            index = packet.ReadShort() - 0x30; // Starts at 0x30 for some reason
+            int index = packet.ReadShort() - 0x30; // Starts at 0x30 for some reason
             if (index < 0)
             {
                 return;
             }
-            SelectItemBox selectBox = ItemMetadataStorage.GetFunctionMetadata(itemId).SelectItemBox;
-            HandleSelectBox(session, items, selectBox, index, amount);
+
+            HandleSelectBox(session, items, index, amount);
             return;
         }
 
-        OpenItemBox openBox = ItemMetadataStorage.GetFunctionMetadata(itemId).OpenItemBox;
-        HandleOpenBox(session, items, /*openBox,*/ amount);
+        HandleOpenBox(session, items, amount);
     }
 
-    private static void HandleSelectBox(GameSession session, IReadOnlyCollection<Item> items, SelectItemBox box, int index, int amount)
+    private static void HandleSelectBox(GameSession session, IReadOnlyCollection<Item> items, int index, int amount)
     {
-        ItemDropMetadata metadata = ItemDropMetadataStorage.GetItemDropMetadata(box.BoxId);
         int opened = 0;
+        OpenBoxResult result = OpenBoxResult.Success;
         foreach (Item item in items)
         {
             for (int i = opened; i < amount; i++)
@@ -68,17 +66,22 @@ public class RequestItemUseMultipleHandler : GamePacketHandler<RequestItemUseMul
                     break;
                 }
 
+                if (!ItemBoxHelper.GiveItemFromSelectBox(session, item, index, out result))
+                {
+                    break;
+                }
+
                 opened++;
-                ItemBoxHelper.GiveItemFromSelectBox(session, item, index);
             }
         }
 
-        session.Send(ItemUsePacket.Use(items.FirstOrDefault().Id, amount));
+        session.Send(ItemUsePacket.Use(items.First().Id, opened, result));
     }
 
-    private static void HandleOpenBox(GameSession session, IReadOnlyCollection<Item> items, /*OpenItemBox box,*/ int amount)
+    private static void HandleOpenBox(GameSession session, IReadOnlyCollection<Item> items, int amount)
     {
         int opened = 0;
+        OpenBoxResult result = OpenBoxResult.Success;
         foreach (Item item in items)
         {
             for (int i = opened; i < amount; i++)
@@ -88,11 +91,22 @@ public class RequestItemUseMultipleHandler : GamePacketHandler<RequestItemUseMul
                     break;
                 }
 
+                if (!ItemBoxHelper.GiveItemFromOpenBox(session, item, out result))
+                {
+                    break;
+                }
+
                 opened++;
-                ItemBoxHelper.GiveItemFromOpenBox(session, item);
             }
         }
 
-        session.Send(ItemUsePacket.Use(items.FirstOrDefault().Id, amount));
+        session.Send(ItemUsePacket.Use(items.First().Id, opened, result));
     }
+}
+
+public enum OpenBoxResult : short
+{
+    Success = 2,
+    UnableToOpen = 3,
+    InventoryFull = 4,
 }

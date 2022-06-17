@@ -57,18 +57,19 @@ public static class ItemBoxHelper
         return items;
     }
 
-    public static void GiveItemFromSelectBox(GameSession session, Item sourceItem, int index)
+    public static bool GiveItemFromSelectBox(GameSession session, Item sourceItem, int index, out OpenBoxResult result)
     {
+        result = OpenBoxResult.Success;
+
         SelectItemBox box = sourceItem.Function.SelectItemBox;
         ItemDropMetadata metadata = ItemDropMetadataStorage.GetItemDropMetadata(box.BoxId);
         if (metadata == null)
         {
-            session.Send(NoticePacket.Notice("No items found", NoticeType.Chat));
-            return;
+            result = OpenBoxResult.UnableToOpen;
+            return false;
         }
 
         IInventory inventory = session.Player.Inventory;
-        inventory.ConsumeItem(session, sourceItem.Uid, 1);
 
         // Select boxes disregards group ID. Adding these all to a filtered list
         List<DropGroupContent> dropContentsList = new();
@@ -92,9 +93,20 @@ public static class ItemBoxHelper
         }
 
         DropGroupContent dropContents = dropContentsList[index];
+        int amount = Random.Shared.Next((int) dropContents.MinAmount, (int) dropContents.MaxAmount);
+        foreach (int id in dropContents.ItemIds)
+        {
+            if (inventory.CanHold(id, amount))
+            {
+                continue;
+            }
 
-        Random rng = Random.Shared;
-        int amount = rng.Next((int) dropContents.MinAmount, (int) dropContents.MaxAmount);
+            result = OpenBoxResult.InventoryFull;
+            return false;
+        }
+
+        inventory.ConsumeItem(session, sourceItem.Uid, 1);
+
         foreach (int id in dropContents.ItemIds)
         {
             Item newItem = new(id)
@@ -104,23 +116,36 @@ public static class ItemBoxHelper
                 Rarity = dropContents.Rarity
             };
             newItem.Stats = new(newItem);
-            inventory.AddItem(session, newItem, true);
+            if (inventory.CanHold(newItem))
+            {
+                inventory.AddItem(session, newItem, true);
+                continue;
+            }
+
+            result = OpenBoxResult.InventoryFull;
+            MailHelper.InventoryWasFull(newItem, session.Player.CharacterId);
         }
+
+        return true;
     }
 
-    public static void GiveItemFromOpenBox(GameSession session, Item item)
+    public static bool GiveItemFromOpenBox(GameSession session, Item item, out OpenBoxResult boxResult)
     {
+        boxResult = OpenBoxResult.Success;
+
         OpenItemBox box = item.Function.OpenItemBox;
         ItemDropMetadata metadata = ItemDropMetadataStorage.GetItemDropMetadata(box.BoxId);
         if (metadata == null)
         {
             session.Send(NoticePacket.Notice("No items found", NoticeType.Chat));
-            return;
+            boxResult = OpenBoxResult.UnableToOpen;
+            return false;
         }
 
         if (box.AmountRequired > item.Amount)
         {
-            return;
+            boxResult = OpenBoxResult.UnableToOpen;
+            return false;
         }
 
         IInventory inventory = session.Player.Inventory;
@@ -129,7 +154,8 @@ public static class ItemBoxHelper
             Item requiredItem = inventory.GetByUid(box.RequiredItemId);
             if (requiredItem == null)
             {
-                return;
+                boxResult = OpenBoxResult.UnableToOpen;
+                return false;
             }
 
             inventory.ConsumeItem(session, requiredItem.Uid, 1);
@@ -138,6 +164,7 @@ public static class ItemBoxHelper
         inventory.ConsumeItem(session, item.Uid, box.AmountRequired);
 
         Random rng = Random.Shared;
+        // Receive one item from each drop group
         if (box.ReceiveOneItem)
         {
             foreach (DropGroup group in metadata.DropGroups)
@@ -148,7 +175,7 @@ public static class ItemBoxHelper
                 IOrderedEnumerable<DropGroupContent> dropContent = group.Contents.OrderBy(_ => rng.Next());
                 foreach (DropGroupContent content in dropContent)
                 {
-                    // Receive one item from each drop group
+                    // If player has already received an item from this group, skip other contents
                     if (box.ReceiveOneItem && receivedItem)
                     {
                         continue;
@@ -157,13 +184,20 @@ public static class ItemBoxHelper
                     List<Item> items = GetItemsFromDropGroup(content, session.Player, item);
                     foreach (Item newItem in items)
                     {
-                        inventory.AddItem(session, newItem, true);
                         receivedItem = true;
+                        if (inventory.CanHold(newItem))
+                        {
+                            inventory.AddItem(session, newItem, true);
+                            continue;
+                        }
+
+                        boxResult = OpenBoxResult.InventoryFull;
+                        MailHelper.InventoryWasFull(newItem, session.Player.CharacterId);
                     }
                 }
             }
 
-            return;
+            return true;
         }
 
         // receive all items from each drop group
@@ -174,9 +208,18 @@ public static class ItemBoxHelper
                 List<Item> items = GetItemsFromDropGroup(dropContent, session.Player, item);
                 foreach (Item newItem in items)
                 {
-                    inventory.AddItem(session, newItem, true);
+                    if (inventory.CanHold(newItem))
+                    {
+                        inventory.AddItem(session, newItem, true);
+                        continue;
+                    }
+
+                    boxResult = OpenBoxResult.InventoryFull;
+                    MailHelper.InventoryWasFull(newItem, session.Player.CharacterId);
                 }
             }
         }
+
+        return true;
     }
 }

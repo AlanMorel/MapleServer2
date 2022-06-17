@@ -3,6 +3,7 @@ using Maple2Storage.Enums;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
+using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using Serilog;
@@ -223,7 +224,13 @@ public sealed class Inventory : IInventory
             };
             newItem.Uid = DatabaseManager.Items.Insert(newItem);
 
-            AddNewItem(session, newItem, isNew);
+            if (CanHold(item))
+            {
+                AddNewItem(session, newItem, isNew);
+                continue;
+            }
+
+            MailHelper.InventoryWasFull(newItem, session.Player.CharacterId);
         }
     }
 

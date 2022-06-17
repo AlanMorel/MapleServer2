@@ -156,14 +156,14 @@ public class RequestItemUseHandler : GamePacketHandler<RequestItemUseHandler>
         short boxType = packet.ReadShort();
         int index = packet.ReadShort() - 0x30;
 
-        ItemBoxHelper.GiveItemFromSelectBox(session, item, index);
+        ItemBoxHelper.GiveItemFromSelectBox(session, item, index, out _);
     }
 
     private static void HandleOpenItemBox(GameSession session, PacketReader packet, Item item)
     {
         short boxType = packet.ReadShort();
 
-        ItemBoxHelper.GiveItemFromOpenBox(session, item);
+        ItemBoxHelper.GiveItemFromOpenBox(session, item, out _);
     }
 
     private static void HandleOpenMassive(GameSession session, PacketReader packet, Item item)
