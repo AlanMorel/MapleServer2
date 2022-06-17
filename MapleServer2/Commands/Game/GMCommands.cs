@@ -517,3 +517,47 @@ public class MountCommand : InGameCommand
         trigger.Session.FieldManager.BroadcastPacket(MountPacket.StartRide(fieldPlayer));
     }
 }
+
+public class ClearInventoryCommand : InGameCommand
+{
+    private readonly string InventoryTypes = "";
+    public ClearInventoryCommand()
+    {
+        foreach (object slot in Enum.GetValues(typeof(InventoryTab)))
+        {
+            InventoryTypes += $"{slot}, ";
+        }
+
+        InventoryTypes = InventoryTypes.TrimEnd(',', ' ');
+        Aliases = new()
+        {
+            "clearinv",
+            "clearinventory"
+        };
+        Description = "Clears the chosen inventory.";
+        Parameters = new()
+        {
+            new Parameter<string>("inventory", "Inventory name. e.g.: Gear (InventoryTab.cs)"),
+        };
+        Usage = "/clearinv [inventory]";
+    }
+    public override void Execute(GameCommandTrigger trigger)
+    {
+        string inventory = trigger.Get<string>("inventory");
+
+        if (!Enum.TryParse(inventory, out InventoryTab inventoryTab))
+        {
+            trigger.Session.SendNotice($"Available inventories: {InventoryTypes}");
+            return;
+        }
+
+        IReadOnlyCollection<Item> itemsInTab = trigger.Session.Player.Inventory.GetItems(inventoryTab);
+        foreach (Item item in itemsInTab)
+        {
+            trigger.Session.Player.Inventory.RemoveItem(trigger.Session, item.Uid, out _);
+            DatabaseManager.Items.Delete(item.Uid);
+        }
+
+        trigger.Session.SendNotice($"Cleared {inventory}");
+    }
+}
