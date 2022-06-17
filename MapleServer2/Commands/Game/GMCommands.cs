@@ -221,16 +221,24 @@ public class AttributeCommand : InGameCommand
         else if (category == 1)
         {
             if (value == 0)
+            {
                 item.Stats.Statics.Remove(newAttribute);
+            }
             else
+            {
                 item.Stats.Statics[newAttribute] = itemStat;
+            }
         }
         else if (category == 2)
         {
             if (value == 0)
+            {
                 item.Stats.Randoms.Remove(newAttribute);
+            }
             else
+            {
                 item.Stats.Randoms[newAttribute] = itemStat;
+            }
         }
 
         trigger.Session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(player.FieldPlayer, item, itemSlot));
