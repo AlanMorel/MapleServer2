@@ -74,7 +74,7 @@ public class SetJobCommand : InGameCommand
             string[] classes = Enum.GetNames(typeof(Job));
 
             player.Session.Send(NoticePacket.Notice(
-                "You have to give a classname and specifiy awakening (1 or 0)\nAvailable classes:\n".Bold().Color(Color.DarkOrange) +
+                "You have to give a classname and specify awakening (1 or 0)\nAvailable classes:\n".Bold().Color(Color.DarkOrange) +
                 $"{string.Join(", ", classes).Color(Color.Aquamarine)}", NoticeType.Chat));
 
             return;
@@ -103,6 +103,7 @@ public class SetJobCommand : InGameCommand
             player.SkillTabs[player.SkillTabs.IndexOf(skillTab)] = newSkillTab;
         }
 
+        player.SkillTabs.FirstOrDefault(x => x.TabId == activeSkillTabId)?.LearnDefaultSkills(player.Job, player.JobCode);
         trigger.Session.Send(JobPacket.SendJob(fieldPlayer));
     }
 }

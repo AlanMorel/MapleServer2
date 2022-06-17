@@ -58,30 +58,7 @@ public class SkillTab
         }
 
         SkillLevels = SkillJob.Keys.ToDictionary(skillId => skillId, _ => (short) 0);
-        LearnDefaultSkills();
-
-        void LearnDefaultSkills()
-        {
-            JobMetadata jobMetadata = JobMetadataStorage.GetJobMetadata(job);
-            if (jobMetadata is null)
-            {
-                return;
-            }
-
-            List<int> skillIds = new();
-            jobMetadata.LearnedSkills.ForEach(x => skillIds.AddRange(x.SkillIds));
-
-            foreach (int skillId in skillIds)
-            {
-                JobSkillMetadata jobSkillMetadata = jobMetadata.Skills.First(x => x.SkillId == skillId);
-                if (jobSkillMetadata.SubJobCode != (int) jobCode && jobSkillMetadata.SubJobCode != 0)
-                {
-                    continue;
-                }
-
-                AddOrUpdate(skillId, 1, true);
-            }
-        }
+        LearnDefaultSkills(job, jobCode);
     }
 
     /// <summary>
@@ -105,5 +82,28 @@ public class SkillTab
     private static Dictionary<int, SkillMetadata> GetSkillsMetadata(Job job)
     {
         return SkillMetadataStorage.GetJobSkills(job).ToDictionary(x => x.SkillId, x => x);
+    }
+
+    public void LearnDefaultSkills(Job job, JobCode jobCode)
+    {
+        JobMetadata jobMetadata = JobMetadataStorage.GetJobMetadata(job);
+        if (jobMetadata is null)
+        {
+            return;
+        }
+
+        List<int> skillIds = new();
+        jobMetadata.LearnedSkills.ForEach(x => skillIds.AddRange(x.SkillIds));
+
+        foreach (int skillId in skillIds)
+        {
+            JobSkillMetadata jobSkillMetadata = jobMetadata.Skills.First(x => x.SkillId == skillId);
+            if (jobSkillMetadata.SubJobCode != (int) jobCode && jobSkillMetadata.SubJobCode != 0)
+            {
+                continue;
+            }
+
+            AddOrUpdate(skillId, 1, true);
+        }
     }
 }
