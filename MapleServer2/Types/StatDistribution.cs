@@ -13,6 +13,13 @@ public struct ExtraSkillPoints
     }
 }
 
+public enum SkillPointSource
+{
+    Trophy = 1,
+    Chapter = 2,
+    Unknown = 3
+}
+
 public class StatDistribution
 {
     public int TotalStatPoints;
@@ -21,15 +28,15 @@ public class StatDistribution
 
     public const int MaxSkillSources = 3;
     public const short MaxSkillJobRanks = 2;
-    public int TotalSkillPoints;
-    public Dictionary<OtherStatsIndex, ExtraSkillPoints> ExtraSkillPoints { get; }
+    public int TotalExtraSkillPoints;
+    public Dictionary<SkillPointSource, ExtraSkillPoints> ExtraSkillPoints { get; }
 
     public StatDistribution(int totalStats = 0, Dictionary<StatAttribute, int> allocatedStats = null, Dictionary<OtherStatsIndex, int> otherStats = null)
     {
         TotalStatPoints = totalStats;
         AllocatedStats = allocatedStats ?? new Dictionary<StatAttribute, int>();
         OtherStats = otherStats ?? new Dictionary<OtherStatsIndex, int>();
-        ExtraSkillPoints = new Dictionary<OtherStatsIndex, ExtraSkillPoints>();
+        ExtraSkillPoints = new Dictionary<SkillPointSource, ExtraSkillPoints>();
 
         foreach (int source in Enumerable.Range(0, MaxSkillSources))
         {
@@ -40,7 +47,7 @@ public class StatDistribution
                 sourcePoints.ExtraPoints[jobRank] = 0;
             }
 
-            ExtraSkillPoints[(OtherStatsIndex) source] = sourcePoints;
+            ExtraSkillPoints[(SkillPointSource) source] = sourcePoints;
         }
     }
 
@@ -71,9 +78,9 @@ public class StatDistribution
         AllocatedStats[statType] = 1;
     }
 
-    public void AddTotalSkillPoints(int amount, int rank, OtherStatsIndex index)
+    public void AddTotalSkillPoints(int amount, int rank, SkillPointSource index)
     {
-        TotalSkillPoints += amount;
+        TotalExtraSkillPoints += amount;
         ExtraSkillPoints[index].ExtraPoints[(short) rank] += amount;
     }
 

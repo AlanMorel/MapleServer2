@@ -148,7 +148,7 @@ public class AttributeCommand : InGameCommand
             new Parameter<string>("newAttributeId", "New Attribute, e.g.: Dex (StatAttribute.cs)"),
             new Parameter<float>("value", "Value, e.g.: 10 / 0.002"),
             new Parameter<byte>("isPercentage", "Is percentage, e.g.: 1 / 0"),
-            new Parameter<byte>("category", "Stat Category, e.g.: 1 - 4"),
+            new Parameter<byte>("category", "Stat Category: 0 = constant, 1 = static, 2 = random"),
         };
         Usage = "/attribute [equipSlot] [attributeId] [value] [isPercentage] [category]";
     }
@@ -186,12 +186,6 @@ public class AttributeCommand : InGameCommand
             return;
         }
 
-        if (value == 0)
-        {
-            //trigger.Session.SendNotice("Value cannot be 0.");
-            //return;
-        }
-
         Player player = trigger.Session.Player;
         if (!player.Inventory.Equips.TryGetValue(itemSlot, out Item item))
         {
@@ -215,9 +209,13 @@ public class AttributeCommand : InGameCommand
         if (category == 0)
         {
             if (value == 0)
+            {
                 item.Stats.Constants.Remove(newAttribute);
+            }
             else
+            {
                 item.Stats.Constants[newAttribute] = itemStat;
+            }
 
         }
         else if (category == 1)

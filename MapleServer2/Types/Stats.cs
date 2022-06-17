@@ -371,45 +371,11 @@ public class Stats
         }
     }
 
-    public void SetBaseStats(Job job)
-    {
-        (int strBase, int dexBase, int intBase, int lukBase, int hpBase, int critBase) = GetJobBaseStats(job);
-
-        Data[StatAttribute.Str].IncreaseBase(strBase);
-        Data[StatAttribute.Dex].IncreaseBase(dexBase);
-        Data[StatAttribute.Int].IncreaseBase(intBase);
-        Data[StatAttribute.Luk].IncreaseBase(lukBase);
-        Data[StatAttribute.Hp].IncreaseBase(hpBase);
-
-        Data[StatAttribute.HpRegen].IncreaseBase(10);
-        Data[StatAttribute.HpRegenInterval].IncreaseBase(3000);
-        Data[StatAttribute.Spirit].IncreaseBase(100);
-        Data[StatAttribute.SpRegen].IncreaseBase(1); // class specific, comes from skill
-        Data[StatAttribute.SpRegenInterval].IncreaseBase(200);
-        Data[StatAttribute.Stamina].IncreaseBase(120);
-        Data[StatAttribute.StaminaRegen].IncreaseBase(10);
-        Data[StatAttribute.StaminaRegenInterval].IncreaseBase(500);
-
-        Data[StatAttribute.AttackSpeed].IncreaseBase(100);
-        Data[StatAttribute.MovementSpeed].IncreaseBase(100);
-        Data[StatAttribute.Accuracy].IncreaseBase(82);
-        Data[StatAttribute.Evasion].IncreaseBase(70); // TODO: changes with job
-        Data[StatAttribute.CritRate].IncreaseBase(critBase); // TODO: changes with job
-        Data[StatAttribute.CritDamage].IncreaseBase(250);
-        Data[StatAttribute.CritEvasion].IncreaseBase(50);
-        Data[StatAttribute.Defense].IncreaseBase(16);
-        Data[StatAttribute.JumpHeight].IncreaseBase(100);
-        Data[StatAttribute.PhysicalAtk].IncreaseBase(10); // TODO: changes with job (base for mage, 74 thief)
-        Data[StatAttribute.MagicAtk].IncreaseBase(2); // TODO: changes with job (base for thief, 216 mage)
-        Data[StatAttribute.PhysicalRes].IncreaseBase(5);
-        Data[StatAttribute.MagicRes].IncreaseBase(4);
-        Data[StatAttribute.MountMovementSpeed].IncreaseBase(100);
-    }
 
     public void RecomputeStats(Player player)
     {
         ResetStats();
-        SetBaseStats(player.Job);
+        player.Stats = new(player.Job);
         AddBaseStats(player, player.Levels.Level - 1);
         RecomputeAllocations(player.StatPointDistribution);
     }

@@ -86,7 +86,7 @@ public class Trophy
                     player.AddStatPoint(GradeCondition.RewardValue, OtherStatsIndex.Trophy);
                     break;
                 case RewardType.skillPoint:
-                    player.AddSkillPoint(GradeCondition.RewardValue, GradeCondition.RewardSubJobLevel, OtherStatsIndex.Trophy);
+                    player.AddSkillPoint(GradeCondition.RewardValue, GradeCondition.RewardSubJobLevel, SkillPointSource.Trophy);
                     break;
             }
 

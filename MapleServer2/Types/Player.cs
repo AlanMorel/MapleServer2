@@ -401,7 +401,7 @@ public class Player
         Session.Send(StatPointPacket.WriteTotalStatPoints(this));
     }
 
-    public void AddSkillPoint(int amount, int rank, OtherStatsIndex index)
+    public void AddSkillPoint(int amount, int rank, SkillPointSource index)
     {
         StatPointDistribution.AddTotalSkillPoints(amount, rank, index);
         Session.Send(SkillPointPacket.ExtraSkillPoints(this));

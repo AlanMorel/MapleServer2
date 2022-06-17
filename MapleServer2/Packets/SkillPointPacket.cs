@@ -10,9 +10,9 @@ public static class SkillPointPacket
     public static PacketWriter ExtraSkillPoints(Player character)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.SkillPoint);
-        pWriter.WriteInt(character.StatPointDistribution.TotalSkillPoints); // total points
+        pWriter.WriteInt(character.StatPointDistribution.TotalExtraSkillPoints); // total points
         pWriter.WriteInt(character.StatPointDistribution.ExtraSkillPoints.Count); // source count
-        foreach (KeyValuePair<OtherStatsIndex, ExtraSkillPoints> source in character.StatPointDistribution.ExtraSkillPoints)
+        foreach (KeyValuePair<SkillPointSource, ExtraSkillPoints> source in character.StatPointDistribution.ExtraSkillPoints)
         {
             pWriter.WriteInt((int) source.Key); // source type
             pWriter.WriteInt(source.Value.ExtraPoints.Count); // count
