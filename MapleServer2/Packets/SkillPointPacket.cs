@@ -12,11 +12,11 @@ public static class SkillPointPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.SkillPoint);
         pWriter.WriteInt(character.StatPointDistribution.TotalExtraSkillPoints); // total points
         pWriter.WriteInt(character.StatPointDistribution.ExtraSkillPoints.Count); // source count
-        foreach (KeyValuePair<SkillPointSource, ExtraSkillPoints> source in character.StatPointDistribution.ExtraSkillPoints)
+        foreach ((SkillPointSource source, ExtraSkillPoints extraPoints) in character.StatPointDistribution.ExtraSkillPoints)
         {
-            pWriter.WriteInt((int) source.Key); // source type
-            pWriter.WriteInt(source.Value.ExtraPoints.Count); // count
-            foreach (KeyValuePair<short, int> reward in source.Value.ExtraPoints)
+            pWriter.WriteInt((int) source); // source type
+            pWriter.WriteInt(extraPoints.ExtraPoints.Count); // count
+            foreach (KeyValuePair<short, int> reward in extraPoints.ExtraPoints)
             {
                 pWriter.WriteShort(reward.Key); // job rank
                 pWriter.WriteInt(reward.Value); // points

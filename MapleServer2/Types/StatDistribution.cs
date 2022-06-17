@@ -5,7 +5,7 @@ namespace MapleServer2.Types;
 
 public struct ExtraSkillPoints
 {
-    public Dictionary<short, int> ExtraPoints;
+    public readonly Dictionary<short, int> ExtraPoints;
 
     public ExtraSkillPoints()
     {
@@ -26,8 +26,8 @@ public class StatDistribution
     public Dictionary<OtherStatsIndex, int> OtherStats { get; } // Dictionary of OtherStatsIndex and amount of points allocated to it
     public Dictionary<StatAttribute, int> AllocatedStats { get; } // Dictionary of StatId and amount of stat points allocated to it
 
-    public const int MaxSkillSources = 3;
-    public const short MaxSkillJobRanks = 2;
+    private const int MaxSkillSources = 3;
+    private const short MaxSkillJobRanks = 2;
     public int TotalExtraSkillPoints;
     public Dictionary<SkillPointSource, ExtraSkillPoints> ExtraSkillPoints { get; }
 
