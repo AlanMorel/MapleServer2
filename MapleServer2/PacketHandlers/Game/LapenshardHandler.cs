@@ -70,7 +70,7 @@ public class LapenshardHandler : GamePacketHandler<LapenshardHandler>
             return;
         }
 
-        if (session.Player.Inventory.LapenshardStorage[slotId] is not null)
+        if (session.Player.Inventory.LapenshardStorage[slotId - 1] is not null)
         {
             return;
         }
@@ -84,7 +84,7 @@ public class LapenshardHandler : GamePacketHandler<LapenshardHandler>
 
         newLapenshard.Uid = DatabaseManager.Items.Insert(newLapenshard);
 
-        session.Player.Inventory.LapenshardStorage[slotId] = newLapenshard;
+        session.Player.Inventory.LapenshardStorage[slotId - 1] = newLapenshard;
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
         session.Send(LapenshardPacket.Equip(slotId, item.Id));
     }
@@ -93,13 +93,13 @@ public class LapenshardHandler : GamePacketHandler<LapenshardHandler>
     {
         int slotId = packet.ReadInt();
 
-        Item lapenshard = session.Player.Inventory.LapenshardStorage[slotId];
+        Item lapenshard = session.Player.Inventory.LapenshardStorage[slotId - 1];
         if (lapenshard is null)
         {
             return;
         }
 
-        session.Player.Inventory.LapenshardStorage[slotId] = null;
+        session.Player.Inventory.LapenshardStorage[slotId - 1] = null;
         lapenshard.Slot = -1;
         lapenshard.IsEquipped = false;
         session.Player.Inventory.AddItem(session, lapenshard, true);

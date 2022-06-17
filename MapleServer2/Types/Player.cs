@@ -305,6 +305,8 @@ public class Player
         {
             club?.BroadcastPacketClub(ClubPacket.UpdateMemberLocation(club.Id, Name, MapId));
         }
+
+        RecomputeStats();
     }
 
     public void Warp(Map mapId, CoordF? coord = null, CoordF? rotation = null, long instanceId = 1)
@@ -397,6 +399,12 @@ public class Player
     {
         StatPointDistribution.AddTotalStatPoints(amount, index);
         Session.Send(StatPointPacket.WriteTotalStatPoints(this));
+    }
+
+    public void AddSkillPoint(int amount, int rank, OtherStatsIndex index)
+    {
+        StatPointDistribution.AddTotalSkillPoints(amount, rank, index);
+        Session.Send(SkillPointPacket.ExtraSkillPoints(this));
     }
 
     public void GetUnreadMailCount(bool sendExpiryNotification = false)
@@ -539,17 +547,17 @@ public class Player
     {
         foreach (ItemStat stat in item.Stats.Constants.Values)
         {
-            Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat + (int) stat.Rate);
+            Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat + (int) (1000 * stat.Rate));
         }
 
         foreach (ItemStat stat in item.Stats.Statics.Values)
         {
-            Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat + (int) stat.Rate);
+            Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat + (int) (1000 * stat.Rate));
         }
 
         foreach (ItemStat stat in item.Stats.Randoms.Values)
         {
-            Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat + (int) stat.Rate);
+            Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat + (int) (1000 * stat.Rate));
         }
 
         foreach (ItemStat stat in item.Stats.Enchants.Values)
@@ -565,21 +573,21 @@ public class Player
         Session.Send(StatPacket.SetStats(FieldPlayer));
     }
 
-    public void IncreaseStats(Item item)
+    public void ComputeStatContribution(Item item)
     {
         foreach (ItemStat stat in item.Stats.Constants.Values)
         {
-            Stats[stat.ItemAttribute].IncreaseBonus(stat.Flat + (int) stat.Rate);
+            Stats[stat.ItemAttribute].IncreaseBonus(stat.Flat + (int) (1000 * stat.Rate));
         }
 
         foreach (ItemStat stat in item.Stats.Statics.Values)
         {
-            Stats[stat.ItemAttribute].IncreaseBonus(stat.Flat + (int) stat.Rate);
+            Stats[stat.ItemAttribute].IncreaseBonus(stat.Flat + (int) (1000 * stat.Rate));
         }
 
         foreach (ItemStat stat in item.Stats.Randoms.Values)
         {
-            Stats[stat.ItemAttribute].IncreaseBonus(stat.Flat + (int) stat.Rate);
+            Stats[stat.ItemAttribute].IncreaseBonus(stat.Flat + (int) (1000 * stat.Rate));
         }
 
         foreach (ItemStat stat in item.Stats.Enchants.Values)
@@ -589,8 +597,37 @@ public class Player
             int totalStat = constantValue + staticValue;
             Stats[stat.ItemAttribute].IncreaseBonus((int) (totalStat * stat.Rate));
         }
+    }
+
+    public void IncreaseStats(Item item)
+    {
+        ComputeStatContribution(item);
 
         UpdateGearScore(item, item.GearScore);
+
+        Session.Send(StatPacket.SetStats(FieldPlayer));
+    }
+
+    public void RecomputeStats()
+    {
+        Stat hp = Stats[StatAttribute.Hp];
+        Stat spirit = Stats[StatAttribute.Spirit];
+        Stat stamina = Stats[StatAttribute.Stamina];
+
+        long hpValue = hp.TotalLong;
+        long spiritValue = spirit.TotalLong;
+        long staminaValue = stamina.TotalLong;
+
+        Stats.RecomputeStats(this);
+
+        foreach ((ItemSlot slot, Item item) in Inventory.Equips)
+        {
+            ComputeStatContribution(item);
+        }
+
+        hp.TotalLong = Math.Min(hp.BonusLong, hpValue);
+        spirit.TotalLong = Math.Min(spirit.BonusLong, spiritValue);
+        stamina.TotalLong = Math.Min(stamina.BonusLong, staminaValue);
 
         Session.Send(StatPacket.SetStats(FieldPlayer));
     }

@@ -59,6 +59,14 @@ internal class TrophyParser : Exporter<List<TrophyMetadata>>
                     newTrophy.ConditionCodes = condition.Attributes["code"].Value;
                 }
 
+                XmlAttribute? subJobLevelNode = reward.Attributes["subJobLevel"];
+                int subJobLevel = 0;
+
+                if (subJobLevelNode != null)
+                {
+                    subJobLevel = int.Parse(subJobLevelNode.Value);
+                }
+
                 TrophyGradeMetadata newGrade = new()
                 {
                     Grade = int.Parse(grade.Attributes["value"].Value),
@@ -67,7 +75,8 @@ internal class TrophyParser : Exporter<List<TrophyMetadata>>
                     RewardType = type,
                     RewardCode = int.Parse(reward.Attributes["code"].Value),
                     RewardValue = int.Parse(reward.Attributes["value"].Value),
-                    RewardRank = int.Parse(reward.Attributes["rank"].Value)
+                    RewardRank = int.Parse(reward.Attributes["rank"].Value),
+                    RewardSubJobLevel = subJobLevel
                 };
 
                 newTrophy.Grades.Add(newGrade);

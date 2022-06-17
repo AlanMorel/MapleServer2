@@ -115,7 +115,7 @@ public sealed class Inventory : IInventory
                         Badges[badgeIndex++] = item;
                         continue;
                     case InventoryTab.Lapenshard:
-                        LapenshardStorage[item.Slot] = item;
+                        LapenshardStorage[item.Slot - 1] = item;
                         continue;
                     case InventoryTab.Gear:
                         if (!Equips.TryAdd(item.ItemSlot, item))

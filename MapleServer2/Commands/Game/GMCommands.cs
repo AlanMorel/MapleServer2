@@ -147,9 +147,10 @@ public class AttributeCommand : InGameCommand
             new Parameter<string>("equipSlot", "Equip slot, e.g.: RH (ItemSlot.cs)"),
             new Parameter<string>("newAttributeId", "New Attribute, e.g.: Dex (StatAttribute.cs)"),
             new Parameter<float>("value", "Value, e.g.: 10 / 0.002"),
-            new Parameter<byte>("isPercentage", "Is percentage, e.g.: 1 / 0")
+            new Parameter<byte>("isPercentage", "Is percentage, e.g.: 1 / 0"),
+            new Parameter<byte>("category", "Stat Category, e.g.: 1 - 4"),
         };
-        Usage = "/attribute [equipSlot] [attributeId] [value] [isPercentage]";
+        Usage = "/attribute [equipSlot] [attributeId] [value] [isPercentage] [category]";
     }
 
     public override void Execute(GameCommandTrigger trigger)
@@ -158,6 +159,7 @@ public class AttributeCommand : InGameCommand
         string newAttributeId = trigger.Get<string>("newAttributeId");
         float value = trigger.Get<float>("value");
         byte isPercentage = trigger.Get<byte>("isPercentage");
+        byte category = trigger.Get<byte>("category");
 
         if (string.IsNullOrEmpty(equipSlot))
         {
@@ -186,8 +188,8 @@ public class AttributeCommand : InGameCommand
 
         if (value == 0)
         {
-            trigger.Session.SendNotice("Value cannot be 0.");
-            return;
+            //trigger.Session.SendNotice("Value cannot be 0.");
+            //return;
         }
 
         Player player = trigger.Session.Player;
@@ -209,7 +211,29 @@ public class AttributeCommand : InGameCommand
         }
 
         player.DecreaseStats(item);
-        item.Stats.Constants[newAttribute] = itemStat;
+
+        if (category == 0)
+        {
+            if (value == 0)
+                item.Stats.Constants.Remove(newAttribute);
+            else
+                item.Stats.Constants[newAttribute] = itemStat;
+
+        }
+        else if (category == 1)
+        {
+            if (value == 0)
+                item.Stats.Statics.Remove(newAttribute);
+            else
+                item.Stats.Statics[newAttribute] = itemStat;
+        }
+        else if (category == 2)
+        {
+            if (value == 0)
+                item.Stats.Randoms.Remove(newAttribute);
+            else
+                item.Stats.Randoms[newAttribute] = itemStat;
+        }
 
         trigger.Session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(player.FieldPlayer, item, itemSlot));
 
