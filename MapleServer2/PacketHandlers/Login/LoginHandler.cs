@@ -47,6 +47,12 @@ public class LoginHandler : LoginPacketHandler<LoginHandler>
         string username = packet.ReadUnicodeString();
         string password = packet.ReadUnicodeString();
 
+        if (string.IsNullOrEmpty(username))
+        {
+            session.Send(LoginResultPacket.SendLoginMode(Packets.LoginMode.IncorrectId));
+            return;
+        }
+
         Account account;
         if (DatabaseManager.Accounts.AccountExists(username.ToLower()))
         {
