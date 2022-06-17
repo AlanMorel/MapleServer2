@@ -169,7 +169,7 @@ public class AttributeCommand : InGameCommand
             return;
         }
 
-        if (!Enum.TryParse(equipSlot, out ItemSlot itemSlot) || itemSlot == ItemSlot.NONE)
+        if (!Enum.TryParse(equipSlot, ignoreCase: true, out ItemSlot itemSlot) || itemSlot == ItemSlot.NONE)
         {
             trigger.Session.SendNotice($"{equipSlot} is not a valid equip slot.");
             string slots = "";
@@ -182,7 +182,7 @@ public class AttributeCommand : InGameCommand
             return;
         }
 
-        if (!Enum.TryParse(newAttributeId, out StatAttribute newAttribute))
+        if (!Enum.TryParse(newAttributeId, ignoreCase: true, out StatAttribute newAttribute))
         {
             trigger.Session.SendNotice($"{newAttributeId} is not a valid attribute. Check StatAttribute.cs");
             return;
@@ -249,7 +249,7 @@ public class ClearStatsCommand : InGameCommand
             return;
         }
 
-        if (!Enum.TryParse(equipSlot, out ItemSlot itemSlot) || itemSlot == ItemSlot.NONE)
+        if (!Enum.TryParse(equipSlot, ignoreCase: true, out ItemSlot itemSlot) || itemSlot == ItemSlot.NONE)
         {
             trigger.Session.SendNotice($"{equipSlot} is not a valid equip slot.");
             string slots = "";
@@ -374,7 +374,7 @@ public class WeatherCommand : InGameCommand
     {
         string weather = trigger.Get<string>("weatherType");
 
-        if (!Enum.TryParse(weather, out WeatherType weatherType))
+        if (!Enum.TryParse(weather, ignoreCase: true, out WeatherType weatherType))
         {
             trigger.Session.SendNotice($"Available weathers: {WeatherTypes}");
             return;
@@ -546,7 +546,7 @@ public class ClearInventoryCommand : InGameCommand
     {
         string inventory = trigger.Get<string>("inventory");
 
-        if (!Enum.TryParse(inventory, out InventoryTab inventoryTab))
+        if (!Enum.TryParse(inventory, ignoreCase: true, out InventoryTab inventoryTab))
         {
             trigger.Session.SendNotice($"Available inventories: {InventoryTypes}");
             return;
