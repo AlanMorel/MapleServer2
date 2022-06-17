@@ -16,10 +16,10 @@ public static class SkillPointPacket
         {
             pWriter.WriteInt((int) source); // source type
             pWriter.WriteInt(extraPoints.ExtraPoints.Count); // count
-            foreach (KeyValuePair<short, int> reward in extraPoints.ExtraPoints)
+            foreach ((short jobRank, int reward) in extraPoints.ExtraPoints)
             {
-                pWriter.WriteShort(reward.Key); // job rank
-                pWriter.WriteInt(reward.Value); // points
+                pWriter.WriteShort(jobRank); // job rank
+                pWriter.WriteInt(reward); // points
             }
         }
 
