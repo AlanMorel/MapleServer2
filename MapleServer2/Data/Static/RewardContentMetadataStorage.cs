@@ -47,10 +47,6 @@ public static class RewardContentMetadataStorage
 
     private static Item GetItem(RewardItemData itemData)
     {
-        return new(itemData.Id)
-        {
-            Amount = itemData.Amount,
-            Rarity = itemData.Rarity
-        };
+        return new(itemData.Id, itemData.Amount, itemData.Rarity);
     }
 }

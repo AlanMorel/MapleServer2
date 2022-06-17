@@ -41,11 +41,7 @@ public class ItemEnchantTransferHandler : GamePacketHandler<ItemEnchantTransferH
         item.EnchantLevel = 0;
         item.Stats.Enchants = new();
 
-        Item scroll = new(metadata.OutputItemId)
-        {
-            Rarity = metadata.OutputRarity,
-            Amount = metadata.OutputAmount
-        };
+        Item scroll = new(metadata.OutputItemId, metadata.OutputAmount, metadata.OutputRarity);
 
         session.Player.Inventory.AddItem(session, scroll, true);
         session.Send(ItemInventoryPacket.UpdateItem(item));

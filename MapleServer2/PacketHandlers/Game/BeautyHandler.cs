@@ -265,10 +265,7 @@ public class BeautyHandler : GamePacketHandler<BeautyHandler>
             session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.Player.FieldPlayer, player.HairInventory.RandomHair, ItemSlot.HR));
 
             int voucherId = DatabaseManager.BeautyShops.GetSpecialVoucher();
-            Item voucher = new(voucherId)
-            {
-                Rarity = 1
-            };
+            Item voucher = new(voucherId);
             player.Inventory.AddItem(session, voucher, true);
 
             session.Send(BeautyPacket.ChooseRandomHair(voucher.Id));

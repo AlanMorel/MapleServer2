@@ -143,11 +143,7 @@ public class MapleopolyHandler : GamePacketHandler<MapleopolyHandler>
         {
             case MapleopolyTileType.Item:
             case MapleopolyTileType.TreasureTrove:
-                Item item = new(currentTile.ItemId)
-                {
-                    Amount = currentTile.ItemAmount,
-                    Rarity = currentTile.ItemRarity
-                };
+                Item item = new(currentTile.ItemId, currentTile.ItemAmount, currentTile.ItemRarity);
                 session.Player.Inventory.AddItem(session, item, true);
                 break;
             case MapleopolyTileType.Backtrack:
@@ -195,11 +191,7 @@ public class MapleopolyHandler : GamePacketHandler<MapleopolyHandler>
             BlueMarbleReward mapleopolyItem1 = items.FirstOrDefault(x => x.TripAmount == 0);
             if (mapleopolyItem1 != null)
             {
-                Item item1 = new(mapleopolyItem1.ItemId)
-                {
-                    Amount = mapleopolyItem1.ItemAmount,
-                    Rarity = mapleopolyItem1.ItemRarity
-                };
+                Item item1 = new(mapleopolyItem1.ItemId, mapleopolyItem1.ItemAmount, mapleopolyItem1.ItemRarity);
                 session.Player.Inventory.AddItem(session, item1, true);
             }
 
@@ -210,11 +202,7 @@ public class MapleopolyHandler : GamePacketHandler<MapleopolyHandler>
                 continue;
             }
 
-            Item item2 = new(mapleopolyItem2.ItemId)
-            {
-                Amount = mapleopolyItem2.ItemAmount,
-                Rarity = mapleopolyItem2.ItemRarity
-            };
+            Item item2 = new(mapleopolyItem2.ItemId, mapleopolyItem2.ItemAmount, mapleopolyItem2.ItemRarity);
             session.Player.Inventory.AddItem(session, item2, true);
         }
 

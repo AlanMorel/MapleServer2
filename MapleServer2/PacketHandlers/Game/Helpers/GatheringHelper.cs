@@ -47,11 +47,7 @@ public static class GatheringHelper
                 continue;
             }
 
-            session.FieldManager.AddItem(session.Player.FieldPlayer, new(item.ItemId)
-            {
-                Rarity = item.Rarity,
-                Amount = item.Amount
-            });
+            session.FieldManager.AddItem(session.Player.FieldPlayer, new(item.ItemId, item.Amount, item.Rarity, saveToDatabase: false));
 
             numDrop += item.Amount;
         }

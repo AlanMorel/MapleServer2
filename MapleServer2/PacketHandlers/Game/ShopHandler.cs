@@ -136,11 +136,7 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
         }
 
         // add item to inventory
-        Item item = new(shopItem.ItemId)
-        {
-            Amount = quantity * shopItem.Quantity,
-            Rarity = shopItem.ItemRank
-        };
+        Item item = new(shopItem.ItemId, quantity * shopItem.Quantity, shopItem.ItemRank);
         session.Player.Inventory.AddItem(session, item, true);
 
         // complete purchase

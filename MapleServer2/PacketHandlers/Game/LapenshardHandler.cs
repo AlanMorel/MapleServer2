@@ -229,7 +229,7 @@ public class LapenshardHandler : GamePacketHandler<LapenshardHandler>
         }
 
         session.Player.Inventory.ConsumeItem(session, itemUid, 1);
-        session.Player.Inventory.AddItem(session, new(itemId + 1) { Rarity = 3 }, true);
+        session.Player.Inventory.AddItem(session, new(itemId + 1, rarity: 3), true);
         session.Send(LapenshardPacket.Upgrade(itemId, true));
     }
 }

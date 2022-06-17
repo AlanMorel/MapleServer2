@@ -135,11 +135,7 @@ public class MushkingRoyaleSystemHandler : GamePacketHandler<MushkingRoyaleSyste
         switch (type)
         {
             case "item":
-                Item item = new(int.Parse(id))
-                {
-                    Rarity = int.Parse(value),
-                    Amount = int.Parse(count)
-                };
+                Item item = new(int.Parse(id), int.Parse(count), int.Parse(value));
                 session.Player.Inventory.AddItem(session, item, true);
                 break;
             case "genderItem":
@@ -154,11 +150,7 @@ public class MushkingRoyaleSystemHandler : GamePacketHandler<MushkingRoyaleSyste
                         continue;
                     }
 
-                    Item genderItem = new(ids[i])
-                    {
-                        Rarity = values[i],
-                        Amount = counts[i]
-                    };
+                    Item genderItem = new(ids[i], counts[i], values[i]);
                     session.Player.Inventory.AddItem(session, genderItem, true);
                 }
                 break;

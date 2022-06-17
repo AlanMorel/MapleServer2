@@ -105,11 +105,7 @@ public class QuestHandler : GamePacketHandler<QuestHandler>
 
         foreach (QuestRewardItem reward in questStatus.RewardItems)
         {
-            Item newItem = new(reward.Code)
-            {
-                Amount = reward.Count,
-                Rarity = reward.Rank
-            };
+            Item newItem = new(reward.Code, reward.Count, reward.Rank);
             if (newItem.RecommendJobs.Contains(session.Player.Job) || newItem.RecommendJobs.Contains(0))
             {
                 session.Player.Inventory.AddItem(session, newItem, true);
@@ -144,11 +140,7 @@ public class QuestHandler : GamePacketHandler<QuestHandler>
 
         foreach (QuestRewardItem rewardItem in questStatus.RewardItems)
         {
-            Item item = new(rewardItem.Code)
-            {
-                Amount = rewardItem.Count,
-                Rarity = rewardItem.Rank
-            };
+            Item item = new(rewardItem.Code, rewardItem.Count, rewardItem.Rank);
             session.Player.Inventory.AddItem(session, item, true);
         }
 

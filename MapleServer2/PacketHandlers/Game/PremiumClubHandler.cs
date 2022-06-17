@@ -62,11 +62,7 @@ public class PremiumClubHandler : GamePacketHandler<PremiumClubHandler>
 
         PremiumClubDailyBenefitMetadata benefit = PremiumClubDailyBenefitMetadataStorage.GetMetadata(benefitId);
 
-        Item benefitRewardItem = new(benefit.ItemId)
-        {
-            Rarity = benefit.ItemRarity,
-            Amount = benefit.ItemAmount
-        };
+        Item benefitRewardItem = new(benefit.ItemId, benefit.ItemAmount, benefit.ItemRarity);
 
         session.Player.Inventory.AddItem(session, benefitRewardItem, true);
 
@@ -98,11 +94,7 @@ public class PremiumClubHandler : GamePacketHandler<PremiumClubHandler>
 
         foreach (BonusItem item in vipPackage.BonusItem)
         {
-            Item bonusItem = new(item.Id)
-            {
-                Rarity = item.Rarity,
-                Amount = item.Amount
-            };
+            Item bonusItem = new(item.Id, item.Amount, item.Rarity);
             session.Player.Inventory.AddItem(session, bonusItem, true);
         }
 

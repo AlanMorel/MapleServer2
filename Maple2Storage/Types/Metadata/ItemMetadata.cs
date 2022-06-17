@@ -22,7 +22,7 @@ public class ItemMetadata
     [XmlElement(Order = 7)]
     public bool IsDress;
     [XmlElement(Order = 8)]
-    public int Rarity;
+    public int Rarity = 1;
     [XmlElement(Order = 9)]
     public ItemGemMetadata Gem;
     [XmlElement(Order = 10)]

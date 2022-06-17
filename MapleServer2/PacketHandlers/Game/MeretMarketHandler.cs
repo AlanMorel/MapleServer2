@@ -399,11 +399,7 @@ public class MeretMarketHandler : GamePacketHandler<MeretMarketHandler>
             return;
         }
 
-        Item item = new(marketItem.ItemId)
-        {
-            Amount = marketItem.Quantity + marketItem.BonusQuantity,
-            Rarity = marketItem.Rarity
-        };
+        Item item = new(marketItem.ItemId, marketItem.Quantity + marketItem.BonusQuantity, marketItem.Rarity);
         if (marketItem.Duration != 0)
         {
             item.ExpiryTime = TimeInfo.Now() + Environment.TickCount + marketItem.Duration * 24 * 60 * 60;

@@ -44,11 +44,9 @@ public static class ItemBoxHelper
                 rarity = constant;
             }
 
-            Item newItem = new(id)
+            Item newItem = new(id, amount, rarity)
             {
-                EnchantLevel = dropContent.EnchantLevel,
-                Amount = amount,
-                Rarity = rarity
+                EnchantLevel = dropContent.EnchantLevel
             };
             newItem.Stats = new(newItem);
             items.Add(newItem);
@@ -109,11 +107,9 @@ public static class ItemBoxHelper
 
         foreach (int id in dropContents.ItemIds)
         {
-            Item newItem = new(id)
+            Item newItem = new(id, amount, dropContents.Rarity)
             {
-                EnchantLevel = dropContents.EnchantLevel,
-                Amount = amount,
-                Rarity = dropContents.Rarity
+                EnchantLevel = dropContents.EnchantLevel
             };
             newItem.Stats = new(newItem);
             if (inventory.CanHold(newItem))

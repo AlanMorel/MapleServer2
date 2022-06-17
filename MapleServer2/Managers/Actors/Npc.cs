@@ -311,7 +311,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
         if (dropMeso)
         {
             // TODO: Calculate meso drop rate
-            Item meso = new(90000001, Rand.Next(2, 800));
+            Item meso = new(id: 90000001, amount: Rand.Next(2, 800), saveToDatabase: false);
             session.FieldManager.AddItem(session.Player.FieldPlayer, meso, npc);
         }
 
@@ -319,7 +319,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
         bool dropMeret = Rand.Next(40) == 0;
         if (dropMeret)
         {
-            Item meret = new(90000004, 20);
+            Item meret = new(id: 90000004, amount: 20, saveToDatabase: false);
             session.FieldManager.AddItem(session.Player.FieldPlayer, meret, npc);
         }
 
@@ -327,7 +327,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
         bool dropSP = Rand.Next(6) == 0;
         if (dropSP)
         {
-            Item spBall = new(90000009, 20);
+            Item spBall = new(id: 90000009, amount: 20, saveToDatabase: false);
             session.FieldManager.AddItem(session.Player.FieldPlayer, spBall, npc);
         }
 
@@ -335,7 +335,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
         bool dropEP = Rand.Next(10) == 0;
         if (dropEP)
         {
-            Item epBall = new(90000010, 20);
+            Item epBall = new(id: 90000010, amount: 20, saveToDatabase: false);
             session.FieldManager.AddItem(session.Player.FieldPlayer, epBall, npc);
         }
 
