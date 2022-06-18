@@ -21,12 +21,7 @@ public class DismantleInventory
 
         foreach ((int id, int amount) in Rewards)
         {
-            Item item = new(id)
-            {
-                Amount = amount
-            };
-
-            session.Player.Inventory.AddItem(session, item, true);
+            session.Player.Inventory.AddItem(session, new(id, amount), true);
         }
 
         Slots = new (long, int)[100];
