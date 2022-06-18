@@ -59,7 +59,9 @@ public class DatabaseCharacter : DatabaseTable
             unlocked_maps = JsonConvert.SerializeObject(player.UnlockedMaps),
             unlocked_taxis = JsonConvert.SerializeObject(player.UnlockedTaxis),
             visiting_home_id = player.VisitingHomeId,
-            gathering_count = JsonConvert.SerializeObject(player.GatheringCount)
+            gathering_count = JsonConvert.SerializeObject(player.GatheringCount),
+            home_storage_access_time = player.HouseStorageAccessTime,
+            home_doctor_access_time = player.HouseDoctorAccessTime
         });
     }
 

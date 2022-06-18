@@ -27,6 +27,7 @@ public static class PartyPacket
         PartyHelp = 0x19,
         MatchParty = 0x1A,
         DungeonFindParty = 0x1E,
+        DungeonHelperCooldown = 0x28,
         JoinRequest = 0x2C,
         StartReadyCheck = 0x2F,
         ReadyCheck = 0x30,
@@ -227,6 +228,14 @@ public static class PartyPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(PartyPacketMode.DungeonFindParty);
         pWriter.WriteInt(); // dungeon queue Id
+        return pWriter;
+    }
+
+    public static PacketWriter DungeonHelperCooldown(int tickTime)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
+        pWriter.Write(PartyPacketMode.DungeonHelperCooldown);
+        pWriter.WriteInt(tickTime);
         return pWriter;
     }
 

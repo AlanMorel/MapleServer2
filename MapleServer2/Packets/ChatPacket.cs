@@ -25,7 +25,7 @@ public static class ChatPacket
                 pWriter.WriteUnicodeString("???");
                 break;
             case ChatType.Super:
-                pWriter.WriteInt(player.SuperChat);
+                pWriter.WriteInt(player.SuperChatId);
                 break;
             case ChatType.Club:
                 pWriter.WriteLong(clubId);

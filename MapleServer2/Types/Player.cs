@@ -71,7 +71,11 @@ public class Player
     public IFieldObject<GuideObject> Guide;
     public IFieldObject<Instrument> Instrument;
 
-    public int SuperChat;
+    public long HouseStorageAccessTime;
+    public long HouseDoctorAccessTime;
+    public int DungeonHelperAccessTime; // tick
+
+    public int SuperChatId;
     public int ShopId; // current shop player is interacting
 
     public short ChannelId;
