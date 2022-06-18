@@ -143,4 +143,11 @@ public class Stat
     {
         TotalLong -= amount;
     }
+
+    public void Reset()
+    {
+        Bonus = 0;
+        Base = 0;
+        Total = 0;
+    }
 }

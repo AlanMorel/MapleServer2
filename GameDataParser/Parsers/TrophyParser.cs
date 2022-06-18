@@ -70,6 +70,8 @@ internal class TrophyParser : Exporter<List<TrophyMetadata>>
                     RewardRank = int.Parse(reward.Attributes["rank"].Value)
                 };
 
+                int.TryParse(reward.Attributes["subJobLevel"]?.Value, out newGrade.RewardSubJobLevel);
+
                 newTrophy.Grades.Add(newGrade);
             }
 

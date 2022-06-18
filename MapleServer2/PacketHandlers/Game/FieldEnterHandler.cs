@@ -27,7 +27,7 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
         session.Send(StatPointPacket.WriteTotalStatPoints(player));
         session.Send(StatPointPacket.WriteTotalStatPoints(player)); // This packet is sent twice on GMS, not sure why 
         session.Send(StatPointPacket.WriteStatPointDistribution(player));
-        session.Send(SkillPointPacket.ExtraSkillPoints());
+        session.Send(SkillPointPacket.ExtraSkillPoints(player));
 
         if (account.IsVip())
         {

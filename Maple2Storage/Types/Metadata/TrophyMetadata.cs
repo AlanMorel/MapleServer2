@@ -44,9 +44,11 @@ public class TrophyGradeMetadata
     public int RewardValue;
     [XmlElement(Order = 7)]
     public int RewardRank;
+    [XmlElement(Order = 8)]
+    public int RewardSubJobLevel;
 
     public override string ToString()
     {
-        return $"TrophyGradeMetadata(Grade:{Grade},Condition:{Condition},RewardType:{RewardType},RewardCode:{RewardCode},RewardValue:{RewardValue})";
+        return $"TrophyGradeMetadata(Grade:{Grade},Condition:{Condition},RewardType:{RewardType},RewardCode:{RewardCode},RewardValue:{RewardValue},RewardSubJobLevel:{RewardSubJobLevel})";
     }
 }

@@ -29,6 +29,11 @@ public class DamageHandler
         return CalculateDamage(skill, source, target, 1);
     }
 
+    public static double FetchMultiplier(Stats stats, StatAttribute attribute)
+    {
+        return (double) stats[attribute].Total / 1000;
+    }
+
     public static DamageHandler CalculateDamage(SkillCast skill, IFieldActor source, IFieldActor target, double luckCoefficient)
     {
         // TODO: get accuracyWeakness from enemy stats from enemy buff. new stat recommended
@@ -48,40 +53,40 @@ public class DamageHandler
         {
             // TODO: get critResist from enemy stats from enemy buff. new stat recommended
             const double CritResist = 1;
-            double critDamage = source.Stats[StatAttribute.CritDamage].Total;
-            finalCritDamage = CritResist * ((critDamage / 100) - 1) + 1;
+            double critDamage = 1000 + source.Stats[StatAttribute.CritDamage].Total;
+            finalCritDamage = CritResist * ((critDamage / 1000) - 1) + 1;
         }
 
-        double damageBonus = 100 + source.Stats[StatAttribute.TotalDamage].Total;
+        double damageBonus = 1 + FetchMultiplier(source.Stats, StatAttribute.TotalDamage);
 
         damageBonus *= finalCritDamage;
 
         switch (skill.GetElement())
         {
             case Element.Fire:
-                damageBonus += source.Stats[StatAttribute.FireDamage].Total;
+                damageBonus += FetchMultiplier(source.Stats, StatAttribute.FireDamage);
                 break;
             case Element.Ice:
-                damageBonus += source.Stats[StatAttribute.IceDamage].Total;
+                damageBonus += FetchMultiplier(source.Stats, StatAttribute.IceDamage);
                 break;
             case Element.Electric:
-                damageBonus += source.Stats[StatAttribute.ElectricDamage].Total;
+                damageBonus += FetchMultiplier(source.Stats, StatAttribute.ElectricDamage);
                 break;
             case Element.Holy:
-                damageBonus += source.Stats[StatAttribute.HolyDamage].Total;
+                damageBonus += FetchMultiplier(source.Stats, StatAttribute.HolyDamage);
                 break;
             case Element.Dark:
-                damageBonus += source.Stats[StatAttribute.DarkDamage].Total;
+                damageBonus += FetchMultiplier(source.Stats, StatAttribute.DarkDamage);
                 break;
             case Element.Poison:
-                damageBonus += source.Stats[StatAttribute.PoisonDamage].Total;
+                damageBonus += FetchMultiplier(source.Stats, StatAttribute.PoisonDamage);
                 break;
         }
 
         // TODO: properly check for melee vs ranged. new skill attribute recommended
         const bool IsMelee = true;
 
-        damageBonus += IsMelee ? source.Stats[StatAttribute.MeleeDamage].Total : source.Stats[StatAttribute.RangedDamage].Total;
+        damageBonus += FetchMultiplier(source.Stats, IsMelee ? StatAttribute.MeleeDamage : StatAttribute.RangedDamage);
 
         bool isBoss = false;
 
@@ -90,20 +95,20 @@ public class DamageHandler
             isBoss = npc.Value.IsBoss();
         }
 
-        damageBonus += isBoss ? source.Stats[StatAttribute.BossDamage].Total : 0;
+        damageBonus += isBoss ? FetchMultiplier(source.Stats, StatAttribute.BossDamage) : 0;
 
         // TODO: properly fetch enemy attack speed weakness from enemy buff. new stat recommended
         const double AttackSpeedWeakness = 0;
 
-        damageBonus += AttackSpeedWeakness * source.Stats[StatAttribute.AttackSpeed].Total;
+        damageBonus += AttackSpeedWeakness * FetchMultiplier(source.Stats, StatAttribute.AttackSpeed);
 
-        double damageMultiplier = (damageBonus / 100) * skill.GetDamageRate();
+        double damageMultiplier = damageBonus * skill.GetDamageRate();
 
         // TODO: properly fetch enemy pierce resistance from enemy buff. new stat recommended
         const double EnemyPierceResistance = 1;
 
-        double defensePierce = 1 - Math.Min(30, EnemyPierceResistance * source.Stats[StatAttribute.Pierce].Total) / 100;
-        damageMultiplier *= 100 / (target.Stats[StatAttribute.Defense].Total * defensePierce);
+        double defensePierce = 1 - Math.Min(0.3, EnemyPierceResistance * FetchMultiplier(source.Stats, StatAttribute.Pierce));
+        damageMultiplier *= 1 / (Math.Max(target.Stats[StatAttribute.Defense].Total, 1) * defensePierce);
 
         bool isPhysical = skill.GetSkillDamageType() == DamageType.Physical;
         StatAttribute resistanceStat = isPhysical ? StatAttribute.PhysicalRes : StatAttribute.MagicRes;
@@ -112,15 +117,15 @@ public class DamageHandler
 
         double targetRes = target.Stats[resistanceStat].Total;
         double attackType = source.Stats[attackStat].Total;
-        double resPierce = source.Stats[piercingStat].Total;
-        double resistance = (1500.0 - Math.Max(0, targetRes - 15 * resPierce)) / 1500;
+        double resPierce = FetchMultiplier(source.Stats, piercingStat);
+        double resistance = (1500.0 - Math.Max(0, targetRes - 1500 * resPierce)) / 1500;
 
         // does this need to be divided by anything at all to account for raw physical attack?
         damageMultiplier *= attackType * resistance;
 
         // TODO: apply special standalone multipliers like Spicy Maple Noodles buff? it seems to have had it's own multiplier. new stat recommended
-        const double FinalDamageMultiplier = 100;
-        damageMultiplier *= FinalDamageMultiplier / 100;
+        const double FinalDamageMultiplier = 1;
+        damageMultiplier *= FinalDamageMultiplier;
 
         double attackDamage = 300;
 

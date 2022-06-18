@@ -349,6 +349,37 @@ public class Stats
         statDist.ResetPoints();
     }
 
+    public void RecomputeAllocations(StatDistribution statDist)
+    {
+        foreach ((StatAttribute id, int value) in statDist.AllocatedStats)
+        {
+            for (int i = 0; i < value; i++)
+            {
+                Allocate(id);
+            }
+        }
+    }
+
+    public void ResetStats()
+    {
+        foreach ((StatAttribute id, Stat stat) in Data)
+        {
+            if (stat != null)
+            {
+                stat.Reset();
+            }
+        }
+    }
+
+
+    public void RecomputeStats(Player player)
+    {
+        ResetStats();
+        player.Stats = new(player.Job);
+        AddBaseStats(player, player.Levels.Level - 1);
+        RecomputeAllocations(player.StatPointDistribution);
+    }
+
     private static (int strBase, int dexBase, int intBase, int lukBase, int hpBase, int critBase) GetJobBaseStats(Job job)
     {
         int strBase = 0, dexBase = 0, intBase = 0, lukBase = 0, hpBase = 0, critBase = 0;
