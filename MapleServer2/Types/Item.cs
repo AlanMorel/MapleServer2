@@ -125,7 +125,6 @@ public class Item
         RemainingRepackageCount = property.RepackageCount;
         RemainingGlamorForges = ItemExtractionMetadataStorage.GetExtractionCount(id);
         Slot = -1;
-        Amount = 1;
         Score = new();
         Stats = new(this);
         GearScore = GetGearScore();
