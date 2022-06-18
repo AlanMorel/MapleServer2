@@ -410,10 +410,11 @@ public class RequestItemUseHandler : GamePacketHandler<RequestItemUseHandler>
 
         int balloonUid = GuidGenerator.Int();
         string id = "AdBalloon_" + balloonUid;
-        AdBalloon balloon = new(id, item.Function.InstallBillboard.InteractId, InteractObjectState.Default, InteractObjectType.AdBalloon,
-            session.Player.FieldPlayer, item.Function.InstallBillboard, title, description, publicHouse);
-        session.FieldManager.State.AddInteractObject(balloon);
-        session.FieldManager.BroadcastPacket(InteractObjectPacket.Add(balloon));
+        IFieldObject<InteractObject> fieldAdBallon = session.FieldManager.AddAdBalloon(new(id, item.Function.InstallBillboard.InteractId,
+            InteractObjectState.Default, InteractObjectType.AdBalloon,
+            session.Player, item.Function.InstallBillboard, title, description, publicHouse));
+        session.FieldManager.State.AddInteractObject(fieldAdBallon);
+        session.FieldManager.BroadcastPacket(InteractObjectPacket.Add(fieldAdBallon));
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
     }
 

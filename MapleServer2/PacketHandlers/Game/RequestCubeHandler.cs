@@ -281,7 +281,7 @@ public class RequestCubeHandler : GamePacketHandler<RequestCubeHandler>
         CoordF coordF = coord.ToFloat();
         Player player = session.Player;
 
-        LiftableObject liftable = session.FieldManager.State.LiftableObjects.Values.FirstOrDefault(x => x.Metadata.ItemId == itemId);
+        IFieldObject<LiftableObject> liftable = session.Player.FieldPlayer.CarryingLiftable;
         if (liftable is not null)
         {
             HandleAddLiftable(player, session.FieldManager, liftable, coord, rotation);
@@ -376,33 +376,51 @@ public class RequestCubeHandler : GamePacketHandler<RequestCubeHandler>
         session.FieldManager.AddCube(fieldCube, homeOwner.ObjectId, session.Player.FieldPlayer.ObjectId);
     }
 
-    private static void HandleAddLiftable(Player player, FieldManager fieldManager, LiftableObject liftable, CoordB coord, CoordF rotation)
+    private static void HandleAddLiftable(Player player, FieldManager fieldManager, IFieldObject<LiftableObject> fieldLiftable, CoordB coord, CoordF rotation)
     {
-        liftable.Position = coord.ToFloat();
-        liftable.Rotation = rotation;
+        LiftableObject liftable = fieldLiftable.Value;
+
+        fieldLiftable.Coord = coord.ToFloat();
+        fieldLiftable.Rotation = rotation;
 
         liftable.State = LiftableState.Active;
         liftable.Enabled = true;
+        liftable.PickedUp = false;
 
-        MapLiftableTarget target = MapEntityMetadataStorage.GetLiftablesTargets(player.MapId)?.FirstOrDefault(x => x.Position == liftable.Position);
+        player.FieldPlayer.CarryingLiftable = null;
+
+        MapLiftableTarget target = MapEntityMetadataStorage.GetLiftablesTargets(player.MapId)?.FirstOrDefault(x => x.Position == fieldLiftable.Coord);
         if (target is not null)
         {
             liftable.State = LiftableState.Disabled;
             QuestManager.OnItemMove(player, liftable.Metadata.ItemId, target.Target);
         }
 
-        fieldManager.BroadcastPacket(LiftablePacket.Drop(liftable));
-        fieldManager.BroadcastPacket(ResponseCubePacket.PlaceLiftable(liftable, player.FieldPlayer.ObjectId));
+        fieldManager.BroadcastPacket(LiftablePacket.Drop(fieldLiftable));
+        fieldManager.BroadcastPacket(ResponseCubePacket.PlaceLiftable(fieldLiftable, player.FieldPlayer.ObjectId));
         fieldManager.BroadcastPacket(BuildModePacket.Use(player.FieldPlayer, BuildModeHandler.BuildModeType.Stop));
+        if (target is null)
+        {
+            fieldManager.BroadcastPacket(LiftablePacket.UpdateEntityByCoord(fieldLiftable));
+        }
+
+        if (liftable.Metadata.ItemLifeTime is 0)
+        {
+            return;
+        }
 
         Task.Run(async () =>
         {
             await Task.Delay(liftable.Metadata.ItemLifeTime);
-            fieldManager.BroadcastPacket(LiftablePacket.UpdateEntityByCoord(liftable));
-            fieldManager.BroadcastPacket(ResponseCubePacket.RemoveCube(0, 0, liftable.Position.ToByte()));
-            fieldManager.BroadcastPacket(LiftablePacket.RemoveCube(liftable));
+
+            fieldManager.BroadcastPacket(LiftablePacket.UpdateEntityByCoord(fieldLiftable));
+            fieldManager.BroadcastPacket(ResponseCubePacket.RemoveCube(0, 0, fieldLiftable.Coord.ToByte()));
+            fieldManager.BroadcastPacket(LiftablePacket.RemoveCube(fieldLiftable));
+
             liftable.State = LiftableState.Removed;
             liftable.Enabled = false;
+
+            fieldManager.State.InteractObjects.Remove(liftable.EntityId, out _);
             // TODO: regen task
         });
     }

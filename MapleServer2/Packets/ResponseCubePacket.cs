@@ -150,7 +150,7 @@ public static class ResponseCubePacket
         return pWriter;
     }
 
-    public static PacketWriter PlaceLiftable(LiftableObject liftable, int ownerObjectId)
+    public static PacketWriter PlaceLiftable(IFieldObject<LiftableObject> fieldLiftableObject, int ownerObjectId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.PlaceFurnishing);
@@ -159,15 +159,15 @@ public static class ResponseCubePacket
         pWriter.WriteInt(ownerObjectId);
         pWriter.WriteInt();
         pWriter.WriteInt();
-        pWriter.Write(liftable.Position.ToByte());
+        pWriter.Write(fieldLiftableObject.Coord.ToByte());
         pWriter.WriteByte();
         pWriter.WriteLong(GuidGenerator.Long());
-        pWriter.WriteInt(liftable.Metadata.ItemId);
+        pWriter.WriteInt(fieldLiftableObject.Value.Metadata.ItemId);
         pWriter.WriteLong();
         pWriter.WriteLong();
         pWriter.WriteByte();
         pWriter.WriteByte(1);
-        pWriter.Write(liftable.Rotation.Z);
+        pWriter.Write(fieldLiftableObject.Rotation.Z);
         pWriter.WriteInt();
         pWriter.WriteByte();
 

@@ -230,8 +230,23 @@ public partial class TriggerContext
         Field.BroadcastPacket(TimeScalePacket.SetTimeScale(enable, startScale, endScale, duration, interpolator));
     }
 
-    public void AddBuff(int[] arg1, int arg2, byte arg3, bool arg4, bool arg5, string feature)
+    public void AddBuff(int[] boxIds, int skillId, byte skillLevel, bool arg4, bool arg5, string feature)
     {
+        foreach (int boxId in boxIds)
+        {
+            MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
+            if (box is null)
+            {
+                return;
+            }
+
+            foreach (Character player in Field.State.Players.Values.Where(player => FieldManager.IsPlayerInBox(box, player)))
+            {
+                // TODO: Rework when buff system is implemented
+                Status status = new(new(skillId, skillLevel), player.ObjectId, player.ObjectId, 1);
+                StatusHandler.Handle(player.Value.Session, status);
+            }
+        }
     }
 
     public void RemoveBuff(int arg1, int arg2, bool arg3)

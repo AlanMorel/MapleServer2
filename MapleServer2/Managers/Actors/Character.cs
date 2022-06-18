@@ -17,6 +17,7 @@ public class Character : FieldActor<Player>
     private Task HpRegenThread;
     private Task SpRegenThread;
     private Task StaRegenThread;
+    public IFieldObject<LiftableObject> CarryingLiftable;
 
     public Character(int objectId, Player value, FieldManager fieldManager) : base(objectId, value, fieldManager)
     {

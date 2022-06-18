@@ -5,12 +5,11 @@ namespace MapleServer2.Types;
 
 public class LiftableObject
 {
-    public string EntityId;
-    public MapLiftableObject Metadata;
-    public CoordF Position;
-    public CoordF Rotation;
+    public readonly string EntityId;
+    public readonly MapLiftableObject Metadata;
     public LiftableState State;
     public bool Enabled;
+    public bool PickedUp;
 
     public LiftableObject(string entityId, MapLiftableObject metadata)
     {
@@ -21,9 +20,9 @@ public class LiftableObject
     }
 }
 
-public enum LiftableState : byte
+public enum LiftableState
 {
-    Active = 0,
-    Removed = 1,
+    Removed = 0,
+    Active = 1,
     Disabled = 2
 }

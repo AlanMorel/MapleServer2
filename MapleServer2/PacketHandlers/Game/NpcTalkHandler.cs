@@ -478,21 +478,31 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
         // need to fix for quests
         if (scriptMetadata is null)
         {
-            return null;
+            // If npc has quests, send quests
+            if (npcQuests.Count <= 0)
+            {
+                return null;
+            }
+
+            npcTalk.DialogType |= DialogType.Quest;
+            npcTalk.QuestId = npcQuests.First().Id;
+            ScriptMetadata questScriptsMetadata = ScriptMetadataStorage.GetQuestScriptMetadata(npcTalk.QuestId);
+            return GetNextScript(session, questScriptsMetadata, npcTalk);
+            ;
         }
 
         if (scriptMetadata.NpcScripts.Any(x => x.Type == ScriptType.Job))
         {
             Script luaScript = ScriptLoader.GetScript($"Npcs/{scriptMetadata.Id}", session);
             DynValue scriptResult = luaScript?.RunFunction("meetsJobScriptRequirement");
-            if (scriptResult != null && scriptResult.Boolean)
+            if (scriptResult is { Boolean: true })
             {
                 npcTalk.DialogType = DialogType.UI;
                 return scriptMetadata.NpcScripts.FirstOrDefault(x => x.Type == ScriptType.Job);
             }
         }
 
-        NpcScript script = scriptMetadata?.NpcScripts.FirstOrDefault(x => x.Type == ScriptType.Select);
+        NpcScript script = scriptMetadata.NpcScripts.FirstOrDefault(x => x.Type == ScriptType.Select);
 
         // If npc has quests, send quests
         if (npcQuests.Count > 0)

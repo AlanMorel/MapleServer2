@@ -50,14 +50,14 @@ public partial class TriggerContext
         InteractObjectState objectState = (InteractObjectState) state;
         foreach (int interactObjectId in interactObjectIds)
         {
-            InteractObject interactObject = Field.State.InteractObjects.Values.FirstOrDefault(x => x.InteractId == interactObjectId);
+            IFieldObject<InteractObject> interactObject = Field.State.InteractObjects.Values.FirstOrDefault(x => x.Value.InteractId == interactObjectId);
             if (interactObject == null)
             {
                 continue;
             }
 
-            interactObject.State = objectState;
-            Field.BroadcastPacket(InteractObjectPacket.Set(interactObject));
+            interactObject.Value.State = objectState;
+            Field.BroadcastPacket(InteractObjectPacket.Set(interactObject.Value));
         }
     }
 
