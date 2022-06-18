@@ -74,7 +74,7 @@ public class SetJobCommand : InGameCommand
             string[] classes = Enum.GetNames(typeof(Job));
 
             player.Session.Send(NoticePacket.Notice(
-                "You have to give a classname and specifiy awakening (1 or 0)\nAvailable classes:\n".Bold().Color(Color.DarkOrange) +
+                "You have to give a classname and specify awakening (1 or 0)\nAvailable classes:\n".Bold().Color(Color.DarkOrange) +
                 $"{string.Join(", ", classes).Color(Color.Aquamarine)}", NoticeType.Chat));
 
             return;
@@ -103,6 +103,7 @@ public class SetJobCommand : InGameCommand
             player.SkillTabs[player.SkillTabs.IndexOf(skillTab)] = newSkillTab;
         }
 
+        player.SkillTabs.FirstOrDefault(x => x.TabId == activeSkillTabId)?.LearnDefaultSkills(player.Job, player.JobCode);
         trigger.Session.Send(JobPacket.SendJob(fieldPlayer));
     }
 }
@@ -170,7 +171,7 @@ public class AttributeCommand : InGameCommand
             return;
         }
 
-        if (!Enum.TryParse(equipSlot, out ItemSlot itemSlot) || itemSlot == ItemSlot.NONE)
+        if (!Enum.TryParse(equipSlot, ignoreCase: true, out ItemSlot itemSlot) || itemSlot == ItemSlot.NONE)
         {
             trigger.Session.SendNotice($"{equipSlot} is not a valid equip slot.");
             string slots = "";
@@ -183,7 +184,7 @@ public class AttributeCommand : InGameCommand
             return;
         }
 
-        if (!Enum.TryParse(newAttributeId, out StatAttribute newAttribute))
+        if (!Enum.TryParse(newAttributeId, ignoreCase: true, out StatAttribute newAttribute))
         {
             trigger.Session.SendNotice($"{newAttributeId} is not a valid attribute. Check StatAttribute.cs");
             return;
@@ -278,7 +279,7 @@ public class ClearStatsCommand : InGameCommand
             return;
         }
 
-        if (!Enum.TryParse(equipSlot, out ItemSlot itemSlot) || itemSlot == ItemSlot.NONE)
+        if (!Enum.TryParse(equipSlot, ignoreCase: true, out ItemSlot itemSlot) || itemSlot == ItemSlot.NONE)
         {
             trigger.Session.SendNotice($"{equipSlot} is not a valid equip slot.");
             string slots = "";
@@ -403,7 +404,7 @@ public class WeatherCommand : InGameCommand
     {
         string weather = trigger.Get<string>("weatherType");
 
-        if (!Enum.TryParse(weather, out WeatherType weatherType))
+        if (!Enum.TryParse(weather, ignoreCase: true, out WeatherType weatherType))
         {
             trigger.Session.SendNotice($"Available weathers: {WeatherTypes}");
             return;
@@ -575,7 +576,7 @@ public class ClearInventoryCommand : InGameCommand
     {
         string inventory = trigger.Get<string>("inventory");
 
-        if (!Enum.TryParse(inventory, out InventoryTab inventoryTab))
+        if (!Enum.TryParse(inventory, ignoreCase: true, out InventoryTab inventoryTab))
         {
             trigger.Session.SendNotice($"Available inventories: {InventoryTypes}");
             return;
