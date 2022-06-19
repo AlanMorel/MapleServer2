@@ -129,6 +129,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
         {
             session.Send(QuestPacket.SendDialogQuest(objectId, npcQuests));
         }
+
         QuestManager.OnTalkNpc(session.Player, npc.Value.Id, npcTalk.ScriptId);
         session.Send(NpcTalkPacket.Respond(npc, npcTalk.DialogType, contentIndex, responseSelection, npcTalk.ScriptId));
 
@@ -151,6 +152,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
             {
                 return ResponseSelection.SelectableTalk;
             }
+
             return ResponseSelection.None;
         }
 
@@ -187,6 +189,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
                     case NpcKind.Wheel:
                         return ResponseSelection.Roulette;
                 }
+
                 break;
             case ScriptType.Select:
                 switch (npcKind)
@@ -196,8 +199,8 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
                     case NpcKind.BalmyShop:
                     case NpcKind.RotatingShop:
                         return ResponseSelection.None;
-
                 }
+
                 break;
         }
 
@@ -292,6 +295,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
                     session.Send(NpcTalkPacket.Close());
                     return;
                 }
+
                 npcTalk.ScriptId = nextScript.Id;
                 npcTalk.ContentIndex = 0;
             }
@@ -314,17 +318,20 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
         {
             npcTalk.TalkFunction(session, nextScript.Contents[npcTalk.ContentIndex].FunctionId, "preTalkActions");
         }
+
         session.Send(NpcTalkPacket.ContinueChat(npcTalk.ScriptId, npcTalk.DialogType, responseSelection, npcTalk.ContentIndex, npcTalk.QuestId));
     }
 
     private static NpcScript GoToScript(GameSession session, int selectedIndex, NpcScript currentScript, NpcTalk npcTalk, ScriptMetadata metadata)
     {
-
-        if (currentScript.Contents[npcTalk.ContentIndex].Distractor[selectedIndex].Goto.Count == 1 && currentScript.Contents[npcTalk.ContentIndex].Distractor[selectedIndex].GotoFail.Count == 0)
+        if (currentScript.Contents[npcTalk.ContentIndex].Distractor[selectedIndex].Goto.Count == 1 &&
+            currentScript.Contents[npcTalk.ContentIndex].Distractor[selectedIndex].GotoFail.Count == 0)
         {
             return metadata.NpcScripts.FirstOrDefault(x => x.Id == currentScript.Contents[npcTalk.ContentIndex].Distractor[selectedIndex].Goto.First());
         }
-        if (currentScript.Contents[npcTalk.ContentIndex].Distractor[selectedIndex].Goto.Count != 0 && currentScript.Contents[npcTalk.ContentIndex].Distractor[selectedIndex].GotoFail.Count > 0)
+
+        if (currentScript.Contents[npcTalk.ContentIndex].Distractor[selectedIndex].Goto.Count != 0 &&
+            currentScript.Contents[npcTalk.ContentIndex].Distractor[selectedIndex].GotoFail.Count > 0)
         {
             Script luaScript = ScriptLoader.GetScript($"Npcs/{session.Player.NpcTalk.Npc.Id}", session);
             DynValue result = luaScript?.RunFunction("handleGoto", currentScript.Contents[npcTalk.ContentIndex].Distractor[selectedIndex].Goto[0]);
@@ -333,6 +340,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
                 return metadata.NpcScripts.FirstOrDefault(x => x.Id == (int) result.Number);
             }
         }
+
         return metadata.NpcScripts.FirstOrDefault(x => x.Id == currentScript.Contents[npcTalk.ContentIndex].Distractor[selectedIndex].Goto[0]);
     }
 
@@ -342,10 +350,12 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
         {
             return DialogType.UI;
         }
+
         if (npcTalk.QuestId != 0)
         {
             return DialogType.Quest;
         }
+
         return DialogType.Talk;
     }
 
@@ -488,7 +498,6 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
             npcTalk.QuestId = npcQuests.First().Id;
             ScriptMetadata questScriptsMetadata = ScriptMetadataStorage.GetQuestScriptMetadata(npcTalk.QuestId);
             return GetNextScript(session, questScriptsMetadata, npcTalk);
-            ;
         }
 
         if (scriptMetadata.NpcScripts.Any(x => x.Type == ScriptType.Job))
@@ -515,6 +524,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
                     scriptMetadata = ScriptMetadataStorage.GetQuestScriptMetadata(npcQuests.First().Id);
                     return GetNextScript(session, scriptMetadata, npcTalk);
                 }
+
                 npcTalk.DialogType |= DialogType.Talk | DialogType.Options;
             }
             else
@@ -523,6 +533,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
                 ScriptMetadata questScriptsMetadata = ScriptMetadataStorage.GetQuestScriptMetadata(npcTalk.QuestId);
                 script = GetNextScript(session, questScriptsMetadata, npcTalk);
             }
+
             return script;
         }
 
@@ -572,6 +583,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
                 {
                     return scriptMetadata.NpcScripts.First(x => x.Id == (int) firstScriptResult.Number);
                 }
+
                 Logger.Warning($"Unhandled NPC {scriptMetadata.Id} with multiple possible talk scripts");
                 return scriptMetadata.NpcScripts.FirstOrDefault(x => x.RandomPick);
         }

@@ -80,13 +80,12 @@ public static class QuestManager
     {
         foreach (QuestStatus quest in relevantQuests)
         {
-            quest.Condition.Where(condition =>
-                {
-                    return ConditionHelper.IsMatching(condition.Type, conditionType)
-                           && ConditionHelper.IsMatching(condition.Code, code)
-                           && (ConditionHelper.IsMatching(condition.Target, target) || ConditionHelper.IsMatching(condition.Target, code.ToString()) || ConditionHelper.IsMatching(condition.Target, "0"))
-                           && !condition.Completed;
-                })
+            quest.Condition.Where(condition => ConditionHelper.IsMatching(condition.Type, conditionType)
+                                               && ConditionHelper.IsMatching(condition.Code, code)
+                                               && (ConditionHelper.IsMatching(condition.Target, target) ||
+                                                   ConditionHelper.IsMatching(condition.Target, code.ToString()) ||
+                                                   ConditionHelper.IsMatching(condition.Target, "0"))
+                                               && !condition.Completed)
                 .UpdateConditions(session, quest);
         }
     }
