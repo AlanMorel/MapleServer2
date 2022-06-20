@@ -8,6 +8,7 @@ using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Managers;
 using MapleServer2.Managers.Actors;
+using MapleServer2.PacketHandlers.Game;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 
@@ -150,6 +151,7 @@ public class Player
 
     public List<GatheringCount> GatheringCount;
 
+    public AdditionalEffects AdditionalEffects = new();
     public List<Status> StatusContainer = new();
     public List<int> UnlockedTaxis;
     public List<int> UnlockedMaps;
@@ -305,8 +307,6 @@ public class Player
         {
             club?.BroadcastPacketClub(ClubPacket.UpdateMemberLocation(club.Id, Name, MapId));
         }
-
-        RecomputeStats();
     }
 
     public void Warp(Map mapId, CoordF? coord = null, CoordF? rotation = null, long instanceId = 1)
@@ -625,10 +625,34 @@ public class Player
             ComputeStatContribution(item);
         }
 
+        foreach (AdditionalEffect effect in AdditionalEffects.Effects)
+        {
+            FieldPlayer.IncreaseStats(effect);
+        }
+
         hp.TotalLong = Math.Min(hp.BonusLong, hpValue);
         spirit.TotalLong = Math.Min(spirit.BonusLong, spiritValue);
         stamina.TotalLong = Math.Min(stamina.BonusLong, staminaValue);
 
         Session.Send(StatPacket.SetStats(FieldPlayer));
+    }
+    public void EffectAdded(AdditionalEffect effect)
+    {
+        Session.Send(StatPacket.SetStats(FieldPlayer));
+    }
+    public void EffectRemoved(AdditionalEffect effect)
+    {
+        Session.Send(StatPacket.SetStats(FieldPlayer));
+    }
+
+    public void InitializeEffects()
+    {
+        foreach (Item item in Inventory.LapenshardStorage)
+        {
+            if (item != null)
+            {
+                LapenshardHandler.AddEffects(this, item);
+            }
+        }
     }
 }

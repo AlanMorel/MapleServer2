@@ -12,6 +12,11 @@ public class Character : FieldActor<Player>
         set => Value.Stats = value;
     }
 
+    public override AdditionalEffects AdditionalEffects
+    {
+        get => Value.AdditionalEffects;
+    }
+
     private CancellationTokenSource CombatCTS;
 
     private Task HpRegenThread;
@@ -34,6 +39,8 @@ public class Character : FieldActor<Player>
         {
             StaRegenThread = StartRegen(StatAttribute.Stamina, StatAttribute.StaminaRegen, StatAttribute.StaminaRegenInterval);
         }
+
+        value.AdditionalEffects.Parent = this;
     }
 
     public override void Cast(SkillCast skillCast)
@@ -244,5 +251,23 @@ public class Character : FieldActor<Player>
                 stat.Increase(Math.Clamp(regenAmount, 0, missingAmount));
             }
         }
+    }
+
+    public override void EffectAdded(AdditionalEffect effect)
+    {
+        base.EffectAdded(effect);
+        Value.EffectAdded(effect);
+    }
+    public override void EffectRemoved(AdditionalEffect effect)
+    {
+        base.EffectRemoved(effect);
+        Value.EffectRemoved(effect);
+    }
+
+    public override void InitializeEffects()
+    {
+        base.InitializeEffects();
+
+        Value.InitializeEffects();
     }
 }

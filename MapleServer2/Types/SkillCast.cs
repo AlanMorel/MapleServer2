@@ -104,6 +104,8 @@ public class SkillCast
 
     public bool IsRecoveryFromBuff() => VerifySkillTypeOf(BuffType.Buff, BuffSubType.Recovery);
 
+    public SkillRangeType GetRangeType() => GetSkillMetadata().RangeType;
+
     public bool IsGM() => VerifySkillTypeOf(SkillType.GM, SkillSubType.GM, BuffType.Buff, BuffSubType.Recovery);
 
     public bool IsGlobal() => VerifySkillTypeOf(SkillType.Active, SkillSubType.Global);

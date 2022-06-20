@@ -372,12 +372,11 @@ public class Stats
     }
 
 
-    public void RecomputeStats(Player player)
+    public static void RecomputeStats(Player player)
     {
-        ResetStats();
         player.Stats = new(player.Job);
-        AddBaseStats(player, player.Levels.Level - 1);
-        RecomputeAllocations(player.StatPointDistribution);
+        player.Stats.AddBaseStats(player, player.Levels.Level - 1);
+        player.Stats.RecomputeAllocations(player.StatPointDistribution);
     }
 
     private static (int strBase, int dexBase, int intBase, int lukBase, int hpBase, int critBase) GetJobBaseStats(Job job)

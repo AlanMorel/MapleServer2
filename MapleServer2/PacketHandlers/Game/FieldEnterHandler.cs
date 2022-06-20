@@ -75,5 +75,8 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
         TrophyManager.OnMapEntered(player, player.MapId);
 
         QuestManager.OnMapEnter(player, player.MapId);
+
+        player.RecomputeStats();
+        player.InitializeEffects();
     }
 }

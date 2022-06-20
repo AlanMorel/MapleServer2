@@ -54,6 +54,30 @@ public class LapenshardHandler : GamePacketHandler<LapenshardHandler>
         }
     }
 
+    public static void AddEffects(Player player, Item lapenshard)
+    {
+        if (lapenshard.AdditionalEffects.Id != null)
+        {
+            for (int i = 0; i < lapenshard.AdditionalEffects.Id.Length; i++)
+            {
+                // TODO: add registration of the feature type
+                player.AdditionalEffects.AddEffect(lapenshard.AdditionalEffects.Id[i], lapenshard.AdditionalEffects.Level[i], "");
+            }
+        }
+    }
+
+    public static void RemoveEffects(Player player, Item lapenshard)
+    {
+        if (lapenshard.AdditionalEffects.Id != null)
+        {
+            for (int i = 0; i < lapenshard.AdditionalEffects.Id.Length; i++)
+            {
+                // TODO: add registration of the feature type
+                player.AdditionalEffects.RemoveEffect(lapenshard.AdditionalEffects.Id[i], lapenshard.AdditionalEffects.Level[i], "");
+            }
+        }
+    }
+
     private static void HandleEquip(GameSession session, PacketReader packet)
     {
         int slotId = packet.ReadInt();
@@ -82,8 +106,9 @@ public class LapenshardHandler : GamePacketHandler<LapenshardHandler>
             Slot = (short) slotId
         };
 
-        newLapenshard.Uid = DatabaseManager.Items.Insert(newLapenshard);
+        AddEffects(session.Player, newLapenshard);
 
+        newLapenshard.Uid = DatabaseManager.Items.Insert(newLapenshard);
         session.Player.Inventory.LapenshardStorage[slotId - 1] = newLapenshard;
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
         session.Send(LapenshardPacket.Equip(slotId, item.Id));
@@ -98,6 +123,8 @@ public class LapenshardHandler : GamePacketHandler<LapenshardHandler>
         {
             return;
         }
+
+        RemoveEffects(session.Player, lapenshard);
 
         session.Player.Inventory.LapenshardStorage[slotId - 1] = null;
         lapenshard.Slot = -1;

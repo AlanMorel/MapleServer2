@@ -1,6 +1,7 @@
 ﻿using Maple2.PathEngine;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -19,6 +20,7 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
     public SkillCast SkillCast { get; set; }
     public bool OnCooldown { get; set; }
     public Agent Agent { get; set; }
+    public virtual AdditionalEffects AdditionalEffects { get; }
 
     public FieldManager FieldManager { get; }
     public FieldNavigator Navigator { get; }
@@ -159,5 +161,40 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
 
     public virtual void Animate(string sequenceName, float duration = -1)
     {
+    }
+
+    public void IncreaseStats(AdditionalEffect effect)
+    {
+        if (effect.LevelMetadata.Status?.Stats != null)
+        {
+            foreach ((StatAttribute stat, EffectStatMetadata statValue) in effect.LevelMetadata.Status.Stats)
+            {
+                Stats[stat].IncreaseBonus(statValue.Flat + (long) (1000 * statValue.Rate));
+            }
+        }
+    }
+
+    public void DecreaseStats(AdditionalEffect effect)
+    {
+        if (effect.LevelMetadata.Status?.Stats != null)
+        {
+            foreach ((StatAttribute stat, EffectStatMetadata statValue) in effect.LevelMetadata.Status.Stats)
+            {
+                Stats[stat].IncreaseBonus(-statValue.Flat - (long) (1000 * statValue.Rate));
+            }
+        }
+    }
+
+    public virtual void EffectAdded(AdditionalEffect effect)
+    {
+        IncreaseStats(effect);
+    }
+    public virtual void EffectRemoved(AdditionalEffect effect)
+    {
+        DecreaseStats(effect);
+    }
+    public virtual void InitializeEffects()
+    {
+
     }
 }
