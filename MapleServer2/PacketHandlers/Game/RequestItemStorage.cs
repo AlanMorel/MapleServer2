@@ -50,7 +50,7 @@ public class RequestItemStorage : GamePacketHandler<RequestItemStorage>
                 HandleLoadBank(session);
                 break;
             case ItemStorageMode.Close:
-                HandleClose(session.Player.Account.BankInventory);
+                HandleClose(session);
                 break;
             default:
                 LogUnknownMode(mode);
@@ -139,8 +139,12 @@ public class RequestItemStorage : GamePacketHandler<RequestItemStorage>
         session.Player.Account.BankInventory.LoadBank(session);
     }
 
-    private static void HandleClose(BankInventory bankInventory)
+    private static void HandleClose(GameSession session)
     {
-        DatabaseManager.BankInventories.Update(bankInventory);
+        if (session.Player.MapId == (int) Map.PrivateResidence)
+        {
+            session.Player.HouseDoctorAccessTime = TimeInfo.Now();
+        }
+        DatabaseManager.BankInventories.Update(session.Player.Account.BankInventory);
     }
 }
