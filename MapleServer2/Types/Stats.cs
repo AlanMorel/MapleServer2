@@ -371,7 +371,6 @@ public class Stats
         }
     }
 
-
     public static void RecomputeStats(Player player)
     {
         player.Stats = new(player.Job);

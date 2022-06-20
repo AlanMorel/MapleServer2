@@ -67,7 +67,7 @@ public class AdditionalEffects
 
         for (index = 0; index < Effects.Count; ++index)
         {
-            if (Effects[index].Matches(id, level))
+            if (Effects[index].Matches(id))
             {
                 effect = Effects[index];
 
@@ -112,7 +112,7 @@ public class AdditionalEffect
         LevelMetadata = AdditionalEffectMetadataStorage.GetLevelMetadata(id, level);
     }
 
-    public bool Matches(int id, int level)
+    public bool Matches(int id)
     {
         return Id == id;
     }

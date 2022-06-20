@@ -63,7 +63,6 @@ public class LapenshardHandler : GamePacketHandler<LapenshardHandler>
 
         for (int i = 0; i < lapenshard.AdditionalEffects.Id.Length; i++)
         {
-            // TODO: add registration of the feature type
             player.AdditionalEffects.AddEffect(lapenshard.AdditionalEffects.Id[i], lapenshard.AdditionalEffects.Level[i]);
         }
     }
@@ -77,7 +76,6 @@ public class LapenshardHandler : GamePacketHandler<LapenshardHandler>
 
         for (int i = 0; i < lapenshard.AdditionalEffects.Id.Length; i++)
         {
-            // TODO: add registration of the feature type
             player.AdditionalEffects.RemoveEffect(lapenshard.AdditionalEffects.Id[i], lapenshard.AdditionalEffects.Level[i]);
         }
     }

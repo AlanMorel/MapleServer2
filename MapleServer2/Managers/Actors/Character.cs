@@ -258,6 +258,7 @@ public class Character : FieldActor<Player>
         base.EffectAdded(effect);
         Value.EffectAdded(effect);
     }
+
     public override void EffectRemoved(AdditionalEffect effect)
     {
         base.EffectRemoved(effect);
