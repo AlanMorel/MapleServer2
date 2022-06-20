@@ -34,7 +34,14 @@ public class DismantleInventory
 
         foreach (Item item in items)
         {
-            if (item.Rarity > rarityType || item.GachaDismantleId is 0 || Slots.Any(x => x.Uid == item.Uid))
+            switch (item.InventoryTab)
+            {
+                case InventoryTab.Gear or InventoryTab.Gemstone when !item.EnableBreak:
+                case InventoryTab.Outfit when item.GachaDismantleId is 0:
+                    continue;
+            }
+
+            if (item.Rarity > rarityType || Slots.Any(x => x.Uid == item.Uid))
             {
                 continue;
             }

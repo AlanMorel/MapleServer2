@@ -1,6 +1,7 @@
 ﻿using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
+using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -44,7 +45,7 @@ public static class ItemBoxHelper
                 rarity = constant;
             }
 
-            Item newItem = new(id, amount, rarity)
+            Item newItem = new(id, amount, rarity, saveToDatabase: false)
             {
                 EnchantLevel = dropContent.EnchantLevel
             };
@@ -145,21 +146,8 @@ public static class ItemBoxHelper
         }
 
         IInventory inventory = session.Player.Inventory;
-        if (box.RequiredItemId > 0)
-        {
-            Item requiredItem = inventory.GetByUid(box.RequiredItemId);
-            if (requiredItem == null)
-            {
-                boxResult = OpenBoxResult.UnableToOpen;
-                return false;
-            }
+        List<Item> rewards = new();
 
-            inventory.ConsumeItem(session, requiredItem.Uid, 1);
-        }
-
-        inventory.ConsumeItem(session, item.Uid, box.AmountRequired);
-
-        Random rng = Random.Shared;
         // Receive one item from each drop group
         if (box.ReceiveOneItem)
         {
@@ -168,7 +156,7 @@ public static class ItemBoxHelper
                 bool receivedItem = false;
 
                 // Randomize the contents
-                IOrderedEnumerable<DropGroupContent> dropContent = group.Contents.OrderBy(_ => rng.Next());
+                IOrderedEnumerable<DropGroupContent> dropContent = group.Contents.OrderBy(_ => Random.Shared.Next());
                 foreach (DropGroupContent content in dropContent)
                 {
                     // If player has already received an item from this group, skip other contents
@@ -181,39 +169,59 @@ public static class ItemBoxHelper
                     foreach (Item newItem in items)
                     {
                         receivedItem = true;
-                        if (inventory.CanHold(newItem))
-                        {
-                            inventory.AddItem(session, newItem, true);
-                            continue;
-                        }
-
-                        boxResult = OpenBoxResult.InventoryFull;
-                        MailHelper.InventoryWasFull(newItem, session.Player.CharacterId);
+                        rewards.Add(newItem);
                     }
                 }
             }
-
-            return true;
+        }
+        else
+        {
+            // receive all items from each drop group
+            foreach (DropGroup group in metadata.DropGroups)
+            {
+                foreach (DropGroupContent dropContent in group.Contents)
+                {
+                    List<Item> items = GetItemsFromDropGroup(dropContent, session.Player, item);
+                    rewards.AddRange(items);
+                }
+            }
         }
 
-        // receive all items from each drop group
-        foreach (DropGroup group in metadata.DropGroups)
+        // Check if any inventory of the rewards is full
+        if (rewards.Any(reward => inventory.GetFreeSlots(reward.InventoryTab) <= 0))
         {
-            foreach (DropGroupContent dropContent in group.Contents)
-            {
-                List<Item> items = GetItemsFromDropGroup(dropContent, session.Player, item);
-                foreach (Item newItem in items)
-                {
-                    if (inventory.CanHold(newItem))
-                    {
-                        inventory.AddItem(session, newItem, true);
-                        continue;
-                    }
+            boxResult = OpenBoxResult.InventoryFull;
+            return false;
+        }
 
-                    boxResult = OpenBoxResult.InventoryFull;
-                    MailHelper.InventoryWasFull(newItem, session.Player.CharacterId);
-                }
+        // Remove the box and required items
+        if (box.RequiredItemId > 0)
+        {
+            Item requiredItem = inventory.GetByUid(box.RequiredItemId);
+            if (requiredItem is null)
+            {
+                boxResult = OpenBoxResult.UnableToOpen;
+                return false;
             }
+
+            inventory.ConsumeItem(session, requiredItem.Uid, 1);
+        }
+
+        inventory.ConsumeItem(session, item.Uid, box.AmountRequired);
+
+        // give the rewards
+        foreach (Item reward in rewards)
+        {
+            reward.Uid = DatabaseManager.Items.Insert(reward);
+
+            if (inventory.CanHold(reward))
+            {
+                inventory.AddItem(session, reward, true);
+                continue;
+            }
+
+            boxResult = OpenBoxResult.InventoryFull;
+            MailHelper.InventoryWasFull(reward, session.Player.CharacterId);
         }
 
         return true;
