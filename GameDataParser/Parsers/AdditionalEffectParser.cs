@@ -35,7 +35,6 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
 
                 AdditionalEffectLevelMetadata level = new()
                 {
-                    Feature = data[i].Feature,
                     Basic = new()
                     {
                         MaxBuffCount = data[i].BasicProperty.maxBuffCount,
@@ -55,24 +54,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                     AddStat(level.Status, StatAttribute.Accuracy, stat.atpvalue);
                 }
 
-                List<AdditionalEffectLevelMetadata> levels;
-                bool addLevels = !metadata.Levels.TryGetValue(levelIndex, out levels);
-
-                if (addLevels)
-                {
-                    levels = new();
-
-                    metadata.Levels.Add(levelIndex, levels);
-                }
-
-                if (level.Feature == "")
-                {
-                    levels.Insert(0, level);
-                }
-                else
-                {
-                    levels.Add(level);
-                }
+                metadata.Levels.Add(levelIndex, level);
             }
 
             effects.Add(metadata);

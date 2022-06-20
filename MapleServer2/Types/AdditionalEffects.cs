@@ -15,7 +15,7 @@ public class AdditionalEffects
         Effects = new();
     }
 
-    public AdditionalEffect AddEffect(int id, int level, string feature, int stacks = 1)
+    public AdditionalEffect AddEffect(int id, int level, int stacks = 1)
     {
         // current default behavior of remove and replace, and add stacks
         // doesnt check for shared buff categories (sigils, whetstones, etc)
@@ -23,9 +23,8 @@ public class AdditionalEffects
 
         int index;
         AdditionalEffect effect;
-        bool found = TryGet(id, level, feature, out effect, out index);
 
-        if (found)
+        if (TryGet(id, level, out effect, out index))
         {
             stacks = Math.Min(effect.LevelMetadata.Basic.MaxBuffCount, stacks + effect.Stacks);
 
@@ -34,7 +33,7 @@ public class AdditionalEffects
             Parent.EffectRemoved(effect);
         }
 
-        effect = new(id, level, feature, stacks);
+        effect = new(id, level, stacks);
 
         Effects.Add(effect);
 
@@ -43,13 +42,12 @@ public class AdditionalEffects
         return effect;
     }
 
-    public void RemoveEffect(int id, int level, string feature, int stacks = 1)
+    public void RemoveEffect(int id, int level, int stacks = 1)
     {
         int index;
         AdditionalEffect effect;
-        bool found = TryGet(id, level, feature, out effect, out index);
 
-        if (found)
+        if (TryGet(id, level, out effect, out index))
         {
             RemoveAt(index);
 
@@ -63,13 +61,13 @@ public class AdditionalEffects
         Effects.RemoveAt(Effects.Count - 1);
     }
 
-    public bool TryGet(int id, int level, string feature, out AdditionalEffect effect, out int index)
+    public bool TryGet(int id, int level, out AdditionalEffect effect, out int index)
     {
         effect = null;
 
         for (index = 0; index < Effects.Count; ++index)
         {
-            if (Effects[index].Matches(id, level, feature))
+            if (Effects[index].Matches(id, level))
             {
                 effect = Effects[index];
 
@@ -80,11 +78,11 @@ public class AdditionalEffects
         return false;
     }
 
-    public bool TryGet(int id, int level, string feature, out AdditionalEffect effect)
+    public bool TryGet(int id, int level, out AdditionalEffect effect)
     {
         int index = 0;
 
-        return TryGet(id, level, feature, out effect, out index);
+        return TryGet(id, level, out effect, out index);
     }
 
     public int CountEffects(AdditionalEffectLevelMetadata level)
@@ -98,26 +96,24 @@ public class AdditionalEffects
 public class AdditionalEffect
 {
     public int Id;
-    public string Feature;
     public int Level;
     public AdditionalEffectMetadata Metadata;
     public AdditionalEffectLevelMetadata LevelMetadata;
     public int References = 0; // Reference counter. Only remove 
     public int Stacks = 1;
 
-    public AdditionalEffect(int id, int level, string feature, int stacks = 1)
+    public AdditionalEffect(int id, int level, int stacks = 1)
     {
         Id = id;
-        Feature = feature;
         Level = level;
         Stacks = stacks;
 
         Metadata = AdditionalEffectMetadataStorage.GetMetadata(id);
-        LevelMetadata = Metadata?.GetLevel(level, feature);
+        LevelMetadata = AdditionalEffectMetadataStorage.GetLevelMetadata(id, level);
     }
 
-    public bool Matches(int id, int level, string feature = "")
+    public bool Matches(int id, int level)
     {
-        return Id == id && (feature == "" || Feature == feature);
+        return Id == id;
     }
 }

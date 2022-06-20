@@ -26,5 +26,18 @@ public static class AdditionalEffectMetadataStorage
 
     public static AdditionalEffectMetadata GetMetadata(int effectId) => AdditionalEffectMetadatas.GetValueOrDefault(effectId);
 
-    public static AdditionalEffectLevelMetadata GetLevelMetadata(int effectId, int level, string feature = "") => GetMetadata(effectId)?.GetLevel(level, feature);
+    public static AdditionalEffectLevelMetadata GetLevelMetadata(int effectId, int level)
+    {
+        AdditionalEffectMetadata meta = GetMetadata(effectId);
+
+        if (meta == null)
+        {
+            return null;
+        }
+
+        AdditionalEffectLevelMetadata levelMeta;
+        meta.Levels.TryGetValue(level, out levelMeta);
+
+        return levelMeta;
+    }
 }

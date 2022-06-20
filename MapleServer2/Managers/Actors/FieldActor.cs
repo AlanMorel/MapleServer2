@@ -189,10 +189,12 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
     {
         IncreaseStats(effect);
     }
+
     public virtual void EffectRemoved(AdditionalEffect effect)
     {
         DecreaseStats(effect);
     }
+
     public virtual void InitializeEffects()
     {
 

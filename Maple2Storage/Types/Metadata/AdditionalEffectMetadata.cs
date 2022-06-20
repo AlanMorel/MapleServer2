@@ -10,33 +10,7 @@ public class AdditionalEffectMetadata
     [XmlElement(Order = 1)]
     public int Id;
     [XmlElement(Order = 2)]
-    public Dictionary<int, List<AdditionalEffectLevelMetadata>> Levels;
-
-    public AdditionalEffectLevelMetadata GetLevel(int level, string feature = "")
-    {
-        List<AdditionalEffectLevelMetadata> levels;
-        Levels.TryGetValue(level, out levels);
-
-        if (levels == null)
-        {
-            return null;
-        }
-
-        if (feature == "")
-        {
-            return levels[0];
-        }
-
-        foreach (AdditionalEffectLevelMetadata levelMeta in levels)
-        {
-            if (levelMeta.Feature == feature)
-            {
-                return levelMeta;
-            }
-        }
-
-        return null;
-    }
+    public Dictionary<int, AdditionalEffectLevelMetadata> Levels;
 }
 
 [XmlType]
@@ -94,8 +68,6 @@ public class AdditionalEffectLevelMetadata
     public List<EffectTriggerSkillMetadata> SplashSkill;
     [XmlElement(Order = 26)]
     public List<EffectTriggerSkillMetadata> ConditionSkill;
-    [XmlElement(Order = 27)]
-    public string Feature;
 }
 
 [XmlType]

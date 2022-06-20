@@ -636,10 +636,12 @@ public class Player
 
         Session.Send(StatPacket.SetStats(FieldPlayer));
     }
+
     public void EffectAdded(AdditionalEffect effect)
     {
         Session.Send(StatPacket.SetStats(FieldPlayer));
     }
+
     public void EffectRemoved(AdditionalEffect effect)
     {
         Session.Send(StatPacket.SetStats(FieldPlayer));
