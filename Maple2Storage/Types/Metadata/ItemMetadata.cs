@@ -57,6 +57,8 @@ public class ItemMetadata
     public ItemShopMetadata Shop;
     [XmlElement(Order = 25)]
     public List<ItemBreakReward> BreakRewards = new();
+    [XmlElement(Order = 26)]
+    public ItemAdditionalEffectMetadata AdditionalEffect;
 }
 
 [XmlType]
@@ -284,6 +286,15 @@ public class ItemShopMetadata
 {
     [XmlElement(Order = 1)]
     public int ShopId;
+}
+
+[XmlType]
+public class ItemAdditionalEffectMetadata
+{
+    [XmlElement(Order = 1)]
+    public int[] Id;
+    [XmlElement(Order = 2)]
+    public int[] Level;
 }
 
 [XmlType]

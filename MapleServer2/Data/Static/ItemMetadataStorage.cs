@@ -55,6 +55,8 @@ public static class ItemMetadataStorage
 
     public static ItemSkillMetadata GetSkillMetadata(int itemId) => GetMetadata(itemId).Skill;
 
+    public static ItemAdditionalEffectMetadata GetAdditionalEffects(int itemId) => GetMetadata(itemId).AdditionalEffect;
+
     public static bool GetIsTwoHand(int itemId) => GetMetadata(itemId).IsTwoHand;
 
     public static bool GetIsDress(int itemId) => GetMetadata(itemId).IsDress;

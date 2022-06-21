@@ -15,6 +15,7 @@ public interface IFieldActor : IFieldObject
     public List<Status> Statuses { get; set; }
     public SkillCast SkillCast { get; }
     public bool OnCooldown { get; set; }
+    public AdditionalEffects AdditionalEffects { get; }
 
     public FieldManager FieldManager { get; }
     public FieldNavigator Navigator { get; }
@@ -33,6 +34,10 @@ public interface IFieldActor : IFieldObject
     public void Perish();
 
     public void Animate(string sequenceName, float duration = -1);
+
+    public void EffectAdded(AdditionalEffect effect);
+    public void EffectRemoved(AdditionalEffect effect);
+    public void InitializeEffects();
 }
 
 public interface IFieldActor<out T> : IFieldActor, IFieldObject<T>

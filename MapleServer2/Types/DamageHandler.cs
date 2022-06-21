@@ -83,10 +83,12 @@ public class DamageHandler
                 break;
         }
 
-        // TODO: properly check for melee vs ranged. new skill attribute recommended
-        const bool IsMelee = true;
+        SkillRangeType rangeType = skill.GetRangeType();
 
-        damageBonus += FetchMultiplier(source.Stats, IsMelee ? StatAttribute.MeleeDamage : StatAttribute.RangedDamage);
+        if (rangeType != SkillRangeType.Special)
+        {
+            damageBonus += FetchMultiplier(source.Stats, rangeType == SkillRangeType.Melee ? StatAttribute.MeleeDamage : StatAttribute.RangedDamage);
+        }
 
         bool isBoss = false;
 

@@ -38,6 +38,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
             MusicScore musicScore = data.MusicScore;
             Life life = data.life;
             Housing housing = data.housing;
+            AdditionalEffect additionalEffect = data.AdditionalEffect;
             ItemMetadata metadata = new()
             {
                 Id = id,
@@ -148,6 +149,11 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                 Shop = new()
                 {
                     ShopId = data.Shop?.systemShopID ?? 0
+                },
+                AdditionalEffect = new()
+                {
+                    Id = additionalEffect.id,
+                    Level = additionalEffect.level
                 }
             };
 

@@ -128,13 +128,7 @@ public class DismantleInventory
             GachaMetadata gachaMetadata = GachaMetadataStorage.GetMetadata(item.GachaDismantleId);
             if (gachaMetadata is not null)
             {
-                int ingredientCount = item.Rarity switch
-                {
-                    (int) RarityType.Epic => 3,
-                    (int) RarityType.Legendary => 5,
-                    _ => 1
-                };
-                AddReward(gachaMetadata.CoinId, ingredientCount, amount);
+                AddReward(gachaMetadata.CoinId, gachaMetadata.CoinAmount, amount);
             }
         }
 

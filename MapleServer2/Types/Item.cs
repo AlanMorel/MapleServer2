@@ -91,6 +91,8 @@ public class Item
     // For items that are in the field
     public DropInformation DropInformation = new();
 
+    public ItemAdditionalEffectMetadata AdditionalEffects;
+
     public Item() { }
 
     public Item(int id, int amount = 1, int rarity = -1, bool saveToDatabase = true)
@@ -306,6 +308,7 @@ public class Item
         BlackMarketCategory = property.BlackMarketCategory;
         Category = property.Category;
         DisableEnchant = limit.DisableEnchant;
+        AdditionalEffects = ItemMetadataStorage.GetAdditionalEffects(Id);
         Type = GetItemType();
     }
 

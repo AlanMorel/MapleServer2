@@ -32,6 +32,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                 byte skillAttackType = byte.Parse(ui.Attributes["attackType"]?.Value ?? "0");
                 SkillType skillType = (SkillType) byte.Parse(kinds.Attributes["type"].Value);
                 SkillSubType skillSubType = (SkillSubType) byte.Parse(kinds.Attributes["subType"]?.Value ?? "0");
+                SkillRangeType skillRangeType = (SkillRangeType) byte.Parse(kinds.Attributes["rangeType"]?.Value ?? "0");
                 byte skillElement = byte.Parse(kinds.Attributes["element"].Value);
                 byte skillSuperArmor = byte.Parse(stateAttr.Attributes["superArmor"].Value);
                 bool skillRecovery = int.Parse(kinds.Attributes["spRecoverySkill"]?.Value ?? "0") == 1;
@@ -93,7 +94,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                     skillLevels.Add(new(levelValue, spirit, stamina, feature, skillMotions, skillUpgrade));
                 }
 
-                skillList.Add(new(skillId, skillLevels, skillState, skillAttackType, skillType, skillSubType, skillElement, skillSuperArmor, skillRecovery));
+                skillList.Add(new(skillId, skillLevels, skillState, skillAttackType, skillType, skillSubType, skillElement, skillSuperArmor, skillRecovery, skillRangeType));
             }
 
             // Parsing SubSkills

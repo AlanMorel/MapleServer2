@@ -45,3 +45,10 @@ public enum BuffCategroy
     Stun = 7,
     Slow = 8
 }
+
+public enum SkillRangeType : byte
+{
+    Special = 0x00,
+    Melee = 0x01,
+    Ranged = 0x02
+}

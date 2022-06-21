@@ -30,6 +30,8 @@ public class SkillMetadata
     public readonly bool IsSpRecovery;
     [XmlElement(Order = 12)]
     public short MaxLevel;
+    [XmlElement(Order = 13)]
+    public SkillRangeType RangeType;
 
     public SkillMetadata() { }
 
@@ -40,7 +42,7 @@ public class SkillMetadata
     }
 
     public SkillMetadata(int id, List<SkillLevel> skillLevels, string state, byte damageType, SkillType type, SkillSubType subType, byte element,
-        byte superArmor, bool isSpRecovery)
+        byte superArmor, bool isSpRecovery, SkillRangeType rangeType)
     {
         SkillId = id;
         SkillLevels = skillLevels;
@@ -51,6 +53,7 @@ public class SkillMetadata
         Element = element;
         SuperArmor = superArmor;
         IsSpRecovery = isSpRecovery;
+        RangeType = rangeType;
     }
 
     public override string ToString()
