@@ -29,6 +29,7 @@ public class FieldManager
     public readonly int MapId;
     public readonly long InstanceId;
     public readonly short Capacity;
+    public readonly bool IsTutorialMap;
     public readonly FieldState State = new();
     public readonly CoordS[] BoundingBox;
     public readonly TriggerScript[] Triggers;
@@ -53,12 +54,13 @@ public class FieldManager
         MapMetadata metadata = MapMetadataStorage.GetMetadata(MapId);
 
         Capacity = metadata.Property.Capacity;
+        IsTutorialMap = metadata.Property.IsTutorialMap;
         Navigator = new(metadata.XBlockName);
 
         BoundingBox = MapEntityMetadataStorage.GetBoundingBox(MapId);
 
         // Capacity 0 means solo instances
-        if (Capacity == 0)
+        if (Capacity == 0 || IsTutorialMap)
         {
             // Set instance id to player id so it's unique
             InstanceId = player.CharacterId;
@@ -302,12 +304,18 @@ public class FieldManager
         // Load interact objects
         foreach (MapInteractObject mapInteract in MapEntityMetadataStorage.GetInteractObjects(MapId))
         {
-            State.AddInteractObject(new(mapInteract.EntityId, mapInteract.InteractId, mapInteract.Type, InteractObjectState.Default));
+            FieldObject<InteractObject> fieldInteractObject = WrapObject(new InteractObject(mapInteract.EntityId, mapInteract.InteractId, mapInteract.Type, InteractObjectState.Default));
+            fieldInteractObject.Coord = mapInteract.Position;
+            fieldInteractObject.Rotation = mapInteract.Rotation;
+            State.AddInteractObject(fieldInteractObject);
         }
 
         foreach (MapLiftableObject liftable in MapEntityMetadataStorage.GetLiftablesObjects(MapId))
         {
-            State.AddLiftableObject(new(liftable.EntityId, liftable));
+            FieldObject<LiftableObject> fieldLiftableObject = WrapObject(new LiftableObject(liftable.EntityId, liftable));
+            fieldLiftableObject.Coord = liftable.Position;
+            fieldLiftableObject.Rotation = liftable.Rotation;
+            State.AddLiftableObject(fieldLiftableObject);
         }
 
         foreach (MapChestMetadata mapChest in MapEntityMetadataStorage.GetMapChests(MapId))
@@ -316,18 +324,18 @@ public class FieldManager
             // TODO: Golden chests ids should always increase by 1 when a new chest is added
             // For more details about chests, see https://github.com/AlanMorel/MapleServer2/issues/513
             int chestId = mapChest.IsGolden ? 14000147 : 11000004;
-            State.AddInteractObject(
+            IFieldObject<InteractObject> fieldChest = WrapObject(
                 new MapChest($"EventCreate_{GuidGenerator.Int()}", chestId, InteractObjectType.Common, InteractObjectState.Default)
                 {
-                    Position = mapChest.Position,
-                    Rotation = mapChest.Rotation,
                     Model = "MS2InteractActor",
                     Asset = mapChest.IsGolden ? "interaction_chestA_02" : "interaction_chestA_01", // 01 = wooden, 02 = golden
                     NormalState = "Opened_A",
                     Reactable = "Idle_A",
                     Scale = 1f
-                }
-            );
+                });
+            fieldChest.Coord = mapChest.Position;
+            fieldChest.Rotation = mapChest.Rotation;
+            State.AddInteractObject(fieldChest);
         }
 
         foreach (CoordS coord in MapEntityMetadataStorage.GetHealingSpot(MapId))
@@ -355,7 +363,7 @@ public class FieldManager
         Debug.Assert(player.FieldPlayer.ObjectId > 0, "Player was added to field without initialized objectId.");
 
         player.MapId = MapId;
-        if (Capacity == 0)
+        if (Capacity == 0 || IsTutorialMap)
         {
             MapPlayerSpawn spawn = MapEntityMetadataStorage.GetRandomPlayerSpawn(MapId);
             player.FieldPlayer.Coord = spawn.Coord.ToFloat();
@@ -461,9 +469,9 @@ public class FieldManager
         breakables.AddRange(State.BreakableNifs.Values);
         sender.Send(BreakablePacket.LoadBreakables(breakables));
 
-        sender.Send(InteractObjectPacket.LoadObjects(State.InteractObjects.Values.Where(t => t is not AdBalloon and not MapChest).ToList()));
+        sender.Send(InteractObjectPacket.LoadObjects(State.InteractObjects.Values.Where(t => t.Value is not AdBalloon and not MapChest).ToList()));
 
-        foreach (InteractObject mapObject in State.InteractObjects.Values.Where(t => t is MapChest or AdBalloon))
+        foreach (IFieldObject<InteractObject> mapObject in State.InteractObjects.Values.Where(t => t.Value is MapChest or AdBalloon))
         {
             sender.Send(InteractObjectPacket.Add(mapObject));
         }
@@ -746,6 +754,16 @@ public class FieldManager
 
     public bool RemoveSkillCast(long skillSn, out SkillCast skillCast) => State.RemoveSkillCast(skillSn, out skillCast);
 
+    public IFieldObject<InteractObject> AddAdBalloon(AdBalloon adBalloon)
+    {
+        IFieldObject<InteractObject> fieldAdBalloon = WrapObject(adBalloon);
+        fieldAdBalloon.Coord = adBalloon.Owner.FieldPlayer.Coord;
+        fieldAdBalloon.Rotation = adBalloon.Owner.FieldPlayer.Rotation;
+
+        State.AddInteractObject(fieldAdBalloon);
+        return fieldAdBalloon;
+    }
+
     #endregion
 
     #region Broadcast Methods
@@ -955,7 +973,7 @@ public class FieldManager
         TriggerTask = null;
         NpcMovementTask = null;
 
-        if (Capacity == 0)
+        if (Capacity == 0 || IsTutorialMap)
         {
             foreach (IFieldObject<Item> item in State.Items.Values)
             {

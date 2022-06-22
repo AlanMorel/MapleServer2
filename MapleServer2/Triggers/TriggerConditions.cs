@@ -119,13 +119,13 @@ public partial class TriggerContext
         InteractObjectState objectState = (InteractObjectState) state;
         foreach (int interactId in interactIds)
         {
-            InteractObject interactObject = Field.State.InteractObjects.Values.FirstOrDefault(x => x.InteractId == interactId);
+            IFieldObject<InteractObject> interactObject = Field.State.InteractObjects.Values.FirstOrDefault(x => x.Value.InteractId == interactId);
             if (interactObject == null)
             {
                 continue;
             }
 
-            if (interactObject.State != objectState)
+            if (interactObject.Value.State != objectState)
             {
                 return false;
             }
@@ -170,8 +170,8 @@ public partial class TriggerContext
                     {
                         case 1: // started
                             return quest.State is QuestState.Started;
-                        case 2: // conditions completed
-                            return quest.State is not QuestState.None && quest.Condition.All(condition => condition.Completed);
+                        case 2: // on going
+                            return quest.State is QuestState.Started && quest.Condition.All(x => x.Completed);
                         case 3: // completed
                             return quest.State is QuestState.Completed;
                     }

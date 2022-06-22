@@ -20,7 +20,7 @@ public static class NpcTalkPacket
 
     public static PacketWriter Respond(IFieldObject<NpcMetadata> npc, DialogType dialogType, int contentIndex, ResponseSelection responseSelection, int scriptId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.NPCTalk);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.NpcTalk);
         pWriter.Write(NpcTalkMode.Respond);
         pWriter.WriteInt(npc.ObjectId);
         pWriter.Write(dialogType);
@@ -33,7 +33,7 @@ public static class NpcTalkPacket
 
     public static PacketWriter ContinueChat(int scriptId, DialogType dialogType, ResponseSelection responseSelection, int contentIndex, int questId = 0)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.NPCTalk);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.NpcTalk);
         pWriter.Write(NpcTalkMode.Continue);
         pWriter.Write(dialogType);
         pWriter.WriteInt(questId);
@@ -46,7 +46,7 @@ public static class NpcTalkPacket
 
     public static PacketWriter Action(ActionType actionType, string window = "", string parameters = "", int portalId = 0, Item item = null)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.NPCTalk);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.NpcTalk);
         pWriter.Write(NpcTalkMode.Action);
         pWriter.Write(actionType);
         switch (actionType)
@@ -72,7 +72,7 @@ public static class NpcTalkPacket
 
     public static PacketWriter CustomText(string script, string voiceId, string illustration)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.NPCTalk);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.NpcTalk);
         pWriter.Write(NpcTalkMode.CustomText);
         pWriter.WriteUnicodeString(script);
         pWriter.WriteUnicodeString(voiceId);
@@ -82,7 +82,7 @@ public static class NpcTalkPacket
 
     public static PacketWriter Close()
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.NPCTalk);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.NpcTalk);
         pWriter.Write(NpcTalkMode.Close);
 
         return pWriter;

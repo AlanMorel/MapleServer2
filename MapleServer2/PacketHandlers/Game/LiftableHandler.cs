@@ -1,6 +1,7 @@
 ﻿using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Managers.Actors;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -34,7 +35,7 @@ public class LiftableHandler : GamePacketHandler<LiftableHandler>
     private static void HandlePickUp(GameSession session, PacketReader packet)
     {
         string id = packet.ReadString();
-        IFieldActor<Player> fieldPlayer = session.Player.FieldPlayer;
+        Character fieldPlayer = session.Player.FieldPlayer;
         if (id.Contains('_'))
         {
             string coordHexa = long.Parse(id.Split('_')[1]).ToString("X2");
@@ -47,28 +48,36 @@ public class LiftableHandler : GamePacketHandler<LiftableHandler>
                 (sbyte) Convert.ToByte(coordHexa[4..], 16),
                 (sbyte) Convert.ToByte(coordHexa.Substring(2, 2), 16),
                 (sbyte) Convert.ToByte(coordHexa[..2], 16));
-            LiftableObject liftable = session.FieldManager.State.LiftableObjects.Values.FirstOrDefault(x => x.Position == coordB.ToFloat());
-            if (liftable is null)
+            IFieldObject<LiftableObject> fieldLiftable = session.FieldManager.State.LiftableObjects.Values.FirstOrDefault(x => x.Coord == coordB.ToFloat());
+            if (fieldLiftable is null)
             {
                 return;
             }
+            LiftableObject liftable = fieldLiftable.Value;
 
             liftable.State = LiftableState.Removed;
             liftable.Enabled = false;
+            liftable.PickedUp = true;
 
-            session.FieldManager.BroadcastPacket(ResponseCubePacket.RemoveCube(fieldPlayer.ObjectId, fieldPlayer.ObjectId, liftable.Position.ToByte()));
-            session.FieldManager.BroadcastPacket(LiftablePacket.RemoveCube(liftable));
+            fieldPlayer.CarryingLiftable = fieldLiftable;
+
+            session.FieldManager.BroadcastPacket(ResponseCubePacket.RemoveCube(fieldPlayer.ObjectId, fieldPlayer.ObjectId, fieldLiftable.Coord.ToByte()));
+            session.FieldManager.BroadcastPacket(LiftablePacket.RemoveCube(fieldLiftable));
             session.FieldManager.BroadcastPacket(BuildModePacket.Use(fieldPlayer, BuildModeHandler.BuildModeType.Liftables, liftable.Metadata.ItemId));
             return;
         }
 
-        if (!session.FieldManager.State.LiftableObjects.TryGetValue(id, out LiftableObject liftable2))
+        if (!session.FieldManager.State.LiftableObjects.TryGetValue(id, out IFieldObject<LiftableObject> fieldLiftable2))
         {
             return;
         }
+        LiftableObject liftable2 = fieldLiftable2.Value;
 
         liftable2.State = LiftableState.Removed;
         liftable2.Enabled = false;
+        liftable2.PickedUp = true;
+
+        fieldPlayer.CarryingLiftable = fieldLiftable2;
 
         session.FieldManager.BroadcastPacket(LiftablePacket.UpdateEntityById(liftable2));
         session.FieldManager.BroadcastPacket(BuildModePacket.Use(fieldPlayer, BuildModeHandler.BuildModeType.Liftables, liftable2.Metadata.ItemId));

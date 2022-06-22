@@ -54,29 +54,31 @@ public static class InteractObjectPacket
         return pWriter;
     }
 
-    public static PacketWriter LoadObjects(List<InteractObject> interactObjects)
+    public static PacketWriter LoadObjects(List<IFieldObject<InteractObject>> interactObjects)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.InteractObject);
         pWriter.Write(InteractObjectMode.Load);
         pWriter.WriteInt(interactObjects.Count);
-        foreach (InteractObject interactObject in interactObjects)
+        foreach (IFieldObject<InteractObject> interactObject in interactObjects)
         {
-            WriteInteractObject(pWriter, interactObject);
+            WriteInteractObject(pWriter, interactObject.Value);
         }
 
         return pWriter;
     }
 
-    public static PacketWriter Add(InteractObject interactObject)
+    public static PacketWriter Add(IFieldObject<InteractObject> fieldInteractObject)
     {
+        InteractObject interactObject = fieldInteractObject.Value;
+
         PacketWriter pWriter = PacketWriter.Of(SendOp.InteractObject);
         pWriter.Write(InteractObjectMode.Add);
         pWriter.WriteString(interactObject.Id);
         pWriter.Write(interactObject.State);
         pWriter.Write(interactObject.Type);
         pWriter.WriteInt(interactObject.InteractId);
-        pWriter.Write(interactObject.Position);
-        pWriter.Write(interactObject.Rotation);
+        pWriter.Write(fieldInteractObject.Coord);
+        pWriter.Write(fieldInteractObject.Rotation);
         pWriter.WriteUnicodeString(interactObject.Model);
         pWriter.WriteUnicodeString(interactObject.Asset);
         pWriter.WriteUnicodeString(interactObject.NormalState);
