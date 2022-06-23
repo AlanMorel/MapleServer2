@@ -15,9 +15,9 @@ public static class ResponseCharCreatePacket
         IncorrectGear = 0x0A, // s_char_err_invalid_def_item
         NameIsTaken = 0x0B, // s_char_err_already_taken
         JobRestriction = 0x0C, // s_char_err_job_forbidden
-        AbnormalActivityDetected = 0x0E, // s_char_err_creation_restriction
+        AbnormalActivityDetected = 0x0E // s_char_err_creation_restriction
     }
-    
+
     public static PacketWriter Error(CharacterCreatePacketMode mode, string message = "")
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.CharCreate);

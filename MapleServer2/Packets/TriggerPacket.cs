@@ -199,7 +199,7 @@ public static class TriggerPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Trigger);
         pWriter.Write(TriggerPacketMode.SidePopup);
-        pWriter.Write((byte)type);
+        pWriter.Write((byte) type);
         pWriter.WriteInt(duration);
         pWriter.WriteString();
         pWriter.WriteString(illustration);

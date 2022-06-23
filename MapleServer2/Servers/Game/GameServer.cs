@@ -29,7 +29,7 @@ public class GameServer : Server<GameSession>
     public static readonly FieldWarManager FieldWarManager = new();
     public static readonly UGCBannerManager UGCBannerManager = new();
     public static readonly MushkingRoyaleQueueManager MushkingRoyaleQueueManager = new();
-    public static readonly MushkingRoyaleSessionManager MushkingRoyaleSessionManager = new ();
+    public static readonly MushkingRoyaleSessionManager MushkingRoyaleSessionManager = new();
 
     private List<GameSession> Sessions;
 

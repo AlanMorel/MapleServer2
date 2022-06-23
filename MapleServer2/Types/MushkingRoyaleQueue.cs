@@ -30,7 +30,7 @@ public class MushkingRoyaleQueue
             MatchMaking = null;
         }
     }
-    
+
     private Task MatchMakeLoop()
     {
         return Task.Run(async () =>

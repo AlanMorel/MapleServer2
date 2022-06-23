@@ -75,7 +75,7 @@ public class MushkingRoyaleSystemHandler : GamePacketHandler<MushkingRoyaleSyste
         {
             return;
         }
-        
+
         session.Send(MushkingRoyaleSystemPacket.ClearMatchedQueue());
         session.Player.Warp(mushkingRoyaleSession.MapId, mushkingRoyaleSession.SpawnPosition, mushkingRoyaleSession.SpawnRotation, mushkingRoyaleSession.InstanceId);
     }
