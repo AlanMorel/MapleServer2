@@ -16,9 +16,7 @@ namespace MapleServer2.Types;
 
 public class Player
 {
-    // Bypass Key is constant PER ACCOUNT, unsure how it is validated
-    // Seems like as long as it's valid, it doesn't matter though
-    public readonly long UnknownId = 0x01EF80C2; //0x01CC3721;
+    public long SessionId;
     public GameSession Session;
 
     public Account Account;
@@ -28,6 +26,7 @@ public class Player
     public long CharacterId { get; set; }
     public long CreationTime { get; set; }
     public long LastLogTime { get; set; }
+    public long DeletionTime { get; set; }
     public long Birthday { get; set; } // Currently just uses the creation time from account
     private long OnlineTime { get; set; }
     public bool IsDeleted;
@@ -162,6 +161,7 @@ public class Player
 
     public List<string> GmFlags = new();
     public int DungeonSessionId = -1;
+    public int MushkingRoyaleSession = -1;
 
     public List<PlayerTrigger> Triggers = new();
 

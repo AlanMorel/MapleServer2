@@ -4,6 +4,7 @@ using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
+using MapleServer2.Managers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -16,6 +17,9 @@ public class MushkingRoyaleSystemHandler : GamePacketHandler<MushkingRoyaleSyste
 
     private enum MushkingRoyaleSystemMode : byte
     {
+        JoinSoloQueue = 0x0,
+        LeaveSoloQueue = 0x1,
+        EnterMatch = 0x2,
         EquipMedal = 0x8,
         PurchaseGoldPass = 0x22,
         ClaimRewards = 0x23
@@ -27,6 +31,15 @@ public class MushkingRoyaleSystemHandler : GamePacketHandler<MushkingRoyaleSyste
 
         switch (mode)
         {
+            case MushkingRoyaleSystemMode.JoinSoloQueue:
+                HandleJoinSoloQueue(session);
+                break;
+            case MushkingRoyaleSystemMode.LeaveSoloQueue:
+                HandleLeaveSoloQueue(session);
+                break;
+            case MushkingRoyaleSystemMode.EnterMatch:
+                HandleEnterMatch(session);
+                break;
             case MushkingRoyaleSystemMode.EquipMedal:
                 HandleEquipMedal(session, packet);
                 break;
@@ -40,6 +53,31 @@ public class MushkingRoyaleSystemHandler : GamePacketHandler<MushkingRoyaleSyste
                 LogUnknownMode(mode);
                 break;
         }
+    }
+
+    private static void HandleJoinSoloQueue(GameSession session)
+    {
+        MushkingRoyaleQueue queue = GameServer.MushkingRoyaleQueueManager.JoinQueue(session.Player, QueueType.Solo);
+        session.Send(MushkingRoyaleSystemPacket.JoinSoloQueue());
+    }
+
+    private static void HandleLeaveSoloQueue(GameSession session)
+    {
+        GameServer.MushkingRoyaleQueueManager.LeaveQueue(session.Player, QueueType.Solo);
+        session.Send(MushkingRoyaleSystemPacket.WithdrawSoloQueue());
+        session.Send(MushkingRoyaleSystemPacket.ClearMatchedQueue());
+    }
+
+    private static void HandleEnterMatch(GameSession session)
+    {
+        MushkingRoyaleSession mushkingRoyaleSession = GameServer.MushkingRoyaleSessionManager.GetSession(session.Player.MushkingRoyaleSession);
+        if (mushkingRoyaleSession is null)
+        {
+            return;
+        }
+        
+        session.Send(MushkingRoyaleSystemPacket.ClearMatchedQueue());
+        session.Player.Warp(mushkingRoyaleSession.MapId, mushkingRoyaleSession.SpawnPosition, mushkingRoyaleSession.SpawnRotation, mushkingRoyaleSession.InstanceId);
     }
 
     private static void HandleEquipMedal(GameSession session, PacketReader packet)
@@ -69,8 +107,6 @@ public class MushkingRoyaleSystemHandler : GamePacketHandler<MushkingRoyaleSyste
 
         session.Send(MushkingRoyaleSystemPacket.LoadMedals(session.Player.Account));
     }
-
-
 
     private static void HandlePurchaseGoldPass(GameSession session, PacketReader packet)
     {
