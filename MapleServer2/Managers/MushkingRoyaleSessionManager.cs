@@ -34,36 +34,4 @@ public class MushkingRoyaleSessionManager
     {
         return !SessionList.ContainsKey(sessionId) ? null : SessionList[sessionId];
     }
-
-    /*public int GetMapInstanceId()
-    {
-        if (RecyclableMapInstanceIds.Count <= 0)
-        {
-            return MapInstanceId++;
-        }
-
-        int mapInstanceId = RecyclableMapInstanceIds.First();
-
-        RecyclableMapInstanceIds.Remove(mapInstanceId);
-
-        return mapInstanceId;
-    }
-
-    public int GetUniqueSessionId()
-    {
-        if (RecyclableSessionIds.Count <= 0)
-        {
-            return SessionId++;
-        }
-
-        int sessionId = RecyclableSessionIds.First();
-
-        RecyclableSessionIds.Remove(sessionId);
-        return sessionId;
-    }
-
-    public DungeonSession GetDungeonSessionBySessionId(int dungeonSessionId)
-    {
-        return !DungeonSessionList.ContainsKey(dungeonSessionId) ? null : DungeonSessionList[dungeonSessionId];
-    }*/
 }

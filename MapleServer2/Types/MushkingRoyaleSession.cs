@@ -23,6 +23,4 @@ public class MushkingRoyaleSession
         InstanceId = SessionId;
         GameServer.MushkingRoyaleSessionManager.AddSession(this);
     }
-
-    
 }
