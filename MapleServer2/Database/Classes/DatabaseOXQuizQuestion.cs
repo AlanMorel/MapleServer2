@@ -13,7 +13,7 @@ public class DatabaseOXQuizQuestion : DatabaseTable
     public OXQuizQuestion GetRandomQuestion()
     {
         IEnumerable<dynamic> result = QueryFactory.Query(TableName).Get();
-        dynamic singleResult =  result.ElementAt(Random.Shared.Next(result.Count()));
+        dynamic singleResult = result.ElementAt(Random.Shared.Next(result.Count()));
         return ReadQuestion(singleResult);
     }
 
