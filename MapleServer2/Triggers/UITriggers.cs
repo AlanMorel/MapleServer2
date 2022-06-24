@@ -2,6 +2,7 @@
 using Maple2.Trigger.Enum;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
+using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Managers;
 using MapleServer2.Packets;
@@ -42,7 +43,7 @@ public partial class TriggerContext
                         break;
                     case "PickQuiz":
                         // TODO: Use args to find a tier of a question
-                        widget.OXQuizQuestion = OXQuizMetadataStorage.GetQuestion();
+                        widget.OXQuizQuestion = DatabaseManager.OxQuizQuestion.GetRandomQuestion();
                         break;
                     case "ShowQuiz":
                         Field.BroadcastPacket(QuizEventPacket.Question(widget.OXQuizQuestion.Category, widget.OXQuizQuestion.QuestionText, int.Parse(args)));

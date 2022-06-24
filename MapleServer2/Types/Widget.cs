@@ -1,4 +1,5 @@
 ﻿using Maple2.Trigger.Enum;
+using MapleServer2.Database.Types;
 
 namespace MapleServer2.Types;
 
