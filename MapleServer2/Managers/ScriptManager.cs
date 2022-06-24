@@ -63,7 +63,7 @@ public class ScriptManager
         {
             return Player.QuestData.TryGetValue(questId, out QuestStatus questStatus) && questStatus.State is QuestState.Started;
         }
-        
+
         public bool HasQuestCompleted(int questId)
         {
             return Player.QuestData.TryGetValue(questId, out QuestStatus questStatus) && questStatus.State is QuestState.Completed;
@@ -81,7 +81,7 @@ public class ScriptManager
 
             return false;
         }
-        
+
         public bool HasAnyQuestCompleted(List<int> questIds)
         {
             foreach (int questId in questIds)
