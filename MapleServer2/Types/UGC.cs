@@ -5,6 +5,7 @@ namespace MapleServer2.Types;
 
 public class UGC
 {
+    public static readonly UGC Default = new();
     public long Uid;
 
     public Guid Guid;
