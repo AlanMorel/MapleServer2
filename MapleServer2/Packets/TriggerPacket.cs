@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using Maple2.Trigger.Enum;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
 
@@ -13,7 +14,8 @@ public static class TriggerPacket
         Cutscene = 0x4,
         Camera = 0x5,
         UI = 0x8,
-        Timer = 0xE
+        Timer = 0xE,
+        SidePopup = 0x12
     }
 
     public enum TriggerUIMode : byte
@@ -190,6 +192,20 @@ public static class TriggerPacket
         pWriter.WriteBool(clearAtZero);
         pWriter.WriteInt();
         pWriter.WriteUnicodeString();
+        return pWriter;
+    }
+
+    public static PacketWriter SidePopUp(SideNpcTalkType type, int duration, string illustration, string sound, string script)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Trigger);
+        pWriter.Write(TriggerPacketMode.SidePopup);
+        pWriter.Write((byte) type);
+        pWriter.WriteInt(duration);
+        pWriter.WriteString();
+        pWriter.WriteString(illustration);
+        pWriter.WriteString(sound);
+        pWriter.WriteString();
+        pWriter.WriteUnicodeString(script);
         return pWriter;
     }
 }

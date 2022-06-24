@@ -89,7 +89,7 @@ public static class CharacterListPacket
         pWriter.WriteCharacter(player);
 
         pWriter.WriteUnicodeString(player.ProfileUrl);
-        pWriter.WriteLong();
+        pWriter.WriteLong(player.DeletionTime);
 
         WriteEquipsAndCosmetics(pWriter, player);
 
@@ -170,8 +170,8 @@ public static class CharacterListPacket
         }
 
         // Some function call on CCharacterList property
-        pWriter.WriteUnicodeString();
-        pWriter.WriteLong(player.UnknownId); // THIS MUST BE CORRECT... BYPASS KEY...
+        pWriter.WriteUnicodeString(); // login username
+        pWriter.WriteLong(player.SessionId); // THIS MUST BE CORRECT... BYPASS KEY...
         pWriter.WriteLong(2000);
         pWriter.WriteLong(3000);
         // End

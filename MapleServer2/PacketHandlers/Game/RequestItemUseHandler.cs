@@ -343,7 +343,7 @@ public class RequestItemUseHandler : GamePacketHandler<RequestItemUseHandler>
             PairedCharacterName = otherPlayer.Name
         };
 
-        Item otherUserBadge = new(item.Function.OpenCoupleEffectBox.Id, item.Function.OpenCoupleEffectBox.Rarity)
+        Item otherUserBadge = new(item.Function.OpenCoupleEffectBox.Id, rarity: item.Function.OpenCoupleEffectBox.Rarity)
         {
             PairedCharacterId = session.Player.CharacterId,
             PairedCharacterName = session.Player.Name

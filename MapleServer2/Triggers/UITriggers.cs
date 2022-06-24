@@ -227,6 +227,7 @@ public partial class TriggerContext
 
     public void SideNpcTalk(int npcId, string illust, int duration, string script, string voice, SideNpcTalkType type, string usm)
     {
+        Field.BroadcastPacket(TriggerPacket.SidePopUp(type, duration, illust, voice, script));
     }
 
     public void ShowCaption(CaptionType type, string title, string script, Align align, float offsetRateX, float offsetRateY, int duration, float scale)
