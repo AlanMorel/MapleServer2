@@ -9,5 +9,5 @@ function getFirstScriptId()
 end
 
 function meetsJobScriptRequirement()
-    return ScriptManager.GetPlayer().JobId == 1
+    return ScriptManager.GetPlayer().JobId == 1 and ScriptManager.GetPlayer().Level >= 10
 end
