@@ -293,7 +293,7 @@ public class FieldManager
         // Load breakables
         foreach (MapBreakableActorObject mapActor in MapEntityMetadataStorage.GetBreakableActors(MapId))
         {
-            State.AddBreakable(new(mapActor.EntityId, mapActor.IsEnabled, mapActor.HideDuration, mapActor.ResetDuration));
+            State.AddBreakable(new BreakableActorObject(mapActor.EntityId, mapActor.IsEnabled, mapActor.HideDuration, mapActor.ResetDuration));
         }
 
         foreach (MapBreakableNifObject mapNif in MapEntityMetadataStorage.GetBreakableNifs(MapId))
