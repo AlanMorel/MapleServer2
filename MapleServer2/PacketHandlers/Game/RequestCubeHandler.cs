@@ -272,11 +272,18 @@ public class RequestCubeHandler : GamePacketHandler<RequestCubeHandler>
     private static void HandleAddCube(GameSession session, PacketReader packet)
     {
         CoordB coord = packet.Read<CoordB>();
-        byte padding = packet.ReadByte();
+        packet.ReadByte();
         int itemId = packet.ReadInt();
         long itemUid = packet.ReadLong();
-        byte ugcBranch = packet.ReadByte();
-        CoordF rotation = packet.Read<CoordF>();
+        packet.ReadLong(); // unknown
+        bool ugcBranch = packet.ReadBool();
+        UGC ugc = null;
+        if (ugcBranch)
+        {
+            ugc = packet.ReadClass<UGC>();
+        }
+
+        CoordF rotation = CoordF.From(0, 0, packet.ReadFloat());
 
         CoordF coordF = coord.ToFloat();
         Player player = session.Player;
@@ -370,7 +377,7 @@ public class RequestCubeHandler : GamePacketHandler<RequestCubeHandler>
             }
         }
 
-        fieldCube = AddCube(session, item, itemId, rotation, coordF, plotNumber, homeOwner, home);
+        fieldCube = AddCube(session, item, itemId, rotation, coordF, plotNumber, homeOwner, home, ugc);
 
         homeOwner.Value.Session.Send(FurnishingInventoryPacket.Load(fieldCube.Value));
         session.FieldManager.AddCube(fieldCube, homeOwner.ObjectId, session.Player.FieldPlayer.ObjectId);
@@ -490,8 +497,13 @@ public class RequestCubeHandler : GamePacketHandler<RequestCubeHandler>
         packet.Skip(1);
         int replacementItemId = packet.ReadInt();
         long replacementItemUid = packet.ReadLong();
-        byte unk = packet.ReadByte();
-        long unk2 = packet.ReadLong(); // maybe part of rotation?
+        packet.ReadLong();
+        bool isUgc = packet.ReadBool();
+        UGC ugc = null;
+        if (isUgc)
+        {
+            ugc = packet.ReadClass<UGC>();
+        }
         float zRotation = packet.ReadFloat();
         CoordF rotation = CoordF.From(0, 0, zRotation);
 
@@ -603,7 +615,7 @@ public class RequestCubeHandler : GamePacketHandler<RequestCubeHandler>
             }
         }
 
-        newFieldCube = AddCube(session, item, replacementItemId, rotation, coord.ToFloat(), plotNumber, homeOwner, home);
+        newFieldCube = AddCube(session, item, replacementItemId, rotation, coord.ToFloat(), plotNumber, homeOwner, home, ugc);
 
         if (oldFieldCube is not null)
         {
@@ -852,7 +864,7 @@ public class RequestCubeHandler : GamePacketHandler<RequestCubeHandler>
         foreach (Cube cube in layout.Cubes)
         {
             Item item = home.WarehouseInventory.Values.FirstOrDefault(y => y.Id == cube.Item.Id);
-            IFieldObject<Cube> fieldCube = AddCube(session, item, cube.Item.Id, cube.Rotation, cube.CoordF, cube.PlotNumber, session.Player.FieldPlayer, home);
+            IFieldObject<Cube> fieldCube = AddCube(session, item, cube.Item.Id, cube.Rotation, cube.CoordF, cube.PlotNumber, session.Player.FieldPlayer, home, item?.Ugc);
             session.Send(FurnishingInventoryPacket.Load(fieldCube.Value));
             if (fieldCube.Coord.Z == 0)
             {
@@ -1453,14 +1465,20 @@ public class RequestCubeHandler : GamePacketHandler<RequestCubeHandler>
     }
 
     private static IFieldObject<Cube> AddCube(GameSession session, Item item, int itemId, CoordF rotation, CoordF coordF, int plotNumber,
-        IFieldObject<Player> homeOwner, Home home)
+        IFieldObject<Player> homeOwner, Home home, UGC ugc)
     {
         IFieldObject<Cube> fieldCube;
         Dictionary<long, Item> warehouseItems = home.WarehouseInventory;
         Dictionary<long, Cube> furnishingInventory = home.FurnishingInventory;
         if (item is null || item.Amount <= 0)
         {
-            Cube cube = new(new(itemId), plotNumber, coordF, rotation, homeId: home.Id);
+            Item newItem = new(itemId);
+            if (ugc is not null)
+            {
+                newItem.Ugc = ugc;
+            }
+
+            Cube cube = new(newItem, plotNumber, coordF, rotation, homeId: home.Id);
 
             fieldCube = session.FieldManager.RequestFieldObject(cube);
             fieldCube.Coord = coordF;
