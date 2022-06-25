@@ -409,16 +409,13 @@ public class RequestCubeHandler : GamePacketHandler<RequestCubeHandler>
         if (target is null)
         {
             fieldManager.BroadcastPacket(LiftablePacket.UpdateEntityByCoord(fieldLiftable));
-        }
 
-        if (liftable.Metadata.ItemLifeTime is 0)
-        {
-            return;
+            return; // don't remove liftable if it's not on target
         }
 
         Task.Run(async () =>
         {
-            await Task.Delay(liftable.Metadata.ItemLifeTime);
+            await Task.Delay(liftable.Metadata.LiftableFinishTime);
 
             fieldManager.BroadcastPacket(LiftablePacket.UpdateEntityByCoord(fieldLiftable));
             fieldManager.BroadcastPacket(ResponseCubePacket.RemoveCube(0, 0, fieldLiftable.Coord.ToByte()));

@@ -675,14 +675,16 @@ public class MapLiftableObject
     [XmlElement(Order = 8)]
     public int LiftableRegenCheckTime;
     [XmlElement(Order = 9)]
-    public CoordF Position;
+    public int LiftableFinishTime;
     [XmlElement(Order = 10)]
+    public CoordF Position;
+    [XmlElement(Order = 11)]
     public CoordF Rotation;
 
     public MapLiftableObject() { }
 
     public MapLiftableObject(string entityId, int itemId, string maskQuestId, string maskQuestState, string effectQuestId, string effectQuestState,
-        int itemLifeTime, int regenCheckTime, CoordF position, CoordF rotation)
+        int itemLifeTime, int regenCheckTime, int liftableFinishTime, CoordF position, CoordF rotation)
     {
         EntityId = entityId;
         ItemId = itemId;
@@ -692,6 +694,7 @@ public class MapLiftableObject
         EffectQuestState = effectQuestState;
         ItemLifeTime = itemLifeTime;
         LiftableRegenCheckTime = regenCheckTime;
+        LiftableFinishTime = liftableFinishTime;
         Position = position;
         Rotation = rotation;
     }

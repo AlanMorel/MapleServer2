@@ -285,7 +285,7 @@ public class MapParser : Exporter<List<MapMetadata>>
                         case IMS2Liftable liftable:
                             mapEntity.LiftableObjects.Add(new(liftable.EntityId, (int) liftable.ItemID, liftable.MaskQuestID, liftable.MaskQuestState,
                                 liftable.EffectQuestID, liftable.EffectQuestState, liftable.ItemLifeTime, liftable.LiftableRegenCheckTime,
-                                CoordF.FromVector3(liftable.Position), CoordF.FromVector3(liftable.Rotation)));
+                                liftable.LiftableFinishTime, CoordF.FromVector3(liftable.Position), CoordF.FromVector3(liftable.Rotation)));
                             break;
                         case IMS2Vibrate vibrate:
                             mapEntity.VibrateObjects.Add(new(vibrate.EntityId, CoordF.FromVector3(physXProp.Position)));
