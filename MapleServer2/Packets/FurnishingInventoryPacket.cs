@@ -32,7 +32,7 @@ public static class FurnishingInventoryPacket
         pWriter.WriteBool(cube.Item.Ugc is not null);
         if (cube.Item.Ugc is not null)
         {
-            pWriter.WriteUGCTemplate(cube.Item.Ugc);
+            pWriter.WriteClass(cube.Item.Ugc);
         }
 
         return pWriter;

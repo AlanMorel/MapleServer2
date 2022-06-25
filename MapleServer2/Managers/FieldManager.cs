@@ -504,6 +504,10 @@ public class FieldManager
         }
 
         player.Triggers.Clear();
+        if (player.Guide is not null)
+        {
+            RemoveGuide(player.Guide);
+        }
 
         if (Decrement() <= 0)
         {
