@@ -217,6 +217,18 @@ public partial class TriggerContext
             return;
         }
 
+        if (arg1 == 1) // Use npc object id?
+        {
+            Npc npc = Field.State.Npcs.Values.FirstOrDefault(x => x.SpawnPointId == npcId);
+            if (npc is null)
+            {
+                return;
+            }
+
+            Field.BroadcastPacket(CinematicPacket.BalloonTalk(npc.ObjectId, false, script, delay * 1000, 0));
+            return;
+        }
+
         Field.BroadcastPacket(CinematicPacket.Conversation(npcId, npcId.ToString(), script, delay * 1000, align));
     }
 
