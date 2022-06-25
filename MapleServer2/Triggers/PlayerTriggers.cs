@@ -114,9 +114,7 @@ public partial class TriggerContext
             IFieldObject<Portal> portal = Field.State.Portals.Values.First(p => p.Value.Id == triggerId);
             foreach (IFieldObject<Player> player in players)
             {
-                player.Coord = portal.Coord;
-                player.Rotation = portal.Rotation;
-                Field.BroadcastPacket(UserMoveByPortalPacket.Move(player, portal.Coord, portal.Rotation, isTrigger: true));
+                player.Value.Move(portal.Coord, portal.Rotation, isTrigger: true);
             }
 
             return;

@@ -98,7 +98,7 @@ public class NpcTalk
         // this needs to be sent after the UI window action
         if (actions.Contains(ActionType.Portal))
         {
-            session.Send(UserMoveByPortalPacket.Move(session.Player.FieldPlayer, portal.Coord.ToFloat(), portal.Rotation.ToFloat()));
+            session.Player.Move(portal.Coord.ToFloat(), portal.Rotation.ToFloat());
         }
     }
 }
