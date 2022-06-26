@@ -26,21 +26,20 @@ public static class ServerEnterPacket
         pWriter.WriteLong(account.GameMeret.Amount); // Game Merets
         pWriter.WriteLong(account.EventMeret.Amount); // Event Merets
 
-        pWriter.WriteLong();
+        pWriter.WriteLong(); // merets?
 
         pWriter.WriteLong(wallet.ValorToken.Amount);
         pWriter.WriteLong(wallet.Treva.Amount);
         pWriter.WriteLong(wallet.Rue.Amount);
         pWriter.WriteLong(wallet.HaviFruit.Amount);
-        pWriter.WriteLong();
-        pWriter.WriteLong();
-        pWriter.WriteLong();
-        pWriter.WriteLong();
+        pWriter.WriteLong(); // reverse coin
+        pWriter.WriteLong(); // mentor
+        pWriter.WriteLong(); // mentee
+        pWriter.WriteLong(); // star point
         pWriter.WriteLong(account.MesoToken.Amount);
         pWriter.WriteUnicodeString(player.ProfileUrl); // Profile Url
         pWriter.WriteByte();
         pWriter.WriteByte();
-        // REQUIRED OR CRASH
 
         // Unlocked Maps (World Map)
         List<int> unlockedMaps = player.UnlockedMaps;
@@ -66,10 +65,5 @@ public static class ServerEnterPacket
         pWriter.WriteUnicodeString();
 
         return pWriter;
-    }
-
-    public static PacketWriter Confirm()
-    {
-        return PacketWriter.Of(SendOp.FinalizeServerEnter);
     }
 }

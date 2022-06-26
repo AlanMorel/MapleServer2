@@ -32,22 +32,12 @@ public static class FieldPlayerPacket
         pWriter.WriteLong();
         pWriter.WriteLong();
 
-        // ???
+        // UGC bool
         bool flagA = false;
         pWriter.WriteBool(flagA);
         if (flagA)
         {
-            pWriter.WriteLong();
-            pWriter.WriteUnicodeString();
-            pWriter.WriteUnicodeString();
-            pWriter.WriteByte();
-            pWriter.WriteInt();
-            pWriter.WriteLong();
-            pWriter.WriteLong();
-            pWriter.WriteUnicodeString();
-            pWriter.WriteLong();
-            pWriter.WriteUnicodeString();
-            pWriter.WriteByte();
+            pWriter.WriteClass(UGC.Default);
         }
 
         pWriter.WriteInt(1);
@@ -127,10 +117,10 @@ public static class FieldPlayerPacket
         pWriter.WriteByte();
         pWriter.WriteInt(player.TitleId);
         pWriter.WriteShort(player.InsigniaId);
-        pWriter.WriteByte();
+        pWriter.WriteByte(); // insignia value
         pWriter.WriteInt();
-        pWriter.WriteByte();
-        pWriter.WriteLong(); // Another timestamp
+        pWriter.WriteByte(); // has pet
+        pWriter.WriteLong(player.Account.VIPExpiration);
         pWriter.WriteInt(int.MaxValue);
         pWriter.WriteByte();
         pWriter.WriteInt(); // MushkingRoyale taileffect kill count

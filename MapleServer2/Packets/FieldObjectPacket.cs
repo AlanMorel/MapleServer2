@@ -34,12 +34,12 @@ public static class FieldObjectPacket
         pWriter.Write(fieldPlayer.Coord);
         pWriter.WriteShort(player.Levels.Level);
         pWriter.WriteShort((short) player.Job);
-        pWriter.WriteShort((short) player.JobCode);
-        pWriter.WriteShort();
-        pWriter.WriteInt(player.MapId);
-        pWriter.WriteLong(1); // unk
+        pWriter.Write(player.JobCode);
+        pWriter.WriteInt(player.Account.Home?.PlotMapId ?? 0);
+        pWriter.WriteInt(player.Account.Home?.PlotNumber ?? 0);
+        pWriter.WriteInt(player.Account.Home?.ApartmentNumber ?? 0);
         pWriter.WriteUnicodeString(player.Account.Home?.Name ?? "");
-        pWriter.WriteInt();
+        pWriter.WriteInt(player.GearScore);
         pWriter.WriteShort();
         foreach (int trophyCount in player.TrophyCount)
         {

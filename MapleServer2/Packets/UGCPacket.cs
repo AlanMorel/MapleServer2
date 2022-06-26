@@ -19,7 +19,8 @@ public static class UGCPacket
         UpdateUGCMount = 0x0F,
         SetEndpoint = 0x11,
         LoadBanners = 0x12,
-        UpdateBanner = 0x14
+        UpdateBanner = 0x14,
+        Mode21 = 0x15,
     }
 
     public static PacketWriter SetEndpoint(string uploadEndpoint, string resourceEndpoint, string locale = "na")

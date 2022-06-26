@@ -188,9 +188,9 @@ public static class CharacterListPacket
         pWriter.WriteLong(player.Birthday);
         pWriter.WriteInt(player.SuperChatId);
         pWriter.WriteInt();
-        pWriter.WriteLong(); // Timestamp
+        pWriter.WriteLong(TimeInfo.Now());
         pWriter.WriteInt(player.Levels.PrestigeLevel);
-        pWriter.WriteLong(); // Timestamp
+        pWriter.WriteLong(player.Account?.LastLogTime ?? 0);
 
         int countB = 0;
         pWriter.WriteInt(countB);

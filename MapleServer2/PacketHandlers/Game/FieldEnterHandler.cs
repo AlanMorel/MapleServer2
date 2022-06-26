@@ -17,13 +17,31 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
     {
         packet.ReadInt(); // ?
 
-        // Liftable: 00 00 00 00 00
-        // SendBreakable
-        // Self
         Player player = session.Player;
         Account account = player.Account;
+
+        // session.Send(ReconnectPacket.Send());
         session.EnterField(player);
         session.Send(StatPacket.SetStats(player.FieldPlayer));
+
+        session.Send(TimeScalePacket.SetTimeScale(false, 1, 1, 3, 0)); // ??
+        session.Send(UserStatePacket.Send(player.FieldPlayer));
+
+        session.Send(LapenshardPacket.Load(player.Inventory.LapenshardStorage));
+
+        session.Send(EmotePacket.LoadEmotes(player));
+
+        session.Send(MacroPacket.LoadControls(player.Macros));
+
+        // wedding
+
+        session.Send(ResponseCubePacket.DecorationScore(account.Home));
+        session.Send(ResponseCubePacket.LoadHome(player.FieldPlayer.ObjectId, player.Account.Home));
+        session.Send(ResponseCubePacket.ReturnMap(player.ReturnMapId));
+
+        session.Send(RevivalCountPacket.Send(0));
+        session.Send(RevivalConfirmPacket.Send(player.FieldPlayer.ObjectId, 0));
+
         session.Send(StatPointPacket.WriteTotalStatPoints(player));
         session.Send(StatPointPacket.WriteTotalStatPoints(player)); // This packet is sent twice on GMS, not sure why 
         session.Send(StatPointPacket.WriteStatPointDistribution(player));
@@ -36,14 +54,7 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
             session.Send(PremiumClubPacket.ActivatePremium(player.FieldPlayer, account.VIPExpiration));
         }
 
-        session.Send(EmotePacket.LoadEmotes(player));
-        session.Send(MacroPacket.LoadControls(player.Macros));
-        session.Send(ChatStickerPacket.LoadChatSticker(player));
-
-        session.Send(ResponseCubePacket.DecorationScore(account.Home));
-        session.Send(ResponseCubePacket.LoadHome(player.FieldPlayer.ObjectId, player.Account.Home));
-        session.Send(ResponseCubePacket.ReturnMap(player.ReturnMapId));
-        session.Send(LapenshardPacket.Load(player.Inventory.LapenshardStorage));
+        session.Send(DungeonListPacket.DungeonList());
 
         IEnumerable<Cube> cubes = session.FieldManager.State.Cubes.Values
             .Where(x => x.Value.PlotNumber == 1 && x.Value.Item.HousingCategory is ItemHousingCategory.Farming or ItemHousingCategory.Ranching)
@@ -70,7 +81,6 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
             session.Send(FieldWarPacket.LegionPopup(fieldWar.Id, fieldWar.EntryClosureTime.ToUnixTimeSeconds()));
         }
 
-        session.Send(KeyTablePacket.SendHotbars(player.GameOptions));
 
         TrophyManager.OnMapEntered(player, player.MapId);
 

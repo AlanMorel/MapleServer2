@@ -304,7 +304,8 @@ public class FieldManager
         // Load interact objects
         foreach (MapInteractObject mapInteract in MapEntityMetadataStorage.GetInteractObjects(MapId))
         {
-            FieldObject<InteractObject> fieldInteractObject = WrapObject(new InteractObject(mapInteract.EntityId, mapInteract.InteractId, mapInteract.Type, InteractObjectState.Default));
+            FieldObject<InteractObject> fieldInteractObject =
+                WrapObject(new InteractObject(mapInteract.EntityId, mapInteract.InteractId, mapInteract.Type, InteractObjectState.Default));
             fieldInteractObject.Coord = mapInteract.Position;
             fieldInteractObject.Rotation = mapInteract.Rotation;
             State.AddInteractObject(fieldInteractObject);
@@ -377,10 +378,23 @@ public class FieldManager
 
         player.SafeBlock = player.SavedCoord;
 
+        sender.Send(LiftablePacket.LoadLiftables(State.LiftableObjects.Values.ToList()));
+
+        List<BreakableObject> breakables = new();
+        breakables.AddRange(State.BreakableActors.Values);
+        breakables.AddRange(State.BreakableNifs.Values);
+        sender.Send(BreakablePacket.LoadBreakables(breakables));
+
+        sender.Send(InteractObjectPacket.LoadObjects(State.InteractObjects.Values.Where(t => t.Value is not AdBalloon and not MapChest).ToList()));
+
+        foreach (IFieldObject<InteractObject> mapObject in State.InteractObjects.Values.Where(t => t.Value is MapChest or AdBalloon))
+        {
+            sender.Send(InteractObjectPacket.Add(mapObject));
+        }
+
         foreach (Character existingPlayer in State.Players.Values)
         {
             sender.Send(FieldPlayerPacket.AddPlayer(existingPlayer));
-            sender.Send(FieldObjectPacket.LoadPlayer(existingPlayer));
         }
 
         State.AddPlayer(player.FieldPlayer);
@@ -389,7 +403,6 @@ public class FieldManager
         Broadcast(session =>
         {
             session.Send(FieldPlayerPacket.AddPlayer(player.FieldPlayer));
-            session.Send(FieldObjectPacket.LoadPlayer(player.FieldPlayer));
         });
 
         foreach (IFieldObject<Item> existingItem in State.Items.Values)
@@ -400,13 +413,11 @@ public class FieldManager
         foreach (Npc existingNpc in State.Npcs.Values)
         {
             sender.Send(FieldNpcPacket.AddNpc(existingNpc));
-            sender.Send(FieldObjectPacket.LoadNpc(existingNpc));
         }
 
         foreach (Npc existingMob in State.Mobs.Values)
         {
             sender.Send(FieldNpcPacket.AddNpc(existingMob));
-            sender.Send(FieldObjectPacket.LoadNpc(existingMob));
 
             // TODO: Determine if buffs are sent on Field Enter
         }
@@ -462,18 +473,19 @@ public class FieldManager
             sender.Send(InstrumentPacket.PlayScore(instrument));
         }
 
-        sender.Send(LiftablePacket.LoadLiftables(State.LiftableObjects.Values.ToList()));
-
-        List<BreakableObject> breakables = new();
-        breakables.AddRange(State.BreakableActors.Values);
-        breakables.AddRange(State.BreakableNifs.Values);
-        sender.Send(BreakablePacket.LoadBreakables(breakables));
-
-        sender.Send(InteractObjectPacket.LoadObjects(State.InteractObjects.Values.Where(t => t.Value is not AdBalloon and not MapChest).ToList()));
-
-        foreach (IFieldObject<InteractObject> mapObject in State.InteractObjects.Values.Where(t => t.Value is MapChest or AdBalloon))
+        foreach (Character existingPlayer in State.Players.Values)
         {
-            sender.Send(InteractObjectPacket.Add(mapObject));
+            sender.Send(FieldObjectPacket.LoadPlayer(existingPlayer));
+        }
+
+        foreach (Npc existingNpc in State.Npcs.Values)
+        {
+            sender.Send(FieldObjectPacket.LoadNpc(existingNpc));
+        }
+
+        foreach (Npc existingMob in State.Mobs.Values)
+        {
+            sender.Send(FieldObjectPacket.LoadNpc(existingMob));
         }
 
         List<TriggerObject> triggerObjects = new();

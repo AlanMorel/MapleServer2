@@ -99,7 +99,6 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
             }
         }
 
-        //session.Send(0x27, 0x01); // Meret market related...?
         session.Send(MushkingRoyaleSystemPacket.LoadStats(player.Account.MushkingRoyaleStats));
         session.Send(MushkingRoyaleSystemPacket.LoadMedals(player.Account));
 
@@ -186,7 +185,7 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
             session.Send(TrophyPacket.WriteTableContent(trophy));
         }
 
-        // SendQuest, SendAchieve, SendManufacturer, SendUserMaid
+        // SendUserMaid
         session.Send(UserEnvPacket.SetTitles(player));
         session.Send(UserEnvPacket.Send04());
         session.Send(UserEnvPacket.Send05());
@@ -203,9 +202,9 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
         session.Send(PvpPacket.Mode17());
 
         session.Send(ResponsePetPacket.Mode07());
+        session.Send(CharacterAbilityPacket.Send());
+
         // LegionBattle (0xF6)
-        // CharacterAbility
-        // E1 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 
         // If the character is not a new character, this is what we would send
         session.Send(KeyTablePacket.SendFullOptions(player.GameOptions));
@@ -223,12 +222,14 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
             session.Send(GameEventPacket.Load(gameEvent));
         }
 
-        // SendKeyTable f(0x00), SendGuideRecord f(0x03), GameEvent f(0x00)
-        // SendBannerList f(0x19), SendRoomDungeon f(0x05, 0x14, 0x17)
+        //  SendGuideRecord f(0x03), RoomDungeon x1A
+
         session.Send(DungeonListPacket.DungeonList());
-        // 0xF0, ResponsePet P(0F 01)
-        // RequestFieldEnter
-        //session.Send("16 00 00 41 75 19 03 00 01 8A 42 0F 00 00 00 00 00 00 C0 28 C4 00 40 03 44 00 00 16 44 00 00 00 00 00 00 00 00 55 FF 33 42 E8 49 01 00".ToByteArray());
+
+        // InGameRank F0
+
+        session.Send(ResponsePetPacket.Mode0F());
+
         session.Send(RequestFieldEnterPacket.RequestEnter(player.FieldPlayer));
 
         Party party = GameServer.PartyManager.GetPartyByMember(player.CharacterId);
@@ -247,16 +248,18 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
 
         player.IsMigrating = false;
 
-        // SendUgc: 15 01 00 00 00 00 00 00 00 00 00 00 00 4B 00 00 00
+        session.Send(UGCPacket.Unknown21());
         session.Send(HomeCommandPacket.LoadHome(player));
+        session.Send(WorldPacket.Send());
 
-        player.TimeSyncLoop();
-        session.Send(TimeSyncPacket.SetSessionServerTick(0));
-        //session.Send("B9 00 00 E1 0F 26 89 7F 98 3C 26 00 00 00 00 00 00 00 00".ToByteArray());
-        session.Send(ServerEnterPacket.Confirm());
+        // player.TimeSyncLoop();
+        // session.Send(TimeSyncPacket.SetSessionServerTick(0));
+
+        session.Send(ChatStickerPacket.LoadChatSticker(player));
+
+        session.Send(BypassKeyPacket.Send());
 
         //session.Send(0xF0, 0x00, 0x1F, 0x78, 0x00, 0x00, 0x00, 0x3C, 0x00, 0x00, 0x00);
-        //session.Send(0x28, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00);
     }
 
     public override void Handle(LoginSession session, PacketReader packet)
@@ -286,6 +289,7 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
             throw new ArgumentException("Attempted login with invalid tokens...");
         }
 
+        session.Send(RequestSystemInfo.Send());
         session.Send(MoveResultPacket.SendStatus(status: 0));
     }
 }
