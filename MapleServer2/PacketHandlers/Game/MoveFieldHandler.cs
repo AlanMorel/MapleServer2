@@ -159,8 +159,7 @@ public class MoveFieldHandler : GamePacketHandler<MoveFieldHandler>
                 }
                 session.Player.FieldPlayer.Coord = destinationCube.Coord;
                 CoordF coordF = destinationCube.Coord;
-                coordF.Z += 25; // Without this the player falls through the ground.
-                session.Send(UserMoveByPortalPacket.Move(session.Player.FieldPlayer, coordF, session.Player.FieldPlayer.Rotation));
+                session.Player.Move(coordF, session.Player.FieldPlayer.Rotation);
                 break;
             case UgcPortalDestination.SelectedMap:
                 session.Player.Warp(int.Parse(destinationTarget));

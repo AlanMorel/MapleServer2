@@ -295,11 +295,36 @@ public class Player
 
     public void Warp(int mapId, CoordF? coord = null, CoordF? rotation = null, long instanceId = 1)
     {
+        if (mapId == MapId)
+        {
+            if (coord is null || rotation is null)
+            {
+                MapPlayerSpawn spawn = GetSpawnCoords(mapId);
+                if (spawn is null)
+                {
+                    Move(SavedCoord, SavedRotation);
+                    return;
+                }
+
+                Move(spawn.Coord.ToFloat(), spawn.Rotation.ToFloat());
+                return;
+            }
+
+            Move((CoordF) coord, (CoordF) rotation);
+            return;
+        }
+
         UpdateCoords(mapId, instanceId, coord, rotation);
 
         if (coord is null && rotation is null)
         {
-            GetSpawnCoords(mapId);
+            MapPlayerSpawn spawn = GetSpawnCoords(mapId);
+            if (spawn is not null)
+            {
+                SavedCoord = spawn.Coord.ToFloat();
+                SafeBlock = spawn.Coord.ToFloat();
+                SavedRotation = spawn.Rotation.ToFloat();
+            }
         }
 
         Session.FieldManager.RemovePlayer(this);
@@ -329,6 +354,14 @@ public class Player
         IsMigrating = true;
 
         Session.SendFinal(MigrationPacket.GameToGame(endpoint, this), logoutNotice: false);
+    }
+
+    public void Move(CoordF coord, CoordF rotation, bool isTrigger = false)
+    {
+        FieldPlayer.Coord = coord;
+        FieldPlayer.Rotation = rotation;
+
+        Session.Send(UserMoveByPortalPacket.Move(FieldPlayer, coord, rotation, isTrigger));
     }
 
     public Dictionary<ItemSlot, Item> GetEquippedInventory(InventoryTab tab)
@@ -488,18 +521,16 @@ public class Player
         }
     }
 
-    private void GetSpawnCoords(int mapId)
+    private MapPlayerSpawn GetSpawnCoords(int mapId)
     {
         MapPlayerSpawn spawn = MapEntityMetadataStorage.GetRandomPlayerSpawn(mapId);
         if (spawn is null)
         {
             Session.SendNotice($"Could not find a spawn for map {mapId}");
-            return;
+            return null;
         }
 
-        SavedCoord = spawn.Coord.ToFloat();
-        SafeBlock = spawn.Coord.ToFloat();
-        SavedRotation = spawn.Rotation.ToFloat();
+        return spawn;
     }
 
     private void UpdateCoords(int mapId, long instanceId, CoordF? coord = null, CoordF? rotation = null)

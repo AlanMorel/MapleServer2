@@ -821,7 +821,7 @@ public class RequestCubeHandler : GamePacketHandler<RequestCubeHandler>
         int x = -1 * Block.BLOCK_SIZE * (home.Size - 1);
         foreach (IFieldObject<Player> fieldPlayer in session.FieldManager.State.Players.Values)
         {
-            fieldPlayer.Value.Session.Send(UserMoveByPortalPacket.Move(fieldPlayer, CoordF.From(x, x, Block.BLOCK_SIZE * 3), CoordF.From(0, 0, 0)));
+            fieldPlayer.Value.Move(CoordF.From(x, x, Block.BLOCK_SIZE * 3), default);
         }
 
         foreach (Cube layoutCube in layout.Cubes)
@@ -858,7 +858,7 @@ public class RequestCubeHandler : GamePacketHandler<RequestCubeHandler>
         int x = -1 * Block.BLOCK_SIZE * (home.Size - 1);
         foreach (IFieldObject<Player> fieldPlayer in session.FieldManager.State.Players.Values)
         {
-            fieldPlayer.Value.Session.Send(UserMoveByPortalPacket.Move(fieldPlayer, CoordF.From(x, x, Block.BLOCK_SIZE * 3), CoordF.From(0, 0, 0)));
+            fieldPlayer.Value.Move(CoordF.From(x, x, Block.BLOCK_SIZE * 3), default);
         }
 
         foreach (Cube cube in layout.Cubes)
@@ -952,7 +952,7 @@ public class RequestCubeHandler : GamePacketHandler<RequestCubeHandler>
 
         foreach (IFieldObject<Player> fieldPlayer in session.FieldManager.State.Players.Values)
         {
-            fieldPlayer.Value.Session.Send(UserMoveByPortalPacket.Move(fieldPlayer, CoordF.From(x, x, Block.BLOCK_SIZE * 3), CoordF.From(0, 0, 0)));
+            fieldPlayer.Value.Move(CoordF.From(x, x, Block.BLOCK_SIZE * 3), default);
         }
     }
 
