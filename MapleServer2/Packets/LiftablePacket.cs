@@ -25,14 +25,14 @@ public static class LiftablePacket
             LiftableObject liftableObject = fieldLiftableObject.Value;
 
             pWriter.WriteString(liftableObject.EntityId);
-            pWriter.WriteBool(liftableObject.Enabled);
+            pWriter.WriteByte(); // not sure ?
+            pWriter.WriteInt(liftableObject.ItemCount);
             pWriter.Write(liftableObject.State);
-            pWriter.WriteBool(liftableObject.PickedUp);
             pWriter.WriteUnicodeString(liftableObject.Metadata.MaskQuestId);
             pWriter.WriteUnicodeString(liftableObject.Metadata.MaskQuestState);
             pWriter.WriteUnicodeString(liftableObject.Metadata.EffectQuestId);
             pWriter.WriteUnicodeString(liftableObject.Metadata.EffectQuestState);
-            pWriter.WriteByte(1);
+            pWriter.WriteBool(true); // effect
         }
 
         return pWriter;
@@ -43,9 +43,9 @@ public static class LiftablePacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.Liftable);
         pWriter.Write(LiftableMode.UpdateEntity);
         pWriter.WriteString(liftableObject.EntityId);
-        pWriter.WriteBool(liftableObject.Enabled);
+        pWriter.WriteByte();
+        pWriter.WriteInt(liftableObject.ItemCount);
         pWriter.Write(liftableObject.State);
-        pWriter.WriteBool(liftableObject.PickedUp);
 
         return pWriter;
     }
@@ -57,9 +57,9 @@ public static class LiftablePacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.Liftable);
         pWriter.Write(LiftableMode.UpdateEntity);
         pWriter.WriteString($"4_{fieldLiftableObject.Coord.ToByte().AsHexadecimal()}");
-        pWriter.WriteBool(liftableObject.Enabled);
+        pWriter.WriteByte();
+        pWriter.WriteInt(liftableObject.ItemCount);
         pWriter.Write(liftableObject.State);
-        pWriter.WriteBool(liftableObject.PickedUp);
 
         return pWriter;
     }
@@ -71,12 +71,12 @@ public static class LiftablePacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.Liftable);
         pWriter.Write(LiftableMode.Drop);
         pWriter.WriteString($"4_{fieldLiftableObject.Coord.ToByte().AsHexadecimal()}");
-        pWriter.Write(liftableObject.State);
+        pWriter.WriteInt(liftableObject.ItemCount);
         pWriter.WriteUnicodeString(liftableObject.Metadata.MaskQuestId);
         pWriter.WriteUnicodeString(liftableObject.Metadata.MaskQuestState);
         pWriter.WriteUnicodeString(liftableObject.Metadata.EffectQuestId);
         pWriter.WriteUnicodeString(liftableObject.Metadata.EffectQuestState);
-        pWriter.WriteByte(1);
+        pWriter.WriteBool(true); // effect
 
         return pWriter;
     }

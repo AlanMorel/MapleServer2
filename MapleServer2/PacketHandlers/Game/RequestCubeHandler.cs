@@ -391,8 +391,7 @@ public class RequestCubeHandler : GamePacketHandler<RequestCubeHandler>
         fieldLiftable.Rotation = rotation;
 
         liftable.State = LiftableState.Active;
-        liftable.Enabled = true;
-        liftable.PickedUp = false;
+        liftable.ItemCount++;
 
         player.FieldPlayer.CarryingLiftable = null;
 
@@ -406,11 +405,11 @@ public class RequestCubeHandler : GamePacketHandler<RequestCubeHandler>
         fieldManager.BroadcastPacket(LiftablePacket.Drop(fieldLiftable));
         fieldManager.BroadcastPacket(ResponseCubePacket.PlaceLiftable(fieldLiftable, player.FieldPlayer.ObjectId));
         fieldManager.BroadcastPacket(BuildModePacket.Use(player.FieldPlayer, BuildModeHandler.BuildModeType.Stop));
-        if (target is null)
-        {
-            fieldManager.BroadcastPacket(LiftablePacket.UpdateEntityByCoord(fieldLiftable));
+        fieldManager.BroadcastPacket(LiftablePacket.UpdateEntityByCoord(fieldLiftable));
 
-            return; // don't remove liftable if it's not on target
+        if (target is null) // don't remove liftable if it's not on target
+        {
+            return;
         }
 
         Task.Run(async () =>
@@ -422,7 +421,6 @@ public class RequestCubeHandler : GamePacketHandler<RequestCubeHandler>
             fieldManager.BroadcastPacket(LiftablePacket.RemoveCube(fieldLiftable));
 
             liftable.State = LiftableState.Removed;
-            liftable.Enabled = false;
 
             fieldManager.State.InteractObjects.Remove(liftable.EntityId, out _);
             // TODO: regen task
