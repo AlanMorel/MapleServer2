@@ -6,6 +6,7 @@ using Maple2.File.Flat.maplestory2library;
 using Maple2.File.IO.Crypto.Common;
 using Maple2.File.Parser.Flat;
 using Maple2.File.Parser.MapXBlock;
+using Maple2.File.Parser.Tools;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -443,6 +444,7 @@ public class MapParser : Exporter<List<MapMetadata>>
         foreach (PackFileEntry map in Resources.XmlReader.Files.Where(x => x.Name.StartsWith("map/")))
         {
             XmlDocument mapXml = Resources.XmlReader.GetXmlDocument(map);
+            MapMetadata mapMetadata = null;
             foreach (XmlNode node in mapXml.DocumentElement.ChildNodes)
             {
                 if (node.Attributes["locale"].Value is "KR" or "CN" or "JP")
@@ -450,30 +452,45 @@ public class MapParser : Exporter<List<MapMetadata>>
                     continue;
                 }
 
-                // map.Name: map/00000001.xml
-                int id = int.Parse(map.Name.Split('/')[1].Split('.')[0]);
-                string xblock = node.SelectSingleNode("xblock").Attributes["name"].Value;
+                // If locale is NA parse it and go to next metadata.
+                if (node.Attributes["locale"].Value is "NA")
+                {
+                    mapMetadata = ParseMapProperty(map, node);
+                    break;
+                }
 
-                XmlNode propertyNode = node.SelectSingleNode("property");
-                MapProperty mapProperty = new()
+                mapMetadata = ParseMapProperty(map, node);
+            }
+
+            if (mapMetadata is null)
+            {
+                continue;
+            }
+
+            MapNames.TryGetValue(mapMetadata.Id, out mapMetadata.Name);
+
+            MapMetadatas.Add(mapMetadata);
+        }
+
+        MapMetadata ParseMapProperty(PackFileEntry map, XmlNode node)
+        {
+            // map.Name: map/00000001.xml
+            int id = int.Parse(map.Name.Split('/')[1].Split('.')[0]);
+            string xblock = node.SelectSingleNode("xblock").Attributes["name"].Value;
+
+            XmlNode propertyNode = node.SelectSingleNode("property");
+            return new()
+            {
+                Id = id,
+                XBlockName = xblock.ToLower(),
+                Property = new()
                 {
                     RevivalReturnMapId = int.Parse(propertyNode.Attributes["revivalreturnid"]?.Value ?? "0"),
                     EnterReturnMapId = propertyNode.Attributes["enterreturnid"]?.Value ?? "",
                     Capacity = short.Parse(propertyNode.Attributes["capacity"]?.Value ?? "0"),
                     IsTutorialMap = propertyNode.Attributes["tutorialType"]?.Value == "1"
-                };
-
-                MapMetadata mapMetadata = new()
-                {
-                    Id = id,
-                    XBlockName = xblock.ToLower(),
-                    Property = mapProperty
-                };
-                MapNames.TryGetValue(id, out mapMetadata.Name);
-
-                MapMetadatas.Add(mapMetadata);
-                break; // only use first environment
-            }
+                }
+            };
         }
     }
 }
