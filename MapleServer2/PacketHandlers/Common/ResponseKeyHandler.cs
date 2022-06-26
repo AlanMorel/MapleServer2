@@ -252,8 +252,8 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
         session.Send(HomeCommandPacket.LoadHome(player));
         session.Send(WorldPacket.Send());
 
-        // player.TimeSyncLoop();
-        // session.Send(TimeSyncPacket.SetSessionServerTick(0));
+        player.TimeSyncLoop();
+        session.Send(TimeSyncPacket.SetSessionServerTick(0));
 
         session.Send(ChatStickerPacket.LoadChatSticker(player));
 
