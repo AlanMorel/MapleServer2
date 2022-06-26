@@ -45,6 +45,12 @@ public class ChangeAttributesScrollHandler : GamePacketHandler<ChangeAttributesS
         {
             isSpecialStat = packet.ReadBool();
             lockStatId = packet.ReadShort();
+
+            if (isSpecialStat)
+            {
+                // Match the enum ID for ItemAttribute
+                lockStatId += 11000;
+            }
         }
 
         IInventory inventory = session.Player.Inventory;
@@ -78,8 +84,7 @@ public class ChangeAttributesScrollHandler : GamePacketHandler<ChangeAttributesS
 
         if (useLock)
         {
-            scrollLock = inventory.GetAllByTag(tag)
-                .FirstOrDefault(x => x.Rarity == gear.Rarity);
+            scrollLock = inventory.GetAllByTag(tag).FirstOrDefault(x => x.Rarity == gear.Rarity);
 
             // Check if scroll lock exists in inventory
             if (scrollLock == null)
