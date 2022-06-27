@@ -1,5 +1,6 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Parsers.Helpers;
 using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
@@ -121,7 +122,7 @@ public class NpcParser : Exporter<List<NpcMetadata>>
             metadata.NpcMetadataBasic.HpBar = byte.Parse(npcBasicNode.Attributes["hpBar"].Value);
             metadata.NpcMetadataBasic.MinimapIconName = npcBasicNode.Attributes["minimapIconName"]?.Value ?? "";
 
-            metadata.Stats = GetNpcStats(statsCollection);
+            metadata.NpcStats = StatParser.ParseStats(statsCollection);
 
             // Parse speed
             metadata.NpcMetadataSpeed.RotationSpeed = float.Parse(npcSpeedNode.Attributes["rotation"]?.Value ?? "0");
@@ -215,48 +216,6 @@ public class NpcParser : Exporter<List<NpcMetadata>>
         }
 
         return npcs;
-    }
-
-    private static NpcStats GetNpcStats(XmlAttributeCollection collection)
-    {
-        // MUST be in ORDER
-        NpcStats npcStats = new()
-        {
-            Str = new(int.Parse(collection["str"].Value)),
-            Dex = new(int.Parse(collection["dex"].Value)),
-            Int = new(int.Parse(collection["int"].Value)),
-            Luk = new(int.Parse(collection["luk"].Value)),
-            Hp = new(long.Parse(collection["hp"].Value)),
-            HpRegen = new(int.Parse(collection["hp_rgp"].Value)),
-            HpInterval = new(int.Parse(collection["hp_inv"].Value)),
-            Sp = new(int.Parse(collection["sp"].Value)),
-            SpRegen = new(int.Parse(collection["sp_rgp"].Value)),
-            SpInterval = new(int.Parse(collection["sp_inv"].Value)),
-            Ep = new(int.Parse(collection["ep"].Value)),
-            EpRegen = new(int.Parse(collection["ep_rgp"].Value)),
-            EpInterval = new(int.Parse(collection["ep_inv"].Value)),
-            AtkSpd = new(int.Parse(collection["asp"].Value)),
-            MoveSpd = new(int.Parse(collection["msp"].Value)),
-            Accuracy = new(int.Parse(collection["atp"].Value)),
-            Evasion = new(int.Parse(collection["evp"].Value)),
-            CritRate = new(int.Parse(collection["cap"].Value)),
-            CritDamage = new(int.Parse(collection["cad"].Value)),
-            CritResist = new(int.Parse(collection["car"].Value)),
-            Defense = new(int.Parse(collection["ndd"].Value)),
-            Guard = new(int.Parse(collection["abp"].Value)),
-            JumpHeight = new(int.Parse(collection["jmp"].Value)),
-            PhysAtk = new(int.Parse(collection["pap"].Value)),
-            MagAtk = new(int.Parse(collection["map"].Value)),
-            PhysRes = new(int.Parse(collection["par"].Value)),
-            MagRes = new(int.Parse(collection["mar"].Value)),
-            MinAtk = new(int.Parse(collection["wapmin"].Value)),
-            MaxAtk = new(int.Parse(collection["wapmax"].Value)),
-            Damage = new(int.Parse(collection["dmg"].Value)),
-            Pierce = new(int.Parse(collection["pen"].Value)),
-            MountSpeed = new(int.Parse(collection["rmsp"].Value))
-        };
-
-        return npcStats;
     }
 
     private static NpcAction GetNpcAction(string name)

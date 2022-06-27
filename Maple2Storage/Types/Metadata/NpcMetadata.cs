@@ -51,7 +51,7 @@ public class NpcMetadata
     [XmlElement(Order = 22)]
     public NpcMetadataInteract NpcMetadataInteract = new();
     [XmlElement(Order = 23)]
-    public NpcStats Stats;
+    public XmlStats NpcStats;
     [XmlElement(Order = 24)]
     public int ShopId;
     [XmlElement(Order = 25)]

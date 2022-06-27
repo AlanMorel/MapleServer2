@@ -19,14 +19,14 @@ public class Stat
 
     public Stat() { }
 
-    public Stat(NpcStat<int> statInt)
+    public Stat(XmlStat<int> statInt)
     {
         Bonus = statInt.Bonus;
         Base = statInt.Base;
         Total = statInt.Total;
     }
 
-    public Stat(NpcStat<long> statLong)
+    public Stat(XmlStat<long> statLong)
     {
         BonusLong = statLong.Bonus;
         BaseLong = statLong.Base;

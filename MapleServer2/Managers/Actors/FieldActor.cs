@@ -5,6 +5,7 @@ using Maple2Storage.Types.Metadata;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
+using Stats = MapleServer2.Types.Stats;
 
 namespace MapleServer2.Managers.Actors;
 

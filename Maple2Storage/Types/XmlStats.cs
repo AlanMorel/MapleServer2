@@ -3,80 +3,80 @@
 namespace Maple2Storage.Types;
 
 [XmlType]
-public class NpcStats
+public class XmlStats
 {
     [XmlElement(Order = 1)]
-    public NpcStat<int> Str;
+    public XmlStat<int> Str;
     [XmlElement(Order = 2)]
-    public NpcStat<int> Dex;
+    public XmlStat<int> Dex;
     [XmlElement(Order = 3)]
-    public NpcStat<int> Int;
+    public XmlStat<int> Int;
     [XmlElement(Order = 4)]
-    public NpcStat<int> Luk;
+    public XmlStat<int> Luk;
     [XmlElement(Order = 5)]
-    public NpcStat<long> Hp;
+    public XmlStat<long> Hp;
     [XmlElement(Order = 6)]
-    public NpcStat<int> HpRegen;
+    public XmlStat<int> HpRegen;
     [XmlElement(Order = 7)]
-    public NpcStat<int> HpInterval;
+    public XmlStat<int> HpInterval;
     [XmlElement(Order = 8)]
-    public NpcStat<int> Sp;
+    public XmlStat<int> Sp;
     [XmlElement(Order = 9)]
-    public NpcStat<int> SpRegen;
+    public XmlStat<int> SpRegen;
     [XmlElement(Order = 10)]
-    public NpcStat<int> SpInterval;
+    public XmlStat<int> SpInterval;
     [XmlElement(Order = 11)]
-    public NpcStat<int> Ep;
+    public XmlStat<int> Ep;
     [XmlElement(Order = 12)]
-    public NpcStat<int> EpRegen;
+    public XmlStat<int> EpRegen;
     [XmlElement(Order = 13)]
-    public NpcStat<int> EpInterval;
+    public XmlStat<int> EpInterval;
     [XmlElement(Order = 14)]
-    public NpcStat<int> AtkSpd;
+    public XmlStat<int> AtkSpd;
     [XmlElement(Order = 15)]
-    public NpcStat<int> MoveSpd;
+    public XmlStat<int> MoveSpd;
     [XmlElement(Order = 16)]
-    public NpcStat<int> Accuracy;
+    public XmlStat<int> Accuracy;
     [XmlElement(Order = 17)]
-    public NpcStat<int> Evasion;
+    public XmlStat<int> Evasion;
     [XmlElement(Order = 18)]
-    public NpcStat<int> CritRate;
+    public XmlStat<int> CritRate;
     [XmlElement(Order = 19)]
-    public NpcStat<int> CritDamage;
+    public XmlStat<int> CritDamage;
     [XmlElement(Order = 20)]
-    public NpcStat<int> CritResist;
+    public XmlStat<int> CritResist;
     [XmlElement(Order = 21)]
-    public NpcStat<int> Defense;
+    public XmlStat<int> Defense;
     [XmlElement(Order = 22)]
-    public NpcStat<int> Guard;
+    public XmlStat<int> Guard;
     [XmlElement(Order = 23)]
-    public NpcStat<int> JumpHeight;
+    public XmlStat<int> JumpHeight;
     [XmlElement(Order = 24)]
-    public NpcStat<int> PhysAtk;
+    public XmlStat<int> PhysAtk;
     [XmlElement(Order = 25)]
-    public NpcStat<int> MagAtk;
+    public XmlStat<int> MagAtk;
     [XmlElement(Order = 26)]
-    public NpcStat<int> PhysRes;
+    public XmlStat<int> PhysRes;
     [XmlElement(Order = 27)]
-    public NpcStat<int> MagRes;
+    public XmlStat<int> MagRes;
     [XmlElement(Order = 28)]
-    public NpcStat<int> MinAtk;
+    public XmlStat<int> MinAtk;
     [XmlElement(Order = 29)]
-    public NpcStat<int> MaxAtk;
+    public XmlStat<int> MaxAtk;
     [XmlElement(Order = 30)]
-    public NpcStat<int> Damage;
+    public XmlStat<int> Damage;
     [XmlElement(Order = 31)]
-    public NpcStat<int> Pierce;
+    public XmlStat<int> Pierce;
     [XmlElement(Order = 32)]
-    public NpcStat<int> MountSpeed;
+    public XmlStat<int> MountSpeed;
     [XmlElement(Order = 33)]
-    public NpcStat<int> BonusAtk;
+    public XmlStat<int> BonusAtk;
     [XmlElement(Order = 34)]
-    public NpcStat<int> BonusAtkPet;
+    public XmlStat<int> BonusAtkPet;
     // There's more on some other NPC but until this point, all of them have it
 }
 [XmlType]
-public struct NpcStat<T> where T : struct
+public struct XmlStat<T> where T : struct
 {
     [XmlElement(Order = 1)]
     public T Bonus;
@@ -92,14 +92,14 @@ public struct NpcStat<T> where T : struct
         _ => Bonus
     };
 
-    public NpcStat(T totalStat)
+    public XmlStat(T totalStat)
     {
         Bonus = totalStat;
         Base = totalStat;
         Total = totalStat;
     }
 
-    public NpcStat(T bonusStat, T baseStat, T totalStat)
+    public XmlStat(T bonusStat, T baseStat, T totalStat)
     {
         Bonus = bonusStat;
         Base = baseStat;
