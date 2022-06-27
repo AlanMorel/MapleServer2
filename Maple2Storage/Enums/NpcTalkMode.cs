@@ -37,7 +37,8 @@ public enum ActionType : byte
 {
     Portal = 3,
     OpenWindow = 4,
-    ItemReward = 5
+    ItemReward = 5,
+    MoveMap = 99
 }
 
 public enum NpcTalkEventType : short
