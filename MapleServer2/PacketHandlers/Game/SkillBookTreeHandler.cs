@@ -90,6 +90,11 @@ public class SkillBookTreeHandler : GamePacketHandler<SkillBookTreeHandler>
         {
             DatabaseManager.SkillTabs.Update(skillTab);
         }
+
+        if (selectedTab == 0)
+        {
+            session.Player.UpdatePassiveSkills();
+        }
     }
 
     private static void HandleRename(GameSession session, PacketReader packet)

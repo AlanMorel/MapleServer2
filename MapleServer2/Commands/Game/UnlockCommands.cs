@@ -27,7 +27,7 @@ public class UnlockAll : InGameCommand
 
         // Reset stats to default
         player.Stats = new(player.Job);
-        player.Stats.AddBaseStats(player, 89);
+        player.Stats.AddBaseStats(player, 90);
 
         trigger.Session.Send(StatPacket.SetStats(player.FieldPlayer));
         trigger.Session.FieldManager.BroadcastPacket(StatPacket.SetStats(player.FieldPlayer), trigger.Session);

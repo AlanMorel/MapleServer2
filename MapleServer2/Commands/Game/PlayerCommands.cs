@@ -158,7 +158,7 @@ public class LevelCommand : InGameCommand
 
         // Reset stats to default
         player.Stats = new(player.Job);
-        player.Stats.AddBaseStats(player, level - 1);
+        player.Stats.AddBaseStats(player, level);
 
         trigger.Session.Send(StatPacket.SetStats(player.FieldPlayer));
         trigger.Session.FieldManager.BroadcastPacket(StatPacket.SetStats(player.FieldPlayer), trigger.Session);

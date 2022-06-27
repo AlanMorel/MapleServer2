@@ -75,7 +75,7 @@ public class ItemEquipHandler : GamePacketHandler<ItemEquipHandler>
 
             if (prevItem.InventoryTab == InventoryTab.Gear)
             {
-                player.DecreaseStats(prevItem);
+                player.FieldPlayer.ComputeStats();
             }
         }
 
@@ -126,7 +126,7 @@ public class ItemEquipHandler : GamePacketHandler<ItemEquipHandler>
         // Add stats if gear
         if (item.InventoryTab == InventoryTab.Gear)
         {
-            player.IncreaseStats(item);
+            player.FieldPlayer.ComputeStats();
         }
     }
 
@@ -150,7 +150,7 @@ public class ItemEquipHandler : GamePacketHandler<ItemEquipHandler>
             inventory.AddItem(session, unequipItem, false);
             session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(player.FieldPlayer, unequipItem));
 
-            player.DecreaseStats(unequipItem);
+            player.FieldPlayer.ComputeStats();
             return;
         }
 

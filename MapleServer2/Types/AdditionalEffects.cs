@@ -24,7 +24,7 @@ public class AdditionalEffects
         int index;
         AdditionalEffect effect;
 
-        if (TryGet(id, level, out effect, out index))
+        if (TryGet(id, level, out effect, out index) && effect.LevelMetadata != null)
         {
             stacks = Math.Min(effect.LevelMetadata.Basic.MaxBuffCount, stacks + effect.Stacks);
 
