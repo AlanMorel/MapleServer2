@@ -5,7 +5,7 @@ namespace MapleServer2.Packets;
 
 public static class ExperiencePacket
 {
-    public static PacketWriter ExpUp(int expGained, long expTotal, long restExp)
+    public static PacketWriter ExpUp(long expGained, long expTotal, long restExp)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ExpUp);
 

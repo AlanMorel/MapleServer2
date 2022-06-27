@@ -20,9 +20,7 @@ public partial class TriggerContext
         Field.BroadcastPacket(TriggerPacket.UpdateTrigger(stateTriggerActor));
     }
 
-    public void SetAgent(int[] arg1, bool arg2)
-    {
-    }
+    public void SetAgent(int[] arg1, bool arg2) { }
 
     public void SetCube(int[] triggerIds, bool isVisible, byte randomCount)
     {
@@ -37,9 +35,16 @@ public partial class TriggerContext
     {
         foreach (int triggerId in triggerIds)
         {
-            if (Field.State.TriggerEffects.TryGetValue(triggerId, out TriggerEffect triggerEffect))
+            if (!Field.State.TriggerEffects.TryGetValue(triggerId, out TriggerEffect triggerEffect))
             {
-                triggerEffect.IsVisible = isVisible;
+                continue;
+            }
+
+            bool oldValue = triggerEffect.IsVisible;
+            triggerEffect.IsVisible = isVisible;
+
+            if (oldValue != isVisible) // If the value changed, broadcast the packet.
+            {
                 Field.BroadcastPacket(TriggerPacket.UpdateTrigger(triggerEffect));
             }
         }
@@ -50,14 +55,14 @@ public partial class TriggerContext
         InteractObjectState objectState = (InteractObjectState) state;
         foreach (int interactObjectId in interactObjectIds)
         {
-            InteractObject interactObject = Field.State.InteractObjects.Values.FirstOrDefault(x => x.InteractId == interactObjectId);
+            IFieldObject<InteractObject> interactObject = Field.State.InteractObjects.Values.FirstOrDefault(x => x.Value.InteractId == interactObjectId);
             if (interactObject == null)
             {
                 continue;
             }
 
-            interactObject.State = objectState;
-            Field.BroadcastPacket(InteractObjectPacket.Set(interactObject));
+            interactObject.Value.State = objectState;
+            Field.BroadcastPacket(InteractObjectPacket.Set(interactObject.Value));
         }
     }
 
@@ -92,9 +97,7 @@ public partial class TriggerContext
         });
     }
 
-    public void SetMeshAnimation(int[] arg1, bool arg2, byte arg3, byte arg4)
-    {
-    }
+    public void SetMeshAnimation(int[] arg1, bool arg2, byte arg3, byte arg4) { }
 
     public void SetBreakable(int[] triggerIds, bool isEnabled)
     {
@@ -153,6 +156,11 @@ public partial class TriggerContext
 
     public void SetSkill(int[] triggerIds, bool arg2)
     {
+        if (arg2 is false) // Not sure what this means
+        {
+            return;
+        }
+
         foreach (int triggerId in triggerIds)
         {
             IFieldObject<TriggerSkill> triggerSkill = Field.State.GetTriggerSkill(triggerId);
@@ -176,15 +184,9 @@ public partial class TriggerContext
         Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerSounds[soundId]));
     }
 
-    public void SetVisibleBreakableObject(int[] arg1, bool arg2)
-    {
-    }
+    public void SetVisibleBreakableObject(int[] arg1, bool arg2) { }
 
-    public void CreateItem(int[] arg1, int arg2, int arg3, int arg5)
-    {
-    }
+    public void CreateItem(int[] arg1, int arg2, int arg3, int arg5) { }
 
-    public void SpawnItemRange(int[] rangeId, byte randomPickCount)
-    {
-    }
+    public void SpawnItemRange(int[] rangeId, byte randomPickCount) { }
 }

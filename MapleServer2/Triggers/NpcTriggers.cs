@@ -90,6 +90,19 @@ public partial class TriggerContext
     {
         foreach (int spawnPointId in rangeId)
         {
+            if (spawnPointId == -1)
+            {
+                foreach (Npc npc in Field.State.Npcs.Values)
+                {
+                    Field.RemoveNpc(npc);
+                }
+                foreach (Npc mob in Field.State.Mobs.Values)
+                {
+                    Field.RemoveMob(mob);
+                }
+                continue;
+            }
+
             Npc fieldNpc = Field.State.Npcs.Values.FirstOrDefault(x => x.SpawnPointId == spawnPointId);
             if (fieldNpc is not null)
             {

@@ -109,19 +109,29 @@ public class MapParser : Exporter<List<MapMetadata>>
                     switch (interact)
                     {
                         case IMS2SimpleUiObject uiObject:
-                            mapEntity.InteractObjects.Add(new(uiObject.EntityId, uiObject.interactID, uiObject.Enabled, type));
+                            mapEntity.InteractObjects.Add(new(uiObject.EntityId, uiObject.interactID, uiObject.Enabled, type,
+                                CoordF.FromVector3(uiObject.Position),
+                                CoordF.FromVector3(uiObject.Rotation)));
                             break;
                         case IMS2InteractMesh interactMesh:
-                            mapEntity.InteractObjects.Add(new(interactMesh.EntityId, interactMesh.interactID, interactMesh.IsVisible, type));
+                            mapEntity.InteractObjects.Add(new(interactMesh.EntityId, interactMesh.interactID, interactMesh.IsVisible, type,
+                                CoordF.FromVector3(interactMesh.Position),
+                                CoordF.FromVector3(interactMesh.Rotation)));
                             break;
                         case IMS2Telescope telescope:
-                            mapEntity.InteractObjects.Add(new(telescope.EntityId, telescope.interactID, telescope.Enabled, type));
+                            mapEntity.InteractObjects.Add(new(telescope.EntityId, telescope.interactID, telescope.Enabled, type,
+                                CoordF.FromVector3(telescope.Position),
+                                CoordF.FromVector3(telescope.Rotation)));
                             break;
                         case IMS2InteractActor interactActor:
-                            mapEntity.InteractObjects.Add(new(interactActor.EntityId, interactActor.interactID, interactActor.IsVisible, type));
+                            mapEntity.InteractObjects.Add(new(interactActor.EntityId, interactActor.interactID, interactActor.IsVisible, type
+                                , CoordF.FromVector3(interactActor.Position),
+                                CoordF.FromVector3(interactActor.Rotation)));
                             break;
                         case IMS2InteractDisplay interactDisplay:
-                            mapEntity.InteractObjects.Add(new(interactDisplay.EntityId, interactDisplay.interactID, interactDisplay.IsVisible, type));
+                            mapEntity.InteractObjects.Add(new(interactDisplay.EntityId, interactDisplay.interactID, interactDisplay.IsVisible, type,
+                                CoordF.FromVector3(interactDisplay.Position),
+                                CoordF.FromVector3(interactDisplay.Rotation)));
                             break;
                     }
 
@@ -273,8 +283,10 @@ public class MapParser : Exporter<List<MapMetadata>>
                             break;
 
                         case IMS2Liftable liftable:
-                            mapEntity.LiftableObjects.Add(new(liftable.EntityId, (int) liftable.ItemID, liftable.EffectQuestID, liftable.EffectQuestState,
-                                liftable.ItemLifeTime, liftable.LiftableRegenCheckTime));
+                            mapEntity.LiftableObjects.Add(new(liftable.EntityId, (int) liftable.ItemID, liftable.ItemStackCount, liftable.MaskQuestID,
+                                liftable.MaskQuestState, liftable.EffectQuestID, liftable.EffectQuestState, liftable.ItemLifeTime,
+                                liftable.LiftableRegenCheckTime, liftable.LiftableFinishTime, CoordF.FromVector3(liftable.Position),
+                                CoordF.FromVector3(liftable.Rotation)));
                             break;
                         case IMS2Vibrate vibrate:
                             mapEntity.VibrateObjects.Add(new(vibrate.EntityId, CoordF.FromVector3(physXProp.Position)));

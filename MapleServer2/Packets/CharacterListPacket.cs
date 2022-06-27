@@ -89,7 +89,7 @@ public static class CharacterListPacket
         pWriter.WriteCharacter(player);
 
         pWriter.WriteUnicodeString(player.ProfileUrl);
-        pWriter.WriteLong();
+        pWriter.WriteLong(player.DeletionTime);
 
         WriteEquipsAndCosmetics(pWriter, player);
 
@@ -134,8 +134,8 @@ public static class CharacterListPacket
         pWriter.WriteInt(player.Stats[StatAttribute.Hp].Bonus);
         pWriter.WriteShort();
         pWriter.WriteLong();
-        pWriter.WriteLong(); // Some timestamp
-        pWriter.WriteLong();
+        pWriter.WriteLong(player.HouseStorageAccessTime);
+        pWriter.WriteLong(player.HouseDoctorAccessTime);
         pWriter.WriteInt(player.ReturnMapId);
         pWriter.Write(player.ReturnCoord);
         pWriter.WriteInt(player.GearScore);
@@ -162,7 +162,7 @@ public static class CharacterListPacket
             }
         }
 
-        pWriter.WriteByte();
+        pWriter.WriteByte(1);
         pWriter.WriteInt();
         foreach (MasteryExp mastery in player.Levels.MasteryExp)
         {
@@ -170,8 +170,8 @@ public static class CharacterListPacket
         }
 
         // Some function call on CCharacterList property
-        pWriter.WriteUnicodeString();
-        pWriter.WriteLong(player.UnknownId); // THIS MUST BE CORRECT... BYPASS KEY...
+        pWriter.WriteUnicodeString(); // login username
+        pWriter.WriteLong(player.SessionId); // THIS MUST BE CORRECT... BYPASS KEY...
         pWriter.WriteLong(2000);
         pWriter.WriteLong(3000);
         // End
@@ -186,7 +186,7 @@ public static class CharacterListPacket
         pWriter.WriteByte();
         pWriter.WriteByte();
         pWriter.WriteLong(player.Birthday);
-        pWriter.WriteInt();
+        pWriter.WriteInt(player.SuperChatId);
         pWriter.WriteInt();
         pWriter.WriteLong(); // Timestamp
         pWriter.WriteInt(player.Levels.PrestigeLevel);

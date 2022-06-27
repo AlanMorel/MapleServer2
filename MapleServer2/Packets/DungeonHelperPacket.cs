@@ -16,27 +16,27 @@ public static class DungeonHelperPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.DungeonHelper);
         pWriter.Write(DungeonHelperPacketMode.BroadcastAssist);
-        pWriter.WriteInt(party.Id);
-        pWriter.WriteUnicodeString();
-        pWriter.WriteLong(); // unk
-        pWriter.WriteLong(); // unk
-        pWriter.WriteInt(dungeonId);
-        pWriter.WriteByte((byte) party.Members.Count);
+        WriteDungeonHelperParty(pWriter, party, dungeonId);
         return pWriter;
     }
 
-    public static PacketWriter DisplayVetAndRookie(Party party)
+    public static PacketWriter DisplayVetAndRookie(Party party, int dungeonId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.DungeonHelper);
         pWriter.Write(DungeonHelperPacketMode.DisplayVetAndRookie);
         pWriter.WriteByte(); // rookie count
         pWriter.WriteByte(); // veteran count
+        WriteDungeonHelperParty(pWriter, party, dungeonId);
+        return pWriter;
+    }
+
+    private static void WriteDungeonHelperParty(PacketWriter pWriter, Party party, int dungeonId)
+    {
         pWriter.WriteInt(party.Id);
         pWriter.WriteUnicodeString(party.Leader.Name);
-        pWriter.WriteLong(); // unk
-        pWriter.WriteLong(); // unk
-        pWriter.WriteInt(); // dungeonId
+        pWriter.WriteLong(party.Leader.AccountId);
+        pWriter.WriteLong(party.Leader.CharacterId);
+        pWriter.WriteInt(dungeonId);
         pWriter.WriteByte((byte) party.Members.Count);
-        return pWriter;
     }
 }

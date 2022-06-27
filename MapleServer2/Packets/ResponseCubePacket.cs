@@ -63,7 +63,7 @@ public static class ResponseCubePacket
         pWriter.WriteBool(item?.Ugc is not null);
         if (item?.Ugc is not null)
         {
-            pWriter.WriteUGCTemplate(item.Ugc);
+            pWriter.WriteClass(item.Ugc);
         }
 
         return pWriter;
@@ -139,7 +139,7 @@ public static class ResponseCubePacket
         pWriter.WriteBool(cube.Value.Item.Ugc is not null);
         if (cube.Value.Item.Ugc is not null)
         {
-            pWriter.WriteUGCTemplate(cube.Value.Item.Ugc);
+            pWriter.WriteClass(cube.Value.Item.Ugc);
         }
 
         pWriter.WriteByte();
@@ -150,7 +150,7 @@ public static class ResponseCubePacket
         return pWriter;
     }
 
-    public static PacketWriter PlaceLiftable(LiftableObject liftable, int ownerObjectId)
+    public static PacketWriter PlaceLiftable(IFieldObject<LiftableObject> fieldLiftableObject, int ownerObjectId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(ResponseCubePacketMode.PlaceFurnishing);
@@ -159,15 +159,15 @@ public static class ResponseCubePacket
         pWriter.WriteInt(ownerObjectId);
         pWriter.WriteInt();
         pWriter.WriteInt();
-        pWriter.Write(liftable.Position.ToByte());
+        pWriter.Write(fieldLiftableObject.Coord.ToByte());
         pWriter.WriteByte();
         pWriter.WriteLong(GuidGenerator.Long());
-        pWriter.WriteInt(liftable.Metadata.ItemId);
+        pWriter.WriteInt(fieldLiftableObject.Value.Metadata.ItemId);
         pWriter.WriteLong();
         pWriter.WriteLong();
         pWriter.WriteByte();
         pWriter.WriteByte(1);
-        pWriter.Write(liftable.Rotation.Z);
+        pWriter.Write(fieldLiftableObject.Rotation.Z);
         pWriter.WriteInt();
         pWriter.WriteByte();
 
@@ -235,7 +235,7 @@ public static class ResponseCubePacket
         pWriter.WriteBool(newCube.Value.Item.Ugc is not null);
         if (newCube.Value.Item.Ugc is not null)
         {
-            pWriter.WriteUGCTemplate(newCube.Value.Item.Ugc);
+            pWriter.WriteClass(newCube.Value.Item.Ugc);
         }
 
         pWriter.WriteByte();

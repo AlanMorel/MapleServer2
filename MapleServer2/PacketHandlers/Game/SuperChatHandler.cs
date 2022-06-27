@@ -44,7 +44,7 @@ public class SuperChatHandler : GamePacketHandler<SuperChatHandler>
             return;
         }
 
-        session.Player.SuperChat = superChatItem.Function.Id;
+        session.Player.SuperChatId = superChatItem.Function.Id;
         session.Send(SuperChatPacket.Select(session.Player.FieldPlayer, superChatItem.Id));
     }
 

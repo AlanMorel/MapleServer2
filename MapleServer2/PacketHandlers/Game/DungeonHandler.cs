@@ -144,20 +144,25 @@ public class DungeonHandler : GamePacketHandler<DungeonHandler>
     private static void HandleGetHelp(GameSession session, PacketReader packet)
     {
         int dungeonId = packet.ReadInt();
-
-        if (session.Player.Party == null)
+        if (session.Player.DungeonHelperAccessTime > session.ClientTick)
         {
-            Party newParty = new(session.Player);
-            GameServer.PartyManager.AddParty(newParty);
-
-            session.Send(PartyPacket.Create(newParty, false));
-            session.Send(PartyPacket.PartyHelp(dungeonId));
-            MapleServer.BroadcastPacketAll(DungeonHelperPacket.BroadcastAssist(newParty, dungeonId));
-
+            session.Send(PartyPacket.DungeonHelperCooldown(session.Player.DungeonHelperAccessTime - session.ClientTick));
             return;
         }
 
         Party party = session.Player.Party;
+        if (party is null)
+        {
+            party = new(session.Player);
+            GameServer.PartyManager.AddParty(party);
+
+            session.Send(PartyPacket.Create(party, false));
+            session.Send(PartyPacket.PartyHelp(dungeonId));
+            MapleServer.BroadcastPacketAll(DungeonHelperPacket.BroadcastAssist(party, dungeonId));
+            return;
+        }
+
+        session.Player.DungeonHelperAccessTime = session.ClientTick + 30000; // 30 second cooldown
 
         party.BroadcastPacketParty(PartyPacket.PartyHelp(dungeonId));
         MapleServer.BroadcastPacketAll(DungeonHelperPacket.BroadcastAssist(party, dungeonId));

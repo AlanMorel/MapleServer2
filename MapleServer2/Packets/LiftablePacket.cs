@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using Maple2Storage.Types;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
 
@@ -14,22 +15,24 @@ public static class LiftablePacket
         RemoveCube = 0x04
     }
 
-    public static PacketWriter LoadLiftables(List<LiftableObject> liftableObjects)
+    public static PacketWriter LoadLiftables(List<IFieldObject<LiftableObject>> liftableObjects)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Liftable);
         pWriter.Write(LiftableMode.LoadLiftables);
         pWriter.Write(liftableObjects.Count);
-        foreach (LiftableObject liftableObject in liftableObjects)
+        foreach (IFieldObject<LiftableObject> fieldLiftableObject in liftableObjects)
         {
+            LiftableObject liftableObject = fieldLiftableObject.Value;
+
             pWriter.WriteString(liftableObject.EntityId);
-            pWriter.WriteByte(1);
-            pWriter.WriteInt(liftableObject.Enabled ? 1 : 0); // 1 = enable, 0 = disable
+            pWriter.WriteByte(); // not sure ?
+            pWriter.WriteInt(liftableObject.ItemCount);
             pWriter.Write(liftableObject.State);
-            pWriter.WriteUnicodeString("0"); // unknown
-            pWriter.WriteUnicodeString(); // ""
-            pWriter.WriteUnicodeString(liftableObject.Metadata.EffectQuestID);
+            pWriter.WriteUnicodeString(liftableObject.Metadata.MaskQuestId);
+            pWriter.WriteUnicodeString(liftableObject.Metadata.MaskQuestState);
+            pWriter.WriteUnicodeString(liftableObject.Metadata.EffectQuestId);
             pWriter.WriteUnicodeString(liftableObject.Metadata.EffectQuestState);
-            pWriter.WriteByte(1);
+            pWriter.WriteBool(true); // effect
         }
 
         return pWriter;
@@ -41,44 +44,48 @@ public static class LiftablePacket
         pWriter.Write(LiftableMode.UpdateEntity);
         pWriter.WriteString(liftableObject.EntityId);
         pWriter.WriteByte();
-        pWriter.WriteInt(liftableObject.Enabled ? 1 : 0); // 1 = enable, 0 = disable
+        pWriter.WriteInt(liftableObject.ItemCount);
         pWriter.Write(liftableObject.State);
 
         return pWriter;
     }
 
-    public static PacketWriter UpdateEntityByCoord(LiftableObject liftableObject)
+    public static PacketWriter UpdateEntityByCoord(IFieldObject<LiftableObject> fieldLiftableObject)
     {
+        LiftableObject liftableObject = fieldLiftableObject.Value;
+
         PacketWriter pWriter = PacketWriter.Of(SendOp.Liftable);
         pWriter.Write(LiftableMode.UpdateEntity);
-        pWriter.WriteString($"4_{liftableObject.Position.ToByte().AsHexadecimal()}");
+        pWriter.WriteString($"4_{fieldLiftableObject.Coord.ToByte().AsHexadecimal()}");
         pWriter.WriteByte();
-        pWriter.WriteInt(liftableObject.Enabled ? 1 : 0); // 1 = enable, 0 = disable
+        pWriter.WriteInt(liftableObject.ItemCount);
         pWriter.Write(liftableObject.State);
 
         return pWriter;
     }
 
-    public static PacketWriter Drop(LiftableObject liftableObject)
+    public static PacketWriter Drop(IFieldObject<LiftableObject> fieldLiftableObject)
     {
+        LiftableObject liftableObject = fieldLiftableObject.Value;
+
         PacketWriter pWriter = PacketWriter.Of(SendOp.Liftable);
         pWriter.Write(LiftableMode.Drop);
-        pWriter.WriteString($"4_{liftableObject.Position.ToByte().AsHexadecimal()}");
-        pWriter.WriteInt(1);
-        pWriter.WriteUnicodeString(liftableObject.Metadata.EffectQuestID);
+        pWriter.WriteString($"4_{fieldLiftableObject.Coord.ToByte().AsHexadecimal()}");
+        pWriter.WriteInt(liftableObject.ItemCount);
+        pWriter.WriteUnicodeString(liftableObject.Metadata.MaskQuestId);
+        pWriter.WriteUnicodeString(liftableObject.Metadata.MaskQuestState);
+        pWriter.WriteUnicodeString(liftableObject.Metadata.EffectQuestId);
         pWriter.WriteUnicodeString(liftableObject.Metadata.EffectQuestState);
-        pWriter.WriteUnicodeString("0");
-        pWriter.WriteUnicodeString("0");
-        pWriter.WriteByte(1);
+        pWriter.WriteBool(true); // effect
 
         return pWriter;
     }
 
-    public static PacketWriter RemoveCube(LiftableObject liftableObject)
+    public static PacketWriter RemoveCube(IFieldObject<LiftableObject> fieldLiftableObject)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Liftable);
         pWriter.Write(LiftableMode.RemoveCube);
-        pWriter.WriteString($"4_{liftableObject.Position.ToByte().AsHexadecimal()}");
+        pWriter.WriteString($"4_{fieldLiftableObject.Coord.ToByte().AsHexadecimal()}");
 
         return pWriter;
     }
