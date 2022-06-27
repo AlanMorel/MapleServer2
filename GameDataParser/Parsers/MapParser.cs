@@ -7,6 +7,7 @@ using Maple2.File.IO.Crypto.Common;
 using Maple2.File.Parser.Flat;
 using Maple2.File.Parser.MapXBlock;
 using Maple2.File.Parser.Tools;
+using Maple2.File.Parser.Xml.Map;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -16,7 +17,6 @@ namespace GameDataParser.Parsers;
 public class MapParser : Exporter<List<MapMetadata>>
 {
     private List<MapMetadata> MapMetadatas;
-    private Dictionary<int, string> MapNames;
     private Dictionary<int, Dictionary<int, SpawnMetadata>> SpawnTagMap;
     private Dictionary<int, InteractObjectType> InteractTypes;
     public MapParser(MetadataResources resources) : base(resources, MetadataName.Map) { }
@@ -25,7 +25,6 @@ public class MapParser : Exporter<List<MapMetadata>>
     {
         MapMetadatas = new();
 
-        ParseMapNames();
         ParseInteractObjectTable();
         ParseMapSpawnTagTable();
         ParseMapMetadata();
@@ -425,72 +424,27 @@ public class MapParser : Exporter<List<MapMetadata>>
         }
     }
 
-    private void ParseMapNames()
-    {
-        MapNames = new();
-
-        PackFileEntry mapNames = Resources.XmlReader.Files.FirstOrDefault(x => x.Name.StartsWith("string/en/mapname.xml"));
-        XmlDocument mapNamesXml = Resources.XmlReader.GetXmlDocument(mapNames);
-        foreach (XmlNode node in mapNamesXml.DocumentElement.ChildNodes)
-        {
-            int id = int.Parse(node.Attributes["id"].Value);
-            string name = node.Attributes["name"].Value;
-            MapNames[id] = name;
-        }
-    }
-
     private void ParseMapMetadata()
     {
-        foreach (PackFileEntry map in Resources.XmlReader.Files.Where(x => x.Name.StartsWith("map/")))
+        Filter.Load(Resources.XmlReader, "NA", "Live");
+        Maple2.File.Parser.MapParser parser = new(Resources.XmlReader);
+        foreach ((int id, string name, MapData data) in parser.Parse())
         {
-            XmlDocument mapXml = Resources.XmlReader.GetXmlDocument(map);
-            MapMetadata mapMetadata = null;
-            foreach (XmlNode node in mapXml.DocumentElement.ChildNodes)
-            {
-                if (node.Attributes["locale"].Value is "KR" or "CN" or "JP")
-                {
-                    continue;
-                }
-
-                // If locale is NA parse it and go to next metadata.
-                if (node.Attributes["locale"].Value is "NA")
-                {
-                    mapMetadata = ParseMapProperty(map, node);
-                    break;
-                }
-
-                mapMetadata = ParseMapProperty(map, node);
-            }
-
-            if (mapMetadata is null)
-            {
-                continue;
-            }
-
-            MapNames.TryGetValue(mapMetadata.Id, out mapMetadata.Name);
-
-            MapMetadatas.Add(mapMetadata);
-        }
-
-        MapMetadata ParseMapProperty(PackFileEntry map, XmlNode node)
-        {
-            // map.Name: map/00000001.xml
-            int id = int.Parse(map.Name.Split('/')[1].Split('.')[0]);
-            string xblock = node.SelectSingleNode("xblock").Attributes["name"].Value;
-
-            XmlNode propertyNode = node.SelectSingleNode("property");
-            return new()
+            MapMetadata mapMetadata = new()
             {
                 Id = id,
-                XBlockName = xblock.ToLower(),
+                XBlockName = data.xblock.name.ToLower(),
+                Name = name,
                 Property = new()
                 {
-                    RevivalReturnMapId = int.Parse(propertyNode.Attributes["revivalreturnid"]?.Value ?? "0"),
-                    EnterReturnMapId = propertyNode.Attributes["enterreturnid"]?.Value ?? "",
-                    Capacity = short.Parse(propertyNode.Attributes["capacity"]?.Value ?? "0"),
-                    IsTutorialMap = propertyNode.Attributes["tutorialType"]?.Value == "1"
+                    RevivalReturnMapId = data.property.revivalreturnid,
+                    EnterReturnMapId = data.property.enterreturnid,
+                    Capacity = data.property.capacity,
+                    IsTutorialMap = data.property.tutorialType == 1
                 }
             };
+
+            MapMetadatas.Add(mapMetadata);
         }
     }
 }

@@ -38,9 +38,9 @@ public class MapProperty
     [XmlElement(Order = 1)]
     public int RevivalReturnMapId;
     [XmlElement(Order = 2)]
-    public string EnterReturnMapId;
+    public int EnterReturnMapId;
     [XmlElement(Order = 3)]
-    public short Capacity;
+    public int Capacity;
     [XmlElement(Order = 4)]
     public bool IsTutorialMap;
 }
