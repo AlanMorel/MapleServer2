@@ -552,7 +552,7 @@ public class FieldManager
     // Spawned NPCs will not appear until controlled
     private void AddNpc(Npc fieldNpc)
     {
-        if (fieldNpc.Value.Type is NpcType.Friendly)
+        if (fieldNpc.Value.Type is NpcType.Friendly or NpcType.Ally)
         {
             State.AddNpc(fieldNpc);
         }

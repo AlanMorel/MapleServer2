@@ -67,26 +67,10 @@ public class Levels
         Player.Stats.AddBaseStats(Player);
         Player.FieldPlayer.RecoverHp(FieldPlayer.Stats[StatAttribute.Hp].Bonus);
 
-        Session.FieldManager.BroadcastPacket(RevivalConfirmPacket.Send(FieldPlayer.ObjectId, 0));
-        Session.FieldManager.BroadcastPacket(LevelUpPacket.LevelUp(FieldPlayer.ObjectId, Level));
-        Session.FieldManager.BroadcastPacket(FieldObjectPacket.UpdateCharacterLevel(Player));
-
-        // Find all new skills for current level
-        HashSet<int> newSkillIds = SkillMetadataStorage.GetJobSkills(Player.Job)
-            .Where(x => x.SkillLevels.First().SkillUpgrade.LevelRequired == Level)
-            .Select(x => x.SkillId).ToHashSet();
-        Session.FieldManager.BroadcastPacket(JobPacket.UpdateSkillTab(FieldPlayer, newSkillIds));
-
-        Session.Send(StatPacket.SetStats(FieldPlayer));
-        Session.FieldManager.BroadcastPacket(StatPacket.SetStats(FieldPlayer), Session);
-
-        Session.Send(KeyTablePacket.SendFullOptions(Player.GameOptions));
-
         Player.UpdateSocials();
         TrophyManager.OnLevelUp(Player);
         QuestHelper.GetNewQuests(Player);
 
-        DatabaseManager.Characters.Update(Player);
         return true;
     }
 
@@ -105,10 +89,11 @@ public class Levels
         {
             mission.LevelCount++;
         }
+
         Session.Send(PrestigePacket.LevelUp(FieldPlayer.ObjectId, PrestigeLevel));
     }
 
-    public void GainExp(int amount)
+    public void GainExp(long amount)
     {
         if (amount <= 0 || !ExpMetadataStorage.LevelExist((short) (Level + 1)))
         {
@@ -126,11 +111,13 @@ public class Levels
             RestExp = 0;
         }
 
+        bool hasLeveledUp = false;
         while (newExp >= ExpMetadataStorage.GetExpToLevel(Level))
         {
             newExp -= ExpMetadataStorage.GetExpToLevel(Level);
             if (LevelUp())
             {
+                hasLeveledUp = true;
                 continue;
             }
 
@@ -140,6 +127,27 @@ public class Levels
 
         Exp = newExp;
         Session.Send(ExperiencePacket.ExpUp(amount, newExp, RestExp));
+
+        if (!hasLeveledUp)
+        {
+            return;
+        }
+
+        Session.FieldManager.BroadcastPacket(RevivalConfirmPacket.Send(FieldPlayer.ObjectId, 0));
+        Session.FieldManager.BroadcastPacket(LevelUpPacket.LevelUp(FieldPlayer.ObjectId, Level));
+        Session.FieldManager.BroadcastPacket(FieldObjectPacket.UpdateCharacterLevel(Player));
+
+        // Find all new skills for current level
+        HashSet<int> newSkillIds = SkillMetadataStorage.GetJobSkills(Player.Job)
+            .Where(x => x.SkillLevels.First().SkillUpgrade.LevelRequired == Level)
+            .Select(x => x.SkillId).ToHashSet();
+        Session.FieldManager.BroadcastPacket(JobPacket.UpdateSkillTab(FieldPlayer, newSkillIds));
+
+        Session.Send(StatPacket.SetStats(FieldPlayer));
+        Session.FieldManager.BroadcastPacket(StatPacket.SetStats(FieldPlayer), Session);
+
+        Session.Send(KeyTablePacket.SendFullOptions(Player.GameOptions));
+        DatabaseManager.Characters.Update(Player);
     }
 
     public void GainPrestigeExp(long amount)

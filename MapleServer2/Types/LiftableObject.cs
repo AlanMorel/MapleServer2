@@ -8,21 +8,20 @@ public class LiftableObject
     public readonly string EntityId;
     public readonly MapLiftableObject Metadata;
     public LiftableState State;
-    public bool Enabled;
-    public bool PickedUp;
+    public int ItemCount;
 
     public LiftableObject(string entityId, MapLiftableObject metadata)
     {
         EntityId = entityId;
         Metadata = metadata;
         State = LiftableState.Active;
-        Enabled = true;
+        ItemCount = metadata.ItemStackCount;
     }
 }
 
-public enum LiftableState
+public enum LiftableState : byte
 {
-    Removed = 0,
-    Active = 1,
+    Active = 0,
+    Removed = 1,
     Disabled = 2
 }

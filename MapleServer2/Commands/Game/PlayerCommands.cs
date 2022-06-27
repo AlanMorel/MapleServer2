@@ -182,7 +182,8 @@ public class LevelUpCommand : InGameCommand
 
     public override void Execute(GameCommandTrigger trigger)
     {
-        trigger.Session.Player.Levels.LevelUp();
+        Levels levels = trigger.Session.Player.Levels;
+        levels.GainExp(ExpMetadataStorage.GetExpToLevel(levels.Level) - levels.Exp);
     }
 }
 

@@ -62,7 +62,7 @@ public class NpcMetadata
         return $"Npc:(Id:{Id},Position:{Coord},Model:{Model},Friendly:{Type},ShopId:{ShopId})";
     }
 
-    public bool IsBoss() => NpcMetadataBasic.Class >= 3 && Type is not NpcType.Friendly;
+    public bool IsBoss() => NpcMetadataBasic.Class >= 3 && Type is NpcType.Enemy;
 }
 
 [XmlType]
