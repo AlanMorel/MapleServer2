@@ -114,15 +114,15 @@ public class UserChatHandler : GamePacketHandler<UserChatHandler>
 
     private static void HandleSuperChat(GameSession session, string message, ChatType type, PacketWriter itemLinkPacket)
     {
-        if (session.Player.SuperChat == 0)
+        if (session.Player.SuperChatId == 0)
         {
             return;
         }
 
-        Item superChatItem = session.Player.Inventory.GetAllByFunctionId(session.Player.SuperChat).FirstOrDefault();
+        Item superChatItem = session.Player.Inventory.GetAllByFunctionId(session.Player.SuperChatId).FirstOrDefault();
         if (superChatItem is null)
         {
-            session.Player.SuperChat = 0;
+            session.Player.SuperChatId = 0;
             session.Send(SuperChatPacket.Deselect(session.Player.FieldPlayer));
             session.Send(ChatPacket.Error(session.Player, SystemNotice.ErrorInsufficientSuperChatThemes, ChatType.NoticeAlert));
             return;
@@ -136,7 +136,7 @@ public class UserChatHandler : GamePacketHandler<UserChatHandler>
         MapleServer.BroadcastPacketAll(ChatPacket.Send(session.Player, message, type));
         session.Player.Inventory.ConsumeItem(session, superChatItem.Uid, 1);
         session.Send(SuperChatPacket.Deselect(session.Player.FieldPlayer));
-        session.Player.SuperChat = 0;
+        session.Player.SuperChatId = 0;
     }
 
     private static void HandleWorldChat(GameSession session, string message, ChatType type, PacketWriter itemLinkPacket)

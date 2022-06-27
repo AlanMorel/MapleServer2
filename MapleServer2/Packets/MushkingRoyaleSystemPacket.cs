@@ -12,6 +12,7 @@ public class MushkingRoyaleSystemPacket
         JoinSoloQueue = 0x0,
         WithdrawSoloQueue = 0x1,
         MatchFound = 0x2,
+        ClearMatchedQueue = 0x3,
         Results = 0x11,
         LastStandingNotice = 0x14,
         Unk16 = 0x16,
@@ -39,11 +40,18 @@ public class MushkingRoyaleSystemPacket
         return pWriter;
     }
 
-    public static PacketWriter MatchFound()
+    public static PacketWriter ClearMatchedQueue()
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MushkingRoyaleSystem);
+        pWriter.Write(MushkingRoyaleSystemPacketMode.ClearMatchedQueue);
+        return pWriter;
+    }
+
+    public static PacketWriter MatchFound(int sessionId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MushkingRoyaleSystem);
         pWriter.Write(MushkingRoyaleSystemPacketMode.MatchFound);
-        pWriter.WriteLong(); // match ID
+        pWriter.WriteLong(sessionId);
         pWriter.WriteBool(false); // false = 15 second window, true = 5 second window
         return pWriter;
     }
@@ -138,12 +146,12 @@ public class MushkingRoyaleSystemPacket
         return pWriter;
     }
 
-    public static PacketWriter SurvivalSessionStats()
+    public static PacketWriter SurvivalSessionStats(int playersRemaining, int totalPlayers)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MushkingRoyaleSystem);
         pWriter.Write(MushkingRoyaleSystemPacketMode.SurvivalSessionStats);
-        pWriter.WriteInt(); // players remaining
-        pWriter.WriteInt(); // total players
+        pWriter.WriteInt(playersRemaining);
+        pWriter.WriteInt(totalPlayers);
         pWriter.WriteByte();
         return pWriter;
     }

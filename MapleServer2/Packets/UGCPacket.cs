@@ -111,7 +111,7 @@ public static class UGCPacket
         pWriter.Write(UGCMode.UpdateUGCItem);
         pWriter.WriteInt(fieldPlayer.ObjectId);
         pWriter.WriteUGCItem(item);
-        pWriter.WriteUGCTemplate(item.Ugc);
+        pWriter.WriteClass(item.Ugc);
 
         return pWriter;
     }
@@ -122,7 +122,7 @@ public static class UGCPacket
         pWriter.Write(UGCMode.UpdateUGCFurnishing);
         pWriter.WriteInt(fieldPlayer.ObjectId);
         pWriter.WriteUGCItem(item);
-        pWriter.WriteUGCTemplate(item.Ugc);
+        pWriter.WriteClass(item.Ugc);
 
         return pWriter;
     }
@@ -133,7 +133,7 @@ public static class UGCPacket
         pWriter.Write(UGCMode.UpdateUGCMount);
         pWriter.WriteInt(fieldPlayer.ObjectId);
         pWriter.WriteUGCItem(item);
-        pWriter.WriteUGCTemplate(item.Ugc);
+        pWriter.WriteClass(item.Ugc);
 
         return pWriter;
     }
@@ -149,7 +149,7 @@ public static class UGCPacket
         pWriter.WriteInt();
         pWriter.WriteUnicodeString("StrW");
         // sub2
-        pWriter.WriteUGCTemplate(null);
+        pWriter.WriteClass(UGC.Default);
 
         return pWriter;
     }
@@ -246,21 +246,6 @@ public static class UGCPacket
         pWriter.WriteInt();
 
         return pWriter;
-    }
-
-    public static void WriteUGCTemplate(this PacketWriter pWriter, UGC ugc)
-    {
-        pWriter.WriteLong(ugc.Uid);
-        pWriter.WriteUnicodeString(ugc.Guid.ToString());
-        pWriter.WriteUnicodeString(ugc.Name);
-        pWriter.WriteByte(1);
-        pWriter.WriteInt(1); // sometimes 2
-        pWriter.WriteLong(ugc.AccountId);
-        pWriter.WriteLong(ugc.CharacterId);
-        pWriter.WriteUnicodeString(ugc.CharacterName);
-        pWriter.WriteLong(ugc.CreationTime);
-        pWriter.WriteUnicodeString(ugc.Url);
-        pWriter.WriteByte();
     }
 
     private static void WriteUGCBanner(this PacketWriter pWriter, long bannerId, List<BannerSlot> banners)

@@ -14,7 +14,7 @@ public static class LoginResultPacket
         pWriter.WriteUnicodeString(); // Ban reason
         pWriter.WriteLong(accountId);
         pWriter.WriteLong(TimeInfo.Now()); // SyncTime
-        pWriter.WriteInt(Environment.TickCount); // SyncTicks
+        pWriter.WriteInt(); // Time Offset
         pWriter.WriteByte(); // TimeZone
         pWriter.WriteByte(); // BlockType
         pWriter.WriteInt(); // Const

@@ -1,10 +1,12 @@
 ﻿using Maple2Storage.Enums;
+using MaplePacketLib2.Tools;
 using MapleServer2.Database;
 
 namespace MapleServer2.Types;
 
-public class UGC
+public class UGC : IPacketDeserializable, IPacketSerializable
 {
+    public static readonly UGC Default = new();
     public long Uid;
 
     public Guid Guid;
@@ -50,5 +52,35 @@ public class UGC
         SalePrice = salePrice;
         Type = type;
         DatabaseManager.UGC.Update(this);
+    }
+
+    public void ReadFrom(PacketReader packet)
+    {
+        Uid = packet.ReadLong();
+        Guid = Guid.Parse(packet.ReadUnicodeString());
+        Name = packet.ReadUnicodeString();
+        packet.ReadByte();
+        packet.ReadInt();
+        AccountId = packet.ReadLong();
+        CharacterId = packet.ReadLong();
+        CharacterName = packet.ReadUnicodeString();
+        CreationTime = packet.ReadLong();
+        Url = packet.ReadUnicodeString();
+        packet.ReadByte();
+    }
+
+    public void WriteTo(PacketWriter pWriter)
+    {
+        pWriter.WriteLong(Uid);
+        pWriter.WriteUnicodeString(Guid.ToString());
+        pWriter.WriteUnicodeString(Name);
+        pWriter.WriteByte(1);
+        pWriter.WriteInt(1); // sometimes 2
+        pWriter.WriteLong(AccountId);
+        pWriter.WriteLong(CharacterId);
+        pWriter.WriteUnicodeString(CharacterName);
+        pWriter.WriteLong(CreationTime);
+        pWriter.WriteUnicodeString(Url);
+        pWriter.WriteByte();
     }
 }

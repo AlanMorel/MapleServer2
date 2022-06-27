@@ -28,8 +28,8 @@ public class FieldState
     public readonly ConcurrentDictionary<string, BreakableActorObject> BreakableActors = new();
     public readonly ConcurrentDictionary<string, BreakableNifObject> BreakableNifs = new();
     public readonly ConcurrentDictionary<int, IFieldObject<TriggerSkill>> TriggerSkills = new();
-    public readonly ConcurrentDictionary<string, InteractObject> InteractObjects = new();
-    public readonly ConcurrentDictionary<string, LiftableObject> LiftableObjects = new();
+    public readonly ConcurrentDictionary<string, IFieldObject<InteractObject>> InteractObjects = new();
+    public readonly ConcurrentDictionary<string, IFieldObject<LiftableObject>> LiftableObjects = new();
     public readonly ConcurrentDictionary<long, SkillCast> SkillCasts = new();
     public readonly ConcurrentDictionary<string, MapVibrateObject> VibrateObjects = new();
 
@@ -187,9 +187,9 @@ public class FieldState
         return TriggerSkills.FirstOrDefault(skill => skill.Value.Value.Id == triggerId).Value;
     }
 
-    public void AddInteractObject(InteractObject interactObject)
+    public void AddInteractObject(IFieldObject<InteractObject> interactObject)
     {
-        InteractObjects[interactObject.Id] = interactObject;
+        InteractObjects[interactObject.Value.Id] = interactObject;
     }
 
     public void RemoveInteractObject(string interactObjectId)
@@ -197,9 +197,9 @@ public class FieldState
         InteractObjects.Remove(interactObjectId, out _);
     }
 
-    public void AddLiftableObject(LiftableObject liftableObject)
+    public void AddLiftableObject(IFieldObject<LiftableObject> liftableObject)
     {
-        LiftableObjects[liftableObject.EntityId] = liftableObject;
+        LiftableObjects[liftableObject.Value.EntityId] = liftableObject;
     }
 
     public void AddSkillCast(SkillCast skillCast)

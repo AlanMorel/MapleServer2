@@ -249,10 +249,12 @@ public sealed class Inventory : IInventory
         if (amount == item.Amount || item.Amount - amount <= 0)
         {
             RemoveItem(session, uid, out Item _);
+            DatabaseManager.Items.Delete(uid);
             return;
         }
 
         item.Amount -= amount;
+        DatabaseManager.Items.Update(item);
         session.Send(ItemInventoryPacket.UpdateAmount(uid, item.Amount));
     }
 
@@ -283,7 +285,6 @@ public sealed class Inventory : IInventory
                 return; // Removal from inventory failed
             }
 
-            session.Send(ItemInventoryPacket.Remove(item.Uid));
             DatabaseManager.Items.Delete(item.Uid);
             return;
         }

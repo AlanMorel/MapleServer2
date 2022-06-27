@@ -574,7 +574,7 @@ public struct CoordB
     /// </summary>
     public long AsHexadecimal()
     {
-        string coordRevertedAsString = $"{Z}{Y:X2}{X:X2}";
+        string coordRevertedAsString = $"{Z:X2}{Y:X2}{X:X2}";
         return Convert.ToInt64(coordRevertedAsString, 16);
     }
 

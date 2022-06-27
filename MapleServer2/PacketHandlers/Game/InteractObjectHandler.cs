@@ -43,7 +43,7 @@ internal class InteractObjectHandler : GamePacketHandler<InteractObjectHandler>
     private static void HandleCast(GameSession session, PacketReader packet)
     {
         string id = packet.ReadString();
-        session.FieldManager.State.InteractObjects.TryGetValue(id, out InteractObject interactObject);
+        session.FieldManager.State.InteractObjects.TryGetValue(id, out IFieldObject<InteractObject> interactObject);
         if (interactObject == null)
         {
             return;
@@ -57,11 +57,13 @@ internal class InteractObjectHandler : GamePacketHandler<InteractObjectHandler>
         Player player = session.Player;
 
         string id = packet.ReadString();
-        session.FieldManager.State.InteractObjects.TryGetValue(id, out InteractObject interactObject);
-        if (interactObject == null)
+        session.FieldManager.State.InteractObjects.TryGetValue(id, out IFieldObject<InteractObject> fieldInteractObject);
+        if (fieldInteractObject is null)
         {
             return;
         }
+
+        InteractObject interactObject = fieldInteractObject.Value;
 
         InteractObjectMetadata metadata = InteractObjectMetadataStorage.GetInteractObjectMetadata(interactObject.InteractId);
         QuestManager.OnInteractObject(player, interactObject.InteractId);

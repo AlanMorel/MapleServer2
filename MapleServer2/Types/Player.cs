@@ -16,9 +16,7 @@ namespace MapleServer2.Types;
 
 public class Player
 {
-    // Bypass Key is constant PER ACCOUNT, unsure how it is validated
-    // Seems like as long as it's valid, it doesn't matter though
-    public readonly long UnknownId = 0x01EF80C2; //0x01CC3721;
+    public long SessionId;
     public GameSession Session;
 
     public Account Account;
@@ -28,6 +26,7 @@ public class Player
     public long CharacterId { get; set; }
     public long CreationTime { get; set; }
     public long LastLogTime { get; set; }
+    public long DeletionTime { get; set; }
     public long Birthday { get; set; } // Currently just uses the creation time from account
     private long OnlineTime { get; set; }
     public bool IsDeleted;
@@ -72,7 +71,11 @@ public class Player
     public IFieldObject<GuideObject> Guide;
     public IFieldObject<Instrument> Instrument;
 
-    public int SuperChat;
+    public long HouseStorageAccessTime;
+    public long HouseDoctorAccessTime;
+    public int DungeonHelperAccessTime; // tick
+
+    public int SuperChatId;
     public int ShopId; // current shop player is interacting
 
     public short ChannelId;
@@ -158,6 +161,7 @@ public class Player
 
     public List<string> GmFlags = new();
     public int DungeonSessionId = -1;
+    public int MushkingRoyaleSession = -1;
 
     public List<PlayerTrigger> Triggers = new();
 
@@ -292,11 +296,36 @@ public class Player
 
     public void Warp(int mapId, CoordF? coord = null, CoordF? rotation = null, long instanceId = 1)
     {
+        if (mapId == MapId)
+        {
+            if (coord is null || rotation is null)
+            {
+                MapPlayerSpawn spawn = GetSpawnCoords(mapId);
+                if (spawn is null)
+                {
+                    Move(SavedCoord, SavedRotation);
+                    return;
+                }
+
+                Move(spawn.Coord.ToFloat(), spawn.Rotation.ToFloat());
+                return;
+            }
+
+            Move((CoordF) coord, (CoordF) rotation);
+            return;
+        }
+
         UpdateCoords(mapId, instanceId, coord, rotation);
 
         if (coord is null && rotation is null)
         {
-            GetSpawnCoords(mapId);
+            MapPlayerSpawn spawn = GetSpawnCoords(mapId);
+            if (spawn is not null)
+            {
+                SavedCoord = spawn.Coord.ToFloat();
+                SafeBlock = spawn.Coord.ToFloat();
+                SavedRotation = spawn.Rotation.ToFloat();
+            }
         }
 
         Session.FieldManager.RemovePlayer(this);
@@ -326,6 +355,14 @@ public class Player
         IsMigrating = true;
 
         Session.SendFinal(MigrationPacket.GameToGame(endpoint, this), logoutNotice: false);
+    }
+
+    public void Move(CoordF coord, CoordF rotation, bool isTrigger = false)
+    {
+        FieldPlayer.Coord = coord;
+        FieldPlayer.Rotation = rotation;
+
+        Session.Send(UserMoveByPortalPacket.Move(FieldPlayer, coord, rotation, isTrigger));
     }
 
     public Dictionary<ItemSlot, Item> GetEquippedInventory(InventoryTab tab)
@@ -485,18 +522,16 @@ public class Player
         }
     }
 
-    private void GetSpawnCoords(int mapId)
+    private MapPlayerSpawn GetSpawnCoords(int mapId)
     {
         MapPlayerSpawn spawn = MapEntityMetadataStorage.GetRandomPlayerSpawn(mapId);
         if (spawn is null)
         {
             Session.SendNotice($"Could not find a spawn for map {mapId}");
-            return;
+            return null;
         }
 
-        SavedCoord = spawn.Coord.ToFloat();
-        SafeBlock = spawn.Coord.ToFloat();
-        SavedRotation = spawn.Rotation.ToFloat();
+        return spawn;
     }
 
     private void UpdateCoords(int mapId, long instanceId, CoordF? coord = null, CoordF? rotation = null)
