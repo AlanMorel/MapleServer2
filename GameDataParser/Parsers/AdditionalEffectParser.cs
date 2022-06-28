@@ -140,8 +140,6 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                     //AddStat(level.Status, StatAttribute., defensive.invincible);
                 }
 
-
-
                 metadata.Levels.Add(levelIndex, level);
             }
 
@@ -163,15 +161,15 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
         if (status.Stats.TryGetValue(stat, out currentValue))
         {
             currentValue.Rate = value;
+
+            return
         }
-        else
+
+        status.Stats.Add(stat, new()
         {
-            status.Stats.Add(stat, new()
-            {
-                Rate = value,
-                AttributeType = StatAttributeType.Rate
-            });
-        }
+            Rate = value,
+            AttributeType = StatAttributeType.Rate
+        });
     }
 
     private void AddStat(EffectStatusMetadata status, StatAttribute stat, long value)
@@ -187,13 +185,11 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
         {
             currentValue.Flat = value;
         }
-        else
+
+        status.Stats.Add(stat, new()
         {
-            status.Stats.Add(stat, new()
-            {
-                Flat = value,
-                AttributeType = StatAttributeType.Flat
-            });
-        }
+            Flat = value,
+            AttributeType = StatAttributeType.Flat
+        });
     }
 }

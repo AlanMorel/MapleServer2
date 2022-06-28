@@ -605,15 +605,6 @@ public class Player
         }
     }
 
-    public void IncreaseStats(Item item)
-    {
-        ComputeStatContribution(item);
-
-        UpdateGearScore(item, item.GearScore);
-
-        Session.Send(StatPacket.SetStats(FieldPlayer));
-    }
-
     public void AddStats()
     {
 

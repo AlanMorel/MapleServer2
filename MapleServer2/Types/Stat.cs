@@ -138,10 +138,8 @@ public class Stat
         {
             return (long) (Modifier.Rate * (Value.BaseLong + Modifier.Flat));
         }
-        else
-        {
-            return (long) (Value.BaseLong + 1000 * Modifier.Rate);
-        }
+
+        return (long) (Value.BaseLong + 1000 * Modifier.Rate);
     }
 
     public void ComputeBonus()
