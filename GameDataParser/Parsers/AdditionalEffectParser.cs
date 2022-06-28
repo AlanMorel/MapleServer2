@@ -162,7 +162,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
         {
             currentValue.Rate = value;
 
-            return
+            return;
         }
 
         status.Stats.Add(stat, new()
@@ -184,6 +184,8 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
         if (status.Stats.TryGetValue(stat, out currentValue))
         {
             currentValue.Flat = value;
+
+            return;
         }
 
         status.Stats.Add(stat, new()
