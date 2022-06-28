@@ -28,7 +28,7 @@ public class FieldManager
 
     public readonly int MapId;
     public readonly long InstanceId;
-    public readonly short Capacity;
+    public readonly int Capacity;
     public readonly bool IsTutorialMap;
     public readonly FieldState State = new();
     public readonly CoordS[] BoundingBox;
