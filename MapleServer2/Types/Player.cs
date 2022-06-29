@@ -293,7 +293,7 @@ public class Player
         }
     }
 
-    public void Warp(int mapId, CoordF? coord = null, CoordF? rotation = null, long instanceId = 1)
+    public void Warp(int mapId, CoordF? coord = null, CoordF? rotation = null, long instanceId = -1)
     {
         if (MapMetadataStorage.GetMetadata(mapId).Property.IsTutorialMap)
         {
@@ -559,7 +559,11 @@ public class Player
         }
 
         MapId = mapId;
-        InstanceId = instanceId;
+
+        if (instanceId != -1)
+        {
+            InstanceId = instanceId;
+        }
 
         if (!UnlockedMaps.Contains(MapId))
         {
