@@ -6,6 +6,8 @@ using Maple2.File.Flat.maplestory2library;
 using Maple2.File.IO.Crypto.Common;
 using Maple2.File.Parser.Flat;
 using Maple2.File.Parser.MapXBlock;
+using Maple2.File.Parser.Tools;
+using Maple2.File.Parser.Xml.Map;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -15,7 +17,6 @@ namespace GameDataParser.Parsers;
 public class MapParser : Exporter<List<MapMetadata>>
 {
     private List<MapMetadata> MapMetadatas;
-    private Dictionary<int, string> MapNames;
     private Dictionary<int, Dictionary<int, SpawnMetadata>> SpawnTagMap;
     private Dictionary<int, InteractObjectType> InteractTypes;
     public MapParser(MetadataResources resources) : base(resources, MetadataName.Map) { }
@@ -24,7 +25,6 @@ public class MapParser : Exporter<List<MapMetadata>>
     {
         MapMetadatas = new();
 
-        ParseMapNames();
         ParseInteractObjectTable();
         ParseMapSpawnTagTable();
         ParseMapMetadata();
@@ -283,9 +283,10 @@ public class MapParser : Exporter<List<MapMetadata>>
                             break;
 
                         case IMS2Liftable liftable:
-                            mapEntity.LiftableObjects.Add(new(liftable.EntityId, (int) liftable.ItemID, liftable.MaskQuestID, liftable.MaskQuestState,
-                                liftable.EffectQuestID, liftable.EffectQuestState, liftable.ItemLifeTime, liftable.LiftableRegenCheckTime,
-                                CoordF.FromVector3(liftable.Position), CoordF.FromVector3(liftable.Rotation)));
+                            mapEntity.LiftableObjects.Add(new(liftable.EntityId, (int) liftable.ItemID, liftable.ItemStackCount, liftable.MaskQuestID,
+                                liftable.MaskQuestState, liftable.EffectQuestID, liftable.EffectQuestState, liftable.ItemLifeTime,
+                                liftable.LiftableRegenCheckTime, liftable.LiftableFinishTime, CoordF.FromVector3(liftable.Position),
+                                CoordF.FromVector3(liftable.Rotation)));
                             break;
                         case IMS2Vibrate vibrate:
                             mapEntity.VibrateObjects.Add(new(vibrate.EntityId, CoordF.FromVector3(physXProp.Position)));
@@ -424,56 +425,27 @@ public class MapParser : Exporter<List<MapMetadata>>
         }
     }
 
-    private void ParseMapNames()
-    {
-        MapNames = new();
-
-        PackFileEntry mapNames = Resources.XmlReader.Files.FirstOrDefault(x => x.Name.StartsWith("string/en/mapname.xml"));
-        XmlDocument mapNamesXml = Resources.XmlReader.GetXmlDocument(mapNames);
-        foreach (XmlNode node in mapNamesXml.DocumentElement.ChildNodes)
-        {
-            int id = int.Parse(node.Attributes["id"].Value);
-            string name = node.Attributes["name"].Value;
-            MapNames[id] = name;
-        }
-    }
-
     private void ParseMapMetadata()
     {
-        foreach (PackFileEntry map in Resources.XmlReader.Files.Where(x => x.Name.StartsWith("map/")))
+        Filter.Load(Resources.XmlReader, "NA", "Live");
+        Maple2.File.Parser.MapParser parser = new(Resources.XmlReader);
+        foreach ((int id, string name, MapData data) in parser.Parse())
         {
-            XmlDocument mapXml = Resources.XmlReader.GetXmlDocument(map);
-            foreach (XmlNode node in mapXml.DocumentElement.ChildNodes)
+            MapMetadata mapMetadata = new()
             {
-                if (node.Attributes["locale"].Value is "KR" or "CN" or "JP")
+                Id = id,
+                XBlockName = data.xblock.name.ToLower(),
+                Name = name,
+                Property = new()
                 {
-                    continue;
+                    RevivalReturnMapId = data.property.revivalreturnid,
+                    EnterReturnMapId = data.property.enterreturnid,
+                    Capacity = data.property.capacity,
+                    IsTutorialMap = data.property.tutorialType == 1
                 }
+            };
 
-                // map.Name: map/00000001.xml
-                int id = int.Parse(map.Name.Split('/')[1].Split('.')[0]);
-                string xblock = node.SelectSingleNode("xblock").Attributes["name"].Value;
-
-                XmlNode propertyNode = node.SelectSingleNode("property");
-                MapProperty mapProperty = new()
-                {
-                    RevivalReturnMapId = int.Parse(propertyNode.Attributes["revivalreturnid"]?.Value ?? "0"),
-                    EnterReturnMapId = propertyNode.Attributes["enterreturnid"]?.Value ?? "",
-                    Capacity = short.Parse(propertyNode.Attributes["capacity"]?.Value ?? "0"),
-                    IsTutorialMap = propertyNode.Attributes["tutorialType"]?.Value == "1"
-                };
-
-                MapMetadata mapMetadata = new()
-                {
-                    Id = id,
-                    XBlockName = xblock.ToLower(),
-                    Property = mapProperty
-                };
-                MapNames.TryGetValue(id, out mapMetadata.Name);
-
-                MapMetadatas.Add(mapMetadata);
-                break; // only use first environment
-            }
+            MapMetadatas.Add(mapMetadata);
         }
     }
 }

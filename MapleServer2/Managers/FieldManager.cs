@@ -28,7 +28,7 @@ public class FieldManager
 
     public readonly int MapId;
     public readonly long InstanceId;
-    public readonly short Capacity;
+    public readonly int Capacity;
     public readonly bool IsTutorialMap;
     public readonly FieldState State = new();
     public readonly CoordS[] BoundingBox;
@@ -552,7 +552,7 @@ public class FieldManager
     // Spawned NPCs will not appear until controlled
     private void AddNpc(Npc fieldNpc)
     {
-        if (fieldNpc.Value.Type is NpcType.Friendly)
+        if (fieldNpc.Value.Type is NpcType.Friendly or NpcType.Ally)
         {
             State.AddNpc(fieldNpc);
         }
