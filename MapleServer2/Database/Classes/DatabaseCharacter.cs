@@ -5,7 +5,6 @@ using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 using Newtonsoft.Json;
 using SqlKata.Execution;
-using Stats = MapleServer2.Types.Stats;
 
 namespace MapleServer2.Database.Classes;
 
