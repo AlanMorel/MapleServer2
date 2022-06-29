@@ -8,9 +8,9 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-internal class RideConsumeEpHandler : GamePacketHandler<RideConsumeEpHandler>
+internal class MountConsumeStaminaHandler : GamePacketHandler<MountConsumeStaminaHandler>
 {
-    public override RecvOp OpCode => RecvOp.RideConsumeEp;
+    public override RecvOp OpCode => RecvOp.MountConsumeStamina;
 
     public override void Handle(GameSession session, PacketReader packet)
     {
@@ -20,7 +20,7 @@ internal class RideConsumeEpHandler : GamePacketHandler<RideConsumeEpHandler>
             return;
         }
 
-        session.Player.FieldPlayer.ConsumeStamina(metadata.RunConsumeEp);
+        session.Player.FieldPlayer.ConsumeStamina(metadata.RunConsumeEp, noRegen: true);
         session.Send(StatPacket.UpdateStats(session.Player.FieldPlayer, StatAttribute.Stamina));
     }
 }

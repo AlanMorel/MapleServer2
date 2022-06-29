@@ -13,7 +13,8 @@ public class RideParser : Exporter<List<MountMetadata>>
 
     protected override List<MountMetadata> Parse()
     {
-        List<MountMetadata> rewards = new();
+        Dictionary<int, MountMetadata> mounts = new();
+
         foreach (PackFileEntry entry in Resources.XmlReader.Files)
         {
             if (!entry.Name.StartsWith("riding/"))
@@ -21,7 +22,6 @@ public class RideParser : Exporter<List<MountMetadata>>
                 continue;
             }
 
-            // TRY FILTER NA HERE
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
             XmlNodeList tableNodes = document.GetElementsByTagName("riding");
             foreach (XmlNode node in tableNodes)
@@ -40,15 +40,28 @@ public class RideParser : Exporter<List<MountMetadata>>
 
                 XmlStats mountStats = StatParser.ParseStats(node.SelectSingleNode("stat").Attributes);
 
-                rewards.Add(new()
+                if (node.Attributes["locale"]?.Value == "NA")
+                {
+                    mounts[id] = new()
+                    {
+                        Id = id,
+                        RunConsumeEp = runXConsumeEp,
+                        MountStats = mountStats
+                    };
+
+                    // If there is a NA locale, use it and skip the other locales.
+                    break;
+                }
+
+                mounts[id] = new()
                 {
                     Id = id,
                     RunConsumeEp = runXConsumeEp,
                     MountStats = mountStats
-                });
+                };
             }
         }
 
-        return rewards;
+        return mounts.Values.ToList();
     }
 }

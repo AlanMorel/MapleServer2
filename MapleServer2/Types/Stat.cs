@@ -136,7 +136,7 @@ public class Stat
 
     public void Decrease(int amount)
     {
-        Total -= amount;
+        Total -= Math.Clamp(amount, 0, Total);
     }
 
     public void Decrease(long amount)
