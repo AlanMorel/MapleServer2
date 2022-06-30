@@ -47,9 +47,9 @@ public static class ItemPacketHelper
             pWriter.WriteTemplate(item.Ugc);
         }
 
-        if (item.InventoryTab == InventoryTab.Pets)
+        if (item.InventoryTab is InventoryTab.Pets)
         {
-            pWriter.WritePet();
+            pWriter.WriteClass(item.PetInfo);
         }
 
         if (item.GemSlot != 0)
@@ -257,17 +257,6 @@ public static class ItemPacketHelper
         pWriter.WriteLong();
         pWriter.WriteLong();
         pWriter.WriteUnicodeString();
-    }
-
-    private static PacketWriter WritePet(this PacketWriter pWriter)
-    {
-        pWriter.WriteUnicodeString(); // Name
-        pWriter.WriteLong(); // Exp
-        pWriter.WriteInt();
-        pWriter.WriteInt(1); // Level
-        pWriter.WriteByte();
-
-        return pWriter;
     }
 
     public static PacketWriter WriteSockets(this PacketWriter pWriter, ItemStats stats)

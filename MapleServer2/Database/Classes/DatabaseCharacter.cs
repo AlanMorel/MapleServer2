@@ -59,7 +59,8 @@ public class DatabaseCharacter : DatabaseTable
             unlocked_maps = JsonConvert.SerializeObject(player.UnlockedMaps),
             unlocked_taxis = JsonConvert.SerializeObject(player.UnlockedTaxis),
             visiting_home_id = player.VisitingHomeId,
-            gathering_count = JsonConvert.SerializeObject(player.GatheringCount)
+            gathering_count = JsonConvert.SerializeObject(player.GatheringCount),
+            active_pet_uid = player.ActivePet?.Uid ?? 0
         });
     }
 
@@ -156,7 +157,8 @@ public class DatabaseCharacter : DatabaseTable
             SkillTabs = skillTabs,
             TrophyData = trophies,
             QuestData = questList,
-            GatheringCount = JsonConvert.DeserializeObject<List<GatheringCount>>(data.gathering_count)
+            GatheringCount = JsonConvert.DeserializeObject<List<GatheringCount>>(data.gathering_count),
+            ActivePet = DatabaseManager.Items.FindByUid(data.active_pet_uid)
         };
     }
 
@@ -296,7 +298,8 @@ public class DatabaseCharacter : DatabaseTable
             unlocked_maps = JsonConvert.SerializeObject(player.UnlockedMaps),
             unlocked_taxis = JsonConvert.SerializeObject(player.UnlockedTaxis),
             visiting_home_id = player.VisitingHomeId,
-            gathering_count = JsonConvert.SerializeObject(player.GatheringCount)
+            gathering_count = JsonConvert.SerializeObject(player.GatheringCount),
+            active_pet_uid = player.ActivePet.Uid
         });
         DatabaseManager.Accounts.Update(player.Account);
 

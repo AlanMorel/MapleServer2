@@ -72,7 +72,7 @@ public partial class TriggerContext
                             continue;
                         }
 
-                        animation = AnimationStorage.GetSequenceIdBySequenceName(npcMetadata.Model, stateAction[0].Item1);
+                        animation = AnimationStorage.GetSequenceIdBySequenceName(npcMetadata.NpcMetadataModel.Model, stateAction[0].Item1);
                     }
 
                     Npc npc = Field.RequestNpc(id, spawnPoint.Position, spawnPoint.Rotation, animation);

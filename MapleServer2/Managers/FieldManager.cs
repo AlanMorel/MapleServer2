@@ -196,6 +196,40 @@ public class FieldManager
         AddNpc(npc);
     }
 
+    public Pet RequestPet(Item item, Character character)
+    {
+        int objectId = Interlocked.Increment(ref Counter);
+        Pet pet = new(objectId, item, character, fieldManager: this);
+
+        Shape shape = Navigator.AddShape(pet.Value.NpcMetadataCapsule);
+        Position spawnPointPosition = Navigator.FindPositionFromCoordS(character.Coord);
+        if (!Navigator.PositionIsValid(spawnPointPosition))
+        {
+            if (!Navigator.FindFirstPositionBelow(character.Coord, out spawnPointPosition))
+            {
+                Logger.Warning("Could not find a random position around character obj id {0}, in map ID {1} for pet ID {2}",
+                    character.ObjectId, MapId, pet.Value.Id);
+                return null;
+            }
+        }
+
+        CoordS? randomPositionAround = Navigator.FindClosestUnobstructedCoordS(shape, spawnPointPosition, pet.Value.NpcMetadataDistance.Avoid);
+        if (randomPositionAround is null || randomPositionAround.Value == CoordS.From(0, 0, 0))
+        {
+            Logger.Warning("Could not find a random position around character obj id {0}, in map ID {1} for pet ID {2}",
+                character.ObjectId, MapId, pet.Value.Id);
+            return null;
+        }
+
+        pet.Coord = randomPositionAround.Value.ToFloat();
+        pet.Rotation = default;
+        pet.Animation = default;
+        pet.Agent = Navigator.AddAgent(pet, shape);
+
+        AddPet(pet);
+        return pet;
+    }
+
     private void AddEntitiesToState()
     {
         // Load default npcs for map from config
@@ -588,6 +622,28 @@ public class FieldManager
             session.Send(FieldObjectPacket.RemoveNpc(fieldNpc));
         });
         return true;
+    }
+
+    private void AddPet(Pet pet)
+    {
+        State.AddPet(pet);
+
+        Broadcast(session =>
+        {
+            session.Send(FieldPetPacket.AddPet(pet));
+            session.Send(ResponsePetPacket.Add(pet));
+        });
+    }
+
+    public void RemovePet(Pet pet)
+    {
+        State.RemovePet(pet.ObjectId);
+
+        Broadcast(session =>
+        {
+            session.Send(ResponsePetPacket.Remove(pet));
+            session.Send(FieldPetPacket.RemovePet(pet));
+        });
     }
 
     public bool RemoveMob(Npc mob)
@@ -1016,7 +1072,8 @@ public class FieldManager
         {
             while (PlayerCount > 0)
             {
-                UpdateEvents();
+                UpdateMobEvents();
+                UpdatePetEvents();
                 UpdateObjects();
                 HealingSpot();
                 SendUpdates();
@@ -1052,6 +1109,13 @@ public class FieldManager
                         npc.UpdateVelocity();
                         BroadcastPacket(FieldObjectPacket.ControlNpc(npc)); // TODO: Optimize this to only send packets when needed
                         npc.UpdateCoord();
+                    }
+
+                    foreach (Pet pet in State.Pets.Values)
+                    {
+                        pet.UpdateVelocity();
+                        BroadcastPacket(FieldObjectPacket.ControlNpc(pet)); // TODO: Optimize this to only send packets when needed
+                        pet.UpdateCoord();
                     }
                 }
                 catch (Exception e)
@@ -1090,7 +1154,7 @@ public class FieldManager
         return updates;
     }
 
-    private void UpdateEvents()
+    private void UpdateMobEvents()
     {
         // Manage mob aggro + targets
         foreach (IFieldActor<Player> player in State.Players.Values)
@@ -1116,11 +1180,45 @@ public class FieldManager
         }
     }
 
+    private void UpdatePetEvents()
+    {
+        // Manage pet aggro + targets
+        foreach (IFieldActor<Player> player in State.Players.Values)
+        {
+            // TODO: loop trough all mobs and check if pet should attack mob
+            foreach (Pet pet in State.Pets.Values)
+            {
+                float playerPetDistance = CoordF.Distance(player.Coord, pet.Coord);
+                if (playerPetDistance > pet.Value.NpcMetadataDistance.Sight)
+                {
+                    // Teleport pet to player if they are too far away
+                    pet.Coord = player.Coord;
+                    continue;
+                }
+
+                if (playerPetDistance > Block.BLOCK_SIZE * 2)
+                {
+                    pet.State = NpcState.Combat; // Setting state as combat so pet will run towards player, probably not the best way to do this.
+                    pet.Target = player;
+                    continue;
+                }
+
+                pet.State = NpcState.Normal;
+                pet.Target = null;
+            }
+        }
+    }
+
     private void UpdateObjects()
     {
         foreach (Npc mob in State.Mobs.Values)
         {
             mob.Act();
+        }
+
+        foreach (Pet pet in State.Pets.Values)
+        {
+            pet.Act();
         }
     }
 

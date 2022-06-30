@@ -31,7 +31,6 @@ public class Item
     public ItemFunctionMetadata Function { get; set; }
     public string Tag { get; set; }
     public int ShopID { get; set; }
-    public int PetId { get; set; }
     public ItemHousingCategory HousingCategory;
     public string BlackMarketCategory;
     public string Category;
@@ -93,6 +92,8 @@ public class Item
 
     public ItemAdditionalEffectMetadata AdditionalEffects;
 
+    public PetInfo PetInfo;
+
     public Item() { }
 
     public Item(int id, int amount = 1, int rarity = -1, bool saveToDatabase = true)
@@ -131,6 +132,7 @@ public class Item
         Stats = new(this);
         GearScore = GetGearScore();
         ExpiryTime = ItemMetadataStorage.GetExpiration(id);
+        PetInfo = new();
         if (saveToDatabase)
         {
             Uid = DatabaseManager.Items.Insert(this);
@@ -191,6 +193,7 @@ public class Item
         Stats = new(other.Stats);
         Ugc = other.Ugc;
         DropInformation = other.DropInformation;
+        PetInfo = other.PetInfo;
         SetMetadataValues();
     }
 

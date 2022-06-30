@@ -66,10 +66,12 @@ public class Player
     public List<PrestigeMission> PrestigeMissions = new();
 
     public Stats Stats;
+
     public IFieldObject<Mount> Mount;
-    public IFieldObject<Pet> Pet;
     public IFieldObject<GuideObject> Guide;
     public IFieldObject<Instrument> Instrument;
+
+    public Item ActivePet;
 
     public long HouseStorageAccessTime;
     public long HouseDoctorAccessTime;

@@ -101,7 +101,8 @@ public class NpcParser : Exporter<List<NpcMetadata>>
                 Id = int.Parse(Path.GetFileNameWithoutExtension(entry.Name))
             };
             metadata.Name = npcIdToName.ContainsKey(metadata.Id) ? npcIdToName[metadata.Id] : "";
-            metadata.Model = npcModelNode.Attributes["kfm"].Value;
+            metadata.NpcMetadataModel.Model = npcModelNode.Attributes["kfm"].Value;
+            float.TryParse(npcModelNode.Attributes["scale"].Value, out metadata.NpcMetadataModel.Scale);
 
             // Parse basic attribs.
             metadata.TemplateId = int.TryParse(npcBasicNode.Attributes["illust"]?.Value, out _) ? int.Parse(npcBasicNode.Attributes["illust"].Value) : 0;
