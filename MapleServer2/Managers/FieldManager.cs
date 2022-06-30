@@ -1189,6 +1189,7 @@ public class FieldManager
             foreach (Pet pet in State.Pets.Values)
             {
                 float playerPetDistance = CoordF.Distance(player.Coord, pet.Coord);
+                // TODO: NpcMetadataDistance.Sight is incorrect, parse and use petproperty.xml
                 if (playerPetDistance > pet.Value.NpcMetadataDistance.Sight)
                 {
                     // Teleport pet to player if they are too far away
