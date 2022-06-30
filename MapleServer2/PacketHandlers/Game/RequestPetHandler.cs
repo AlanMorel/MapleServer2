@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using Maple2Storage.Enums;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Database;
 using MapleServer2.Enums;
@@ -88,7 +89,7 @@ public class RequestPetHandler : GamePacketHandler<RequestPetHandler>
         fieldPlayer.ActivePet.Item = player.ActivePet;
         session.Send(ResponsePetPacket.UpdateName(fieldPlayer.ActivePet));
 
-        DatabaseManager.Items.Update(player.ActivePet);
+        DatabaseManager.Pets.Update(fieldPlayer.ActivePet.Item.PetInfo);
     }
 
     private static void HandlePetReplace(GameSession session, PacketReader packet)
@@ -121,7 +122,7 @@ public class RequestPetHandler : GamePacketHandler<RequestPetHandler>
         fieldPlayer.ActivePet.Item = player.ActivePet;
         session.Send(ResponsePetPacket.UpdatePotions(fieldPlayer.ActivePet));
 
-        DatabaseManager.Items.Update(player.ActivePet);
+        DatabaseManager.Pets.Update(fieldPlayer.ActivePet.Item.PetInfo);
     }
 
     private static void HandlePetLootSettings(GameSession session, PacketReader packet)
@@ -139,25 +140,31 @@ public class RequestPetHandler : GamePacketHandler<RequestPetHandler>
         fieldPlayer.ActivePet.Item = player.ActivePet;
         session.Send(ResponsePetPacket.UpdateLoot(fieldPlayer.ActivePet));
 
-        DatabaseManager.Items.Update(player.ActivePet);
+        DatabaseManager.Pets.Update(fieldPlayer.ActivePet.Item.PetInfo);
     }
 
     private static void AddPet(GameSession session, long uid)
     {
-        Item item = session.Player.Inventory.GetByUid(uid);
+        Player player = session.Player;
+        Item item = player.Inventory.GetByUid(uid);
         if (item is null)
         {
             return;
         }
 
-        Pet pet = session.FieldManager.RequestPet(item, session.Player.FieldPlayer);
+        Pet pet = session.FieldManager.RequestPet(item, player.FieldPlayer);
         if (pet is null)
         {
             return;
         }
 
-        session.Player.ActivePet = pet.Item;
-        session.Player.FieldPlayer.ActivePet = pet;
+        if (item.TransferType == TransferType.BindOnSummonEnchantOrReroll & !item.IsBound())
+        {
+            item.BindItem(session.Player);
+        }
+
+        player.ActivePet = pet.Item;
+        player.FieldPlayer.ActivePet = pet;
 
         session.Send(ResponsePetPacket.LoadPetSettings(pet));
         session.Send(NoticePacket.Notice(SystemNotice.PetSummonOn, NoticeType.Chat | NoticeType.FastText));

@@ -1,16 +1,45 @@
 ﻿using MaplePacketLib2.Tools;
+using MapleServer2.Database;
 
 namespace MapleServer2.Types;
 
 public class PetInfo : IPacketSerializable
 {
-    public string Name { get; set; } = "";
+    public readonly long Uid;
+    public string Name { get; set; }
     public long Exp { get; set; }
-    public short Level { get; set; } = 1;
+    public short Level { get; set; }
 
-    public PetPotionSettings PotionSettings { get; set; } = new();
+    public PetPotionSettings PotionSettings { get; set; }
 
-    public PetLootSettings LootSettings { get; set; } = new();
+    public PetLootSettings LootSettings { get; set; }
+
+    public PetInfo(long uid)
+    {
+        Uid = uid;
+    }
+
+    public PetInfo()
+    {
+        Name = "";
+        Exp = 0;
+        Level = 1;
+        PotionSettings = new();
+        LootSettings = new();
+
+        Uid = DatabaseManager.Pets.Insert(this);
+    }
+
+    public PetInfo(PetInfo otherPetInfo)
+    {
+        Name = otherPetInfo.Name;
+        Exp = otherPetInfo.Exp;
+        Level = otherPetInfo.Level;
+        PotionSettings = otherPetInfo.PotionSettings;
+        LootSettings = otherPetInfo.LootSettings;
+
+        Uid = DatabaseManager.Pets.Insert(this);
+    }
 
     public void WriteTo(PacketWriter pWriter)
     {

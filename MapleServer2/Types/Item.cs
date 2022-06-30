@@ -132,11 +132,17 @@ public class Item
         Stats = new(this);
         GearScore = GetGearScore();
         ExpiryTime = ItemMetadataStorage.GetExpiration(id);
-        PetInfo = new();
-        if (saveToDatabase)
+        if (InventoryTab is InventoryTab.Pets)
         {
-            Uid = DatabaseManager.Items.Insert(this);
+            PetInfo = new();
         }
+
+        if (!saveToDatabase)
+        {
+            return;
+        }
+
+        Uid = DatabaseManager.Items.Insert(this);
     }
 
     // Make a copy of item
@@ -193,7 +199,11 @@ public class Item
         Stats = new(other.Stats);
         Ugc = other.Ugc;
         DropInformation = other.DropInformation;
-        PetInfo = other.PetInfo;
+        if (other.PetInfo is not null)
+        {
+            PetInfo = new(other.PetInfo);
+        }
+
         SetMetadataValues();
     }
 
