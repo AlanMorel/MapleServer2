@@ -39,14 +39,15 @@ public class StatPointHandler : GamePacketHandler<StatPointHandler>
         StatAttribute statTypeIndex = (StatAttribute) packet.ReadByte();
 
         session.Player.StatPointDistribution.AddPoint(statTypeIndex);
-        session.Player.Stats.Allocate(statTypeIndex);
+        session.Player.FieldPlayer.ComputeStats();
         session.Send(StatPointPacket.WriteStatPointDistribution(session.Player));
         session.Send(StatPacket.SetStats(session.Player.FieldPlayer));
     }
 
     private static void HandleResetStatDistribution(GameSession session)
     {
-        session.Player.Stats.ResetAllocations(session.Player.StatPointDistribution);
+        session.Player.StatPointDistribution.ResetPoints();
+        session.Player.FieldPlayer.ComputeStats();
         session.Send(StatPointPacket.WriteStatPointDistribution(session.Player));
         session.Send(StatPacket.SetStats(session.Player.FieldPlayer));
     }

@@ -1142,7 +1142,7 @@ public class FieldManager
                 player.Value.Session.Send(BuffPacket.SendBuff(0, status));
                 BroadcastPacket(SkillDamagePacket.Heal(status, healAmount));
 
-                player.Stats[StatAttribute.Hp].Increase(healAmount);
+                player.Stats[StatAttribute.Hp].AddValue(healAmount);
                 player.Value.Session.Send(StatPacket.UpdateStats(player, StatAttribute.Hp));
             }
         }

@@ -38,6 +38,9 @@ public interface IFieldActor : IFieldObject
     public void EffectAdded(AdditionalEffect effect);
     public void EffectRemoved(AdditionalEffect effect);
     public void InitializeEffects();
+
+    public void ComputeStats();
+    public void StatsComputed();
 }
 
 public interface IFieldActor<out T> : IFieldActor, IFieldObject<T>
