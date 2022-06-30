@@ -294,8 +294,14 @@ public class Player
         }
     }
 
-    public void Warp(int mapId, CoordF? coord = null, CoordF? rotation = null, long instanceId = 1)
+    public void Warp(int mapId, CoordF? coord = null, CoordF? rotation = null, long instanceId = -1)
     {
+        if (MapMetadataStorage.GetMetadata(mapId).Property.IsTutorialMap)
+        {
+            WarpGameToGame(mapId, instanceId, coord, rotation);
+            return;
+        }
+
         if (mapId == MapId)
         {
             if (coord is null || rotation is null)
@@ -316,17 +322,6 @@ public class Player
         }
 
         UpdateCoords(mapId, instanceId, coord, rotation);
-
-        if (coord is null && rotation is null)
-        {
-            MapPlayerSpawn spawn = GetSpawnCoords(mapId);
-            if (spawn is not null)
-            {
-                SavedCoord = spawn.Coord.ToFloat();
-                SafeBlock = spawn.Coord.ToFloat();
-                SavedRotation = spawn.Rotation.ToFloat();
-            }
-        }
 
         Session.FieldManager.RemovePlayer(this);
         DatabaseManager.Characters.Update(this);
@@ -553,8 +548,23 @@ public class Player
             SavedRotation = (CoordF) rotation;
         }
 
+        if (coord is null && rotation is null)
+        {
+            MapPlayerSpawn spawn = GetSpawnCoords(mapId);
+            if (spawn is not null)
+            {
+                SavedCoord = spawn.Coord;
+                SavedRotation = spawn.Rotation;
+                SafeBlock = SavedCoord;
+            }
+        }
+
         MapId = mapId;
-        InstanceId = instanceId;
+
+        if (instanceId != -1)
+        {
+            InstanceId = instanceId;
+        }
 
         if (!UnlockedMaps.Contains(MapId))
         {

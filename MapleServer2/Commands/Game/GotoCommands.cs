@@ -105,7 +105,7 @@ public class MapCommand : InGameCommand
             return;
         }
 
-        trigger.Session.Player.Warp(mapId, instanceId: 1);
+        trigger.Session.Player.Warp(mapId);
     }
 }
 
@@ -136,15 +136,23 @@ public class GotoPlayerCommand : InGameCommand
             return;
         }
 
-        IFieldObject<Player> fieldPlayer = target.Session.Player.FieldPlayer;
+        IFieldObject<Player> targetFieldPlayer = target.Session.Player.FieldPlayer;
 
-        if (target.MapId == trigger.Session.Player.MapId && target.InstanceId == trigger.Session.Player.InstanceId)
+        Player player = trigger.Session.Player;
+        if (target.MapId == player.MapId && target.InstanceId == player.InstanceId)
         {
-            trigger.Session.Player.Move(fieldPlayer.Coord, fieldPlayer.Rotation);
+            player.Move(targetFieldPlayer.Coord, targetFieldPlayer.Rotation);
             return;
         }
 
-        trigger.Session.Player.Warp(target.MapId, fieldPlayer.Coord, instanceId: target.InstanceId);
+        if (player.ChannelId != target.ChannelId)
+        {
+            player.ChannelId = target.ChannelId;
+            player.WarpGameToGame(target.MapId, target.InstanceId, targetFieldPlayer.Coord);
+            return;
+        }
+
+        player.Warp(target.MapId, targetFieldPlayer.Coord, instanceId: target.InstanceId);
     }
 }
 
