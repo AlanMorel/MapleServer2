@@ -91,7 +91,6 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
 
         QuestManager.OnMapEnter(player, player.MapId);
 
-        player.RecomputeStats();
         player.InitializeEffects();
     }
 }
