@@ -208,8 +208,6 @@ public class AttributeCommand : InGameCommand
             itemStat = new BasicStat(newAttribute, value, attributeType);
         }
 
-        player.DecreaseStats(item);
-
         if (category == 0)
         {
             if (value == 0)
@@ -247,7 +245,7 @@ public class AttributeCommand : InGameCommand
 
         trigger.Session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(player.FieldPlayer, item, itemSlot));
 
-        player.IncreaseStats(item);
+        player.FieldPlayer.ComputeStats();
 
         DatabaseManager.Items.Update(item);
     }
@@ -299,11 +297,11 @@ public class ClearStatsCommand : InGameCommand
             return;
         }
 
-        player.DecreaseStats(item);
-
         item.Stats.Constants.Clear();
         item.Stats.Randoms.Clear();
         item.Stats.Statics.Clear();
+
+        player.FieldPlayer.ComputeStats();
 
         trigger.Session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(player.FieldPlayer, item, itemSlot));
 

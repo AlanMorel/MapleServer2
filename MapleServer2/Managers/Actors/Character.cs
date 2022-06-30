@@ -85,7 +85,7 @@ public class Character : FieldActor<Player>
             Stat stat = Stats[StatAttribute.Hp];
             if (stat.Total < stat.Bonus)
             {
-                stat.Increase(Math.Min(amount, stat.Bonus - stat.Total));
+                stat.AddValue(amount);
                 Value.Session.Send(StatPacket.UpdateStats(this, StatAttribute.Hp));
             }
         }
@@ -101,7 +101,7 @@ public class Character : FieldActor<Player>
         lock (Stats)
         {
             Stat stat = Stats[StatAttribute.Hp];
-            stat.Decrease(Math.Min(amount, stat.Total));
+            stat.AddValue(-amount);
         }
 
         if (HpRegenThread == null || HpRegenThread.IsCompleted)
@@ -122,7 +122,7 @@ public class Character : FieldActor<Player>
             Stat stat = Stats[StatAttribute.Spirit];
             if (stat.Total < stat.Bonus)
             {
-                stat.Increase(Math.Min(amount, stat.Bonus - stat.Total));
+                stat.AddValue(amount);
                 Value.Session.Send(StatPacket.UpdateStats(this, StatAttribute.Spirit));
             }
         }
@@ -138,7 +138,7 @@ public class Character : FieldActor<Player>
         lock (Stats)
         {
             Stat stat = Stats[StatAttribute.Spirit];
-            Stats[StatAttribute.Spirit].Decrease(Math.Min(amount, stat.Total));
+            Stats[StatAttribute.Spirit].AddValue(-amount);
         }
 
         if (SpRegenThread == null || SpRegenThread.IsCompleted)
@@ -159,7 +159,7 @@ public class Character : FieldActor<Player>
             Stat stat = Stats[StatAttribute.Stamina];
             if (stat.Total < stat.Bonus)
             {
-                Stats[StatAttribute.Stamina].Increase(Math.Min(amount, stat.Bonus - stat.Total));
+                Stats[StatAttribute.Stamina].AddValue(amount);
                 Value.Session.Send(StatPacket.UpdateStats(this, StatAttribute.Stamina));
             }
         }
@@ -175,7 +175,7 @@ public class Character : FieldActor<Player>
         lock (Stats)
         {
             Stat stat = Stats[StatAttribute.Stamina];
-            Stats[StatAttribute.Stamina].Decrease(Math.Min(amount, stat.Total));
+            Stats[StatAttribute.Stamina].AddValue(-amount);
         }
 
         if (StaRegenThread == null || StaRegenThread.IsCompleted)
@@ -191,7 +191,7 @@ public class Character : FieldActor<Player>
         {
             while (true)
             {
-                await Task.Delay(Stats[timeStatAttribute].Total);
+                await Task.Delay(Math.Max(Stats[timeStatAttribute].Total, 100));
 
                 lock (Stats)
                 {
@@ -248,8 +248,7 @@ public class Character : FieldActor<Player>
         {
             if (stat.Total < stat.Bonus)
             {
-                int missingAmount = stat.Bonus - stat.Total;
-                stat.Increase(Math.Clamp(regenAmount, 0, missingAmount));
+                stat.AddValue(regenAmount);
             }
         }
     }
@@ -268,8 +267,20 @@ public class Character : FieldActor<Player>
 
     public override void InitializeEffects()
     {
+        Value.InitializeEffects();
+
         base.InitializeEffects();
 
-        Value.InitializeEffects();
+        ComputeStats();
+    }
+
+    public override void StatsComputed()
+    {
+        Value.Session.Send(StatPacket.SetStats(this));
+    }
+
+    public override void AddStats()
+    {
+        Value.AddStats();
     }
 }
