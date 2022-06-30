@@ -23,6 +23,7 @@ public class Character : FieldActor<Player>
     private Task SpRegenThread;
     private Task StaRegenThread;
     public IFieldObject<LiftableObject> CarryingLiftable;
+    public Pet ActivePet;
 
     private DateTime LastConsumeStaminaTime;
 

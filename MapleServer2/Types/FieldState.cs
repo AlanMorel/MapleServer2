@@ -13,6 +13,7 @@ public class FieldState
     public readonly ConcurrentDictionary<int, Character> Players = new();
     public readonly ConcurrentDictionary<int, Npc> Npcs = new();
     public readonly ConcurrentDictionary<int, Npc> Mobs = new();
+    public readonly ConcurrentDictionary<int, Pet> Pets = new();
     public readonly ConcurrentDictionary<int, IFieldObject<GuideObject>> Guide = new();
     public readonly ConcurrentDictionary<int, IFieldObject<Cube>> Cubes = new();
     public readonly ConcurrentDictionary<int, IFieldObject<HealingSpot>> HealingSpots = new();
@@ -61,6 +62,16 @@ public class FieldState
     public bool RemoveNpc(int objectId)
     {
         return Npcs.Remove(objectId, out _);
+    }
+
+    public void AddPet(Pet npc)
+    {
+        Pets[npc.ObjectId] = npc;
+    }
+
+    public bool RemovePet(int objectId)
+    {
+        return Pets.Remove(objectId, out _);
     }
 
     public void AddPortal(IFieldObject<Portal> portal)

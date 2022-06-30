@@ -2,7 +2,9 @@
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
+using MapleServer2.Enums;
 using MapleServer2.Managers;
+using MapleServer2.Managers.Actors;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -28,6 +30,19 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
         session.Send(StatPointPacket.WriteTotalStatPoints(player)); // This packet is sent twice on GMS, not sure why 
         session.Send(StatPointPacket.WriteStatPointDistribution(player));
         session.Send(SkillPointPacket.ExtraSkillPoints(player));
+
+        if (player.ActivePet is not null)
+        {
+            player.ActivePet.SetMetadataValues();
+            Pet pet = session.FieldManager.RequestPet(player.ActivePet, player.FieldPlayer);
+            if (pet is not null)
+            {
+                player.FieldPlayer.ActivePet = pet;
+
+                session.Send(ResponsePetPacket.LoadPetSettings(pet));
+                session.Send(NoticePacket.Notice(SystemNotice.PetSummonOn, NoticeType.Chat | NoticeType.FastText));
+            }
+        }
 
         if (account.IsVip())
         {
