@@ -48,7 +48,7 @@ public class Stat
 
     public Stat() { }
 
-    public Stat(NpcStat<int> statInt, StatAttributeType type = StatAttributeType.Flat)
+    public Stat(XmlStat<int> statInt, StatAttributeType type = StatAttributeType.Flat)
     {
         Value.Bonus = statInt.Bonus;
         Value.Base = statInt.Base;
@@ -57,7 +57,7 @@ public class Stat
         Modifier.Rate = 1;
     }
 
-    public Stat(NpcStat<long> statLong, StatAttributeType type = StatAttributeType.Flat)
+    public Stat(XmlStat<long> statLong, StatAttributeType type = StatAttributeType.Flat)
     {
         Value.BonusLong = statLong.Bonus;
         Value.BaseLong = statLong.Base;

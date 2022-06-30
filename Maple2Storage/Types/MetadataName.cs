@@ -54,6 +54,7 @@ public static class MetadataName
     public const string MasteryUGCHousing = "mastery-ugc-housing";
     public const string MeretMarketCategory = "meret-market-category";
     public const string Mesh = "mesh";
+    public const string Mount = "mount";
     public const string Npc = "npc";
     public const string PremiumClubDailyBenefit = "premium-club-daily-benefit";
     public const string PremiumClubPackage = "premium-club-package";

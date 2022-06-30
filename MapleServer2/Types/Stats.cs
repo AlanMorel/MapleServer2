@@ -18,143 +18,143 @@ public class Stats
         {
             {
                 StatAttribute.Str,
-                new(metadata.Stats.Str)
+                new(metadata.NpcStats.Str)
             },
             {
                 StatAttribute.Dex,
-                new(metadata.Stats.Dex)
+                new(metadata.NpcStats.Dex)
             },
             {
                 StatAttribute.Int,
-                new(metadata.Stats.Int)
+                new(metadata.NpcStats.Int)
             },
             {
                 StatAttribute.Luk,
-                new(metadata.Stats.Luk)
+                new(metadata.NpcStats.Luk)
             },
             {
                 StatAttribute.Hp,
-                new(metadata.Stats.Hp)
+                new(metadata.NpcStats.Hp)
             },
             {
                 StatAttribute.HpRegen,
-                new(metadata.Stats.HpRegen)
+                new(metadata.NpcStats.HpRegen)
             },
             {
                 StatAttribute.HpRegenInterval,
-                new(metadata.Stats.HpInterval)
+                new(metadata.NpcStats.HpInterval)
             },
             {
                 StatAttribute.Spirit,
-                new(metadata.Stats.Sp)
+                new(metadata.NpcStats.Sp)
             },
             {
                 StatAttribute.SpRegen,
-                new(metadata.Stats.SpRegen)
+                new(metadata.NpcStats.SpRegen)
             },
             {
                 StatAttribute.SpRegenInterval,
-                new(metadata.Stats.SpInterval)
+                new(metadata.NpcStats.SpInterval)
             },
             {
                 StatAttribute.Stamina,
-                new(metadata.Stats.Ep)
+                new(metadata.NpcStats.Ep)
             },
             {
                 StatAttribute.StaminaRegen,
-                new(metadata.Stats.EpRegen)
+                new(metadata.NpcStats.EpRegen)
             },
             {
                 StatAttribute.StaminaRegenInterval,
-                new(metadata.Stats.EpInterval)
+                new(metadata.NpcStats.EpInterval)
             },
             {
                 StatAttribute.AttackSpeed,
-                new(metadata.Stats.AtkSpd)
+                new(metadata.NpcStats.AtkSpd)
             },
             {
                 StatAttribute.MovementSpeed,
-                new(metadata.Stats.MoveSpd)
+                new(metadata.NpcStats.MoveSpd)
             },
             {
                 StatAttribute.Accuracy,
-                new(metadata.Stats.Accuracy)
+                new(metadata.NpcStats.Accuracy)
             },
             {
                 StatAttribute.Evasion,
-                new(metadata.Stats.Evasion)
+                new(metadata.NpcStats.Evasion)
             },
             {
                 StatAttribute.CritRate,
-                new(metadata.Stats.CritRate)
+                new(metadata.NpcStats.CritRate)
             },
             {
                 StatAttribute.CritDamage,
-                new(metadata.Stats.CritDamage)
+                new(metadata.NpcStats.CritDamage)
             },
             {
                 StatAttribute.CritEvasion,
-                new(metadata.Stats.CritResist)
+                new(metadata.NpcStats.CritResist)
             },
             {
                 StatAttribute.Defense,
-                new(metadata.Stats.Defense)
+                new(metadata.NpcStats.Defense)
             },
             {
                 StatAttribute.PerfectGuard,
-                new(metadata.Stats.Guard)
+                new(metadata.NpcStats.Guard)
             },
             {
                 StatAttribute.JumpHeight,
-                new(metadata.Stats.JumpHeight)
+                new(metadata.NpcStats.JumpHeight)
             },
             {
                 StatAttribute.PhysicalAtk,
-                new(metadata.Stats.PhysAtk)
+                new(metadata.NpcStats.PhysAtk)
             },
             {
                 StatAttribute.MagicAtk,
-                new(metadata.Stats.MagAtk)
+                new(metadata.NpcStats.MagAtk)
             },
             {
                 StatAttribute.PhysicalRes,
-                new(metadata.Stats.PhysRes)
+                new(metadata.NpcStats.PhysRes)
             },
             {
                 StatAttribute.MagicRes,
-                new(metadata.Stats.MagRes)
+                new(metadata.NpcStats.MagRes)
             },
             {
                 StatAttribute.MinWeaponAtk,
-                new(metadata.Stats.MinAtk)
+                new(metadata.NpcStats.MinAtk)
             },
             {
                 StatAttribute.MaxWeaponAtk,
-                new(metadata.Stats.MaxAtk)
+                new(metadata.NpcStats.MaxAtk)
             },
             {
                 StatAttribute.MinDamage,
-                new(metadata.Stats.Damage)
+                new(metadata.NpcStats.Damage)
             },
             {
                 StatAttribute.MaxDamage,
-                new(metadata.Stats.Damage)
+                new(metadata.NpcStats.Damage)
             },
             {
                 StatAttribute.Pierce,
-                new(metadata.Stats.Pierce, StatAttributeType.Rate)
+                new(metadata.NpcStats.Pierce, StatAttributeType.Rate)
             },
             {
                 StatAttribute.MountMovementSpeed,
-                new(metadata.Stats.MountSpeed)
+                new(metadata.NpcStats.MountSpeed)
             },
             {
                 StatAttribute.BonusAtk,
-                new(metadata.Stats.BonusAtk)
+                new(metadata.NpcStats.BonusAtk)
             },
             {
                 StatAttribute.PetBonusAtk,
-                new(metadata.Stats.BonusAtkPet)
+                new(metadata.NpcStats.BonusAtkPet)
             }
         };
     }

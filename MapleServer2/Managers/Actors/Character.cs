@@ -24,6 +24,8 @@ public class Character : FieldActor<Player>
     private Task StaRegenThread;
     public IFieldObject<LiftableObject> CarryingLiftable;
 
+    private DateTime LastConsumeStaminaTime;
+
     public Character(int objectId, Player value, FieldManager fieldManager) : base(objectId, value, fieldManager)
     {
         if (HpRegenThread == null || HpRegenThread.IsCompleted)
@@ -165,7 +167,12 @@ public class Character : FieldActor<Player>
         }
     }
 
-    public override void ConsumeStamina(int amount)
+    /// <summary>
+    /// Consumes stamina.
+    /// </summary>
+    /// <param name="amount">The amount</param>
+    /// <param name="noRegen">If regen should be stopped</param>
+    public override void ConsumeStamina(int amount, bool noRegen = false)
     {
         if (amount <= 0)
         {
@@ -176,15 +183,23 @@ public class Character : FieldActor<Player>
         {
             Stat stat = Stats[StatAttribute.Stamina];
             Stats[StatAttribute.Stamina].AddValue(-amount);
+            LastConsumeStaminaTime = DateTime.Now;
         }
 
         if (StaRegenThread == null || StaRegenThread.IsCompleted)
         {
-            StaRegenThread = StartRegen(StatAttribute.Stamina, StatAttribute.StaminaRegen, StatAttribute.StaminaRegenInterval);
+            StaRegenThread = StartRegen(StatAttribute.Stamina, StatAttribute.StaminaRegen, StatAttribute.StaminaRegenInterval, noRegen);
         }
     }
 
-    private Task StartRegen(StatAttribute statAttribute, StatAttribute regenStatAttribute, StatAttribute timeStatAttribute)
+    /// <summary>
+    /// Starts the regen task for the given stat. If noRegen is true and last consume time is less than 1.5 seconds ago, the regen will not be started.
+    /// </summary>
+    /// <param name="statAttribute">The stat it self. E.g: Stamina</param>
+    /// <param name="regenStatAttribute">The stat for the regen amount. E.g: StaminaRegen</param>
+    /// <param name="timeStatAttribute">The stat for the regen interval. E.g: StaminaRegenInterval</param>
+    /// <param name="noRegen">If regen should pause</param>
+    private Task StartRegen(StatAttribute statAttribute, StatAttribute regenStatAttribute, StatAttribute timeStatAttribute, bool noRegen = false)
     {
         // TODO: merge regen updates with larger packets
         return Task.Run(async () =>
@@ -200,13 +215,15 @@ public class Character : FieldActor<Player>
                         return;
                     }
 
-                    // TODO: Check if regen-enabled
+                    // If noRegen is true and last consume time is less than 1.5 seconds ago, the regen will not be started.
+                    if (statAttribute is StatAttribute.Stamina && noRegen && DateTime.Now - LastConsumeStaminaTime < TimeSpan.FromSeconds(1.5))
+                    {
+                        continue;
+                    }
+
                     AddStatRegen(statAttribute, regenStatAttribute);
                     Value.Session?.FieldManager.BroadcastPacket(StatPacket.UpdateStats(this, statAttribute));
-                    if (Value.Party != null)
-                    {
-                        Value.Party.BroadcastPacketParty(PartyPacket.UpdateHitpoints(Value));
-                    }
+                    Value.Party?.BroadcastPacketParty(PartyPacket.UpdateHitpoints(Value));
                 }
             }
         });

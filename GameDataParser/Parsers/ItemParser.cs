@@ -43,7 +43,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
             {
                 Id = id,
                 Name = name,
-                Tab = GetTab(property.type, property.subtype, !property.skin),
+                Tab = GetTab(property.type, property.subtype, property.skin),
                 Gem = new()
                 {
                     Gem = (GemSlot) data.gem.system

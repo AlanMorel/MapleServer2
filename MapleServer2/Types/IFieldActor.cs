@@ -29,7 +29,7 @@ public interface IFieldActor : IFieldObject
     public void RecoverSp(int amount);
     public void ConsumeSp(int amount);
     public void RecoverStamina(int amount);
-    public void ConsumeStamina(int amount);
+    public void ConsumeStamina(int amount, bool noRegen = false);
 
     public void Perish();
 

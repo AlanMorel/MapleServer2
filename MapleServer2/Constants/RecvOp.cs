@@ -88,7 +88,7 @@ public enum RecvOp : ushort
     Rank = 0x0059,
     RequestSkipTutorial = 0x005A,
     RequestItemBreak = 0x005B,
-    RideConsumeEp = 0x005C,
+    MountConsumeStamina = 0x005C,
     RequestAddEffect = 0x005D,
     RecallUser = 0x005E,
     RequestItemEnchant = 0x005F,

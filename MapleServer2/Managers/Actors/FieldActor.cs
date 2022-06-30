@@ -130,7 +130,7 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
         }
     }
 
-    public virtual void ConsumeStamina(int amount)
+    public virtual void ConsumeStamina(int amount, bool noRegen = false)
     {
         if (amount <= 0)
         {
