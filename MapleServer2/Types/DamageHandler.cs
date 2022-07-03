@@ -1,4 +1,5 @@
 ﻿using Maple2Storage.Enums;
+using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 
 namespace MapleServer2.Types;
@@ -182,18 +183,13 @@ public class DamageHandler
         };
     }
 
-    private static bool IsTwoHanded(Item item)
-    {
-        return item != null && item.IsTwoHand;
-    }
-
     private static double GetWeaponBonusAttackMultiplier(Player player)
     {
         player.Inventory.Equips.TryGetValue(ItemSlot.RH, out Item rightHand);
 
         double weaponBonusAttackCoeff = GetRarityBonusAttackMultiplier(rightHand);
 
-        if (!IsTwoHanded(rightHand))
+        if (ItemMetadataStorage.GetItemSlots(rightHand.Id).Count < 2)
         {
             player.Inventory.Equips.TryGetValue(ItemSlot.LH, out Item leftHand);
 
