@@ -126,7 +126,7 @@ public class AdditionalEffects
 
         if (parameters.IsBuff)
         {
-            Parent.FieldManager.BroadcastPacket(BuffPacket.SendBuff((byte)(buffId == -1 ? 0 : 2), effect, Parent.ObjectId));
+            Parent.FieldManager.BroadcastPacket(BuffPacket.SendBuff((byte) (buffId == -1 ? 0 : 2), effect, Parent.ObjectId));
         }
 
         return effect;
@@ -204,7 +204,7 @@ public class AdditionalEffects
             return;
         }
 
-        NextBuffExpiration = Math.Min(NextBuffExpiration,  time);
+        NextBuffExpiration = Math.Min(NextBuffExpiration, time);
     }
 
     public void RecomputeExpiration()

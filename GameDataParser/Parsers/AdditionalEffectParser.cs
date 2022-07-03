@@ -219,7 +219,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                     AddStat(level.Status, StatAttribute.StaminaRecoverySpeed, special.reduce_recovery_ep_invvalue, special.reduce_recovery_ep_invrate);
                     AddStat(level.Status, StatAttribute.MaxWeaponAttack, special.improve_stat_wap_uvalue, special.improve_stat_wap_urate); //
                     AddStat(level.Status, StatAttribute.DoubleMiningProduction, special.mining_double_rewardvalue, special.mining_double_rewardrate); //
-                    AddStat(level.Status, StatAttribute.DoubleRanchingProduction, special.breeding_double_rewardvalue, special.breeding_double_rewardrate); 
+                    AddStat(level.Status, StatAttribute.DoubleRanchingProduction, special.breeding_double_rewardvalue, special.breeding_double_rewardrate);
                     AddStat(level.Status, StatAttribute.DoubleForagingProduction, special.gathering_double_rewardvalue, special.gathering_double_rewardrate); //
                     AddStat(level.Status, StatAttribute.DoubleFarmingProduction, special.farming_double_rewardvalue, special.farming_double_rewardrate); //
                     AddStat(level.Status, StatAttribute.DoubleSmithingProduction, special.blacksmithing_double_rewardvalue, special.blacksmithing_double_rewardrate); //
@@ -237,7 +237,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                     AddStat(level.Status, StatAttribute.ChaosRaidWeaponAttack, special.improve_chaosraid_wapvalue, special.improve_chaosraid_waprate); //
                     AddStat(level.Status, StatAttribute.ChaosRaidAttackSpeed, special.improve_chaosraid_aspvalue, special.improve_chaosraid_asprate); //
                     AddStat(level.Status, StatAttribute.ChaosRaidAccuracy, special.improve_chaosraid_atpvalue, special.improve_chaosraid_atprate); //
-                    AddStat(level.Status, StatAttribute.ChaosRaidHealth, special.improve_chaosraid_hpvalue, special.improve_chaosraid_hprate); 
+                    AddStat(level.Status, StatAttribute.ChaosRaidHealth, special.improve_chaosraid_hpvalue, special.improve_chaosraid_hprate);
                     AddStat(level.Status, StatAttribute.StaminaAndSpiritFromOrbs, special.improve_recovery_ballvalue, special.improve_recovery_ballrate); //
                     AddStat(level.Status, StatAttribute.WorldBossExp, special.improve_fieldboss_kill_expvalue, special.improve_fieldboss_kill_exprate); //
                     AddStat(level.Status, StatAttribute.WorldBossDropRate, special.improve_fieldboss_kill_dropvalue, special.improve_fieldboss_kill_droprate); //
@@ -331,7 +331,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
 
         if (status.Stats.TryGetValue(stat, out currentValue))
         {
-            currentValue.Flat += (long)(flat * 1000);
+            currentValue.Flat += (long) (flat * 1000);
             currentValue.Rate += rate;
 
             return;

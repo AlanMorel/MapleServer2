@@ -641,7 +641,7 @@ public class Player
         {
             if (ActivePet.PetInfo != null)
             {
-                Stats[StatAttribute.PetBonusAtk].Add(0, (float)ActivePet.PetInfo.Level - 1);
+                Stats[StatAttribute.PetBonusAtk].Add(0, (float) ActivePet.PetInfo.Level - 1);
             }
 
             ComputeStatContribution(ActivePet.Stats);

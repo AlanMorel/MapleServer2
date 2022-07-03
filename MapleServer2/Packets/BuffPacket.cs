@@ -60,7 +60,7 @@ public static class BuffPacket
                 pWriter.WriteInt(effect.Start);
                 pWriter.WriteInt(effect.End);
                 pWriter.WriteInt(effect.Id);
-                pWriter.WriteShort((short)effect.Level);
+                pWriter.WriteShort((short) effect.Level);
                 pWriter.WriteInt(effect.Stacks);
                 pWriter.WriteByte(1); // sniffs always get 1 but doesn't change behaviour
                 pWriter.WriteLong();
@@ -70,7 +70,7 @@ public static class BuffPacket
                 pWriter.WriteInt(effect.Start);
                 pWriter.WriteInt(effect.End);
                 pWriter.WriteInt(effect.Id);
-                pWriter.WriteShort((short)effect.Level);
+                pWriter.WriteShort((short) effect.Level);
                 pWriter.WriteInt(effect.Stacks);
                 pWriter.WriteByte();
                 break;
