@@ -1,4 +1,5 @@
 ﻿using Maple2Storage.Enums;
+using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Enums;
@@ -128,6 +129,19 @@ public class ItemEquipHandler : GamePacketHandler<ItemEquipHandler>
         equippedInventory[equipSlot] = item;
         session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(player.FieldPlayer, item, equipSlot));
 
+        if (item.AdditionalEffects != null)
+        {
+            player.AddEffects(item.AdditionalEffects);
+
+            foreach (GemSocket socket in item.GemSockets.Sockets)
+            {
+                if (socket.Gemstone != null)
+                {
+                    player.AddEffects(socket.Gemstone.AdditionalEffects);
+                }
+            }
+        }
+
         // Add stats if gear
         if (item.InventoryTab == InventoryTab.Gear)
         {
@@ -156,6 +170,20 @@ public class ItemEquipHandler : GamePacketHandler<ItemEquipHandler>
             session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(player.FieldPlayer, unequipItem));
 
             player.FieldPlayer.ComputeStats();
+
+            if (item.AdditionalEffects != null)
+            {
+                player.RemoveEffects(item.AdditionalEffects);
+
+                foreach (GemSocket socket in item.GemSockets.Sockets)
+                {
+                    if (socket.Gemstone != null)
+                    {
+                        player.RemoveEffects(socket.Gemstone.AdditionalEffects);
+                    }
+                }
+            }
+
             return;
         }
 

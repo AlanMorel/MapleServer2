@@ -148,7 +148,7 @@ public class AttributeCommand : InGameCommand
         Description = "Add attribute to selected item.";
         Parameters = new()
         {
-            new Parameter<string>("equipSlot", "Equip slot, e.g.: RH (ItemSlot.cs)"),
+            new Parameter<string>("equipSlot", "Equip slot, e.g.: RH (ItemSlot.cs) or PET (Active pet)"),
             new Parameter<string>("newAttributeId", "New Attribute, e.g.: Dex (StatAttribute.cs)"),
             new Parameter<float>("value", "Value, e.g.: 10 / 0.002"),
             new Parameter<byte>("isPercentage", "Is percentage, e.g.: 1 / 0"),
@@ -164,6 +164,7 @@ public class AttributeCommand : InGameCommand
         float value = trigger.Get<float>("value");
         byte isPercentage = trigger.Get<byte>("isPercentage");
         byte category = trigger.Get<byte>("category");
+        bool isPet = equipSlot == "PET";
 
         if (string.IsNullOrEmpty(equipSlot))
         {
@@ -171,7 +172,7 @@ public class AttributeCommand : InGameCommand
             return;
         }
 
-        if (!Enum.TryParse(equipSlot, ignoreCase: true, out ItemSlot itemSlot) || itemSlot == ItemSlot.NONE)
+        if ((!Enum.TryParse(equipSlot, ignoreCase: true, out ItemSlot itemSlot) || itemSlot == ItemSlot.NONE) && !isPet)
         {
             trigger.Session.SendNotice($"{equipSlot} is not a valid equip slot.");
             string slots = "";
@@ -190,11 +191,17 @@ public class AttributeCommand : InGameCommand
             return;
         }
 
+        Item item = null;
         Player player = trigger.Session.Player;
-        if (!player.Inventory.Equips.TryGetValue(itemSlot, out Item item))
+        if (!isPet && !player.Inventory.Equips.TryGetValue(itemSlot, out item))
         {
             trigger.Session.SendNotice($"You don't have an item in slot {itemSlot}.");
             return;
+        }
+
+        if (isPet)
+        {
+            item = player.ActivePet;
         }
 
         ItemStat itemStat;
@@ -243,7 +250,10 @@ public class AttributeCommand : InGameCommand
             }
         }
 
-        trigger.Session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(player.FieldPlayer, item, itemSlot));
+        if (!isPet)
+        {
+            trigger.Session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(player.FieldPlayer, item, itemSlot));
+        }
 
         player.FieldPlayer.ComputeStats();
 

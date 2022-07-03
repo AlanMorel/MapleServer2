@@ -110,6 +110,10 @@ public class SkillCast
 
     public bool IsGlobal() => VerifySkillTypeOf(SkillType.Active, SkillSubType.Global);
 
+    public bool IsBuff() => VerifySkillTypeOf(BuffType.Buff);
+
+    public bool IsUnspecifiedBuff() => VerifySkillTypeOf(SkillType.Active, SkillSubType.Status, BuffType.Buff, BuffSubType.None);
+
     public bool IsBuffToOwner() => VerifySkillTypeOf(SkillType.Active, SkillSubType.Status, BuffType.Buff, BuffSubType.Owner);
 
     public bool IsBuffToEntity() => VerifySkillTypeOf(SkillType.Active, SkillSubType.Status, BuffType.Buff, BuffSubType.Entity);
@@ -181,6 +185,22 @@ public class SkillCast
         }
 
         return skillAdditionalData.BuffType == buffType && skillAdditionalData.BuffSubType == buffSubType;
+    }
+
+    private bool VerifySkillTypeOf(BuffType buffType)
+    {
+        if (IsChainSkill())
+        {
+            return false;
+        }
+
+        SkillAdditionalData skillAdditionalData = GetAdditionalData();
+        if (skillAdditionalData is null)
+        {
+            return false;
+        }
+
+        return skillAdditionalData.BuffType == buffType;
     }
 
     private SkillMetadata GetSkillMetadata() => SkillMetadataStorage.GetSkill(SkillId);

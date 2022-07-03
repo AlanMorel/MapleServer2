@@ -64,10 +64,16 @@ public class Character : FieldActor<Player>
 
         // TODO: Move this and all others combat cases like recover sp to its own class.
         // Since the cast is always sent by the skill, we have to check buffs even when not doing damage.
-        if (skillCast.IsBuffToOwner() || skillCast.IsBuffToEntity() || skillCast.IsBuffShield() || skillCast.IsDebuffToOwner())
+        if (skillCast.IsBuff())
         {
-            Status status = new(skillCast, ObjectId, ObjectId, 1);
-            StatusHandler.Handle(Value.Session, status);
+            AdditionalEffects.AddEffect(new(skillCast.SkillId, skillCast.SkillLevel)
+            {
+                Duration = skillCast.DurationTick(),
+                IsBuff = true
+            });
+
+            //Status status = new(skillCast, ObjectId, ObjectId, 1);
+            //StatusHandler.Handle(Value.Session, status);
         }
 
         Value.Session.FieldManager.BroadcastPacket(SkillUsePacket.SkillUse(skillCast));

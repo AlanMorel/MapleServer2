@@ -139,7 +139,7 @@ public class Stat
             return (long) (Modifier.Rate * (Value.BaseLong + Modifier.Flat));
         }
 
-        return (long) (Value.BaseLong + 1000 * Modifier.Rate);
+        return (long) (Value.BaseLong + Modifier.Flat + 1000 * Modifier.Rate);
     }
 
     public void ComputeBonus()

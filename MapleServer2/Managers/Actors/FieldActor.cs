@@ -169,19 +169,25 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
         {
             foreach ((StatAttribute stat, EffectStatMetadata statValue) in effect.LevelMetadata.Status.Stats)
             {
-                Stats[stat].Add(statValue.Flat, statValue.Rate);
+                Stats.AddStat(stat, statValue.AttributeType, statValue.Flat, statValue.Rate);
             }
         }
     }
 
     public virtual void EffectAdded(AdditionalEffect effect)
     {
-        ComputeStats();
+        if ((effect?.LevelMetadata?.Status?.Stats?.Count ?? 0) > 0)
+        {
+            ComputeStats();
+        }
     }
 
     public virtual void EffectRemoved(AdditionalEffect effect)
     {
-        ComputeStats();
+        if ((effect?.LevelMetadata?.Status?.Stats?.Count ?? 0) > 0)
+        {
+            ComputeStats();
+        }
     }
 
     public virtual void InitializeEffects()
