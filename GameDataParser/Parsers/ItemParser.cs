@@ -207,7 +207,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                 }
                 metadata.Slots.Add(itemSlot);
             }
-            
+
             if (!string.IsNullOrEmpty(housing.categoryTag))
             {
                 string[] tags = housing.categoryTag.Split(',');

@@ -460,7 +460,7 @@ public class BeautyHandler : GamePacketHandler<BeautyHandler>
             return;
         }
         ItemSlot itemSlot = itemSlots.First();
-        
+
         Dictionary<ItemSlot, Item> cosmetics = session.Player.Inventory.Cosmetics;
 
         if (cosmetics.TryGetValue(itemSlot, out Item removeItem))

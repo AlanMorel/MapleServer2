@@ -16,10 +16,7 @@ public class Wardrobe : IPacketSerializable
     public string Name;
     public Dictionary<ItemSlot, Item> Equips;
 
-    public Wardrobe()
-    {
-
-    }
+    public Wardrobe() { }
 
     public Wardrobe(int type, int key, int index, string name, Dictionary<ItemSlot, Item> equips, Player player)
     {
