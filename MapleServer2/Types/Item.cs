@@ -79,6 +79,7 @@ public class Item
     public byte[] FaceDecorationData;
     public MusicScore Score;
     public ItemStats Stats;
+    public List<GemSocket> GemSockets;
 
     public UGC Ugc;
 
@@ -136,6 +137,8 @@ public class Item
         {
             PetInfo = new();
         }
+
+        GetGemSockets();
 
         if (!saveToDatabase)
         {
@@ -205,6 +208,15 @@ public class Item
         }
 
         SetMetadataValues();
+
+        //if (other.GemSockets != null)
+        //{
+        //    GemSockets = new(other.GemSockets);
+        //
+        //    return;
+        //}
+
+        GetGemSockets();
     }
 
     public bool TrySplit(int splitAmount, out Item splitItem)
@@ -466,6 +478,83 @@ public class Item
         Script script = ScriptLoader.GetScript("Functions/calcItemValues");
         DynValue result = script.RunFunction("calcItemGearScore", gearScoreFactor, Rarity, (int) Type, EnchantLevel, LimitBreakLevel);
         return (int) result.Tuple[0].Number + (int) result.Tuple[1].Number;
+    }
+    public void GetGemSockets()
+    {
+        bool instantiatingNew = GemSockets == null;
+
+        GemSockets = GemSockets ?? new();
+        float optionLevelFactor = ItemMetadataStorage.GetOptionMetadata(Id).OptionLevelFactor;
+
+        // Check for predefined sockets
+        int socketId = ItemMetadataStorage.GetPropertyMetadata(Id).SocketDataId;
+        if (socketId != 0)
+        {
+            ItemSocketRarityData socketData = ItemSocketMetadataStorage.GetMetadata(socketId, Rarity);
+            if (socketData is not null)
+            {
+                while (GemSockets.Count > socketData.MaxCount)
+                {
+                    GemSockets.RemoveAt(GemSockets.Count - 1);
+                }
+
+                for (int i = GemSockets.Count; i < socketData.MaxCount; i++)
+                {
+                    GemSockets.Add(new());
+                }
+
+                for (int j = 0; j < socketData.FixedOpenCount; j++)
+                {
+                    GemSockets[j].IsUnlocked = true;
+                }
+                return;
+            }
+        }
+
+        if (Type == ItemType.None)
+        {
+            Type = GetItemType();
+        }
+
+        Script script = ScriptLoader.GetScript("Functions/calcItemSocketMaxCount");
+        DynValue dynValue = script.RunFunction("calcItemSocketMaxCount", (int) Type, Rarity, optionLevelFactor, (int) InventoryTab);
+        int slotAmount = (int) dynValue.Number;
+        if (slotAmount <= 0)
+        {
+            return;
+        }
+
+        while (GemSockets.Count > slotAmount)
+        {
+            GemSockets.RemoveAt(GemSockets.Count - 1);
+        }
+
+        // add sockets
+        for (int i = GemSockets.Count; i < slotAmount; i++)
+        {
+            GemSocket socket = new();
+            GemSockets.Add(socket);
+        }
+
+        if (!instantiatingNew)
+        {
+            return;
+        }
+
+        // roll to unlock sockets
+        for (int i = 0; i < GemSockets.Count; i++)
+        {
+            int successNumber = Random.Shared.Next(0, 100);
+
+            // 5% success rate to unlock a gemsocket
+            if (successNumber < 95)
+            {
+                break;
+            }
+            GemSockets[i].IsUnlocked = true;
+        }
+
+        return;
     }
 }
 

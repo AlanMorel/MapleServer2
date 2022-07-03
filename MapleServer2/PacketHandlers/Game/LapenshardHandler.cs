@@ -61,10 +61,7 @@ public class LapenshardHandler : GamePacketHandler<LapenshardHandler>
             return;
         }
 
-        for (int i = 0; i < lapenshard.AdditionalEffects.Id.Length; i++)
-        {
-            player.AdditionalEffects.AddEffect(lapenshard.AdditionalEffects.Id[i], lapenshard.AdditionalEffects.Level[i]);
-        }
+        player.AddEffects(lapenshard.AdditionalEffects);
     }
 
     public static void RemoveEffects(Player player, Item lapenshard)
@@ -74,10 +71,7 @@ public class LapenshardHandler : GamePacketHandler<LapenshardHandler>
             return;
         }
 
-        for (int i = 0; i < lapenshard.AdditionalEffects.Id.Length; i++)
-        {
-            player.AdditionalEffects.RemoveEffect(lapenshard.AdditionalEffects.Id[i], lapenshard.AdditionalEffects.Level[i]);
-        }
+        player.RemoveEffects(lapenshard.AdditionalEffects);
     }
 
     private static void HandleEquip(GameSession session, PacketReader packet)

@@ -169,7 +169,7 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
         {
             foreach ((StatAttribute stat, EffectStatMetadata statValue) in effect.LevelMetadata.Status.Stats)
             {
-                Stats[stat].Add(statValue.Flat, statValue.Rate);
+                Stats.AddStat(stat, statValue.AttributeType, statValue.Flat, statValue.Rate);
             }
         }
     }

@@ -50,6 +50,7 @@ public static class ItemBoxHelper
                 EnchantLevel = dropContent.EnchantLevel
             };
             newItem.Stats = new(newItem);
+            newItem.GetGemSockets();
             items.Add(newItem);
         }
 
@@ -113,6 +114,7 @@ public static class ItemBoxHelper
                 EnchantLevel = dropContents.EnchantLevel
             };
             newItem.Stats = new(newItem);
+            newItem.GetGemSockets();
             if (inventory.CanHold(newItem))
             {
                 inventory.AddItem(session, newItem, true);

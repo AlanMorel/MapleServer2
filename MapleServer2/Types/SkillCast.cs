@@ -110,6 +110,8 @@ public class SkillCast
 
     public bool IsGlobal() => VerifySkillTypeOf(SkillType.Active, SkillSubType.Global);
 
+    public bool IsUnspecifiedBuff() => VerifySkillTypeOf(SkillType.Active, SkillSubType.Status, BuffType.Buff, BuffSubType.None);
+
     public bool IsBuffToOwner() => VerifySkillTypeOf(SkillType.Active, SkillSubType.Status, BuffType.Buff, BuffSubType.Owner);
 
     public bool IsBuffToEntity() => VerifySkillTypeOf(SkillType.Active, SkillSubType.Status, BuffType.Buff, BuffSubType.Entity);

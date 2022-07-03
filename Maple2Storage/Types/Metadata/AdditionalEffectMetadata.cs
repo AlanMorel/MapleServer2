@@ -92,13 +92,23 @@ public class EffectMotionPropertyMetadata
 [XmlType]
 public class EffectCancelEffectMetadata
 {
-
+    [XmlElement(Order = 1)]
+    public bool CancelCheckSameCaster;
+    [XmlElement(Order = 2)]
+    public bool CancelPassiveEffect;
+    [XmlElement(Order = 3)]
+    public int[] CancelEffectCodes;
+    [XmlElement(Order = 4)]
+    public int[] CancelBuffCategories;
 }
 
 [XmlType]
 public class EffectImmuneEffectMetadata
 {
-
+    [XmlElement(Order = 1)]
+    public int[] ImmuneEffectCodes;
+    [XmlElement(Order = 2)]
+    public int[] ImmuneBuffCategories;
 }
 
 [XmlType]

@@ -80,7 +80,7 @@ public class ItemSocketSystemHandler : GamePacketHandler<ItemSocketSystemHandler
             return;
         }
         Item equip = inventory.GetByUid(itemUid);
-        int equipUnlockedSlotCount = equip.Stats.GemSockets.Count(x => x.IsUnlocked);
+        int equipUnlockedSlotCount = equip.GemSockets.Count(x => x.IsUnlocked);
 
         foreach (long uid in fodderUids)
         {
@@ -91,7 +91,7 @@ public class ItemSocketSystemHandler : GamePacketHandler<ItemSocketSystemHandler
             }
 
             Item fodder = inventory.GetByUid(uid);
-            int fodderUnlockedSlotCount = fodder.Stats.GemSockets.Count(x => x.IsUnlocked);
+            int fodderUnlockedSlotCount = fodder.GemSockets.Count(x => x.IsUnlocked);
             if (equipUnlockedSlotCount == fodderUnlockedSlotCount)
             {
                 continue;
@@ -102,7 +102,7 @@ public class ItemSocketSystemHandler : GamePacketHandler<ItemSocketSystemHandler
         }
 
         // get socket slot to unlock
-        int slot = equip.Stats.GemSockets.FindIndex(0, equip.Stats.GemSockets.Count, x => !x.IsUnlocked);
+        int slot = equip.GemSockets.FindIndex(0, equip.GemSockets.Count, x => !x.IsUnlocked);
         if (slot < 0)
         {
             return;
@@ -124,8 +124,8 @@ public class ItemSocketSystemHandler : GamePacketHandler<ItemSocketSystemHandler
             inventory.ConsumeItem(session, uid, 1);
         }
 
-        equip.Stats.GemSockets[slot].IsUnlocked = true;
-        List<GemSocket> unlockedSockets = equip.Stats.GemSockets.Where(x => x.IsUnlocked).ToList();
+        equip.GemSockets[slot].IsUnlocked = true;
+        List<GemSocket> unlockedSockets = equip.GemSockets.Where(x => x.IsUnlocked).ToList();
 
         session.Send(ItemSocketSystemPacket.UnlockSocket(equip, (byte) slot, unlockedSockets));
     }
@@ -152,6 +152,7 @@ public class ItemSocketSystemHandler : GamePacketHandler<ItemSocketSystemHandler
         long itemUid = packet.ReadLong();
 
         ItemGemstoneUpgradeMetadata metadata;
+        Item upgradeGem = null;
 
         IInventory inventory = session.Player.Inventory;
         if (equipUid == 0) // this is a gemstone in the player's inventory
@@ -189,20 +190,21 @@ public class ItemSocketSystemHandler : GamePacketHandler<ItemSocketSystemHandler
 
             inventory.ConsumeItem(session, gem.Uid, 1);
 
-            Item upgradeGem = new(metadata.NextItemId, rarity: gem.Rarity);
+            upgradeGem = new(metadata.NextItemId, rarity: gem.Rarity);
             inventory.AddItem(session, upgradeGem, true);
             session.Send(ItemSocketSystemPacket.UpgradeGem(equipUid, slot, upgradeGem));
             return;
         }
 
         // upgrade gem mounted on a equipment
-        if (!inventory.HasItem(equipUid))
+        if (!inventory.HasItem(equipUid) && !session.Player.Inventory.ItemIsEquipped(equipUid))
         {
             session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.ItemIsNotInYourInventory));
             return;
         }
 
-        Gemstone gemstone = inventory.GetByUid(equipUid).Stats.GemSockets[slot].Gemstone;
+        Item item = inventory.GetByUid(equipUid) ?? inventory.GetEquippedItem(equipUid);
+        Gemstone gemstone = item.GemSockets[slot].Gemstone;
         if (gemstone == null)
         {
             return;
@@ -240,17 +242,29 @@ public class ItemSocketSystemHandler : GamePacketHandler<ItemSocketSystemHandler
             newGem.OwnerCharacterName = owner.Name;
         }
 
+        upgradeGem = new(metadata.NextItemId, rarity: 4);
+
         Gemstone upgradedGemstone = new()
         {
             Id = metadata.NextItemId,
             IsLocked = gemstone.IsLocked,
             UnlockTime = gemstone.UnlockTime,
             OwnerId = gemstone.OwnerId,
-            OwnerName = gemstone.OwnerName
+            OwnerName = gemstone.OwnerName,
+            Stats = new(upgradeGem.Stats),
+            AdditionalEffects = ItemMetadataStorage.GetAdditionalEffects(metadata.NextItemId)
         };
 
-        inventory.GetByUid(equipUid).Stats.GemSockets[slot].Gemstone = gemstone;
+        item.GemSockets[slot].Gemstone = upgradedGemstone;
         session.Send(ItemSocketSystemPacket.UpgradeGem(equipUid, slot, newGem));
+
+        if (session.Player.Inventory.ItemIsEquipped(equipUid))
+        {
+            session.Player.RemoveEffects(gemstone.AdditionalEffects);
+            session.Player.AddEffects(upgradedGemstone.AdditionalEffects);
+
+            session.Player.FieldPlayer.ComputeStats();
+        }
     }
 
     private static bool CheckGemUpgradeIngredients(IInventory inventory, ItemGemstoneUpgradeMetadata metadata)
@@ -311,13 +325,14 @@ public class ItemSocketSystemHandler : GamePacketHandler<ItemSocketSystemHandler
         }
 
         // select gem mounted on a equipment
-        if (!session.Player.Inventory.HasItem(equipUid))
+        if (!session.Player.Inventory.HasItem(equipUid) && !session.Player.Inventory.ItemIsEquipped(equipUid))
         {
             session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.ItemIsNotInYourInventory));
             return;
         }
 
-        Gemstone gemstone = session.Player.Inventory.GetByUid(equipUid).Stats.GemSockets[slot].Gemstone;
+        Item item = session.Player.Inventory.GetByUid(equipUid) ?? session.Player.Inventory.GetEquippedItem(equipUid);
+        Gemstone gemstone = item.GemSockets[slot].Gemstone;
         if (gemstone == null)
         {
             return;
@@ -344,15 +359,15 @@ public class ItemSocketSystemHandler : GamePacketHandler<ItemSocketSystemHandler
             return;
         }
 
-        Item equipItem = session.Player.Inventory.GetByUid(equipItemUid);
+        Item equipItem = session.Player.Inventory.GetByUid(equipItemUid) ?? session.Player.Inventory.GetEquippedItem(equipItemUid);
         Item gemItem = session.Player.Inventory.GetByUid(gemItemUid);
 
-        if (!equipItem.Stats.GemSockets[slot].IsUnlocked)
+        if (!equipItem.GemSockets[slot].IsUnlocked)
         {
             return;
         }
 
-        if (equipItem.Stats.GemSockets[slot].Gemstone != null)
+        if (equipItem.GemSockets[slot].Gemstone != null)
         {
             return;
         }
@@ -361,7 +376,9 @@ public class ItemSocketSystemHandler : GamePacketHandler<ItemSocketSystemHandler
         {
             Id = gemItem.Id,
             IsLocked = gemItem.IsLocked,
-            UnlockTime = gemItem.UnlockTime
+            UnlockTime = gemItem.UnlockTime,
+            Stats = new(gemItem.Stats),
+            AdditionalEffects = gemItem.AdditionalEffects
         };
         if (gemItem.OwnerCharacterId != 0)
         {
@@ -369,10 +386,17 @@ public class ItemSocketSystemHandler : GamePacketHandler<ItemSocketSystemHandler
             gemstone.OwnerName = gemItem.OwnerCharacterName;
         }
 
-        equipItem.Stats.GemSockets[slot].Gemstone = gemstone;
+        equipItem.GemSockets[slot].Gemstone = gemstone;
 
         session.Player.Inventory.ConsumeItem(session, gemItem.Uid, 1);
         session.Send(ItemSocketSystemPacket.MountGem(equipItemUid, gemstone, slot));
+
+        if (session.Player.Inventory.ItemIsEquipped(equipItemUid))
+        {
+            session.Player.AddEffects(gemstone.AdditionalEffects);
+
+            session.Player.FieldPlayer.ComputeStats();
+        }
     }
 
     private static void HandleExtractGem(GameSession session, PacketReader packet)
@@ -386,14 +410,14 @@ public class ItemSocketSystemHandler : GamePacketHandler<ItemSocketSystemHandler
             return;
         }
 
-        Item equipItem = session.Player.Inventory.GetByUid(equipItemUid);
+        Item equipItem = session.Player.Inventory.GetByUid(equipItemUid) ?? session.Player.Inventory.GetEquippedItem(equipItemUid);
 
-        if (equipItem.Stats.GemSockets[slot].Gemstone == null)
+        if (equipItem.GemSockets[slot].Gemstone == null)
         {
             return;
         }
 
-        Gemstone gemstone = equipItem.Stats.GemSockets[slot].Gemstone;
+        Gemstone gemstone = equipItem.GemSockets[slot].Gemstone;
 
         int gemLevel = ItemGemstoneUpgradeMetadataStorage.GetGemLevel(gemstone.Id);
 
@@ -425,9 +449,16 @@ public class ItemSocketSystemHandler : GamePacketHandler<ItemSocketSystemHandler
         }
 
         // remove gemstone from item
-        equipItem.Stats.GemSockets[slot].Gemstone = null;
+        equipItem.GemSockets[slot].Gemstone = null;
 
         session.Player.Inventory.AddItem(session, gemstoneItem, true);
         session.Send(ItemSocketSystemPacket.ExtractGem(equipItemUid, gemstoneItem.Uid, slot));
+
+        if (session.Player.Inventory.ItemIsEquipped(equipItemUid))
+        {
+            session.Player.AddEffects(gemstone.AdditionalEffects);
+
+            session.Player.FieldPlayer.ComputeStats();
+        }
     }
 }

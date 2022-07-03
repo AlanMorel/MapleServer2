@@ -32,7 +32,7 @@ public static class ItemSocketScrollPacket
         pWriter.WriteLong(item.Uid);
         pWriter.WriteByte();
         pWriter.WriteInt(successRate);
-        pWriter.WriteSockets(item.Stats);
+        pWriter.WriteSockets(item.Stats, item.GemSockets);
         return pWriter;
     }
 

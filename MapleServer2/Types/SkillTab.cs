@@ -69,11 +69,24 @@ public class SkillTab
     public List<(int skillId, short skillLevel)> GetSkillsByType(SkillType type)
     {
         List<(int, short)> skills = new();
-        foreach ((int skillId, SkillMetadata metadata) in SkillJob.Where(x => x.Value.Type == type))
+        foreach ((int skillId, SkillMetadata metadata) in SkillJob.Where(x => x.Value.Type == type || x.Value.SubSkills.Length > 0))
         {
             short level = SkillLevels.GetValueOrDefault(skillId);
-            skills.Add((skillId, level));
-            skills.AddRange(metadata.SubSkills.Select(metadataSubSkill => (metadataSubSkill, level)));
+
+            if (metadata.Type == type)
+            {
+                skills.Add((skillId, level));
+            }
+
+            foreach (int subSkillId in metadata.SubSkills)
+            {
+                SkillMetadata subSkill = SkillMetadataStorage.GetSkill(subSkillId);
+
+                if (subSkill.Type == type)
+                {
+                    skills.Add((subSkillId, level));
+                }
+            }
         }
 
         return skills;

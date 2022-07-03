@@ -3,6 +3,7 @@ using Maple2Storage.Types;
 using MapleServer2.Types;
 using Newtonsoft.Json;
 using SqlKata.Execution;
+using MapleServer2.Data.Static;
 
 namespace MapleServer2.Database.Classes;
 
@@ -65,6 +66,7 @@ public class DatabaseItem : DatabaseTable
             category = item.Category,
             ugc_uid = item.Ugc is null ? null : (int?) item.Ugc.Uid,
             pet_uid = item.PetInfo is null ? null : (int?) item.PetInfo.Uid,
+            gem_sockets = JsonConvert.SerializeObject(item.GemSockets, Settings),
         });
     }
 
@@ -187,7 +189,8 @@ public class DatabaseItem : DatabaseTable
             transparency_badge_bools = JsonConvert.SerializeObject(item.TransparencyBadgeBools),
             unlock_time = item.UnlockTime,
             ugc_uid = item.Ugc == null ? null : (int?) item.Ugc.Uid,
-            pet_uid = item.PetInfo == null ? null : (int?) item.PetInfo.Uid
+            pet_uid = item.PetInfo == null ? null : (int?) item.PetInfo.Uid,
+            gem_sockets = JsonConvert.SerializeObject(item.GemSockets, Settings)
         });
 
         if (item.PetInfo is not null)
@@ -203,7 +206,7 @@ public class DatabaseItem : DatabaseTable
 
     private Item ReadItem(dynamic data)
     {
-        return new()
+        Item item = new()
         {
             Uid = data.uid,
             Name = data.name,
@@ -251,7 +254,18 @@ public class DatabaseItem : DatabaseTable
             MailId = data.mail_id ?? 0,
             HomeId = data.home_id ?? 0,
             Ugc = data.ugc_uid is null ? null : DatabaseManager.UGC.FindByUid(data.ugc_uid),
-            PetInfo = data.pet_uid is null ? null : DatabaseManager.Pets.Get(data.pet_uid)
+            PetInfo = data.pet_uid is null ? null : DatabaseManager.Pets.Get(data.pet_uid),
+            GemSockets = data.gem_sockets is null ? null : JsonConvert.DeserializeObject<List<GemSocket>>(data.gem_sockets, Settings)
         };
+
+        if (!ItemMetadataStorage.IsValid(item.Id))
+        {
+            item.GemSockets = item.GemSockets ?? new();
+            return item;
+        }
+
+        item.GetGemSockets();
+
+        return item;
     }
 }

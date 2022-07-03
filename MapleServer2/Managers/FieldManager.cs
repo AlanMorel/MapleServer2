@@ -1215,11 +1215,19 @@ public class FieldManager
         foreach (Npc mob in State.Mobs.Values)
         {
             mob.Act();
+            mob.AdditionalEffects?.UpdateEffects();
         }
 
         foreach (Pet pet in State.Pets.Values)
         {
             pet.Act();
+
+            pet.AdditionalEffects?.UpdateEffects();
+        }
+
+        foreach (Character player in State.Players.Values)
+        {
+            player.AdditionalEffects.UpdateEffects();
         }
     }
 
