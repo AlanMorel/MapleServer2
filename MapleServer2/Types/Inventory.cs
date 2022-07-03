@@ -376,7 +376,7 @@ public sealed class Inventory : IInventory
         RemoveItem(session, uid, out item);
 
         Player player = session.Player;
-        
+
         // Get correct equipped inventory
         Dictionary<ItemSlot, Item> equippedInventory = player.GetEquippedInventory(item.InventoryTab);
         if (equippedInventory == null)
@@ -401,6 +401,19 @@ public sealed class Inventory : IInventory
         equippedInventory[equipSlot] = item;
         session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(player.FieldPlayer, item, equipSlot));
         player.FieldPlayer?.ComputeStats();
+
+        if (item.AdditionalEffects != null)
+        {
+            player.AddEffects(item.AdditionalEffects);
+
+            foreach (GemSocket socket in item.GemSockets.Sockets)
+            {
+                if (socket.Gemstone != null)
+                {
+                    player.AddEffects(socket.Gemstone.AdditionalEffects);
+                }
+            }
+        }
         return true;
     }
 
@@ -422,6 +435,19 @@ public sealed class Inventory : IInventory
             player.Inventory.AddItem(session, prevItem, false);
             session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(player.FieldPlayer, prevItem));
             player.FieldPlayer?.ComputeStats();
+
+            if (item.AdditionalEffects != null)
+            {
+                player.RemoveEffects(item.AdditionalEffects);
+
+                foreach (GemSocket socket in item.GemSockets.Sockets)
+                {
+                    if (socket.Gemstone != null)
+                    {
+                        player.RemoveEffects(socket.Gemstone.AdditionalEffects);
+                    }
+                }
+            }
             return true;
         }
         return false;
