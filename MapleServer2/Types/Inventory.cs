@@ -400,7 +400,7 @@ public sealed class Inventory : IInventory
         item.ItemSlot = equipSlot;
         equippedInventory[equipSlot] = item;
         session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(player.FieldPlayer, item, equipSlot));
-        player.IncreaseStats(item);
+        player.FieldPlayer?.ComputeStats();
         return true;
     }
 
@@ -421,7 +421,7 @@ public sealed class Inventory : IInventory
             prevItem.IsEquipped = false;
             player.Inventory.AddItem(session, prevItem, false);
             session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(player.FieldPlayer, prevItem));
-            player.DecreaseStats(prevItem);
+            player.FieldPlayer?.ComputeStats();
             return true;
         }
         return false;
