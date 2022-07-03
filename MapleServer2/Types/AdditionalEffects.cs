@@ -43,16 +43,27 @@ public class AdditionalEffects
 
     public void UpdateEffects()
     {
-        while (TimedEffects.Count > 0 && Environment.TickCount >= NextBuffExpiration)
+        bool recomputedLastIteration = false;
+
+        while (NextBuffExpiration != -1 && TimedEffects.Count > 0 && Environment.TickCount >= NextBuffExpiration)
         {
             int index = FindExpiredBuff();
 
             if (index == -1)
             {
+                if (recomputedLastIteration)
+                {
+                    return;
+                }
+
                 RecomputeExpiration();
+
+                recomputedLastIteration = true;
 
                 continue;
             }
+
+            recomputedLastIteration = false;
 
             RemoveEffect(Effects[index], index);
         }
@@ -126,7 +137,14 @@ public class AdditionalEffects
 
         if (parameters.IsBuff)
         {
-            Parent.FieldManager.BroadcastPacket(BuffPacket.SendBuff((byte) (buffId == -1 ? 0 : 2), effect, Parent.ObjectId));
+            if (buffId == -1)
+            {
+                Parent.FieldManager.BroadcastPacket(BuffPacket.AddBuff(effect, Parent.ObjectId));
+
+                return effect;
+            }
+
+            Parent.FieldManager.BroadcastPacket(BuffPacket.UpdateBuff(effect, Parent.ObjectId));
         }
 
         return effect;
@@ -153,7 +171,7 @@ public class AdditionalEffects
         {
             if (sendPacket)
             {
-                Parent.FieldManager.BroadcastPacket(BuffPacket.SendBuff(1, effect, Parent.ObjectId));
+                Parent.FieldManager.BroadcastPacket(BuffPacket.RemoveBuff(effect, Parent.ObjectId));
             }
 
             int timedIndex = -1;

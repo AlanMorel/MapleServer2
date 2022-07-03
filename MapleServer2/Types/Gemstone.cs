@@ -17,6 +17,7 @@ public class Gemstone
     public ItemStats Stats;
     public ItemAdditionalEffectMetadata AdditionalEffects;
 }
+
 public class GemSocket
 {
     public bool IsUnlocked;

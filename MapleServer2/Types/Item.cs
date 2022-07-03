@@ -209,13 +209,6 @@ public class Item
 
         SetMetadataValues();
 
-        //if (other.GemSockets != null)
-        //{
-        //    GemSockets = new(other.GemSockets);
-        //
-        //    return;
-        //}
-
         GetGemSockets();
     }
 
@@ -479,6 +472,7 @@ public class Item
         DynValue result = script.RunFunction("calcItemGearScore", gearScoreFactor, Rarity, (int) Type, EnchantLevel, LimitBreakLevel);
         return (int) result.Tuple[0].Number + (int) result.Tuple[1].Number;
     }
+
     public void GetGemSockets()
     {
         bool instantiatingNew = GemSockets == null;

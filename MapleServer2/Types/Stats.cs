@@ -397,9 +397,7 @@ public class Stats
 
     public void AddStat(StatAttribute attribute, StatAttributeType type, long flat, float rate)
     {
-        Stat stat;
-
-        if (!Data.TryGetValue(attribute, out stat))
+        if (!Data.TryGetValue(attribute, out Stat stat))
         {
             stat = new();
             stat.Modifier.Type = type;

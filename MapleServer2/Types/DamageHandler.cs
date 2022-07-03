@@ -189,17 +189,13 @@ public class DamageHandler
 
     private static double GetWeaponBonusAttackMultiplier(Player player)
     {
-        Item rightHand;
-
-        player.Inventory.Equips.TryGetValue(ItemSlot.RH, out rightHand);
+        player.Inventory.Equips.TryGetValue(ItemSlot.RH, out Item rightHand);
 
         double weaponBonusAttackCoeff = GetRarityBonusAttackMultiplier(rightHand);
 
         if (!IsTwoHanded(rightHand))
         {
-            Item leftHand;
-
-            player.Inventory.Equips.TryGetValue(ItemSlot.RH, out leftHand);
+            player.Inventory.Equips.TryGetValue(ItemSlot.RH, out Item leftHand);
 
             weaponBonusAttackCoeff = 0.5 * (weaponBonusAttackCoeff + GetRarityBonusAttackMultiplier(rightHand));
         }
