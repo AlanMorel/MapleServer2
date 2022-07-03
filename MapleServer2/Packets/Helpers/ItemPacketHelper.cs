@@ -86,7 +86,7 @@ public static class ItemPacketHelper
             pWriter.WriteUnicodeString(item.OwnerCharacterName);
         }
 
-        pWriter.WriteSockets(item.Stats, item.GemSockets);
+        pWriter.WriteSockets(item.Stats, item.GemSockets.Sockets);
 
         pWriter.WriteLong(item.PairedCharacterId);
         if (item.PairedCharacterId != 0)

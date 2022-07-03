@@ -86,7 +86,7 @@ public class ItemSocketScrollHandler : GamePacketHandler<ItemSocketScrollHandler
         byte socketCount = ItemSocketScrollHelper.GetSocketCount(metadata.Id);
         int successRate = (int) ItemSocketScrollHelper.GetSuccessRate(metadata.Id) * 10000;
 
-        if (equip.GemSockets.Count(x => x.IsUnlocked) >= socketCount)
+        if (equip.GemSockets.Sockets.Count(x => x.IsUnlocked) >= socketCount)
         {
             session.Send(ItemSocketScrollPacket.Error((int) ItemSocketScrollError.SelectedItemCannotHaveMoreSockets));
             return;

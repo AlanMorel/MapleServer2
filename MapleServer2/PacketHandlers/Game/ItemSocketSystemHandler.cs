@@ -80,7 +80,7 @@ public class ItemSocketSystemHandler : GamePacketHandler<ItemSocketSystemHandler
             return;
         }
         Item equip = inventory.GetByUid(itemUid);
-        int equipUnlockedSlotCount = equip.GemSockets.Count(x => x.IsUnlocked);
+        int equipUnlockedSlotCount = equip.GemSockets.Sockets.Count(x => x.IsUnlocked);
 
         foreach (long uid in fodderUids)
         {
@@ -91,7 +91,7 @@ public class ItemSocketSystemHandler : GamePacketHandler<ItemSocketSystemHandler
             }
 
             Item fodder = inventory.GetByUid(uid);
-            int fodderUnlockedSlotCount = fodder.GemSockets.Count(x => x.IsUnlocked);
+            int fodderUnlockedSlotCount = fodder.GemSockets.Sockets.Count(x => x.IsUnlocked);
             if (equipUnlockedSlotCount == fodderUnlockedSlotCount)
             {
                 continue;
@@ -102,7 +102,7 @@ public class ItemSocketSystemHandler : GamePacketHandler<ItemSocketSystemHandler
         }
 
         // get socket slot to unlock
-        int slot = equip.GemSockets.FindIndex(0, equip.GemSockets.Count, x => !x.IsUnlocked);
+        int slot = equip.GemSockets.Sockets.FindIndex(0, equip.GemSockets.Count, x => !x.IsUnlocked);
         if (slot < 0)
         {
             return;
@@ -125,7 +125,7 @@ public class ItemSocketSystemHandler : GamePacketHandler<ItemSocketSystemHandler
         }
 
         equip.GemSockets[slot].IsUnlocked = true;
-        List<GemSocket> unlockedSockets = equip.GemSockets.Where(x => x.IsUnlocked).ToList();
+        List<GemSocket> unlockedSockets = equip.GemSockets.Sockets.Where(x => x.IsUnlocked).ToList();
 
         session.Send(ItemSocketSystemPacket.UnlockSocket(equip, (byte) slot, unlockedSockets));
     }

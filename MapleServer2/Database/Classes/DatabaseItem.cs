@@ -255,7 +255,7 @@ public class DatabaseItem : DatabaseTable
             HomeId = data.home_id ?? 0,
             Ugc = data.ugc_uid is null ? null : DatabaseManager.UGC.FindByUid(data.ugc_uid),
             PetInfo = data.pet_uid is null ? null : DatabaseManager.Pets.Get(data.pet_uid),
-            GemSockets = data.gem_sockets is null ? null : JsonConvert.DeserializeObject<List<GemSocket>>(data.gem_sockets, Settings)
+            GemSockets = data.gem_sockets is null ? new GemSockets() : JsonConvert.DeserializeObject<GemSockets>(data.gem_sockets, Settings)
         };
     }
 }

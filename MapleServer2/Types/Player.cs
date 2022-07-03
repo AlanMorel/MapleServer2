@@ -628,7 +628,7 @@ public class Player
         {
             ComputeStatContribution(item.Stats);
 
-            foreach (GemSocket socket in item.GemSockets)
+            foreach (GemSocket socket in item.GemSockets.Sockets)
             {
                 if (socket.Gemstone != null)
                 {

@@ -195,7 +195,7 @@ public class DamageHandler
 
         if (!IsTwoHanded(rightHand))
         {
-            player.Inventory.Equips.TryGetValue(ItemSlot.RH, out Item leftHand);
+            player.Inventory.Equips.TryGetValue(ItemSlot.LH, out Item leftHand);
 
             weaponBonusAttackCoeff = 0.5 * (weaponBonusAttackCoeff + GetRarityBonusAttackMultiplier(rightHand));
         }

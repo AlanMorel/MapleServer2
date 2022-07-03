@@ -133,7 +133,7 @@ public class ItemEquipHandler : GamePacketHandler<ItemEquipHandler>
         {
             player.AddEffects(item.AdditionalEffects);
 
-            foreach (GemSocket socket in item.GemSockets)
+            foreach (GemSocket socket in item.GemSockets.Sockets)
             {
                 if (socket.Gemstone != null)
                 {
@@ -175,7 +175,7 @@ public class ItemEquipHandler : GamePacketHandler<ItemEquipHandler>
             {
                 player.RemoveEffects(item.AdditionalEffects);
 
-                foreach (GemSocket socket in item.GemSockets)
+                foreach (GemSocket socket in item.GemSockets.Sockets)
                 {
                     if (socket.Gemstone != null)
                     {
