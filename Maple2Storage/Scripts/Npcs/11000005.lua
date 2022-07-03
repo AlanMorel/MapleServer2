@@ -4,3 +4,11 @@ function getFirstScriptId()
     end
     return 90
 end
+
+function postTalkActions()
+    return 99
+end
+
+function actionMoveMap()
+    return 2000062, 13 -- Lith Harbor, portal 13
+end

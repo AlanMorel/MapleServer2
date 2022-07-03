@@ -114,9 +114,7 @@ public partial class TriggerContext
             IFieldObject<Portal> portal = Field.State.Portals.Values.First(p => p.Value.Id == triggerId);
             foreach (IFieldObject<Player> player in players)
             {
-                player.Coord = portal.Coord;
-                player.Rotation = portal.Rotation;
-                Field.BroadcastPacket(UserMoveByPortalPacket.Move(player, portal.Coord, portal.Rotation, isTrigger: true));
+                player.Value.Move(portal.Coord, portal.Rotation, isTrigger: true);
             }
 
             return;
@@ -214,6 +212,18 @@ public partial class TriggerContext
             }
 
             Field.BroadcastPacket(CinematicPacket.BalloonTalk(player.ObjectId, false, script, delay * 1000, 0));
+            return;
+        }
+
+        if (arg1 == 1) // Use npc object id?
+        {
+            Npc npc = Field.State.Npcs.Values.FirstOrDefault(x => x.SpawnPointId == npcId);
+            if (npc is null)
+            {
+                return;
+            }
+
+            Field.BroadcastPacket(CinematicPacket.BalloonTalk(npc.ObjectId, false, script, delay * 1000, 0));
             return;
         }
 

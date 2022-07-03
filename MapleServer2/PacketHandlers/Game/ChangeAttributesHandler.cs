@@ -49,6 +49,12 @@ public class ChangeAttributesHandler : GamePacketHandler<ChangeAttributesHandler
         {
             isSpecialStat = packet.ReadBool();
             lockStatId = packet.ReadShort();
+
+            if (isSpecialStat)
+            {
+                // Match the enum ID for ItemAttribute
+                lockStatId += 11000;
+            }
         }
 
         IInventory inventory = session.Player.Inventory;

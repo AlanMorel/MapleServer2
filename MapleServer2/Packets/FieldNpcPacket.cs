@@ -17,7 +17,7 @@ public static class FieldNpcPacket
         pWriter.Write(npc.Rotation);
         if (npc.Value.IsBoss())
         {
-            pWriter.WriteString(npc.Value.Model); // StrA - kfm model string
+            pWriter.WriteString(npc.Value.NpcMetadataModel.Model);
         }
         // If NPC is not valid, the packet seems to stop here
 

@@ -141,10 +141,10 @@ public static class RandomStats
             {
                 continue;
             }
-            newBonus[stat.ItemAttribute] = new BasicStat(dictionary[stat.ItemAttribute][Roll(item.Level)]);
+            newBonus[stat.ItemAttribute] = new BasicStat(dictionary[stat.ItemAttribute][Roll(item.Id)]);
         }
 
-        foreach (SpecialStat stat in item.Stats.Randoms.OfType<SpecialStat>())
+        foreach (SpecialStat stat in item.Stats.Randoms.Values.OfType<SpecialStat>())
         {
             if (isSpecialStat && (short) stat.ItemAttribute == ignoreStat)
             {
@@ -157,7 +157,7 @@ public static class RandomStats
             {
                 continue;
             }
-            newBonus[stat.ItemAttribute] = new SpecialStat(dictionary[stat.ItemAttribute][Roll(item.Level)]);
+            newBonus[stat.ItemAttribute] = new SpecialStat(dictionary[stat.ItemAttribute][Roll(item.Id)]);
         }
 
         return newBonus;

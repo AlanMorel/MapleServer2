@@ -157,6 +157,7 @@ CREATE TABLE `characters`
     `unlocked_taxis`           text,
     `visiting_home_id`         bigint           NOT NULL,
     `gathering_count`          text,
+    `active_pet_item_uid`      bigint           NOT NULL,
     PRIMARY KEY (`character_id`),
     UNIQUE KEY `ix_characters_name` (`name`),
     KEY `ix_characters_accountid` (`account_id`),
@@ -521,6 +522,7 @@ CREATE TABLE `items`
     `blackmarket_category`     text,
     `category`                 text,
     `ugc_uid`                  bigint           NULL,
+    `pet_uid`                  bigint           NULL,
     PRIMARY KEY (`uid`),
     KEY `ix_items_bankinventoryid` (`bank_inventory_id`),
     KEY `ix_items_guildid` (`guild_id`),
@@ -530,13 +532,15 @@ CREATE TABLE `items`
     KEY `ix_items_owneraccountid` (`owner_account_id`),
     KEY `ix_items_ownercharacterid` (`owner_character_id`),
     KEY `ix_items_ugcuid` (`ugc_uid`),
+    KEY `ix_items_petuid` (`pet_uid`),
     CONSTRAINT `fk_items_bankinventories_bankinventoryid` FOREIGN KEY (`bank_inventory_id`) REFERENCES `bank_inventories` (`id`) ON DELETE RESTRICT,
     CONSTRAINT `fk_items_characters_owneraccountid` FOREIGN KEY (`owner_account_id`) REFERENCES `accounts` (`id`) ON DELETE RESTRICT,
     CONSTRAINT `fk_items_characters_ownercharacterid` FOREIGN KEY (`owner_character_id`) REFERENCES `characters` (`character_id`) ON DELETE RESTRICT,
     CONSTRAINT `fk_items_guilds_guildid` FOREIGN KEY (`guild_id`) REFERENCES `guilds` (`id`) ON DELETE RESTRICT,
     CONSTRAINT `fk_items_homes_homeid` FOREIGN KEY (`home_id`) REFERENCES `homes` (`id`) ON DELETE RESTRICT,
     CONSTRAINT `fk_items_inventories_inventoryid` FOREIGN KEY (`inventory_id`) REFERENCES `inventories` (`id`) ON DELETE RESTRICT,
-    CONSTRAINT `fk_items_mails_mailid` FOREIGN KEY (`mail_id`) REFERENCES `mails` (`id`) ON DELETE RESTRICT
+    CONSTRAINT `fk_items_mails_mailid` FOREIGN KEY (`mail_id`) REFERENCES `mails` (`id`) ON DELETE RESTRICT,
+    CONSTRAINT `pet_info_FK` FOREIGN KEY (`pet_uid`) REFERENCES `pets` (`uid`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
@@ -872,7 +876,7 @@ CREATE TABLE `game_event_user_values`
   COLLATE = utf8mb4_0900_ai_ci;
 
 --
--- Table structure for table `banner_slot`
+-- Table structure for table `ad_banner_slots`
 --
 
 DROP TABLE IF EXISTS `ad_banner_slots`;
@@ -885,6 +889,24 @@ CREATE TABLE `ad_banner_slots`
     `ugc_uid`   bigint,
     CONSTRAINT `banner_slots_pk` PRIMARY KEY (`id`),
     CONSTRAINT `banner_slots_ugc_FK` FOREIGN KEY (`ugc_uid`) REFERENCES `ugc` (`uid`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci;
+
+--
+-- Table structure for table `pets`
+--
+
+DROP TABLE IF EXISTS `pets`;
+CREATE TABLE `pets`
+(
+    `uid`             bigint      NOT NULL AUTO_INCREMENT,
+    `name`            varchar(25) NULL,
+    `exp`             bigint      NULL,
+    `level`           smallint    NULL,
+    `potion_settings` mediumtext  NOT NULL,
+    `loot_settings`   mediumtext  NOT NULL,
+    CONSTRAINT `pets_pk` PRIMARY KEY (`uid`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;

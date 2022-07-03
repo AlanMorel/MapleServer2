@@ -75,7 +75,7 @@ public class UserSyncHandler : GamePacketHandler<UserSyncHandler>
 
         if (IsOutOfBounds(fieldPlayer.Coord, session.FieldManager.BoundingBox))
         {
-            session.Send(UserMoveByPortalPacket.Move(fieldPlayer, player.SafeBlock, fieldPlayer.Rotation));
+            player.Move(player.SafeBlock, fieldPlayer.Rotation);
             player.FallDamage();
         }
 

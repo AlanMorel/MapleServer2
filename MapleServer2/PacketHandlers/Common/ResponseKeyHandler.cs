@@ -202,7 +202,7 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
         session.Send(PvpPacket.Mode16());
         session.Send(PvpPacket.Mode17());
 
-        session.Send(ResponsePetPacket.Mode07());
+        session.Send(ResponsePetPacket.LoadAlbum());
         // LegionBattle (0xF6)
         // CharacterAbility
         // E1 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00

@@ -391,8 +391,7 @@ public class RequestCubeHandler : GamePacketHandler<RequestCubeHandler>
         fieldLiftable.Rotation = rotation;
 
         liftable.State = LiftableState.Active;
-        liftable.Enabled = true;
-        liftable.PickedUp = false;
+        liftable.ItemCount++;
 
         player.FieldPlayer.CarryingLiftable = null;
 
@@ -406,26 +405,22 @@ public class RequestCubeHandler : GamePacketHandler<RequestCubeHandler>
         fieldManager.BroadcastPacket(LiftablePacket.Drop(fieldLiftable));
         fieldManager.BroadcastPacket(ResponseCubePacket.PlaceLiftable(fieldLiftable, player.FieldPlayer.ObjectId));
         fieldManager.BroadcastPacket(BuildModePacket.Use(player.FieldPlayer, BuildModeHandler.BuildModeType.Stop));
-        if (target is null)
-        {
-            fieldManager.BroadcastPacket(LiftablePacket.UpdateEntityByCoord(fieldLiftable));
-        }
+        fieldManager.BroadcastPacket(LiftablePacket.UpdateEntityByCoord(fieldLiftable));
 
-        if (liftable.Metadata.ItemLifeTime is 0)
+        if (target is null) // don't remove liftable if it's not on target
         {
             return;
         }
 
         Task.Run(async () =>
         {
-            await Task.Delay(liftable.Metadata.ItemLifeTime);
+            await Task.Delay(liftable.Metadata.LiftableFinishTime);
 
             fieldManager.BroadcastPacket(LiftablePacket.UpdateEntityByCoord(fieldLiftable));
             fieldManager.BroadcastPacket(ResponseCubePacket.RemoveCube(0, 0, fieldLiftable.Coord.ToByte()));
             fieldManager.BroadcastPacket(LiftablePacket.RemoveCube(fieldLiftable));
 
             liftable.State = LiftableState.Removed;
-            liftable.Enabled = false;
 
             fieldManager.State.InteractObjects.Remove(liftable.EntityId, out _);
             // TODO: regen task
@@ -821,7 +816,7 @@ public class RequestCubeHandler : GamePacketHandler<RequestCubeHandler>
         int x = -1 * Block.BLOCK_SIZE * (home.Size - 1);
         foreach (IFieldObject<Player> fieldPlayer in session.FieldManager.State.Players.Values)
         {
-            fieldPlayer.Value.Session.Send(UserMoveByPortalPacket.Move(fieldPlayer, CoordF.From(x, x, Block.BLOCK_SIZE * 3), CoordF.From(0, 0, 0)));
+            fieldPlayer.Value.Move(CoordF.From(x, x, Block.BLOCK_SIZE * 3), default);
         }
 
         foreach (Cube layoutCube in layout.Cubes)
@@ -858,7 +853,7 @@ public class RequestCubeHandler : GamePacketHandler<RequestCubeHandler>
         int x = -1 * Block.BLOCK_SIZE * (home.Size - 1);
         foreach (IFieldObject<Player> fieldPlayer in session.FieldManager.State.Players.Values)
         {
-            fieldPlayer.Value.Session.Send(UserMoveByPortalPacket.Move(fieldPlayer, CoordF.From(x, x, Block.BLOCK_SIZE * 3), CoordF.From(0, 0, 0)));
+            fieldPlayer.Value.Move(CoordF.From(x, x, Block.BLOCK_SIZE * 3), default);
         }
 
         foreach (Cube cube in layout.Cubes)
@@ -952,7 +947,7 @@ public class RequestCubeHandler : GamePacketHandler<RequestCubeHandler>
 
         foreach (IFieldObject<Player> fieldPlayer in session.FieldManager.State.Players.Values)
         {
-            fieldPlayer.Value.Session.Send(UserMoveByPortalPacket.Move(fieldPlayer, CoordF.From(x, x, Block.BLOCK_SIZE * 3), CoordF.From(0, 0, 0)));
+            fieldPlayer.Value.Move(CoordF.From(x, x, Block.BLOCK_SIZE * 3), default);
         }
     }
 

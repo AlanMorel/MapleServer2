@@ -332,7 +332,7 @@ public class ItemSocketSystemHandler : GamePacketHandler<ItemSocketSystemHandler
         long gemItemUid = packet.ReadLong();
         byte slot = packet.ReadByte();
 
-        if (!session.Player.Inventory.HasItem(equipItemUid))
+        if (!session.Player.Inventory.HasItem(equipItemUid) && !session.Player.Inventory.ItemIsEquipped(equipItemUid))
         {
             session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.TargetIsNotInYourInventory));
             return;
@@ -380,7 +380,7 @@ public class ItemSocketSystemHandler : GamePacketHandler<ItemSocketSystemHandler
         long equipItemUid = packet.ReadLong();
         byte slot = packet.ReadByte();
 
-        if (!session.Player.Inventory.HasItem(equipItemUid))
+        if (!session.Player.Inventory.HasItem(equipItemUid) && !session.Player.Inventory.ItemIsEquipped(equipItemUid))
         {
             session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.ItemIsNotInYourInventory));
             return;

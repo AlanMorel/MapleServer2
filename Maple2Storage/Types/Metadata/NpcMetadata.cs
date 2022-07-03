@@ -11,7 +11,7 @@ public class NpcMetadata
     [XmlElement(Order = 2)]
     public string Name;
     [XmlElement(Order = 3)]
-    public string Model = string.Empty;
+    public NpcMetadataModel NpcMetadataModel = new();
     [XmlElement(Order = 4)]
     public int TemplateId;
     [XmlElement(Order = 5)]
@@ -51,7 +51,7 @@ public class NpcMetadata
     [XmlElement(Order = 22)]
     public NpcMetadataInteract NpcMetadataInteract = new();
     [XmlElement(Order = 23)]
-    public NpcStats Stats;
+    public XmlStats NpcStats;
     [XmlElement(Order = 24)]
     public int ShopId;
     [XmlElement(Order = 25)]
@@ -59,10 +59,10 @@ public class NpcMetadata
 
     public override string ToString()
     {
-        return $"Npc:(Id:{Id},Position:{Coord},Model:{Model},Friendly:{Type},ShopId:{ShopId})";
+        return $"Npc:(Id:{Id},Position:{Coord},Friendly:{Type},ShopId:{ShopId})";
     }
 
-    public bool IsBoss() => NpcMetadataBasic.Class >= 3 && Type is not NpcType.Friendly;
+    public bool IsBoss() => NpcMetadataBasic.Class >= 3 && Type is NpcType.Enemy;
 }
 
 [XmlType]
@@ -230,4 +230,13 @@ public class NpcMetadataCapsule
         Height = height;
         Ignore = ignore;
     }
+}
+
+[XmlType]
+public class NpcMetadataModel
+{
+    [XmlElement(Order = 1)]
+    public string Model;
+    [XmlElement(Order = 2)]
+    public float Scale;
 }

@@ -82,7 +82,8 @@ public class MapCommand : InGameCommand
 
         if (!int.TryParse(mapName, out int mapId))
         {
-            MapMetadata mapMetadata = MapMetadataStorage.GetAll().FirstOrDefault(x => string.Equals(x.Name, mapName, StringComparison.CurrentCultureIgnoreCase));
+            MapMetadata mapMetadata =
+                MapMetadataStorage.GetAll().FirstOrDefault(x => string.Equals(x.Name, mapName, StringComparison.CurrentCultureIgnoreCase));
             if (mapMetadata is null)
             {
                 trigger.Session.SendNotice($"Map '{mapName}' not found.");
@@ -104,7 +105,7 @@ public class MapCommand : InGameCommand
             return;
         }
 
-        trigger.Session.Player.Warp(mapId, instanceId: 1);
+        trigger.Session.Player.Warp(mapId);
     }
 }
 
@@ -135,15 +136,23 @@ public class GotoPlayerCommand : InGameCommand
             return;
         }
 
-        IFieldObject<Player> fieldPlayer = target.Session.Player.FieldPlayer;
+        IFieldObject<Player> targetFieldPlayer = target.Session.Player.FieldPlayer;
 
-        if (target.MapId == trigger.Session.Player.MapId && target.InstanceId == trigger.Session.Player.InstanceId)
+        Player player = trigger.Session.Player;
+        if (target.MapId == player.MapId && target.InstanceId == player.InstanceId)
         {
-            trigger.Session.Send(UserMoveByPortalPacket.Move(trigger.Session.Player.FieldPlayer, fieldPlayer.Coord, fieldPlayer.Rotation));
+            player.Move(targetFieldPlayer.Coord, targetFieldPlayer.Rotation);
             return;
         }
 
-        trigger.Session.Player.Warp(target.MapId, fieldPlayer.Coord, instanceId: target.InstanceId);
+        if (player.ChannelId != target.ChannelId)
+        {
+            player.ChannelId = target.ChannelId;
+            player.WarpGameToGame(target.MapId, target.InstanceId, targetFieldPlayer.Coord);
+            return;
+        }
+
+        player.Warp(target.MapId, targetFieldPlayer.Coord, instanceId: target.InstanceId);
     }
 }
 
@@ -167,7 +176,8 @@ public class GotoCoordCommand : InGameCommand
     {
         CoordF coordF = trigger.Get<CoordF>("pos");
 
-        IFieldActor<Player> fieldPlayer = trigger.Session.Player.FieldPlayer;
+        Player player = trigger.Session.Player;
+        IFieldActor<Player> fieldPlayer = player.FieldPlayer;
         if (coordF == default)
         {
             trigger.Session.SendNotice($"Coord: {fieldPlayer.Coord}");
@@ -175,7 +185,6 @@ public class GotoCoordCommand : InGameCommand
             return;
         }
 
-        fieldPlayer.Coord = coordF;
-        trigger.Session.Send(UserMoveByPortalPacket.Move(fieldPlayer, coordF, fieldPlayer.Rotation));
+        player.Move(coordF, fieldPlayer.Rotation);
     }
 }

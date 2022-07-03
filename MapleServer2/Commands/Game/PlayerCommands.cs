@@ -158,7 +158,7 @@ public class LevelCommand : InGameCommand
 
         // Reset stats to default
         player.Stats = new(player.Job);
-        player.Stats.AddBaseStats(player, level - 1);
+        player.Stats.AddBaseStats(player, level);
 
         trigger.Session.Send(StatPacket.SetStats(player.FieldPlayer));
         trigger.Session.FieldManager.BroadcastPacket(StatPacket.SetStats(player.FieldPlayer), trigger.Session);
@@ -182,7 +182,8 @@ public class LevelUpCommand : InGameCommand
 
     public override void Execute(GameCommandTrigger trigger)
     {
-        trigger.Session.Player.Levels.LevelUp();
+        Levels levels = trigger.Session.Player.Levels;
+        levels.GainExp(ExpMetadataStorage.GetExpToLevel(levels.Level) - levels.Exp);
     }
 }
 

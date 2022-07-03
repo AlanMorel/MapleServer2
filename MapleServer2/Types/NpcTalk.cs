@@ -92,13 +92,28 @@ public class NpcTalk
                     session.Player.Inventory.AddItem(session, item, true);
                     session.Send(NpcTalkPacket.Action(action, "", "", 0, item));
                     break;
+                case ActionType.MoveMap:
+                    DynValue map = npcScript.RunFunction("actionMoveMap");
+
+                    int mapId = (int) map.Tuple[0].Number;
+                    int portalId = (int) map.Tuple[1].Number;
+
+                    MapPortal portalDst = MapEntityMetadataStorage.GetPortals(mapId).FirstOrDefault(x => x.Id == portalId);
+                    if (portalDst is null)
+                    {
+                        session.Player.Warp(mapId);
+                        return;
+                    }
+
+                    session.Player.Warp(mapId, portalDst.Coord, portalDst.Rotation);
+                    break;
             }
         }
 
         // this needs to be sent after the UI window action
         if (actions.Contains(ActionType.Portal))
         {
-            session.Send(UserMoveByPortalPacket.Move(session.Player.FieldPlayer, portal.Coord.ToFloat(), portal.Rotation.ToFloat()));
+            session.Player.Move(portal.Coord.ToFloat(), portal.Rotation.ToFloat());
         }
     }
 }

@@ -67,6 +67,7 @@ public static class DatabaseManager
     public static DatabaseRouletteGameItem RouletteGameItems { get; } = new();
     public static DatabaseOXQuizQuestion OxQuizQuestion { get; } = new();
     public static DatabaseWardrobe Wardrobes { get; } = new();
+    public static DatabasePets Pets { get; } = new();
 
     static DatabaseManager()
     {

@@ -155,7 +155,7 @@ public class RideHandler : GamePacketHandler<RideHandler>
         }
 
         session.FieldManager.BroadcastPacket(MountPacket.StopTwoPersonRide(otherPlayer.ObjectId, session.Player.FieldPlayer.ObjectId));
-        session.Send(UserMoveByPortalPacket.Move(session.Player.FieldPlayer, otherPlayer.Coord, otherPlayer.Rotation));
+        session.Player.Move(otherPlayer.Coord, otherPlayer.Rotation);
         session.Player.Mount = null;
         if (otherPlayer.Value.Mount != null)
         {

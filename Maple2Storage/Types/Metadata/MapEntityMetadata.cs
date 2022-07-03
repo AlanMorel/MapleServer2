@@ -663,35 +663,41 @@ public class MapLiftableObject
     [XmlElement(Order = 2)]
     public int ItemId;
     [XmlElement(Order = 3)]
-    public string MaskQuestId;
+    public int ItemStackCount;
     [XmlElement(Order = 4)]
-    public string MaskQuestState;
+    public string MaskQuestId;
     [XmlElement(Order = 5)]
-    public string EffectQuestId;
+    public string MaskQuestState;
     [XmlElement(Order = 6)]
-    public string EffectQuestState;
+    public string EffectQuestId;
     [XmlElement(Order = 7)]
-    public int ItemLifeTime;
+    public string EffectQuestState;
     [XmlElement(Order = 8)]
-    public int LiftableRegenCheckTime;
+    public int ItemLifeTime;
     [XmlElement(Order = 9)]
-    public CoordF Position;
+    public int LiftableRegenCheckTime;
     [XmlElement(Order = 10)]
+    public int LiftableFinishTime;
+    [XmlElement(Order = 11)]
+    public CoordF Position;
+    [XmlElement(Order = 12)]
     public CoordF Rotation;
 
     public MapLiftableObject() { }
 
-    public MapLiftableObject(string entityId, int itemId, string maskQuestId, string maskQuestState, string effectQuestId, string effectQuestState,
-        int itemLifeTime, int regenCheckTime, CoordF position, CoordF rotation)
+    public MapLiftableObject(string entityId, int itemId, int itemStackCount, string maskQuestId, string maskQuestState, string effectQuestId, string effectQuestState,
+        int itemLifeTime, int regenCheckTime, int liftableFinishTime, CoordF position, CoordF rotation)
     {
         EntityId = entityId;
         ItemId = itemId;
+        ItemStackCount = itemStackCount;
         MaskQuestId = maskQuestId;
         MaskQuestState = maskQuestState;
         EffectQuestId = effectQuestId;
         EffectQuestState = effectQuestState;
         ItemLifeTime = itemLifeTime;
         LiftableRegenCheckTime = regenCheckTime;
+        LiftableFinishTime = liftableFinishTime;
         Position = position;
         Rotation = rotation;
     }

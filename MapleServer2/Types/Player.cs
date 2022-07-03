@@ -66,10 +66,12 @@ public class Player
     public List<PrestigeMission> PrestigeMissions = new();
 
     public Stats Stats;
+
     public IFieldObject<Mount> Mount;
-    public IFieldObject<Pet> Pet;
     public IFieldObject<GuideObject> Guide;
     public IFieldObject<Instrument> Instrument;
+
+    public Item ActivePet;
 
     public long HouseStorageAccessTime;
     public long HouseDoctorAccessTime;
@@ -168,6 +170,7 @@ public class Player
 
     public Character FieldPlayer;
 
+    private Dictionary<int, short> PassiveSkillEffects = new();
     public Player() { }
 
     // Initializes all values to be saved into the database
@@ -294,14 +297,34 @@ public class Player
         }
     }
 
-    public void Warp(int mapId, CoordF? coord = null, CoordF? rotation = null, long instanceId = 1)
+    public void Warp(int mapId, CoordF? coord = null, CoordF? rotation = null, long instanceId = -1)
     {
-        UpdateCoords(mapId, instanceId, coord, rotation);
-
-        if (coord is null && rotation is null)
+        if (MapMetadataStorage.GetMetadata(mapId).Property.IsTutorialMap)
         {
-            GetSpawnCoords(mapId);
+            WarpGameToGame(mapId, instanceId, coord, rotation);
+            return;
         }
+
+        if (mapId == MapId)
+        {
+            if (coord is null || rotation is null)
+            {
+                MapPlayerSpawn spawn = GetSpawnCoords(mapId);
+                if (spawn is null)
+                {
+                    Move(SavedCoord, SavedRotation);
+                    return;
+                }
+
+                Move(spawn.Coord.ToFloat(), spawn.Rotation.ToFloat());
+                return;
+            }
+
+            Move((CoordF) coord, (CoordF) rotation);
+            return;
+        }
+
+        UpdateCoords(mapId, instanceId, coord, rotation);
 
         Session.FieldManager.RemovePlayer(this);
         DatabaseManager.Characters.Update(this);
@@ -330,6 +353,14 @@ public class Player
         IsMigrating = true;
 
         Session.SendFinal(MigrationPacket.GameToGame(endpoint, this), logoutNotice: false);
+    }
+
+    public void Move(CoordF coord, CoordF rotation, bool isTrigger = false)
+    {
+        FieldPlayer.Coord = coord;
+        FieldPlayer.Rotation = rotation;
+
+        Session.Send(UserMoveByPortalPacket.Move(FieldPlayer, coord, rotation, isTrigger));
     }
 
     public Dictionary<ItemSlot, Item> GetEquippedInventory(InventoryTab tab)
@@ -501,18 +532,16 @@ public class Player
         return true;
     }
 
-    private void GetSpawnCoords(int mapId)
+    private MapPlayerSpawn GetSpawnCoords(int mapId)
     {
         MapPlayerSpawn spawn = MapEntityMetadataStorage.GetRandomPlayerSpawn(mapId);
         if (spawn is null)
         {
             Session.SendNotice($"Could not find a spawn for map {mapId}");
-            return;
+            return null;
         }
 
-        SavedCoord = spawn.Coord.ToFloat();
-        SafeBlock = spawn.Coord.ToFloat();
-        SavedRotation = spawn.Rotation.ToFloat();
+        return spawn;
     }
 
     private void UpdateCoords(int mapId, long instanceId, CoordF? coord = null, CoordF? rotation = null)
@@ -534,8 +563,23 @@ public class Player
             SavedRotation = (CoordF) rotation;
         }
 
+        if (coord is null && rotation is null)
+        {
+            MapPlayerSpawn spawn = GetSpawnCoords(mapId);
+            if (spawn is not null)
+            {
+                SavedCoord = spawn.Coord;
+                SavedRotation = spawn.Rotation;
+                SafeBlock = SavedCoord;
+            }
+        }
+
         MapId = mapId;
-        InstanceId = instanceId;
+
+        if (instanceId != -1)
+        {
+            InstanceId = instanceId;
+        }
 
         if (!UnlockedMaps.Contains(MapId))
         {
@@ -560,51 +604,21 @@ public class Player
         GearScore += value;
     }
 
-    public void DecreaseStats(Item item)
-    {
-        foreach (ItemStat stat in item.Stats.Constants.Values)
-        {
-            Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat + (int) (1000 * stat.Rate));
-        }
-
-        foreach (ItemStat stat in item.Stats.Statics.Values)
-        {
-            Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat + (int) (1000 * stat.Rate));
-        }
-
-        foreach (ItemStat stat in item.Stats.Randoms.Values)
-        {
-            Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat + (int) (1000 * stat.Rate));
-        }
-
-        foreach (ItemStat stat in item.Stats.Enchants.Values)
-        {
-            int constantValue = item.Stats.Constants.TryGetValue(stat.ItemAttribute, out ItemStat itemStat) ? itemStat.Flat : 0;
-            int staticValue = item.Stats.Statics.TryGetValue(stat.ItemAttribute, out ItemStat itemStat2) ? itemStat2.Flat : 0;
-            int totalStat = constantValue + staticValue;
-            Stats[stat.ItemAttribute].DecreaseBonus((int) (totalStat * stat.Rate));
-        }
-
-        UpdateGearScore(item, -item.GearScore);
-
-        Session.Send(StatPacket.SetStats(FieldPlayer));
-    }
-
     public void ComputeStatContribution(Item item)
     {
         foreach (ItemStat stat in item.Stats.Constants.Values)
         {
-            Stats[stat.ItemAttribute].IncreaseBonus(stat.Flat + (int) (1000 * stat.Rate));
+            Stats[stat.ItemAttribute].Add(stat.Flat, stat.Rate);
         }
 
         foreach (ItemStat stat in item.Stats.Statics.Values)
         {
-            Stats[stat.ItemAttribute].IncreaseBonus(stat.Flat + (int) (1000 * stat.Rate));
+            Stats[stat.ItemAttribute].Add(stat.Flat, stat.Rate);
         }
 
         foreach (ItemStat stat in item.Stats.Randoms.Values)
         {
-            Stats[stat.ItemAttribute].IncreaseBonus(stat.Flat + (int) (1000 * stat.Rate));
+            Stats[stat.ItemAttribute].Add(stat.Flat, stat.Rate);
         }
 
         foreach (ItemStat stat in item.Stats.Enchants.Values)
@@ -612,30 +626,16 @@ public class Player
             int constantValue = item.Stats.Constants.TryGetValue(stat.ItemAttribute, out ItemStat itemStat) ? itemStat.Flat : 0;
             int staticValue = item.Stats.Statics.TryGetValue(stat.ItemAttribute, out ItemStat itemStat2) ? itemStat2.Flat : 0;
             int totalStat = constantValue + staticValue;
-            Stats[stat.ItemAttribute].IncreaseBonus((int) (totalStat * stat.Rate));
+            Stats[stat.ItemAttribute].Add((int) (totalStat * stat.Rate));
         }
     }
 
-    public void IncreaseStats(Item item)
+    public void AddStats()
     {
-        ComputeStatContribution(item);
 
-        UpdateGearScore(item, item.GearScore);
-
-        Session.Send(StatPacket.SetStats(FieldPlayer));
-    }
-
-    public void RecomputeStats()
-    {
-        Stat hp = Stats[StatAttribute.Hp];
-        Stat spirit = Stats[StatAttribute.Spirit];
-        Stat stamina = Stats[StatAttribute.Stamina];
-
-        long hpValue = hp.TotalLong;
-        long spiritValue = spirit.TotalLong;
-        long staminaValue = stamina.TotalLong;
-
-        Stats.RecomputeStats(this);
+        Stats = new(Job);
+        Stats.AddBaseStats(this, Levels.Level);
+        Stats.RecomputeAllocations(StatPointDistribution);
 
         foreach ((ItemSlot slot, Item item) in Inventory.Equips)
         {
@@ -647,21 +647,24 @@ public class Player
             FieldPlayer.IncreaseStats(effect);
         }
 
-        hp.TotalLong = Math.Min(hp.BonusLong, hpValue);
-        spirit.TotalLong = Math.Min(spirit.BonusLong, spiritValue);
-        stamina.TotalLong = Math.Min(stamina.BonusLong, staminaValue);
+        Stats.ComputeStatBonuses();
 
-        Session.Send(StatPacket.SetStats(FieldPlayer));
+        if (Job == Job.Runeblade)
+        {
+            Stats.Data[StatAttribute.Int].AddBonus((long) (0.7f * Stats.Data[StatAttribute.Str].TotalLong));
+        }
+
+        Stats.AddAttackBonus(this);
     }
 
     public void EffectAdded(AdditionalEffect effect)
     {
-        Session.Send(StatPacket.SetStats(FieldPlayer));
+
     }
 
     public void EffectRemoved(AdditionalEffect effect)
     {
-        Session.Send(StatPacket.SetStats(FieldPlayer));
+
     }
 
     public void InitializeEffects()
@@ -671,6 +674,33 @@ public class Player
             if (item != null)
             {
                 LapenshardHandler.AddEffects(this, item);
+            }
+        }
+
+        UpdatePassiveSkills();
+    }
+
+    public void UpdatePassiveSkills()
+    {
+        foreach ((int id, short level) in PassiveSkillEffects)
+        {
+            PassiveSkillEffects[id] = -1;
+        }
+
+        foreach ((int id, short level) in SkillTabs[(int) ActiveSkillTabId - 1].GetSkillsByType(SkillType.Passive))
+        {
+            PassiveSkillEffects[id] = level;
+        }
+
+        foreach ((int id, short level) in PassiveSkillEffects)
+        {
+            if (level == -1)
+            {
+                AdditionalEffects.RemoveEffect(id, level);
+            }
+            else
+            {
+                AdditionalEffects.AddEffect(id, level);
             }
         }
     }
