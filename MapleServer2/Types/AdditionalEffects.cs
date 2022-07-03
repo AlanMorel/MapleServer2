@@ -75,7 +75,6 @@ public class AdditionalEffects
         // doesnt check for shared buff categories (sigils, whetstones, etc)
         // TODO: add correct refreshing behavior based on attributes from the xmls
 
-        int buffId = -1;
         AdditionalEffect effect = new(parameters.Id, parameters.Level, parameters.Stacks);
 
         if (effect.LevelMetadata == null)
@@ -104,9 +103,7 @@ public class AdditionalEffects
             {
                 parameters.Stacks = Math.Min(oldEffect.LevelMetadata.Basic.MaxBuffCount, parameters.Stacks + oldEffect.Stacks);
 
-                RemoveEffect(oldEffect, i, false);
-
-                buffId = oldEffect.BuffId;
+                RemoveEffect(oldEffect, i, true);
 
                 break;
             }
@@ -122,7 +119,7 @@ public class AdditionalEffects
         if (parameters.IsBuff)
         {
             effect.SourceId = parameters.Source == -1 ? Parent.ObjectId : parameters.Source;
-            effect.BuffId = buffId == -1 ? GuidGenerator.Int() : buffId;
+            effect.BuffId = GuidGenerator.Int();
             effect.Start = Environment.TickCount;
             effect.Duration = parameters.Duration;
 
@@ -137,14 +134,7 @@ public class AdditionalEffects
 
         if (parameters.IsBuff)
         {
-            if (buffId == -1)
-            {
-                Parent.FieldManager.BroadcastPacket(BuffPacket.AddBuff(effect, Parent.ObjectId));
-
-                return effect;
-            }
-
-            Parent.FieldManager.BroadcastPacket(BuffPacket.UpdateBuff(effect, Parent.ObjectId));
+            Parent.FieldManager.BroadcastPacket(BuffPacket.AddBuff(effect, Parent.ObjectId));
         }
 
         return effect;
