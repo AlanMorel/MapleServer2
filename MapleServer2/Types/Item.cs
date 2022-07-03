@@ -485,7 +485,7 @@ public class Item
 
         GemSockets = GemSockets ?? new();
 
-        if(!ItemMetadataStorage.IsValid(Id))
+        if (!ItemMetadataStorage.IsValid(Id))
         {
             return;
         }
