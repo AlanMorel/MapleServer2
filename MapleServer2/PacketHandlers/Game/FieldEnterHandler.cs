@@ -48,12 +48,10 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
         {
             player.FieldPlayer.AdditionalEffects.AddEffect(new(100000014, 1)
             {
-                Duration = (int)(Math.Min(account.VIPExpiration - TimeInfo.Now(), 0x0FFFFFFF)),
+                Duration = (int) (Math.Min(account.VIPExpiration - TimeInfo.Now(), 0x0FFFFFFF)),
                 IsBuff = true
             });
 
-            //session.Send(BuffPacket.AddBuff(
-            //    new(100000014, player.FieldPlayer.ObjectId, player.FieldPlayer.ObjectId, 1, (int) account.VIPExpiration, 1)));
             session.Send(PremiumClubPacket.ActivatePremium(player.FieldPlayer, account.VIPExpiration));
         }
 

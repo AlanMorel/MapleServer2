@@ -97,7 +97,7 @@ public static class BuffPacket
         pWriter.WriteInt(start);
         pWriter.WriteInt(end);
         pWriter.WriteInt(skillId);
-        pWriter.WriteShort((short)level);
+        pWriter.WriteShort((short) level);
         pWriter.WriteInt(stacks);
     }
 }
