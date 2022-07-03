@@ -395,6 +395,11 @@ public sealed class Inventory : IInventory
             }
         }
 
+        if (item.TransferType == TransferType.BindOnEquip & !item.IsBound())
+        {
+            item.BindItem(session.Player);
+        }
+
         // Equip new item
         item.IsEquipped = true;
         item.ItemSlot = equipSlot;
