@@ -9,7 +9,7 @@ public static class StatusHandler
     // TODO: Handle Add Stacks to status.
     public static void Handle(GameSession session, Status status)
     {
-        session.FieldManager.BroadcastPacket(BuffPacket.SendBuff(0, status));
+        session.FieldManager.BroadcastPacket(BuffPacket.AddBuff(status));
         Remove(session, status);
     }
 
@@ -18,7 +18,7 @@ public static class StatusHandler
         return Task.Run(async () =>
         {
             await Task.Delay(status.Duration);
-            session.FieldManager.BroadcastPacket(BuffPacket.SendBuff(1, status));
+            session.FieldManager.BroadcastPacket(BuffPacket.RemoveBuff(status));
         });
     }
 }

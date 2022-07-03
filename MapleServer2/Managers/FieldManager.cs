@@ -604,7 +604,7 @@ public class FieldManager
             for (int i = 0; i < fieldNpc.Value.NpcMetadataEffect.EffectIds.Length; i++)
             {
                 SkillCast effectCast = new(fieldNpc.Value.NpcMetadataEffect.EffectIds[i], fieldNpc.Value.NpcMetadataEffect.EffectLevels[i]);
-                session.Send(BuffPacket.SendBuff(0, new(effectCast, fieldNpc.ObjectId, fieldNpc.ObjectId, 1)));
+                session.Send(BuffPacket.AddBuff(new(effectCast, fieldNpc.ObjectId, fieldNpc.ObjectId, 1)));
             }
         });
     }
@@ -1246,7 +1246,7 @@ public class FieldManager
                 int healAmount = (int) (player.Value.Stats[StatAttribute.Hp].Bonus * 0.03);
                 Status status = new(new(70000018, 1, 0, 1), player.ObjectId, healingSpot.ObjectId, 1);
 
-                player.Value.Session.Send(BuffPacket.SendBuff(0, status));
+                player.Value.Session.Send(BuffPacket.AddBuff(status));
                 BroadcastPacket(SkillDamagePacket.Heal(status, healAmount));
 
                 player.Stats[StatAttribute.Hp].AddValue(healAmount);
