@@ -261,6 +261,14 @@ public static class ItemPacketHelper
 
     public static PacketWriter WriteSockets(this PacketWriter pWriter, ItemStats stats, List<GemSocket> sockets)
     {
+        if (sockets == null)
+        {
+            pWriter.WriteByte(0); // 0 sockets
+            pWriter.WriteByte(0); // 0 unlocked sockets
+
+            return pWriter;
+        }
+
         pWriter.WriteByte((byte) sockets.Count);
         int unlockedCount = 0;
         for (int i = 0; i < sockets.Count; i++)

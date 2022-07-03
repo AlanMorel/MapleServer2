@@ -206,7 +206,7 @@ public class DatabaseItem : DatabaseTable
 
     private Item ReadItem(dynamic data)
     {
-        Item item = new()
+        return new()
         {
             Uid = data.uid,
             Name = data.name,
@@ -257,15 +257,5 @@ public class DatabaseItem : DatabaseTable
             PetInfo = data.pet_uid is null ? null : DatabaseManager.Pets.Get(data.pet_uid),
             GemSockets = data.gem_sockets is null ? null : JsonConvert.DeserializeObject<List<GemSocket>>(data.gem_sockets, Settings)
         };
-
-        if (!ItemMetadataStorage.IsValid(item.Id))
-        {
-            item.GemSockets = item.GemSockets ?? new();
-            return item;
-        }
-
-        item.GetGemSockets();
-
-        return item;
     }
 }

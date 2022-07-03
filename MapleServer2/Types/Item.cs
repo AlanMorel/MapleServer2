@@ -484,6 +484,12 @@ public class Item
         bool instantiatingNew = GemSockets == null;
 
         GemSockets = GemSockets ?? new();
+
+        if(!ItemMetadataStorage.IsValid(Id))
+        {
+            return;
+        }
+
         float optionLevelFactor = ItemMetadataStorage.GetOptionMetadata(Id).OptionLevelFactor;
 
         // Check for predefined sockets
