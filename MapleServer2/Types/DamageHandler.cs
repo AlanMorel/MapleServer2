@@ -53,11 +53,11 @@ public class DamageHandler
         {
             // TODO: get critResist from enemy stats from enemy buff. new stat recommended
             const double CritResist = 1;
-            double critDamage = 1000 + source.Stats[StatAttribute.CritDamage].Total;
+            double critDamage = 1000 + source.Stats[StatAttribute.CritDamage].Total + source.Stats[StatAttribute.CriticalDamage].Total;
             finalCritDamage = CritResist * ((critDamage / 1000) - 1) + 1;
         }
 
-        double damageBonus = 1 + FetchMultiplier(source.Stats, StatAttribute.TotalDamage);
+        double damageBonus = 1 + FetchMultiplier(source.Stats, StatAttribute.TotalDamage) + FetchMultiplier(source.Stats, StatAttribute.Damage);
 
         damageBonus *= finalCritDamage;
 
@@ -133,13 +133,14 @@ public class DamageHandler
 
         if (source is IFieldActor<Player> player)
         {
-            double bonusAttack = player.Stats[StatAttribute.BonusAtk].Total + 0.4 * player.Stats[StatAttribute.PetBonusAtk].Total;
+            double bonusAttack = player.Stats[StatAttribute.BonusAtk].Total + 0.396 * player.Stats[StatAttribute.PetBonusAtk].Total;
 
             // TODO: properly fetch enemy bonus attack weakness from enemy buff. new stat recommended
             const double BonusAttackWeakness = 1;
 
-            double minDamage = player.Stats[StatAttribute.MinWeaponAtk].Total + BonusAttackWeakness * bonusAttack;
-            double maxDamage = player.Stats[StatAttribute.MaxWeaponAtk].Total + BonusAttackWeakness * bonusAttack;
+            double bonusAttackCoeff = BonusAttackWeakness * GetBonusAttackCoefficient(player.Value);
+            double minDamage = player.Stats[StatAttribute.MinWeaponAtk].Total + bonusAttackCoeff * bonusAttack;
+            double maxDamage = player.Stats[StatAttribute.MaxWeaponAtk].Total + bonusAttackCoeff * bonusAttack;
 
             attackDamage = minDamage + (maxDamage - minDamage) * Random.Shared.NextDouble();
         }
@@ -165,5 +166,65 @@ public class DamageHandler
         double critChance = Math.Min(critRate / critEvasion * PercentageConversion, MaxCritRate);
 
         return Random.Shared.Next(1000) < 1000 * critChance;
+    }
+
+    private static double GetRarityBonusAttackMultiplier(Item item)
+    {
+        return (item?.Rarity ?? 0) switch
+        {
+            1 => 0.26,
+            2 => 0.27,
+            3 => 0.2883,
+            4 => 0.5,
+            5 => 1,
+            6 => 1,
+            _ => 0
+        };
+    }
+
+    private static bool IsTwoHanded(Item item)
+    {
+        return item != null && item.IsTwoHand;
+    }
+
+    private static double GetWeaponBonusAttackMultiplier(Player player)
+    {
+        player.Inventory.Equips.TryGetValue(ItemSlot.RH, out Item rightHand);
+
+        double weaponBonusAttackCoeff = GetRarityBonusAttackMultiplier(rightHand);
+
+        if (!IsTwoHanded(rightHand))
+        {
+            player.Inventory.Equips.TryGetValue(ItemSlot.LH, out Item leftHand);
+
+            weaponBonusAttackCoeff = 0.5 * (weaponBonusAttackCoeff + GetRarityBonusAttackMultiplier(rightHand));
+        }
+
+        return weaponBonusAttackCoeff;
+    }
+
+    private static double GetClassBonusAttackMultiplier(Job job)
+    {
+        return job switch
+        {
+            Job.Beginner => 1.039,
+            Job.Knight => 1.105,
+            Job.Berserker => 1.354,
+            Job.Wizard => 1.398,
+            Job.Priest => 0.975,
+            Job.Archer => 1.143,
+            Job.HeavyGunner => 1.364,
+            Job.Thief => 1.151,
+            Job.Assassin => 1.114,
+            Job.Runeblade => 1.259,
+            Job.Striker => 1.264,
+            Job.SoulBinder => 1.177,
+            _ => 1,
+        };
+    }
+
+    private static double GetBonusAttackCoefficient(Player player)
+    {
+        return 4.96 * GetWeaponBonusAttackMultiplier(player) * GetClassBonusAttackMultiplier(player.Job);
     }
 }

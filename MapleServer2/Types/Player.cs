@@ -604,27 +604,27 @@ public class Player
         GearScore += value;
     }
 
-    public void ComputeStatContribution(Item item)
+    public void ComputeStatContribution(ItemStats stats)
     {
-        foreach (ItemStat stat in item.Stats.Constants.Values)
+        foreach (ItemStat stat in stats.Constants.Values)
         {
             Stats[stat.ItemAttribute].Add(stat.Flat, stat.Rate);
         }
 
-        foreach (ItemStat stat in item.Stats.Statics.Values)
+        foreach (ItemStat stat in stats.Statics.Values)
         {
             Stats[stat.ItemAttribute].Add(stat.Flat, stat.Rate);
         }
 
-        foreach (ItemStat stat in item.Stats.Randoms.Values)
+        foreach (ItemStat stat in stats.Randoms.Values)
         {
             Stats[stat.ItemAttribute].Add(stat.Flat, stat.Rate);
         }
 
-        foreach (ItemStat stat in item.Stats.Enchants.Values)
+        foreach (ItemStat stat in stats.Enchants.Values)
         {
-            int constantValue = item.Stats.Constants.TryGetValue(stat.ItemAttribute, out ItemStat itemStat) ? itemStat.Flat : 0;
-            int staticValue = item.Stats.Statics.TryGetValue(stat.ItemAttribute, out ItemStat itemStat2) ? itemStat2.Flat : 0;
+            int constantValue = stats.Constants.TryGetValue(stat.ItemAttribute, out ItemStat itemStat) ? itemStat.Flat : 0;
+            int staticValue = stats.Statics.TryGetValue(stat.ItemAttribute, out ItemStat itemStat2) ? itemStat2.Flat : 0;
             int totalStat = constantValue + staticValue;
             Stats[stat.ItemAttribute].Add((int) (totalStat * stat.Rate));
         }
@@ -639,7 +639,25 @@ public class Player
 
         foreach ((ItemSlot slot, Item item) in Inventory.Equips)
         {
-            ComputeStatContribution(item);
+            ComputeStatContribution(item.Stats);
+
+            foreach (GemSocket socket in item.GemSockets.Sockets)
+            {
+                if (socket.Gemstone != null)
+                {
+                    ComputeStatContribution(socket.Gemstone.Stats);
+                }
+            }
+        }
+
+        if (ActivePet != null)
+        {
+            if (ActivePet.PetInfo != null)
+            {
+                Stats[StatAttribute.PetBonusAtk].Add(0, (float) ActivePet.PetInfo.Level - 1);
+            }
+
+            ComputeStatContribution(ActivePet.Stats);
         }
 
         foreach (AdditionalEffect effect in AdditionalEffects.Effects)
@@ -680,6 +698,32 @@ public class Player
         UpdatePassiveSkills();
     }
 
+    public void AddEffects(ItemAdditionalEffectMetadata effects)
+    {
+        if (effects?.Level == null || effects?.Id == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < effects.Level.Length; ++i)
+        {
+            AdditionalEffects.AddEffect(new(effects.Id[i], effects.Level[i]));
+        }
+    }
+
+    public void RemoveEffects(ItemAdditionalEffectMetadata effects)
+    {
+        if (effects?.Level == null || effects?.Id == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < effects.Level.Length; ++i)
+        {
+            AdditionalEffects.RemoveEffect(effects.Id[i], effects.Level[i]);
+        }
+    }
+
     public void UpdatePassiveSkills()
     {
         foreach ((int id, short level) in PassiveSkillEffects)
@@ -700,7 +744,7 @@ public class Player
             }
             else
             {
-                AdditionalEffects.AddEffect(id, level);
+                AdditionalEffects.AddEffect(new(id, level));
             }
         }
     }

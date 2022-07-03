@@ -77,6 +77,7 @@ public class Item
     public byte[] FaceDecorationData;
     public MusicScore Score;
     public ItemStats Stats;
+    public GemSockets GemSockets;
 
     public UGC Ugc;
 
@@ -138,6 +139,8 @@ public class Item
         {
             PetInfo = new();
         }
+
+        GemSockets = new(this);
 
         if (!saveToDatabase)
         {
@@ -205,6 +208,8 @@ public class Item
         }
 
         SetMetadataValues();
+
+        GemSockets = new(this);
     }
 
     public bool TrySplit(int splitAmount, out Item splitItem)

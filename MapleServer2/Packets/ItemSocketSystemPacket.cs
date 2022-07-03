@@ -24,7 +24,7 @@ public static class ItemSocketSystemPacket
         pWriter.WriteBool(success);
         pWriter.WriteLong(item.Uid);
         pWriter.WriteByte(slot);
-        pWriter.WriteByte((byte) item.Stats.GemSockets.Count);
+        pWriter.WriteByte(item.GemSockets.Count);
         pWriter.WriteByte((byte) unlockedSockets.Count);
         foreach (GemSocket socket in unlockedSockets)
         {

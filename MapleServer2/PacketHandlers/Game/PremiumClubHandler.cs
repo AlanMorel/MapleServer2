@@ -118,7 +118,7 @@ public class PremiumClubHandler : GamePacketHandler<PremiumClubHandler>
             account.VIPExpiration += vipTime;
             session.Send(NoticePacket.Notice(SystemNotice.PremiumExtended, NoticeType.Chat | NoticeType.FastText));
         }
-        session.Send(BuffPacket.SendBuff(0, new(100000014, session.Player.FieldPlayer.ObjectId, session.Player.FieldPlayer.ObjectId, 1, (int) vipTime, 1)));
+        session.Send(BuffPacket.AddBuff(new(100000014, session.Player.FieldPlayer.ObjectId, session.Player.FieldPlayer.ObjectId, 1, (int) vipTime, 1)));
         session.Send(PremiumClubPacket.ActivatePremium(session.Player.FieldPlayer, account.VIPExpiration));
     }
 }

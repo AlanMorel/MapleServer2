@@ -394,4 +394,18 @@ public class Stats
         Data[StatAttribute.PhysicalAtk].AddBonus(BaseStats.PhysicalAttack(player.Job, str, dex, luk));
         Data[StatAttribute.MagicAtk].AddBonus(BaseStats.MagicAttack(player.Job, inte));
     }
+
+    public void AddStat(StatAttribute attribute, StatAttributeType type, long flat, float rate)
+    {
+        if (!Data.TryGetValue(attribute, out Stat stat))
+        {
+            stat = new();
+            stat.Modifier.Type = type;
+            stat.Modifier.Rate = 1;
+
+            Data[attribute] = stat;
+        }
+
+        stat.Add(flat, rate);
+    }
 }

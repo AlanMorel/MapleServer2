@@ -75,21 +75,6 @@ public class SpecialStat : ItemStat
     public SpecialStat(ParserSpecialStat parsedStat) : base(parsedStat.Attribute, parsedStat.AttributeType, parsedStat.Value) { }
 }
 
-public class Gemstone
-{
-    public int Id;
-    public long OwnerId = 0;
-    public string OwnerName = "";
-    public bool IsLocked;
-    public long UnlockTime;
-}
-
-public class GemSocket
-{
-    public bool IsUnlocked;
-    public Gemstone Gemstone;
-}
-
 public class ItemStats
 {
     public Dictionary<StatAttribute, ItemStat> Constants;
@@ -97,7 +82,6 @@ public class ItemStats
     public Dictionary<StatAttribute, ItemStat> Randoms;
     public Dictionary<StatAttribute, ItemStat> Enchants;
     public Dictionary<StatAttribute, ItemStat> LimitBreakEnchants;
-    public List<GemSocket> GemSockets;
 
     public ItemStats() { }
 
@@ -113,7 +97,6 @@ public class ItemStats
         Randoms = CopyStats(other.Randoms);
         Enchants = CopyStats(other.Enchants);
         LimitBreakEnchants = CopyStats(other.LimitBreakEnchants);
-        GemSockets = new();
     }
 
     private void CreateNewStats(Item item)
@@ -123,7 +106,6 @@ public class ItemStats
         Randoms = new();
         Enchants = new();
         LimitBreakEnchants = new();
-        GemSockets = new();
         if (item.Rarity is 0 or > 6)
         {
             return;
@@ -142,7 +124,6 @@ public class ItemStats
         {
             Enchants = EnchantHelper.GetEnchantStats(item.EnchantLevel, item.Type, item.Level);
         }
-        GetGemSockets(item, optionLevelFactor);
     }
 
     private static Dictionary<StatAttribute, ItemStat> CopyStats(Dictionary<StatAttribute, ItemStat> otherStats)
@@ -206,56 +187,5 @@ public class ItemStats
         int smallerValue = Math.Min(value, calibratedValue);
         int summedFlat = (int) (normalStat.Flat + Random.Shared.Next(smallerValue, biggerValue));
         stats[index] = new SpecialStat(normalStat.ItemAttribute, summedFlat, StatAttributeType.Flat);
-    }
-
-    private void GetGemSockets(Item item, float optionLevelFactor)
-    {
-        // Check for predefined sockets
-        int socketId = ItemMetadataStorage.GetPropertyMetadata(item.Id).SocketDataId;
-        if (socketId != 0)
-        {
-            ItemSocketRarityData socketData = ItemSocketMetadataStorage.GetMetadata(socketId, item.Rarity);
-            if (socketData is not null)
-            {
-                for (int i = 0; i < socketData.MaxCount; i++)
-                {
-                    GemSockets.Add(new());
-                }
-
-                for (int j = 0; j < socketData.FixedOpenCount; j++)
-                {
-                    GemSockets[j].IsUnlocked = true;
-                }
-                return;
-            }
-        }
-
-        Script script = ScriptLoader.GetScript("Functions/calcItemSocketMaxCount");
-        DynValue dynValue = script.RunFunction("calcItemSocketMaxCount", (int) item.Type, item.Rarity, optionLevelFactor, (int) item.InventoryTab);
-        int slotAmount = (int) dynValue.Number;
-        if (slotAmount <= 0)
-        {
-            return;
-        }
-
-        // add sockets
-        for (int i = 0; i < slotAmount; i++)
-        {
-            GemSocket socket = new();
-            GemSockets.Add(socket);
-        }
-
-        // roll to unlock sockets
-        for (int i = 0; i < GemSockets.Count; i++)
-        {
-            int successNumber = Random.Shared.Next(0, 100);
-
-            // 5% success rate to unlock a gemsocket
-            if (successNumber < 95)
-            {
-                break;
-            }
-            GemSockets[i].IsUnlocked = true;
-        }
     }
 }
