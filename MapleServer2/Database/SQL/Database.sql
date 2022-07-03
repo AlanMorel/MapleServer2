@@ -523,6 +523,7 @@ CREATE TABLE `items`
     `category`                 text,
     `ugc_uid`                  bigint           NULL,
     `pet_uid`                  bigint           NULL,
+    `gem_sockets`              text,
     PRIMARY KEY (`uid`),
     KEY `ix_items_bankinventoryid` (`bank_inventory_id`),
     KEY `ix_items_guildid` (`guild_id`),
