@@ -139,15 +139,16 @@ public class GotoPlayerCommand : InGameCommand
         IFieldObject<Player> targetFieldPlayer = target.Session.Player.FieldPlayer;
 
         Player player = trigger.Session.Player;
-        if (target.MapId == player.MapId && target.InstanceId == player.InstanceId)
+        if (target.MapId == player.MapId && target.InstanceId == player.InstanceId && target.ChannelId == player.ChannelId)
         {
             player.Move(targetFieldPlayer.Coord, targetFieldPlayer.Rotation);
             return;
         }
 
-        if (player.ChannelId != target.ChannelId)
+        if (player.ChannelId != target.ChannelId || player.InstanceId != target.InstanceId)
         {
             player.ChannelId = target.ChannelId;
+            player.InstanceId = target.InstanceId;
             player.WarpGameToGame(target.MapId, target.InstanceId, targetFieldPlayer.Coord);
             return;
         }

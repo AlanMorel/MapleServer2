@@ -33,7 +33,6 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
 
         if (player.ActivePet is not null)
         {
-            player.ActivePet.SetMetadataValues();
             Pet pet = session.FieldManager.RequestPet(player.ActivePet, player.FieldPlayer);
             if (pet is not null)
             {
