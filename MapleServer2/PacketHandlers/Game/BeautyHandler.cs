@@ -453,7 +453,14 @@ public class BeautyHandler : GamePacketHandler<BeautyHandler>
 
     private static void ModifyBeauty(GameSession session, PacketReader packet, Item beautyItem)
     {
-        ItemSlot itemSlot = ItemMetadataStorage.GetSlot(beautyItem.Id);
+        List<ItemSlot> itemSlots = ItemMetadataStorage.GetItemSlots(beautyItem.Id);
+        if (itemSlots.Count > 1)
+        {
+            // beauty items shouldn't have more than one slot
+            return;
+        }
+        ItemSlot itemSlot = itemSlots.First();
+        
         Dictionary<ItemSlot, Item> cosmetics = session.Player.Inventory.Cosmetics;
 
         if (cosmetics.TryGetValue(itemSlot, out Item removeItem))

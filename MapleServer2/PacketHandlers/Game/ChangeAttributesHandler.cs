@@ -1,6 +1,7 @@
 ﻿using Maple2Storage.Enums;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
@@ -79,16 +80,17 @@ public class ChangeAttributesHandler : GamePacketHandler<ChangeAttributesHandler
 
         Item scrollLock = null;
 
+        List<ItemSlot> itemSlots = ItemMetadataStorage.GetItemSlots(gear.Id);
         string tag = "";
-        if (Item.IsAccessory(gear.ItemSlot))
+        if (Item.IsAccessory(itemSlots))
         {
             tag = "LockItemOptionAccessory";
         }
-        else if (Item.IsArmor(gear.ItemSlot))
+        else if (Item.IsArmor(itemSlots))
         {
             tag = "LockItemOptionArmor";
         }
-        else if (Item.IsWeapon(gear.ItemSlot))
+        else if (Item.IsWeapon(itemSlots))
         {
             tag = "LockItemOptionWeapon";
         }

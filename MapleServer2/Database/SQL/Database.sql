@@ -240,6 +240,27 @@ CREATE TABLE `macros`
   COLLATE = utf8mb4_0900_ai_ci;
 
 --
+-- Table structure for table `wardrobes`
+--
+
+DROP TABLE IF EXISTS `wardrobes`;
+CREATE TABLE `wardrobes`
+(
+    `id`               bigint NOT NULL AUTO_INCREMENT,
+    `character_id`     bigint NOT NULL,
+    `name`             text,
+    `type`             int    NOT NULL,
+    `index`            int    NOT NULL,
+    `shortcut_keycode` int    NOT NULL,
+    `equip_uids`       text,
+    PRIMARY KEY (`id`),
+    KEY `ix_wardrobes_characterid` (`character_id`),
+    CONSTRAINT fk_wardrobes_characters_id FOREIGN KEY (`character_id`) REFERENCES `characters` (`character_id`) ON DELETE RESTRICT
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci;
+
+--
 -- Table structure for table `guildapplications`
 --
 

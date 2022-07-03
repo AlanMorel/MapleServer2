@@ -29,7 +29,7 @@ public static class ItemMetadataStorage
 
     public static string GetName(int itemId) => GetMetadata(itemId).Name;
 
-    public static ItemSlot GetSlot(int itemId) => GetMetadata(itemId).Slot;
+    public static List<ItemSlot> GetItemSlots(int itemId) => GetMetadata(itemId).Slots;
 
     public static GemSlot GetGem(int itemId) => GetMetadata(itemId).Gem.Gem;
 
@@ -56,10 +56,6 @@ public static class ItemMetadataStorage
     public static ItemSkillMetadata GetSkillMetadata(int itemId) => GetMetadata(itemId).Skill;
 
     public static ItemAdditionalEffectMetadata GetAdditionalEffects(int itemId) => GetMetadata(itemId).AdditionalEffect;
-
-    public static bool GetIsTwoHand(int itemId) => GetMetadata(itemId).IsTwoHand;
-
-    public static bool GetIsDress(int itemId) => GetMetadata(itemId).IsDress;
 
     public static bool GetIsUGC(int itemId) => !string.IsNullOrEmpty(GetMetadata(itemId).UGC.Mesh);
 

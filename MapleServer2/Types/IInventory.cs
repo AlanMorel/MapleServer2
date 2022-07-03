@@ -72,6 +72,8 @@ public interface IInventory
     IEnumerable<Item> GetAllByFunctionId(int functionId);
     Item GetFromInventoryOrEquipped(long uid);
     bool ItemIsEquipped(long uid);
+    bool Equip(GameSession session, long uid, ItemSlot slot);
+    bool Unequip(GameSession session, long uid);
     Item GetEquippedItem(long uid);
     bool Replace(Item item);
     void SortInventory(GameSession session, InventoryTab tab);

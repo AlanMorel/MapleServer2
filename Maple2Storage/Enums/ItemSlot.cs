@@ -8,41 +8,41 @@ public enum ItemSlot : byte
     [Description("None")]
     NONE = 0,
     [Description("Hair")]
-    HR = 102,
+    HR = 1,
     [Description("Face")]
-    FA = 103,
+    FA = 2,
     [Description("Face Decoration")]
-    FD = 104,
-    [Description("Ear")]
-    ER = 105,
-    [Description("Face Accessory")]
-    FH = 110,
-    [Description("Eyewear")]
-    EY = 111,
-    [Description("Earring")]
-    EA = 112,
-    [Description("Cap")]
-    CP = 113,
-    [Description("Clothes")]
-    CL = 114,
-    [Description("Pants")]
-    PA = 115,
-    [Description("Gloves")]
-    GL = 116,
-    [Description("Shoes")]
-    SH = 117,
-    [Description("Mantle")]
-    MT = 118,
-    [Description("Pendant")]
-    PD = 119,
-    [Description("Ring")]
-    RI = 120,
-    [Description("Belt")]
-    BE = 121,
-    [Description("Right Hand")]
-    RH = 1,
+    FD = 3,
     [Description("Left Hand")]
-    LH = 2,
+    LH = 4,
+    [Description("Right Hand")]
+    RH = 5,
+    [Description("Cap")]
+    CP = 6,
+    [Description("Mantle")]
+    MT = 7,
+    [Description("Clothes")]
+    CL = 8,
+    [Description("Pants")]
+    PA = 9,
+    [Description("Gloves")]
+    GL = 10,
+    [Description("Shoes")]
+    SH = 11,
+    [Description("Face Accessory")]
+    FH = 12,
+    [Description("Eyewear")]
+    EY = 13,
+    [Description("Earring")]
+    EA = 14,
+    [Description("Pendant")]
+    PD = 15,
+    [Description("Ring")]
+    RI = 16,
+    [Description("Belt")]
+    BE = 17,
+    [Description("Ear")]
+    ER = 18,
     [Description("Off Hand")]
-    OH = 3
+    OH = 19
 }

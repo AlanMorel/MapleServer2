@@ -191,31 +191,23 @@ public class ItemParser : Exporter<List<ItemMetadata>>
             // Item functions
             ParseFunctions(function, metadata);
 
-            Slot firstSlot = data.slots.slot.First();
-            bool slotResult = Enum.TryParse(firstSlot.name, out metadata.Slot);
-            if (!slotResult && !string.IsNullOrEmpty(firstSlot.name))
+            Slots slots = data.slots;
+            metadata.Slots = new();
+            foreach (Slot slot in slots.slot)
             {
-                Console.WriteLine($"Failed to parse item slot for {id}: {firstSlot.name}");
-            }
-
-            if (data.slots.slot.Count > 1)
-            {
-                switch (metadata.Slot)
+                bool slotResult = Enum.TryParse(slot.name, out ItemSlot itemSlot);
+                if (!slotResult && !string.IsNullOrEmpty(slot.name))
                 {
-                    case ItemSlot.CL or ItemSlot.PA:
-                        metadata.IsDress = true;
-                        break;
-                    case ItemSlot.RH or ItemSlot.LH:
-                        metadata.IsTwoHand = true;
-                        break;
+                    Console.WriteLine($"Failed to parse item slot for {id}: {slot.name}");
+                    continue;
                 }
+                if (itemSlot == ItemSlot.HR)
+                {
+                    ParseHair(slot, metadata);
+                }
+                metadata.Slots.Add(itemSlot);
             }
-
-            if (metadata.Slot is ItemSlot.HR)
-            {
-                ParseHair(firstSlot, metadata);
-            }
-
+            
             if (!string.IsNullOrEmpty(housing.categoryTag))
             {
                 string[] tags = housing.categoryTag.Split(',');
