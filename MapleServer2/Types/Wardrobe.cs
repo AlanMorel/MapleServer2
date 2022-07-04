@@ -26,7 +26,6 @@ public class Wardrobe : IPacketSerializable
         Name = name;
         Equips = equips;
         DatabaseManager.Wardrobes.Insert(this, player.CharacterId);
-        player.Wardrobes.Insert(index, this);
     }
 
     public void WriteTo(PacketWriter pWriter)

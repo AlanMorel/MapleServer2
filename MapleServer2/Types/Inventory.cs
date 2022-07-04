@@ -359,7 +359,7 @@ public sealed class Inventory : IInventory
         session.Send(ItemInventoryPacket.Move(dstUid, srcSlot, uid, dstSlot));
     }
 
-    public bool Equip(GameSession session, long uid, ItemSlot equipSlot)
+    public bool TryEquip(GameSession session, long uid, ItemSlot equipSlot)
     {
         if (!HasItem(uid))
         {
@@ -391,7 +391,7 @@ public sealed class Inventory : IInventory
         {
             if (equippedInventory.TryGetValue(slot, out Item equip))
             {
-                Unequip(session, equip.Uid);
+                TryUnequip(session, equip.Uid);
             }
         }
 
@@ -422,7 +422,7 @@ public sealed class Inventory : IInventory
         return true;
     }
 
-    public bool Unequip(GameSession session, long uid)
+    public bool TryUnequip(GameSession session, long uid)
     {
         Player player = session.Player;
         Item item = player.Inventory.GetEquippedItem(uid);

@@ -137,7 +137,7 @@ public class WardrobeHandler : GamePacketHandler<WardrobeHandler>
 
         if (!session.Player.TryGetWardrobe(index, out Wardrobe wardrobe))
         {
-            _ = new Wardrobe(0, 0, index, name, new(), session.Player);
+            session.Player.Wardrobes.Insert(index, new(0, 0, index, name, new(), session.Player));
             return;
         }
 
