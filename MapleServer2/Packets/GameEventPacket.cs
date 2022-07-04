@@ -154,6 +154,15 @@ public static class GameEventPacket
                     pWriter.WriteInt(saleChat.WorldChatDiscountAmount);
                     pWriter.WriteInt(saleChat.ChannelChatDiscountAmount);
                     break;
+                case TrafficOptimizer optimizer:
+                    pWriter.WriteInt(optimizer.InternalMs);
+                    pWriter.WriteInt(optimizer.InternalMs);
+                    pWriter.WriteInt(100);
+                    pWriter.WriteInt();
+                    pWriter.WriteInt();
+                    pWriter.WriteInt(optimizer.InternalMs);
+                    pWriter.WriteInt(100);
+                    break;
             }
         }
 

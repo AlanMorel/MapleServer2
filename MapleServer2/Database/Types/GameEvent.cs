@@ -24,7 +24,7 @@ public abstract class GameEvent
     MeratMarketNotice // Changes the Meret Market marquee
     BlueMarble, // Mapleopoly
     ExchangeScrollSale,
-    TrafficOptimizer,
+    TrafficOptimizer, // reduces user sync packet sends
     PetComposeSale,
     SaleRemakes,
     SaleEnchant,
@@ -235,5 +235,15 @@ public class SaleChat : GameEvent
     {
         WorldChatDiscountAmount = worldChatDiscountAmount;
         ChannelChatDiscountAmount = channelChatDiscountAmount;
+    }
+}
+
+public class TrafficOptimizer : GameEvent
+{
+    public readonly int InternalMs;
+
+    public TrafficOptimizer(int id, long beginTimestamp, long endTimestamp, int intervalMs) : base(id, beginTimestamp, endTimestamp)
+    {
+        InternalMs = intervalMs;
     }
 }
