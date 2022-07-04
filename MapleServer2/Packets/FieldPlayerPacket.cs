@@ -118,7 +118,7 @@ public static class FieldPlayerPacket
             pWriter.WriteDeflated(new byte[1], 0, 1); // Empty buffer
         }
 
-        pWriter.WritePassiveSkills(fieldPlayer);
+        pWriter.WriteFieldEnterBuffs(player.AdditionalEffects);
 
         pWriter.WriteInt();
         pWriter.WriteInt();

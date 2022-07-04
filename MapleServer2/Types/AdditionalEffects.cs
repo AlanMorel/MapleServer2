@@ -22,7 +22,7 @@ public struct AdditionalEffectParameters
         Level = level;
         Stacks = 1;
         Source = -1;
-        Duration = -1;
+        Duration = 0;
         IsBuff = false;
     }
 }
@@ -116,26 +116,28 @@ public class AdditionalEffects
             }
         }
 
-        if (parameters.IsBuff)
-        {
-            effect.SourceId = parameters.Source == -1 ? Parent.ObjectId : parameters.Source;
-            effect.BuffId = GuidGenerator.Int();
-            effect.Start = Environment.TickCount;
-            effect.Duration = parameters.Duration;
+        effect.BuffId = GuidGenerator.Int();
+        effect.SourceId = parameters.Source == -1 ? Parent.ObjectId : parameters.Source;
+        effect.Start = Environment.TickCount;
+        effect.Duration = parameters.Duration;
 
+        if (parameters.Duration != 0)
+        {
             TimedEffects.Add(effect);
 
             AddExpiringBuffTime(effect.End);
+        }
+
+        if (parameters.Duration == 0)
+        {
+            --effect.Start;
         }
 
         Effects.Add(effect);
 
         Parent.EffectAdded(effect);
 
-        if (parameters.IsBuff)
-        {
-            Parent.FieldManager.BroadcastPacket(BuffPacket.AddBuff(effect, Parent.ObjectId));
-        }
+        Parent.FieldManager.BroadcastPacket(BuffPacket.AddBuff(effect, Parent.ObjectId));
 
         return effect;
     }
@@ -285,7 +287,7 @@ public class AdditionalEffect
     public int SourceId = -1;
     public int BuffId = -1;
     public int Start = -1;
-    public int Duration = -1;
+    public int Duration = 0;
     public int End { get => Start + Duration; }
 
     public AdditionalEffect(int id, int level, int stacks = 1)
