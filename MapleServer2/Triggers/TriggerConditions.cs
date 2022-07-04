@@ -43,7 +43,21 @@ public partial class TriggerContext
 
     public bool DetectLiftableObject(int[] triggerBoxIds, int itemId)
     {
-        // todo:
+        foreach (int boxId in triggerBoxIds)
+        {
+            MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
+            if (box is null)
+            {
+                return false;
+            }
+
+            IFieldObject<LiftableObject> liftable = Field.State.LiftableObjects.Values.FirstOrDefault(x => x.Value.Metadata.ItemId == itemId);
+            if (FieldManager.IsActorInBox(box, liftable))
+            {
+                return true;
+            }
+        }
+
         return false;
     }
 
