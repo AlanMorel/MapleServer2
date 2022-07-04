@@ -33,12 +33,45 @@ public class AdditionalEffects
     public List<AdditionalEffect> TimedEffects;
     public IFieldActor Parent;
     private int NextBuffExpiration = -1;
-    private AdditionalEffect NextEndingBuff = null;
 
     public AdditionalEffects()
     {
         Effects = new();
         TimedEffects = new();
+    }
+
+    public void ForEach(Action<AdditionalEffect> action)
+    {
+        foreach (AdditionalEffect effect in Effects)
+        {
+            action(effect);
+        }
+    }
+
+    public void ForEachBuff(Action<AdditionalEffect> action)
+    {
+        foreach (AdditionalEffect effect in Effects)
+        {
+            if (effect.BuffId != -1)
+            {
+                action(effect);
+            }
+        }
+    }
+
+    public List<AdditionalEffect> GetBuffs()
+    {
+        List<AdditionalEffect> list = new();
+
+        foreach (AdditionalEffect effect in Effects)
+        {
+            if (effect.BuffId != -1)
+            {
+                list.Add(effect);
+            }
+        }
+
+        return list;
     }
 
     public void UpdateEffects()
@@ -67,6 +100,13 @@ public class AdditionalEffects
 
             RemoveEffect(Effects[index], index);
         }
+    }
+
+    public AdditionalEffect AddBuff(AdditionalEffectParameters parameters)
+    {
+        parameters.IsBuff = true;
+
+        return AddEffect(parameters);
     }
 
     public AdditionalEffect AddEffect(AdditionalEffectParameters parameters)
@@ -287,6 +327,7 @@ public class AdditionalEffect
     public int Start = -1;
     public int Duration = -1;
     public int End { get => Start + Duration; }
+    public bool IsBuff { get => BuffId != -1; }
 
     public AdditionalEffect(int id, int level, int stacks = 1)
     {
