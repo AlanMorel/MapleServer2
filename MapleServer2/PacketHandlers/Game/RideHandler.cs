@@ -1,6 +1,8 @@
 ﻿using Maple2Storage.Enums;
+using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Managers;
 using MapleServer2.Managers.Actors;
@@ -57,6 +59,13 @@ public class RideHandler : GamePacketHandler<RideHandler>
         packet.ReadLong();
         long mountUid = packet.ReadLong();
         // [46-0s] (UgcPacketHelper.Ugc()) but client doesn't set this data?
+
+        MapUi mapUi = MapMetadataStorage.GetMapUi(session.Player.MapId);
+        if (!mapUi.EnableMount)
+        {
+            session.Send(NoticePacket.Notice(SystemNotice.ErrCannotUseHere, NoticeType.Chat | NoticeType.FastText));
+            return;
+        }
 
         if (type == RideType.UseItem && !session.Player.Inventory.HasItem(mountUid))
         {
