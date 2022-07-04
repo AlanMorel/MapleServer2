@@ -1,6 +1,8 @@
-﻿using MaplePacketLib2.Tools;
+﻿using Maple2Storage.Types.Metadata;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
+using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
@@ -31,6 +33,20 @@ internal class RequestTaxiHandler : GamePacketHandler<RequestTaxiHandler>
         if (mode != RequestTaxiMode.DiscoverTaxi)
         {
             mapId = packet.ReadInt();
+        }
+
+        MapCashCall currentMapCall = MapMetadataStorage.GetMapCashCall(session.Player.MapId);
+        if (currentMapCall.DisableExitWithTaxi)
+        {
+            session.Send(NoticePacket.Notice(SystemNotice.ErrCashTaxiCannotDeparture, NoticeType.Popup));
+            return;
+        }
+        
+        MapCashCall destinationMapCall = MapMetadataStorage.GetMapCashCall(mapId);
+        if (destinationMapCall.DisableEnterWithTaxi)
+        {
+            session.Send(NoticePacket.Notice(SystemNotice.ErrCashTaxiCannotDestination, NoticeType.Popup));
+            return;
         }
 
         switch (mode)

@@ -161,4 +161,19 @@ public static class MapMetadataStorage
 
         return mapMetadata.Property.IsTutorialMap;
     }
+
+    public static MapProperty GetMapProperty(int mapId)
+    {
+        return Maps.GetValueOrDefault(mapId)?.Property;
+    }
+
+    public static MapUi GetMapUi(int mapId)
+    {
+        return Maps.GetValueOrDefault(mapId)?.Ui;
+    }
+
+    public static MapCashCall GetMapCashCall(int mapId)
+    {
+        return Maps.GetValueOrDefault(mapId)?.CashCall;
+    }
 }
