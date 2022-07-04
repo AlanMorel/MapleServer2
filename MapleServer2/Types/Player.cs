@@ -674,6 +674,8 @@ public class Player
 
     public void InitializeEffects()
     {
+        AdditionalEffects.Parent = FieldPlayer;
+
         foreach (Item item in Inventory.LapenshardStorage)
         {
             if (item != null)

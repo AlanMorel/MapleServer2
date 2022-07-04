@@ -100,4 +100,23 @@ public static class BuffPacket
         pWriter.WriteShort((short) level);
         pWriter.WriteInt(stacks);
     }
+
+    public static void WriteFieldEnterBuffs(this PacketWriter pWriter, AdditionalEffects effects)
+    {
+        pWriter.WriteShort((short) effects.Effects.Count);
+
+        foreach (AdditionalEffect effect in effects.Effects)
+        {
+            WriteFieldEnterBuff(pWriter, effect, effects.Parent.ObjectId);
+        }
+    }
+
+    public static void WriteFieldEnterBuff(this PacketWriter pWriter, AdditionalEffect status, int target)
+    {
+        pWriter.WriteBuffOwner(target, status.BuffId, status.SourceId);
+        pWriter.WriteBuff(status.Start, status.End, status.Id, status.Level, status.Stacks);
+
+        pWriter.WriteByte(1);
+        pWriter.WriteLong();
+    }
 }
