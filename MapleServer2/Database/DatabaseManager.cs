@@ -10,7 +10,7 @@ namespace MapleServer2.Database;
 public static class DatabaseManager
 {
     private static readonly ILogger Logger = Log.Logger.ForContext(typeof(DatabaseManager));
-    private static readonly Tuple<int, int> MIN_MYSQL_VERSION = new(8, 0); // Primary support version of MySQL (major version, minor version)
+    private static readonly (int Major, int Minor) MIN_MYSQL_VERSION = new(8, 0); // Primary support version of MySQL (major version, minor version)
 
     public static readonly string ConnectionString;
     public static readonly string ConnectionStringWithoutTable;
@@ -76,15 +76,14 @@ public static class DatabaseManager
 
     public static void Init()
     {
-        Tuple<Tuple<int, int>, string> mysqlVersionFormat = GetVersion();
-        Tuple<int, int> mysqlVersion = mysqlVersionFormat.Item1;
+        ((int majorVersion, int minorVersion), string versionString) = GetVersion();
         bool useLegacy = false;
 
-        if (mysqlVersion.Item1 >= MIN_MYSQL_VERSION.Item1 && mysqlVersion.Item2 >= MIN_MYSQL_VERSION.Item2)
+        if (majorVersion >= MIN_MYSQL_VERSION.Major && minorVersion >= MIN_MYSQL_VERSION.Minor)
         {
             Logger.Information("Found supported MySQL version.");
         }
-        else if (mysqlVersionFormat.Item2.Contains("MariaDB"))
+        else if (versionString.Contains("MariaDB"))
         {
             Logger.Warning($"MariaDB isn't officially supported! Use at your OWN RISK! (DO NOT report bugs about MariaDB)");
             useLegacy = true;
@@ -121,7 +120,7 @@ public static class DatabaseManager
         new QueryFactory(new MySqlConnection(ConnectionString), new MySqlCompiler()).Statement(query);
     }
 
-    public static Tuple<Tuple<int, int>, string> GetVersion()
+    public static ((int Major, int Minor), string VersionString) GetVersion()
     {
         MySqlConnection conn = new(ConnectionStringWithoutTable);
         conn.Open();
