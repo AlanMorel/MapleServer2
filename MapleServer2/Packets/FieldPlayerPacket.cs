@@ -1,6 +1,7 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Extensions;
+using MapleServer2.Managers.Actors;
 using MapleServer2.Packets.Helpers;
 using MapleServer2.Types;
 
@@ -8,7 +9,7 @@ namespace MapleServer2.Packets;
 
 public static class FieldPlayerPacket
 {
-    public static PacketWriter AddPlayer(IFieldActor<Player> fieldPlayer)
+    public static PacketWriter AddPlayer(Character fieldPlayer)
     {
         Player player = fieldPlayer.Value;
         PacketWriter pWriter = PacketWriter.Of(SendOp.FieldAddPlayer);
@@ -128,8 +129,15 @@ public static class FieldPlayerPacket
         pWriter.WriteInt(player.TitleId);
         pWriter.WriteShort(player.InsigniaId);
         pWriter.WriteByte();
-        pWriter.WriteInt();
-        pWriter.WriteByte();
+        pWriter.WriteInt(fieldPlayer.ActivePet?.ObjectId ?? 0);
+        pWriter.WriteBool(player.ActivePet is not null);
+        if (player.ActivePet is not null)
+        {
+            pWriter.WriteInt(player.ActivePet.Id);
+            pWriter.WriteLong(player.ActivePet.Uid);
+            pWriter.WriteInt(player.ActivePet.Rarity);
+            pWriter.WriteItem(player.ActivePet);
+        }
         pWriter.WriteLong(); // Another timestamp
         pWriter.WriteInt(int.MaxValue);
         pWriter.WriteByte();
