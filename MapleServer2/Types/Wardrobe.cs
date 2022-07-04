@@ -1,10 +1,6 @@
-﻿using System.Data;
-using System.Security.Policy;
-using Maple2.Trigger.Enum;
-using Maple2Storage.Enums;
+﻿using Maple2Storage.Enums;
 using MaplePacketLib2.Tools;
 using MapleServer2.Database;
-using MapleServer2.Database.Types;
 
 namespace MapleServer2.Types;
 
