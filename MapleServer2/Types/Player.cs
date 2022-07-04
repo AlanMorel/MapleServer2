@@ -455,6 +455,12 @@ public class Player
 
     public void FallDamage()
     {
+        MapUi mapUi = MapMetadataStorage.GetMapUi(MapId);
+        if (!mapUi.EnableFallDamage)
+        {
+            return;
+        }
+
         long currentHp = Stats[StatAttribute.Hp].TotalLong;
         int fallDamage = (int) (currentHp * Math.Clamp(currentHp * 4 / 100 - 1, 0, 25) / 100); // TODO: Create accurate damage model
         FieldPlayer.ConsumeHp(fallDamage);
@@ -674,6 +680,8 @@ public class Player
 
     public void InitializeEffects()
     {
+        AdditionalEffects.Parent = FieldPlayer;
+
         foreach (Item item in Inventory.LapenshardStorage)
         {
             if (item != null)

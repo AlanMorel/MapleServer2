@@ -57,6 +57,7 @@ public static class MetadataName
     public const string Mount = "mount";
     public const string Npc = "npc";
     public const string PremiumClubDailyBenefit = "premium-club-daily-benefit";
+    public const string PremiumClubEffect = "premium-club-effect";
     public const string PremiumClubPackage = "premium-club-package";
     public const string Prestige = "prestige";
     public const string PrestigeLevelMission = "prestige-level-mission";

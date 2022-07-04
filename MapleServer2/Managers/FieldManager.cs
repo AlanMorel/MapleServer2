@@ -34,7 +34,8 @@ public class FieldManager
     public readonly CoordS[] BoundingBox;
     public readonly TriggerScript[] Triggers;
 
-    private int Counter = 10000000;
+    private static int GlobalIdCounter = 1_000_000;
+    private int LocalIdCounter = 10_000_000;
     private int PlayerCount;
     private readonly List<MapTimer> MapTimers = new();
     private readonly List<Widget> Widgets = new();
@@ -113,18 +114,7 @@ public class FieldManager
         return WrapObject(wrappingObject);
     }
 
-    public Character RequestCharacter(Player player)
-    {
-        if (player.FieldPlayer is null)
-        {
-            return WrapPlayer(player);
-        }
-
-        // Bind existing character to this map.
-        int objectId = Interlocked.Increment(ref Counter);
-        player.FieldPlayer.ObjectId = objectId;
-        return player.FieldPlayer;
-    }
+    public Character RequestCharacter(Player player) => player.FieldPlayer ?? WrapPlayer(player);
 
     public Npc RequestNpc(int npcId, CoordF coord = default, CoordF rotation = default, short animation = -1)
     {
@@ -198,8 +188,7 @@ public class FieldManager
 
     public Pet RequestPet(Item item, Character character)
     {
-        int objectId = Interlocked.Increment(ref Counter);
-        Pet pet = new(objectId, item, character, fieldManager: this);
+        Pet pet = new(NextLocalId(), item, character, fieldManager: this);
 
         Shape shape = Navigator.AddShape(pet.Value.NpcMetadataCapsule);
         Position spawnPointPosition = Navigator.FindPositionFromCoordS(character.Coord);
@@ -338,7 +327,8 @@ public class FieldManager
         // Load interact objects
         foreach (MapInteractObject mapInteract in MapEntityMetadataStorage.GetInteractObjects(MapId))
         {
-            FieldObject<InteractObject> fieldInteractObject = WrapObject(new InteractObject(mapInteract.EntityId, mapInteract.InteractId, mapInteract.Type, InteractObjectState.Default));
+            FieldObject<InteractObject> fieldInteractObject =
+                WrapObject(new InteractObject(mapInteract.EntityId, mapInteract.InteractId, mapInteract.Type, InteractObjectState.Default));
             fieldInteractObject.Coord = mapInteract.Position;
             fieldInteractObject.Rotation = mapInteract.Rotation;
             State.AddInteractObject(fieldInteractObject);
@@ -426,6 +416,11 @@ public class FieldManager
             session.Send(FieldPlayerPacket.AddPlayer(player.FieldPlayer));
             session.Send(FieldObjectPacket.LoadPlayer(player.FieldPlayer));
         });
+
+        foreach (Pet pet in State.Pets.Values)
+        {
+            sender.Send(FieldPetPacket.AddPet(pet));
+        }
 
         foreach (IFieldObject<Item> existingItem in State.Items.Values)
         {
@@ -544,10 +539,14 @@ public class FieldManager
             RemoveGuide(player.Guide);
         }
 
+        if (player.FieldPlayer.ActivePet is not null)
+        {
+            RemovePet(player.FieldPlayer.ActivePet);
+        }
+
         if (Decrement() <= 0)
         {
             FreezeField(player);
-            player.FieldPlayer.ObjectId = -1;
             return;
         }
 
@@ -557,8 +556,6 @@ public class FieldManager
             session.Send(FieldPlayerPacket.RemovePlayer(player.FieldPlayer));
             session.Send(FieldObjectPacket.RemovePlayer(player.FieldPlayer));
         });
-
-        player.FieldPlayer.ObjectId = -1; // Reset object id
     }
 
     public static bool IsActorInBox(MapTriggerBox box, IFieldObject actor)
@@ -870,29 +867,37 @@ public class FieldManager
     // Initializes a FieldObject with an objectId for this field.
     private FieldObject<T> WrapObject<T>(T fieldObject)
     {
-        int objectId = Interlocked.Increment(ref Counter);
-        return new(objectId, fieldObject);
+        return new(NextLocalId(), fieldObject);
     }
 
     // Initializes a FieldActor with an objectId for this field.
     private Character WrapPlayer(Player player)
     {
-        int objectId = Interlocked.Increment(ref Counter);
-        return new(objectId, player, fieldManager: this);
+        return new(NextGlobalId(), player, fieldManager: this);
     }
 
     private Npc WrapNpc(NpcMetadata metadata)
     {
-        int objectId = Interlocked.Increment(ref Counter);
-        return new(objectId, metadata, fieldManager: this);
+        return new(NextLocalId(), metadata, fieldManager: this);
     }
 
     // Initializes a Mob with an objectId for this field.
     private Npc WrapMob(int mobId)
     {
-        int objectId = Interlocked.Increment(ref Counter);
-        return new(objectId, mobId, fieldManager: this);
+        return new(NextLocalId(), mobId, fieldManager: this);
     }
+
+    /// <summary>
+    /// Generates an Object ID unique across all field instances.
+    /// </summary>
+    /// <returns>Returns a globally unique object id</returns>
+    public static int NextGlobalId() => Interlocked.Increment(ref GlobalIdCounter);
+
+    /// <summary>
+    /// Generates an Object ID unique within this field instance.
+    /// </summary>
+    /// <returns>Returns a unique object id</returns>
+    private int NextLocalId() => Interlocked.Increment(ref LocalIdCounter);
 
     #endregion
 
@@ -931,8 +936,7 @@ public class FieldManager
 
     public void AddRegionSkillEffect(SkillCast skillCast)
     {
-        int objectId = Interlocked.Increment(ref Counter);
-        skillCast.SkillObjectId = objectId;
+        skillCast.SkillObjectId = NextLocalId();
 
         AddSkillCast(skillCast);
         BroadcastPacket(RegionSkillPacket.Send(skillCast));
@@ -1183,31 +1187,28 @@ public class FieldManager
 
     private void UpdatePetEvents()
     {
+        // TODO: loop trough all mobs and check if pet should attack mob
         // Manage pet aggro + targets
-        foreach (IFieldActor<Player> player in State.Players.Values)
+        foreach (Pet pet in State.Pets.Values)
         {
-            // TODO: loop trough all mobs and check if pet should attack mob
-            foreach (Pet pet in State.Pets.Values)
+            float playerPetDistance = CoordF.Distance(pet.Owner.Coord, pet.Coord);
+            // TODO: NpcMetadataDistance.Sight is incorrect, parse and use petproperty.xml
+            if (playerPetDistance > pet.Value.NpcMetadataDistance.Sight)
             {
-                float playerPetDistance = CoordF.Distance(player.Coord, pet.Coord);
-                // TODO: NpcMetadataDistance.Sight is incorrect, parse and use petproperty.xml
-                if (playerPetDistance > pet.Value.NpcMetadataDistance.Sight)
-                {
-                    // Teleport pet to player if they are too far away
-                    pet.Coord = player.Coord;
-                    continue;
-                }
-
-                if (playerPetDistance > Block.BLOCK_SIZE * 2)
-                {
-                    pet.State = NpcState.Combat; // Setting state as combat so pet will run towards player, probably not the best way to do this.
-                    pet.Target = player;
-                    continue;
-                }
-
-                pet.State = NpcState.Normal;
-                pet.Target = null;
+                // Teleport pet to player if they are too far away
+                pet.Coord = pet.Owner.Coord;
+                continue;
             }
+
+            if (playerPetDistance > Block.BLOCK_SIZE * 2)
+            {
+                pet.State = NpcState.Combat; // Setting state as combat so pet will run towards player, probably not the best way to do this.
+                pet.Target = pet.Owner;
+                continue;
+            }
+
+            pet.State = NpcState.Normal;
+            pet.Target = null;
         }
     }
 

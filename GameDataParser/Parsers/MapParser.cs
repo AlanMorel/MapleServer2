@@ -438,7 +438,34 @@ public class MapParser : Exporter<List<MapMetadata>>
                     RevivalReturnMapId = data.property.revivalreturnid,
                     EnterReturnMapId = data.property.enterreturnid,
                     Capacity = data.property.capacity,
-                    IsTutorialMap = data.property.tutorialType == 1
+                    IsTutorialMap = data.property.tutorialType == 1,
+                    DeathPenalty = data.property.deathPenalty,
+                    HomeReturnable = data.property.homeReturnable,
+                    RecoverFullHp = data.property.recoveryFullHP,
+                    DisableFly = data.property.checkFly,
+                    EnterBuffIds = data.property.enteranceBuffIDs.ToList(),
+                    EnterBuffLevels = data.property.enteranceBuffLevels.ToList()
+                },
+                Drop = new()
+                {
+                    MapLevel = data.drop.maplevel,
+                    DropRank = data.drop.droprank,
+                    GlobalDropBoxIds = data.drop.globalDropBoxID.ToList()
+                },
+                CashCall = new()
+                {
+                    DisableEnterWithTaxi = data.cashCall.cashTaxiNotDestination,
+                    DisableExitWithTaxi = data.cashCall.cashTaxiNotDeparture,
+                    DisableRecallPlayers = data.cashCall.RecallOtherUserProhibit,
+                    DisableUseDoctor = data.cashCall.cashCallMedicProhibit,
+                    DisableUseMarket = data.cashCall.cashCallMarketProhibit
+                },
+                Ui = new()
+                {
+                    EnableFallDamage = data.ui.fallDamage == 1,
+                    EnableStaminaSkillUse = data.ui.useEPSkill == 1,
+                    EnableMount = data.ui.useRidee == 1,
+                    EnablePet = data.ui.usePet == 1
                 }
             };
 

@@ -104,6 +104,9 @@ public class DatabaseCharacter : DatabaseTable
         Dictionary<int, QuestStatus> questList = DatabaseManager.Quests.FindAllByCharacterId(data.character_id);
         AuthData authData = new(data.token_a, data.token_b, data.account_id, data.online_character_id ?? 0);
 
+        Item pet = DatabaseManager.Items.FindByUid(data.active_pet_item_uid);
+        pet?.SetMetadataValues();
+
         return new()
         {
             Session = session,
@@ -158,7 +161,7 @@ public class DatabaseCharacter : DatabaseTable
             TrophyData = trophies,
             QuestData = questList,
             GatheringCount = JsonConvert.DeserializeObject<List<GatheringCount>>(data.gathering_count),
-            ActivePet = DatabaseManager.Items.FindByUid(data.active_pet_item_uid)
+            ActivePet = pet
         };
     }
 

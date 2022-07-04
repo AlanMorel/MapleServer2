@@ -118,7 +118,17 @@ public class PremiumClubHandler : GamePacketHandler<PremiumClubHandler>
             account.VIPExpiration += vipTime;
             session.Send(NoticePacket.Notice(SystemNotice.PremiumExtended, NoticeType.Chat | NoticeType.FastText));
         }
-        session.Send(BuffPacket.AddBuff(new(100000014, session.Player.FieldPlayer.ObjectId, session.Player.FieldPlayer.ObjectId, 1, (int) vipTime, 1)));
+
+        List<PremiumClubEffectMetadata> effectMetadatas = PremiumClubEffectMetadataStorage.GetBuffs();
+        foreach (PremiumClubEffectMetadata effect in effectMetadatas)
+        {
+            session.Player.FieldPlayer.AdditionalEffects.AddEffect(new(effect.EffectId, effect.EffectLevel)
+            {
+                Duration = (int) (Math.Min(account.VIPExpiration - TimeInfo.Now(), 0x0FFFFFFF)),
+                IsBuff = true
+            });
+        }
+
         session.Send(PremiumClubPacket.ActivatePremium(session.Player.FieldPlayer, account.VIPExpiration));
     }
 }

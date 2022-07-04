@@ -1,4 +1,5 @@
 ﻿using Maple2Storage.Enums;
+using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
@@ -33,7 +34,6 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
 
         if (player.ActivePet is not null)
         {
-            player.ActivePet.SetMetadataValues();
             Pet pet = session.FieldManager.RequestPet(player.ActivePet, player.FieldPlayer);
             if (pet is not null)
             {
@@ -46,11 +46,16 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
 
         if (account.IsVip())
         {
-            player.FieldPlayer.AdditionalEffects.AddEffect(new(100000014, 1)
+            List<PremiumClubEffectMetadata> effectMetadatas = PremiumClubEffectMetadataStorage.GetBuffs();
+            foreach (PremiumClubEffectMetadata effect in effectMetadatas)
             {
-                Duration = (int) (Math.Min(account.VIPExpiration - TimeInfo.Now(), 0x0FFFFFFF)),
-                IsBuff = true
-            });
+                player.FieldPlayer.AdditionalEffects.AddEffect(new(effect.EffectId, effect.EffectLevel)
+                {
+                    Duration = (int) (Math.Min(account.VIPExpiration - TimeInfo.Now(), 0x0FFFFFFF)),
+                    IsBuff = true
+                });
+            }
+
 
             session.Send(PremiumClubPacket.ActivatePremium(player.FieldPlayer, account.VIPExpiration));
         }
@@ -94,6 +99,13 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
         TrophyManager.OnMapEntered(player, player.MapId);
 
         QuestManager.OnMapEnter(player, player.MapId);
+
+
+        MapProperty mapProperty = MapMetadataStorage.GetMapProperty(player.MapId);
+        for (int i = 0; i < mapProperty.EnterBuffIds.Count; i++)
+        {
+            player.FieldPlayer.AdditionalEffects.AddEffect(new(mapProperty.EnterBuffIds[i], mapProperty.EnterBuffLevels[i]));
+        }
 
         player.InitializeEffects();
     }
