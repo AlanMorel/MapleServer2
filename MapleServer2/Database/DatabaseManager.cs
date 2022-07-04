@@ -10,7 +10,7 @@ namespace MapleServer2.Database;
 public static class DatabaseManager
 {
     private static readonly ILogger Logger = Log.Logger.ForContext(typeof(DatabaseManager));
-    private static readonly int MIN_MYSQL_VERSION = 8;
+    private static readonly Tuple<int, int> MIN_MYSQL_VERSION = new(8, 0); // Primary support version of MySQL (major version, minor version)
 
     public static readonly string ConnectionString;
     public static readonly string ConnectionStringWithoutTable;
@@ -76,9 +76,20 @@ public static class DatabaseManager
 
     public static void Init()
     {
-        if (GetVersion() < MIN_MYSQL_VERSION)
+        Tuple<Tuple<int, int>, string> mysqlVersionFormat = GetVersion();
+        Tuple<int, int> mysqlVersion = mysqlVersionFormat.Item1;
+        bool useLegacy = false;
+
+        if (mysqlVersion.Item1 >= MIN_MYSQL_VERSION.Item1 && mysqlVersion.Item2 >= MIN_MYSQL_VERSION.Item2)
         {
-            throw new("MySQL version out-of-date, please upgrade to version " + MIN_MYSQL_VERSION + ".");
+            Logger.Information("Found supported MySQL version.");
+        } else if (mysqlVersionFormat.Item2.Contains("MariaDB"))
+        {
+            Logger.Warning($"MariaDB isn't officially supported! Use at your OWN RISK! (DO NOT report bugs about MariaDB)");
+            useLegacy = true;
+        } else
+        {
+            throw new($"MySQL version out-of-date, please upgrade to version {MIN_MYSQL_VERSION.Item1}.${MIN_MYSQL_VERSION.Item2}");
         }
 
         if (DatabaseExists())
@@ -88,7 +99,7 @@ public static class DatabaseManager
         }
 
         Logger.Information("Creating database...");
-        CreateDatabase();
+        CreateDatabase(useLegacy);
 
         string[] seeds =
         {
@@ -97,7 +108,7 @@ public static class DatabaseManager
 
         foreach (string seed in seeds)
         {
-            Seed(seed);
+            Seed(seed, useLegacy);
         }
 
         Logger.Information("Database created.");
@@ -108,12 +119,15 @@ public static class DatabaseManager
         new QueryFactory(new MySqlConnection(ConnectionString), new MySqlCompiler()).Statement(query);
     }
 
-    public static int GetVersion()
+    public static Tuple<Tuple<int, int>, string> GetVersion()
     {
         MySqlConnection conn = new(ConnectionStringWithoutTable);
         conn.Open();
 
-        return int.Parse(conn.ServerVersion.Split(".")[0]);
+        string versionString = conn.ServerVersion;
+        string[] versionStrings = versionString.Split(".");
+
+        return new(new(int.Parse(versionStrings[0]), int.Parse(versionStrings[1])), versionString);
     }
 
     public static bool DatabaseExists()
@@ -125,22 +139,34 @@ public static class DatabaseManager
         return result != null;
     }
 
-    public static void CreateDatabase()
+    public static void CreateDatabase(bool useLegacy = false)
     {
-        string fileLines = File.ReadAllText(Paths.SOLUTION_DIR + "/MapleServer2/Database/SQL/Database.sql");
+        string fileLines = ReadSqlFile($"{Paths.SOLUTION_DIR}/MapleServer2/Database/SQL/Database.sql", useLegacy);
         MySqlScript script = new(new(ConnectionStringWithoutTable), fileLines.Replace("DATABASE_NAME", Database));
         script.Execute();
     }
 
-    private static void Seed(string type)
+    private static void Seed(string type, bool useLegacy = false)
     {
         Logger.Information("Seeding {type}...", type);
-        ExecuteSqlFile(File.ReadAllText(Paths.SOLUTION_DIR + "/MapleServer2/Database/Seeding/" + type + "Seeding.sql"));
+        string fileLines = ReadSqlFile($"{Paths.SOLUTION_DIR}/MapleServer2/Database/Seeding/{type}Seeding.sql", useLegacy);
+        ExecuteSqlFile(fileLines);
     }
 
     private static void ExecuteSqlFile(string fileLines)
     {
         MySqlScript script = new(new(ConnectionString), fileLines);
         script.Execute();
+    }
+
+    private static string ReadSqlFile(string filePath, bool useLegacy = false)
+    {
+        string fileLines = File.ReadAllText(filePath);
+        if (useLegacy)
+        {
+            // Use Unicode 5.2.0 instead of Unicode 9.0.0 when MySQL(MariaDB) version is older than MIN_MYSQL_VERSION
+            fileLines = fileLines.Replace("utf8mb4_0900_ai_ci", "utf8mb4_unicode_520_ci");
+        }
+        return fileLines;
     }
 }
