@@ -33,20 +33,20 @@ internal class RequestTaxiHandler : GamePacketHandler<RequestTaxiHandler>
         if (mode != RequestTaxiMode.DiscoverTaxi)
         {
             mapId = packet.ReadInt();
-        }
 
-        MapCashCall currentMapCall = MapMetadataStorage.GetMapCashCall(session.Player.MapId);
-        if (currentMapCall.DisableExitWithTaxi)
-        {
-            session.Send(NoticePacket.Notice(SystemNotice.ErrCashTaxiCannotDeparture, NoticeType.Popup));
-            return;
-        }
-        
-        MapCashCall destinationMapCall = MapMetadataStorage.GetMapCashCall(mapId);
-        if (destinationMapCall.DisableEnterWithTaxi)
-        {
-            session.Send(NoticePacket.Notice(SystemNotice.ErrCashTaxiCannotDestination, NoticeType.Popup));
-            return;
+            MapCashCall currentMapCall = MapMetadataStorage.GetMapCashCall(session.Player.MapId);
+            if (currentMapCall.DisableExitWithTaxi)
+            {
+                session.Send(NoticePacket.Notice(SystemNotice.ErrCashTaxiCannotDeparture, NoticeType.Popup));
+                return;
+            }
+
+            MapCashCall destinationMapCall = MapMetadataStorage.GetMapCashCall(mapId);
+            if (destinationMapCall.DisableEnterWithTaxi)
+            {
+                session.Send(NoticePacket.Notice(SystemNotice.ErrCashTaxiCannotDestination, NoticeType.Popup));
+                return;
+            }
         }
 
         switch (mode)
