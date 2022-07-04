@@ -83,11 +83,13 @@ public static class DatabaseManager
         if (mysqlVersion.Item1 >= MIN_MYSQL_VERSION.Item1 && mysqlVersion.Item2 >= MIN_MYSQL_VERSION.Item2)
         {
             Logger.Information("Found supported MySQL version.");
-        } else if (mysqlVersionFormat.Item2.Contains("MariaDB"))
+        }
+        else if (mysqlVersionFormat.Item2.Contains("MariaDB"))
         {
             Logger.Warning($"MariaDB isn't officially supported! Use at your OWN RISK! (DO NOT report bugs about MariaDB)");
             useLegacy = true;
-        } else
+        }
+        else
         {
             throw new($"MySQL version out-of-date, please upgrade to version {MIN_MYSQL_VERSION.Item1}.${MIN_MYSQL_VERSION.Item2}");
         }
