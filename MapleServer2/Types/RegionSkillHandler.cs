@@ -81,7 +81,16 @@ public static class RegionSkillHandler
         List<CoordF> effectCoords = new();
         if (skillMovesCount <= 0)
         {
-            effectCoords.Add(skillCast.Position);
+            MapMetadataStorage.GetDistanceToNextBlockBelow(mapId, Block.ClosestBlock(skillCast.Position), out MapBlock block);
+            if (block is null)
+            {
+                effectCoords.Add(skillCast.Position);
+            }
+            else
+            {
+                effectCoords.Add(block.Coord);
+            }
+
             return effectCoords;
         }
 
@@ -244,7 +253,8 @@ public static class RegionSkillHandler
     {
         if (!field.State.Players.TryGetValue(skillCast.CasterObjectId, out Character caster))
         {
-            // Handle NPCs/Triggers sending skills
+            // TODO: Handle NPCs/Triggers sending skills
+            field.BroadcastPacket(SkillDamagePacket.RegionDamage(skillCast, new()));
             return;
         }
 
@@ -276,14 +286,16 @@ public static class RegionSkillHandler
 
     private static void VibrateObjects(FieldManager field, SkillCast skillCast)
     {
+        RangeProperty rangeProperty = skillCast.SkillAttack.RangeProperty;
         foreach ((string objectId, MapVibrateObject metadata) in field.State.VibrateObjects)
         {
             foreach (CoordF effectCoord in skillCast.EffectCoords)
             {
-                if ((metadata.Position - effectCoord).Length() > skillCast.SkillAttack.RangeProperty.Distance)
+                if ((metadata.Position - effectCoord).Length() > rangeProperty.Distance)
                 {
                     continue;
                 }
+
                 field.BroadcastPacket(VibratePacket.Vibrate(objectId, skillCast));
             }
         }

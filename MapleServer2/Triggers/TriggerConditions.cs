@@ -43,6 +43,7 @@ public partial class TriggerContext
 
     public bool DetectLiftableObject(int[] triggerBoxIds, int itemId)
     {
+        // todo:
         return false;
     }
 
@@ -104,8 +105,23 @@ public partial class TriggerContext
         return false;
     }
 
-    public bool NpcDetected(int arg1, int[] arg2)
+    public bool NpcDetected(int boxId, int[] spawnPointIds)
     {
+        MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
+        if (box is null)
+        {
+            return false;
+        }
+
+        foreach (int spawnPointId in spawnPointIds)
+        {
+            Npc npc = Field.State.Npcs.Values.FirstOrDefault(x => x.SpawnPointId == spawnPointId);
+            if (FieldManager.IsActorInBox(box, npc))
+            {
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -154,7 +170,7 @@ public partial class TriggerContext
 
             foreach (Character player in players)
             {
-                if (!FieldManager.IsPlayerInBox(box, player))
+                if (!FieldManager.IsActorInBox(box, player))
                 {
                     continue;
                 }
@@ -207,7 +223,7 @@ public partial class TriggerContext
                 return false;
             }
 
-            if (players.Any(player => FieldManager.IsPlayerInBox(box, player)))
+            if (players.Any(player => FieldManager.IsActorInBox(box, player)))
             {
                 return true;
             }

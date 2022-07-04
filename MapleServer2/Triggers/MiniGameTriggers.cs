@@ -28,7 +28,7 @@ public partial class TriggerContext
 
         foreach (IFieldObject<Player> player in Field.State.Players.Values)
         {
-            if (!FieldManager.IsPlayerInBox(box, player))
+            if (!FieldManager.IsActorInBox(box, player))
             {
                 continue;
             }
@@ -57,7 +57,7 @@ public partial class TriggerContext
 
         foreach (IFieldObject<Player> player in Field.State.Players.Values)
         {
-            if (FieldManager.IsPlayerInBox(box, player))
+            if (FieldManager.IsActorInBox(box, player))
             {
                 // TODO: calculate correct amount of exp;
                 player.Value.Levels.GainExp(10000);
@@ -76,7 +76,7 @@ public partial class TriggerContext
         List<IFieldObject<Player>> boxPlayers = new();
         foreach (IFieldObject<Player> player in Field.State.Players.Values)
         {
-            if (FieldManager.IsPlayerInBox(box, player))
+            if (FieldManager.IsActorInBox(box, player))
             {
                 boxPlayers.Add(player);
             }
@@ -103,7 +103,7 @@ public partial class TriggerContext
         List<IFieldObject<Player>> players = new();
         foreach (IFieldObject<Player> player in Field.State.Players.Values)
         {
-            if (FieldManager.IsPlayerInBox(box, player))
+            if (FieldManager.IsActorInBox(box, player))
             {
                 players.Add(player);
             }

@@ -42,6 +42,18 @@ public static class QuestManager
             .UpdateRelevantConditions(player.Session, ConditionTypes.Npc, npcId, mapId);
     }
 
+    public static void OnItemPickup(Player player, Item item)
+    {
+        GetRelevantQuests(player, ConditionTypes.ItemExist)
+            .UpdateRelevantConditions(player.Session, ConditionTypes.ItemExist, item.Id);
+    }
+
+    public static void OnSkillUse(Player player, int skillId)
+    {
+        GetRelevantQuests(player, ConditionTypes.Skill)
+            .UpdateRelevantConditions(player.Session, ConditionTypes.Skill, skillId);
+    }
+
     #region Helper Methods
 
     /// <summary>
@@ -84,7 +96,7 @@ public static class QuestManager
                                                && ConditionHelper.IsMatching(condition.Code, code)
                                                && (ConditionHelper.IsMatching(condition.Target, target) ||
                                                    ConditionHelper.IsMatching(condition.Target, code.ToString()) ||
-                                                   ConditionHelper.IsMatching(condition.Target, "0"))
+                                                   ConditionHelper.IsMatching(condition.Target, ""))
                                                && !condition.Completed)
                 .UpdateConditions(session, quest);
         }

@@ -95,7 +95,7 @@ public partial class TriggerContext
                 return;
             }
 
-            players = players.Where(player => FieldManager.IsPlayerInBox(box, player)).ToList();
+            players = players.Where(player => FieldManager.IsActorInBox(box, player)).ToList();
         }
 
         // move player back to return map
@@ -189,7 +189,7 @@ public partial class TriggerContext
                 return;
             }
 
-            players = players.Where(player => FieldManager.IsPlayerInBox(box, player)).ToList();
+            players = players.Where(player => FieldManager.IsActorInBox(box, player)).ToList();
         }
 
         foreach (IFieldObject<Player> player in players)
@@ -250,7 +250,7 @@ public partial class TriggerContext
                 return;
             }
 
-            foreach (Character player in Field.State.Players.Values.Where(player => FieldManager.IsPlayerInBox(box, player)))
+            foreach (Character player in Field.State.Players.Values.Where(player => FieldManager.IsActorInBox(box, player)))
             {
                 // TODO: Rework when buff system is implemented
                 Status status = new(new(skillId, skillLevel), player.ObjectId, player.ObjectId, 1);

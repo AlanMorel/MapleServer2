@@ -113,7 +113,7 @@ public partial class TriggerContext : ITriggerContext
         int userCount = 0;
         foreach (IFieldActor<Player> player in Field.State.Players.Values)
         {
-            if (FieldManager.IsPlayerInBox(box, player))
+            if (FieldManager.IsActorInBox(box, player))
             {
                 userCount++;
             }

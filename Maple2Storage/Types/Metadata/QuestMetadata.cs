@@ -7,56 +7,31 @@ namespace Maple2Storage.Types.Metadata;
 public class QuestMetadata
 {
     [XmlElement(Order = 1)]
-    public string Feature;
-    [XmlElement(Order = 2)]
-    public string Locale;
-    [XmlElement(Order = 3)]
     public QuestBasic Basic = new();
-    [XmlElement(Order = 4)]
-    public QuestNotify Notify = new();
-    [XmlElement(Order = 5)]
+    [XmlElement(Order = 2)]
     public QuestRequire Require = new();
-    [XmlElement(Order = 6)]
+    [XmlElement(Order = 3)]
     public int StartNpc;
-    [XmlElement(Order = 7)]
+    [XmlElement(Order = 4)]
     public int CompleteNpc;
-    [XmlElement(Order = 8)]
+    [XmlElement(Order = 5)]
     public QuestReward Reward = new();
-    [XmlElement(Order = 9)]
+    [XmlElement(Order = 6)]
     public List<QuestRewardItem> RewardItem = new();
-    [XmlElement(Order = 10)]
+    [XmlElement(Order = 7)]
     public List<int> ProgressMap = new();
-    [XmlElement(Order = 11)]
-    public QuestGuide Guide = new();
-    [XmlElement(Order = 12)]
+    [XmlElement(Order = 8)]
     public QuestNpc Npc = new();
-    [XmlElement(Order = 13)]
+    [XmlElement(Order = 9)]
     public QuestDungeon Dungeon = new();
-    [XmlElement(Order = 14)]
-    public QuestRemoteAccept RemoteAccept = new();
-    [XmlElement(Order = 15)]
-    public QuestRemoteComplete RemoteComplete = new();
-    [XmlElement(Order = 16)]
+    [XmlElement(Order = 10)]
     public QuestSummonPortal SummonPortal = new();
-    [XmlElement(Order = 17)]
-    public string Event;
-    [XmlElement(Order = 18)]
+    [XmlElement(Order = 11)]
     public List<QuestCondition> Condition = new();
-    [XmlElement(Order = 19)]
-    public List<QuestNavigation> Navigation = new();
-    [XmlElement(Order = 20)]
+    [XmlElement(Order = 12)]
     public QuestDispatch Dispatch = new();
-    [XmlElement(Order = 21)]
+    [XmlElement(Order = 13)]
     public string Name = "";
-
-    public override string ToString()
-    {
-        return $"Feature: {Feature}, Locale: {Locale}, Basic: {Basic}, Notify: {Notify},  Require: {Require}," +
-               $" StartNpc: {StartNpc}, CompleteNpc: {CompleteNpc},  Reward: {Reward}, QuestRewardItem: {string.Join(",", RewardItem)},  " +
-               $"ProgressMap: {string.Join(",", ProgressMap)}, Guide: {Guide}, Npc: {Npc}, Dungeon: {Dungeon}, RemoteAccept: {RemoteAccept}, " +
-               $"RemoteComplete: {RemoteComplete}, SummonPortal: {SummonPortal}, Event: {Event}, Condition: {string.Join(",", Condition)}, " +
-               $"Navigation: {string.Join(",", Navigation)}";
-    }
 }
 
 [XmlType]
@@ -69,53 +44,7 @@ public class QuestBasic
     [XmlElement(Order = 3)]
     public QuestType QuestType;
     [XmlElement(Order = 4)]
-    public byte Account;
-    [XmlElement(Order = 5)]
-    public int StandardLevel;
-    [XmlElement(Order = 6)]
-    public byte AutoStart;
-    [XmlElement(Order = 7)]
-    public byte DisableGiveup;
-    [XmlElement(Order = 8)]
-    public int ExceptChapterClear;
-    [XmlElement(Order = 9)]
-    public byte Repeatable;
-    [XmlElement(Order = 10)]
-    public string UsePeriod;
-    [XmlElement(Order = 11)]
-    public string EventTag;
-    [XmlElement(Order = 12)]
-    public byte Locking;
-    [XmlElement(Order = 13)]
-    public int TabIndex;
-    [XmlElement(Order = 14)]
-    public byte ForceRegistGuide;
-    [XmlElement(Order = 15)]
-    public bool UseNavigation;
-
-    public override string ToString()
-    {
-        return $"\r\nchapterID: {ChapterID}, questID: {Id}, questType: {QuestType}, account: {Account}, standardLevel: {StandardLevel}, " +
-               $"autoStart: {AutoStart}, disableGiveup: {DisableGiveup}, exceptChapterClear: {ExceptChapterClear}, repeatable: {Repeatable}, " +
-               $"usePeriod: {UsePeriod}, eventTag: {EventTag}, locking: {Locking}, tabIndex: {TabIndex}, forceRegistGuide: {ForceRegistGuide}, " +
-               $"useNavi: {UseNavigation}";
-    }
-}
-
-[XmlType]
-public class QuestNotify
-{
-    [XmlElement(Order = 1)]
-    public string CompleteUiEffect;
-    [XmlElement(Order = 2)]
-    public string AcceptSoundKey;
-    [XmlElement(Order = 3)]
-    public string CompleteSoundKey;
-
-    public override string ToString()
-    {
-        return $"\r\ncompleteUiEffect: {CompleteUiEffect}, acceptSoundKey: {AcceptSoundKey}, completeSoundKey: {CompleteSoundKey}";
-    }
+    public bool AutoStart;
 }
 
 [XmlType]
@@ -129,29 +58,6 @@ public class QuestRequire
     public List<short> Job = new();
     [XmlElement(Order = 4)]
     public List<int> RequiredQuests = new();
-    [XmlElement(Order = 5)]
-    public List<int> SelectableQuest = new();
-    [XmlElement(Order = 6)]
-    public List<int> Unrequire = new();
-    [XmlElement(Order = 7)]
-    public int Field;
-    [XmlElement(Order = 8)]
-    public int Achievement;
-    [XmlElement(Order = 9)]
-    public List<int> UnreqAchievement = new();
-    [XmlElement(Order = 10)]
-    public int GroupID;
-    [XmlElement(Order = 11)]
-    public string DayOfWeek;
-    [XmlElement(Order = 12)]
-    public int GearScore;
-
-    public override string ToString()
-    {
-        return $"\r\nLevel: {Level}, maxLevel: {MaxLevel}, job: {string.Join(", ", Job)}, quest: {string.Join(", ", RequiredQuests)}, " +
-               $"selectableQuest: {string.Join(", ", SelectableQuest)}, unrequire: {string.Join(", ", Unrequire)}, field: {Field}, achievement: {Achievement}, " +
-               $"unreqAchievement: {string.Join(", ", UnreqAchievement)}, groupID: {GroupID}, dayOfWeek: {DayOfWeek}, gearScore: {GearScore}";
-    }
 }
 
 [XmlType]
@@ -167,11 +73,6 @@ public class QuestReward
     public int Karma;
     [XmlElement(Order = 5)]
     public int Lu;
-
-    public override string ToString()
-    {
-        return $"\r\nexp: {Exp}, relativeExp: {RelativeExp}, money: {Money}, karma: {Karma}, lu: {Lu}";
-    }
 }
 
 [XmlType]
@@ -192,47 +93,17 @@ public class QuestRewardItem
         Rank = pRank;
         Count = pCount;
     }
-
-    public override string ToString()
-    {
-        return $"\r\nItemId: {Code}, rank: {Rank}, count: {Count}";
-    }
-}
-
-[XmlType]
-public class QuestGuide
-{
-    [XmlElement(Order = 1)]
-    public string Type;
-    [XmlElement(Order = 2)]
-    public string Icon;
-    [XmlElement(Order = 3)]
-    public short MinLevel;
-    [XmlElement(Order = 4)]
-    public short MaxLevel;
-    [XmlElement(Order = 5)]
-    public string Group;
-
-    public override string ToString()
-    {
-        return $"\r\nguideType: {Type}, guideIcon: {Icon}, guideMinLevel: {MinLevel}, guideMaxLevel: {MaxLevel}, guideGroup: {Group}";
-    }
 }
 
 [XmlType]
 public class QuestNpc
 {
     [XmlElement(Order = 1)]
-    public byte Enable;
+    public bool Enable;
     [XmlElement(Order = 2)]
     public int GoToField;
     [XmlElement(Order = 3)]
     public int GoToPortal;
-
-    public override string ToString()
-    {
-        return $"\r\nenable: {Enable}, gotoField: {GoToField}, gotoPortal: {GoToPortal}";
-    }
 }
 
 [XmlType]
@@ -244,41 +115,6 @@ public class QuestDungeon
     public int GoToDungeon;
     [XmlElement(Order = 3)]
     public int GoToInstanceID;
-
-    public override string ToString()
-    {
-        return $"\r\nstate: {State}, gotoDungeon: {GoToDungeon}, gotoInstanceID: {GoToInstanceID}";
-    }
-}
-
-[XmlType]
-public class QuestRemoteAccept
-{
-    [XmlElement(Order = 1)]
-    public string UseRemote;
-    [XmlElement(Order = 2)]
-    public int RequireField;
-
-    public override string ToString()
-    {
-        return $"\r\nuseRemote: {UseRemote}, requireField: {RequireField}";
-    }
-}
-
-[XmlType]
-public class QuestRemoteComplete
-{
-    [XmlElement(Order = 1)]
-    public string UseRemote;
-    [XmlElement(Order = 2)]
-    public int RequireField;
-    [XmlElement(Order = 3)]
-    public int RequireDungeonClear;
-
-    public override string ToString()
-    {
-        return $"\r\nuseRemote: {UseRemote}, requireField: {RequireField}, requireDungeonClear: {RequireDungeonClear}";
-    }
 }
 
 [XmlType]
@@ -288,11 +124,6 @@ public class QuestSummonPortal
     public int FieldID;
     [XmlElement(Order = 2)]
     public int PortalID;
-
-    public override string ToString()
-    {
-        return $"\r\nfieldID: {FieldID}, portalID: {PortalID}";
-    }
 }
 
 [XmlType]
@@ -315,36 +146,6 @@ public class QuestCondition
         Code = code;
         Goal = goal;
         Target = target;
-    }
-
-    public override string ToString()
-    {
-        return $"\r\ntype: {Type}, codes: {Code}, Goal: {Goal}, Targets: {string.Join(",", Target)}";
-    }
-}
-
-[XmlType]
-public class QuestNavigation
-{
-    [XmlElement(Order = 1)]
-    public string Type;
-    [XmlElement(Order = 2)]
-    public string Code;
-    [XmlElement(Order = 3)]
-    public int Map;
-
-    public QuestNavigation() { }
-
-    public QuestNavigation(string type, string code, int map)
-    {
-        Type = type;
-        Code = code;
-        Map = map;
-    }
-
-    public override string ToString()
-    {
-        return $"\r\ntype: {Type}, code: {Code}, value: {Map}";
     }
 }
 
