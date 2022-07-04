@@ -93,7 +93,7 @@ public class WardrobeHandler : GamePacketHandler<WardrobeHandler>
         int failEquipCount = 0;
         foreach (KeyValuePair<ItemSlot, Item> item in wardrobe.Equips)
         {
-            if (!session.Player.Inventory.Equip(session, item.Value.Uid, item.Key))
+            if (!session.Player.Inventory.TryEquip(session, item.Value.Uid, item.Key))
             {
                 failEquipCount++;
             }

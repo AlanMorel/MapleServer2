@@ -48,7 +48,7 @@ public class ItemEquipHandler : GamePacketHandler<ItemEquipHandler>
             return;
         }
 
-        session.Player.Inventory.Equip(session, itemUid, equipSlot);
+        session.Player.Inventory.TryEquip(session, itemUid, equipSlot);
     }
 
     private static void HandleUnequipItem(GameSession session, PacketReader packet)
@@ -56,6 +56,6 @@ public class ItemEquipHandler : GamePacketHandler<ItemEquipHandler>
         long itemUid = packet.ReadLong();
 
         // TODO: do something on false
-        session.Player.Inventory.Unequip(session, itemUid);
+        session.Player.Inventory.TryUnequip(session, itemUid);
     }
 }
