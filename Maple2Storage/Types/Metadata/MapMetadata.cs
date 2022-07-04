@@ -58,7 +58,7 @@ public class MapProperty
     [XmlElement(Order = 8)]
     public bool DisableFly;
     [XmlElement(Order = 9)]
-    public List<int> EnterBuffIds = new ();
+    public List<int> EnterBuffIds = new();
     [XmlElement(Order = 10)]
     public List<int> EnterBuffLevels = new();
 }

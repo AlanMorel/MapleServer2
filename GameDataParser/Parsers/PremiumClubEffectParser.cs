@@ -29,7 +29,7 @@ public class PremiumClubEffectParser : Exporter<List<PremiumClubEffectMetadata>>
                 {
                     continue;
                 }
-                
+
                 PremiumClubEffectMetadata metadata = new()
                 {
                     EffectId = int.Parse(node.Attributes["effectID"].Value),
