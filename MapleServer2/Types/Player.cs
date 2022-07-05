@@ -153,6 +153,7 @@ public class Player
 
     public CancellationTokenSource OnlineCTS;
     public Task OnlineTimeThread;
+    public Task TimeSyncTask;
 
     public List<GatheringCount> GatheringCount;
 
@@ -376,12 +377,12 @@ public class Player
     {
         return Task.Run(async () =>
         {
-            while (Session != null)
+            while (Session is not null)
             {
                 Session.Send(TimeSyncPacket.Request());
-                await Task.Delay(TimeSpan.FromSeconds(1));
+                await Task.Delay(TimeSpan.FromSeconds(1), OnlineCTS.Token);
             }
-        });
+        }, OnlineCTS.Token);
     }
 
     public Task ClientTickSyncLoop()

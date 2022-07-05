@@ -522,8 +522,6 @@ public class FieldManager
         TriggerTask ??= StartTriggerTask();
 
         UGCBannerTimer ??= TaskScheduler.Instance.ScheduleTask(0, 0, 60, () => { GameServer.UGCBannerManager.UGCBannerLoop(this); });
-
-        player.OnlineTimeThread ??= player.OnlineTimer();
     }
 
     public void RemovePlayer(Player player)

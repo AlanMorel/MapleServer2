@@ -250,7 +250,9 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
         // SendUgc: 15 01 00 00 00 00 00 00 00 00 00 00 00 4B 00 00 00
         session.Send(HomeCommandPacket.LoadHome(player));
 
-        player.TimeSyncLoop();
+        player.OnlineTimeThread = player.OnlineTimer();
+        player.TimeSyncTask = player.TimeSyncLoop();
+
         session.Send(TimeSyncPacket.SetSessionServerTick(0));
         //session.Send("B9 00 00 E1 0F 26 89 7F 98 3C 26 00 00 00 00 00 00 00 00".ToByteArray());
         session.Send(ServerEnterPacket.Confirm());
