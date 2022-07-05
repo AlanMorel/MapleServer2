@@ -82,7 +82,7 @@ public class SkillTab
             {
                 SkillMetadata subSkill = SkillMetadataStorage.GetSkill(subSkillId);
 
-                if (subSkill.Type == type)
+                if (subSkill != null && subSkill.Type == type)
                 {
                     skills.Add((subSkillId, level));
                 }
