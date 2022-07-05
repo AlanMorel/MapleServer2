@@ -14,13 +14,9 @@ public class ItemMetadata
     [XmlElement(Order = 3)]
     public InventoryTab Tab;
     [XmlElement(Order = 4)]
-    public ItemSlot Slot;
+    public List<ItemSlot> Slots;
     [XmlElement(Order = 5)]
     public MedalSlot Medal;
-    [XmlElement(Order = 6)]
-    public bool IsTwoHand;
-    [XmlElement(Order = 7)]
-    public bool IsDress;
     [XmlElement(Order = 8)]
     public int Rarity = 1;
     [XmlElement(Order = 9)]
