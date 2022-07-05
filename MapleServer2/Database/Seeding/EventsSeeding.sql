@@ -165,6 +165,23 @@ CREATE TABLE `event_sale_chat`
     CONSTRAINT `event_sale_chat_fk` FOREIGN KEY (`game_event_id`) REFERENCES `events` (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
+--
+-- Table structure for table `event_traffic_optimizer`
+--
+DROP TABLE IF EXISTS `event_traffic_optimizer`;
+
+CREATE TABLE `event_traffic_optimizer`
+(
+    `game_event_id`   int NOT NULL,
+    `guide_object_sync_interval_ms` int NOT NULL,
+    `ride_sync_interval_ms` int NOT NULL,
+    `linear_movement_interval_ms` int NOT NULL,
+    `user_sync_interval_ms` int NOT NULL,
+    PRIMARY KEY (`game_event_id`),
+    KEY               `event_traffic_optimizer_fk` (`game_event_id`),
+    CONSTRAINT `event_traffic_optimizer_fk` FOREIGN KEY (`game_event_id`) REFERENCES `events` (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+
 INSERT INTO `events` (`id`, `begin_timestamp`, `end_timestamp`)
 VALUES (1, 1590577200 ,2531386800),
        (2, 1590577200 ,2531386800),
@@ -175,7 +192,8 @@ VALUES (1, 1590577200 ,2531386800),
        (7, 1590577200 ,2531386800),
        (8, 1590577200, 2531386800),
        (9, 1590577200, 2531386800),
-       (10, 1590577200, 2531386800);
+       (10, 1590577200, 2531386800),
+       (11, 1590577200, 2531386800);
 
 INSERT INTO `event_string_boards` (`message_id`, `message`, `game_event_id`)
 VALUES (0,
@@ -345,4 +363,7 @@ VALUES
   );
 
 INSERT INTO `event_sale_chat` (`game_event_id`, `world_chat_discount_amount`, `channel_chat_discount_amount`)
-VALUES (10, 9000, 9000)
+VALUES (10, 9000, 9000);
+
+INSERT INTO `event_traffic_optimizer` (`game_event_id`, `guide_object_sync_interval_ms`, `ride_sync_interval_ms`, `linear_movement_interval_ms`, `user_sync_interval_ms`)
+VALUES (11, 300, 300, 0, 300);
