@@ -173,7 +173,10 @@ DROP TABLE IF EXISTS `event_traffic_optimizer`;
 CREATE TABLE `event_traffic_optimizer`
 (
     `game_event_id`   int NOT NULL,
-    `interval_ms` int NOT NULL,
+    `guide_object_sync_interval_ms` int NOT NULL,
+    `ride_sync_interval_ms` int NOT NULL,
+    `linear_movement_interval_ms` int NOT NULL,
+    `user_sync_interval_ms` int NOT NULL,
     PRIMARY KEY (`game_event_id`),
     KEY               `event_traffic_optimizer_fk` (`game_event_id`),
     CONSTRAINT `event_traffic_optimizer_fk` FOREIGN KEY (`game_event_id`) REFERENCES `events` (`id`)
@@ -362,5 +365,5 @@ VALUES
 INSERT INTO `event_sale_chat` (`game_event_id`, `world_chat_discount_amount`, `channel_chat_discount_amount`)
 VALUES (10, 9000, 9000);
 
-INSERT INTO `event_traffic_optimizer` (`game_event_id`, `interval_ms`)
-VALUES (11, 300);
+INSERT INTO `event_traffic_optimizer` (`game_event_id`, `guide_object_sync_interval_ms`, `ride_sync_interval_ms`, `linear_movement_interval_ms`, `user_sync_interval_ms`)
+VALUES (11, 300, 300, 0, 300);

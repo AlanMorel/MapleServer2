@@ -191,6 +191,7 @@ public class DatabaseEvent : DatabaseTable
     private static TrafficOptimizer ReadTrafficOptimizer(dynamic data)
     {
         dynamic baseEvent = ReadBaseGameEvent((int) data.game_event_id);
-        return new TrafficOptimizer(data.game_event_id, baseEvent.begin_timestamp, baseEvent.end_timestamp, data.interval_ms);
+        return new TrafficOptimizer(data.game_event_id, baseEvent.begin_timestamp, baseEvent.end_timestamp, data.guide_object_sync_interval_ms, 
+            data.ride_sync_interval_ms, data.linear_movement_interval_ms, data.user_sync_interval_ms);
     }
 }

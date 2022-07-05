@@ -240,10 +240,16 @@ public class SaleChat : GameEvent
 
 public class TrafficOptimizer : GameEvent
 {
-    public readonly int InternalMs;
+    public readonly int GuideObjectSyncIntervalMs;
+    public readonly int RideSyncIntervalMs;
+    public readonly int LinearMovementIntervalMs;
+    public readonly int UserSyncIntervalMs;
 
-    public TrafficOptimizer(int id, long beginTimestamp, long endTimestamp, int intervalMs) : base(id, beginTimestamp, endTimestamp)
+    public TrafficOptimizer(int id, long beginTimestamp, long endTimestamp, int guideObjectSyncInterval, int rideSyncInterval, int linearMovementInterval, int userSyncInterval) : base(id, beginTimestamp, endTimestamp)
     {
-        InternalMs = intervalMs;
+        GuideObjectSyncIntervalMs = guideObjectSyncInterval;
+        RideSyncIntervalMs = rideSyncInterval;
+        LinearMovementIntervalMs = linearMovementInterval;
+        UserSyncIntervalMs = userSyncInterval;
     }
 }
