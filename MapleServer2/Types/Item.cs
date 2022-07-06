@@ -20,8 +20,6 @@ public class Item
     public int Rarity { get; init; }
     public int StackLimit { get; private set; }
     public bool EnableBreak { get; private set; }
-    public bool IsTwoHand { get; private set; }
-    public bool IsDress { get; private set; }
     public bool IsCustomScore { get; set; }
     public int PlayCount { get; set; }
     public Gender Gender { get; private set; }
@@ -110,7 +108,11 @@ public class Item
         SetMetadataValues();
         Name = ItemMetadataStorage.GetName(id);
         Level = limit.LevelLimitMin;
-        ItemSlot = ItemMetadataStorage.GetSlot(id);
+        List<ItemSlot> slots = ItemMetadataStorage.GetItemSlots(id);
+        if (slots.Count == 1)
+        {
+            ItemSlot = slots.First();
+        }
         if (ItemMetadataStorage.GetIsUGC(id))
         {
             Ugc = new();
@@ -161,8 +163,6 @@ public class Item
         Rarity = other.Rarity;
         StackLimit = other.StackLimit;
         EnableBreak = other.EnableBreak;
-        IsTwoHand = other.IsTwoHand;
-        IsDress = other.IsDress;
         IsCustomScore = other.IsCustomScore;
         PlayCount = other.PlayCount;
         FileName = other.FileName;
@@ -233,19 +233,19 @@ public class Item
         return true;
     }
 
-    public static bool IsWeapon(ItemSlot slot)
+    public static bool IsWeapon(List<ItemSlot> slots)
     {
-        return slot is ItemSlot.RH or ItemSlot.LH or ItemSlot.OH;
+        return slots.Contains(ItemSlot.RH) || slots.Contains(ItemSlot.LH) || slots.Contains(ItemSlot.OH);
     }
 
-    public static bool IsAccessory(ItemSlot slot)
+    public static bool IsAccessory(List<ItemSlot> slots)
     {
-        return slot is ItemSlot.FH or ItemSlot.EA or ItemSlot.PD or ItemSlot.RI or ItemSlot.BE;
+        return slots.Contains(ItemSlot.FH) || slots.Contains(ItemSlot.EA) || slots.Contains(ItemSlot.PD) || slots.Contains(ItemSlot.BE) || slots.Contains(ItemSlot.RI);
     }
 
-    public static bool IsArmor(ItemSlot slot)
+    public static bool IsArmor(List<ItemSlot> slots)
     {
-        return slot is ItemSlot.CP or ItemSlot.CL or ItemSlot.PA or ItemSlot.GL or ItemSlot.SH or ItemSlot.MT;
+        return slots.Contains(ItemSlot.CP) || slots.Contains(ItemSlot.CL) || slots.Contains(ItemSlot.GL) || slots.Contains(ItemSlot.SH) || slots.Contains(ItemSlot.MT);
     }
 
     public bool IsPet()
@@ -310,8 +310,6 @@ public class Item
         GemSlot = ItemMetadataStorage.GetGem(Id);
         StackLimit = property.StackLimit;
         EnableBreak = limit.Breakable;
-        IsTwoHand = ItemMetadataStorage.GetIsTwoHand(Id);
-        IsDress = ItemMetadataStorage.GetIsDress(Id);
         IsCustomScore = music.IsCustomScore;
         FileName = music.FileName;
         Gender = limit.Gender;

@@ -151,6 +151,7 @@ public class CharacterManagementHandler : LoginPacketHandler<CharacterManagement
                 Color = equipColor,
                 HairData = hair,
                 FaceDecorationData = faceDecoration,
+                ItemSlot = type
             });
         }
 

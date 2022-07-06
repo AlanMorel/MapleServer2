@@ -128,6 +128,7 @@ public class Player
     public HairInventory HairInventory = new();
     public TradeInventory TradeInventory;
     public ItemEnchant ItemEnchant; // Current item player is enchanting
+    public List<Wardrobe> Wardrobes = new();
 
     public List<Mail> Mailbox = new();
 
@@ -524,6 +525,18 @@ public class Player
 
             GameOptions.Hotbars[GameOptions.ActiveHotbarId].AddToFirstSlot(QuickSlot.From(skillId));
         }
+    }
+
+    public bool TryGetWardrobe(int index, out Wardrobe wardrobe)
+    {
+        if (Wardrobes.ElementAtOrDefault(index) is null)
+        {
+            wardrobe = null;
+            return false;
+        }
+
+        wardrobe = Wardrobes[index];
+        return true;
     }
 
     private MapPlayerSpawn GetSpawnCoords(int mapId)

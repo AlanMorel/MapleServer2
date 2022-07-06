@@ -33,7 +33,8 @@ public class MapParser : Exporter<List<MapMetadata>>
         FlatTypeIndex index = new(Resources.ExportedReader);
         XBlockParser parser = new(Resources.ExportedReader, index);
 
-        parser.Parse(BuildMetadata);
+        parser.Parallel().ForAll(tuple => BuildMetadata(tuple.xblock, tuple.entities));
+
         // Since parsing is done in parallel, sort at the end for deterministic order.
         MapMetadatas.Sort((metadata1, metadata2) => metadata1.Id.CompareTo(metadata2.Id));
         return MapMetadatas;
@@ -462,10 +463,10 @@ public class MapParser : Exporter<List<MapMetadata>>
                 },
                 Ui = new()
                 {
-                    EnableFallDamage = data.ui.fallDamage == 1,
-                    EnableStaminaSkillUse = data.ui.useEPSkill == 1,
-                    EnableMount = data.ui.useRidee == 1,
-                    EnablePet = data.ui.usePet == 1
+                    EnableFallDamage = data.ui.fallDamage,
+                    EnableStaminaSkillUse = data.ui.useEPSkill,
+                    EnableMount = data.ui.useRidee,
+                    EnablePet = data.ui.usePet
                 }
             };
 

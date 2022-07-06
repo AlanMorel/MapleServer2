@@ -62,6 +62,10 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
 
         session.Send(EmotePacket.LoadEmotes(player));
         session.Send(MacroPacket.LoadControls(player.Macros));
+        foreach (Wardrobe wardrobe in player.Wardrobes)
+        {
+            session.Send(WardrobePacket.Load(wardrobe));
+        }
         session.Send(ChatStickerPacket.LoadChatSticker(player));
 
         session.Send(ResponseCubePacket.DecorationScore(account.Home));
