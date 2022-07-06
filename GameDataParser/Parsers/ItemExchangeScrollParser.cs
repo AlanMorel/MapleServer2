@@ -59,11 +59,15 @@ public class ItemExchangeScrollParser : Exporter<List<ItemExchangeScrollMetadata
 
                             ItemRequirementMetadata item = new();
                             string[] parameters = itemNode.Attributes["id"].Value.Split(",");
-                            parameters[0] = Regex.Match(parameters[0], @"\d+").Value; // remove text from item id
-
-                            item.Id = int.Parse(parameters[0]);
+                            string[] parameter0 = parameters[0].Split(":");
+                            
+                            item.Id = int.Parse(parameter0[0]);
                             item.Rarity = byte.Parse(parameters[1]);
                             item.Amount = short.Parse(parameters[2]);
+                            if (parameter0.ElementAtOrDefault(1) is not null)
+                            {
+                                item.StringTag = parameter0[1];
+                            }
 
                             metadata.ItemCost.Add(item);
                         }
