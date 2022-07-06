@@ -91,14 +91,14 @@ public class QuestParser : Exporter<List<QuestMetadata>>
                 essentialJobItem = data.completeReward.globalEssentialJobItem.Count == 0 ? essentialJobItem : data.completeReward.globalEssentialJobItem;
             }
 
-            metadata.RewardItem = essentialItem.Select(x => new QuestRewardItem()
+            metadata.RewardItem = essentialItem.Where(x => x.code != 0).Select(x => new QuestRewardItem()
             {
                 Code = x.code,
                 Count = x.count,
                 Rank = (byte) x.rank
             }).ToList();
 
-            metadata.RewardItem.AddRange(essentialJobItem.Select(x => new QuestRewardItem()
+            metadata.RewardItem.AddRange(essentialJobItem.Where(x => x.code != 0).Select(x => new QuestRewardItem()
             {
                 Code = x.code,
                 Count = x.count,
