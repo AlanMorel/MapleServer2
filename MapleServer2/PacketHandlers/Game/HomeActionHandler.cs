@@ -15,7 +15,7 @@ public class HomeActionHandler : GamePacketHandler<HomeActionHandler>
 {
     public override RecvOp OpCode => RecvOp.HomeAction;
 
-    private enum HomeActionMode : byte
+    private enum Mode : byte
     {
         Smite = 0x01,
         Kick = 0x02,
@@ -27,23 +27,23 @@ public class HomeActionHandler : GamePacketHandler<HomeActionHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        HomeActionMode mode = (HomeActionMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case HomeActionMode.Kick:
+            case Mode.Kick:
                 HandleKick(packet);
                 break;
-            case HomeActionMode.Survey:
+            case Mode.Survey:
                 HandleRespondSurvey(session, packet);
                 break;
-            case HomeActionMode.ChangePortalSettings:
+            case Mode.ChangePortalSettings:
                 HandleChangePortalSettings(session, packet);
                 break;
-            case HomeActionMode.UpdateBallCoord:
+            case Mode.UpdateBallCoord:
                 HandleUpdateBallCoord(session, packet);
                 break;
-            case HomeActionMode.SendPortalSettings:
+            case Mode.SendPortalSettings:
                 HandleSendPortalSettings(session, packet);
                 break;
             default:

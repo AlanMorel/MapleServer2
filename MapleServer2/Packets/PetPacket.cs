@@ -6,9 +6,9 @@ using MapleServer2.Types;
 
 namespace MapleServer2.Packets;
 
-public static class ResponsePetPacket
+public static class PetPacket
 {
-    private enum ResponsePetMode : byte
+    private enum Mode : byte
     {
         Add = 0x00,
         Remove = 0x01,
@@ -22,7 +22,7 @@ public static class ResponsePetPacket
     public static PacketWriter Add(Pet pet)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ResponsePet);
-        pWriter.Write(ResponsePetMode.Add);
+        pWriter.Write(Mode.Add);
         pWriter.WriteInt(pet.Owner.ObjectId);
         pWriter.WriteInt(pet.ObjectId);
         pWriter.WriteBool(true);
@@ -43,7 +43,7 @@ public static class ResponsePetPacket
     public static PacketWriter Remove(Pet pet)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ResponsePet);
-        pWriter.Write(ResponsePetMode.Remove);
+        pWriter.Write(Mode.Remove);
         pWriter.WriteInt(pet.Owner.ObjectId);
         pWriter.WriteLong(pet.Item.Uid);
 
@@ -53,7 +53,7 @@ public static class ResponsePetPacket
     public static PacketWriter UpdateName(Pet pet)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ResponsePet);
-        pWriter.Write(ResponsePetMode.UpdateName);
+        pWriter.Write(Mode.UpdateName);
         pWriter.WriteInt(pet.Owner.ObjectId);
         pWriter.WriteUnicodeString(pet.Item.PetInfo.Name);
         pWriter.WriteLong();
@@ -68,7 +68,7 @@ public static class ResponsePetPacket
     public static PacketWriter LoadPetSettings(Pet pet)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ResponsePet);
-        pWriter.Write(ResponsePetMode.LoadPetSettings);
+        pWriter.Write(Mode.LoadPetSettings);
         pWriter.WriteInt(pet.Owner.ObjectId);
         pWriter.WriteUnicodeString(pet.Item.PetInfo.Name);
         pWriter.WriteLong(pet.Item.PetInfo.Exp);
@@ -85,7 +85,7 @@ public static class ResponsePetPacket
     public static PacketWriter UpdatePotions(Pet pet)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ResponsePet);
-        pWriter.Write(ResponsePetMode.PotionSettings);
+        pWriter.Write(Mode.PotionSettings);
         pWriter.WriteInt(pet.Owner.ObjectId);
         pWriter.WriteClass(pet.Item.PetInfo.PotionSettings);
 
@@ -95,7 +95,7 @@ public static class ResponsePetPacket
     public static PacketWriter UpdateLoot(Pet pet)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ResponsePet);
-        pWriter.Write(ResponsePetMode.LootSettings);
+        pWriter.Write(Mode.LootSettings);
         pWriter.WriteInt(pet.Owner.ObjectId);
         pWriter.WriteClass(pet.Item.PetInfo.LootSettings);
 
@@ -105,7 +105,7 @@ public static class ResponsePetPacket
     public static PacketWriter LoadAlbum()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ResponsePet);
-        pWriter.Write(ResponsePetMode.Album);
+        pWriter.Write(Mode.Album);
         pWriter.WriteInt(); // count
         for (int i = 0; i < 0; i++)
         {

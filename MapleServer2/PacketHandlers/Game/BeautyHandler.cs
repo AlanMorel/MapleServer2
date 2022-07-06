@@ -18,7 +18,7 @@ public class BeautyHandler : GamePacketHandler<BeautyHandler>
 {
     public override RecvOp OpCode => RecvOp.Beauty;
 
-    private enum BeautyMode : byte
+    private enum Mode : byte
     {
         LoadShop = 0x0,
         NewBeauty = 0x3,
@@ -36,44 +36,44 @@ public class BeautyHandler : GamePacketHandler<BeautyHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        BeautyMode mode = (BeautyMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case BeautyMode.LoadShop:
+            case Mode.LoadShop:
                 HandleLoadShop(session, packet);
                 break;
-            case BeautyMode.NewBeauty:
+            case Mode.NewBeauty:
                 HandleNewBeauty(session, packet);
                 break;
-            case BeautyMode.ModifyExistingBeauty:
+            case Mode.ModifyExistingBeauty:
                 HandleModifyExistingBeauty(session, packet);
                 break;
-            case BeautyMode.ModifySkin:
+            case Mode.ModifySkin:
                 HandleModifySkin(session, packet);
                 break;
-            case BeautyMode.RandomHair:
+            case Mode.RandomHair:
                 HandleRandomHair(session, packet);
                 break;
-            case BeautyMode.ChooseRandomHair:
+            case Mode.ChooseRandomHair:
                 HandleChooseRandomHair(session, packet);
                 break;
-            case BeautyMode.SaveHair:
+            case Mode.SaveHair:
                 HandleSaveHair(session, packet);
                 break;
-            case BeautyMode.Teleport:
+            case Mode.Teleport:
                 HandleTeleport(session, packet);
                 break;
-            case BeautyMode.DeleteSavedHair:
+            case Mode.DeleteSavedHair:
                 HandleDeleteSavedHair(session, packet);
                 break;
-            case BeautyMode.ChangeToSavedHair:
+            case Mode.ChangeToSavedHair:
                 HandleChangeToSavedHair(session, packet);
                 break;
-            case BeautyMode.DyeItem:
+            case Mode.DyeItem:
                 HandleDyeItem(session, packet);
                 break;
-            case BeautyMode.BeautyVoucher:
+            case Mode.BeautyVoucher:
                 HandleBeautyVoucher(session, packet);
                 break;
             default:

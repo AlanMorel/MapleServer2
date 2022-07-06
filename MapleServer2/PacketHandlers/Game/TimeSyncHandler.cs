@@ -5,7 +5,7 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestTimeSyncHandler : GamePacketHandler<RequestTimeSyncHandler>
+public class TimeSyncHandler : GamePacketHandler<TimeSyncHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestTimeSync;
 

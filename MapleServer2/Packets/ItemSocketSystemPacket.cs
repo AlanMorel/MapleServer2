@@ -6,7 +6,7 @@ namespace MapleServer2.Packets;
 
 public static class ItemSocketSystemPacket
 {
-    private enum ItemSocketSystemPacketMode : byte
+    private enum Mode : byte
     {
         UnlockSocket = 0x1,
         SelectUnlockSocketEquip = 0x3,
@@ -20,7 +20,7 @@ public static class ItemSocketSystemPacket
     public static PacketWriter UnlockSocket(Item item, byte slot, List<GemSocket> unlockedSockets, bool success = true)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemSocketSystem);
-        pWriter.Write(ItemSocketSystemPacketMode.UnlockSocket);
+        pWriter.Write(Mode.UnlockSocket);
         pWriter.WriteBool(success);
         pWriter.WriteLong(item.Uid);
         pWriter.WriteByte(slot);
@@ -48,7 +48,7 @@ public static class ItemSocketSystemPacket
     public static PacketWriter SelectGemUpgrade(long unkUid, byte slot, long equipUid)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemSocketSystem);
-        pWriter.Write(ItemSocketSystemPacketMode.SelectGemUpgrade);
+        pWriter.Write(Mode.SelectGemUpgrade);
         pWriter.WriteLong(unkUid);
         pWriter.WriteByte(slot);
         pWriter.WriteLong(equipUid);
@@ -59,7 +59,7 @@ public static class ItemSocketSystemPacket
     public static PacketWriter SelectUnlockSocketEquip(long equipUid, byte slot, long itemUid)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemSocketSystem);
-        pWriter.Write(ItemSocketSystemPacketMode.SelectUnlockSocketEquip);
+        pWriter.Write(Mode.SelectUnlockSocketEquip);
         pWriter.WriteLong(equipUid);
         pWriter.WriteByte(slot);
         pWriter.WriteLong(itemUid);
@@ -70,7 +70,7 @@ public static class ItemSocketSystemPacket
     public static PacketWriter UpgradeGem(long equipUid, byte slot, Item item, bool success = true)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemSocketSystem);
-        pWriter.Write(ItemSocketSystemPacketMode.UpgradeGem);
+        pWriter.Write(Mode.UpgradeGem);
         pWriter.WriteLong(equipUid);
         pWriter.WriteByte(slot);
         pWriter.WriteBool(success);
@@ -97,7 +97,7 @@ public static class ItemSocketSystemPacket
     public static PacketWriter MountGem(long equipItemUid, Gemstone gem, byte slot)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemSocketSystem);
-        pWriter.Write(ItemSocketSystemPacketMode.MountGem);
+        pWriter.Write(Mode.MountGem);
         pWriter.WriteLong(equipItemUid);
         pWriter.WriteByte(slot);
         pWriter.WriteByte(1);
@@ -120,7 +120,7 @@ public static class ItemSocketSystemPacket
     public static PacketWriter ExtractGem(long equipItemUid, long gemItemUid, byte slot)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemSocketSystem);
-        pWriter.Write(ItemSocketSystemPacketMode.ExtractGem);
+        pWriter.Write(Mode.ExtractGem);
         pWriter.WriteLong(equipItemUid);
         pWriter.WriteByte(slot);
         pWriter.WriteLong(gemItemUid);
@@ -130,7 +130,7 @@ public static class ItemSocketSystemPacket
     public static PacketWriter Notice(int noticeId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemSocketSystem);
-        pWriter.Write(ItemSocketSystemPacketMode.Notice);
+        pWriter.Write(Mode.Notice);
         pWriter.WriteByte(); // category?
         pWriter.WriteInt(noticeId);
         return pWriter;

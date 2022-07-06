@@ -11,7 +11,7 @@ public class MacroHandler : GamePacketHandler<MacroHandler>
 {
     public override RecvOp OpCode => RecvOp.Macro;
 
-    private enum MacroMode : byte
+    private enum Mode : byte
     {
         OpenSettings = 0x0,
         CloseSettings = 0x1,
@@ -19,14 +19,14 @@ public class MacroHandler : GamePacketHandler<MacroHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        MacroMode mode = (MacroMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case MacroMode.OpenSettings:
+            case Mode.OpenSettings:
                 HandleOpenSettings(session);
                 break;
-            case MacroMode.CloseSettings:
+            case Mode.CloseSettings:
                 HandleCloseSettings(session, packet);
                 break;
             default:

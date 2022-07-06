@@ -14,7 +14,7 @@ public class UgcHandler : GamePacketHandler<UgcHandler>
 {
     public override RecvOp OpCode => RecvOp.UGC;
 
-    private enum UgcMode : byte
+    private enum Mode : byte
     {
         Upload = 0x01,
         ConfirmationPacket = 0x03,
@@ -25,22 +25,22 @@ public class UgcHandler : GamePacketHandler<UgcHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        UgcMode function = (UgcMode) packet.ReadByte();
+        Mode function = (Mode) packet.ReadByte();
         switch (function)
         {
-            case UgcMode.Upload:
+            case Mode.Upload:
                 HandleUpload(session, packet);
                 break;
-            case UgcMode.ConfirmationPacket:
+            case Mode.ConfirmationPacket:
                 HandleConfirmationPacket(session, packet);
                 break;
-            case UgcMode.ProfilePicture:
+            case Mode.ProfilePicture:
                 HandleProfilePicture(session, packet);
                 break;
-            case UgcMode.LoadBanner:
+            case Mode.LoadBanner:
                 HandleLoadBanner(session, packet);
                 break;
-            case UgcMode.UpdateBanner:
+            case Mode.UpdateBanner:
                 HandleUpdateBanner(session, packet);
                 break;
             default:

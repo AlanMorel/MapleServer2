@@ -6,7 +6,7 @@ namespace MapleServer2.Packets;
 
 public static class MatchPartyPacket
 {
-    private enum MatchPartyPacketMode : byte
+    private enum Mode : byte
     {
         Create = 0x0,
         Remove = 0x1,
@@ -16,7 +16,7 @@ public static class MatchPartyPacket
     public static PacketWriter CreateListing(Party party)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MatchParty);
-        pWriter.Write(MatchPartyPacketMode.Create);
+        pWriter.Write(Mode.Create);
         WritePartyInformation(pWriter, party, false);
 
         return pWriter;
@@ -25,7 +25,7 @@ public static class MatchPartyPacket
     public static PacketWriter RemoveListing(Party party)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MatchParty);
-        pWriter.Write(MatchPartyPacketMode.Remove);
+        pWriter.Write(Mode.Remove);
         pWriter.WriteLong(party.PartyFinderId);
 
         return pWriter;
@@ -34,7 +34,7 @@ public static class MatchPartyPacket
     public static PacketWriter SendListings(List<Party> parties)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MatchParty);
-        pWriter.Write(MatchPartyPacketMode.Refresh);
+        pWriter.Write(Mode.Refresh);
         pWriter.WriteInt(parties.Count);
         foreach (Party party in parties)
         {

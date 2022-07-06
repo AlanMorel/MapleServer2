@@ -5,7 +5,7 @@ namespace MapleServer2.Packets;
 
 public static class AttendancePacket
 {
-    private enum AttendancePacketMode : byte
+    private enum Mode : byte
     {
         Notice = 0x9
     }
@@ -13,7 +13,7 @@ public static class AttendancePacket
     public static PacketWriter Notice(byte noticeId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Attendance);
-        pWriter.Write(AttendancePacketMode.Notice);
+        pWriter.Write(Mode.Notice);
         pWriter.WriteByte(noticeId);
         return pWriter;
     }

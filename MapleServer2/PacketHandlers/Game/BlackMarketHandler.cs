@@ -16,7 +16,7 @@ public class BlackMarketHandler : GamePacketHandler<BlackMarketHandler>
 {
     public override RecvOp OpCode => RecvOp.BlackMarket;
 
-    private enum BlackMarketMode : byte
+    private enum Mode : byte
     {
         Open = 0x1,
         CreateListing = 0x2,
@@ -42,26 +42,26 @@ public class BlackMarketHandler : GamePacketHandler<BlackMarketHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        BlackMarketMode mode = (BlackMarketMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case BlackMarketMode.Open:
+            case Mode.Open:
                 HandleOpen(session);
                 break;
-            case BlackMarketMode.CreateListing:
+            case Mode.CreateListing:
                 HandleCreateListing(session, packet);
                 break;
-            case BlackMarketMode.CancelListing:
+            case Mode.CancelListing:
                 HandleCancelListing(session, packet);
                 break;
-            case BlackMarketMode.Search:
+            case Mode.Search:
                 HandleSearch(session, packet);
                 break;
-            case BlackMarketMode.Purchase:
+            case Mode.Purchase:
                 HandlePurchase(session, packet);
                 break;
-            case BlackMarketMode.PrepareListing:
+            case Mode.PrepareListing:
                 HandlePrepareListing(session, packet);
                 break;
             default:

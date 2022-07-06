@@ -9,7 +9,7 @@ public class PCCafeBonusHandler : GamePacketHandler<PCCafeBonusHandler>
 {
     public override RecvOp OpCode => RecvOp.PCCafeBonus;
 
-    private enum PCCafeBonusMode : byte
+    private enum Mode : byte
     {
         ClaimLoginTimeReward = 0x1,
         ClaimPCCafeItem = 0x2
@@ -17,14 +17,14 @@ public class PCCafeBonusHandler : GamePacketHandler<PCCafeBonusHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        PCCafeBonusMode mode = (PCCafeBonusMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case PCCafeBonusMode.ClaimLoginTimeReward:
+            case Mode.ClaimLoginTimeReward:
                 HandleClaimLoginTimeReward(session, packet);
                 break;
-            case PCCafeBonusMode.ClaimPCCafeItem:
+            case Mode.ClaimPCCafeItem:
                 HandleClaimPCCafeItem(session, packet);
                 break;
             default:

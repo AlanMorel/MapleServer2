@@ -6,7 +6,7 @@ namespace MapleServer2.Packets;
 
 public static class DungeonHelperPacket
 {
-    private enum DungeonHelperPacketMode : byte
+    private enum Mode : byte
     {
         BroadcastAssist = 0x0,
         DisplayVetAndRookie = 0x1
@@ -15,7 +15,7 @@ public static class DungeonHelperPacket
     public static PacketWriter BroadcastAssist(Party party, int dungeonId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.DungeonHelper);
-        pWriter.Write(DungeonHelperPacketMode.BroadcastAssist);
+        pWriter.Write(Mode.BroadcastAssist);
         WriteDungeonHelperParty(pWriter, party, dungeonId);
         return pWriter;
     }
@@ -23,7 +23,7 @@ public static class DungeonHelperPacket
     public static PacketWriter DisplayVetAndRookie(Party party, int dungeonId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.DungeonHelper);
-        pWriter.Write(DungeonHelperPacketMode.DisplayVetAndRookie);
+        pWriter.Write(Mode.DisplayVetAndRookie);
         pWriter.WriteByte(); // rookie count
         pWriter.WriteByte(); // veteran count
         WriteDungeonHelperParty(pWriter, party, dungeonId);

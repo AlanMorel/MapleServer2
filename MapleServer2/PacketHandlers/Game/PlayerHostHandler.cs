@@ -10,18 +10,18 @@ public class PlayerHostHandler : GamePacketHandler<PlayerHostHandler>
 {
     public override RecvOp OpCode => RecvOp.PlayerHost;
 
-    private enum PlayerHostMode : byte
+    private enum Mode : byte
     {
         Claim = 0x1
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        PlayerHostMode mode = (PlayerHostMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case PlayerHostMode.Claim:
+            case Mode.Claim:
                 HandleClaim(session, packet);
                 break;
             default:

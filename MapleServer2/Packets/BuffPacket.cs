@@ -6,7 +6,7 @@ namespace MapleServer2.Packets;
 
 public static class BuffPacket
 {
-    private enum StatusMode : byte
+    private enum Mode : byte
     {
         Add = 0,
         Remove = 1,
@@ -16,7 +16,7 @@ public static class BuffPacket
     public static PacketWriter AddBuff(Status status)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buff);
-        pWriter.Write(StatusMode.Add);
+        pWriter.Write(Mode.Add);
         pWriter.WriteBuffOwner(status.Target, status.UniqueId, status.Source);
 
         pWriter.WriteBuff(status.Start, status.End, status.SkillId, status.Level, status.Stacks);
@@ -29,7 +29,7 @@ public static class BuffPacket
     public static PacketWriter UpdateBuff(Status status)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buff);
-        pWriter.Write(StatusMode.Update);
+        pWriter.Write(Mode.Update);
         pWriter.WriteBuffOwner(status.Target, status.UniqueId, status.Source);
 
         pWriter.WriteInt(status.Target);
@@ -43,7 +43,7 @@ public static class BuffPacket
     public static PacketWriter RemoveBuff(Status status)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buff);
-        pWriter.Write(StatusMode.Remove);
+        pWriter.Write(Mode.Remove);
         pWriter.WriteBuffOwner(status.Target, status.UniqueId, status.Source);
 
         return pWriter;
@@ -52,7 +52,7 @@ public static class BuffPacket
     public static PacketWriter AddBuff(AdditionalEffect status, int target)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buff);
-        pWriter.Write(StatusMode.Add);
+        pWriter.Write(Mode.Add);
         pWriter.WriteBuffOwner(target, status.BuffId, status.SourceId);
 
         pWriter.WriteBuff(status.Start, status.End, status.Id, status.Level, status.Stacks);
@@ -65,7 +65,7 @@ public static class BuffPacket
     public static PacketWriter UpdateBuff(AdditionalEffect status, int target)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buff);
-        pWriter.Write(StatusMode.Update);
+        pWriter.Write(Mode.Update);
         pWriter.WriteBuffOwner(target, status.BuffId, status.SourceId);
 
         pWriter.WriteInt(target);
@@ -79,7 +79,7 @@ public static class BuffPacket
     public static PacketWriter RemoveBuff(AdditionalEffect status, int target)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buff);
-        pWriter.Write(StatusMode.Remove);
+        pWriter.Write(Mode.Remove);
         pWriter.WriteBuffOwner(target, status.BuffId, status.SourceId);
 
         return pWriter;

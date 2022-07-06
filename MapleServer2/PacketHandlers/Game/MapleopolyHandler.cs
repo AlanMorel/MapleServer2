@@ -15,7 +15,7 @@ public class MapleopolyHandler : GamePacketHandler<MapleopolyHandler>
 {
     public override RecvOp OpCode => RecvOp.Mapleopoly;
 
-    private enum MapleopolyMode : byte
+    private enum Mode : byte
     {
         Open = 0x0,
         Roll = 0x1,
@@ -31,7 +31,7 @@ public class MapleopolyHandler : GamePacketHandler<MapleopolyHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        MapleopolyMode mode = (MapleopolyMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         BlueMarble mapleopolyEvent = DatabaseManager.Events.FindMapleopolyEvent();
         if (mapleopolyEvent is null)
@@ -49,13 +49,13 @@ public class MapleopolyHandler : GamePacketHandler<MapleopolyHandler>
 
         switch (mode)
         {
-            case MapleopolyMode.Open:
+            case Mode.Open:
                 HandleOpen(session, totalTileValue, freeRollValue);
                 break;
-            case MapleopolyMode.Roll:
+            case Mode.Roll:
                 HandleRoll(session, totalTileValue, freeRollValue);
                 break;
-            case MapleopolyMode.ProcessTile:
+            case Mode.ProcessTile:
                 HandleProcessTile(session, totalTileValue, freeRollValue, totalTripValue);
                 break;
             default:

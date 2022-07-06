@@ -9,7 +9,7 @@ namespace MapleServer2.Packets;
 
 public static class EnchantScrollPacket
 {
-    private enum EnchantScrollMode : byte
+    private enum Mode : byte
     {
         OpenWindow = 0x0,
         AddItem = 0x1,
@@ -19,7 +19,7 @@ public static class EnchantScrollPacket
     public static PacketWriter OpenWindow(long itemUid, EnchantScrollMetadata metadata, float successRate)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.EnchantScroll);
-        pWriter.Write(EnchantScrollMode.OpenWindow);
+        pWriter.Write(Mode.OpenWindow);
         pWriter.WriteLong(itemUid);
         pWriter.Write(metadata.ScrollType);
         pWriter.WriteBool(false); // untradeable reminder
@@ -49,7 +49,7 @@ public static class EnchantScrollPacket
     public static PacketWriter AddItem(long itemUid, Dictionary<StatAttribute, ItemStat> enchantStats)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.EnchantScroll);
-        pWriter.Write(EnchantScrollMode.AddItem);
+        pWriter.Write(Mode.AddItem);
         pWriter.WriteLong(itemUid);
         pWriter.WriteShort(1);
         List<BasicStat> stats = enchantStats.Values.OfType<BasicStat>().ToList();
@@ -66,7 +66,7 @@ public static class EnchantScrollPacket
     public static PacketWriter UseScroll(short errorId, Item item = null)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.EnchantScroll);
-        pWriter.Write(EnchantScrollMode.UseScroll);
+        pWriter.Write(Mode.UseScroll);
         pWriter.WriteShort(errorId);
         if (item is not null)
         {

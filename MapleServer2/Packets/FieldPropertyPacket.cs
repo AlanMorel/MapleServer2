@@ -6,7 +6,7 @@ namespace MapleServer2.Packets;
 
 public static class FieldPropertyPacket
 {
-    private enum FieldPropertyMode : byte
+    private enum Mode : byte
     {
         Gravity = 0x01,
         SightRange = 0x06,
@@ -21,7 +21,7 @@ public static class FieldPropertyPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.FieldProperty);
         pWriter.WriteByte(1);
-        pWriter.Write(FieldPropertyMode.Gravity);
+        pWriter.Write(Mode.Gravity);
         pWriter.WriteFloat(value);
 
         return pWriter;
@@ -31,7 +31,7 @@ public static class FieldPropertyPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.FieldProperty);
         pWriter.WriteByte(1);
-        pWriter.Write(FieldPropertyMode.Weather);
+        pWriter.Write(Mode.Weather);
         pWriter.WriteByte((byte) weather);
 
         return pWriter;
@@ -41,7 +41,7 @@ public static class FieldPropertyPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.FieldProperty);
         pWriter.WriteByte(1);
-        pWriter.Write(FieldPropertyMode.AmbientLight);
+        pWriter.Write(Mode.AmbientLight);
         pWriter.WriteByte(r);
         pWriter.WriteByte(g);
         pWriter.WriteByte(b);
@@ -53,7 +53,7 @@ public static class FieldPropertyPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.FieldProperty);
         pWriter.WriteByte(1);
-        pWriter.Write(FieldPropertyMode.DirectionalLight);
+        pWriter.Write(Mode.DirectionalLight);
         pWriter.WriteByte(r);
         pWriter.WriteByte(g);
         pWriter.WriteByte(b);
@@ -68,7 +68,7 @@ public static class FieldPropertyPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.FieldProperty);
         pWriter.WriteByte(1);
-        pWriter.Write(FieldPropertyMode.FreeCamera);
+        pWriter.Write(Mode.FreeCamera);
         pWriter.WriteBool(enable);
 
         return pWriter;
@@ -78,7 +78,7 @@ public static class FieldPropertyPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.FieldProperty);
         pWriter.WriteByte(1);
-        pWriter.Write(FieldPropertyMode.SightRange);
+        pWriter.Write(Mode.SightRange);
         pWriter.WriteFloat(900); // radius
         pWriter.WriteFloat(); // these 3 floats control some kind of fade in/out
         pWriter.WriteFloat();
@@ -94,7 +94,7 @@ public static class FieldPropertyPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.FieldProperty);
         pWriter.WriteByte(1);
-        pWriter.Write(FieldPropertyMode.SightRange);
+        pWriter.Write(Mode.SightRange);
         pWriter.WriteFloat(); // radius
         pWriter.WriteFloat(); // these 3 floats control some kind of fade in/out
         pWriter.WriteFloat();

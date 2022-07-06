@@ -12,7 +12,7 @@ public class TriggerHandler : GamePacketHandler<TriggerHandler>
 {
     public override RecvOp OpCode => RecvOp.Trigger;
 
-    private enum TriggerMode : byte
+    private enum Mode : byte
     {
         SkipCutscene = 0x7,
         UpdateWidget = 0x8
@@ -20,14 +20,14 @@ public class TriggerHandler : GamePacketHandler<TriggerHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        TriggerMode mode = (TriggerMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case TriggerMode.SkipCutscene:
+            case Mode.SkipCutscene:
                 HandleSkipCutscene(session);
                 break;
-            case TriggerMode.UpdateWidget:
+            case Mode.UpdateWidget:
                 HandleUpdateWidget(session, packet);
                 break;
             default:

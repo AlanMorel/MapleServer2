@@ -6,7 +6,7 @@ namespace MapleServer2.Packets;
 
 public static class PrestigePacket
 {
-    private enum PrestigePacketMode : byte
+    private enum Mode : byte
     {
         SetLevels = 0x00,
         Exp = 0x01,
@@ -19,7 +19,7 @@ public static class PrestigePacket
     public static PacketWriter SetLevels(Player player)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Prestige);
-        pWriter.Write(PrestigePacketMode.SetLevels);
+        pWriter.Write(Mode.SetLevels);
         pWriter.WriteLong(player.Levels.PrestigeExp);
         pWriter.WriteInt(player.Levels.PrestigeLevel);
         pWriter.WriteLong(player.Levels.PrestigeExp);
@@ -38,7 +38,7 @@ public static class PrestigePacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Prestige);
 
-        pWriter.Write(PrestigePacketMode.Exp);
+        pWriter.Write(Mode.Exp);
         pWriter.WriteLong(prestigeExp);
         pWriter.WriteLong(amount);
 
@@ -49,7 +49,7 @@ public static class PrestigePacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Prestige);
 
-        pWriter.Write(PrestigePacketMode.LevelUp);
+        pWriter.Write(Mode.LevelUp);
         pWriter.WriteInt(playerObjectId);
         pWriter.WriteInt(level);
 
@@ -60,7 +60,7 @@ public static class PrestigePacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Prestige);
 
-        pWriter.Write(PrestigePacketMode.Reward);
+        pWriter.Write(Mode.Reward);
         pWriter.WriteByte(0x01); // Unknown maybe boolean for whether to accept?
         pWriter.WriteInt(1); // Amount of rewards to accept (multiple ranks)
         pWriter.WriteInt(rank);
@@ -71,7 +71,7 @@ public static class PrestigePacket
     public static PacketWriter UpdateMissions(List<PrestigeMission> missions)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Prestige);
-        pWriter.Write(PrestigePacketMode.UpdateMissions);
+        pWriter.Write(Mode.UpdateMissions);
         pWriter.WriteInt(missions.Count);
 
         foreach (PrestigeMission mission in missions)
@@ -87,7 +87,7 @@ public static class PrestigePacket
     public static PacketWriter WeeklyMissions(List<PrestigeMission> missions)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Prestige);
-        pWriter.Write(PrestigePacketMode.WeeklyMissions);
+        pWriter.Write(Mode.WeeklyMissions);
         pWriter.WriteInt(missions.Count);
 
         foreach (PrestigeMission mission in missions)

@@ -5,7 +5,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestMoneyPickupHandler : GamePacketHandler<RequestMoneyPickupHandler>
+public class MoneyPickupHandler : GamePacketHandler<MoneyPickupHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestMoneyPickup;
 

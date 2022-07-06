@@ -10,7 +10,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class LiftableHandler : GamePacketHandler<LiftableHandler>
 {
-    private enum LiftableMode : byte
+    private enum Mode : byte
     {
         PickUp = 1
     }
@@ -19,11 +19,11 @@ public class LiftableHandler : GamePacketHandler<LiftableHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        LiftableMode mode = (LiftableMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case LiftableMode.PickUp:
+            case Mode.PickUp:
                 HandlePickUp(session, packet);
                 break;
             default:

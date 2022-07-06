@@ -3,7 +3,7 @@ using MapleServer2.Constants;
 
 namespace MapleServer2.Packets;
 
-public class RevivalConfirmPacket
+public static class RevivalConfirmPacket
 {
     public static PacketWriter Send(int objectId, long unk)
     {

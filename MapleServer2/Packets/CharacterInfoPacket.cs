@@ -4,7 +4,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.Packets;
 
-public class CharacterInfoPacket
+public static class CharacterInfoPacket
 {
     public static PacketWriter WriteCharacterInfo(long characterId, Player player)
     {

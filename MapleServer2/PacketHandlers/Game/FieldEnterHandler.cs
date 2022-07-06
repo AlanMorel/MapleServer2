@@ -39,7 +39,7 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
             {
                 player.FieldPlayer.ActivePet = pet;
 
-                session.Send(ResponsePetPacket.LoadPetSettings(pet));
+                session.Send(PetPacket.LoadPetSettings(pet));
                 session.Send(NoticePacket.Notice(SystemNotice.PetSummonOn, NoticeType.Chat | NoticeType.FastText));
             }
         }

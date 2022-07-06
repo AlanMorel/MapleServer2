@@ -6,7 +6,7 @@ namespace MapleServer2.Packets;
 
 public static class GameEventUserValuePacket
 {
-    private enum GameEventUserValuePacketMode : byte
+    private enum Mode : byte
     {
         LoadValues = 0x0,
         UpdateValue = 0x1,
@@ -16,7 +16,7 @@ public static class GameEventUserValuePacket
     public static PacketWriter LoadValues(List<GameEventUserValue> userValues)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.GameEventUserValue);
-        pWriter.Write(GameEventUserValuePacketMode.LoadValues);
+        pWriter.Write(Mode.LoadValues);
         pWriter.WriteByte();
         pWriter.WriteInt(userValues.Count);
 
@@ -30,7 +30,7 @@ public static class GameEventUserValuePacket
     public static PacketWriter UpdateValue(GameEventUserValue userValue)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.GameEventUserValue);
-        pWriter.Write(GameEventUserValuePacketMode.UpdateValue);
+        pWriter.Write(Mode.UpdateValue);
         pWriter.WriteByte();
         WriteUserValue(pWriter, userValue);
         return pWriter;

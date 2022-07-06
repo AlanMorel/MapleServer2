@@ -5,7 +5,7 @@ namespace MapleServer2.Packets;
 
 public static class ResponseCharCreatePacket
 {
-    public enum CharacterCreatePacketMode : byte
+    public enum Mode : byte
     {
         SystemError = 0x00, // s_char_err_system
         NameNeeds2LettersMinimum = 0x01, //s_char_err_name
@@ -18,7 +18,7 @@ public static class ResponseCharCreatePacket
         AbnormalActivityDetected = 0x0E // s_char_err_creation_restriction
     }
 
-    public static PacketWriter Error(CharacterCreatePacketMode mode, string message = "")
+    public static PacketWriter Error(Mode mode, string message = "")
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.CharCreate);
         pWriter.Write(mode);

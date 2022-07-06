@@ -6,7 +6,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.Packets;
 
-public class HomeActionPacket
+public static class HomeActionPacket
 {
     private enum HomeActionMode : byte
     {

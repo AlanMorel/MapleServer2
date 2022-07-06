@@ -12,18 +12,18 @@ public class ItemExchangeHandler : GamePacketHandler<ItemExchangeHandler>
 {
     public override RecvOp OpCode => RecvOp.ItemExchange;
 
-    private enum ItemExchangeMode : byte
+    private enum Mode : byte
     {
         Use = 0x1
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        ItemExchangeMode mode = (ItemExchangeMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case ItemExchangeMode.Use:
+            case Mode.Use:
                 HandleUse(session, packet);
                 break;
             default:

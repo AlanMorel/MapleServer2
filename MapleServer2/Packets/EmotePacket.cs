@@ -6,7 +6,7 @@ namespace MapleServer2.Packets;
 
 public static class EmotePacket
 {
-    private enum EmotePacketMode : byte
+    private enum Mode : byte
     {
         LoadEmotes = 0x0,
         LearnEmote = 0x1
@@ -15,7 +15,7 @@ public static class EmotePacket
     public static PacketWriter LoadEmotes(Player player)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Emotion);
-        pWriter.Write(EmotePacketMode.LoadEmotes);
+        pWriter.Write(Mode.LoadEmotes);
         pWriter.WriteInt(player.Emotes.Count);
         foreach (int emoteId in player.Emotes)
         {
@@ -29,7 +29,7 @@ public static class EmotePacket
     public static PacketWriter LearnEmote(int emoteId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Emotion);
-        pWriter.Write(EmotePacketMode.LearnEmote);
+        pWriter.Write(Mode.LearnEmote);
         pWriter.WriteInt(emoteId);
         pWriter.WriteInt(1); // quantity
         pWriter.WriteLong();

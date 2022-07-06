@@ -6,7 +6,7 @@ namespace MapleServer2.Packets;
 
 public static class SendCubesPacket
 {
-    private enum SendCubesMode : byte
+    private enum Mode : byte
     {
         LoadCubes = 0x0,
         AvailablePlots = 0x01,
@@ -17,7 +17,7 @@ public static class SendCubesPacket
     public static PacketWriter LoadCubes(List<Cube> cubes)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Cubes);
-        pWriter.Write(SendCubesMode.LoadCubes);
+        pWriter.Write(Mode.LoadCubes);
         pWriter.WriteByte();
         pWriter.WriteInt(cubes.Count);
         foreach (Cube cube in cubes)
@@ -46,7 +46,7 @@ public static class SendCubesPacket
     public static PacketWriter LoadAvailablePlots(List<Home> homes, List<byte> plotNumbers)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Cubes);
-        pWriter.Write(SendCubesMode.AvailablePlots);
+        pWriter.Write(Mode.AvailablePlots);
         pWriter.WriteInt(plotNumbers.Count);
         foreach (int plotId in plotNumbers)
         {
@@ -60,7 +60,7 @@ public static class SendCubesPacket
     public static PacketWriter LoadPlots(List<Home> homes, int mapId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Cubes);
-        pWriter.Write(SendCubesMode.LoadPlots);
+        pWriter.Write(Mode.LoadPlots);
         pWriter.WriteInt(homes.Count);
         foreach (Home home in homes)
         {
@@ -76,7 +76,7 @@ public static class SendCubesPacket
     public static PacketWriter Expiration(List<Home> homes)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Cubes);
-        pWriter.Write(SendCubesMode.Expiration);
+        pWriter.Write(Mode.Expiration);
         pWriter.WriteInt(homes.Count);
         foreach (Home home in homes)
         {

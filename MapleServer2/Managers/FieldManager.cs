@@ -628,7 +628,7 @@ public class FieldManager
         Broadcast(session =>
         {
             session.Send(FieldPetPacket.AddPet(pet));
-            session.Send(ResponsePetPacket.Add(pet));
+            session.Send(PetPacket.Add(pet));
         });
     }
 
@@ -638,7 +638,7 @@ public class FieldManager
 
         Broadcast(session =>
         {
-            session.Send(ResponsePetPacket.Remove(pet));
+            session.Send(PetPacket.Remove(pet));
             session.Send(FieldPetPacket.RemovePet(pet));
         });
     }

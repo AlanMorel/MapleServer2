@@ -16,7 +16,7 @@ public class MoveFieldHandler : GamePacketHandler<MoveFieldHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestMoveField;
 
-    private enum RequestMoveFieldMode : byte
+    private enum Mode : byte
     {
         Move = 0x0,
         LeaveInstance = 0x1,
@@ -27,23 +27,23 @@ public class MoveFieldHandler : GamePacketHandler<MoveFieldHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        RequestMoveFieldMode mode = (RequestMoveFieldMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case RequestMoveFieldMode.Move:
+            case Mode.Move:
                 HandleMove(session, packet);
                 break;
-            case RequestMoveFieldMode.LeaveInstance:
+            case Mode.LeaveInstance:
                 HandleLeaveInstance(session);
                 break;
-            case RequestMoveFieldMode.VisitHouse:
+            case Mode.VisitHouse:
                 HandleVisitHouse(session, packet);
                 break;
-            case RequestMoveFieldMode.ReturnMap:
+            case Mode.ReturnMap:
                 HandleReturnMap(session);
                 break;
-            case RequestMoveFieldMode.EnterDecorPlaner:
+            case Mode.EnterDecorPlaner:
                 HandleEnterDecorPlaner(session);
                 break;
             default:

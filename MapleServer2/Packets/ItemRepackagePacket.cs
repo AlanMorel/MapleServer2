@@ -7,7 +7,7 @@ namespace MapleServer2.Packets;
 
 public static class ItemRepackagePacket
 {
-    private enum ItemRepackagePacketMode : byte
+    private enum Mode : byte
     {
         Open = 0x0,
         Repackage = 0x2,
@@ -17,7 +17,7 @@ public static class ItemRepackagePacket
     public static PacketWriter Open(long itemUid)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemRepackage);
-        pWriter.Write(ItemRepackagePacketMode.Open);
+        pWriter.Write(Mode.Open);
         pWriter.WriteLong(itemUid);
         return pWriter;
     }
@@ -25,7 +25,7 @@ public static class ItemRepackagePacket
     public static PacketWriter Repackage(Item item)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemRepackage);
-        pWriter.Write(ItemRepackagePacketMode.Repackage);
+        pWriter.Write(Mode.Repackage);
         pWriter.WriteShort();
         pWriter.WriteLong(item.Uid);
         pWriter.WriteItem(item);
@@ -35,7 +35,7 @@ public static class ItemRepackagePacket
     public static PacketWriter Notice(int noticeId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemRepackage);
-        pWriter.Write(ItemRepackagePacketMode.Notice);
+        pWriter.Write(Mode.Notice);
         pWriter.WriteByte();
         pWriter.WriteInt(noticeId);
         return pWriter;

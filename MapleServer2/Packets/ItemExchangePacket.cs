@@ -5,7 +5,7 @@ namespace MapleServer2.Packets;
 
 public static class ItemExchangePacket
 {
-    private enum ItemExchangePacketMode : byte
+    private enum Mode : byte
     {
         Notice = 0x2
     }
@@ -13,7 +13,7 @@ public static class ItemExchangePacket
     public static PacketWriter Notice(short noticeId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemExchange);
-        pWriter.Write(ItemExchangePacketMode.Notice);
+        pWriter.Write(Mode.Notice);
         pWriter.WriteShort(noticeId);
         return pWriter;
     }

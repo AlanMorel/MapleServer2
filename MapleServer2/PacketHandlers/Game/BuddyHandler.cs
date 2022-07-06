@@ -13,7 +13,7 @@ public class BuddyHandler : GamePacketHandler<BuddyHandler>
 {
     public override RecvOp OpCode => RecvOp.Buddy;
 
-    private enum BuddyMode : byte
+    private enum Mode : byte
     {
         SendRequest = 0x2,
         Accept = 0x3,
@@ -41,32 +41,32 @@ public class BuddyHandler : GamePacketHandler<BuddyHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        BuddyMode mode = (BuddyMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case BuddyMode.SendRequest:
+            case Mode.SendRequest:
                 HandleSendRequest(session, packet);
                 break;
-            case BuddyMode.Accept:
+            case Mode.Accept:
                 HandleAccept(session, packet);
                 break;
-            case BuddyMode.Decline:
+            case Mode.Decline:
                 HandleDecline(session, packet);
                 break;
-            case BuddyMode.Block:
+            case Mode.Block:
                 HandleBlock(session, packet);
                 break;
-            case BuddyMode.Unblock:
+            case Mode.Unblock:
                 HandleUnblock(session, packet);
                 break;
-            case BuddyMode.RemoveFriend:
+            case Mode.RemoveFriend:
                 HandleRemoveFriend(session, packet);
                 break;
-            case BuddyMode.EditBlockReason:
+            case Mode.EditBlockReason:
                 HandleEditBlockReason(session, packet);
                 break;
-            case BuddyMode.CancelRequest:
+            case Mode.CancelRequest:
                 HandleCancelRequest(session, packet);
                 break;
             default:

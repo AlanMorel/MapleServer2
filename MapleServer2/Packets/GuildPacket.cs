@@ -7,7 +7,7 @@ namespace MapleServer2.Packets;
 
 public static class GuildPacket
 {
-    private enum GuildPacketMode : byte
+    private enum Mode : byte
     {
         UpdateGuild = 0x0,
         Create = 0x1,
@@ -80,7 +80,7 @@ public static class GuildPacket
     public static PacketWriter UpdateGuild(Guild guild)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.UpdateGuild);
+        pWriter.Write(Mode.UpdateGuild);
         pWriter.WriteLong(guild.Id);
         pWriter.WriteUnicodeString(guild.Name);
         pWriter.WriteUnicodeString(guild.Emblem);
@@ -232,7 +232,7 @@ public static class GuildPacket
     public static PacketWriter Create(string guildName)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.Create);
+        pWriter.Write(Mode.Create);
         pWriter.WriteByte();
         pWriter.WriteUnicodeString(guildName);
         return pWriter;
@@ -241,7 +241,7 @@ public static class GuildPacket
     public static PacketWriter DisbandConfirm()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.DisbandConfirm);
+        pWriter.Write(Mode.DisbandConfirm);
         pWriter.WriteByte();
         return pWriter;
     }
@@ -249,7 +249,7 @@ public static class GuildPacket
     public static PacketWriter InviteConfirm(Player player)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.InviteConfirm);
+        pWriter.Write(Mode.InviteConfirm);
         pWriter.WriteUnicodeString(player.Name);
         return pWriter;
     }
@@ -257,7 +257,7 @@ public static class GuildPacket
     public static PacketWriter SendInvite(Player inviter, Player invitee, Guild guild)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.SendInvite);
+        pWriter.Write(Mode.SendInvite);
         pWriter.WriteLong(guild.Id);
         pWriter.WriteUnicodeString(guild.Name);
         pWriter.WriteByte();
@@ -270,7 +270,7 @@ public static class GuildPacket
     public static PacketWriter InviteResponseConfirm(Player inviter, Player invitee, Guild guild, short response)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.InviteResponseConfirm);
+        pWriter.Write(Mode.InviteResponseConfirm);
         pWriter.WriteLong(guild.Id);
         pWriter.WriteUnicodeString(guild.Name);
         pWriter.WriteShort();
@@ -283,7 +283,7 @@ public static class GuildPacket
     public static PacketWriter InviteNotification(string inviteeName, short response)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.InviteNotification);
+        pWriter.Write(Mode.InviteNotification);
         pWriter.WriteUnicodeString(inviteeName);
         pWriter.WriteShort(response);
         return pWriter;
@@ -292,14 +292,14 @@ public static class GuildPacket
     public static PacketWriter LeaveConfirm()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.LeaveConfirm);
+        pWriter.Write(Mode.LeaveConfirm);
         return pWriter;
     }
 
     public static PacketWriter KickConfirm(Player member)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.KickConfirm);
+        pWriter.Write(Mode.KickConfirm);
         pWriter.WriteUnicodeString(member.Name);
         return pWriter;
     }
@@ -307,7 +307,7 @@ public static class GuildPacket
     public static PacketWriter KickNotification(Player player)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.KickNotification);
+        pWriter.Write(Mode.KickNotification);
         pWriter.WriteUnicodeString(player.Name);
         return pWriter;
     }
@@ -315,7 +315,7 @@ public static class GuildPacket
     public static PacketWriter RankChangeConfirm(string memberName, byte rank)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.RankChangeConfirm);
+        pWriter.Write(Mode.RankChangeConfirm);
         pWriter.WriteUnicodeString(memberName);
         pWriter.WriteByte(rank);
         return pWriter;
@@ -324,7 +324,7 @@ public static class GuildPacket
     public static PacketWriter UpdateMemberName(string oldName, string newName)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.UpdateMemberName);
+        pWriter.Write(Mode.UpdateMemberName);
         pWriter.WriteUnicodeString(oldName);
         pWriter.WriteUnicodeString(newName);
         return pWriter;
@@ -333,14 +333,14 @@ public static class GuildPacket
     public static PacketWriter CheckInBegin()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.CheckInBegin);
+        pWriter.Write(Mode.CheckInBegin);
         return pWriter;
     }
 
     public static PacketWriter MemberBroadcastJoinNotice(GuildMember member, string inviterName, bool displayNotice)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.MemberBroadcastJoinNotice);
+        pWriter.Write(Mode.MemberBroadcastJoinNotice);
         pWriter.WriteUnicodeString(inviterName);
         pWriter.WriteUnicodeString(member.Player.Name);
         pWriter.WriteBool(displayNotice);
@@ -363,7 +363,7 @@ public static class GuildPacket
     public static PacketWriter MemberLeaveNotice(Player member)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.MemberLeaveNotice);
+        pWriter.Write(Mode.MemberLeaveNotice);
         pWriter.WriteUnicodeString(member.Name);
         return pWriter;
     }
@@ -371,7 +371,7 @@ public static class GuildPacket
     public static PacketWriter KickMember(Player member, Player leader)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.KickMember);
+        pWriter.Write(Mode.KickMember);
         pWriter.WriteUnicodeString(leader.Name);
         pWriter.WriteUnicodeString(member.Name);
         return pWriter;
@@ -380,7 +380,7 @@ public static class GuildPacket
     public static PacketWriter RankChangeNotice(string leaderName, string memberName, byte rank)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.RankChangeNotice);
+        pWriter.Write(Mode.RankChangeNotice);
         pWriter.WriteUnicodeString(leaderName);
         pWriter.WriteUnicodeString(memberName);
         pWriter.WriteByte(rank);
@@ -390,7 +390,7 @@ public static class GuildPacket
     public static PacketWriter UpdatePlayerMessage(Player player, string message)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.UpdatePlayerMessage);
+        pWriter.Write(Mode.UpdatePlayerMessage);
         pWriter.WriteUnicodeString(player.Name);
         pWriter.WriteUnicodeString(message);
         return pWriter;
@@ -399,7 +399,7 @@ public static class GuildPacket
     public static PacketWriter MemberLoggedIn(Player player)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.MemberLoggedIn);
+        pWriter.Write(Mode.MemberLoggedIn);
         pWriter.WriteUnicodeString(player.Name);
         return pWriter;
     }
@@ -407,7 +407,7 @@ public static class GuildPacket
     public static PacketWriter MemberLoggedOff(Player player)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.MemberLoggedOff);
+        pWriter.Write(Mode.MemberLoggedOff);
         pWriter.WriteUnicodeString(player.Name);
         pWriter.WriteLong(TimeInfo.Now());
         return pWriter;
@@ -416,7 +416,7 @@ public static class GuildPacket
     public static PacketWriter AssignNewLeader(Player newLeader, Player oldLeader)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.AssignNewLeader);
+        pWriter.Write(Mode.AssignNewLeader);
         pWriter.WriteUnicodeString(oldLeader.Name);
         pWriter.WriteUnicodeString(newLeader.Name);
         return pWriter;
@@ -425,7 +425,7 @@ public static class GuildPacket
     public static PacketWriter GuildNoticeChange(Player player, string notice)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.GuildNoticeChange);
+        pWriter.Write(Mode.GuildNoticeChange);
         pWriter.WriteUnicodeString(player.Name);
         pWriter.WriteByte(0x1);
         pWriter.WriteUnicodeString(notice);
@@ -435,7 +435,7 @@ public static class GuildPacket
     public static PacketWriter GuildNoticeEmblemChange(string playerName, string emblemUrl)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.GuildNoticeEmblemChange);
+        pWriter.Write(Mode.GuildNoticeEmblemChange);
         pWriter.WriteByte();
         pWriter.WriteInt();
         pWriter.WriteUnicodeString(playerName);
@@ -446,7 +446,7 @@ public static class GuildPacket
     public static PacketWriter UpdateRankNotice(Guild guild, byte rankIndex)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.UpdateRankNotice);
+        pWriter.Write(Mode.UpdateRankNotice);
         pWriter.WriteByte();
         pWriter.WriteInt();
         pWriter.WriteUnicodeString(guild.LeaderName);
@@ -460,7 +460,7 @@ public static class GuildPacket
     public static PacketWriter ListGuildUpdate(Player player, bool toggle)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.ListGuildUpdate);
+        pWriter.Write(Mode.ListGuildUpdate);
         pWriter.WriteUnicodeString(player.Name);
         pWriter.WriteBool(toggle);
         pWriter.WriteInt();
@@ -470,7 +470,7 @@ public static class GuildPacket
     public static PacketWriter UpdateMemberLocation(string playerName, int mapId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.UpdateMemberLocation);
+        pWriter.Write(Mode.UpdateMemberLocation);
         pWriter.WriteUnicodeString(playerName);
         pWriter.WriteInt(mapId);
         return pWriter;
@@ -479,7 +479,7 @@ public static class GuildPacket
     public static PacketWriter UpdatePlayer(Player player)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.UpdatePlayer);
+        pWriter.Write(Mode.UpdatePlayer);
         pWriter.WriteUnicodeString(player.Name);
         WriteGuildMember(pWriter, player);
         return pWriter;
@@ -488,7 +488,7 @@ public static class GuildPacket
     public static PacketWriter GuildNameChange(string newName)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.GuildNameChange);
+        pWriter.Write(Mode.GuildNameChange);
         pWriter.WriteUnicodeString(newName);
         return pWriter;
     }
@@ -496,7 +496,7 @@ public static class GuildPacket
     public static PacketWriter TrophyNotice()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.TrophyNotice);
+        pWriter.Write(Mode.TrophyNotice);
         pWriter.WriteUnicodeString(); // character name
         pWriter.WriteInt(); // trophy id
         pWriter.WriteInt(); // trophy value
@@ -508,7 +508,7 @@ public static class GuildPacket
     public static PacketWriter FinishCheckIn(GuildMember member)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.FinishCheckIn);
+        pWriter.Write(Mode.FinishCheckIn);
         pWriter.WriteUnicodeString(member.Player.Name);
         pWriter.WriteLong(member.AttendanceTimestamp);
         return pWriter;
@@ -517,7 +517,7 @@ public static class GuildPacket
     public static PacketWriter BattleMatchmaking(bool success)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.BattleMatchmaking);
+        pWriter.Write(Mode.BattleMatchmaking);
         pWriter.WriteBool(success);
         return pWriter;
     }
@@ -525,7 +525,7 @@ public static class GuildPacket
     public static PacketWriter BattleApplyNotice(string playerName)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.BattleApplyNotice);
+        pWriter.Write(Mode.BattleApplyNotice);
         pWriter.WriteUnicodeString(playerName);
         return pWriter;
     }
@@ -533,7 +533,7 @@ public static class GuildPacket
     public static PacketWriter BattleCancelApplyNotice(string playerName)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.BattleCancelApplyNotice);
+        pWriter.Write(Mode.BattleCancelApplyNotice);
         pWriter.WriteUnicodeString(playerName);
         return pWriter;
     }
@@ -541,7 +541,7 @@ public static class GuildPacket
     public static PacketWriter SendApplication(GuildApplication application, Player player)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.SendApplication);
+        pWriter.Write(Mode.SendApplication);
         pWriter.WriteLong(application.Id);
         pWriter.WriteLong(application.GuildId);
         pWriter.WriteLong(player.AccountId);
@@ -563,7 +563,7 @@ public static class GuildPacket
     public static PacketWriter WithdrawApplicationGuildUpdate(long applicationId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.WithdrawApplicationGuildUpdate);
+        pWriter.Write(Mode.WithdrawApplicationGuildUpdate);
         pWriter.WriteLong(applicationId);
         return pWriter;
     }
@@ -571,7 +571,7 @@ public static class GuildPacket
     public static PacketWriter ApplicationResponseBroadcastNotice(string reviewerName, string applierName, byte response, long applicationId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.ApplicationResponseBroadcastNotice);
+        pWriter.Write(Mode.ApplicationResponseBroadcastNotice);
         pWriter.WriteUnicodeString(reviewerName);
         pWriter.WriteUnicodeString(applierName);
         pWriter.WriteByte(response);
@@ -582,7 +582,7 @@ public static class GuildPacket
     public static PacketWriter ApplicationResponseToApplier(string guildName, long applicationId, byte response)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.ApplicationResponseToApplier);
+        pWriter.Write(Mode.ApplicationResponseToApplier);
         pWriter.WriteUnicodeString(guildName);
         pWriter.WriteLong(applicationId);
         pWriter.WriteByte(response);
@@ -592,7 +592,7 @@ public static class GuildPacket
     public static PacketWriter UpdateGuildExp(int guildExp)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.UpdateGuildExp);
+        pWriter.Write(Mode.UpdateGuildExp);
         pWriter.WriteInt(guildExp);
         return pWriter;
     }
@@ -600,7 +600,7 @@ public static class GuildPacket
     public static PacketWriter UpdateGuildFunds(int guildFunds)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.UpdateGuildFunds);
+        pWriter.Write(Mode.UpdateGuildFunds);
         pWriter.WriteInt(guildFunds);
         return pWriter;
     }
@@ -608,7 +608,7 @@ public static class GuildPacket
     public static PacketWriter UpdatePlayerContribution(GuildMember member, int contribution)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.UpdatePlayerContribution);
+        pWriter.Write(Mode.UpdatePlayerContribution);
         pWriter.WriteUnicodeString(member.Player.Name);
         pWriter.WriteInt(contribution);
         pWriter.WriteInt(member.DailyContribution);
@@ -619,7 +619,7 @@ public static class GuildPacket
     public static PacketWriter UpgradeBuff(int buffId, int buffLevel, string playerName)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.UpgradeBuff);
+        pWriter.Write(Mode.UpgradeBuff);
         pWriter.WriteUnicodeString(playerName);
         pWriter.WriteInt(buffId);
         pWriter.WriteInt(buffLevel);
@@ -630,7 +630,7 @@ public static class GuildPacket
     public static PacketWriter StartMinigame(string playerName, int minigameId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.StartMiniGame);
+        pWriter.Write(Mode.StartMiniGame);
         pWriter.WriteUnicodeString(playerName);
         pWriter.WriteInt(minigameId);
         pWriter.WriteInt();
@@ -640,7 +640,7 @@ public static class GuildPacket
     public static PacketWriter ChangeHouse(string playerName, int houseRank, int houseTheme)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.ChangeHouse);
+        pWriter.Write(Mode.ChangeHouse);
         pWriter.WriteUnicodeString(playerName);
         pWriter.WriteInt(houseRank);
         pWriter.WriteInt(houseTheme);
@@ -650,7 +650,7 @@ public static class GuildPacket
     public static PacketWriter UpgradeService(Player player, int serviceId, int serviceLevel)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.UpgradeService);
+        pWriter.Write(Mode.UpgradeService);
         pWriter.WriteUnicodeString(player.Name);
         pWriter.WriteInt(serviceId);
         pWriter.WriteInt(serviceLevel);
@@ -660,7 +660,7 @@ public static class GuildPacket
     public static PacketWriter UpdateBannerUrl(Player player, UGC ugc)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.UpdateBannerUrl);
+        pWriter.Write(Mode.UpdateBannerUrl);
         pWriter.WriteLong(player.CharacterId);
         pWriter.WriteUnicodeString(player.Name);
         pWriter.WriteInt(ugc.GuildPosterId);
@@ -671,7 +671,7 @@ public static class GuildPacket
     public static PacketWriter RequestMiniGameWar(bool request)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.RequestMiniGameWar);
+        pWriter.Write(Mode.RequestMiniGameWar);
         pWriter.WriteBool(request);
         pWriter.WriteByte(0x1);
         return pWriter;
@@ -680,7 +680,7 @@ public static class GuildPacket
     public static PacketWriter TransferLeaderConfirm(Player newLeader)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.TransferLeaderConfirm);
+        pWriter.Write(Mode.TransferLeaderConfirm);
         pWriter.WriteUnicodeString(newLeader.Name);
         return pWriter;
     }
@@ -688,7 +688,7 @@ public static class GuildPacket
     public static PacketWriter SubmitApplication(GuildApplication application, string guildName)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.SubmitApplication);
+        pWriter.Write(Mode.SubmitApplication);
         pWriter.WriteLong(application.Id);
         pWriter.WriteUnicodeString(guildName);
         return pWriter;
@@ -697,7 +697,7 @@ public static class GuildPacket
     public static PacketWriter WithdrawApplicationPlayerUpdate(GuildApplication application, string guildName)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.WithdrawApplicationPlayerUpdate);
+        pWriter.Write(Mode.WithdrawApplicationPlayerUpdate);
         pWriter.WriteLong(application.Id);
         pWriter.WriteUnicodeString(guildName);
         return pWriter;
@@ -706,7 +706,7 @@ public static class GuildPacket
     public static PacketWriter ApplicationResponse(long guildApplicationId, string applierName, byte response)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.ApplicationResponse);
+        pWriter.Write(Mode.ApplicationResponse);
         pWriter.WriteLong(guildApplicationId);
         pWriter.WriteUnicodeString(applierName);
         pWriter.WriteByte(response);
@@ -716,7 +716,7 @@ public static class GuildPacket
     public static PacketWriter GuildNoticeConfirm(string notice)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.GuildNoticeConfirm);
+        pWriter.Write(Mode.GuildNoticeConfirm);
         pWriter.WriteByte(0x1);
         pWriter.WriteUnicodeString(notice);
         return pWriter;
@@ -725,7 +725,7 @@ public static class GuildPacket
     public static PacketWriter ChangeEmblemUrl(string emblemUrl)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.ChangeEmblemUrl);
+        pWriter.Write(Mode.ChangeEmblemUrl);
         pWriter.WriteUnicodeString(emblemUrl);
         return pWriter;
     }
@@ -733,7 +733,7 @@ public static class GuildPacket
     public static PacketWriter UpdateRankConfirm(Guild guild, byte rankIndex)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.UpdateRankConfirm);
+        pWriter.Write(Mode.UpdateRankConfirm);
         pWriter.WriteByte(rankIndex);
         pWriter.WriteByte(rankIndex);
         pWriter.WriteUnicodeString(guild.Ranks[rankIndex].Name);
@@ -744,7 +744,7 @@ public static class GuildPacket
     public static PacketWriter ListGuildConfirm(bool toggle)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.ListGuildConfirm);
+        pWriter.Write(Mode.ListGuildConfirm);
         pWriter.WriteBool(toggle);
         pWriter.WriteInt();
         return pWriter;
@@ -753,14 +753,14 @@ public static class GuildPacket
     public static PacketWriter SendMail()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.SendMail);
+        pWriter.Write(Mode.SendMail);
         return pWriter;
     }
 
     public static PacketWriter UpdateGuildTag2(Player player, string guildName)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.UpdateGuildTag2);
+        pWriter.Write(Mode.UpdateGuildTag2);
         pWriter.WriteUnicodeString(player.Name);
         pWriter.WriteUnicodeString(guildName);
         return pWriter;
@@ -769,7 +769,7 @@ public static class GuildPacket
     public static PacketWriter UpdateGuildTag(Player player)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.UpdateGuildTag);
+        pWriter.Write(Mode.UpdateGuildTag);
         pWriter.WriteUnicodeString(player.Name);
         return pWriter;
     }
@@ -777,7 +777,7 @@ public static class GuildPacket
     public static PacketWriter ErrorNotice(byte errorNotice, int param = 0)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.ErrorNotice);
+        pWriter.Write(Mode.ErrorNotice);
         pWriter.WriteByte(1);
         pWriter.WriteByte(errorNotice);
         pWriter.WriteInt(param);
@@ -787,7 +787,7 @@ public static class GuildPacket
     public static PacketWriter LoadApplications(Player player)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.LoadApplications);
+        pWriter.Write(Mode.LoadApplications);
         pWriter.WriteInt(player.GuildApplications.Count);
         foreach (GuildApplication application in player.GuildApplications)
         {
@@ -815,7 +815,7 @@ public static class GuildPacket
     public static PacketWriter DisplayGuildList(List<Guild> guilds)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.DisplayGuildList);
+        pWriter.Write(Mode.DisplayGuildList);
         pWriter.WriteInt(guilds.Count);
 
         foreach (Guild guild in guilds)
@@ -841,7 +841,7 @@ public static class GuildPacket
     public static PacketWriter UseBuffNotice(int buffID)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.UseBuffNotice);
+        pWriter.Write(Mode.UseBuffNotice);
         pWriter.WriteInt(buffID);
         return pWriter;
     }
@@ -849,7 +849,7 @@ public static class GuildPacket
     public static PacketWriter ActivateBuff(int buffID)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.ActivateBuff);
+        pWriter.Write(Mode.ActivateBuff);
         pWriter.WriteInt(buffID);
         return pWriter;
     }
@@ -857,7 +857,7 @@ public static class GuildPacket
     public static PacketWriter List()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.List);
+        pWriter.Write(Mode.List);
         pWriter.WriteByte(0x1);
         pWriter.WriteLong();
         pWriter.WriteLong();
@@ -874,7 +874,7 @@ public static class GuildPacket
     public static PacketWriter UpdateGuildStatsNotice(int exp, int funds)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.UpdateGuildStatsNotice);
+        pWriter.Write(Mode.UpdateGuildStatsNotice);
         pWriter.WriteInt(exp);
         pWriter.WriteInt(funds);
         return pWriter;
@@ -883,7 +883,7 @@ public static class GuildPacket
     public static PacketWriter StartMiniGame(int minigameId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.StartMiniGame);
+        pWriter.Write(Mode.StartMiniGame);
         pWriter.WriteInt(minigameId);
         return pWriter;
     }
@@ -891,7 +891,7 @@ public static class GuildPacket
     public static PacketWriter UpdatePlayerDonation( /*int totalDonationAmount*/)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Guild);
-        pWriter.Write(GuildPacketMode.UpdatePlayerDonation);
+        pWriter.Write(Mode.UpdatePlayerDonation);
         pWriter.WriteInt(0x3); // total amount of donations today
         pWriter.WriteLong(TimeInfo.Now() + Environment.TickCount);
         return pWriter;

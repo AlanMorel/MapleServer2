@@ -11,7 +11,7 @@ public class PartyHandler : GamePacketHandler<PartyHandler>
 {
     public override RecvOp OpCode => RecvOp.Party;
 
-    private enum PartyMode : byte
+    private enum Mode : byte
     {
         Invite = 0x1,
         Join = 0x2,
@@ -29,41 +29,41 @@ public class PartyHandler : GamePacketHandler<PartyHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        PartyMode mode = (PartyMode) packet.ReadByte(); //Mode
+        Mode mode = (Mode) packet.ReadByte(); //Mode
 
         switch (mode)
         {
-            case PartyMode.Invite:
+            case Mode.Invite:
                 HandleInvite(session, packet);
                 break;
-            case PartyMode.Join:
+            case Mode.Join:
                 HandleJoin(session, packet);
                 break;
-            case PartyMode.Leave:
+            case Mode.Leave:
                 HandleLeave(session);
                 break;
-            case PartyMode.Kick:
+            case Mode.Kick:
                 HandleKick(session, packet);
                 break;
-            case PartyMode.SetLeader:
+            case Mode.SetLeader:
                 HandleSetLeader(session, packet);
                 break;
-            case PartyMode.FinderJoin:
+            case Mode.FinderJoin:
                 HandleFinderJoin(session, packet);
                 break;
-            case PartyMode.SummonParty:
+            case Mode.SummonParty:
                 HandleSummonParty();
                 break;
-            case PartyMode.VoteKick:
+            case Mode.VoteKick:
                 HandleVoteKick(session, packet);
                 break;
-            case PartyMode.ReadyCheck:
+            case Mode.ReadyCheck:
                 HandleStartReadyCheck(session);
                 break;
-            case PartyMode.FindDungeonParty:
+            case Mode.FindDungeonParty:
                 HandleFindDungeonParty(session, packet);
                 break;
-            case PartyMode.ReadyCheckUpdate:
+            case Mode.ReadyCheckUpdate:
                 HandleReadyCheckUpdate(session, packet);
                 break;
             default:

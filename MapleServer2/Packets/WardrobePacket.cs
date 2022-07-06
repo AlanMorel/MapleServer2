@@ -6,15 +6,15 @@ namespace MapleServer2.Packets;
 
 public static class WardrobePacket
 {
-    private enum WardrobePacketMode : byte
+    private enum Mode : byte
     {
-        Load = 0x5,
+        Load = 0x5
     }
 
     public static PacketWriter Load(Wardrobe wardrobe)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Wardrobe);
-        pWriter.Write(WardrobePacketMode.Load);
+        pWriter.Write(Mode.Load);
         pWriter.WriteClass(wardrobe);
         return pWriter;
     }

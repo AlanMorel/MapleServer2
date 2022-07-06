@@ -11,7 +11,7 @@ public class TradeHandler : GamePacketHandler<TradeHandler>
 {
     public override RecvOp OpCode => RecvOp.Trade;
 
-    private enum TradeModeType : byte
+    private enum Mode : byte
     {
         SendRequest = 0x00,
         RequestRespond = 0x02,
@@ -27,37 +27,37 @@ public class TradeHandler : GamePacketHandler<TradeHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        TradeModeType mode = (TradeModeType) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
         switch (mode)
         {
-            case TradeModeType.SendRequest:
+            case Mode.SendRequest:
                 HandleSendRequest(session, packet);
                 break;
-            case TradeModeType.RequestRespond:
+            case Mode.RequestRespond:
                 HandleRequestRespond(packet);
                 break;
-            case TradeModeType.AcceptRequest:
+            case Mode.AcceptRequest:
                 HandleAcceptRequest(session, packet);
                 break;
-            case TradeModeType.DeclineRequest:
+            case Mode.DeclineRequest:
                 HandleDeclineRequest(session, packet);
                 break;
-            case TradeModeType.CloseTrade:
+            case Mode.CloseTrade:
                 HandleCloseTrade(session);
                 break;
-            case TradeModeType.AddItemToTrade:
+            case Mode.AddItemToTrade:
                 HandleAddItemToTrade(session, packet);
                 break;
-            case TradeModeType.RemoveItemToTrade:
+            case Mode.RemoveItemToTrade:
                 HandleRemoveItemToTrade(session, packet);
                 break;
-            case TradeModeType.ModifyMesosToTrade:
+            case Mode.ModifyMesosToTrade:
                 HandleModifyMesosToTrade(session, packet);
                 break;
-            case TradeModeType.LockOffer:
+            case Mode.LockOffer:
                 HandleLockOffer(session);
                 break;
-            case TradeModeType.FinalizeTrade:
+            case Mode.FinalizeTrade:
                 HandleFinalizeTrade(session);
                 break;
             default:

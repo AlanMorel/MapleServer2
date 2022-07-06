@@ -16,7 +16,7 @@ public class RideHandler : GamePacketHandler<RideHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestRide;
 
-    private enum RideMode : byte
+    private enum Mode : byte
     {
         StartRide = 0x0,
         StopRide = 0x1,
@@ -27,23 +27,23 @@ public class RideHandler : GamePacketHandler<RideHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        RideMode mode = (RideMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case RideMode.StartRide:
+            case Mode.StartRide:
                 HandleStartRide(session, packet);
                 break;
-            case RideMode.StopRide:
+            case Mode.StopRide:
                 HandleStopRide(session, packet);
                 break;
-            case RideMode.ChangeRide:
+            case Mode.ChangeRide:
                 HandleChangeRide(session, packet);
                 break;
-            case RideMode.StartMultiPersonRide:
+            case Mode.StartMultiPersonRide:
                 HandleStartMultiPersonRide(session, packet);
                 break;
-            case RideMode.StopMultiPersonRide:
+            case Mode.StopMultiPersonRide:
                 HandleStopMultiPersonRide(session);
                 break;
             default:

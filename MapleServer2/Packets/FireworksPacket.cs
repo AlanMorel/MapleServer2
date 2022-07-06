@@ -6,7 +6,7 @@ namespace MapleServer2.Packets;
 
 public static class FireWorksPacket
 {
-    private enum FireworksPacketMode : byte
+    private enum Mode : byte
     {
         TreasureChest = 0x4,
         Gacha = 0x5
@@ -15,7 +15,7 @@ public static class FireWorksPacket
     public static PacketWriter TreasureChest(int itemId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Fireworks);
-        pWriter.Write(FireworksPacketMode.TreasureChest);
+        pWriter.Write(Mode.TreasureChest);
         pWriter.WriteInt(itemId);
         return pWriter;
     }
@@ -23,7 +23,7 @@ public static class FireWorksPacket
     public static PacketWriter Gacha(List<Item> items)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Fireworks);
-        pWriter.Write(FireworksPacketMode.Gacha);
+        pWriter.Write(Mode.Gacha);
         pWriter.WriteInt(items.Count);
         foreach (Item item in items)
         {

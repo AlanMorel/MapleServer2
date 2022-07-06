@@ -17,7 +17,7 @@ public class CharacterManagementHandler : LoginPacketHandler<CharacterManagement
 {
     public override RecvOp OpCode => RecvOp.CharManagement;
 
-    private enum CharacterManagementMode : byte
+    private enum Mode : byte
     {
         Login = 0x0,
         Create = 0x1,
@@ -26,16 +26,16 @@ public class CharacterManagementHandler : LoginPacketHandler<CharacterManagement
 
     public override void Handle(LoginSession session, PacketReader packet)
     {
-        CharacterManagementMode mode = (CharacterManagementMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
         switch (mode)
         {
-            case CharacterManagementMode.Login:
+            case Mode.Login:
                 HandleSelect(session, packet);
                 break;
-            case CharacterManagementMode.Create:
+            case Mode.Create:
                 HandleCreate(session, packet);
                 break;
-            case CharacterManagementMode.Delete:
+            case Mode.Delete:
                 HandleDelete(session, packet);
                 break;
             default:
@@ -93,22 +93,22 @@ public class CharacterManagementHandler : LoginPacketHandler<CharacterManagement
         switch (name.Length)
         {
             case <= 1:
-                session.Send(ResponseCharCreatePacket.Error(ResponseCharCreatePacket.CharacterCreatePacketMode.NameNeeds2LettersMinimum));
+                session.Send(ResponseCharCreatePacket.Error(ResponseCharCreatePacket.Mode.NameNeeds2LettersMinimum));
                 return;
             case > 13:
-                session.Send(ResponseCharCreatePacket.Error(ResponseCharCreatePacket.CharacterCreatePacketMode.MaxCharactersReached));
+                session.Send(ResponseCharCreatePacket.Error(ResponseCharCreatePacket.Mode.MaxCharactersReached));
                 return;
         }
 
         if (DatabaseManager.Characters.NameExists(name))
         {
-            session.Send(ResponseCharCreatePacket.Error(ResponseCharCreatePacket.CharacterCreatePacketMode.NameIsTaken));
+            session.Send(ResponseCharCreatePacket.Error(ResponseCharCreatePacket.Mode.NameIsTaken));
             return;
         }
 
         if (CharacterCreateMetadataStorage.JobIsDisabled((int) job))
         {
-            session.Send(ResponseCharCreatePacket.Error(ResponseCharCreatePacket.CharacterCreatePacketMode.JobRestriction));
+            session.Send(ResponseCharCreatePacket.Error(ResponseCharCreatePacket.Mode.JobRestriction));
             return;
         }
 
@@ -122,7 +122,7 @@ public class CharacterManagementHandler : LoginPacketHandler<CharacterManagement
             string typeStr = packet.ReadUnicodeString();
             if (!Enum.TryParse(typeStr, out ItemSlot type) || !DefaultItemsMetadataStorage.IsValid((int) job, id))
             {
-                session.Send(ResponseCharCreatePacket.Error(ResponseCharCreatePacket.CharacterCreatePacketMode.IncorrectGear));
+                session.Send(ResponseCharCreatePacket.Error(ResponseCharCreatePacket.Mode.IncorrectGear));
                 return;
             }
 

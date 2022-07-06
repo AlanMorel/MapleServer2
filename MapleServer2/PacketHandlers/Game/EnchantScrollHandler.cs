@@ -16,7 +16,7 @@ public class EnchantScrollHandler : GamePacketHandler<EnchantScrollHandler>
 {
     public override RecvOp OpCode => RecvOp.EnchantScroll;
 
-    private enum EnchantScrollMode : byte
+    private enum Mode : byte
     {
         AddItem = 0x1,
         UseScroll = 0x2,
@@ -37,7 +37,7 @@ public class EnchantScrollHandler : GamePacketHandler<EnchantScrollHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        EnchantScrollMode mode = (EnchantScrollMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         long scrollUid = packet.ReadLong();
         long equipUid = packet.ReadLong();
@@ -87,10 +87,10 @@ public class EnchantScrollHandler : GamePacketHandler<EnchantScrollHandler>
 
         switch (mode)
         {
-            case EnchantScrollMode.AddItem:
+            case Mode.AddItem:
                 session.Send(EnchantScrollPacket.AddItem(equipUid, enchantStats));
                 break;
-            case EnchantScrollMode.UseScroll:
+            case Mode.UseScroll:
                 HandleUseScroll(session, equip, scroll, enchantStats, metadata.EnchantLevels[enchantLevelIndex], metadata.Id);
                 break;
             default:
