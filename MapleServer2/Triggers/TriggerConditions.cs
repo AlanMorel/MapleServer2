@@ -130,6 +130,11 @@ public partial class TriggerContext
         foreach (int spawnPointId in spawnPointIds)
         {
             Npc npc = Field.State.Npcs.Values.FirstOrDefault(x => x.SpawnPointId == spawnPointId);
+            if (npc is null)
+            {
+                continue;
+            }
+
             if (FieldManager.IsActorInBox(box, npc))
             {
                 return true;

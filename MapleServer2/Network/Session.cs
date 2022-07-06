@@ -99,8 +99,9 @@ public abstract class Session : IDisposable
         Disposed = true;
         Complete();
         Thread.Join(STOP_TIMEOUT);
+        Thread.Sleep(500);
 
-        Client?.Close();
+        CloseClient();
 
 #if DEBUG
         GC.SuppressFinalize(this);
@@ -181,7 +182,7 @@ public abstract class Session : IDisposable
             // Pipeline tasks can be run asynchronously
             Task writeTask = WriteRecvPipe(Client.Client, RecvPipe.Writer);
             Task readTask = ReadRecvPipe(RecvPipe.Reader);
-            Task.WhenAll(writeTask, readTask).ContinueWith(_ => Client?.Close());
+            Task.WhenAll(writeTask, readTask).ContinueWith(_ => CloseClient());
 
             while (!Disposed && PipeScheduler.OutputAvailableAsync().Result)
             {
@@ -315,6 +316,13 @@ public abstract class Session : IDisposable
         {
             Disconnect(logoutNotice: true);
         }
+    }
+
+    private void CloseClient()
+    {
+        // Must close socket before network stream to prevent lingering
+        Client?.Client?.Close();
+        Client?.Close();
     }
 
     private static void LogSend(PacketWriter packet)
