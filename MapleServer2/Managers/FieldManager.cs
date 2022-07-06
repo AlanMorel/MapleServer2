@@ -681,7 +681,7 @@ public class FieldManager
     public void AddCube(IFieldObject<Cube> cube, int houseOwnerObjectId, int fieldPlayerObjectId)
     {
         State.AddCube(cube);
-        BroadcastPacket(ResponseCubePacket.PlaceFurnishing(cube, houseOwnerObjectId, fieldPlayerObjectId, false));
+        BroadcastPacket(CubePacket.PlaceFurnishing(cube, houseOwnerObjectId, fieldPlayerObjectId, false));
 
         if (cube.Value.Item.HousingCategory is ItemHousingCategory.Ranching or ItemHousingCategory.Farming)
         {
@@ -704,7 +704,7 @@ public class FieldManager
         }
 
         State.RemoveCube(cube.ObjectId);
-        BroadcastPacket(ResponseCubePacket.RemoveCube(houseOwnerObjectId, fieldPlayerObjectId, cube.Coord.ToByte()));
+        BroadcastPacket(CubePacket.RemoveCube(houseOwnerObjectId, fieldPlayerObjectId, cube.Coord.ToByte()));
     }
 
     public void AddInstrument(IFieldObject<Instrument> instrument)

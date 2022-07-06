@@ -68,9 +68,9 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
         }
         session.Send(ChatStickerPacket.LoadChatSticker(player));
 
-        session.Send(ResponseCubePacket.DecorationScore(account.Home));
-        session.Send(ResponseCubePacket.LoadHome(player.FieldPlayer.ObjectId, player.Account.Home));
-        session.Send(ResponseCubePacket.ReturnMap(player.ReturnMapId));
+        session.Send(CubePacket.DecorationScore(account.Home));
+        session.Send(CubePacket.LoadHome(player.FieldPlayer.ObjectId, player.Account.Home));
+        session.Send(CubePacket.ReturnMap(player.ReturnMapId));
         session.Send(LapenshardPacket.Load(player.Inventory.LapenshardStorage));
 
         IEnumerable<Cube> cubes = session.FieldManager.State.Cubes.Values

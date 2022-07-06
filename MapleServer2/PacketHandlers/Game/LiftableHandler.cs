@@ -1,6 +1,7 @@
 ﻿using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Enums;
 using MapleServer2.Managers.Actors;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -63,9 +64,9 @@ public class LiftableHandler : GamePacketHandler<LiftableHandler>
 
             fieldPlayer.CarryingLiftable = fieldLiftable;
 
-            session.FieldManager.BroadcastPacket(ResponseCubePacket.RemoveCube(fieldPlayer.ObjectId, fieldPlayer.ObjectId, fieldLiftable.Coord.ToByte()));
+            session.FieldManager.BroadcastPacket(CubePacket.RemoveCube(fieldPlayer.ObjectId, fieldPlayer.ObjectId, fieldLiftable.Coord.ToByte()));
             session.FieldManager.BroadcastPacket(LiftablePacket.RemoveCube(fieldLiftable));
-            session.FieldManager.BroadcastPacket(BuildModePacket.Use(fieldPlayer, BuildModeHandler.BuildModeType.Liftables, liftable.Metadata.ItemId));
+            session.FieldManager.BroadcastPacket(BuildModePacket.Use(fieldPlayer, BuildModeType.Liftables, liftable.Metadata.ItemId));
             return;
         }
 
@@ -82,7 +83,7 @@ public class LiftableHandler : GamePacketHandler<LiftableHandler>
         fieldPlayer.CarryingLiftable = fieldLiftable;
 
         session.FieldManager.BroadcastPacket(LiftablePacket.UpdateEntityById(liftable));
-        session.FieldManager.BroadcastPacket(BuildModePacket.Use(fieldPlayer, BuildModeHandler.BuildModeType.Liftables, liftable.Metadata.ItemId));
+        session.FieldManager.BroadcastPacket(BuildModePacket.Use(fieldPlayer, BuildModeType.Liftables, liftable.Metadata.ItemId));
         session.FieldManager.BroadcastPacket(LiftablePacket.UpdateEntityById(liftable));
     }
 }

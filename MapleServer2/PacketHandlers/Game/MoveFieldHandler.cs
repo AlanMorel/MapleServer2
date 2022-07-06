@@ -229,7 +229,7 @@ public class MoveFieldHandler : GamePacketHandler<MoveFieldHandler>
         }
 
         player.VisitingHomeId = home.Id;
-        session.Send(ResponseCubePacket.LoadHome(session.Player.FieldPlayer.ObjectId, home));
+        session.Send(CubePacket.LoadHome(session.Player.FieldPlayer.ObjectId, home));
 
         player.WarpGameToGame(home.MapId, home.InstanceId, session.Player.FieldPlayer.Coord, session.Player.FieldPlayer.Rotation);
     }
