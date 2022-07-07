@@ -14,7 +14,7 @@ public class LimitBreakHandler : GamePacketHandler<LimitBreakHandler>
 {
     public override RecvOp OpCode => RecvOp.LimitBreak;
 
-    private enum LimitBreakMode : byte
+    private enum Mode : byte
     {
         SelectItem = 0x00,
         LimitBreakItem = 0x01
@@ -29,14 +29,14 @@ public class LimitBreakHandler : GamePacketHandler<LimitBreakHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        LimitBreakMode mode = (LimitBreakMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case LimitBreakMode.SelectItem:
+            case Mode.SelectItem:
                 HandleSelectItem(session, packet);
                 break;
-            case LimitBreakMode.LimitBreakItem:
+            case Mode.LimitBreakItem:
                 HandleLimitBreakItem(session, packet);
                 break;
             default:

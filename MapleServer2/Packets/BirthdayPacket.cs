@@ -5,7 +5,7 @@ namespace MapleServer2.Packets;
 
 public class BirthdayPacket
 {
-    private enum BirthdayPacketMode : byte
+    private enum Mode : byte
     {
         SetBirthday = 0x1
     }
@@ -13,7 +13,7 @@ public class BirthdayPacket
     public static PacketWriter SetBirthday(int playerObjectId, long birthdate)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Birthday);
-        pWriter.Write(BirthdayPacketMode.SetBirthday);
+        pWriter.Write(Mode.SetBirthday);
         pWriter.WriteInt(playerObjectId);
         pWriter.WriteLong(birthdate);
         return pWriter;

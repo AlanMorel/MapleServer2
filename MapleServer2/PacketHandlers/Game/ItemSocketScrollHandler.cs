@@ -13,7 +13,7 @@ public class ItemSocketScrollHandler : GamePacketHandler<ItemSocketScrollHandler
 {
     public override RecvOp OpCode => RecvOp.ItemSocketScroll;
 
-    private enum ItemSocketScrollMode : byte
+    private enum Mode : byte
     {
         UseScroll = 0x1
     }
@@ -32,11 +32,11 @@ public class ItemSocketScrollHandler : GamePacketHandler<ItemSocketScrollHandler
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        ItemSocketScrollMode mode = (ItemSocketScrollMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case ItemSocketScrollMode.UseScroll:
+            case Mode.UseScroll:
                 HandleUseScroll(session, packet);
                 break;
             default:

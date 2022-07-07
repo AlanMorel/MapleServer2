@@ -4,7 +4,7 @@ using MapleServer2.Constants;
 
 namespace MapleServer2.Packets;
 
-internal class WalletPacket
+internal static class WalletPacket
 {
     public static PacketWriter UpdateWallet(CurrencyType type, long amount)
     {

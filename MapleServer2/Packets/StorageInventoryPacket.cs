@@ -7,7 +7,7 @@ namespace MapleServer2.Packets;
 
 public static class StorageInventoryPacket
 {
-    private enum ItemStorageMode : byte
+    private enum Mode : byte
     {
         Add = 0x00,
         Remove = 0x01,
@@ -25,7 +25,7 @@ public static class StorageInventoryPacket
     public static PacketWriter Add(Item item)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.StorageInventory);
-        pWriter.Write(ItemStorageMode.Add);
+        pWriter.Write(Mode.Add);
         pWriter.WriteLong();
         pWriter.WriteInt(item.Id);
         pWriter.WriteLong(item.Uid);
@@ -39,7 +39,7 @@ public static class StorageInventoryPacket
     public static PacketWriter Remove(long uid)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.StorageInventory);
-        pWriter.Write(ItemStorageMode.Remove);
+        pWriter.Write(Mode.Remove);
         pWriter.WriteLong();
         pWriter.WriteLong(uid);
 
@@ -49,7 +49,7 @@ public static class StorageInventoryPacket
     public static PacketWriter Move(long srcUid, short srcSlot, long dstUid, short dstSlot)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.StorageInventory);
-        pWriter.Write(ItemStorageMode.Move);
+        pWriter.Write(Mode.Move);
         pWriter.WriteLong();
         pWriter.WriteLong(srcUid);
         pWriter.WriteShort(srcSlot);
@@ -62,7 +62,7 @@ public static class StorageInventoryPacket
     public static PacketWriter UpdateMesos(long amount)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.StorageInventory);
-        pWriter.Write(ItemStorageMode.Mesos);
+        pWriter.Write(Mode.Mesos);
         pWriter.WriteLong(amount);
 
         return pWriter;
@@ -71,7 +71,7 @@ public static class StorageInventoryPacket
     public static PacketWriter ItemCount(short itemCount)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.StorageInventory);
-        pWriter.Write(ItemStorageMode.ItemCount);
+        pWriter.Write(Mode.ItemCount);
         pWriter.WriteLong();
         pWriter.WriteShort(itemCount);
 
@@ -82,7 +82,7 @@ public static class StorageInventoryPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.StorageInventory);
 
-        pWriter.Write(ItemStorageMode.LoadItems);
+        pWriter.Write(Mode.LoadItems);
         pWriter.LoadHelper(items);
 
         return pWriter;
@@ -91,7 +91,7 @@ public static class StorageInventoryPacket
     public static PacketWriter ExpandAnim()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.StorageInventory);
-        pWriter.Write(ItemStorageMode.ExpandAnim);
+        pWriter.Write(Mode.ExpandAnim);
 
         return pWriter;
     }
@@ -99,7 +99,7 @@ public static class StorageInventoryPacket
     public static PacketWriter Sort(Item[] items)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.StorageInventory);
-        pWriter.Write(ItemStorageMode.Sort);
+        pWriter.Write(Mode.Sort);
         pWriter.LoadHelper(items);
 
         return pWriter;
@@ -108,7 +108,7 @@ public static class StorageInventoryPacket
     public static PacketWriter UpdateItem(Item item)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.StorageInventory);
-        pWriter.Write(ItemStorageMode.UpdateItem);
+        pWriter.Write(Mode.UpdateItem);
         pWriter.WriteLong();
         pWriter.WriteLong(item.Uid);
         pWriter.WriteInt(item.Amount);
@@ -119,7 +119,7 @@ public static class StorageInventoryPacket
     public static PacketWriter Update()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.StorageInventory);
-        pWriter.Write(ItemStorageMode.Update);
+        pWriter.Write(Mode.Update);
 
         return pWriter;
     }
@@ -127,7 +127,7 @@ public static class StorageInventoryPacket
     public static PacketWriter Expand(int amount)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.StorageInventory);
-        pWriter.Write(ItemStorageMode.Expand);
+        pWriter.Write(Mode.Expand);
         pWriter.WriteInt(amount);
 
         return pWriter;

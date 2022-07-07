@@ -6,7 +6,7 @@ namespace MapleServer2.Packets;
 
 public static class MacroPacket
 {
-    private enum MacroPacketMode : byte
+    private enum Mode : byte
     {
         OpenSettings = 0x00,
         LoadControls = 0x02,
@@ -15,7 +15,7 @@ public static class MacroPacket
     public static PacketWriter OpenSettings(List<Macro> compactControls)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Macro);
-        pWriter.Write(MacroPacketMode.OpenSettings);
+        pWriter.Write(Mode.OpenSettings);
         WriteMacroList(pWriter, compactControls);
         return pWriter;
     }
@@ -23,7 +23,7 @@ public static class MacroPacket
     public static PacketWriter LoadControls(List<Macro> compactControls)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Macro);
-        pWriter.Write(MacroPacketMode.LoadControls);
+        pWriter.Write(Mode.LoadControls);
         WriteMacroList(pWriter, compactControls);
         return pWriter;
     }

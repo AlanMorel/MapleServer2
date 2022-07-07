@@ -6,11 +6,11 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestHomeBankHandler : GamePacketHandler<RequestHomeBankHandler>
+public class HomeBankHandler : GamePacketHandler<HomeBankHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestHomeBank;
 
-    private enum BankMode : byte
+    private enum Mode : byte
     {
         House = 0x01,
         Inventory = 0x02
@@ -18,13 +18,13 @@ public class RequestHomeBankHandler : GamePacketHandler<RequestHomeBankHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        BankMode mode = (BankMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
         switch (mode)
         {
-            case BankMode.House:
+            case Mode.House:
                 HandleOpen(session, TimeInfo.Now());
                 break;
-            case BankMode.Inventory:
+            case Mode.Inventory:
                 HandleOpen(session);
                 break;
             default:

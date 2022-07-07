@@ -5,7 +5,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.Packets;
 
-public static class ResponseLoadUgcMapPacket
+public static class LoadUgcMapPacket
 {
     public static PacketWriter LoadUgcMap(Home home = null, bool inDecorPlanner = false)
     {

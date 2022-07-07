@@ -16,7 +16,7 @@ internal class InteractObjectHandler : GamePacketHandler<InteractObjectHandler>
 {
     public override RecvOp OpCode => RecvOp.InteractObject;
 
-    private enum InteractObjectMode : byte
+    private enum Mode : byte
     {
         Cast = 0x0B,
         Interact = 0x0C
@@ -24,14 +24,14 @@ internal class InteractObjectHandler : GamePacketHandler<InteractObjectHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        InteractObjectMode mode = (InteractObjectMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case InteractObjectMode.Cast:
+            case Mode.Cast:
                 HandleCast(session, packet);
                 break;
-            case InteractObjectMode.Interact:
+            case Mode.Interact:
                 HandleInteract(session, packet);
                 break;
             default:

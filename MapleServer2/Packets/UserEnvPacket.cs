@@ -7,7 +7,7 @@ namespace MapleServer2.Packets;
 
 public static class UserEnvPacket
 {
-    private enum UserEnvPacketMode : byte
+    private enum Mode : byte
     {
         AddTitle = 0x0,
         UpdateTitles = 0x1,
@@ -18,7 +18,7 @@ public static class UserEnvPacket
     public static PacketWriter AddTitle(int titleId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnvironment);
-        pWriter.Write(UserEnvPacketMode.AddTitle);
+        pWriter.Write(Mode.AddTitle);
         pWriter.WriteInt(titleId);
         return pWriter;
     }
@@ -26,7 +26,7 @@ public static class UserEnvPacket
     public static PacketWriter UpdateTitle(GameSession session, int titleId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnvironment);
-        pWriter.Write(UserEnvPacketMode.UpdateTitles);
+        pWriter.Write(Mode.UpdateTitles);
         pWriter.WriteInt(session.Player.FieldPlayer.ObjectId);
         pWriter.WriteInt(titleId);
         return pWriter;
@@ -36,7 +36,7 @@ public static class UserEnvPacket
     public static PacketWriter SetTitles(Player player)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnvironment);
-        pWriter.Write(UserEnvPacketMode.SetTitles);
+        pWriter.Write(Mode.SetTitles);
         pWriter.WriteInt(player.Titles.Count);
         foreach (int titleId in player.Titles)
         {
@@ -91,7 +91,7 @@ public static class UserEnvPacket
     public static PacketWriter UpdateLifeSkills(List<GatheringCount> gatherings)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnvironment);
-        pWriter.Write(UserEnvPacketMode.LifeSkills);
+        pWriter.Write(Mode.LifeSkills);
         pWriter.WriteInt(gatherings.Count);
         foreach (GatheringCount gathering in gatherings)
         {

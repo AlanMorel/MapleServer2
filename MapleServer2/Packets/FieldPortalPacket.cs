@@ -7,7 +7,7 @@ namespace MapleServer2.Packets;
 
 public static class FieldPortalPacket
 {
-    private enum PortalType : byte
+    private enum Mode : byte
     {
         AddPortal = 0x00,
         RemovePortal = 0x01,
@@ -21,7 +21,7 @@ public static class FieldPortalPacket
         coord.Z -= 75; // Looks like every portal coord is offset by 75
 
         PacketWriter pWriter = PacketWriter.Of(SendOp.FieldPortal);
-        pWriter.Write(PortalType.AddPortal);
+        pWriter.Write(Mode.AddPortal);
         pWriter.WriteInt(portal.Id);
         pWriter.WriteBool(portal.IsVisible);
         pWriter.WriteBool(portal.IsEnabled);
@@ -49,7 +49,7 @@ public static class FieldPortalPacket
     public static PacketWriter RemovePortal(Portal portal)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.FieldPortal);
-        pWriter.Write(PortalType.RemovePortal);
+        pWriter.Write(Mode.RemovePortal);
         pWriter.WriteInt(portal.Id);
 
         return pWriter;
@@ -58,7 +58,7 @@ public static class FieldPortalPacket
     public static PacketWriter UpdatePortal(IFieldObject<Portal> portal)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.FieldPortal);
-        pWriter.Write(PortalType.UpdatePortal);
+        pWriter.Write(Mode.UpdatePortal);
         pWriter.WriteInt(portal.Value.Id);
         pWriter.WriteBool(portal.Value.IsVisible);
         pWriter.WriteBool(portal.Value.IsEnabled);

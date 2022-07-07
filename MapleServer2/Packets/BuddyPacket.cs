@@ -4,9 +4,9 @@ using MapleServer2.Types;
 
 namespace MapleServer2.Packets;
 
-public class BuddyPacket
+public static class BuddyPacket
 {
-    private enum BuddyPacketMode : byte
+    private enum Mode : byte
     {
         LoadList = 0x1,
         Notice = 0x2,
@@ -29,7 +29,7 @@ public class BuddyPacket
     public static PacketWriter LoadList(List<Buddy> buddyList)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
-        pWriter.Write(BuddyPacketMode.LoadList);
+        pWriter.Write(Mode.LoadList);
         pWriter.WriteInt(buddyList.Count);
         foreach (Buddy buddy in buddyList)
         {
@@ -41,7 +41,7 @@ public class BuddyPacket
     public static PacketWriter Notice(byte notice, string playerName)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
-        pWriter.Write(BuddyPacketMode.Notice);
+        pWriter.Write(Mode.Notice);
         pWriter.WriteByte(notice);
         pWriter.WriteUnicodeString(playerName);
         pWriter.WriteUnicodeString();
@@ -51,7 +51,7 @@ public class BuddyPacket
     public static PacketWriter AcceptRequest(Buddy buddy)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
-        pWriter.Write(BuddyPacketMode.AcceptRequest);
+        pWriter.Write(Mode.AcceptRequest);
         pWriter.WriteByte();
         pWriter.WriteLong(buddy.SharedId);
         pWriter.WriteLong(buddy.Friend.CharacterId);
@@ -63,7 +63,7 @@ public class BuddyPacket
     public static PacketWriter DeclineRequest(Buddy buddy)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
-        pWriter.Write(BuddyPacketMode.DeclineRequest);
+        pWriter.Write(Mode.DeclineRequest);
         pWriter.WriteByte();
         pWriter.WriteLong(buddy.SharedId);
         return pWriter;
@@ -72,7 +72,7 @@ public class BuddyPacket
     public static PacketWriter Block(Buddy buddy)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
-        pWriter.Write(BuddyPacketMode.Block);
+        pWriter.Write(Mode.Block);
         pWriter.WriteByte();
         pWriter.WriteLong(buddy.SharedId);
         pWriter.WriteUnicodeString(buddy.Friend.Name);
@@ -83,7 +83,7 @@ public class BuddyPacket
     public static PacketWriter Unblock(Buddy buddy)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
-        pWriter.Write(BuddyPacketMode.Unblock);
+        pWriter.Write(Mode.Unblock);
         pWriter.WriteByte();
         pWriter.WriteLong(buddy.SharedId);
         return pWriter;
@@ -92,7 +92,7 @@ public class BuddyPacket
     public static PacketWriter RemoveFromList(Buddy buddy)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
-        pWriter.Write(BuddyPacketMode.RemoveFromList);
+        pWriter.Write(Mode.RemoveFromList);
         pWriter.WriteByte();
         pWriter.WriteLong(buddy.SharedId);
         pWriter.WriteLong(buddy.Friend.AccountId);
@@ -104,7 +104,7 @@ public class BuddyPacket
     public static PacketWriter UpdateBuddy(Buddy buddy)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
-        pWriter.Write(BuddyPacketMode.UpdateBuddy);
+        pWriter.Write(Mode.UpdateBuddy);
         WriteBuddy(buddy, pWriter);
         return pWriter;
     }
@@ -112,7 +112,7 @@ public class BuddyPacket
     public static PacketWriter AddToList(Buddy buddy)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
-        pWriter.Write(BuddyPacketMode.AddToList);
+        pWriter.Write(Mode.AddToList);
         WriteBuddy(buddy, pWriter);
         return pWriter;
     }
@@ -120,7 +120,7 @@ public class BuddyPacket
     public static PacketWriter EditBlockReason(Buddy buddy)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
-        pWriter.Write(BuddyPacketMode.EditBlockReason);
+        pWriter.Write(Mode.EditBlockReason);
         pWriter.WriteByte();
         pWriter.WriteLong(buddy.SharedId);
         pWriter.WriteUnicodeString(buddy.Friend.Name);
@@ -133,7 +133,7 @@ public class BuddyPacket
     public static PacketWriter AcceptNotification(Buddy buddy)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
-        pWriter.Write(BuddyPacketMode.AcceptNotification);
+        pWriter.Write(Mode.AcceptNotification);
         pWriter.WriteLong(buddy.SharedId);
         return pWriter;
     }
@@ -141,7 +141,7 @@ public class BuddyPacket
     public static PacketWriter BlockNotification(string playerName)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
-        pWriter.Write(BuddyPacketMode.BlockNotification);
+        pWriter.Write(Mode.BlockNotification);
         pWriter.WriteByte();
         pWriter.WriteUnicodeString(playerName);
         return pWriter;
@@ -150,7 +150,7 @@ public class BuddyPacket
     public static PacketWriter LoginLogoutNotification(Buddy buddy)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
-        pWriter.Write(BuddyPacketMode.LoginLogoutNotification);
+        pWriter.Write(Mode.LoginLogoutNotification);
         pWriter.WriteBool(!buddy.Friend?.Session?.Connected() ?? true);
         pWriter.WriteLong(buddy.SharedId);
         pWriter.WriteUnicodeString(buddy.Friend.Name);
@@ -160,14 +160,14 @@ public class BuddyPacket
     public static PacketWriter Initialize()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
-        pWriter.Write(BuddyPacketMode.Initialize);
+        pWriter.Write(Mode.Initialize);
         return pWriter;
     }
 
     public static PacketWriter CancelRequest(Buddy buddy)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
-        pWriter.Write(BuddyPacketMode.CancelRequest);
+        pWriter.Write(Mode.CancelRequest);
         pWriter.WriteByte();
         pWriter.WriteLong(buddy.SharedId);
         return pWriter;
@@ -176,7 +176,7 @@ public class BuddyPacket
     public static PacketWriter EndList(int buddyCount)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
-        pWriter.Write(BuddyPacketMode.EndList);
+        pWriter.Write(Mode.EndList);
         pWriter.WriteInt(buddyCount);
         return pWriter;
     }

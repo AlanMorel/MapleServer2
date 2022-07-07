@@ -6,7 +6,7 @@ namespace MapleServer2.Packets;
 
 public static class ResultsPacket
 {
-    private enum ResultsPacketMode : byte
+    private enum Mode : byte
     {
         Timed = 0x0,
         Rounds = 0x1,
@@ -16,7 +16,7 @@ public static class ResultsPacket
     public static PacketWriter Timed(bool success, List<Item> itemRewards, bool bonus, List<Item> itemRewardsBonus = null)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Results);
-        pWriter.Write(ResultsPacketMode.Timed);
+        pWriter.Write(Mode.Timed);
         pWriter.WriteBool(success);
         pWriter.WriteInt(); // dungeonID
         pWriter.WriteByte();
@@ -66,7 +66,7 @@ public static class ResultsPacket
     public static PacketWriter Rounds(int roundsCleared, int totalRounds)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Results);
-        pWriter.Write(ResultsPacketMode.Rounds);
+        pWriter.Write(Mode.Rounds);
         pWriter.WriteInt(roundsCleared);
         pWriter.WriteInt(totalRounds);
         pWriter.WriteInt(1); // amount of rewards (meso and/or exp)
@@ -91,7 +91,7 @@ public static class ResultsPacket
     public static PacketWriter Untimed(bool success)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Results);
-        pWriter.Write(ResultsPacketMode.Untimed);
+        pWriter.Write(Mode.Untimed);
         pWriter.WriteBool(success);
         pWriter.WriteInt(); // dungeonID
         pWriter.WriteInt();

@@ -11,7 +11,7 @@ public class BuddyEmoteHandler : GamePacketHandler<BuddyEmoteHandler>
 {
     public override RecvOp OpCode => RecvOp.BuddyEmote;
 
-    private enum BuddyEmoteMode : byte
+    private enum Mode : byte
     {
         InviteBuddyEmote = 0x0,
         InviteBuddyEmoteConfirm = 0x1,
@@ -23,26 +23,26 @@ public class BuddyEmoteHandler : GamePacketHandler<BuddyEmoteHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        BuddyEmoteMode mode = (BuddyEmoteMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case BuddyEmoteMode.InviteBuddyEmote:
+            case Mode.InviteBuddyEmote:
                 HandleInviteBuddyEmote(session, packet);
                 break;
-            case BuddyEmoteMode.InviteBuddyEmoteConfirm:
+            case Mode.InviteBuddyEmoteConfirm:
                 HandleInviteBuddyEmoteConfirm(session, packet);
                 break;
-            case BuddyEmoteMode.LearnEmote:
+            case Mode.LearnEmote:
                 HandleLearnEmote(session, packet);
                 break;
-            case BuddyEmoteMode.AcceptEmote:
+            case Mode.AcceptEmote:
                 HandleAcceptEmote(session, packet);
                 break;
-            case BuddyEmoteMode.DeclineEmote:
+            case Mode.DeclineEmote:
                 HandleDeclineEmote(session, packet);
                 break;
-            case BuddyEmoteMode.StopEmote:
+            case Mode.StopEmote:
                 HandleStopEmote(session, packet);
                 break;
             default:

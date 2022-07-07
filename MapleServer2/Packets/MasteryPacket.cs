@@ -7,7 +7,7 @@ namespace MapleServer2.Packets;
 
 public static class MasteryPacket
 {
-    private enum MasteryMode : byte
+    private enum Mode : byte
     {
         SetMasteryExp = 0x00,
         ClaimRewardBox = 0x01,
@@ -19,7 +19,7 @@ public static class MasteryPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Mastery);
 
-        pWriter.Write(MasteryMode.SetMasteryExp);
+        pWriter.Write(Mode.SetMasteryExp);
         pWriter.Write(type);
         pWriter.WriteLong(totalExp);
 
@@ -30,7 +30,7 @@ public static class MasteryPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Mastery);
 
-        pWriter.Write(MasteryMode.ClaimRewardBox);
+        pWriter.Write(Mode.ClaimRewardBox);
         pWriter.WriteInt(rewardBoxDetails);
         pWriter.WriteInt(item.Amount);
         pWriter.WriteInt(item.Id);
@@ -43,7 +43,7 @@ public static class MasteryPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Mastery);
 
-        pWriter.Write(MasteryMode.GetCraftedItem);
+        pWriter.Write(Mode.GetCraftedItem);
         pWriter.WriteShort((short) type);
         pWriter.WriteInt(item.Amount);
         pWriter.WriteInt(item.Id);
@@ -55,7 +55,7 @@ public static class MasteryPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Mastery);
 
-        pWriter.Write(MasteryMode.MasteryNotice);
+        pWriter.Write(Mode.MasteryNotice);
         pWriter.WriteShort(noticeId);
         return pWriter;
     }

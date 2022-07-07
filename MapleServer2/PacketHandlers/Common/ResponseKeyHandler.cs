@@ -202,7 +202,7 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
         session.Send(PvpPacket.Mode16());
         session.Send(PvpPacket.Mode17());
 
-        session.Send(ResponsePetPacket.LoadAlbum());
+        session.Send(PetPacket.LoadAlbum());
         // LegionBattle (0xF6)
         // CharacterAbility
         // E1 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
@@ -229,7 +229,7 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
         // 0xF0, ResponsePet P(0F 01)
         // RequestFieldEnter
         //session.Send("16 00 00 41 75 19 03 00 01 8A 42 0F 00 00 00 00 00 00 C0 28 C4 00 40 03 44 00 00 16 44 00 00 00 00 00 00 00 00 55 FF 33 42 E8 49 01 00".ToByteArray());
-        session.Send(RequestFieldEnterPacket.RequestEnter(player.FieldPlayer));
+        session.Send(FieldEnterPacket.RequestEnter(player.FieldPlayer));
 
         Party party = GameServer.PartyManager.GetPartyByMember(player.CharacterId);
         if (party != null)

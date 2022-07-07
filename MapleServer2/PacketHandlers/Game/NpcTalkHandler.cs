@@ -19,7 +19,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
 {
     public override RecvOp OpCode => RecvOp.NpcTalk;
 
-    private enum NpcTalkMode : byte
+    private enum Mode : byte
     {
         Close = 0,
         Begin = 1,
@@ -37,21 +37,21 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        NpcTalkMode function = (NpcTalkMode) packet.ReadByte();
+        Mode function = (Mode) packet.ReadByte();
         switch (function)
         {
-            case NpcTalkMode.Close:
+            case Mode.Close:
                 return;
-            case NpcTalkMode.Begin:
+            case Mode.Begin:
                 HandleBegin(session, packet);
                 break;
-            case NpcTalkMode.Continue:
+            case Mode.Continue:
                 HandleContinue(session, packet.ReadInt());
                 break;
-            case NpcTalkMode.Enchant:
+            case Mode.Enchant:
                 HandleEnchant(session, packet);
                 break;
-            case NpcTalkMode.NextQuest:
+            case Mode.NextQuest:
                 HandleNextQuest(session, packet);
                 break;
             default:

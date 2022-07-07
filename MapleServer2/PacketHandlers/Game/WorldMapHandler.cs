@@ -5,21 +5,21 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestWorldMapHandler : GamePacketHandler<RequestWorldMapHandler>
+public class WorldMapHandler : GamePacketHandler<WorldMapHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestWorldMap;
 
-    private enum WorldMapMode : byte
+    private enum Mode : byte
     {
         Open = 0x00
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        WorldMapMode mode = (WorldMapMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
         switch (mode)
         {
-            case WorldMapMode.Open: // open
+            case Mode.Open: // open
                 HandleOpen(session);
                 break;
             default:

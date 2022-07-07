@@ -6,7 +6,7 @@ namespace MapleServer2.Packets;
 
 public static class ChatStickerPacket
 {
-    private enum ChatStickerMode : byte
+    private enum Mode : byte
     {
         LoadChatSticker = 0x0,
         ExpiredStickerNotification = 0x1,
@@ -20,7 +20,7 @@ public static class ChatStickerPacket
     public static PacketWriter LoadChatSticker(Player player)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ChatSticker);
-        pWriter.Write(ChatStickerMode.LoadChatSticker);
+        pWriter.Write(Mode.LoadChatSticker);
         pWriter.WriteShort((short) player.FavoriteStickers.Count);
         foreach (int favorite in player.FavoriteStickers)
         {
@@ -38,7 +38,7 @@ public static class ChatStickerPacket
     public static PacketWriter ExpiredStickerNotification(List<ChatSticker> stickers)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ChatSticker);
-        pWriter.Write(ChatStickerMode.ExpiredStickerNotification);
+        pWriter.Write(Mode.ExpiredStickerNotification);
         pWriter.WriteInt();
         pWriter.WriteInt(stickers.Count);
         foreach (ChatSticker sticker in stickers)
@@ -51,7 +51,7 @@ public static class ChatStickerPacket
     public static PacketWriter AddSticker(int itemId, int stickerGroupId, long expiration)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ChatSticker);
-        pWriter.Write(ChatStickerMode.AddSticker);
+        pWriter.Write(Mode.AddSticker);
         pWriter.WriteInt(itemId);
         pWriter.WriteInt(1);
         pWriter.WriteInt(stickerGroupId);
@@ -62,7 +62,7 @@ public static class ChatStickerPacket
     public static PacketWriter UseSticker(int stickerId, string script)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ChatSticker);
-        pWriter.Write(ChatStickerMode.UseSticker);
+        pWriter.Write(Mode.UseSticker);
         pWriter.WriteInt(stickerId);
         pWriter.WriteUnicodeString(script);
         pWriter.WriteByte();
@@ -72,7 +72,7 @@ public static class ChatStickerPacket
     public static PacketWriter GroupChatSticker(int stickerId, string groupChatName)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ChatSticker);
-        pWriter.Write(ChatStickerMode.GroupChatSticker);
+        pWriter.Write(Mode.GroupChatSticker);
         pWriter.WriteInt(stickerId);
         pWriter.WriteUnicodeString(groupChatName);
         return pWriter;
@@ -81,7 +81,7 @@ public static class ChatStickerPacket
     public static PacketWriter Favorite(int stickerId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ChatSticker);
-        pWriter.Write(ChatStickerMode.Favorite);
+        pWriter.Write(Mode.Favorite);
         pWriter.WriteInt(stickerId);
         return pWriter;
     }
@@ -89,7 +89,7 @@ public static class ChatStickerPacket
     public static PacketWriter Unfavorite(int stickerId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ChatSticker);
-        pWriter.Write(ChatStickerMode.Unfavorite);
+        pWriter.Write(Mode.Unfavorite);
         pWriter.WriteInt(stickerId);
         return pWriter;
     }

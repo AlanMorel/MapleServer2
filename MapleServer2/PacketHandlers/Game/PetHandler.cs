@@ -10,11 +10,11 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestPetHandler : GamePacketHandler<RequestPetHandler>
+public class PetHandler : GamePacketHandler<PetHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestPet;
 
-    private enum RequestPetMode : byte
+    private enum Mode : byte
     {
         Summon = 0x0,
         Dismiss = 0x1,
@@ -26,26 +26,26 @@ public class RequestPetHandler : GamePacketHandler<RequestPetHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        RequestPetMode mode = (RequestPetMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case RequestPetMode.Summon:
+            case Mode.Summon:
                 HandlePetSummon(session, packet);
                 break;
-            case RequestPetMode.Dismiss:
+            case Mode.Dismiss:
                 HandlePetDismiss(session, packet);
                 break;
-            case RequestPetMode.Replace:
+            case Mode.Replace:
                 HandlePetReplace(session, packet);
                 break;
-            case RequestPetMode.Rename:
+            case Mode.Rename:
                 HandlePetRename(session, packet);
                 break;
-            case RequestPetMode.PotionSettings:
+            case Mode.PotionSettings:
                 HandlePetPotionSettings(session, packet);
                 break;
-            case RequestPetMode.LootSettings:
+            case Mode.LootSettings:
                 HandlePetLootSettings(session, packet);
                 break;
             default:
@@ -87,7 +87,7 @@ public class RequestPetHandler : GamePacketHandler<RequestPetHandler>
 
         player.ActivePet.PetInfo.Name = name;
         fieldPlayer.ActivePet.Item = player.ActivePet;
-        session.Send(ResponsePetPacket.UpdateName(fieldPlayer.ActivePet));
+        session.Send(PetPacket.UpdateName(fieldPlayer.ActivePet));
 
         DatabaseManager.Pets.Update(fieldPlayer.ActivePet.Item.PetInfo);
     }
@@ -120,7 +120,7 @@ public class RequestPetHandler : GamePacketHandler<RequestPetHandler>
 
         player.ActivePet.PetInfo.PotionSettings = settings;
         fieldPlayer.ActivePet.Item = player.ActivePet;
-        session.Send(ResponsePetPacket.UpdatePotions(fieldPlayer.ActivePet));
+        session.Send(PetPacket.UpdatePotions(fieldPlayer.ActivePet));
 
         DatabaseManager.Pets.Update(fieldPlayer.ActivePet.Item.PetInfo);
     }
@@ -138,7 +138,7 @@ public class RequestPetHandler : GamePacketHandler<RequestPetHandler>
 
         player.ActivePet.PetInfo.LootSettings = settings;
         fieldPlayer.ActivePet.Item = player.ActivePet;
-        session.Send(ResponsePetPacket.UpdateLoot(fieldPlayer.ActivePet));
+        session.Send(PetPacket.UpdateLoot(fieldPlayer.ActivePet));
 
         DatabaseManager.Pets.Update(fieldPlayer.ActivePet.Item.PetInfo);
     }
@@ -166,7 +166,7 @@ public class RequestPetHandler : GamePacketHandler<RequestPetHandler>
         player.ActivePet = pet.Item;
         player.FieldPlayer.ActivePet = pet;
 
-        session.Send(ResponsePetPacket.LoadPetSettings(pet));
+        session.Send(PetPacket.LoadPetSettings(pet));
         session.Send(NoticePacket.Notice(SystemNotice.PetSummonOn, NoticeType.Chat | NoticeType.FastText));
     }
 }

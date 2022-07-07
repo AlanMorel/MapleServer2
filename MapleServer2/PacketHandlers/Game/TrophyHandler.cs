@@ -14,7 +14,7 @@ public class TrophyHandler : GamePacketHandler<TrophyHandler>
 {
     public override RecvOp OpCode => RecvOp.Trophy;
 
-    private enum TrophyHandlerMode : byte
+    private enum Mode : byte
     {
         ClaimReward = 0x03,
         Favorite = 0x04
@@ -22,14 +22,14 @@ public class TrophyHandler : GamePacketHandler<TrophyHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        TrophyHandlerMode mode = (TrophyHandlerMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case TrophyHandlerMode.ClaimReward:
+            case Mode.ClaimReward:
                 HandleClaimReward(session, packet);
                 break;
-            case TrophyHandlerMode.Favorite:
+            case Mode.Favorite:
                 HandleFavorite(session, packet);
                 break;
             default:

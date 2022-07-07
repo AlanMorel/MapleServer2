@@ -6,7 +6,7 @@ namespace MapleServer2.Packets;
 
 public static class FurnishingInventoryPacket
 {
-    private enum FurnishingInventoryPacketMode : byte
+    private enum Mode : byte
     {
         StartList = 0x0,
         Load = 0x1,
@@ -17,7 +17,7 @@ public static class FurnishingInventoryPacket
     public static PacketWriter StartList()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.FurnishingInventory);
-        pWriter.Write(FurnishingInventoryPacketMode.StartList);
+        pWriter.Write(Mode.StartList);
 
         return pWriter;
     }
@@ -25,7 +25,7 @@ public static class FurnishingInventoryPacket
     public static PacketWriter Load(Cube cube)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.FurnishingInventory);
-        pWriter.Write(FurnishingInventoryPacketMode.Load);
+        pWriter.Write(Mode.Load);
         pWriter.WriteInt(cube.Item.Id);
         pWriter.WriteLong(cube.Uid);
         pWriter.WriteLong(); // expire timestamp for ugc items
@@ -41,7 +41,7 @@ public static class FurnishingInventoryPacket
     public static PacketWriter Remove(Cube cube)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.FurnishingInventory);
-        pWriter.Write(FurnishingInventoryPacketMode.Remove);
+        pWriter.Write(Mode.Remove);
         pWriter.WriteLong(cube.Uid);
 
         return pWriter;
@@ -50,7 +50,7 @@ public static class FurnishingInventoryPacket
     public static PacketWriter EndList()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.FurnishingInventory);
-        pWriter.Write(FurnishingInventoryPacketMode.EndList);
+        pWriter.Write(Mode.EndList);
 
         return pWriter;
     }

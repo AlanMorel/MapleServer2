@@ -14,7 +14,7 @@ public class MailHandler : GamePacketHandler<MailHandler>
 {
     public override RecvOp OpCode => RecvOp.Mail;
 
-    private enum MailMode : byte
+    private enum Mode : byte
     {
         Open = 0x0,
         Send = 0x1,
@@ -48,29 +48,29 @@ public class MailHandler : GamePacketHandler<MailHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        MailMode mode = (MailMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case MailMode.Open:
+            case Mode.Open:
                 HandleOpen(session);
                 break;
-            case MailMode.Send:
+            case Mode.Send:
                 HandleSend(session, packet);
                 break;
-            case MailMode.Read:
+            case Mode.Read:
                 HandleRead(session, packet);
                 break;
-            case MailMode.Collect:
+            case Mode.Collect:
                 HandleCollect(session, packet);
                 break;
-            case MailMode.Delete:
+            case Mode.Delete:
                 HandleDelete(session, packet);
                 break;
-            case MailMode.ReadBatch:
+            case Mode.ReadBatch:
                 HandleReadBatch(session, packet);
                 break;
-            case MailMode.CollectBatch:
+            case Mode.CollectBatch:
                 HandleCollectBatch(session, packet);
                 break;
             default:

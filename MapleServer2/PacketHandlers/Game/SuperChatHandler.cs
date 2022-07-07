@@ -10,7 +10,7 @@ public class SuperChatHandler : GamePacketHandler<SuperChatHandler>
 {
     public override RecvOp OpCode => RecvOp.SuperWorldChat;
 
-    private enum SuperChatMode : byte
+    private enum Mode : byte
     {
         Select = 0x0,
         Deselect = 0x1
@@ -18,14 +18,14 @@ public class SuperChatHandler : GamePacketHandler<SuperChatHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        SuperChatMode mode = (SuperChatMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case SuperChatMode.Select:
+            case Mode.Select:
                 HandleSelect(session, packet);
                 break;
-            case SuperChatMode.Deselect:
+            case Mode.Deselect:
                 HandleDeselect(session);
                 break;
             default:

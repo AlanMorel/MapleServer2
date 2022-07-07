@@ -14,7 +14,7 @@ public class FishingHandler : GamePacketHandler<FishingHandler>
 {
     public override RecvOp OpCode => RecvOp.Fishing;
 
-    private enum FishingMode : byte
+    private enum Mode : byte
     {
         PrepareFishing = 0x0,
         Stop = 0x1,
@@ -35,23 +35,23 @@ public class FishingHandler : GamePacketHandler<FishingHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        FishingMode mode = (FishingMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case FishingMode.PrepareFishing:
+            case Mode.PrepareFishing:
                 HandlePrepareFishing(session, packet);
                 break;
-            case FishingMode.Stop:
+            case Mode.Stop:
                 HandleStop(session);
                 break;
-            case FishingMode.Catch:
+            case Mode.Catch:
                 HandleCatch(session, packet);
                 break;
-            case FishingMode.Start:
+            case Mode.Start:
                 HandleStart(session, packet);
                 break;
-            case FishingMode.FailMinigame:
+            case Mode.FailMinigame:
                 HandleFailMinigame();
                 break;
             default:

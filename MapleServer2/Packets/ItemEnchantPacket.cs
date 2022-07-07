@@ -9,7 +9,7 @@ namespace MapleServer2.Packets;
 
 public static class ItemEnchantPacket
 {
-    private enum ItemEnchantPacketMode : byte
+    private enum Mode : byte
     {
         BeginEnchant = 0x05,
         UpdateExp = 0x06,
@@ -22,7 +22,7 @@ public static class ItemEnchantPacket
     public static PacketWriter BeginEnchant(EnchantType type, Item item, ItemEnchant enchantInfo, Dictionary<StatAttribute, ItemStat> stats)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemEnchant);
-        pWriter.Write(ItemEnchantPacketMode.BeginEnchant);
+        pWriter.Write(Mode.BeginEnchant);
         pWriter.Write(type);
         pWriter.WriteLong(item.Uid);
         pWriter.WriteByte((byte) enchantInfo.Ingredients.Count);
@@ -63,7 +63,7 @@ public static class ItemEnchantPacket
     public static PacketWriter UpdateExp(Item item)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemEnchant);
-        pWriter.Write(ItemEnchantPacketMode.UpdateExp);
+        pWriter.Write(Mode.UpdateExp);
         pWriter.WriteLong(item.Uid);
         pWriter.WriteInt(item.EnchantExp);
         return pWriter;
@@ -72,7 +72,7 @@ public static class ItemEnchantPacket
     public static PacketWriter UpdateCharges(ItemEnchant itemEnchant)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemEnchant);
-        pWriter.Write(ItemEnchantPacketMode.UpdateCharges);
+        pWriter.Write(Mode.UpdateCharges);
         pWriter.WriteInt(itemEnchant.Rates.ChargesAdded);
         pWriter.WriteInt(itemEnchant.CatalystItemUids.Count);
         pWriter.WriteInt(itemEnchant.CatalystItemUids.Count);
@@ -87,7 +87,7 @@ public static class ItemEnchantPacket
     public static PacketWriter EnchantSuccess(Item item, List<ItemStat> enchants)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemEnchant);
-        pWriter.Write(ItemEnchantPacketMode.EnchantSuccess);
+        pWriter.Write(Mode.EnchantSuccess);
         pWriter.WriteLong(item.Uid);
         pWriter.WriteItem(item);
 
@@ -104,7 +104,7 @@ public static class ItemEnchantPacket
     public static PacketWriter EnchantFail(Item item, ItemEnchant enchantInfo)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemEnchant);
-        pWriter.Write(ItemEnchantPacketMode.EnchantFail);
+        pWriter.Write(Mode.EnchantFail);
         pWriter.WriteLong(item.Uid);
         pWriter.WriteItem(item);
         pWriter.WriteInt();
@@ -117,7 +117,7 @@ public static class ItemEnchantPacket
     public static PacketWriter Notice(short noticeId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemEnchant);
-        pWriter.Write(ItemEnchantPacketMode.Notice);
+        pWriter.Write(Mode.Notice);
         pWriter.WriteShort(noticeId);
         return pWriter;
     }

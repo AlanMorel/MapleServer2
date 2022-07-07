@@ -15,7 +15,7 @@ using MoonSharp.Interpreter;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestItemUseHandler : GamePacketHandler<RequestItemUseHandler>
+public class ItemUseHandler : GamePacketHandler<ItemUseHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestItemUse;
 

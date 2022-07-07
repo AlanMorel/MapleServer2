@@ -6,7 +6,7 @@ namespace MapleServer2.Packets;
 
 public static class PremiumClubPacket
 {
-    private enum PremiumClubPacketMode : byte
+    private enum Mode : byte
     {
         ActivatePremium = 0x0,
         Open = 0x1,
@@ -18,7 +18,7 @@ public static class PremiumClubPacket
     public static PacketWriter Open()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.PremiumClub);
-        pWriter.Write(PremiumClubPacketMode.Open);
+        pWriter.Write(Mode.Open);
         pWriter.WriteInt();
         return pWriter;
     }
@@ -26,7 +26,7 @@ public static class PremiumClubPacket
     public static PacketWriter ClaimItem(int benefitId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.PremiumClub);
-        pWriter.Write(PremiumClubPacketMode.ClaimItem);
+        pWriter.Write(Mode.ClaimItem);
         pWriter.WriteInt(benefitId);
         return pWriter;
     }
@@ -34,7 +34,7 @@ public static class PremiumClubPacket
     public static PacketWriter OpenPurchaseWindow()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.PremiumClub);
-        pWriter.Write(PremiumClubPacketMode.OpenPurchaseWindow);
+        pWriter.Write(Mode.OpenPurchaseWindow);
         pWriter.WriteInt();
         return pWriter;
     }
@@ -42,7 +42,7 @@ public static class PremiumClubPacket
     public static PacketWriter PurchaseMembership(int packageId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.PremiumClub);
-        pWriter.Write(PremiumClubPacketMode.PurchaseMembership);
+        pWriter.Write(Mode.PurchaseMembership);
         pWriter.WriteInt(packageId);
         return pWriter;
     }
@@ -50,7 +50,7 @@ public static class PremiumClubPacket
     public static PacketWriter ActivatePremium(IFieldObject<Player> player, long expiration)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.PremiumClub);
-        pWriter.Write(PremiumClubPacketMode.ActivatePremium);
+        pWriter.Write(Mode.ActivatePremium);
         pWriter.WriteInt(player.ObjectId);
         pWriter.WriteLong(expiration);
         return pWriter;

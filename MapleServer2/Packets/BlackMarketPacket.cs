@@ -7,7 +7,7 @@ namespace MapleServer2.Packets;
 
 public static class BlackMarketPacket
 {
-    private enum BlackMarketPacketMode : byte
+    private enum Mode : byte
     {
         Error = 0x0,
         Open = 0x1,
@@ -21,7 +21,7 @@ public static class BlackMarketPacket
     public static PacketWriter Error(int errorCode, int itemId = 0, int itemLevel = 0)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.BlackMarket);
-        pWriter.Write(BlackMarketPacketMode.Error);
+        pWriter.Write(Mode.Error);
         pWriter.WriteByte();
         pWriter.WriteInt(errorCode);
         pWriter.WriteLong();
@@ -33,7 +33,7 @@ public static class BlackMarketPacket
     public static PacketWriter Open(List<BlackMarketListing> listings)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.BlackMarket);
-        pWriter.Write(BlackMarketPacketMode.Open);
+        pWriter.Write(Mode.Open);
         pWriter.WriteInt(listings.Count);
         foreach (BlackMarketListing listing in listings)
         {
@@ -45,7 +45,7 @@ public static class BlackMarketPacket
     public static PacketWriter CreateListing(BlackMarketListing listing)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.BlackMarket);
-        pWriter.Write(BlackMarketPacketMode.CreateListing);
+        pWriter.Write(Mode.CreateListing);
         WriteListing(pWriter, listing);
         return pWriter;
     }
@@ -53,7 +53,7 @@ public static class BlackMarketPacket
     public static PacketWriter CancelListing(BlackMarketListing listing, bool isSold)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.BlackMarket);
-        pWriter.Write(BlackMarketPacketMode.CancelListing);
+        pWriter.Write(Mode.CancelListing);
         pWriter.WriteLong(listing.Id);
         pWriter.WriteBool(isSold);
         return pWriter;
@@ -62,7 +62,7 @@ public static class BlackMarketPacket
     public static PacketWriter SearchResults(List<BlackMarketListing> listings)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.BlackMarket);
-        pWriter.Write(BlackMarketPacketMode.SearchResults);
+        pWriter.Write(Mode.SearchResults);
         pWriter.WriteInt(listings.Count);
         foreach (BlackMarketListing listing in listings)
         {
@@ -74,7 +74,7 @@ public static class BlackMarketPacket
     public static PacketWriter Purchase(long listingId, int amount)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.BlackMarket);
-        pWriter.Write(BlackMarketPacketMode.Purchase);
+        pWriter.Write(Mode.Purchase);
         pWriter.WriteLong(listingId);
         pWriter.WriteInt(amount);
         return pWriter;
@@ -83,7 +83,7 @@ public static class BlackMarketPacket
     public static PacketWriter PrepareListing(int itemId, int rarity, int npcShopPrice)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.BlackMarket);
-        pWriter.Write(BlackMarketPacketMode.PrepareListing);
+        pWriter.Write(Mode.PrepareListing);
         pWriter.WriteInt(itemId);
         pWriter.WriteInt(rarity);
         pWriter.WriteLong(npcShopPrice);
