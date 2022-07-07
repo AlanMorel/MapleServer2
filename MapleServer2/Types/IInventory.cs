@@ -14,7 +14,8 @@ public interface IInventory
     Dictionary<long, Item> TemporaryStorage { get; }
     void AddItem(GameSession session, Item item, bool isNew);
     void ConsumeItem(GameSession session, long uid, int amount);
-    void ConsumeByTag(GameSession session, string tag, int amount);
+    void ConsumeByTag(GameSession session, string tag, int amount, int rarity = 0);
+    void ConsumeById(GameSession session, int id, int amount, int rarity = 0);
     bool RemoveItem(GameSession session, long uid, out Item item);
     void DropItem(GameSession session, Item item, int amount);
     void MoveItem(GameSession session, long uid, short dstSlot);
