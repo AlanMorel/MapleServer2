@@ -68,7 +68,12 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                 },
                 Limit = new()
                 {
-                    JobRequirements = limit.jobLimit.ToList(),
+                    JobRequirements = limit.jobLimit.Length == 0
+                        ? new()
+                        {
+                            0
+                        }
+                        : limit.jobLimit.ToList(),
                     JobRecommendations = limit.recommendJobs.ToList(),
                     LevelLimitMin = limit.levelLimit,
                     LevelLimitMax = limit.levelLimitMax,
@@ -169,6 +174,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
             {
                 metadata.Option.OptionLevelFactor = (float) data.option.globalOptionLevelFactor;
             }
+
             // if globalTransferType is present, override with these values
             if (limit.globalTransferType is not null)
             {
@@ -201,10 +207,12 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                     Console.WriteLine($"Failed to parse item slot for {id}: {slot.name}");
                     continue;
                 }
+
                 if (itemSlot == ItemSlot.HR)
                 {
                     ParseHair(slot, metadata);
                 }
+
                 metadata.Slots.Add(itemSlot);
             }
 
