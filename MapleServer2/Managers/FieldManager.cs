@@ -367,8 +367,7 @@ public class FieldManager
             State.AddHealingSpot(RequestFieldObject(new HealingSpot(coord)));
         }
 
-        List<MapVibrateObject> mapVibrateObjects = MapEntityMetadataStorage.GetVibrateObjects(MapId);
-        foreach (MapVibrateObject mapVibrateObject in mapVibrateObjects)
+        foreach (MapVibrateObject mapVibrateObject in MapEntityMetadataStorage.GetVibrateObjects(MapId))
         {
             State.AddVibrateObject(mapVibrateObject);
         }
