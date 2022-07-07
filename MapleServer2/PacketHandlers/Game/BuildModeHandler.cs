@@ -1,6 +1,7 @@
 ﻿using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -11,29 +12,22 @@ public class BuildModeHandler : GamePacketHandler<BuildModeHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestSetBuildMode;
 
-    private enum BuildModeMode : byte
+    private enum Mode : byte
     {
         Stop = 0x0,
         Start = 0x1
     }
 
-    public enum BuildModeType : byte
-    {
-        Stop = 0x0,
-        House = 0x1,
-        Liftables = 0x2
-    }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
-        BuildModeMode mode = (BuildModeMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case BuildModeMode.Stop:
+            case Mode.Stop:
                 HandleStop(session);
                 break;
-            case BuildModeMode.Start:
+            case Mode.Start:
                 HandleStart(session, packet);
                 break;
             default:

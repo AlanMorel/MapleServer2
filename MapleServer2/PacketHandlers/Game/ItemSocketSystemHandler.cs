@@ -14,7 +14,7 @@ public class ItemSocketSystemHandler : GamePacketHandler<ItemSocketSystemHandler
 {
     public override RecvOp OpCode => RecvOp.ItemSocketSystem;
 
-    private enum ItemSocketSystemMode : byte
+    private enum Mode : byte
     {
         UnlockSocket = 0x0,
         SelectUnlockSocketEquip = 0x2,
@@ -34,26 +34,26 @@ public class ItemSocketSystemHandler : GamePacketHandler<ItemSocketSystemHandler
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        ItemSocketSystemMode mode = (ItemSocketSystemMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case ItemSocketSystemMode.UnlockSocket:
+            case Mode.UnlockSocket:
                 HandleUnlockSocket(session, packet);
                 break;
-            case ItemSocketSystemMode.SelectUnlockSocketEquip:
+            case Mode.SelectUnlockSocketEquip:
                 HandleSelectUnlockSocketEquip(session, packet);
                 break;
-            case ItemSocketSystemMode.SelectGemUpgrade:
+            case Mode.SelectGemUpgrade:
                 HandleSelectGemUpgrade(session, packet);
                 break;
-            case ItemSocketSystemMode.UpgradeGem:
+            case Mode.UpgradeGem:
                 HandleUpgradeGem(session, packet);
                 break;
-            case ItemSocketSystemMode.MountGem:
+            case Mode.MountGem:
                 HandleMountGem(session, packet);
                 break;
-            case ItemSocketSystemMode.ExtractGem:
+            case Mode.ExtractGem:
                 HandleExtractGem(session, packet);
                 break;
             default:

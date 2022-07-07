@@ -11,7 +11,7 @@ public class SkillBookTreeHandler : GamePacketHandler<SkillBookTreeHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestSkillBookTree;
 
-    private enum SkillBookMode : byte
+    private enum Mode : byte
     {
         Open = 0x00,
         Save = 0x01,
@@ -21,19 +21,19 @@ public class SkillBookTreeHandler : GamePacketHandler<SkillBookTreeHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        SkillBookMode mode = (SkillBookMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
         switch (mode)
         {
-            case SkillBookMode.Open:
+            case Mode.Open:
                 HandleOpen(session);
                 break;
-            case SkillBookMode.Save:
+            case Mode.Save:
                 HandleSave(session, packet);
                 break;
-            case SkillBookMode.Rename:
+            case Mode.Rename:
                 HandleRename(session, packet);
                 break;
-            case SkillBookMode.AddTab:
+            case Mode.AddTab:
                 HandleAddTab(session);
                 break;
             default:

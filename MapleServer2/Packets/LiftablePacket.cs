@@ -7,7 +7,7 @@ namespace MapleServer2.Packets;
 
 public static class LiftablePacket
 {
-    private enum LiftableMode : byte
+    private enum Mode : byte
     {
         LoadLiftables = 0x00,
         UpdateEntity = 0x02,
@@ -18,7 +18,7 @@ public static class LiftablePacket
     public static PacketWriter LoadLiftables(List<IFieldObject<LiftableObject>> liftableObjects)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Liftable);
-        pWriter.Write(LiftableMode.LoadLiftables);
+        pWriter.Write(Mode.LoadLiftables);
         pWriter.Write(liftableObjects.Count);
         foreach (IFieldObject<LiftableObject> fieldLiftableObject in liftableObjects)
         {
@@ -41,7 +41,7 @@ public static class LiftablePacket
     public static PacketWriter UpdateEntityById(LiftableObject liftableObject)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Liftable);
-        pWriter.Write(LiftableMode.UpdateEntity);
+        pWriter.Write(Mode.UpdateEntity);
         pWriter.WriteString(liftableObject.EntityId);
         pWriter.WriteByte();
         pWriter.WriteInt(liftableObject.ItemCount);
@@ -55,7 +55,7 @@ public static class LiftablePacket
         LiftableObject liftableObject = fieldLiftableObject.Value;
 
         PacketWriter pWriter = PacketWriter.Of(SendOp.Liftable);
-        pWriter.Write(LiftableMode.UpdateEntity);
+        pWriter.Write(Mode.UpdateEntity);
         pWriter.WriteString($"4_{fieldLiftableObject.Coord.ToByte().AsHexadecimal()}");
         pWriter.WriteByte();
         pWriter.WriteInt(liftableObject.ItemCount);
@@ -69,7 +69,7 @@ public static class LiftablePacket
         LiftableObject liftableObject = fieldLiftableObject.Value;
 
         PacketWriter pWriter = PacketWriter.Of(SendOp.Liftable);
-        pWriter.Write(LiftableMode.Drop);
+        pWriter.Write(Mode.Drop);
         pWriter.WriteString($"4_{fieldLiftableObject.Coord.ToByte().AsHexadecimal()}");
         pWriter.WriteInt(liftableObject.ItemCount);
         pWriter.WriteUnicodeString(liftableObject.Metadata.MaskQuestId);
@@ -84,7 +84,7 @@ public static class LiftablePacket
     public static PacketWriter RemoveCube(IFieldObject<LiftableObject> fieldLiftableObject)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Liftable);
-        pWriter.Write(LiftableMode.RemoveCube);
+        pWriter.Write(Mode.RemoveCube);
         pWriter.WriteString($"4_{fieldLiftableObject.Coord.ToByte().AsHexadecimal()}");
 
         return pWriter;

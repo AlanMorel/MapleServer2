@@ -6,7 +6,7 @@ namespace MapleServer2.Packets;
 
 public static class SkillBookTreePacket
 {
-    private enum SkillBookTreeMode : byte
+    private enum Mode : byte
     {
         Open = 0x00,
         Save = 0x01,
@@ -19,7 +19,7 @@ public static class SkillBookTreePacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.SkillBookTree);
 
         // Writes only skills that are learned and for the job rank tab that is opened also doesn't write default passive skills
-        pWriter.Write(SkillBookTreeMode.Open);
+        pWriter.Write(Mode.Open);
         pWriter.WriteInt(player.SkillTabs.Count);
         pWriter.WriteLong(player.ActiveSkillTabId);
         pWriter.WriteInt(player.SkillTabs.Count);
@@ -44,7 +44,7 @@ public static class SkillBookTreePacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.SkillBookTree);
 
-        pWriter.Write(SkillBookTreeMode.Save);
+        pWriter.Write(Mode.Save);
         pWriter.WriteLong(player.ActiveSkillTabId);
         pWriter.WriteLong(selectedTab);
         pWriter.WriteInt(2); // Set Client Mode (1 = unsaved points, 2 = no unsaved points)
@@ -55,7 +55,7 @@ public static class SkillBookTreePacket
     public static PacketWriter Rename(long id, string name)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.SkillBookTree);
-        pWriter.Write(SkillBookTreeMode.Rename);
+        pWriter.Write(Mode.Rename);
         pWriter.WriteLong(id);
         pWriter.WriteUnicodeString(name);
         pWriter.WriteByte();
@@ -67,7 +67,7 @@ public static class SkillBookTreePacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.SkillBookTree);
 
-        pWriter.Write(SkillBookTreeMode.AddTab);
+        pWriter.Write(Mode.AddTab);
         pWriter.WriteInt(2);
         pWriter.WriteLong(player.ActiveSkillTabId);
 

@@ -7,7 +7,7 @@ namespace MapleServer2.Packets;
 
 public static class MeretMarketPacket
 {
-    private enum MeretMarketMode : byte
+    private enum Mode : byte
     {
         LoadPersonalListings = 0xB,
         LoadSales = 0xC,
@@ -30,7 +30,7 @@ public static class MeretMarketPacket
     public static PacketWriter LoadPersonalListings(List<UgcMarketItem> items)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MeretMarket);
-        pWriter.Write(MeretMarketMode.LoadPersonalListings);
+        pWriter.Write(Mode.LoadPersonalListings);
         pWriter.WriteLong();
         pWriter.WriteInt(items.Count);
         foreach (UgcMarketItem item in items)
@@ -44,7 +44,7 @@ public static class MeretMarketPacket
     public static PacketWriter LoadSales(List<UgcMarketSale> sales)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MeretMarket);
-        pWriter.Write(MeretMarketMode.LoadSales);
+        pWriter.Write(Mode.LoadSales);
         pWriter.WriteInt(sales.Count); // count
 
         foreach (UgcMarketSale sale in sales)
@@ -70,7 +70,7 @@ public static class MeretMarketPacket
     public static PacketWriter ListItem(UgcMarketItem item)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MeretMarket);
-        pWriter.Write(MeretMarketMode.ListItem);
+        pWriter.Write(Mode.ListItem);
         WriteUgcMarketItem(pWriter, item);
         return pWriter;
     }
@@ -78,7 +78,7 @@ public static class MeretMarketPacket
     public static PacketWriter RemoveListing(long id)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MeretMarket);
-        pWriter.Write(MeretMarketMode.RemoveListing);
+        pWriter.Write(Mode.RemoveListing);
         pWriter.WriteInt();
         pWriter.WriteLong(id);
         pWriter.WriteLong(id);
@@ -88,7 +88,7 @@ public static class MeretMarketPacket
     public static PacketWriter RelistItem(UgcMarketItem item)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MeretMarket);
-        pWriter.Write(MeretMarketMode.RelistItem);
+        pWriter.Write(Mode.RelistItem);
         WriteUgcMarketItem(pWriter, item);
         return pWriter;
     }
@@ -96,7 +96,7 @@ public static class MeretMarketPacket
     public static PacketWriter CollectProfit(UgcMarketSale sale)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MeretMarket);
-        pWriter.Write(MeretMarketMode.CollectProfit);
+        pWriter.Write(Mode.CollectProfit);
         pWriter.WriteLong(sale.Id);
         pWriter.WriteInt();
         pWriter.WriteLong(sale.Id);
@@ -107,7 +107,7 @@ public static class MeretMarketPacket
     public static PacketWriter UpdateExpiration(UgcMarketItem item)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MeretMarket);
-        pWriter.Write(MeretMarketMode.UpdateExpiration);
+        pWriter.Write(Mode.UpdateExpiration);
         pWriter.WriteInt();
         pWriter.WriteLong(item.MarketId);
         pWriter.WriteLong(item.MarketId);
@@ -120,7 +120,7 @@ public static class MeretMarketPacket
     public static PacketWriter UpdateProfit(long saleId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MeretMarket);
-        pWriter.Write(MeretMarketMode.UpdateProfit);
+        pWriter.Write(Mode.UpdateProfit);
         pWriter.WriteLong(saleId);
         pWriter.WriteLong(saleId);
         return pWriter;
@@ -129,7 +129,7 @@ public static class MeretMarketPacket
     public static PacketWriter Initialize()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MeretMarket);
-        pWriter.Write(MeretMarketMode.Initialize);
+        pWriter.Write(Mode.Initialize);
         pWriter.WriteByte();
         return pWriter;
     }
@@ -137,7 +137,7 @@ public static class MeretMarketPacket
     public static PacketWriter LoadShopCategory(List<MeretMarketItem> items, int totalItems)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MeretMarket);
-        pWriter.Write(MeretMarketMode.LoadShopCategory);
+        pWriter.Write(Mode.LoadShopCategory);
         pWriter.WriteInt(items.Count);
         pWriter.WriteInt(totalItems);
         pWriter.WriteInt(1);
@@ -148,7 +148,7 @@ public static class MeretMarketPacket
     public static PacketWriter Purchase(int premiumMarketId, long ugcMarketItemId, long price, int totalQuantity, int itemIndex = 0)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MeretMarket);
-        pWriter.Write(MeretMarketMode.Purchase);
+        pWriter.Write(Mode.Purchase);
         pWriter.WriteByte((byte) totalQuantity);
         pWriter.WriteInt(premiumMarketId);
         pWriter.WriteLong(ugcMarketItemId);
@@ -174,7 +174,7 @@ public static class MeretMarketPacket
     public static PacketWriter Promos(List<MeretMarketItem> items)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MeretMarket);
-        pWriter.Write(MeretMarketMode.Home);
+        pWriter.Write(Mode.Home);
         pWriter.WriteByte();
         pWriter.WriteByte(10);
         pWriter.WriteByte(1);
@@ -201,7 +201,7 @@ public static class MeretMarketPacket
     public static PacketWriter OpenDesignShop(List<UgcMarketItem> promoItems, List<UgcMarketItem> newItems)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MeretMarket);
-        pWriter.Write(MeretMarketMode.OpenDesignShop);
+        pWriter.Write(Mode.OpenDesignShop);
         pWriter.WriteInt(promoItems.Count + newItems.Count);
         foreach (UgcMarketItem item in promoItems)
         {
@@ -219,7 +219,7 @@ public static class MeretMarketPacket
     public static PacketWriter LoadCart()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MeretMarket);
-        pWriter.Write(MeretMarketMode.LoadCart);
+        pWriter.Write(Mode.LoadCart);
         pWriter.WriteInt(1);
         pWriter.WriteInt();
         pWriter.WriteInt(3);
@@ -230,7 +230,7 @@ public static class MeretMarketPacket
     public static PacketWriter ModeC9()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MeretMarket);
-        pWriter.Write(MeretMarketMode.ModeC9);
+        pWriter.Write(Mode.ModeC9);
         pWriter.WriteInt();
 
         return pWriter;

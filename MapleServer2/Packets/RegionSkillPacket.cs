@@ -7,7 +7,7 @@ namespace MapleServer2.Packets;
 
 public static class RegionSkillPacket
 {
-    private enum RegionSkillMode : byte
+    private enum Mode : byte
     {
         Add = 0x0,
         Remove = 0x1
@@ -17,7 +17,7 @@ public static class RegionSkillPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.RegionSkill);
 
-        pWriter.Write(RegionSkillMode.Add);
+        pWriter.Write(Mode.Add);
         pWriter.WriteInt(skill.SkillObjectId);
         pWriter.WriteInt(skill.CasterObjectId);
         pWriter.WriteInt(skill.ServerTick);
@@ -43,7 +43,7 @@ public static class RegionSkillPacket
     public static PacketWriter Remove(int sourceObjectId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.RegionSkill);
-        pWriter.Write(RegionSkillMode.Remove);
+        pWriter.Write(Mode.Remove);
         pWriter.WriteInt(sourceObjectId); // Uid regionEffect
         return pWriter;
     }

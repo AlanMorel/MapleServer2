@@ -5,7 +5,7 @@ namespace MapleServer2.Packets;
 
 public static class ItemBreakPacket
 {
-    private enum ItemBreakMode : byte
+    private enum Mode : byte
     {
         Add = 0x01,
         Remove = 0x02,
@@ -16,7 +16,7 @@ public static class ItemBreakPacket
     public static PacketWriter Add(long uid, short slot, int amount)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemBreak);
-        pWriter.Write(ItemBreakMode.Add);
+        pWriter.Write(Mode.Add);
         pWriter.WriteLong(uid);
         pWriter.WriteShort(slot);
         pWriter.WriteInt(amount);
@@ -27,7 +27,7 @@ public static class ItemBreakPacket
     public static PacketWriter Remove(long uid)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemBreak);
-        pWriter.Write(ItemBreakMode.Remove);
+        pWriter.Write(Mode.Remove);
         pWriter.WriteLong(uid);
 
         return pWriter;
@@ -36,7 +36,7 @@ public static class ItemBreakPacket
     public static PacketWriter Results(Dictionary<int, int> rewards)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemBreak);
-        pWriter.Write(ItemBreakMode.Results);
+        pWriter.Write(Mode.Results);
         pWriter.WriteInt(rewards.Count);
         foreach ((int id, int amount) in rewards)
         {
@@ -51,7 +51,7 @@ public static class ItemBreakPacket
     public static PacketWriter ShowRewards(Dictionary<int, int> rewards)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemBreak);
-        pWriter.Write(ItemBreakMode.ShowRewards);
+        pWriter.Write(Mode.ShowRewards);
         pWriter.WriteByte(1); // unknown
         pWriter.WriteInt(rewards.Count);
         foreach ((int id, int amount) in rewards)

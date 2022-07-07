@@ -6,7 +6,7 @@ namespace MapleServer2.Packets;
 
 public static class NoticePacket
 {
-    private enum NoticePacketMode : byte
+    private enum Mode : byte
     {
         Send = 0x04,
         Quit = 0x05
@@ -15,7 +15,7 @@ public static class NoticePacket
     public static PacketWriter Notice(string message, NoticeType type = NoticeType.Mint, short durationSec = 0)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Notice);
-        pWriter.Write(NoticePacketMode.Send);
+        pWriter.Write(Mode.Send);
         pWriter.WriteShort((short) type);
         pWriter.WriteByte();
         pWriter.WriteInt();
@@ -31,7 +31,7 @@ public static class NoticePacket
     {
         parameters ??= new();
         PacketWriter pWriter = PacketWriter.Of(SendOp.Notice);
-        pWriter.Write(NoticePacketMode.Send);
+        pWriter.Write(Mode.Send);
         WriteNotice(pWriter, notice, type, parameters, durationSec);
         return pWriter;
     }
@@ -40,7 +40,7 @@ public static class NoticePacket
     {
         parameters ??= new();
         PacketWriter pWriter = PacketWriter.Of(SendOp.Notice);
-        pWriter.Write(NoticePacketMode.Quit);
+        pWriter.Write(Mode.Quit);
         WriteNotice(pWriter, notice, type, parameters, durationSec);
         return pWriter;
     }

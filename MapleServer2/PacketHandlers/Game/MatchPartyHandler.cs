@@ -11,7 +11,7 @@ public class MatchPartyHandler : GamePacketHandler<MatchPartyHandler>
 {
     public override RecvOp OpCode => RecvOp.MatchParty;
 
-    private enum MatchPartyMode : byte
+    private enum Mode : byte
     {
         CreateListing = 0x0,
         RemoveListing = 0x1,
@@ -28,16 +28,16 @@ public class MatchPartyHandler : GamePacketHandler<MatchPartyHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        MatchPartyMode mode = (MatchPartyMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
         switch (mode)
         {
-            case MatchPartyMode.CreateListing:
+            case Mode.CreateListing:
                 HandleCreateListing(session, packet);
                 break;
-            case MatchPartyMode.RemoveListing:
+            case Mode.RemoveListing:
                 HandleRemoveListing(session);
                 break;
-            case MatchPartyMode.Refresh:
+            case Mode.Refresh:
                 HandleRefresh(session, packet);
                 break;
             default:

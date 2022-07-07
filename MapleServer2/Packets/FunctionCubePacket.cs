@@ -8,7 +8,7 @@ namespace MapleServer2.Packets;
 
 public class FunctionCubePacket
 {
-    private enum FunctionCubeMode : byte
+    private enum Mode : byte
     {
         SendCubes = 0x02,
         Add = 0x03,
@@ -21,7 +21,7 @@ public class FunctionCubePacket
     {
         PacketWriter packetWriter = PacketWriter.Of(SendOp.FunctionCube);
 
-        packetWriter.Write(FunctionCubeMode.SendCubes);
+        packetWriter.Write(Mode.SendCubes);
         packetWriter.WriteInt(cubes.Count);
         foreach (Cube cube in cubes)
         {
@@ -47,7 +47,7 @@ public class FunctionCubePacket
     {
         PacketWriter packetWriter = PacketWriter.Of(SendOp.FunctionCube);
 
-        packetWriter.Write(FunctionCubeMode.Add);
+        packetWriter.Write(Mode.Add);
         packetWriter.WriteUnicodeString($"4_{coordB.AsHexadecimal()}");
         packetWriter.WriteInt(status);
         packetWriter.WriteByte(unkByte);
@@ -59,7 +59,7 @@ public class FunctionCubePacket
     {
         PacketWriter packetWriter = PacketWriter.Of(SendOp.FunctionCube);
 
-        packetWriter.Write(FunctionCubeMode.Furniture);
+        packetWriter.Write(Mode.Furniture);
         packetWriter.WriteLong(characterId);
         packetWriter.WriteUnicodeString($"4_{coordB.AsHexadecimal()}");
         packetWriter.WriteBool(inUse);
@@ -71,7 +71,7 @@ public class FunctionCubePacket
     {
         PacketWriter packetWriter = PacketWriter.Of(SendOp.FunctionCube);
 
-        packetWriter.Write(FunctionCubeMode.SuccessLifeSkill);
+        packetWriter.Write(Mode.SuccessLifeSkill);
         packetWriter.WriteLong(characterId);
         packetWriter.WriteUnicodeString($"4_{coordB.AsHexadecimal()}");
         packetWriter.WriteLong(TimeInfo.Now());
@@ -84,7 +84,7 @@ public class FunctionCubePacket
     {
         PacketWriter packetWriter = PacketWriter.Of(SendOp.FunctionCube);
 
-        packetWriter.Write(FunctionCubeMode.FailLifeSkill);
+        packetWriter.Write(Mode.FailLifeSkill);
         packetWriter.WriteLong(characterId);
         packetWriter.WriteUnicodeString($"4_{coordB.AsHexadecimal()}");
         packetWriter.WriteLong(TimeInfo.Now());

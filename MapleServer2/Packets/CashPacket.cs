@@ -5,7 +5,7 @@ namespace MapleServer2.Packets;
 
 public static class CashPacket
 {
-    private enum CashMode : byte
+    private enum Mode : byte
     {
         Mode09 = 0x09
     }
@@ -13,7 +13,7 @@ public static class CashPacket
     public static PacketWriter Unknown09()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Cash);
-        pWriter.Write(CashMode.Mode09);
+        pWriter.Write(Mode.Mode09);
         pWriter.WriteByte();
 
         return pWriter;

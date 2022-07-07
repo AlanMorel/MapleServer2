@@ -12,7 +12,7 @@ public class ChangeAttributesScrollHandler : GamePacketHandler<ChangeAttributesS
 {
     public override RecvOp OpCode => RecvOp.ChangeAttributeScroll;
 
-    private enum ChangeAttributeMode : byte
+    private enum Mode : byte
     {
         ChangeAttributes = 1,
         SelectNewAttributes = 3
@@ -20,13 +20,13 @@ public class ChangeAttributesScrollHandler : GamePacketHandler<ChangeAttributesS
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        ChangeAttributeMode mode = (ChangeAttributeMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
         switch (mode)
         {
-            case ChangeAttributeMode.ChangeAttributes:
+            case Mode.ChangeAttributes:
                 HandleChangeAttributes(session, packet);
                 break;
-            case ChangeAttributeMode.SelectNewAttributes:
+            case Mode.SelectNewAttributes:
                 HandleSelectNewAttributes(session, packet);
                 break;
             default:

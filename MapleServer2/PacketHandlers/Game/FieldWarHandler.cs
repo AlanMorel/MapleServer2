@@ -10,17 +10,17 @@ public class FieldWarHandler : GamePacketHandler<FieldWarHandler>
 {
     public override RecvOp OpCode => RecvOp.FieldWar;
 
-    private enum FieldWarMode : byte
+    private enum Mode : byte
     {
         LegionEnter = 0x01
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        FieldWarMode function = (FieldWarMode) packet.ReadByte();
+        Mode function = (Mode) packet.ReadByte();
         switch (function)
         {
-            case FieldWarMode.LegionEnter:
+            case Mode.LegionEnter:
                 HandleLegionEnter(session);
                 break;
         }

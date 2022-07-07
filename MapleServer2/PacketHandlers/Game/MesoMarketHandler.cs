@@ -13,7 +13,7 @@ public class MesoMarketHandler : GamePacketHandler<MesoMarketHandler>
 {
     public override RecvOp OpCode => RecvOp.MesoMarket;
 
-    private enum MesoMarketMode : byte
+    private enum Mode : byte
     {
         Load = 0x3,
         CreateListing = 0x5,
@@ -41,23 +41,23 @@ public class MesoMarketHandler : GamePacketHandler<MesoMarketHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        MesoMarketMode mode = (MesoMarketMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case MesoMarketMode.Load:
+            case Mode.Load:
                 HandleLoad(session);
                 break;
-            case MesoMarketMode.CreateListing:
+            case Mode.CreateListing:
                 HandleCreateListing(session, packet);
                 break;
-            case MesoMarketMode.CancelListing:
+            case Mode.CancelListing:
                 HandleCancelListing(session, packet);
                 break;
-            case MesoMarketMode.RefreshListings:
+            case Mode.RefreshListings:
                 HandleRefreshListings(session, packet);
                 break;
-            case MesoMarketMode.Purchase:
+            case Mode.Purchase:
                 HandlePurchase(session, packet);
                 break;
             default:

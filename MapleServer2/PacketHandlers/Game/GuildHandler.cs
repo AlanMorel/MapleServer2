@@ -16,7 +16,7 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
 {
     public override RecvOp OpCode => RecvOp.Guild;
 
-    private enum GuildMode : byte
+    private enum Mode : byte
     {
         Create = 0x1,
         Disband = 0x2,
@@ -85,88 +85,88 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        GuildMode mode = (GuildMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
         switch (mode)
         {
-            case GuildMode.Create:
+            case Mode.Create:
                 HandleCreate(session, packet);
                 break;
-            case GuildMode.Disband:
+            case Mode.Disband:
                 HandleDisband(session);
                 break;
-            case GuildMode.Invite:
+            case Mode.Invite:
                 HandleInvite(session, packet);
                 break;
-            case GuildMode.InviteResponse:
+            case Mode.InviteResponse:
                 HandleInviteResponse(session, packet);
                 break;
-            case GuildMode.Leave:
+            case Mode.Leave:
                 HandleLeave(session);
                 break;
-            case GuildMode.Kick:
+            case Mode.Kick:
                 HandleKick(session, packet);
                 break;
-            case GuildMode.RankChange:
+            case Mode.RankChange:
                 HandleRankChange(session, packet);
                 break;
-            case GuildMode.PlayerMessage:
+            case Mode.PlayerMessage:
                 HandlePlayerMessage(session, packet);
                 break;
-            case GuildMode.CheckIn:
+            case Mode.CheckIn:
                 HandleCheckIn(session);
                 break;
-            case GuildMode.TransferLeader:
+            case Mode.TransferLeader:
                 HandleTransferLeader(session, packet);
                 break;
-            case GuildMode.GuildNotice:
+            case Mode.GuildNotice:
                 HandleGuildNotice(session, packet);
                 break;
-            case GuildMode.UpdateRank:
+            case Mode.UpdateRank:
                 HandleUpdateRank(session, packet);
                 break;
-            case GuildMode.ListGuild:
+            case Mode.ListGuild:
                 HandleListGuild(session, packet);
                 break;
-            case GuildMode.GuildMail:
+            case Mode.GuildMail:
                 HandleGuildMail(session, packet);
                 break;
-            case GuildMode.SubmitApplication:
+            case Mode.SubmitApplication:
                 HandleSubmitApplication(session, packet);
                 break;
-            case GuildMode.WithdrawApplication:
+            case Mode.WithdrawApplication:
                 HandleWithdrawApplication(session, packet);
                 break;
-            case GuildMode.ApplicationResponse:
+            case Mode.ApplicationResponse:
                 HandleApplicationResponse(session, packet);
                 break;
-            case GuildMode.LoadApplications:
+            case Mode.LoadApplications:
                 HandleLoadApplications(session);
                 break;
-            case GuildMode.LoadGuildList:
+            case Mode.LoadGuildList:
                 HandleLoadGuildList(session, packet);
                 break;
-            case GuildMode.SearchGuildByName:
+            case Mode.SearchGuildByName:
                 HandleSearchGuildByName(session, packet);
                 break;
-            case GuildMode.UseBuff:
+            case Mode.UseBuff:
                 HandleUseBuff(session, packet);
                 break;
-            case GuildMode.UpgradeBuff:
+            case Mode.UpgradeBuff:
                 HandleUpgradeBuff(session, packet);
                 break;
-            case GuildMode.UpgradeHome:
+            case Mode.UpgradeHome:
                 HandleUpgradeHome(session, packet);
                 break;
-            case GuildMode.ChangeHomeTheme:
+            case Mode.ChangeHomeTheme:
                 HandleChangeHomeTheme(session, packet);
                 break;
-            case GuildMode.EnterHouse:
+            case Mode.EnterHouse:
                 HandleEnterHouse(session);
                 break;
-            case GuildMode.GuildDonate:
+            case Mode.GuildDonate:
                 HandleGuildDonate(session, packet);
                 break;
-            case GuildMode.Services:
+            case Mode.Services:
                 HandleServices(session, packet);
                 break;
             default:

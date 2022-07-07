@@ -7,7 +7,7 @@ namespace MapleServer2.Packets;
 
 public class ChangeAttributesScrollPacket
 {
-    private enum ChangeAttributesScrollMode : byte
+    private enum Mode : byte
     {
         Open = 0,
         Preview = 2,
@@ -17,7 +17,7 @@ public class ChangeAttributesScrollPacket
     public static PacketWriter Open(long uid)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ChangeAttributesScroll);
-        pWriter.Write(ChangeAttributesScrollMode.Open);
+        pWriter.Write(Mode.Open);
         pWriter.WriteLong(uid);
 
         return pWriter;
@@ -26,7 +26,7 @@ public class ChangeAttributesScrollPacket
     public static PacketWriter PreviewNewItem(Item item)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ChangeAttributesScroll);
-        pWriter.Write(ChangeAttributesScrollMode.Preview);
+        pWriter.Write(Mode.Preview);
         pWriter.WriteLong(item.Uid);
         pWriter.WriteItem(item);
 
@@ -36,7 +36,7 @@ public class ChangeAttributesScrollPacket
     public static PacketWriter AddNewItem(Item item)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ChangeAttributesScroll);
-        pWriter.Write(ChangeAttributesScrollMode.Add);
+        pWriter.Write(Mode.Add);
         pWriter.WriteLong(item.Uid);
         pWriter.WriteItem(item);
 

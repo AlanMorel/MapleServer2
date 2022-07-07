@@ -8,7 +8,7 @@ namespace MapleServer2.Packets;
 
 public static class FieldObjectPacket
 {
-    private enum FieldObjectMode : byte
+    private enum Mode : byte
     {
         LoadPlayer = 0x03,
         RemovePlayer = 0x04,
@@ -23,7 +23,7 @@ public static class FieldObjectPacket
     {
         Player player = fieldPlayer.Value;
         PacketWriter pWriter = PacketWriter.Of(SendOp.FieldObject);
-        pWriter.Write(FieldObjectMode.LoadPlayer);
+        pWriter.Write(Mode.LoadPlayer);
         pWriter.WriteInt(fieldPlayer.ObjectId);
         pWriter.WriteLong(player.CharacterId);
         pWriter.WriteLong(player.AccountId);
@@ -52,7 +52,7 @@ public static class FieldObjectPacket
     public static PacketWriter RemovePlayer(IFieldObject<Player> fieldPlayer)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.FieldObject);
-        pWriter.Write(FieldObjectMode.RemovePlayer);
+        pWriter.Write(Mode.RemovePlayer);
         pWriter.WriteInt(fieldPlayer.ObjectId);
 
         return pWriter;
@@ -62,7 +62,7 @@ public static class FieldObjectPacket
     {
         FieldObjectUpdate flag = FieldObjectUpdate.Move | FieldObjectUpdate.Animate;
         PacketWriter pWriter = PacketWriter.Of(SendOp.FieldObject);
-        pWriter.Write(FieldObjectMode.UpdateEntity);
+        pWriter.Write(Mode.UpdateEntity);
         pWriter.WriteInt(player.ObjectId);
         pWriter.WriteByte((byte) flag);
 
@@ -110,7 +110,7 @@ public static class FieldObjectPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.FieldObject);
 
-        pWriter.Write(FieldObjectMode.UpdateEntity);
+        pWriter.Write(Mode.UpdateEntity);
         pWriter.WriteInt(player.FieldPlayer.ObjectId);
         pWriter.Write(FieldObjectUpdate.Level);
         pWriter.WriteShort(player.Levels.Level);
@@ -121,7 +121,7 @@ public static class FieldObjectPacket
     public static PacketWriter LoadNpc(IFieldObject<NpcMetadata> npc)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.FieldObject);
-        pWriter.Write(FieldObjectMode.LoadNpc);
+        pWriter.Write(Mode.LoadNpc);
         pWriter.WriteInt(npc.ObjectId);
         pWriter.WriteInt(npc.Value.Id);
         pWriter.WriteByte();
@@ -159,7 +159,7 @@ public static class FieldObjectPacket
     public static PacketWriter UpdateEntity(int objectId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.FieldObject);
-        pWriter.Write(FieldObjectMode.UpdateEntity);
+        pWriter.Write(Mode.UpdateEntity);
         pWriter.WriteInt(objectId);
         pWriter.WriteByte();
         pWriter.WriteShort();
@@ -169,7 +169,7 @@ public static class FieldObjectPacket
     public static PacketWriter RemoveNpc(IFieldObject<NpcMetadata> npc)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.FieldObject);
-        pWriter.Write(FieldObjectMode.RemoveNpc);
+        pWriter.Write(Mode.RemoveNpc);
         pWriter.WriteInt(npc.ObjectId);
         return pWriter;
     }
@@ -177,7 +177,7 @@ public static class FieldObjectPacket
     public static PacketWriter MoveNpc(IFieldObject<NpcMetadata> npc)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.FieldObject);
-        pWriter.Write(FieldObjectMode.MoveNpc);
+        pWriter.Write(Mode.MoveNpc);
         pWriter.WriteInt(npc.ObjectId);
         pWriter.WriteByte();
         pWriter.Write(npc.Coord);

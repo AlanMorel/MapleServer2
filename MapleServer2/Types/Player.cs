@@ -329,7 +329,7 @@ public class Player
 
         Session.FieldManager.RemovePlayer(this);
         DatabaseManager.Characters.Update(this);
-        Session.Send(RequestFieldEnterPacket.RequestEnter(FieldPlayer));
+        Session.Send(FieldEnterPacket.RequestEnter(FieldPlayer));
         Party?.BroadcastPacketParty(PartyPacket.UpdateMemberLocation(this));
         Guild?.BroadcastPacketGuild(GuildPacket.UpdateMemberLocation(Name, MapId));
         foreach (Club club in Clubs)

@@ -4,7 +4,7 @@ using MapleServer2.Enums;
 
 namespace MapleServer2.Packets;
 
-public class HandshakePacket
+public static class HandshakePacket
 {
     public static PacketWriter Handshake(uint version, uint riv, uint siv, uint blockIv, PatchType patchType, int handshakeSize)
     {

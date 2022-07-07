@@ -7,7 +7,7 @@ namespace MapleServer2.Packets;
 
 public static class LimitBreakPacket
 {
-    private enum LimitBreakPacketMode : byte
+    private enum Mode : byte
     {
         SelectedItem = 0x00,
         LimitBreakItem = 0x01,
@@ -17,7 +17,7 @@ public static class LimitBreakPacket
     public static PacketWriter SelectedItem(long itemUid, Item item, long mesoCost, List<EnchantIngredient> ingredients)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.LimitBreak);
-        pWriter.Write(LimitBreakPacketMode.SelectedItem);
+        pWriter.Write(Mode.SelectedItem);
         pWriter.WriteLong(itemUid);
         pWriter.WriteLong(mesoCost);
         pWriter.WriteByte((byte) ingredients.Count);
@@ -36,7 +36,7 @@ public static class LimitBreakPacket
     public static PacketWriter LimitBreakItem(Item item)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.LimitBreak);
-        pWriter.Write(LimitBreakPacketMode.LimitBreakItem);
+        pWriter.Write(Mode.LimitBreakItem);
         pWriter.WriteLong(item.Uid);
         pWriter.WriteItem(item);
         return pWriter;
@@ -45,7 +45,7 @@ public static class LimitBreakPacket
     public static PacketWriter Notice(short noticeId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.LimitBreak);
-        pWriter.Write(LimitBreakPacketMode.Notice);
+        pWriter.Write(Mode.Notice);
         pWriter.WriteShort(noticeId);
         return pWriter;
     }

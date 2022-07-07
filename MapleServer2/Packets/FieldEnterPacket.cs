@@ -4,7 +4,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.Packets;
 
-public static class RequestFieldEnterPacket
+public static class FieldEnterPacket
 {
     public static PacketWriter RequestEnter(IFieldActor<Player> fieldPlayer)
     {

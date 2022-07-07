@@ -458,9 +458,35 @@ public sealed class Inventory : IInventory
         return false;
     }
 
-    public void ConsumeByTag(GameSession session, string tag, int amount)
+    public void ConsumeByTag(GameSession session, string tag, int amount, int rarity = 0)
     {
         IReadOnlyCollection<Item> ingredientTotal = GetAllByTag(tag);
+        if (rarity > 0)
+        {
+            ingredientTotal = ingredientTotal.Where(x => x.Rarity == rarity).ToList();
+        }
+
+        foreach (Item item in ingredientTotal)
+        {
+            if (item.Amount >= amount)
+            {
+                ConsumeItem(session, item.Uid, amount);
+                break;
+            }
+
+            amount -= item.Amount;
+            ConsumeItem(session, item.Uid, item.Amount);
+        }
+    }
+
+    public void ConsumeById(GameSession session, int id, int amount, int rarity = 0)
+    {
+        IReadOnlyCollection<Item> ingredientTotal = GetAllById(id);
+        if (rarity > 0)
+        {
+            ingredientTotal = ingredientTotal.Where(x => x.Rarity == rarity).ToList();
+        }
+
         foreach (Item item in ingredientTotal)
         {
             if (item.Amount >= amount)

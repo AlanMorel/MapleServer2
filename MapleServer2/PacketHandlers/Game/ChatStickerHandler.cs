@@ -10,7 +10,7 @@ public class ChatStickerHandler : GamePacketHandler<ChatStickerHandler>
 {
     public override RecvOp OpCode => RecvOp.ChatSticker;
 
-    private enum ChatStickerMode : byte
+    private enum Mode : byte
     {
         OpenWindow = 0x1,
         UseSticker = 0x3,
@@ -21,23 +21,23 @@ public class ChatStickerHandler : GamePacketHandler<ChatStickerHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        ChatStickerMode mode = (ChatStickerMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case ChatStickerMode.OpenWindow:
+            case Mode.OpenWindow:
                 HandleOpenWindow();
                 break;
-            case ChatStickerMode.UseSticker:
+            case Mode.UseSticker:
                 HandleUseSticker(session, packet);
                 break;
-            case ChatStickerMode.GroupChatSticker:
+            case Mode.GroupChatSticker:
                 HandleGroupChatSticker(session, packet);
                 break;
-            case ChatStickerMode.Favorite:
+            case Mode.Favorite:
                 HandleFavorite(session, packet);
                 break;
-            case ChatStickerMode.Unfavorite:
+            case Mode.Unfavorite:
                 HandleUnfavorite(session, packet);
                 break;
             default:

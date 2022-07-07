@@ -12,15 +12,6 @@ public class ItemEnchantTransferHandler : GamePacketHandler<ItemEnchantTransferH
 {
     public override RecvOp OpCode => RecvOp.ItemEnchantTransform;
 
-    private enum ItemEnchantTransferMode : byte
-    {
-        Convert = 0x1,
-        UseSticker = 0x3,
-        GroupChatSticker = 0x4,
-        Favorite = 0x5,
-        Unfavorite = 0x6
-    }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
         long itemUid = packet.ReadLong();

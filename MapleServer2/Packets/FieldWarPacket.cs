@@ -5,7 +5,7 @@ namespace MapleServer2.Packets;
 
 public static class FieldWarPacket
 {
-    private enum FieldWarMode : byte
+    private enum Mode : byte
     {
         LegionPopup = 0x0
     }
@@ -13,7 +13,7 @@ public static class FieldWarPacket
     public static PacketWriter LegionPopup(int fieldWarId, long epochTime)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.FieldWar);
-        pWriter.Write(FieldWarMode.LegionPopup);
+        pWriter.Write(Mode.LegionPopup);
         pWriter.WriteInt(fieldWarId);
         pWriter.WriteLong(epochTime);
         return pWriter;

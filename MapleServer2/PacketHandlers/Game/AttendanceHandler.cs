@@ -15,7 +15,7 @@ public class AttendanceHandler : GamePacketHandler<AttendanceHandler>
 {
     public override RecvOp OpCode => RecvOp.Attendance;
 
-    private enum AttendanceMode : byte
+    private enum Mode : byte
     {
         Claim = 0x0,
         BeginTimer = 0x1,
@@ -33,17 +33,17 @@ public class AttendanceHandler : GamePacketHandler<AttendanceHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        AttendanceMode mode = (AttendanceMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case AttendanceMode.Claim:
+            case Mode.Claim:
                 HandleClaim(session);
                 break;
-            case AttendanceMode.BeginTimer:
+            case Mode.BeginTimer:
                 HandleBeginTimer(session);
                 break;
-            case AttendanceMode.EarlyParticipate:
+            case Mode.EarlyParticipate:
                 HandleEarlyParticipation(session, packet);
                 break;
             default:

@@ -7,7 +7,7 @@ namespace MapleServer2.Packets;
 
 public static class UGCPacket
 {
-    private enum UGCMode : byte
+    private enum Mode : byte
     {
         CreateUgc = 0x02,
         SetUGCUrl = 0x04,
@@ -25,7 +25,7 @@ public static class UGCPacket
     public static PacketWriter SetEndpoint(string uploadEndpoint, string resourceEndpoint, string locale = "na")
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.Write(UGCMode.SetEndpoint); // Function
+        pWriter.Write(Mode.SetEndpoint); // Function
         pWriter.WriteUnicodeString(uploadEndpoint); // Serves some random irrq.aspx
         pWriter.WriteUnicodeString(resourceEndpoint); // Serves resources
         pWriter.WriteUnicodeString(locale); // locale
@@ -43,7 +43,7 @@ public static class UGCPacket
     public static PacketWriter CreateUGC(UGC ugc)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.Write(UGCMode.CreateUgc);
+        pWriter.Write(Mode.CreateUgc);
         pWriter.Write(ugc.Type);
         pWriter.WriteLong(ugc.Uid);
         pWriter.WriteUnicodeString(ugc.Guid.ToString());
@@ -54,7 +54,7 @@ public static class UGCPacket
     public static PacketWriter SetUGCUrl(UGC ugc)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.Write(UGCMode.SetUGCUrl);
+        pWriter.Write(Mode.SetUGCUrl);
         pWriter.Write(ugc.Type);
         pWriter.WriteLong(ugc.Uid);
         pWriter.WriteUnicodeString(ugc.Url);
@@ -65,7 +65,7 @@ public static class UGCPacket
     public static PacketWriter ActivateBanner(UGCBanner ugcBanner)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.Write(UGCMode.ActivateBanner);
+        pWriter.Write(Mode.ActivateBanner);
         pWriter.WriteActiveBannerSlot(ugcBanner);
 
         return pWriter;
@@ -74,7 +74,7 @@ public static class UGCPacket
     public static PacketWriter UpdateUGCBanner(UGCBanner ugcBanner)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.Write(UGCMode.UpdateUGCBanner);
+        pWriter.Write(Mode.UpdateUGCBanner);
         pWriter.WriteUGCBanner(ugcBanner.Id, ugcBanner.Slots);
 
         return pWriter;
@@ -97,7 +97,7 @@ public static class UGCPacket
     public static PacketWriter SetProfilePictureUrl(int objectId, long characterId, string url)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.Write(UGCMode.ProfilePicture);
+        pWriter.Write(Mode.ProfilePicture);
         pWriter.WriteInt(objectId);
         pWriter.WriteLong(characterId);
         pWriter.WriteUnicodeString(url);
@@ -108,7 +108,7 @@ public static class UGCPacket
     public static PacketWriter UpdateUGCItem(IFieldObject<Player> fieldPlayer, Item item)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.Write(UGCMode.UpdateUGCItem);
+        pWriter.Write(Mode.UpdateUGCItem);
         pWriter.WriteInt(fieldPlayer.ObjectId);
         pWriter.WriteUGCItem(item);
         pWriter.WriteClass(item.Ugc);
@@ -119,7 +119,7 @@ public static class UGCPacket
     public static PacketWriter UpdateUGCFurnishing(IFieldObject<Player> fieldPlayer, Item item)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.Write(UGCMode.UpdateUGCFurnishing);
+        pWriter.Write(Mode.UpdateUGCFurnishing);
         pWriter.WriteInt(fieldPlayer.ObjectId);
         pWriter.WriteUGCItem(item);
         pWriter.WriteClass(item.Ugc);
@@ -130,7 +130,7 @@ public static class UGCPacket
     public static PacketWriter UpdateUGCMount(IFieldObject<Player> fieldPlayer, Item item)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.Write(UGCMode.UpdateUGCMount);
+        pWriter.Write(Mode.UpdateUGCMount);
         pWriter.WriteInt(fieldPlayer.ObjectId);
         pWriter.WriteUGCItem(item);
         pWriter.WriteClass(item.Ugc);
@@ -169,7 +169,7 @@ public static class UGCPacket
     public static PacketWriter LoadUGCBanner(List<UGCBanner> banners)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.Write(UGCMode.LoadBanners);
+        pWriter.Write(Mode.LoadBanners);
 
         int counter1 = 0;
         pWriter.WriteInt(counter1);
@@ -209,7 +209,7 @@ public static class UGCPacket
     public static PacketWriter ReserveBannerSlots(long bannerId, List<BannerSlot> bannerSlots)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.Write(UGCMode.UpdateBanner);
+        pWriter.Write(Mode.UpdateBanner);
         pWriter.WriteLong(bannerId);
         pWriter.WriteInt(bannerSlots.Count);
         foreach (BannerSlot slot in bannerSlots)

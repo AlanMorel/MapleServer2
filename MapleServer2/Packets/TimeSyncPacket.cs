@@ -10,7 +10,7 @@ namespace MapleServer2.Packets;
 // perhaps setting some initial state?
 public static class TimeSyncPacket
 {
-    private enum TimeSyncPacketMode : byte
+    private enum Mode : byte
     {
         SetSessionServerTick = 0x0,
         SetInitial1 = 0x1,
@@ -21,7 +21,7 @@ public static class TimeSyncPacket
     public static PacketWriter SetSessionServerTick(int key)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseTimeSync);
-        pWriter.Write(TimeSyncPacketMode.SetSessionServerTick);
+        pWriter.Write(Mode.SetSessionServerTick);
         pWriter.WriteInt(Environment.TickCount);
         pWriter.WriteLong(TimeInfo.Now());
         pWriter.WriteByte();
@@ -34,7 +34,7 @@ public static class TimeSyncPacket
     public static PacketWriter SetInitial1()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseTimeSync);
-        pWriter.Write(TimeSyncPacketMode.SetInitial1);
+        pWriter.Write(Mode.SetInitial1);
         pWriter.WriteInt(Environment.TickCount);
         pWriter.WriteLong(TimeInfo.Now());
         pWriter.WriteByte();
@@ -46,7 +46,7 @@ public static class TimeSyncPacket
     public static PacketWriter Request()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseTimeSync);
-        pWriter.Write(TimeSyncPacketMode.Request);
+        pWriter.Write(Mode.Request);
         pWriter.WriteInt(Environment.TickCount);
         pWriter.WriteLong(TimeInfo.Now());
         pWriter.WriteByte();
@@ -58,7 +58,7 @@ public static class TimeSyncPacket
     public static PacketWriter SetInitial2()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseTimeSync);
-        pWriter.Write(TimeSyncPacketMode.SetInitial2);
+        pWriter.Write(Mode.SetInitial2);
         pWriter.WriteLong(TimeInfo.Now());
 
         return pWriter;

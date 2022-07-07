@@ -9,7 +9,7 @@ public class NewsNotificationHandler : GamePacketHandler<NewsNotificationHandler
 {
     public override RecvOp OpCode => RecvOp.NewsNotification;
 
-    private enum NewsNotificationMode : byte
+    private enum Mode : byte
     {
         OpenBrowser = 0x0,
         OpenSidebar = 0x2
@@ -18,14 +18,14 @@ public class NewsNotificationHandler : GamePacketHandler<NewsNotificationHandler
     public override void Handle(GameSession session, PacketReader packet)
     {
         short unk = packet.ReadShort();
-        NewsNotificationMode mode = (NewsNotificationMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case NewsNotificationMode.OpenBrowser:
+            case Mode.OpenBrowser:
                 HandleOpenBrowser(session);
                 break;
-            case NewsNotificationMode.OpenSidebar:
+            case Mode.OpenSidebar:
                 HandleOpenSidebar(session);
                 break;
             default:

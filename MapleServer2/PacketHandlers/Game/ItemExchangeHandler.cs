@@ -12,18 +12,18 @@ public class ItemExchangeHandler : GamePacketHandler<ItemExchangeHandler>
 {
     public override RecvOp OpCode => RecvOp.ItemExchange;
 
-    private enum ItemExchangeMode : byte
+    private enum Mode : byte
     {
         Use = 0x1
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        ItemExchangeMode mode = (ItemExchangeMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case ItemExchangeMode.Use:
+            case Mode.Use:
                 HandleUse(session, packet);
                 break;
             default:
@@ -65,7 +65,7 @@ public class ItemExchangeHandler : GamePacketHandler<ItemExchangeHandler>
             return;
         }
 
-        if (exchange.ItemCost.Count != 0 && !PlayerHasAllIngredients(session, exchange, quantity))
+        if (exchange.ItemCost.Count != 0 && !PlayerHasIngredients(exchange, session.Player.Inventory, quantity))
         {
             session.Send(ItemExchangePacket.Notice((short) ExchangeNotice.InsufficientItems));
             return;
@@ -82,41 +82,36 @@ public class ItemExchangeHandler : GamePacketHandler<ItemExchangeHandler>
         session.Send(ItemExchangePacket.Notice((short) ExchangeNotice.Success));
     }
 
-    private static bool PlayerHasAllIngredients(GameSession session, ItemExchangeScrollMetadata exchange, int quantity)
+    private static bool PlayerHasIngredients(ItemExchangeScrollMetadata exchange, IInventory inventory, int quantity)
     {
-        // TODO: Check if rarity matches
-
-        for (int i = 0; i < exchange.ItemCost.Count; i++)
+        foreach (ItemRequirementMetadata ingredient in exchange.ItemCost)
         {
-            ItemRequirementMetadata exchangeItem = exchange.ItemCost.ElementAt(i);
-            Item item = session.Player.Inventory.GetById(exchangeItem.Id);
-
-            if (item == null)
+            IReadOnlyCollection<Item> ingredientTotal = inventory.GetAllById(ingredient.Id);
+            if (!string.IsNullOrEmpty(ingredient.StringTag))
             {
-                continue;
+                ingredientTotal = inventory.GetAllByTag(ingredient.StringTag);
             }
 
-            return item.Amount >= exchangeItem.Amount * quantity;
+            if (ingredientTotal.Where(x => x.Rarity == ingredient.Rarity).Sum(x => x.Amount) < ingredient.Amount * quantity)
+            {
+                return false;
+            }
         }
 
-        return false;
+        return true;
     }
 
     private static bool RemoveRequiredItemsFromInventory(GameSession session, ItemExchangeScrollMetadata exchange, Item originItem, int quantity)
     {
-        if (exchange.ItemCost.Count != 0)
+        foreach (ItemRequirementMetadata itemRequirement in exchange.ItemCost)
         {
-            for (int i = 0; i < exchange.ItemCost.Count; i++)
+            if (!string.IsNullOrEmpty(itemRequirement.StringTag))
             {
-                ItemRequirementMetadata exchangeItem = exchange.ItemCost.ElementAt(i);
-                Item item = session.Player.Inventory.GetById(exchangeItem.Id);
-                if (item == null)
-                {
-                    continue;
-                }
-
-                session.Player.Inventory.ConsumeItem(session, item.Uid, exchangeItem.Amount * quantity);
+                session.Player.Inventory.ConsumeByTag(session, itemRequirement.StringTag, itemRequirement.Amount * quantity, itemRequirement.Rarity);
+                continue;
             }
+
+            session.Player.Inventory.ConsumeById(session, itemRequirement.Id, itemRequirement.Amount * quantity, itemRequirement.Rarity);
         }
 
         session.Player.Inventory.ConsumeItem(session, originItem.Uid, exchange.RecipeAmount * quantity);

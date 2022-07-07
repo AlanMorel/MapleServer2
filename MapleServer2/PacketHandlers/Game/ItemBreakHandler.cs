@@ -5,11 +5,11 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestItemBreakHandler : GamePacketHandler<RequestItemBreakHandler>
+public class ItemBreakHandler : GamePacketHandler<ItemBreakHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestItemBreak;
 
-    private enum ItemBreakMode : byte
+    private enum Mode : byte
     {
         Open = 0x00,
         Add = 0x01,
@@ -20,23 +20,23 @@ public class RequestItemBreakHandler : GamePacketHandler<RequestItemBreakHandler
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        ItemBreakMode mode = (ItemBreakMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
         switch (mode)
         {
-            case ItemBreakMode.Open:
+            case Mode.Open:
                 session.Player.DismantleInventory.Slots = new (long, int)[100];
                 session.Player.DismantleInventory.Rewards = new();
                 break;
-            case ItemBreakMode.Add:
+            case Mode.Add:
                 HandleAdd(session, packet);
                 break;
-            case ItemBreakMode.Remove:
+            case Mode.Remove:
                 HandleRemove(session, packet);
                 break;
-            case ItemBreakMode.Dismantle:
+            case Mode.Dismantle:
                 HandleDismantle(session);
                 break;
-            case ItemBreakMode.AutoAdd:
+            case Mode.AutoAdd:
                 HandleAutoAdd(session, packet);
                 break;
             default:

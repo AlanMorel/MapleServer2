@@ -626,7 +626,7 @@ public class FieldManager
         Broadcast(session =>
         {
             session.Send(FieldPetPacket.AddPet(pet));
-            session.Send(ResponsePetPacket.Add(pet));
+            session.Send(PetPacket.Add(pet));
         });
     }
 
@@ -636,7 +636,7 @@ public class FieldManager
 
         Broadcast(session =>
         {
-            session.Send(ResponsePetPacket.Remove(pet));
+            session.Send(PetPacket.Remove(pet));
             session.Send(FieldPetPacket.RemovePet(pet));
         });
     }
@@ -679,7 +679,7 @@ public class FieldManager
     public void AddCube(IFieldObject<Cube> cube, int houseOwnerObjectId, int fieldPlayerObjectId)
     {
         State.AddCube(cube);
-        BroadcastPacket(ResponseCubePacket.PlaceFurnishing(cube, houseOwnerObjectId, fieldPlayerObjectId, false));
+        BroadcastPacket(CubePacket.PlaceFurnishing(cube, houseOwnerObjectId, fieldPlayerObjectId, false));
 
         if (cube.Value.Item.HousingCategory is ItemHousingCategory.Ranching or ItemHousingCategory.Farming)
         {
@@ -702,7 +702,7 @@ public class FieldManager
         }
 
         State.RemoveCube(cube.ObjectId);
-        BroadcastPacket(ResponseCubePacket.RemoveCube(houseOwnerObjectId, fieldPlayerObjectId, cube.Coord.ToByte()));
+        BroadcastPacket(CubePacket.RemoveCube(houseOwnerObjectId, fieldPlayerObjectId, cube.Coord.ToByte()));
     }
 
     public void AddInstrument(IFieldObject<Instrument> instrument)

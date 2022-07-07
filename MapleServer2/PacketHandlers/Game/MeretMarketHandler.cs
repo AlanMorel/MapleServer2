@@ -18,7 +18,7 @@ public class MeretMarketHandler : GamePacketHandler<MeretMarketHandler>
 {
     public override RecvOp OpCode => RecvOp.MeretMarket;
 
-    private enum MeretMarketMode : byte
+    private enum Mode : byte
     {
         LoadPersonalListings = 0xB,
         LoadSales = 0xC,
@@ -39,53 +39,53 @@ public class MeretMarketHandler : GamePacketHandler<MeretMarketHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        MeretMarketMode mode = (MeretMarketMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case MeretMarketMode.LoadPersonalListings:
+            case Mode.LoadPersonalListings:
                 HandleLoadPersonalListings(session);
                 break;
-            case MeretMarketMode.LoadSales:
+            case Mode.LoadSales:
                 HandleLoadSales(session);
                 break;
-            case MeretMarketMode.ListItem:
+            case Mode.ListItem:
                 HandleListItem(session, packet);
                 break;
-            case MeretMarketMode.RemoveListing:
+            case Mode.RemoveListing:
                 HandleRemoveListing(session, packet);
                 break;
-            case MeretMarketMode.UnlistItem:
+            case Mode.UnlistItem:
                 HandleUnlistItem(session, packet);
                 break;
-            case MeretMarketMode.RelistItem:
+            case Mode.RelistItem:
                 HandleRelistItem(session, packet);
                 break;
-            case MeretMarketMode.CollectProfit:
+            case Mode.CollectProfit:
                 HandleCollectProfit(session, packet);
                 break;
-            case MeretMarketMode.Initialize:
+            case Mode.Initialize:
                 HandleInitialize(session);
                 break;
-            case MeretMarketMode.OpenShop:
+            case Mode.OpenShop:
                 HandleOpenShop(session, packet);
                 break;
-            case MeretMarketMode.Purchase:
+            case Mode.Purchase:
                 HandlePurchase(session, packet);
                 break;
-            case MeretMarketMode.OpenFeatured:
+            case Mode.OpenFeatured:
                 HandleOpenFeatured(session, packet);
                 break;
-            case MeretMarketMode.OpenDesignShop:
+            case Mode.OpenDesignShop:
                 HandleOpenDesignShop(session);
                 break;
-            case MeretMarketMode.Search:
+            case Mode.Search:
                 HandleSearch(session, packet);
                 break;
-            case MeretMarketMode.LoadCart:
+            case Mode.LoadCart:
                 HandleLoadCart(session);
                 break;
-            case MeretMarketMode.SendMarketRequest:
+            case Mode.SendMarketRequest:
                 HandleSendMarketRequest(session, packet);
                 break;
             default:

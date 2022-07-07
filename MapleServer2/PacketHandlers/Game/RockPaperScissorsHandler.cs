@@ -14,7 +14,7 @@ public class RockPaperScissorsHandler : GamePacketHandler<RockPaperScissorsHandl
 {
     public override RecvOp OpCode => RecvOp.RockPaperScissors;
 
-    private enum RpsMode : short
+    private enum Mode : short
     {
         OpenMatch = 0x00,
         RequestMatch = 0x01,
@@ -35,32 +35,32 @@ public class RockPaperScissorsHandler : GamePacketHandler<RockPaperScissorsHandl
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        RpsMode mode = (RpsMode) packet.ReadShort();
+        Mode mode = (Mode) packet.ReadShort();
 
         switch (mode)
         {
-            case RpsMode.OpenMatch:
+            case Mode.OpenMatch:
                 HandleOpenMatch(session);
                 break;
-            case RpsMode.RequestMatch:
+            case Mode.RequestMatch:
                 HandleRequestMatch(session, packet);
                 break;
-            case RpsMode.ConfirmMatch:
+            case Mode.ConfirmMatch:
                 HandleConfirmMatch(session, packet);
                 break;
-            case RpsMode.DenyMatch:
+            case Mode.DenyMatch:
                 HandleDenyMatch(session, packet);
                 break;
-            case RpsMode.CancelRequestMatch:
+            case Mode.CancelRequestMatch:
                 HandleCancelRequestMatch(session, packet);
                 break;
-            case RpsMode.SelectRpsChoice:
+            case Mode.SelectRpsChoice:
                 HandleSelectRpsChoice(session, packet);
                 break;
-            case RpsMode.ClaimReward:
+            case Mode.ClaimReward:
                 HandleClaimReward(session, packet);
                 break;
-            case RpsMode.ConfirmMatch2:
+            case Mode.ConfirmMatch2:
                 HandleConfirmMatch2(session, packet);
                 break;
             default:

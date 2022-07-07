@@ -16,7 +16,7 @@ public class WardrobeHandler : GamePacketHandler<WardrobeHandler>
 {
     public override RecvOp OpCode => RecvOp.Wardrobe;
 
-    private enum WardrobeMode : byte
+    private enum Mode : byte
     {
         Save = 0,
         Equip = 1,
@@ -27,23 +27,23 @@ public class WardrobeHandler : GamePacketHandler<WardrobeHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        WardrobeMode mode = (WardrobeMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case WardrobeMode.Save:
+            case Mode.Save:
                 HandleSave(session, packet);
                 break;
-            case WardrobeMode.Equip:
+            case Mode.Equip:
                 HandleEquip(session, packet);
                 break;
-            case WardrobeMode.Reset:
+            case Mode.Reset:
                 HandleReset(session, packet);
                 break;
-            case WardrobeMode.SetShortcut:
+            case Mode.SetShortcut:
                 HandleSetShortcut(session, packet);
                 break;
-            case WardrobeMode.Rename:
+            case Mode.Rename:
                 HandleRename(session, packet);
                 break;
             default:

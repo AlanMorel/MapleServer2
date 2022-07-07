@@ -6,7 +6,7 @@ namespace MapleServer2.Packets;
 
 public static class CinematicPacket
 {
-    private enum CinematicPacketMode : byte
+    private enum Mode : byte
     {
         HideUi = 0x1,
         Mode02 = 0x2,
@@ -22,7 +22,7 @@ public static class CinematicPacket
     public static PacketWriter HideUi(bool hide)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Cinematic);
-        pWriter.Write(CinematicPacketMode.HideUi);
+        pWriter.Write(Mode.HideUi);
         pWriter.WriteBool(hide);
         return pWriter;
     }
@@ -30,14 +30,14 @@ public static class CinematicPacket
     public static PacketWriter Mode02()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Cinematic);
-        pWriter.Write(CinematicPacketMode.Mode02);
+        pWriter.Write(Mode.Mode02);
         return pWriter;
     }
 
     public static PacketWriter View(int type)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Cinematic);
-        pWriter.Write(CinematicPacketMode.View);
+        pWriter.Write(Mode.View);
         pWriter.WriteInt(type);
         pWriter.WriteUnicodeString();
         pWriter.WriteUnicodeString();
@@ -47,7 +47,7 @@ public static class CinematicPacket
     public static PacketWriter SetSceneSkip(string skipState = "")
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Cinematic);
-        pWriter.Write(CinematicPacketMode.SetSceneSkip);
+        pWriter.Write(Mode.SetSceneSkip);
         pWriter.WriteBool(skipState.Length != 0);
         pWriter.WriteString(skipState);
         return pWriter;
@@ -56,14 +56,14 @@ public static class CinematicPacket
     public static PacketWriter StartSceneSkip()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Cinematic);
-        pWriter.Write(CinematicPacketMode.StartSceneSkip);
+        pWriter.Write(Mode.StartSceneSkip);
         return pWriter;
     }
 
     public static PacketWriter Conversation(int npcId, string illustrationId, string stringId, int delay, Align align)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Cinematic);
-        pWriter.Write(CinematicPacketMode.Conversation);
+        pWriter.Write(Mode.Conversation);
         pWriter.WriteInt(npcId);
         pWriter.WriteString(illustrationId);
         pWriter.WriteUnicodeString(stringId);
@@ -75,7 +75,7 @@ public static class CinematicPacket
     public static PacketWriter BalloonTalk(int objectId, bool isNpcId, string msg, int duration, int delayTick)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Cinematic);
-        pWriter.Write(CinematicPacketMode.BalloonTalk);
+        pWriter.Write(Mode.BalloonTalk);
         pWriter.WriteBool(isNpcId);
         pWriter.WriteInt(objectId);
         pWriter.WriteUnicodeString(msg);
@@ -88,7 +88,7 @@ public static class CinematicPacket
         float scale)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Cinematic);
-        pWriter.Write(CinematicPacketMode.Caption);
+        pWriter.Write(Mode.Caption);
         pWriter.WriteUnicodeString(type + "Caption");
         pWriter.WriteUnicodeString(title);
         pWriter.WriteUnicodeString(script);
@@ -103,7 +103,7 @@ public static class CinematicPacket
     public static PacketWriter SystemMessage(string script)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Cinematic);
-        pWriter.Write(CinematicPacketMode.SystemMsg);
+        pWriter.Write(Mode.SystemMsg);
         pWriter.WriteUnicodeString(script);
         pWriter.WriteByte();
 

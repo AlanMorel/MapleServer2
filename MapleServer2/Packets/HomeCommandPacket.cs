@@ -4,9 +4,9 @@ using MapleServer2.Types;
 
 namespace MapleServer2.Packets;
 
-public class HomeCommandPacket
+public static class HomeCommandPacket
 {
-    private enum HomeCommandMode : byte
+    private enum Mode : byte
     {
         Load = 0x00,
         UpdateArchitectScore = 0x01
@@ -15,7 +15,7 @@ public class HomeCommandPacket
     public static PacketWriter LoadHome(Player player)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.HomeCommand);
-        pWriter.Write(HomeCommandMode.Load);
+        pWriter.Write(Mode.Load);
         pWriter.WriteLong(player.AccountId);
         pWriter.WriteLong(); // last time player nominated home
 
@@ -25,7 +25,7 @@ public class HomeCommandPacket
     public static PacketWriter UpdateArchitectScore(int ownerObjectId, int architectScoreCurrent, int architectScoreTotal)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.HomeCommand);
-        pWriter.Write(HomeCommandMode.UpdateArchitectScore);
+        pWriter.Write(Mode.UpdateArchitectScore);
         pWriter.WriteInt(ownerObjectId);
         pWriter.WriteLong(TimeInfo.Now());
         pWriter.WriteInt(architectScoreCurrent);

@@ -4,11 +4,11 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestItemLockHandler : GamePacketHandler<RequestItemLockHandler>
+public class ItemLockHandler : GamePacketHandler<ItemLockHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestItemLock;
 
-    private enum ItemLockMode : byte
+    private enum Mode : byte
     {
         Open = 0x00,
         Add = 0x01,
@@ -18,19 +18,19 @@ public class RequestItemLockHandler : GamePacketHandler<RequestItemLockHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        ItemLockMode mode = (ItemLockMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
         switch (mode)
         {
-            case ItemLockMode.Open:
+            case Mode.Open:
                 session.Player.LockInventory = new();
                 break;
-            case ItemLockMode.Add:
+            case Mode.Add:
                 HandleAdd(session, packet);
                 break;
-            case ItemLockMode.Remove:
+            case Mode.Remove:
                 HandleRemove(session, packet);
                 break;
-            case ItemLockMode.Update:
+            case Mode.Update:
                 HandleUpdateItem(session, packet);
                 break;
             default:

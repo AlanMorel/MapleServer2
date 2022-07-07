@@ -11,11 +11,11 @@ using MoonSharp.Interpreter;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-internal class RequestTaxiHandler : GamePacketHandler<RequestTaxiHandler>
+internal class TaxiHandler : GamePacketHandler<TaxiHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestTaxi;
 
-    private enum RequestTaxiMode : byte
+    private enum Mode : byte
     {
         Car = 0x1,
         RotorsMeso = 0x3,
@@ -25,12 +25,12 @@ internal class RequestTaxiHandler : GamePacketHandler<RequestTaxiHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        RequestTaxiMode mode = (RequestTaxiMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         int mapId = 0;
         long meretPrice = 15;
 
-        if (mode != RequestTaxiMode.DiscoverTaxi)
+        if (mode != Mode.DiscoverTaxi)
         {
             mapId = packet.ReadInt();
 
@@ -51,16 +51,16 @@ internal class RequestTaxiHandler : GamePacketHandler<RequestTaxiHandler>
 
         switch (mode)
         {
-            case RequestTaxiMode.Car:
+            case Mode.Car:
                 HandleCarTaxi(session, mapId);
                 break;
-            case RequestTaxiMode.RotorsMeso:
+            case Mode.RotorsMeso:
                 HandleRotorMeso(session, mapId);
                 break;
-            case RequestTaxiMode.RotorsMeret:
+            case Mode.RotorsMeret:
                 HandleRotorMeret(session, mapId, meretPrice);
                 break;
-            case RequestTaxiMode.DiscoverTaxi:
+            case Mode.DiscoverTaxi:
                 HandleDiscoverTaxi(session);
                 break;
             default:
