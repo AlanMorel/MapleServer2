@@ -146,7 +146,7 @@ internal class InteractObjectHandler : GamePacketHandler<InteractObjectHandler>
                         foreach (int itemId in dropGroupContent.ItemIds)
                         {
                             int amount = Random.Shared.Next((int) dropGroupContent.MinAmount, (int) dropGroupContent.MaxAmount);
-                            Item item = new(itemId, amount, dropGroupContent.Rarity);
+                            Item item = new(itemId, amount, Math.Clamp((int) dropGroupContent.Rarity, 1, 6));
 
                             session.FieldManager.AddItem(session.Player.FieldPlayer, item);
                         }

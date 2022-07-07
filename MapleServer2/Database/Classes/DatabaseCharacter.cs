@@ -317,10 +317,6 @@ public class DatabaseCharacter : DatabaseTable
         DatabaseManager.Wallets.Update(player.Wallet);
         DatabaseManager.GameOptions.Update(player.GameOptions);
         DatabaseManager.Inventories.Update(player.Inventory);
-        foreach ((int id, QuestStatus questStatus) in player.QuestData)
-        {
-            DatabaseManager.Quests.Update(questStatus);
-        }
 
         foreach (KeyValuePair<int, Trophy> trophy in player.TrophyData)
         {

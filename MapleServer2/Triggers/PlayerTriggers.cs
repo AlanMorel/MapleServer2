@@ -178,7 +178,7 @@ public partial class TriggerContext
     {
     }
 
-    public void SetAchievement(int boxId, string type, string trophySet)
+    public void SetAchievement(int boxId, string type, string code)
     {
         List<Character> players = Field.State.Players.Values.ToList();
         if (boxId != 0)
@@ -196,7 +196,8 @@ public partial class TriggerContext
         {
             if (type == "trigger")
             {
-                TrophyManager.OnTrigger(player.Value, trophySet);
+                TrophyManager.OnTrigger(player.Value, code);
+                QuestManager.OnTrigger(player.Value, code);
             }
         }
     }
