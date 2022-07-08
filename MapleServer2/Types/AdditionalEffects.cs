@@ -156,7 +156,7 @@ public class AdditionalEffects
 
         EffectDotDamageMetadata dotDamage = effect.LevelMetadata.DotDamage;
 
-        if ((dotDamage?.Rate ?? 0) == 0)
+        if (dotDamage?.Rate == 0)
         {
             return effect;
         }
@@ -335,7 +335,7 @@ public class AdditionalEffects
                 Duration = parent?.LevelMetadata?.Basic?.DurationTick ?? 100
             };
 
-            if (trigger.Splash == true)
+            if (trigger.Splash)
             {
                 RegionSkillHandler.HandleEffect(Parent.FieldManager, skillCast, skillCast.SkillAttack.AttackPoint);
 
