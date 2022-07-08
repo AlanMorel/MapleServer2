@@ -68,12 +68,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                 },
                 Limit = new()
                 {
-                    JobRequirements = limit.jobLimit.Length == 0
-                        ? new()
-                        {
-                            0
-                        }
-                        : limit.jobLimit.ToList(),
+                    JobRequirements = limit.jobLimit.Length == 0 ? new() { 0 } : limit.jobLimit.ToList(),
                     JobRecommendations = limit.recommendJobs.ToList(),
                     LevelLimitMin = limit.levelLimit,
                     LevelLimitMax = limit.levelLimitMax,
