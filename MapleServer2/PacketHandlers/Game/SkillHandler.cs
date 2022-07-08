@@ -358,7 +358,7 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             Interval = skillCondition.Interval,
             Rotation = rotation
         };
-        skillCast.Duration = skillCast.DurationTick();
+        
         RegionSkillHandler.HandleEffect(session.FieldManager, skillCast, attackIndex);
     }
 
