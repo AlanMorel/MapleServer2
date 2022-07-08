@@ -14,7 +14,7 @@ public class SystemShopHandler : GamePacketHandler<SystemShopHandler>
 {
     public override RecvOp OpCode => RecvOp.SystemShop;
 
-    private enum ShopMode : byte
+    private enum Mode : byte
     {
         Arena = 0x03,
         Fishing = 0x04,
@@ -23,17 +23,17 @@ public class SystemShopHandler : GamePacketHandler<SystemShopHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        ShopMode mode = (ShopMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case ShopMode.ViaItem:
+            case Mode.ViaItem:
                 HandleViaItem(session, packet);
                 break;
-            case ShopMode.Fishing:
+            case Mode.Fishing:
                 HandleFishingShop(session, packet);
                 break;
-            case ShopMode.Arena:
+            case Mode.Arena:
                 HandleMapleArenaShop(session, packet);
                 break;
             default:

@@ -96,6 +96,7 @@ public class DatabaseCharacter : DatabaseTable
         List<Medal> medals = DatabaseManager.MushkingRoyaleMedals.FindAllByAccountId(data.account_id);
         Dictionary<int, Trophy> trophies = DatabaseManager.Trophies.FindAllByCharacterId(data.character_id);
         List<ClubMember> clubMemberships = DatabaseManager.ClubMembers.FindAllClubIdsByCharacterId(data.character_id);
+        List<Wardrobe> wardrobes = DatabaseManager.Wardrobes.FindAllByCharacterId(data.character_id);
         foreach (KeyValuePair<int, Trophy> trophy in DatabaseManager.Trophies.FindAllByAccountId(data.account_id))
         {
             trophies.Add(trophy.Key, trophy.Value);
@@ -138,6 +139,7 @@ public class DatabaseCharacter : DatabaseTable
             Macros = macros,
             Wallet = new Wallet(data.meso, data.valor_token, data.treva, data.rue, data.havi_fruit, session, data.wallet_id),
             Inventory = inventory,
+            Wardrobes = wardrobes,
             ChatSticker = JsonConvert.DeserializeObject<List<ChatSticker>>(data.chat_sticker),
             SavedCoord = JsonConvert.DeserializeObject<CoordF>(data.coord),
             Emotes = JsonConvert.DeserializeObject<List<int>>(data.emotes),

@@ -19,7 +19,7 @@ public class QuitHandler : CommonPacketHandler<QuitHandler>
         LoginEndpoint = new(IPAddress.Parse(ipAddress), port);
     }
 
-    private enum QuitMode : byte
+    private enum Mode : byte
     {
         ChangeCharacter = 0x00,
         Quit = 0x01
@@ -27,17 +27,17 @@ public class QuitHandler : CommonPacketHandler<QuitHandler>
 
     protected override void HandleCommon(Session session, PacketReader packet)
     {
-        QuitMode mode = (QuitMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case QuitMode.ChangeCharacter:
+            case Mode.ChangeCharacter:
                 if (session is GameSession gameSession)
                 {
                     HandleChangeCharacter(gameSession);
                 }
                 break;
-            case QuitMode.Quit:
+            case Mode.Quit:
                 if (session is GameSession gameSession2)
                 {
                     HandleQuit(gameSession2);

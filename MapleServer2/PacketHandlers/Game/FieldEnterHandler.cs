@@ -39,7 +39,7 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
             {
                 player.FieldPlayer.ActivePet = pet;
 
-                session.Send(ResponsePetPacket.LoadPetSettings(pet));
+                session.Send(PetPacket.LoadPetSettings(pet));
                 session.Send(NoticePacket.Notice(SystemNotice.PetSummonOn, NoticeType.Chat | NoticeType.FastText));
             }
         }
@@ -62,11 +62,15 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
 
         session.Send(EmotePacket.LoadEmotes(player));
         session.Send(MacroPacket.LoadControls(player.Macros));
+        foreach (Wardrobe wardrobe in player.Wardrobes)
+        {
+            session.Send(WardrobePacket.Load(wardrobe));
+        }
         session.Send(ChatStickerPacket.LoadChatSticker(player));
 
-        session.Send(ResponseCubePacket.DecorationScore(account.Home));
-        session.Send(ResponseCubePacket.LoadHome(player.FieldPlayer.ObjectId, player.Account.Home));
-        session.Send(ResponseCubePacket.ReturnMap(player.ReturnMapId));
+        session.Send(CubePacket.DecorationScore(account.Home));
+        session.Send(CubePacket.LoadHome(player.FieldPlayer.ObjectId, player.Account.Home));
+        session.Send(CubePacket.ReturnMap(player.ReturnMapId));
         session.Send(LapenshardPacket.Load(player.Inventory.LapenshardStorage));
 
         IEnumerable<Cube> cubes = session.FieldManager.State.Cubes.Values

@@ -5,7 +5,7 @@ namespace MapleServer2.Packets;
 
 public static class EnterUgcMapPacket
 {
-    private enum EnterUgcMapMode : byte
+    private enum Mode : byte
     {
         RequestPassword = 0x03,
         WrongPassword = 0x04
@@ -14,7 +14,7 @@ public static class EnterUgcMapPacket
     public static PacketWriter RequestPassword(long accountId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.EnterUGCMap);
-        pWriter.Write(EnterUgcMapMode.RequestPassword);
+        pWriter.Write(Mode.RequestPassword);
         pWriter.WriteInt();
         pWriter.WriteLong();
         pWriter.WriteLong(accountId);
@@ -27,7 +27,7 @@ public static class EnterUgcMapPacket
     public static PacketWriter WrongPassword(long accountId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.EnterUGCMap);
-        pWriter.Write(EnterUgcMapMode.WrongPassword);
+        pWriter.Write(Mode.WrongPassword);
         pWriter.WriteInt();
         pWriter.WriteLong();
         pWriter.WriteLong(accountId);

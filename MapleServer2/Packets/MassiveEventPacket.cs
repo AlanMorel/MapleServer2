@@ -6,7 +6,7 @@ namespace MapleServer2.Packets;
 
 public static class MassiveEventPacket
 {
-    private enum MassiveEventPacketMode : byte
+    private enum Mode : byte
     {
         RoundBar = 0x0,
         RoundBanner = 0x1,
@@ -18,7 +18,7 @@ public static class MassiveEventPacket
     public static PacketWriter RoundBar(int currentRound, int lastRound, int startFromRound)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MassiveEvent);
-        pWriter.Write(MassiveEventPacketMode.RoundBar);
+        pWriter.Write(Mode.RoundBar);
         pWriter.WriteInt(currentRound);
         pWriter.WriteInt(lastRound);
         pWriter.WriteInt(startFromRound);
@@ -29,7 +29,7 @@ public static class MassiveEventPacket
     public static PacketWriter Round(string text, int round, int countFrom, int soundType = 0)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MassiveEvent);
-        pWriter.Write(MassiveEventPacketMode.RoundBanner);
+        pWriter.Write(Mode.RoundBanner);
         pWriter.WriteUnicodeString(text);
         pWriter.WriteInt(round);
         pWriter.WriteInt(countFrom);
@@ -40,7 +40,7 @@ public static class MassiveEventPacket
     public static PacketWriter TextBanner(EventBannerType type, string script, int duration)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MassiveEvent);
-        pWriter.Write(MassiveEventPacketMode.TextBanner);
+        pWriter.Write(Mode.TextBanner);
         pWriter.Write(type);
         pWriter.WriteUnicodeString(script);
         pWriter.WriteInt(duration);
@@ -50,7 +50,7 @@ public static class MassiveEventPacket
     public static PacketWriter RoundHeader(int round, bool finalRound, int duration)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MassiveEvent);
-        pWriter.Write(MassiveEventPacketMode.RoundHeader);
+        pWriter.Write(Mode.RoundHeader);
         pWriter.WriteInt(round);
         pWriter.WriteBool(finalRound);
         pWriter.WriteInt(duration);
@@ -60,7 +60,7 @@ public static class MassiveEventPacket
     public static PacketWriter PrepareCountdown(int countFrom)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MassiveEvent);
-        pWriter.Write(MassiveEventPacketMode.PrepareCountdown);
+        pWriter.Write(Mode.PrepareCountdown);
         pWriter.WriteInt(countFrom);
         return pWriter;
     }

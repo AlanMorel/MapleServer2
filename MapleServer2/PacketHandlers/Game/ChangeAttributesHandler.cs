@@ -1,6 +1,7 @@
 ﻿using Maple2Storage.Enums;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
@@ -13,7 +14,7 @@ public class ChangeAttributesHandler : GamePacketHandler<ChangeAttributesHandler
 {
     public override RecvOp OpCode => RecvOp.ChangeAttribute;
 
-    private enum ChangeAttributesMode : byte
+    private enum Mode : byte
     {
         ChangeAttributes = 0,
         SelectNewAttributes = 2
@@ -21,14 +22,14 @@ public class ChangeAttributesHandler : GamePacketHandler<ChangeAttributesHandler
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        ChangeAttributesMode function = (ChangeAttributesMode) packet.ReadByte();
+        Mode function = (Mode) packet.ReadByte();
 
         switch (function)
         {
-            case ChangeAttributesMode.ChangeAttributes:
+            case Mode.ChangeAttributes:
                 HandleChangeAttributes(session, packet);
                 break;
-            case ChangeAttributesMode.SelectNewAttributes:
+            case Mode.SelectNewAttributes:
                 HandleSelectNewAttributes(session, packet);
                 break;
             default:
@@ -85,16 +86,17 @@ public class ChangeAttributesHandler : GamePacketHandler<ChangeAttributesHandler
 
         Item scrollLock = null;
 
+        List<ItemSlot> itemSlots = ItemMetadataStorage.GetItemSlots(gear.Id);
         string tag = "";
-        if (Item.IsAccessory(gear.ItemSlot))
+        if (Item.IsAccessory(itemSlots))
         {
             tag = "LockItemOptionAccessory";
         }
-        else if (Item.IsArmor(gear.ItemSlot))
+        else if (Item.IsArmor(itemSlots))
         {
             tag = "LockItemOptionArmor";
         }
-        else if (Item.IsWeapon(gear.ItemSlot))
+        else if (Item.IsWeapon(itemSlots))
         {
             tag = "LockItemOptionWeapon";
         }

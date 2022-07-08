@@ -9,7 +9,7 @@ public class StateHandler : GamePacketHandler<StateHandler>
 {
     public override RecvOp OpCode => RecvOp.State;
 
-    private enum StateHandlerMode : byte
+    private enum Mode : byte
     {
         Jump = 0x0,
         Land = 0x1
@@ -17,14 +17,14 @@ public class StateHandler : GamePacketHandler<StateHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        StateHandlerMode mode = (StateHandlerMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case StateHandlerMode.Jump:
+            case Mode.Jump:
                 HandleJump(session);
                 break;
-            case StateHandlerMode.Land:
+            case Mode.Land:
                 break;
             default:
                 LogUnknownMode(mode);

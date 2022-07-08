@@ -7,7 +7,7 @@ namespace MapleServer2.Packets;
 
 public static class ItemLockPacket
 {
-    private enum ItemLockMode : byte
+    private enum Mode : byte
     {
         Add = 0x01,
         Remove = 0x02,
@@ -17,7 +17,7 @@ public static class ItemLockPacket
     public static PacketWriter Add(long uid, short slot)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemLock);
-        pWriter.Write(ItemLockMode.Add);
+        pWriter.Write(Mode.Add);
         pWriter.WriteLong(uid);
         pWriter.WriteShort(slot);
 
@@ -27,7 +27,7 @@ public static class ItemLockPacket
     public static PacketWriter Remove(long uid)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemLock);
-        pWriter.Write(ItemLockMode.Remove);
+        pWriter.Write(Mode.Remove);
         pWriter.WriteLong(uid);
 
         return pWriter;
@@ -36,7 +36,7 @@ public static class ItemLockPacket
     public static PacketWriter UpdateItems(List<Item> items)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemLock);
-        pWriter.Write(ItemLockMode.Update);
+        pWriter.Write(Mode.Update);
         pWriter.WriteByte((byte) items.Count);
         foreach (Item item in items)
         {

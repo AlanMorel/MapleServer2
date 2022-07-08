@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using System.Xml;
+﻿using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
@@ -59,11 +58,15 @@ public class ItemExchangeScrollParser : Exporter<List<ItemExchangeScrollMetadata
 
                             ItemRequirementMetadata item = new();
                             string[] parameters = itemNode.Attributes["id"].Value.Split(",");
-                            parameters[0] = Regex.Match(parameters[0], @"\d+").Value; // remove text from item id
+                            string[] parameter0 = parameters[0].Split(":");
 
-                            item.Id = int.Parse(parameters[0]);
+                            item.Id = int.Parse(parameter0[0]);
                             item.Rarity = byte.Parse(parameters[1]);
                             item.Amount = short.Parse(parameters[2]);
+                            if (parameter0.ElementAtOrDefault(1) is not null)
+                            {
+                                item.StringTag = parameter0[1];
+                            }
 
                             metadata.ItemCost.Add(item);
                         }

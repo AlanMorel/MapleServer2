@@ -5,7 +5,7 @@ namespace MapleServer2.Packets;
 
 public static class PCCafeBonusPacket
 {
-    private enum PCCafeBonusPacketMode : byte
+    private enum Mode : byte
     {
         LoadBenefits = 0x0,
         ClaimLoginTimeReward = 0x1,
@@ -16,7 +16,7 @@ public static class PCCafeBonusPacket
     public static PacketWriter LoadBenefits()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.PCCafeBonus);
-        pWriter.Write(PCCafeBonusPacketMode.LoadBenefits);
+        pWriter.Write(Mode.LoadBenefits);
         pWriter.WriteByte();
         pWriter.WriteBool(true); // player is PCCafe user 
         pWriter.WriteInt();
@@ -58,7 +58,7 @@ public static class PCCafeBonusPacket
     public static PacketWriter ClaimLoginTimeReward(byte index)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.PCCafeBonus);
-        pWriter.Write(PCCafeBonusPacketMode.ClaimLoginTimeReward);
+        pWriter.Write(Mode.ClaimLoginTimeReward);
         pWriter.WriteByte(index);
         pWriter.WriteInt();
         return pWriter;
@@ -67,7 +67,7 @@ public static class PCCafeBonusPacket
     public static PacketWriter ClaimPCCafeItem(int index)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.PCCafeBonus);
-        pWriter.Write(PCCafeBonusPacketMode.ClaimPCCafeItem);
+        pWriter.Write(Mode.ClaimPCCafeItem);
         pWriter.WriteInt(index);
         return pWriter;
     }
@@ -75,7 +75,7 @@ public static class PCCafeBonusPacket
     public static PacketWriter Unk()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.PCCafeBonus);
-        pWriter.Write(PCCafeBonusPacketMode.Unk);
+        pWriter.Write(Mode.Unk);
         pWriter.WriteBool(true); // is PC Cafe user
         pWriter.WriteInt();
         pWriter.WriteInt();

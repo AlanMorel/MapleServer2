@@ -6,7 +6,7 @@ namespace MapleServer2.Packets;
 
 public static class GroupChatPacket
 {
-    private enum GroupChatPacketMode : byte
+    private enum Mode : byte
     {
         Update = 0x0,
         Create = 0x1,
@@ -24,7 +24,7 @@ public static class GroupChatPacket
     public static PacketWriter Update(GroupChat groupChat)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.GroupChat);
-        pWriter.Write(GroupChatPacketMode.Update);
+        pWriter.Write(Mode.Update);
         pWriter.WriteInt(groupChat.Id);
         pWriter.WriteByte((byte) groupChat.Members.Count);
         foreach (Player member in groupChat.Members)
@@ -38,7 +38,7 @@ public static class GroupChatPacket
     public static PacketWriter Create(GroupChat groupChat)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.GroupChat);
-        pWriter.Write(GroupChatPacketMode.Create);
+        pWriter.Write(Mode.Create);
         pWriter.WriteInt(groupChat.Id);
         return pWriter;
     }
@@ -46,7 +46,7 @@ public static class GroupChatPacket
     public static PacketWriter Invite(Player member, Player invitee, GroupChat groupChat)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.GroupChat);
-        pWriter.Write(GroupChatPacketMode.Invite);
+        pWriter.Write(Mode.Invite);
         pWriter.WriteUnicodeString(member.Name);
         pWriter.WriteUnicodeString(invitee.Name);
         pWriter.WriteInt(groupChat.Id);
@@ -56,7 +56,7 @@ public static class GroupChatPacket
     public static PacketWriter Join(Player member, Player invitee, GroupChat groupChat)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.GroupChat);
-        pWriter.Write(GroupChatPacketMode.Join);
+        pWriter.Write(Mode.Join);
         pWriter.WriteUnicodeString(member.Name);
         pWriter.WriteUnicodeString(invitee.Name);
         pWriter.WriteInt(groupChat.Id);
@@ -66,7 +66,7 @@ public static class GroupChatPacket
     public static PacketWriter Leave(GroupChat groupChat)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.GroupChat);
-        pWriter.Write(GroupChatPacketMode.Leave);
+        pWriter.Write(Mode.Leave);
         pWriter.WriteInt(groupChat.Id);
         return pWriter;
     }
@@ -74,7 +74,7 @@ public static class GroupChatPacket
     public static PacketWriter UpdateGroupMembers(Player member, Player invitee, GroupChat groupChat)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.GroupChat);
-        pWriter.Write(GroupChatPacketMode.UpdateGroupMembers);
+        pWriter.Write(Mode.UpdateGroupMembers);
         pWriter.WriteInt(groupChat.Id);
         pWriter.WriteUnicodeString(member.Name);
         pWriter.WriteByte(0x1);
@@ -85,7 +85,7 @@ public static class GroupChatPacket
     public static PacketWriter LeaveNotice(GroupChat groupChat, Player player)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.GroupChat);
-        pWriter.Write(GroupChatPacketMode.LeaveNotice);
+        pWriter.Write(Mode.LeaveNotice);
         pWriter.WriteInt(groupChat.Id);
         pWriter.WriteByte();
         pWriter.WriteUnicodeString(player.Name);
@@ -95,7 +95,7 @@ public static class GroupChatPacket
     public static PacketWriter LoginNotice(GroupChat groupChat, Player player)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.GroupChat);
-        pWriter.Write(GroupChatPacketMode.LoginNotice);
+        pWriter.Write(Mode.LoginNotice);
         pWriter.WriteInt(groupChat.Id);
         pWriter.WriteUnicodeString(player.Name);
         return pWriter;
@@ -104,7 +104,7 @@ public static class GroupChatPacket
     public static PacketWriter LogoutNotice(GroupChat groupChat, Player player)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.GroupChat);
-        pWriter.Write(GroupChatPacketMode.LogoutNotice);
+        pWriter.Write(Mode.LogoutNotice);
         pWriter.WriteInt(groupChat.Id);
         pWriter.WriteUnicodeString(player.Name);
         return pWriter;
@@ -113,7 +113,7 @@ public static class GroupChatPacket
     public static PacketWriter Chat(GroupChat groupChat, Player player, string message)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.GroupChat);
-        pWriter.Write(GroupChatPacketMode.Chat);
+        pWriter.Write(Mode.Chat);
         pWriter.WriteInt(groupChat.Id);
         pWriter.WriteUnicodeString(player.Name);
         pWriter.WriteUnicodeString(message);
@@ -123,7 +123,7 @@ public static class GroupChatPacket
     public static PacketWriter Error(Player player, string other, int error)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.GroupChat);
-        pWriter.Write(GroupChatPacketMode.Error);
+        pWriter.Write(Mode.Error);
         pWriter.WriteByte(0x2);
         pWriter.WriteInt(error);
         pWriter.WriteUnicodeString(player.Name);

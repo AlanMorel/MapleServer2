@@ -9,7 +9,7 @@ namespace MapleServer2.Packets;
 
 public static class ShopPacket
 {
-    private enum ShopMode : byte
+    private enum Mode : byte
     {
         Open = 0x0,
         LoadProducts = 0x1,
@@ -21,7 +21,7 @@ public static class ShopPacket
     public static PacketWriter Open(Shop shop, int npcId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Shop);
-        pWriter.Write(ShopMode.Open);
+        pWriter.Write(Mode.Open);
         pWriter.WriteInt(npcId);
         pWriter.WriteInt(shop.Id);
         pWriter.WriteLong(shop.NextRestock);
@@ -45,7 +45,7 @@ public static class ShopPacket
     public static PacketWriter Reload()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Shop);
-        pWriter.Write(ShopMode.Reload);
+        pWriter.Write(Mode.Reload);
         pWriter.WriteByte();
         pWriter.WriteByte();
 
@@ -63,7 +63,7 @@ public static class ShopPacket
     public static PacketWriter Buy(int itemId, int quantity, int price, ShopCurrencyType shopCurrencyType)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Shop);
-        pWriter.Write(ShopMode.Buy);
+        pWriter.Write(Mode.Buy);
         pWriter.WriteInt(itemId);
         pWriter.WriteInt(quantity);
         pWriter.WriteInt(price * quantity);
@@ -76,7 +76,7 @@ public static class ShopPacket
     public static PacketWriter Sell(Item item, int quantity)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Shop);
-        pWriter.Write(ShopMode.Sell);
+        pWriter.Write(Mode.Sell);
         pWriter.WriteInt(quantity);
         pWriter.WriteShort();
         pWriter.WriteInt(item.Id);
@@ -92,7 +92,7 @@ public static class ShopPacket
     public static PacketWriter LoadProducts(ShopItem product)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Shop);
-        pWriter.Write(ShopMode.LoadProducts);
+        pWriter.Write(Mode.LoadProducts);
         pWriter.WriteByte(1);
         pWriter.WriteInt(product.Uid);
         pWriter.WriteInt(product.ItemId);

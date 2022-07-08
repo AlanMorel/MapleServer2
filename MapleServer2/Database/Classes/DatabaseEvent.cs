@@ -86,6 +86,12 @@ public class DatabaseEvent : DatabaseTable
         return ReadSaleChatEvent(result);
     }
 
+    public TrafficOptimizer FindTrafficOptimizer()
+    {
+        dynamic result = QueryFactory.Query("event_traffic_optimizer").FirstOrDefault();
+        return ReadTrafficOptimizer(result);
+    }
+
     public List<GameEvent> FindAll()
     {
         List<GameEvent> gameEvents = new();
@@ -100,6 +106,7 @@ public class DatabaseEvent : DatabaseTable
         gameEvents.Add(FindRockPaperScissorsEvent());
         gameEvents.Add(FindMeratMarketNotice());
         gameEvents.Add(FindSaleChatEvent());
+        gameEvents.Add(FindTrafficOptimizer());
 
         return gameEvents;
     }
@@ -179,5 +186,12 @@ public class DatabaseEvent : DatabaseTable
         dynamic baseEvent = ReadBaseGameEvent((int) data.game_event_id);
         return new SaleChat(data.game_event_id, baseEvent.begin_timestamp, baseEvent.end_timestamp, data.world_chat_discount_amount,
             data.channel_chat_discount_amount);
+    }
+
+    private static TrafficOptimizer ReadTrafficOptimizer(dynamic data)
+    {
+        dynamic baseEvent = ReadBaseGameEvent((int) data.game_event_id);
+        return new TrafficOptimizer(data.game_event_id, baseEvent.begin_timestamp, baseEvent.end_timestamp, data.guide_object_sync_interval_ms,
+            data.ride_sync_interval_ms, data.linear_movement_interval_ms, data.user_sync_interval_ms);
     }
 }

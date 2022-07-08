@@ -14,7 +14,7 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
 {
     public override RecvOp OpCode => RecvOp.Skill;
 
-    private enum SkillHandlerMode : byte
+    private enum Mode : byte
     {
         Cast = 0x0,
         Damage = 0x1,
@@ -25,22 +25,22 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        SkillHandlerMode mode = (SkillHandlerMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
         switch (mode)
         {
-            case SkillHandlerMode.Cast:
+            case Mode.Cast:
                 HandleCast(session, packet);
                 break;
-            case SkillHandlerMode.Damage:
+            case Mode.Damage:
                 HandleDamageMode(session, packet);
                 break;
-            case SkillHandlerMode.Sync:
+            case Mode.Sync:
                 HandleSyncSkills(session, packet);
                 break;
-            case SkillHandlerMode.SyncTick:
+            case Mode.SyncTick:
                 HandleSyncTick(packet);
                 break;
-            case SkillHandlerMode.Cancel:
+            case Mode.Cancel:
                 HandleCancelSkill(session, packet);
                 break;
             default:

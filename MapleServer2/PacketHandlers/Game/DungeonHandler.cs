@@ -12,7 +12,7 @@ public class DungeonHandler : GamePacketHandler<DungeonHandler>
 {
     public override RecvOp OpCode => RecvOp.RoomDungeon;
 
-    private enum DungeonMode : byte
+    private enum Mode : byte
     {
         ResetDungeon = 0x01,
         CreateDungeon = 0x02,
@@ -26,29 +26,29 @@ public class DungeonHandler : GamePacketHandler<DungeonHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        DungeonMode mode = (DungeonMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case DungeonMode.EnterDungeonPortal:
+            case Mode.EnterDungeonPortal:
                 HandleEnterDungeonPortal(session);
                 break;
-            case DungeonMode.CreateDungeon:
+            case Mode.CreateDungeon:
                 HandleCreateDungeon(session, packet);
                 break;
-            case DungeonMode.EnterDungeonButton:
+            case Mode.EnterDungeonButton:
                 HandleEnterDungeonButton(session);
                 break;
-            case DungeonMode.AddRewards:
+            case Mode.AddRewards:
                 HandleAddRewards(session, packet);
                 break;
-            case DungeonMode.GetHelp:
+            case Mode.GetHelp:
                 HandleGetHelp(session, packet);
                 break;
-            case DungeonMode.Veteran:
+            case Mode.Veteran:
                 HandleVeteran(session, packet);
                 break;
-            case DungeonMode.Favorite:
+            case Mode.Favorite:
                 HandleFavorite(session, packet);
                 break;
             default:

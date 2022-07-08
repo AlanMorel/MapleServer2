@@ -23,7 +23,7 @@ public class LoginHandler : LoginPacketHandler<LoginHandler>
     private readonly string ServerName;
     private readonly short ChannelCount;
 
-    private enum LoginMode : byte
+    private enum Mode : byte
     {
         Banners = 0x01,
         SendCharacters = 0x02
@@ -43,7 +43,7 @@ public class LoginHandler : LoginPacketHandler<LoginHandler>
 
     public override void Handle(LoginSession session, PacketReader packet)
     {
-        LoginMode mode = (LoginMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
         string username = packet.ReadUnicodeString();
         string password = packet.ReadUnicodeString();
 
@@ -90,10 +90,10 @@ public class LoginHandler : LoginPacketHandler<LoginHandler>
 
         switch (mode)
         {
-            case LoginMode.Banners:
+            case Mode.Banners:
                 SendBanners(session, account);
                 break;
-            case LoginMode.SendCharacters:
+            case Mode.SendCharacters:
                 SendCharacters(session, account);
                 break;
             default:

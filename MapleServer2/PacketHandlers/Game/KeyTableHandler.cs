@@ -10,7 +10,7 @@ public class KeyTableHandler : GamePacketHandler<KeyTableHandler>
 {
     public override RecvOp OpCode => RecvOp.KeyTable;
 
-    private enum KeyTableEnum : byte
+    private enum Mode : byte
     {
         SetMacroKeybind = 0x01,
         SetKeyBind = 0x02,
@@ -22,24 +22,24 @@ public class KeyTableHandler : GamePacketHandler<KeyTableHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        KeyTableEnum requestType = (KeyTableEnum) packet.ReadByte();
+        Mode requestType = (Mode) packet.ReadByte();
 
         switch (requestType)
         {
-            case KeyTableEnum.SetMacroKeybind:
-            case KeyTableEnum.SetKeyBind:
+            case Mode.SetMacroKeybind:
+            case Mode.SetKeyBind:
                 SetKeyBinds(session, packet);
                 break;
-            case KeyTableEnum.MoveQuickSlot:
+            case Mode.MoveQuickSlot:
                 MoveQuickSlot(session, packet);
                 break;
-            case KeyTableEnum.AddToFirstSlot:
+            case Mode.AddToFirstSlot:
                 AddToQuickSlot(session, packet);
                 break;
-            case KeyTableEnum.RemoveQuickSlot:
+            case Mode.RemoveQuickSlot:
                 RemoveQuickSlot(session, packet);
                 break;
-            case KeyTableEnum.SetActiveHotbar:
+            case Mode.SetActiveHotbar:
                 SetActiveHotbar(session, packet);
                 break;
             default:

@@ -6,7 +6,7 @@ namespace MapleServer2.Packets;
 
 public static class KeyTablePacket
 {
-    private enum KeyTablePacketMode : byte
+    private enum Mode : byte
     {
         SendFullOptions = 0x00,
         SendHotbars = 0x07,
@@ -16,7 +16,7 @@ public static class KeyTablePacket
     public static PacketWriter SendFullOptions(GameOptions options)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.KeyTable);
-        pWriter.Write(KeyTablePacketMode.SendFullOptions);
+        pWriter.Write(Mode.SendFullOptions);
         pWriter.WriteBool(false); // if true, load DefaultKey.xml
 
         // Key bindings
@@ -35,7 +35,7 @@ public static class KeyTablePacket
     public static PacketWriter SendHotbars(GameOptions options)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.KeyTable);
-        pWriter.Write(KeyTablePacketMode.SendHotbars);
+        pWriter.Write(Mode.SendHotbars);
         pWriter.WriteHotbars(options);
 
         return pWriter;
@@ -44,7 +44,7 @@ public static class KeyTablePacket
     public static PacketWriter AskKeyboardOrMouse()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.KeyTable);
-        pWriter.Write(KeyTablePacketMode.AskKeyboardOrMouse);
+        pWriter.Write(Mode.AskKeyboardOrMouse);
 
         return pWriter;
     }

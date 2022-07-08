@@ -11,7 +11,7 @@ public class ItemRepackageHandler : GamePacketHandler<ItemRepackageHandler>
 {
     public override RecvOp OpCode => RecvOp.ItemRepackage;
 
-    private enum ItemRepackageMode : byte
+    private enum Mode : byte
     {
         Repackage = 0x1
     }
@@ -27,11 +27,11 @@ public class ItemRepackageHandler : GamePacketHandler<ItemRepackageHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        ItemRepackageMode mode = (ItemRepackageMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case ItemRepackageMode.Repackage:
+            case Mode.Repackage:
                 HandleRepackage(session, packet);
                 break;
             default:

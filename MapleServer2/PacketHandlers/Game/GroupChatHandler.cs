@@ -10,7 +10,7 @@ public class GroupChatHandler : GamePacketHandler<GroupChatHandler>
 {
     public override RecvOp OpCode => RecvOp.GroupChat;
 
-    private enum GroupChatMode : byte
+    private enum Mode : byte
     {
         Create = 0x1,
         Invite = 0x2,
@@ -20,20 +20,20 @@ public class GroupChatHandler : GamePacketHandler<GroupChatHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        GroupChatMode mode = (GroupChatMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case GroupChatMode.Create:
+            case Mode.Create:
                 HandleCreate(session);
                 break;
-            case GroupChatMode.Invite:
+            case Mode.Invite:
                 HandleInvite(session, packet);
                 break;
-            case GroupChatMode.Leave:
+            case Mode.Leave:
                 HandleLeave(session, packet);
                 break;
-            case GroupChatMode.Chat:
+            case Mode.Chat:
                 HandleChat(session, packet);
                 break;
             default:

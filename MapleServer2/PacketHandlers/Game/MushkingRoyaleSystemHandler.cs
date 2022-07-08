@@ -15,7 +15,7 @@ public class MushkingRoyaleSystemHandler : GamePacketHandler<MushkingRoyaleSyste
 {
     public override RecvOp OpCode => RecvOp.MushkingRoyale;
 
-    private enum MushkingRoyaleSystemMode : byte
+    private enum Mode : byte
     {
         JoinSoloQueue = 0x0,
         LeaveSoloQueue = 0x1,
@@ -27,26 +27,26 @@ public class MushkingRoyaleSystemHandler : GamePacketHandler<MushkingRoyaleSyste
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        MushkingRoyaleSystemMode mode = (MushkingRoyaleSystemMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case MushkingRoyaleSystemMode.JoinSoloQueue:
+            case Mode.JoinSoloQueue:
                 HandleJoinSoloQueue(session);
                 break;
-            case MushkingRoyaleSystemMode.LeaveSoloQueue:
+            case Mode.LeaveSoloQueue:
                 HandleLeaveSoloQueue(session);
                 break;
-            case MushkingRoyaleSystemMode.EnterMatch:
+            case Mode.EnterMatch:
                 HandleEnterMatch(session);
                 break;
-            case MushkingRoyaleSystemMode.EquipMedal:
+            case Mode.EquipMedal:
                 HandleEquipMedal(session, packet);
                 break;
-            case MushkingRoyaleSystemMode.PurchaseGoldPass:
+            case Mode.PurchaseGoldPass:
                 HandlePurchaseGoldPass(session, packet);
                 break;
-            case MushkingRoyaleSystemMode.ClaimRewards:
+            case Mode.ClaimRewards:
                 HandleClaimRewards(session, packet);
                 break;
             default:

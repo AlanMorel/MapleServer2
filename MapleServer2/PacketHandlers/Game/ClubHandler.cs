@@ -12,7 +12,7 @@ public class ClubHandler : GamePacketHandler<ClubHandler>
 {
     public override RecvOp OpCode => RecvOp.Club;
 
-    private enum ClubMode : byte
+    private enum Mode : byte
     {
         Create = 0x1,
         NewClubInvite = 0x3,
@@ -45,29 +45,29 @@ public class ClubHandler : GamePacketHandler<ClubHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        ClubMode mode = (ClubMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case ClubMode.Create:
+            case Mode.Create:
                 HandleCreate(session, packet);
                 break;
-            case ClubMode.NewClubInvite:
+            case Mode.NewClubInvite:
                 HandleNewClubInvite(session, packet);
                 break;
-            case ClubMode.SendInvite:
+            case Mode.SendInvite:
                 HandleSendInvite(session, packet);
                 break;
-            case ClubMode.InviteResponse:
+            case Mode.InviteResponse:
                 HandleInviteResponse(session, packet);
                 break;
-            case ClubMode.Leave:
+            case Mode.Leave:
                 HandleLeave(session, packet);
                 break;
-            case ClubMode.Buff:
+            case Mode.Buff:
                 HandleBuff(packet);
                 break;
-            case ClubMode.Rename:
+            case Mode.Rename:
                 HandleRename(session, packet);
                 break;
             default:

@@ -6,7 +6,7 @@ namespace MapleServer2.Packets;
 
 public static class PlayerHostPacket
 {
-    private enum PlayerHostPacketMode : byte
+    private enum Mode : byte
     {
         OpenHongbao = 0x0,
         HongbaoGiftNotice = 0x2,
@@ -19,7 +19,7 @@ public static class PlayerHostPacket
     public static PacketWriter OpenHongbao(Player player, HongBao hongBao)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.PlayerHost);
-        pWriter.Write(PlayerHostPacketMode.OpenHongbao);
+        pWriter.Write(Mode.OpenHongbao);
         pWriter.WriteInt(hongBao.ItemId);
         pWriter.WriteInt(hongBao.Id);
         pWriter.WriteInt(hongBao.RewardId);
@@ -32,7 +32,7 @@ public static class PlayerHostPacket
     public static PacketWriter HongbaoGiftNotice(Player receiver, HongBao hongBao, int dividedRewardAmount)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.PlayerHost);
-        pWriter.Write(PlayerHostPacketMode.HongbaoGiftNotice);
+        pWriter.Write(Mode.HongbaoGiftNotice);
         pWriter.WriteBool(hongBao.Active);
         if (hongBao.Active)
         {
@@ -48,7 +48,7 @@ public static class PlayerHostPacket
     public static PacketWriter StartMinigame(Player player, int minigameId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.PlayerHost);
-        pWriter.Write(PlayerHostPacketMode.StartMinigame);
+        pWriter.Write(Mode.StartMinigame);
         pWriter.WriteUnicodeString(player.Name);
         pWriter.WriteInt(minigameId);
         return pWriter;
@@ -57,7 +57,7 @@ public static class PlayerHostPacket
     public static PacketWriter MinigameRewardNotice(int minigameId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.PlayerHost);
-        pWriter.Write(PlayerHostPacketMode.MinigameRewardNotice);
+        pWriter.Write(Mode.MinigameRewardNotice);
         pWriter.WriteInt(minigameId);
         pWriter.WriteInt(); // amount of players in map
         return pWriter;
@@ -66,7 +66,7 @@ public static class PlayerHostPacket
     public static PacketWriter MinigameRewardReceive(int minigameId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.PlayerHost);
-        pWriter.Write(PlayerHostPacketMode.MinigameRewardReceive);
+        pWriter.Write(Mode.MinigameRewardReceive);
         pWriter.WriteInt(minigameId);
         pWriter.WriteInt(); // amount of players in map
         return pWriter;
@@ -75,7 +75,7 @@ public static class PlayerHostPacket
     public static PacketWriter AdBalloonWindow(AdBalloon balloon)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.PlayerHost);
-        pWriter.Write(PlayerHostPacketMode.AdBalloonWindow);
+        pWriter.Write(Mode.AdBalloonWindow);
         pWriter.WriteLong(balloon.Owner.AccountId);
         pWriter.WriteLong(balloon.Owner.CharacterId);
         pWriter.WriteUnicodeString(balloon.Owner.ProfileUrl);
@@ -94,7 +94,7 @@ public static class PlayerHostPacket
     public static PacketWriter AdBalloonPlace()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.PlayerHost);
-        pWriter.Write(PlayerHostPacketMode.AdBalloonPlace);
+        pWriter.Write(Mode.AdBalloonPlace);
         pWriter.WriteInt();
         return pWriter;
     }

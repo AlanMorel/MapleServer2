@@ -43,6 +43,8 @@ public class ItemRequirementMetadata
     public byte Rarity;
     [XmlElement(Order = 3)]
     public short Amount;
+    [XmlElement(Order = 4)]
+    public string StringTag = "";
 
     public override string ToString()
     {

@@ -6,7 +6,7 @@ namespace MapleServer2.Packets;
 
 public static class BreakablePacket
 {
-    private enum BreakablePacketMode : byte
+    private enum Mode : byte
     {
         LoadBreakables = 0x0,
         Interact = 0x1
@@ -15,7 +15,7 @@ public static class BreakablePacket
     public static PacketWriter LoadBreakables(List<BreakableObject> breakables)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Breakable);
-        pWriter.Write(BreakablePacketMode.LoadBreakables);
+        pWriter.Write(Mode.LoadBreakables);
         pWriter.WriteInt(breakables.Count);
         foreach (BreakableObject breakable in breakables)
         {
@@ -27,7 +27,7 @@ public static class BreakablePacket
     public static PacketWriter Interact(BreakableObject breakable)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Breakable);
-        pWriter.Write(BreakablePacketMode.Interact);
+        pWriter.Write(Mode.Interact);
         WriteBreakable(pWriter, breakable);
         return pWriter;
     }

@@ -10,7 +10,7 @@ public class EmoteHandler : GamePacketHandler<EmoteHandler>
 {
     public override RecvOp OpCode => RecvOp.Emotion;
 
-    private enum EmoteMode : byte
+    private enum Mode : byte
     {
         LearnEmote = 0x1,
         UseEmote = 0x2
@@ -18,14 +18,14 @@ public class EmoteHandler : GamePacketHandler<EmoteHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        EmoteMode mode = (EmoteMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case EmoteMode.LearnEmote:
+            case Mode.LearnEmote:
                 HandleLearnEmote(session, packet);
                 break;
-            case EmoteMode.UseEmote:
+            case Mode.UseEmote:
                 HandleUseEmote(packet);
                 break;
             default:

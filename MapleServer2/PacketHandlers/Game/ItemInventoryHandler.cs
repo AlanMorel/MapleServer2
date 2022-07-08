@@ -6,11 +6,11 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestItemInventoryHandler : GamePacketHandler<RequestItemInventoryHandler>
+public class ItemInventoryHandler : GamePacketHandler<ItemInventoryHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestItemInventory;
 
-    private enum RequestItemInventoryMode : byte
+    private enum Mode : byte
     {
         Move = 0x3,
         Drop = 0x4,
@@ -21,23 +21,23 @@ public class RequestItemInventoryHandler : GamePacketHandler<RequestItemInventor
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        RequestItemInventoryMode mode = (RequestItemInventoryMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case RequestItemInventoryMode.Move:
+            case Mode.Move:
                 HandleMove(session, packet);
                 break;
-            case RequestItemInventoryMode.Drop:
+            case Mode.Drop:
                 HandleDrop(session, packet);
                 break;
-            case RequestItemInventoryMode.DropBound:
+            case Mode.DropBound:
                 HandleDropBound(session, packet);
                 break;
-            case RequestItemInventoryMode.Sort:
+            case Mode.Sort:
                 HandleSort(session, packet);
                 break;
-            case RequestItemInventoryMode.Expand:
+            case Mode.Expand:
                 HandleExpand(session, packet);
                 break;
             default:

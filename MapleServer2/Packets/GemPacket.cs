@@ -9,7 +9,7 @@ namespace MapleServer2.Packets;
 
 public static class GemPacket
 {
-    private enum GemMode : byte
+    private enum Mode : byte
     {
         EquipItem = 0x00,
         UnequipItem = 0x01,
@@ -30,7 +30,7 @@ public static class GemPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Gem);
 
-        pWriter.Write(GemMode.EquipItem);
+        pWriter.Write(Mode.EquipItem);
         pWriter.WriteInt(session.Player.FieldPlayer.ObjectId);
         pWriter.WriteInt(item.Id);
         pWriter.WriteLong(item.Uid);
@@ -45,7 +45,7 @@ public static class GemPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Gem);
 
-        pWriter.Write(GemMode.UnequipItem);
+        pWriter.Write(Mode.UnequipItem);
         pWriter.WriteInt(session.Player.FieldPlayer.ObjectId);
         pWriter.Write(gemSlot);
 
@@ -56,7 +56,7 @@ public static class GemPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Gem);
 
-        pWriter.Write(GemMode.EquipError);
+        pWriter.Write(Mode.EquipError);
         pWriter.WriteShort((short) type);
 
         return pWriter;

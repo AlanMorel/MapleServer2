@@ -8,7 +8,7 @@ namespace MapleServer2.Packets;
 
 public static class StatPointPacket
 {
-    private enum StatPointPacketMode : byte
+    private enum Mode : byte
     {
         TotalPoints = 0x0,
         StatDistribution = 0x1
@@ -20,7 +20,7 @@ public static class StatPointPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.StatPoint);
 
-        pWriter.Write(StatPointPacketMode.TotalPoints);
+        pWriter.Write(Mode.TotalPoints);
         pWriter.WriteInt(character.StatPointDistribution.TotalStatPoints);
         pWriter.WriteInt(character.StatPointDistribution.OtherStats.Count);
 
@@ -38,7 +38,7 @@ public static class StatPointPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.StatPoint);
 
-        pWriter.Write(StatPointPacketMode.StatDistribution);
+        pWriter.Write(Mode.StatDistribution);
         pWriter.WriteInt(character.StatPointDistribution.TotalStatPoints);
         pWriter.WriteInt(character.StatPointDistribution.GetStatTypeCount());
 

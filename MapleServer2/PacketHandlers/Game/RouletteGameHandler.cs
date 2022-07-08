@@ -14,7 +14,7 @@ public class RouletteGameHandler : GamePacketHandler<RouletteGameHandler>
 {
     public override RecvOp OpCode => RecvOp.RouletteGame;
 
-    private enum RouletteGameType : byte
+    private enum Mode : byte
     {
         Open = 0x00,
         Spin = 0x02,
@@ -23,16 +23,16 @@ public class RouletteGameHandler : GamePacketHandler<RouletteGameHandler>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        RouletteGameType mode = (RouletteGameType) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
         switch (mode)
         {
-            case RouletteGameType.Open:
+            case Mode.Open:
                 HandleOpen(session, packet);
                 break;
-            case RouletteGameType.Spin:
+            case Mode.Spin:
                 HandleSpin(session);
                 break;
-            case RouletteGameType.Close:
+            case Mode.Close:
                 break;
             default:
                 LogUnknownMode(mode);

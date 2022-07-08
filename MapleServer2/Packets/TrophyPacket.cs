@@ -6,7 +6,7 @@ namespace MapleServer2.Packets;
 
 public static class TrophyPacket
 {
-    private enum TrophyPacketMode : byte
+    private enum Mode : byte
     {
         TableStart = 0x0,
         TableContent = 0x1,
@@ -23,7 +23,7 @@ public static class TrophyPacket
     public static PacketWriter WriteTableStart()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Trophy);
-        pWriter.Write(TrophyPacketMode.TableStart);
+        pWriter.Write(Mode.TableStart);
 
         return pWriter;
     }
@@ -32,7 +32,7 @@ public static class TrophyPacket
     public static PacketWriter WriteTableContent(List<Trophy> trophies)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Trophy);
-        pWriter.Write(TrophyPacketMode.TableContent);
+        pWriter.Write(Mode.TableContent);
         pWriter.WriteInt(trophies.Count);
 
         foreach (Trophy trophy in trophies)
@@ -48,7 +48,7 @@ public static class TrophyPacket
     public static PacketWriter WriteUpdate(Trophy trophy)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Trophy);
-        pWriter.Write(TrophyPacketMode.Update);
+        pWriter.Write(Mode.Update);
         pWriter.WriteInt(trophy.Id);
         WriteIndividualTrophy(pWriter, trophy);
 
@@ -58,7 +58,7 @@ public static class TrophyPacket
     public static PacketWriter ToggleFavorite(Trophy trophy, bool favorited)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Trophy);
-        pWriter.Write(TrophyPacketMode.Favorite);
+        pWriter.Write(Mode.Favorite);
         pWriter.WriteInt(trophy.Id);
         pWriter.WriteBool(favorited);
 

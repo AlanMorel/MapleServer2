@@ -6,11 +6,11 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestGemEquipmentHandler : GamePacketHandler<RequestGemEquipmentHandler>
+public class GemEquipmentHandler : GamePacketHandler<GemEquipmentHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestGemEquipment;
 
-    private enum RequestGemEquipmentMode : byte
+    private enum Mode : byte
     {
         EquipItem = 0x00,
         UnequipItem = 0x01,
@@ -19,17 +19,17 @@ public class RequestGemEquipmentHandler : GamePacketHandler<RequestGemEquipmentH
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        RequestGemEquipmentMode mode = (RequestGemEquipmentMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case RequestGemEquipmentMode.EquipItem:
+            case Mode.EquipItem:
                 HandleEquipItem(session, packet);
                 break;
-            case RequestGemEquipmentMode.UnequipItem:
+            case Mode.UnequipItem:
                 HandleUnequipItem(session, packet);
                 break;
-            case RequestGemEquipmentMode.Transparency:
+            case Mode.Transparency:
                 HandleTransparency(session, packet);
                 break;
             default:

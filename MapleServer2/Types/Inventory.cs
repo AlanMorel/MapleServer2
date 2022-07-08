@@ -359,9 +359,134 @@ public sealed class Inventory : IInventory
         session.Send(ItemInventoryPacket.Move(dstUid, srcSlot, uid, dstSlot));
     }
 
-    public void ConsumeByTag(GameSession session, string tag, int amount)
+    public bool TryEquip(GameSession session, long uid, ItemSlot equipSlot)
+    {
+        if (!HasItem(uid))
+        {
+            return false;
+        }
+
+        Item item = GetByUid(uid);
+        if (item is null || !item.CanEquip(session))
+        {
+            return false;
+        }
+
+        // Remove the item from the users inventory
+        RemoveItem(session, uid, out item);
+
+        Player player = session.Player;
+
+        // Get correct equipped inventory
+        Dictionary<ItemSlot, Item> equippedInventory = player.GetEquippedInventory(item.InventoryTab);
+        if (equippedInventory == null)
+        {
+            Logger.Warning("equippedInventory was null: {inventoryTab}", item.InventoryTab);
+            return false;
+        }
+
+        // Unequip multiple slots if new item takes two slots (overalls, 2H weps)
+        List<ItemSlot> metadataSlots = ItemMetadataStorage.GetItemSlots(item.Id);
+        foreach (ItemSlot slot in metadataSlots)
+        {
+            if (equippedInventory.TryGetValue(slot, out Item equip))
+            {
+                TryUnequip(session, equip.Uid);
+            }
+        }
+
+        if (item.TransferType == TransferType.BindOnEquip & !item.IsBound())
+        {
+            item.BindItem(session.Player);
+        }
+
+        // Equip new item
+        item.IsEquipped = true;
+        item.ItemSlot = equipSlot;
+        equippedInventory[equipSlot] = item;
+        session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(player.FieldPlayer, item, equipSlot));
+        player.FieldPlayer?.ComputeStats();
+
+        if (item.AdditionalEffects != null)
+        {
+            player.AddEffects(item.AdditionalEffects);
+
+            foreach (GemSocket socket in item.GemSockets.Sockets)
+            {
+                if (socket.Gemstone != null)
+                {
+                    player.AddEffects(socket.Gemstone.AdditionalEffects);
+                }
+            }
+        }
+        return true;
+    }
+
+    public bool TryUnequip(GameSession session, long uid)
+    {
+        Player player = session.Player;
+        Item item = player.Inventory.GetEquippedItem(uid);
+        if (item is null)
+        {
+            return false;
+        }
+
+        Dictionary<ItemSlot, Item> equippedInventory = player.GetEquippedInventory(item.InventoryTab);
+
+        if (equippedInventory.Remove(item.ItemSlot, out Item prevItem))
+        {
+            prevItem.Slot = -1;
+            prevItem.IsEquipped = false;
+            player.Inventory.AddItem(session, prevItem, false);
+            session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(player.FieldPlayer, prevItem));
+            player.FieldPlayer?.ComputeStats();
+
+            if (item.AdditionalEffects != null)
+            {
+                player.RemoveEffects(item.AdditionalEffects);
+
+                foreach (GemSocket socket in item.GemSockets.Sockets)
+                {
+                    if (socket.Gemstone != null)
+                    {
+                        player.RemoveEffects(socket.Gemstone.AdditionalEffects);
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public void ConsumeByTag(GameSession session, string tag, int amount, int rarity = 0)
     {
         IReadOnlyCollection<Item> ingredientTotal = GetAllByTag(tag);
+        if (rarity > 0)
+        {
+            ingredientTotal = ingredientTotal.Where(x => x.Rarity == rarity).ToList();
+        }
+
+        foreach (Item item in ingredientTotal)
+        {
+            if (item.Amount >= amount)
+            {
+                ConsumeItem(session, item.Uid, amount);
+                break;
+            }
+
+            amount -= item.Amount;
+            ConsumeItem(session, item.Uid, item.Amount);
+        }
+    }
+
+    public void ConsumeById(GameSession session, int id, int amount, int rarity = 0)
+    {
+        IReadOnlyCollection<Item> ingredientTotal = GetAllById(id);
+        if (rarity > 0)
+        {
+            ingredientTotal = ingredientTotal.Where(x => x.Rarity == rarity).ToList();
+        }
+
         foreach (Item item in ingredientTotal)
         {
             if (item.Amount >= amount)

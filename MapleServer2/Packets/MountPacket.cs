@@ -7,7 +7,7 @@ namespace MapleServer2.Packets;
 
 public static class MountPacket
 {
-    private enum MountPacketMode : byte
+    private enum Mode : byte
     {
         StartRide = 0x0,
         StopRide = 0x1,
@@ -19,7 +19,7 @@ public static class MountPacket
     public static PacketWriter StartRide(IFieldObject<Player> player)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseRide);
-        pWriter.Write(MountPacketMode.StartRide);
+        pWriter.Write(Mode.StartRide);
         pWriter.WriteInt(player.ObjectId);
         pWriter.WriteMount(player.Value.Mount);
         return pWriter;
@@ -28,7 +28,7 @@ public static class MountPacket
     public static PacketWriter StopRide(IFieldObject<Player> player, bool forced = false)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseRide);
-        pWriter.Write(MountPacketMode.StopRide);
+        pWriter.Write(Mode.StopRide);
         pWriter.WriteInt(player.ObjectId);
         pWriter.WriteByte();
         pWriter.WriteBool(forced);
@@ -38,7 +38,7 @@ public static class MountPacket
     public static PacketWriter ChangeRide(int playerObjectId, int mountId, long mountUid)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseRide);
-        pWriter.Write(MountPacketMode.ChangeRide);
+        pWriter.Write(Mode.ChangeRide);
         pWriter.WriteInt(playerObjectId);
         pWriter.WriteInt(mountId);
         pWriter.WriteLong(mountUid);
@@ -48,7 +48,7 @@ public static class MountPacket
     public static PacketWriter StartTwoPersonRide(int otherPlayerObjectId, int playerObjectId, byte index)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseRide);
-        pWriter.Write(MountPacketMode.StartTwoPersonRide);
+        pWriter.Write(Mode.StartTwoPersonRide);
         pWriter.WriteInt(otherPlayerObjectId);
         pWriter.WriteInt(playerObjectId);
         pWriter.WriteByte(index);
@@ -58,7 +58,7 @@ public static class MountPacket
     public static PacketWriter StopTwoPersonRide(int otherPlayerObjectId, int playerObjectId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseRide);
-        pWriter.Write(MountPacketMode.StopTwoPersonRide);
+        pWriter.Write(Mode.StopTwoPersonRide);
         pWriter.WriteInt(otherPlayerObjectId);
         pWriter.WriteInt(playerObjectId);
         return pWriter;

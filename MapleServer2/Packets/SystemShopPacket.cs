@@ -5,7 +5,7 @@ namespace MapleServer2.Packets;
 
 public static class SystemShopPacket
 {
-    private enum SystemShopPacketMode : byte
+    private enum Mode : byte
     {
         Open = 0x0A
     }
@@ -13,7 +13,7 @@ public static class SystemShopPacket
     public static PacketWriter Open()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.SystemShop);
-        pWriter.Write(SystemShopPacketMode.Open);
+        pWriter.Write(Mode.Open);
         pWriter.WriteByte(0x1);
         return pWriter;
     }

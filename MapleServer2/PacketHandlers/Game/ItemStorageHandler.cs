@@ -6,11 +6,11 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestItemStorage : GamePacketHandler<RequestItemStorage>
+public class ItemStorageHandler : GamePacketHandler<ItemStorageHandler>
 {
     public override RecvOp OpCode => RecvOp.RequestItemStorage;
 
-    private enum ItemStorageMode : byte
+    private enum Mode : byte
     {
         Add = 0x00,
         Remove = 0x01,
@@ -24,32 +24,32 @@ public class RequestItemStorage : GamePacketHandler<RequestItemStorage>
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        ItemStorageMode mode = (ItemStorageMode) packet.ReadByte();
+        Mode mode = (Mode) packet.ReadByte();
 
         switch (mode)
         {
-            case ItemStorageMode.Add:
+            case Mode.Add:
                 HandleAdd(session, packet);
                 break;
-            case ItemStorageMode.Remove:
+            case Mode.Remove:
                 HandleRemove(session, packet);
                 break;
-            case ItemStorageMode.Move:
+            case Mode.Move:
                 HandleMove(session, packet);
                 break;
-            case ItemStorageMode.Mesos:
+            case Mode.Mesos:
                 HandleMesos(session, packet);
                 break;
-            case ItemStorageMode.Expand:
+            case Mode.Expand:
                 HandleExpand(session);
                 break;
-            case ItemStorageMode.Sort:
+            case Mode.Sort:
                 HandleSort(session);
                 break;
-            case ItemStorageMode.LoadBank:
+            case Mode.LoadBank:
                 HandleLoadBank(session);
                 break;
-            case ItemStorageMode.Close:
+            case Mode.Close:
                 HandleClose(session);
                 break;
             default:

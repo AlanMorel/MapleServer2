@@ -5,7 +5,7 @@ namespace MapleServer2.Packets;
 
 public static class NewsNotificationPacket
 {
-    private enum NewsNotificationPacketMode : byte
+    private enum Mode : byte
     {
         OpenBrowser = 0x0,
         OpenSidebar = 0x2
@@ -17,7 +17,7 @@ public static class NewsNotificationPacket
         pWriter.WriteByte();
         pWriter.WriteUnicodeString("86BFAEA2-DC42-4AEA-ADD5-D234E8810E08"); // random key to display banners
         pWriter.WriteByte(0x1);
-        pWriter.Write(NewsNotificationPacketMode.OpenBrowser);
+        pWriter.Write(Mode.OpenBrowser);
         pWriter.WriteInt();
         return pWriter;
     }
@@ -28,7 +28,7 @@ public static class NewsNotificationPacket
         pWriter.WriteByte();
         pWriter.WriteUnicodeString("86BFAEA2-DC42-4AEA-ADD5-D234E8810E08"); // random key to display banners
         pWriter.WriteByte(0x1);
-        pWriter.Write(NewsNotificationPacketMode.OpenSidebar);
+        pWriter.Write(Mode.OpenSidebar);
         pWriter.WriteInt();
         return pWriter;
     }

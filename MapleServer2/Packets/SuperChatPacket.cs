@@ -6,7 +6,7 @@ namespace MapleServer2.Packets;
 
 public static class SuperChatPacket
 {
-    private enum SuperChatMode : byte
+    private enum Mode : byte
     {
         Select = 0x0,
         Deselect = 0x1
@@ -15,7 +15,7 @@ public static class SuperChatPacket
     public static PacketWriter Select(IFieldObject<Player> player, int itemId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.SuperWorldChat);
-        pWriter.Write(SuperChatMode.Select);
+        pWriter.Write(Mode.Select);
         pWriter.WriteInt(player.ObjectId);
         pWriter.WriteInt(itemId);
         return pWriter;
@@ -24,7 +24,7 @@ public static class SuperChatPacket
     public static PacketWriter Deselect(IFieldObject<Player> player)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.SuperWorldChat);
-        pWriter.Write(SuperChatMode.Deselect);
+        pWriter.Write(Mode.Deselect);
         pWriter.WriteInt(player.ObjectId);
         return pWriter;
     }
