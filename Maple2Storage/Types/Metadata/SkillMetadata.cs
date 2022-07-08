@@ -32,6 +32,8 @@ public class SkillMetadata
     public short MaxLevel;
     [XmlElement(Order = 13)]
     public SkillRangeType RangeType;
+    [XmlElement(Order = 14)]
+    public int[] GroupIDs;
 
     public SkillMetadata() { }
 
@@ -42,7 +44,7 @@ public class SkillMetadata
     }
 
     public SkillMetadata(int id, List<SkillLevel> skillLevels, string state, byte damageType, SkillType type, SkillSubType subType, byte element,
-        byte superArmor, bool isSpRecovery, SkillRangeType rangeType)
+        byte superArmor, bool isSpRecovery, SkillRangeType rangeType, int[] groupIds)
     {
         SkillId = id;
         SkillLevels = skillLevels;
@@ -54,6 +56,7 @@ public class SkillMetadata
         SuperArmor = superArmor;
         IsSpRecovery = isSpRecovery;
         RangeType = rangeType;
+        GroupIDs = groupIds;
     }
 
     public override string ToString()
@@ -79,10 +82,12 @@ public class SkillLevel
     public SkillAdditionalData SkillAdditionalData;
     [XmlElement(Order = 7)]
     public readonly SkillUpgrade SkillUpgrade;
+    [XmlElement(Order = 8)]
+    public readonly float CooldownTime;
 
     public SkillLevel() { }
 
-    public SkillLevel(int level, int spirit, int stamina, string feature, List<SkillMotion> skillMotions, SkillUpgrade skillUpgrade)
+    public SkillLevel(int level, int spirit, int stamina, string feature, List<SkillMotion> skillMotions, SkillUpgrade skillUpgrade, float cooldownTime)
     {
         Level = level;
         Spirit = spirit;
@@ -90,6 +95,7 @@ public class SkillLevel
         Feature = feature;
         SkillMotions = skillMotions;
         SkillUpgrade = skillUpgrade;
+        CooldownTime = cooldownTime;
     }
 
     public override string ToString()

@@ -16,7 +16,7 @@ public class SkillCast
     public int ClientTick { get; }
     public int ServerTick { get; }
     public byte MotionPoint { get; }
-    public byte AttackPoint { get; }
+    public byte AttackPoint { get; set; }
     public int Duration;
     public int Interval;
     public SkillCast ParentSkill { get; }
@@ -27,6 +27,7 @@ public class SkillCast
     public CoordF Direction;
     public CoordF Rotation;
     public short LookDirection;
+    public float AimAngle;
 
     public IFieldActor<NpcMetadata> Target;
 
@@ -106,6 +107,8 @@ public class SkillCast
 
     public SkillRangeType GetRangeType() => GetSkillMetadata().RangeType;
 
+    public int[] GetSkillGroups() => GetSkillMetadata().GroupIDs;
+
     public bool IsGM() => VerifySkillTypeOf(SkillType.GM, SkillSubType.GM, BuffType.Buff, BuffSubType.Recovery);
 
     public bool IsGlobal() => VerifySkillTypeOf(SkillType.Active, SkillSubType.Global);
@@ -123,6 +126,8 @@ public class SkillCast
         return VerifySkillTypeOf(SkillType.Active, SkillSubType.Status, BuffType.Debuff, BuffSubType.Entity) ||
                VerifySkillTypeOf(BuffType.Debuff, BuffSubType.Entity);
     }
+
+    public bool IsStatus() => VerifySkillTypeOf(SkillType.Active, SkillSubType.Status);
 
     public bool IsDebuffToOwner() => VerifySkillTypeOf(BuffType.Debuff, BuffSubType.Owner);
 

@@ -9,6 +9,8 @@ public class Stats
     // TODO: Handle stat allocation in here?
     // ReSharper disable once FieldCanBeMadeReadOnly.Global - JsonConvert.DeserializeObject can't set values if it's readonly
     public Dictionary<StatAttribute, Stat> Data;
+    public Dictionary<int, StatGroup> EffectGroups = new();
+    public Dictionary<int, StatGroup> SkillGroups = new();
 
     public Stats() { }
 
@@ -351,6 +353,9 @@ public class Stats
                 stat.Reset();
             }
         }
+
+        EffectGroups.Clear();
+        SkillGroups.Clear();
     }
 
     public void ComputeStatBonuses()
@@ -401,11 +406,85 @@ public class Stats
         {
             stat = new();
             stat.Modifier.Type = type;
-            stat.Modifier.Rate = 1;
+            stat.Modifier.Rate = type == StatAttributeType.Flat ? 1 : 0;
 
             Data[attribute] = stat;
         }
 
         stat.Add(flat, rate);
+    }
+
+    public void AddEffectGroup(int id, float value, float rate)
+    {
+        if (!EffectGroups.TryGetValue(id, out StatGroup stat))
+        {
+            stat = new StatGroup();
+        }
+
+        stat.Value += value;
+        stat.Rate += rate;
+
+        EffectGroups[id] = stat;
+    }
+
+    public void AddSkillGroup(int id, float value, float rate)
+    {
+        if (!SkillGroups.TryGetValue(id, out StatGroup stat))
+        {
+            stat = new StatGroup();
+        }
+
+        stat.Value += value;
+        stat.Rate += rate;
+
+        SkillGroups[id] = stat;
+    }
+
+    public StatGroup GetEffectStats(int[] ids)
+    {
+        StatGroup stat = new()
+        {
+            Rate = 1
+        };
+
+        if (ids == null)
+        {
+            return stat;
+        }
+
+        foreach (int id in ids)
+        {
+            if (EffectGroups.TryGetValue(id, out StatGroup statGroup))
+            {
+                stat.Value += statGroup.Value;
+                stat.Rate += statGroup.Rate;
+            }
+        }
+
+        return stat;
+    }
+
+    public StatGroup GetSkillStats(int[] ids)
+    {
+        StatGroup stat = new()
+        {
+            Rate = 1
+        };
+
+        if (ids == null)
+        {
+            return stat;
+        }
+
+        foreach (int id in ids)
+        {
+            if (SkillGroups.TryGetValue(id, out StatGroup statGroup))
+            {
+                stat.Value += statGroup.Value;
+                stat.Rate += statGroup.Rate;
+            }
+        }
+
+        return stat;
     }
 }

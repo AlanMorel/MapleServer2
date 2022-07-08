@@ -250,21 +250,65 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             }
 
             skillCast.Target = mob;
+            skillCast.AttackPoint = (byte) attackPoint;
 
-            DamageHandler damage = DamageHandler.CalculateDamage(skillCast, fieldPlayer, mob);
-
-            mob.Damage(damage, session);
-
-            damages.Add(damage);
-
-            // TODO: Check if the skill is a debuff for an entity
-            if (!skillCast.IsDebuffElement() && !skillCast.IsDebuffToEntity() && !skillCast.IsDebuffElement())
+            foreach (SkillMotion motion in skillCast.GetSkillMotions())
             {
-                continue;
-            }
+                SkillAttack attack = motion.SkillAttacks?[attackPoint];
 
-            Status status = new(skillCast, mob.ObjectId, fieldPlayer.ObjectId, 1);
-            StatusHandler.Handle(session, status);
+                skillCast.SkillAttack = attack;
+
+                if (skillCast.GetDamageRate() != 0)
+                {
+                    DamageHandler damage = DamageHandler.CalculateDamage(skillCast, fieldPlayer, mob);
+
+                    mob.Damage(damage, session);
+
+                    damages.Add(damage);
+
+                    fieldPlayer.AdditionalEffects.SkillTrigger(mob, skillCast);
+                }
+
+                if (attack != null)
+                {
+                    if (attack.SkillConditions != null)
+                    {
+                        foreach (SkillCondition condition in attack.SkillConditions)
+                        {
+                            if (condition.SkillId != skillCast.SkillId && condition.IsSplash)
+                            {
+                                SkillCast splashSkillCast = new(condition.SkillId, condition.SkillLevel, skillSn, Environment.TickCount, skillCast)
+                                {
+                                    CasterObjectId = skillCast.CasterObjectId,
+                                    Position = mob.Coord
+                                };
+
+                                splashSkillCast.Duration = splashSkillCast.DurationTick();
+
+                                RegionSkillHandler.HandleEffect(fieldPlayer.FieldManager, splashSkillCast, splashSkillCast.SkillAttack.AttackPoint);
+                            }
+                            else if (condition.SkillId == skillCast.SkillId && !condition.IsSplash)
+                            {
+                                mob.AdditionalEffects.AddEffect(new(skillCast.SkillId, skillCast.SkillLevel)
+                                {
+                                    Duration = skillCast.DurationTick(),
+                                    Source = fieldPlayer.ObjectId,
+                                    ParentSkill = skillCast
+                                });
+                            }
+                        }
+                    }
+                    else
+                    {
+                        mob.AdditionalEffects.AddEffect(new(skillCast.SkillId, skillCast.SkillLevel)
+                        {
+                            Duration = skillCast.DurationTick(),
+                            Source = fieldPlayer.ObjectId,
+                            ParentSkill = skillCast
+                        });
+                    }
+                }
+            }
         }
 
         session.FieldManager.BroadcastPacket(SkillDamagePacket.Damage(skillCast, attackCounter, position, rotation, damages));
@@ -311,8 +355,10 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
         {
             SkillAttack = skillAttack,
             Duration = skillCondition.FireCount * 1000,
-            Interval = skillCondition.Interval
+            Interval = skillCondition.Interval,
+            Rotation = rotation
         };
+        skillCast.Duration = skillCast.DurationTick();
         RegionSkillHandler.HandleEffect(session.FieldManager, skillCast, attackIndex);
     }
 

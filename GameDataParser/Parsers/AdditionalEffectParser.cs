@@ -4,6 +4,7 @@ using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
 using Maple2.File.Parser.Tools;
 using Maple2.File.Parser.Xml.AdditionalEffect;
+using Maple2.File.Parser.Xml.Skill;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -35,9 +36,19 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
 
                 AdditionalEffectLevelMetadata level = new()
                 {
+                    BeginCondition = ParseBeginCondition(data[i].beginCondition),
                     Basic = new()
                     {
                         MaxBuffCount = data[i].BasicProperty.maxBuffCount,
+                        SkillGroupType = data[i].BasicProperty.skillGroupType,
+                        GroupIds = data[i].BasicProperty.groupIDs,
+                        DotCondition = data[i].BasicProperty.dotCondition,
+                        DurationTick = data[i].BasicProperty.durationTick,
+                        KeepCondition = data[i].BasicProperty.keepCondition,
+                        IntervalTick = data[i].BasicProperty.intervalTick,
+                        BuffType = (BuffType) data[i].BasicProperty.buffType,
+                        BuffSubType = (BuffSubType) data[i].BasicProperty.buffSubType,
+                        CooldownTime = float.Parse(data[i].BasicProperty.coolDownTime ?? "0")
                     },
                     Status = new()
                     {
@@ -311,6 +322,82 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                     };
                 }
 
+                List<TriggerSkill> splashSkills = data[i].splashSkill;
+
+                if (splashSkills != null)
+                {
+                    level.SplashSkill = new();
+
+                    for (int skillIndex = 0; skillIndex < splashSkills.Count; skillIndex++)
+                    {
+                        TriggerSkill splashSkill = data[i].splashSkill[skillIndex];
+
+                        level.SplashSkill.Add(new()
+                        {
+                            SkillId = splashSkill.skillID,
+                            SkillLevel = splashSkill.level,
+                            Splash = splashSkill.splash,
+                            FireCount = splashSkill.fireCount,
+                            Interval = splashSkill.interval,
+                            Delay = splashSkill.delay,
+                            RemoveDelay = splashSkill.removeDelay
+                        });
+                    }
+                }
+
+                List<TriggerSkill> conditionSkills = data[i].conditionSkill;
+
+                if (conditionSkills != null)
+                {
+                    level.ConditionSkill = new();
+
+                    for (int skillIndex = 0; skillIndex < conditionSkills.Count; skillIndex++)
+                    {
+                        TriggerSkill conditionSkill = data[i].conditionSkill[skillIndex];
+
+                        level.ConditionSkill.Add(new()
+                        {
+                            SkillId = conditionSkill.skillID,
+                            SkillLevel = conditionSkill.level,
+                            Splash = conditionSkill.splash,
+                            FireCount = conditionSkill.fireCount,
+                            Interval = conditionSkill.interval,
+                            Delay = conditionSkill.delay,
+                            RemoveDelay = conditionSkill.removeDelay,
+                            BeginCondition = ParseBeginCondition(conditionSkill.beginCondition)
+                        });
+                    }
+                }
+
+                InvokeEffectProperty invoke = data[i].InvokeEffectProperty;
+
+                if (invoke != null)
+                {
+                    level.InvokeEffect = new()
+                    {
+                        Values = invoke.values,
+                        Rates = invoke.rates,
+                        Types = invoke.types,
+                        EffectId = invoke.effectID,
+                        EffectGroupId = invoke.effectGroupID,
+                        SkillId = invoke.skillID,
+                        SkillGroupId = invoke.skillGroupID
+                    };
+                }
+
+                DotDamageProperty dotDamage = data[i].DotDamageProperty;
+
+                if (dotDamage != null)
+                {
+                    level.DotDamage = new()
+                    {
+                        DamageType = (byte) dotDamage.type,
+                        Rate = dotDamage.rate,
+                        Value = dotDamage.value,
+                        Element = dotDamage.element,
+                    };
+                }
+
                 metadata.Levels.Add(levelIndex, level);
             }
 
@@ -318,6 +405,34 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
         }
 
         return effects;
+    }
+
+    private EffectBeginConditionMetadata ParseBeginCondition(BeginCondition beginCondition)
+    {
+        if (beginCondition == null)
+        {
+            return null;
+        }
+
+        SubConditionTarget ownerCondition = beginCondition.skillOwner;
+
+        EffectBeginConditionOwnerMetadata owner = null;
+
+        if (ownerCondition != null)
+        {
+            owner = new()
+            {
+                EventSkillIDs = ownerCondition.eventSkillID,
+                EventEffectIDs = ownerCondition.eventEffectID,
+                HasBuffId = ownerCondition.hasBuffID
+            };
+        }
+
+        return new()
+        {
+            Owner = owner,
+            Probability = beginCondition.probability,
+        };
     }
 
     private void AddStat(EffectStatusMetadata status, StatAttribute stat, float flat, float rate)

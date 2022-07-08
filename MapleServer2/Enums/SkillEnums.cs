@@ -11,7 +11,8 @@ public enum DamageType : byte
 {
     None = 0x00,
     Physical = 0x01,
-    Magic = 0x02
+    Magic = 0x02,
+    Primary = 0x03
 }
 
 public enum Element : byte

@@ -36,6 +36,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                 byte skillElement = byte.Parse(kinds.Attributes["element"].Value);
                 byte skillSuperArmor = byte.Parse(stateAttr.Attributes["superArmor"].Value);
                 bool skillRecovery = int.Parse(kinds.Attributes["spRecoverySkill"]?.Value ?? "0") == 1;
+                int[] groupIds = kinds.Attributes["groupIDs"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? new int[0];
 
                 List<SkillLevel> skillLevels = new();
                 foreach (XmlNode level in levels)
@@ -47,6 +48,13 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                     if (skillLevels.Exists(x => x.Level == levelValue))
                     {
                         continue;
+                    }
+
+                    float cooldown = 0;
+
+                    foreach (XmlNode beginCondition in level.SelectNodes("beginCondition"))
+                    {
+                        cooldown = float.Parse(beginCondition.Attributes["cooldownTime"]?.Value ?? "0");
                     }
 
                     List<SkillMotion> skillMotions = new();
@@ -91,10 +99,10 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                     SkillUpgrade skillUpgrade = ParseSkillUpgrade(level);
                     (int spirit, int stamina) = ParseConsume(level);
 
-                    skillLevels.Add(new(levelValue, spirit, stamina, feature, skillMotions, skillUpgrade));
+                    skillLevels.Add(new(levelValue, spirit, stamina, feature, skillMotions, skillUpgrade, cooldown));
                 }
 
-                skillList.Add(new(skillId, skillLevels, skillState, skillAttackType, skillType, skillSubType, skillElement, skillSuperArmor, skillRecovery, skillRangeType));
+                skillList.Add(new(skillId, skillLevels, skillState, skillAttackType, skillType, skillSubType, skillElement, skillSuperArmor, skillRecovery, skillRangeType, groupIds));
             }
 
             // Parsing SubSkills

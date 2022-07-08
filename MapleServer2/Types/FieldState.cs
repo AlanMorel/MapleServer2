@@ -233,4 +233,29 @@ public class FieldState
     {
         VibrateObjects[vibrateObject.EntityId] = vibrateObject;
     }
+
+    public IFieldActor GetActor(int actorId)
+    {
+        if (Players.TryGetValue(actorId, out Character player))
+        {
+            return player;
+        }
+
+        if (Mobs.TryGetValue(actorId, out Npc mob))
+        {
+            return mob;
+        }
+
+        if (Pets.TryGetValue(actorId, out Pet pet))
+        {
+            return pet;
+        }
+
+        if (Npcs.TryGetValue(actorId, out Npc npc))
+        {
+            return npc;
+        }
+
+        return null;
+    }
 }

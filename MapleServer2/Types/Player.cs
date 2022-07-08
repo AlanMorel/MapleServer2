@@ -601,17 +601,17 @@ public class Player
     {
         foreach (ItemStat stat in stats.Constants.Values)
         {
-            Stats[stat.ItemAttribute].Add(stat.Flat, stat.Rate);
+            Stats.AddStat(stat.ItemAttribute, stat.AttributeType, stat.Flat, stat.Rate);
         }
 
         foreach (ItemStat stat in stats.Statics.Values)
         {
-            Stats[stat.ItemAttribute].Add(stat.Flat, stat.Rate);
+            Stats.AddStat(stat.ItemAttribute, stat.AttributeType, stat.Flat, stat.Rate);
         }
 
         foreach (ItemStat stat in stats.Randoms.Values)
         {
-            Stats[stat.ItemAttribute].Add(stat.Flat, stat.Rate);
+            Stats.AddStat(stat.ItemAttribute, stat.AttributeType, stat.Flat, stat.Rate);
         }
 
         foreach (ItemStat stat in stats.Enchants.Values)

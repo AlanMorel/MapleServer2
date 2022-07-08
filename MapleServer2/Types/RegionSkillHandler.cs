@@ -16,7 +16,7 @@ public static class RegionSkillHandler
 
     public static void HandleEffect(FieldManager field, SkillCast skillCast, int attackIndex)
     {
-        skillCast.EffectCoords = GetEffectCoords(skillCast, field.MapId, attackIndex);
+        skillCast.EffectCoords = GetEffectCoords(skillCast, field.MapId, attackIndex, field);
 
         field.AddRegionSkillEffect(skillCast);
 
@@ -60,7 +60,7 @@ public static class RegionSkillHandler
     /// Get the coordinates of the skill's effect, if needed change the offset to match the direction of the player.
     /// For skills that paint the ground, match the correct height.
     /// </summary>
-    private static List<CoordF> GetEffectCoords(SkillCast skillCast, int mapId, int attackIndex)
+    private static List<CoordF> GetEffectCoords(SkillCast skillCast, int mapId, int attackIndex, FieldManager field)
     {
         SkillAttack skillAttack = skillCast.SkillAttack;
         List<MagicPathMove> cubeMagicPathMoves = new();
@@ -134,9 +134,17 @@ public static class RegionSkillHandler
             tempBlockCoord.Z += Block.BLOCK_SIZE * 2;
 
             // Find the first block below the effect coord
-            int distanceToNextBlockBelow = MapMetadataStorage.GetDistanceToNextBlockBelow(mapId, offSetCoord.ToShort(), out MapBlock blockBelow);
+            bool foundBlock = field.Navigator.FindFirstCoordSBelow(offSetCoord.ToShort(), out CoordS resultCoord);
 
-            // If the block is null or the distance from the cast effect Z height is greater than two blocks, continue
+            if (!foundBlock || offSetCoord.Z - resultCoord.Z > Block.BLOCK_SIZE * 2)
+            {
+                continue;
+            }
+
+            MapBlock blockBelow = MapMetadataStorage.GetMapBlock(mapId, Block.ClosestBlock(resultCoord));
+            int distanceToNextBlockBelow = (int) (offSetCoord.Z - resultCoord.Z);
+
+            //// If the block is null or the distance from the cast effect Z height is greater than two blocks, continue
             if (blockBelow is null || distanceToNextBlockBelow > Block.BLOCK_SIZE * 2)
             {
                 continue;
@@ -156,7 +164,7 @@ public static class RegionSkillHandler
 
             // Since this is the block below, add 150 units to the Z coord so the effect is above the block
             offSetCoord = blockBelow.Coord.ToFloat();
-            offSetCoord.Z += Block.BLOCK_SIZE;
+            offSetCoord.Z += Block.BLOCK_SIZE + 1;
 
             effectCoords.Add(offSetCoord);
         }
