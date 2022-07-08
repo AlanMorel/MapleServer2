@@ -2,6 +2,8 @@
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
+using MapleServer2.Packets;
+using MapleServer2.Servers.Game;
 
 namespace MapleServer2.Types;
 
@@ -14,6 +16,7 @@ public class DamageSourceParameters
     public DamageType DamageType;
     public int[] SkillGroups;
     public float DamageRate;
+    public SkillCast ParentSkill;
 
     public DamageSourceParameters()
     {
@@ -24,6 +27,7 @@ public class DamageSourceParameters
         SkillGroups = null;
         DamageRate = 0;
         DamageType = DamageType.None;
+        ParentSkill = null;
     }
 }
 
@@ -72,6 +76,19 @@ public class DamageHandler
         }
 
         return 0;
+    }
+
+    public static void ApplyDotDamage(GameSession session, IFieldActor sourceActor, IFieldActor target, DamageSourceParameters dotParameters)
+    {
+        DamageHandler damage = DamageHandler.CalculateDamage(dotParameters, sourceActor, target);
+
+        if (session != null)
+        {
+            target.Damage(damage, session);
+        }
+
+        List<DamageHandler> damages = new() { damage };
+        target.FieldManager.BroadcastPacket(SkillDamagePacket.Damage(dotParameters.ParentSkill, 0, target.Coord, target.Rotation, damages));
     }
 
     public static DamageHandler CalculateDamage(DamageSourceParameters parameters, IFieldActor source, IFieldActor target)

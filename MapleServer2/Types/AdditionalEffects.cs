@@ -149,65 +149,59 @@ public class AdditionalEffects
 
         if (effect.LevelMetadata.SplashSkill != null)
         {
-            for (int skill = 0; skill < effect.LevelMetadata.SplashSkill.Count; ++skill)
+            foreach (EffectTriggerSkillMetadata skill in effect.LevelMetadata.SplashSkill)
             {
-                FireTriggerSkill(effect, effect.LevelMetadata.SplashSkill[skill], effect.ParentSkill, Parent, effect.Start);
+                FireTriggerSkill(effect, skill, effect.ParentSkill, Parent, effect.Start);
             }
         }
 
         EffectDotDamageMetadata dotDamage = effect.LevelMetadata.DotDamage;
 
-        if (dotDamage?.Rate != 0)
+        if ((dotDamage?.Rate ?? 0) == 0)
         {
-            DamageSourceParameters dotParameters = new()
+            return effect;
+        }
+
+        DamageSourceParameters dotParameters = new()
+        {
+            IsSkill = false,
+            GuaranteedCrit = false,
+            Element = (Element) dotDamage.Element,
+            RangeType = SkillRangeType.Special,
+            DamageType = (DamageType) dotDamage.DamageType,
+            DamageRate = dotDamage.Rate,
+            ParentSkill = parameters.ParentSkill
+        };
+
+        IFieldActor sourceActor = Parent.FieldManager.State.GetActor(parameters.Source);
+
+        // TODO: fix dot damage handling with damage numbers and game session tracking
+
+        GameSession session = null;
+
+        if (sourceActor is Character character)
+        {
+            session = character.Value.Session;
+        }
+
+        DamageHandler.ApplyDotDamage(session, sourceActor, Parent, dotParameters);
+
+        if (effect.Duration < effect.TickRate)
+        {
+            Task.Run(async () =>
             {
-                IsSkill = false,
-                GuaranteedCrit = false,
-                Element = (Element) dotDamage.Element,
-                RangeType = SkillRangeType.Special,
-                DamageType = (DamageType) dotDamage.DamageType,
-                DamageRate = dotDamage.Rate,
-            };
-
-            IFieldActor sourceActor = Parent.FieldManager.State.GetActor(parameters.Source);
-
-            // TODO: fix dot damage handling with damage numbers and game session tracking
-
-            DamageHandler damage = DamageHandler.CalculateDamage(dotParameters, sourceActor, Parent);
-            GameSession session = null;
-
-            if (sourceActor is Character character)
-            {
-                session = character.Value.Session;
-                Parent.Damage(damage, session);
-            }
-
-            List<DamageHandler> damages = new() { damage };
-            Parent.FieldManager.BroadcastPacket(SkillDamagePacket.Damage(parameters.ParentSkill, 0, Parent.Coord, Parent.Rotation, damages));
-
-            if (effect.Duration < effect.TickRate)
-            {
-                Task.Run(async () =>
+                while (effect.IsAlive && Environment.TickCount - effect.Start < effect.Duration)
                 {
-                    while (effect.IsAlive && Environment.TickCount - effect.Start < effect.Duration)
+                    await Task.Delay(effect.TickRate);
+
+                    if (!effect.IsAlive)
                     {
-                        await Task.Delay(effect.TickRate);
-
-                        if (effect.IsAlive)
-                        {
-                            DamageHandler damage = DamageHandler.CalculateDamage(dotParameters, Parent.FieldManager.State.GetActor(parameters.Source), Parent);
-
-                            if (session != null)
-                            {
-                                Parent.Damage(damage, session);
-                            }
-
-                            List<DamageHandler> damages = new() { damage };
-                            Parent.FieldManager.BroadcastPacket(SkillDamagePacket.Damage(parameters.ParentSkill, 0, Parent.Coord, Parent.Rotation, damages));
-                        }
+                        break;
                     }
-                });
-            }
+
+                    DamageHandler.ApplyDotDamage(session, sourceActor, Parent, dotParameters);
+                }
+            });
         }
 
         return effect;
@@ -312,7 +306,7 @@ public class AdditionalEffects
             start = Environment.TickCount;
         }
 
-        for (int skillIndex = 0; skillIndex < trigger.SkillId.Count(); ++skillIndex)
+        for (int skillIndex = 0; skillIndex < trigger.SkillId.Length; ++skillIndex)
         {
             int skillId = trigger.SkillId[skillIndex];
             int skillLevel = trigger.SkillLevel[skillIndex];
@@ -396,16 +390,18 @@ public class AdditionalEffects
     {
         foreach (AdditionalEffect effect in Effects)
         {
-            if (effect.ListensForEffects)
+            if (!effect.ListensForEffects)
             {
-                foreach (EffectTriggerSkillMetadata skill in effect.LevelMetadata.ConditionSkill)
+                continue;
+            }
+
+            foreach (EffectTriggerSkillMetadata skill in effect.LevelMetadata.ConditionSkill)
+            {
+                foreach (int effectId in skill.BeginCondition.Owner.EventSkillIDs)
                 {
-                    foreach (int effectId in skill.BeginCondition.Owner.EventSkillIDs)
+                    if (effectId == effect.Id)
                     {
-                        if (effectId == effect.Id)
-                        {
-                            FireTriggerSkill(effect, skill, effectActivated.ParentSkill, target, Environment.TickCount);
-                        }
+                        FireTriggerSkill(effect, skill, effectActivated.ParentSkill, target, Environment.TickCount);
                     }
                 }
             }
@@ -524,9 +520,9 @@ public class AdditionalEffect
     public int Start = -1;
     public int Duration = 0;
     public int End { get => Start + Duration; }
-    public int TickRate = 0;
+    public int TickRate;
     public bool IsAlive = true;
-    public SkillCast ParentSkill = null;
+    public SkillCast ParentSkill;
     public bool ListensForSkills { get; }
     public bool ListensForEffects { get; }
     public Dictionary<int, int> SkillFiredLast = new();
@@ -540,19 +536,21 @@ public class AdditionalEffect
         Metadata = AdditionalEffectMetadataStorage.GetMetadata(id);
         LevelMetadata = AdditionalEffectMetadataStorage.GetLevelMetadata(id, level);
 
-        if (LevelMetadata?.ConditionSkill != null)
+        if (LevelMetadata?.ConditionSkill == null)
         {
-            foreach (EffectTriggerSkillMetadata skill in LevelMetadata.ConditionSkill)
-            {
-                if (skill.BeginCondition?.Owner != null)
-                {
-                    ListensForSkills = (skill.BeginCondition.Owner.EventSkillIDs?.Length ?? 0) > 0;
-                    ListensForEffects = (skill.BeginCondition.Owner.EventEffectIDs?.Length ?? 0) > 0;
-                }
-            }
-
-            ListensForSkills |= (LevelMetadata.BeginCondition?.Owner?.HasBuffId?.Length ?? 0) > 0;
+            return;
         }
+
+        foreach (EffectTriggerSkillMetadata skill in LevelMetadata.ConditionSkill)
+        {
+            if (skill.BeginCondition?.Owner != null)
+            {
+                ListensForSkills = (skill.BeginCondition.Owner.EventSkillIDs?.Length ?? 0) > 0;
+                ListensForEffects = (skill.BeginCondition.Owner.EventEffectIDs?.Length ?? 0) > 0;
+            }
+        }
+
+        ListensForSkills |= (LevelMetadata.BeginCondition?.Owner?.HasBuffId?.Length ?? 0) > 0;
     }
 
     public bool Matches(int id)
