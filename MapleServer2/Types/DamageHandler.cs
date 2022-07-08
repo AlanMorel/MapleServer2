@@ -1,4 +1,5 @@
 ﻿using Maple2Storage.Enums;
+using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 
@@ -91,7 +92,7 @@ public class DamageHandler
         {
             luckCoefficient = GetClassLuckCoefficient(player.Value.Job);
 
-            double bonusAttack = player.Stats[StatAttribute.BonusAtk].Total + 0.396 * player.Stats[StatAttribute.PetBonusAtk].Total;
+            double bonusAttack = player.Stats[StatAttribute.BonusAtk].Total + Constant.PetAttackMultiplier * player.Stats[StatAttribute.PetBonusAtk].Total;
 
             // TODO: properly fetch enemy bonus attack weakness from enemy buff. new stat recommended
             const double BonusAttackWeakness = 1;

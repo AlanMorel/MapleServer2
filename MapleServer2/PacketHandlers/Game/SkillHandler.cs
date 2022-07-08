@@ -269,49 +269,56 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
                     fieldPlayer.AdditionalEffects.SkillTrigger(mob, skillCast);
                 }
 
-                if (attack != null)
+                if (attack == null)
                 {
-                    if (attack.SkillConditions != null)
+                    continue;
+                }
+
+                if (attack.SkillConditions == null)
+                {
+                    ProcessSkillEffect(skillCast, fieldPlayer, mob);
+
+                    continue;
+                }
+
+                foreach (SkillCondition condition in attack.SkillConditions)
+                {
+                    if (condition.SkillId != skillCast.SkillId && condition.IsSplash)
                     {
-                        foreach (SkillCondition condition in attack.SkillConditions)
-                        {
-                            if (condition.SkillId != skillCast.SkillId && condition.IsSplash)
-                            {
-                                SkillCast splashSkillCast = new(condition.SkillId, condition.SkillLevel, skillSn, Environment.TickCount, skillCast)
-                                {
-                                    CasterObjectId = skillCast.CasterObjectId,
-                                    Position = mob.Coord
-                                };
-
-                                splashSkillCast.Duration = splashSkillCast.DurationTick();
-
-                                RegionSkillHandler.HandleEffect(fieldPlayer.FieldManager, splashSkillCast, splashSkillCast.SkillAttack.AttackPoint);
-                            }
-                            else if (condition.SkillId == skillCast.SkillId && !condition.IsSplash)
-                            {
-                                mob.AdditionalEffects.AddEffect(new(skillCast.SkillId, skillCast.SkillLevel)
-                                {
-                                    Duration = skillCast.DurationTick(),
-                                    Source = fieldPlayer.ObjectId,
-                                    ParentSkill = skillCast
-                                });
-                            }
-                        }
+                        ProcessRegionSkill(skillCast, fieldPlayer, mob, condition);
                     }
-                    else
+                    else if (condition.SkillId == skillCast.SkillId && !condition.IsSplash)
                     {
-                        mob.AdditionalEffects.AddEffect(new(skillCast.SkillId, skillCast.SkillLevel)
-                        {
-                            Duration = skillCast.DurationTick(),
-                            Source = fieldPlayer.ObjectId,
-                            ParentSkill = skillCast
-                        });
+                        ProcessSkillEffect(skillCast, fieldPlayer, mob);
                     }
                 }
             }
         }
 
         session.FieldManager.BroadcastPacket(SkillDamagePacket.Damage(skillCast, attackCounter, position, rotation, damages));
+    }
+
+    private static void ProcessSkillEffect(SkillCast skillCast, IFieldActor<Player> fieldPlayer, IFieldActor<NpcMetadata> mob)
+    {
+        mob.AdditionalEffects.AddEffect(new(skillCast.SkillId, skillCast.SkillLevel)
+        {
+            Duration = skillCast.DurationTick(),
+            Source = fieldPlayer.ObjectId,
+            ParentSkill = skillCast
+        });
+    }
+
+    private static void ProcessRegionSkill(SkillCast skillCast, IFieldActor<Player> fieldPlayer, IFieldActor<NpcMetadata> mob, SkillCondition condition)
+    {
+        SkillCast splashSkillCast = new(condition.SkillId, condition.SkillLevel, skillCast.SkillSn, Environment.TickCount, skillCast)
+        {
+            CasterObjectId = skillCast.CasterObjectId,
+            Position = mob.Coord
+        };
+
+        splashSkillCast.Duration = splashSkillCast.DurationTick();
+
+        RegionSkillHandler.HandleEffect(fieldPlayer.FieldManager, splashSkillCast, splashSkillCast.SkillAttack.AttackPoint);
     }
 
     private static void HandleRegionSkills(GameSession session, PacketReader packet)
@@ -358,7 +365,7 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             Interval = skillCondition.Interval,
             Rotation = rotation
         };
-        
+
         RegionSkillHandler.HandleEffect(session.FieldManager, skillCast, attackIndex);
     }
 

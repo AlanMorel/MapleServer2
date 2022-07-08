@@ -189,7 +189,7 @@ public class AdditionalEffects
             {
                 Task.Run(async () =>
                 {
-                    while (effect.IsAlive && Environment.TickCount < effect.End)
+                    while (effect.IsAlive && Environment.TickCount - effect.Start < effect.Duration)
                     {
                         await Task.Delay(effect.TickRate);
 
@@ -272,16 +272,13 @@ public class AdditionalEffects
 
         EffectBeginConditionOwnerMetadata owner = effect.LevelMetadata.BeginCondition.Owner;
 
-        if (owner != null)
+        if (owner?.HasBuffId != null)
         {
-            if (owner.HasBuffId != null)
+            foreach (int buffId in owner.HasBuffId)
             {
-                foreach (int buffId in owner.HasBuffId)
+                if (!HasEffect(buffId))
                 {
-                    if (!HasEffect(buffId))
-                    {
-                        return false;
-                    }
+                    return false;
                 }
             }
         }
