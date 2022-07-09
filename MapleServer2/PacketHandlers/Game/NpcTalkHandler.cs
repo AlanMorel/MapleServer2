@@ -95,7 +95,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
         NpcScript script = null;
 
         // find select script
-        NpcScript selectScript = scriptMetadata.NpcScripts.FirstOrDefault(x => x.Type == ScriptType.Select);
+        NpcScript selectScript = scriptMetadata?.NpcScripts?.FirstOrDefault(x => x.Type == ScriptType.Select);
 
         // find any first script
         NpcScript talkScript = GetFirstTalkScript(session, scriptMetadata, npcTalk);
@@ -557,13 +557,17 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
 
     private static NpcScript GetFirstTalkScript(GameSession session, ScriptMetadata scriptMetadata, NpcTalk npcTalk)
     {
+        if (scriptMetadata is null)
+        {
+            return null;
+        }
+        
         if (scriptMetadata.NpcScripts.Any(x => x.Type == ScriptType.Job))
         {
             Script luaScript = ScriptLoader.GetScript($"Npcs/{scriptMetadata.Id}", session);
             DynValue scriptResult = luaScript?.RunFunction("meetsJobScriptRequirement");
             if (scriptResult is {Boolean: true})
             {
-                //npcTalk.DialogType = DialogType.UI;
                 return scriptMetadata.NpcScripts.FirstOrDefault(x => x.Type == ScriptType.Job);
             }
         }
