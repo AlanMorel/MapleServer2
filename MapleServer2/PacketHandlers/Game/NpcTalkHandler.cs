@@ -98,7 +98,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
         NpcScript selectScript = scriptMetadata?.NpcScripts?.FirstOrDefault(x => x.Type == ScriptType.Select);
 
         // find any first script
-        NpcScript talkScript = GetFirstTalkScript(session, scriptMetadata, npcTalk);
+        NpcScript talkScript = GetFirstTalkScript(session, scriptMetadata);
 
         // find any quest scripts
         NpcScript questScript = GetFirstQuestScript(session, npcTalk, npcQuests);
@@ -309,7 +309,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
 
                 }
                 npcTalk.ContentIndex = 0;
-                nextScript = GetFirstTalkScript(session, metadata, npcTalk);
+                nextScript = GetFirstTalkScript(session, metadata);
                 npcTalk.DialogType = nextScript?.Type == ScriptType.Job ? DialogType.UI : DialogType.Talk;
                 npcTalk.ScriptId = nextScript?.Id ?? 0;
                 responseSelection = GetResponseSelection(kind, npcTalk.DialogType, npcTalk.ContentIndex, nextScript);
@@ -555,7 +555,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
         return GetNextQuestScript(session, npcTalk);
     }
 
-    private static NpcScript GetFirstTalkScript(GameSession session, ScriptMetadata scriptMetadata, NpcTalk npcTalk)
+    private static NpcScript GetFirstTalkScript(GameSession session, ScriptMetadata scriptMetadata)
     {
         if (scriptMetadata is null)
         {
