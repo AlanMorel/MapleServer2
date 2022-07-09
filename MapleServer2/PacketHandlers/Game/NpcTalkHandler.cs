@@ -561,7 +561,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
         {
             return null;
         }
-        
+
         if (scriptMetadata.NpcScripts.Any(x => x.Type == ScriptType.Job))
         {
             Script luaScript = ScriptLoader.GetScript($"Npcs/{scriptMetadata.Id}", session);
