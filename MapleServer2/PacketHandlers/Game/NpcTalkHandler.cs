@@ -304,10 +304,6 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
                     return;
                 }
 
-                if (currentDialogType.HasFlag(DialogType.UI))
-                {
-
-                }
                 npcTalk.ContentIndex = 0;
                 nextScript = GetFirstTalkScript(session, metadata);
                 npcTalk.DialogType = nextScript?.Type == ScriptType.Job ? DialogType.UI : DialogType.Talk;
@@ -566,7 +562,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
         {
             Script luaScript = ScriptLoader.GetScript($"Npcs/{scriptMetadata.Id}", session);
             DynValue scriptResult = luaScript?.RunFunction("meetsJobScriptRequirement");
-            if (scriptResult is {Boolean: true})
+            if (scriptResult is { Boolean: true })
             {
                 return scriptMetadata.NpcScripts.FirstOrDefault(x => x.Type == ScriptType.Job);
             }
