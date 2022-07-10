@@ -81,7 +81,9 @@ public abstract class Session : IDisposable
 
     public bool IsLocalHost()
     {
-        return Name == "127.0.0.1";
+        string[] ipInfo = Name.Split(":");
+
+        return ipInfo?[0] == "127.0.0.1";
     }
 
     public void Dispose()
