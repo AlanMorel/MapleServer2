@@ -2,6 +2,7 @@
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
+using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -22,7 +23,7 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
     public Agent Agent { get; set; }
     public virtual AdditionalEffects AdditionalEffects { get; }
 
-    public FieldManager FieldManager { get; }
+    public virtual FieldManager FieldManager { get; }
     public FieldNavigator Navigator { get; }
 
     protected FieldActor(int objectId, T value, FieldManager fieldManager) : base(objectId, value)
@@ -170,6 +171,21 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
             foreach ((StatAttribute stat, EffectStatMetadata statValue) in effect.LevelMetadata.Status.Stats)
             {
                 Stats.AddStat(stat, statValue.AttributeType, statValue.Flat, statValue.Rate);
+            }
+        }
+
+        EffectInvokeMetadata invoke = effect.LevelMetadata?.InvokeEffect;
+
+        if (invoke != null)
+        {
+            if (invoke.SkillGroupId != 0)
+            {
+                Stats.AddSkillGroup(invoke.SkillGroupId, invoke.Values[0], invoke.Rates[0]);
+            }
+
+            if (invoke.EffectGroupId != 0)
+            {
+                Stats.AddEffectGroup(invoke.EffectGroupId, invoke.Values[0], invoke.Rates[0]);
             }
         }
     }

@@ -1,8 +1,35 @@
 ﻿using Maple2Storage.Enums;
+using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
+using MapleServer2.Packets;
+using MapleServer2.Servers.Game;
 
 namespace MapleServer2.Types;
+
+public class DamageSourceParameters
+{
+    public bool IsSkill;
+    public bool GuaranteedCrit;
+    public Element Element;
+    public SkillRangeType RangeType;
+    public DamageType DamageType;
+    public int[] SkillGroups;
+    public float DamageRate;
+    public SkillCast ParentSkill;
+
+    public DamageSourceParameters()
+    {
+        IsSkill = false;
+        GuaranteedCrit = false;
+        Element = Element.None;
+        RangeType = SkillRangeType.Special;
+        SkillGroups = null;
+        DamageRate = 0;
+        DamageType = DamageType.None;
+        ParentSkill = null;
+    }
+}
 
 public class DamageHandler
 {
@@ -26,16 +53,45 @@ public class DamageHandler
             return new(source, target, target.Stats[StatAttribute.Hp].Total, HitType.Critical);
         }
 
+        DamageSourceParameters parameters = new()
+        {
+            IsSkill = true,
+            GuaranteedCrit = skill.IsGuaranteedCrit(),
+            Element = skill.GetElement(),
+            RangeType = skill.GetRangeType(),
+            DamageType = skill.GetSkillDamageType(),
+            SkillGroups = skill.GetSkillGroups(),
+            DamageRate = skill.GetDamageRate(),
+        };
+
         // get luck coefficient from class. new stat recommended, can be refactored away like isCrit was
-        return CalculateDamage(skill, source, target, 1);
+        return CalculateDamage(parameters, source, target);
     }
 
     public static double FetchMultiplier(Stats stats, StatAttribute attribute)
     {
-        return (double) stats[attribute].Total / 1000;
+        if (stats.Data.TryGetValue(attribute, out Stat stat))
+        {
+            return (double) stat.Total / 1000;
+        }
+
+        return 0;
     }
 
-    public static DamageHandler CalculateDamage(SkillCast skill, IFieldActor source, IFieldActor target, double luckCoefficient)
+    public static void ApplyDotDamage(GameSession session, IFieldActor sourceActor, IFieldActor target, DamageSourceParameters dotParameters)
+    {
+        DamageHandler damage = DamageHandler.CalculateDamage(dotParameters, sourceActor, target);
+
+        if (session != null)
+        {
+            target.Damage(damage, session);
+        }
+
+        List<DamageHandler> damages = new() { damage };
+        target.FieldManager.BroadcastPacket(SkillDamagePacket.Damage(dotParameters.ParentSkill, 0, target.Coord, target.Rotation, damages));
+    }
+
+    public static DamageHandler CalculateDamage(DamageSourceParameters parameters, IFieldActor source, IFieldActor target)
     {
         // TODO: get accuracyWeakness from enemy stats from enemy buff. new stat recommended
         const double AccuracyWeakness = 0;
@@ -46,7 +102,26 @@ public class DamageHandler
             return new(source, target, 0, HitType.Miss); // we missed
         }
 
-        bool isCrit = skill.IsGuaranteedCrit() || RollCrit(source, target, luckCoefficient);
+        double luckCoefficient = 1;
+        double attackDamage = 300;
+
+        if (source is IFieldActor<Player> player)
+        {
+            luckCoefficient = GetClassLuckCoefficient(player.Value.Job);
+
+            double bonusAttack = player.Stats[StatAttribute.BonusAtk].Total + Constant.PetAttackMultiplier * player.Stats[StatAttribute.PetBonusAtk].Total;
+
+            // TODO: properly fetch enemy bonus attack weakness from enemy buff. new stat recommended
+            const double BonusAttackWeakness = 1;
+
+            double bonusAttackCoeff = BonusAttackWeakness * GetBonusAttackCoefficient(player.Value);
+            double minDamage = player.Stats[StatAttribute.MinWeaponAtk].Total + bonusAttackCoeff * bonusAttack;
+            double maxDamage = player.Stats[StatAttribute.MaxWeaponAtk].Total + bonusAttackCoeff * bonusAttack;
+
+            attackDamage = minDamage + (maxDamage - minDamage) * Random.Shared.NextDouble();
+        }
+
+        bool isCrit = parameters.GuaranteedCrit || RollCrit(source, target, luckCoefficient);
 
         double finalCritDamage = 1;
 
@@ -62,7 +137,7 @@ public class DamageHandler
 
         damageBonus *= finalCritDamage;
 
-        switch (skill.GetElement())
+        switch (parameters.Element)
         {
             case Element.Fire:
                 damageBonus += FetchMultiplier(source.Stats, StatAttribute.FireDamage);
@@ -84,7 +159,7 @@ public class DamageHandler
                 break;
         }
 
-        SkillRangeType rangeType = skill.GetRangeType();
+        SkillRangeType rangeType = parameters.RangeType;
 
         if (rangeType != SkillRangeType.Special)
         {
@@ -105,21 +180,39 @@ public class DamageHandler
 
         damageBonus += AttackSpeedWeakness * FetchMultiplier(source.Stats, StatAttribute.AttackSpeed);
 
-        double damageMultiplier = damageBonus * skill.GetDamageRate();
+        StatGroup skillModifier = source.Stats.GetSkillStats(parameters.SkillGroups);
+        double damageMultiplier = damageBonus * skillModifier.Rate * (parameters.DamageRate + skillModifier.Value);
 
         // TODO: properly fetch enemy pierce resistance from enemy buff. new stat recommended
         const double EnemyPierceResistance = 1;
 
-        double defensePierce = 1 - Math.Min(0.3, EnemyPierceResistance * FetchMultiplier(source.Stats, StatAttribute.Pierce));
+        double defensePierce = 1 - Math.Min(0.3, EnemyPierceResistance * (FetchMultiplier(source.Stats, StatAttribute.Pierce) - 1));
         damageMultiplier *= 1 / (Math.Max(target.Stats[StatAttribute.Defense].Total, 1) * defensePierce);
 
-        bool isPhysical = skill.GetSkillDamageType() == DamageType.Physical;
+        DamageType damageType = parameters.DamageType;
+
+        bool isPhysical = damageType == DamageType.Physical;
+        double attackType = 0;
+
+        if (damageType == DamageType.Primary)
+        {
+            double physAttack = source.Stats[StatAttribute.PhysicalAtk].Total;
+            double magAttack = source.Stats[StatAttribute.MagicAtk].Total;
+
+            attackType = Math.Max(physAttack, magAttack);
+            isPhysical = physAttack > magAttack;
+        }
+
         StatAttribute resistanceStat = isPhysical ? StatAttribute.PhysicalRes : StatAttribute.MagicRes;
         StatAttribute attackStat = isPhysical ? StatAttribute.PhysicalAtk : StatAttribute.MagicAtk;
         StatAttribute piercingStat = isPhysical ? StatAttribute.PhysicalPiercing : StatAttribute.MagicPiercing;
 
+        if (damageType != DamageType.Primary)
+        {
+            attackType = source.Stats[attackStat].Total;
+        }
+
         double targetRes = target.Stats[resistanceStat].Total;
-        double attackType = source.Stats[attackStat].Total;
         double resPierce = FetchMultiplier(source.Stats, piercingStat);
         double resistance = (1500.0 - Math.Max(0, targetRes - 1500 * resPierce)) / 1500;
 
@@ -130,23 +223,9 @@ public class DamageHandler
         const double FinalDamageMultiplier = 1;
         damageMultiplier *= FinalDamageMultiplier;
 
-        double attackDamage = 300;
+        const double magicNumber = 4; // random constant of an unknown origin, but the formula this was pulled from was always off by a factor of 4
 
-        if (source is IFieldActor<Player> player)
-        {
-            double bonusAttack = player.Stats[StatAttribute.BonusAtk].Total + 0.396 * player.Stats[StatAttribute.PetBonusAtk].Total;
-
-            // TODO: properly fetch enemy bonus attack weakness from enemy buff. new stat recommended
-            const double BonusAttackWeakness = 1;
-
-            double bonusAttackCoeff = BonusAttackWeakness * GetBonusAttackCoefficient(player.Value);
-            double minDamage = player.Stats[StatAttribute.MinWeaponAtk].Total + bonusAttackCoeff * bonusAttack;
-            double maxDamage = player.Stats[StatAttribute.MaxWeaponAtk].Total + bonusAttackCoeff * bonusAttack;
-
-            attackDamage = minDamage + (maxDamage - minDamage) * Random.Shared.NextDouble();
-        }
-
-        attackDamage *= damageMultiplier;
+        attackDamage *= damageMultiplier * magicNumber;
 
         return new(source, target, Math.Max(1, attackDamage), isCrit ? HitType.Critical : HitType.Normal);
     }
@@ -222,5 +301,25 @@ public class DamageHandler
     private static double GetBonusAttackCoefficient(Player player)
     {
         return 4.96 * GetWeaponBonusAttackMultiplier(player) * GetClassBonusAttackMultiplier(player.Job);
+    }
+
+    private static double GetClassLuckCoefficient(Job job)
+    {
+        return job switch
+        {
+            Job.Beginner => 1,
+            Job.Knight => 3.78,
+            Job.Berserker => 4.305,
+            Job.Wizard => 3.40375,
+            Job.Priest => 7.34125,
+            Job.Archer => 6.4575,
+            Job.HeavyGunner => 2.03875,
+            Job.Thief => 0.60375,
+            Job.Assassin => 0.55125,
+            Job.Runeblade => 3.78,
+            Job.Striker => 2.03875,
+            Job.SoulBinder => 3.40375,
+            _ => 1,
+        };
     }
 }

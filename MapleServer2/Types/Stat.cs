@@ -33,6 +33,12 @@ public struct StatModifier
     public float Rate;
 }
 
+public struct StatGroup
+{
+    public float Value;
+    public float Rate;
+}
+
 public class Stat
 {
     public StatValue Value;

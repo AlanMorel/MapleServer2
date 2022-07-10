@@ -34,10 +34,15 @@ public class Npc : FieldActor<NpcMetadata>, INpc
     private Queue<WayPoint> WayPointQueue = new();
     private WayPoint CurrentWayPoint;
     private bool WaitForAnimation;
+    private AdditionalEffects Effects;
+    public override AdditionalEffects AdditionalEffects { get => Effects; }
 
     public int SpawnPointId;
 
-    public Npc(int objectId, int mobId, FieldManager fieldManager) : this(objectId, NpcMetadataStorage.GetNpcMetadata(mobId), fieldManager) { }
+    public Npc(int objectId, int mobId, FieldManager fieldManager) : this(objectId, NpcMetadataStorage.GetNpcMetadata(mobId), fieldManager)
+    {
+        Effects = new(this);
+    }
 
     public Npc(int objectId, NpcMetadata metadata, FieldManager fieldManager) : base(objectId, metadata, fieldManager)
     {
@@ -46,6 +51,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
         Stats = new(metadata);
         State = NpcState.Normal;
         Action = NpcAction.Idle;
+        Effects = new(this);
     }
 
     public void Attack()

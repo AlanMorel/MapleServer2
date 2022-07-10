@@ -27,6 +27,8 @@ public class Character : FieldActor<Player>
 
     private DateTime LastConsumeStaminaTime;
 
+    public override FieldManager FieldManager { get => Value.Session.FieldManager; }
+
     public Character(int objectId, Player value, FieldManager fieldManager) : base(objectId, value, fieldManager)
     {
         if (HpRegenThread == null || HpRegenThread.IsCompleted)
@@ -71,7 +73,8 @@ public class Character : FieldActor<Player>
             AdditionalEffects.AddEffect(new(skillCast.SkillId, skillCast.SkillLevel)
             {
                 Duration = skillCast.DurationTick(),
-                IsBuff = true
+                IsBuff = true,
+                ParentSkill = skillCast
             });
 
             //Status status = new(skillCast, ObjectId, ObjectId, 1);
