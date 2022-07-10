@@ -1,6 +1,6 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Packets;
+using MapleServer2.Managers;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 
@@ -43,6 +43,8 @@ public class ItemPickupHandler : GamePacketHandler<ItemPickupHandler>
                     // No need to send "Inventory full" message since it's client sided.
                     return;
                 }
+
+                QuestManager.OnItemPickup(session.Player, fieldItem.Value);
 
                 fieldItem.Value.Slot = -1; // add to first empty slot
                 session.Player.Inventory.AddItem(session, fieldItem.Value, true);

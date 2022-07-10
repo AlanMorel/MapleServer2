@@ -64,8 +64,6 @@ public abstract class Session : IDisposable
             throw new ObjectDisposedException("Session has been disposed.");
         }
 
-        // Allow client to close immediately
-        client.LingerState = new(true, 0);
         Name = client.Client.RemoteEndPoint?.ToString();
 
         byte[] sivBytes = new byte[4];
@@ -101,6 +99,7 @@ public abstract class Session : IDisposable
         Disposed = true;
         Complete();
         Thread.Join(STOP_TIMEOUT);
+        Thread.Sleep(500);
 
         CloseClient();
 

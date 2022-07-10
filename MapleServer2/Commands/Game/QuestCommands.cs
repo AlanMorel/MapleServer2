@@ -74,7 +74,8 @@ public class CompleteQuestCommand : InGameCommand
         foreach (QuestRewardItem reward in questStatus.RewardItems)
         {
             Item newItem = new(id: reward.Code, amount: reward.Count, rarity: reward.Rank);
-            if (newItem.RecommendJobs.Contains(player.Job) || newItem.RecommendJobs.Contains(0))
+            List<int> limitJobRequirements = ItemMetadataStorage.GetMetadata(reward.Code).Limit.JobRequirements;
+            if (limitJobRequirements.Contains((int) player.Job) || limitJobRequirements.Contains(0))
             {
                 player.Inventory.AddItem(trigger.Session, newItem, true);
             }

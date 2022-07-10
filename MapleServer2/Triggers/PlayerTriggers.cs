@@ -95,7 +95,7 @@ public partial class TriggerContext
                 return;
             }
 
-            players = players.Where(player => FieldManager.IsPlayerInBox(box, player)).ToList();
+            players = players.Where(player => FieldManager.IsActorInBox(box, player)).ToList();
         }
 
         // move player back to return map
@@ -178,7 +178,7 @@ public partial class TriggerContext
     {
     }
 
-    public void SetAchievement(int boxId, string type, string trophySet)
+    public void SetAchievement(int boxId, string type, string code)
     {
         List<Character> players = Field.State.Players.Values.ToList();
         if (boxId != 0)
@@ -189,14 +189,15 @@ public partial class TriggerContext
                 return;
             }
 
-            players = players.Where(player => FieldManager.IsPlayerInBox(box, player)).ToList();
+            players = players.Where(player => FieldManager.IsActorInBox(box, player)).ToList();
         }
 
         foreach (IFieldObject<Player> player in players)
         {
             if (type == "trigger")
             {
-                TrophyManager.OnTrigger(player.Value, trophySet);
+                TrophyManager.OnTrigger(player.Value, code);
+                QuestManager.OnTrigger(player.Value, code);
             }
         }
     }
@@ -250,7 +251,7 @@ public partial class TriggerContext
                 return;
             }
 
-            foreach (Character player in Field.State.Players.Values.Where(player => FieldManager.IsPlayerInBox(box, player)))
+            foreach (Character player in Field.State.Players.Values.Where(player => FieldManager.IsActorInBox(box, player)))
             {
                 // TODO: Rework when buff system is implemented
                 Status status = new(new(skillId, skillLevel), player.ObjectId, player.ObjectId, 1);

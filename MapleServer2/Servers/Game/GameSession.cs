@@ -63,6 +63,7 @@ public class GameSession : Session
 
         Player.OnlineCTS?.Cancel();
         Player.OnlineTimeThread = null;
+        Player.TimeSyncTask = null;
 
         CoordF safeCoord = Player.SafeBlock;
         safeCoord.Z += Block.BLOCK_SIZE;

@@ -105,7 +105,7 @@ public partial class TriggerContext
 
                 foreach (IFieldObject<Player> player in Field.State.Players.Values)
                 {
-                    if (FieldManager.IsPlayerInBox(box, player))
+                    if (FieldManager.IsActorInBox(box, player))
                     {
                         player.Value.Session.Send(SystemSoundPacket.Play(sound));
                     }
@@ -183,7 +183,7 @@ public partial class TriggerContext
 
             foreach (IFieldObject<Player> player in Field.State.Players.Values)
             {
-                if (!FieldManager.IsPlayerInBox(triggerBox, player))
+                if (!FieldManager.IsActorInBox(triggerBox, player))
                 {
                     player.Value.Session.Send(MassiveEventPacket.TextBanner(type, script, duration));
                 }
@@ -201,7 +201,7 @@ public partial class TriggerContext
 
         foreach (IFieldObject<Player> player in Field.State.Players.Values)
         {
-            if (FieldManager.IsPlayerInBox(triggerBox, player))
+            if (FieldManager.IsActorInBox(triggerBox, player))
             {
                 player.Value.Session.Send(MassiveEventPacket.TextBanner(type, script, duration));
             }

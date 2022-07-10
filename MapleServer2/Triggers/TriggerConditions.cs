@@ -43,6 +43,21 @@ public partial class TriggerContext
 
     public bool DetectLiftableObject(int[] triggerBoxIds, int itemId)
     {
+        foreach (int boxId in triggerBoxIds)
+        {
+            MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
+            if (box is null)
+            {
+                return false;
+            }
+
+            IFieldObject<LiftableObject> liftable = Field.State.LiftableObjects.Values.FirstOrDefault(x => x.Value.Metadata.ItemId == itemId);
+            if (FieldManager.IsActorInBox(box, liftable))
+            {
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -104,8 +119,28 @@ public partial class TriggerContext
         return false;
     }
 
-    public bool NpcDetected(int arg1, int[] arg2)
+    public bool NpcDetected(int boxId, int[] spawnPointIds)
     {
+        MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
+        if (box is null)
+        {
+            return false;
+        }
+
+        foreach (int spawnPointId in spawnPointIds)
+        {
+            Npc npc = Field.State.Npcs.Values.FirstOrDefault(x => x.SpawnPointId == spawnPointId);
+            if (npc is null)
+            {
+                continue;
+            }
+
+            if (FieldManager.IsActorInBox(box, npc))
+            {
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -154,7 +189,7 @@ public partial class TriggerContext
 
             foreach (Character player in players)
             {
-                if (!FieldManager.IsPlayerInBox(box, player))
+                if (!FieldManager.IsActorInBox(box, player))
                 {
                     continue;
                 }
@@ -207,7 +242,7 @@ public partial class TriggerContext
                 return false;
             }
 
-            if (players.Any(player => FieldManager.IsPlayerInBox(box, player)))
+            if (players.Any(player => FieldManager.IsActorInBox(box, player)))
             {
                 return true;
             }

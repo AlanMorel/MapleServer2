@@ -521,8 +521,6 @@ public class FieldManager
         TriggerTask ??= StartTriggerTask();
 
         UGCBannerTimer ??= TaskScheduler.Instance.ScheduleTask(0, 0, 60, () => { GameServer.UGCBannerManager.UGCBannerLoop(this); });
-
-        player.OnlineTimeThread ??= player.OnlineTimer();
     }
 
     public void RemovePlayer(Player player)
@@ -557,7 +555,7 @@ public class FieldManager
         });
     }
 
-    public static bool IsPlayerInBox(MapTriggerBox box, IFieldObject<Player> player)
+    public static bool IsActorInBox(MapTriggerBox box, IFieldObject actor)
     {
         if (box is null)
         {
@@ -574,8 +572,8 @@ public class FieldManager
             box.Position.Y + box.Dimension.Y / 2,
             box.Position.Z + box.Dimension.Z / 2);
 
-        bool min = player.Coord.X >= minCoord.X && player.Coord.Y >= minCoord.Y && player.Coord.Z >= minCoord.Z;
-        bool max = player.Coord.X <= maxCoord.X && player.Coord.Y <= maxCoord.Y && player.Coord.Z <= maxCoord.Z;
+        bool min = actor.Coord.X >= minCoord.X && actor.Coord.Y >= minCoord.Y && actor.Coord.Z >= minCoord.Z;
+        bool max = actor.Coord.X <= maxCoord.X && actor.Coord.Y <= maxCoord.Y && actor.Coord.Z <= maxCoord.Z;
 
         return min && max;
     }
