@@ -347,7 +347,7 @@ public class Player
     {
         UpdateCoords(mapId, instanceId, coord, rotation);
 
-        string ipAddress = Environment.GetEnvironmentVariable("IP");
+        string ipAddress = Session.IsLocalHost() ? "127.0.0.1" : Environment.GetEnvironmentVariable("IP");
         int port = int.Parse(Environment.GetEnvironmentVariable("GAME_PORT"));
         IPEndPoint endpoint = new(IPAddress.Parse(ipAddress), port);
 

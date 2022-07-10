@@ -79,6 +79,11 @@ public abstract class Session : IDisposable
         RecvCipher = new(VERSION, Riv, BLOCK_IV);
     }
 
+    public bool IsLocalHost()
+    {
+        return Name == "127.0.0.1";
+    }
+
     public void Dispose()
     {
         if (Disposed)

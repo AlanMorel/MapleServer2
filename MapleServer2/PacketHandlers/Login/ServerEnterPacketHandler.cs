@@ -17,6 +17,7 @@ public class ServerEnterPacketHandler : LoginPacketHandler<ServerEnterPacketHand
 
     // TODO: This data needs to be dynamic
     private readonly ImmutableList<IPEndPoint> ServerIPs;
+    private readonly ImmutableList<IPEndPoint> ServerLocalIPs;
     private readonly string ServerName;
     private readonly short ChannelCount;
 
@@ -28,7 +29,12 @@ public class ServerEnterPacketHandler : LoginPacketHandler<ServerEnterPacketHand
 
         builder.Add(new(IPAddress.Parse(ipAddress), port));
 
+        ImmutableList<IPEndPoint>.Builder localBuilder = ImmutableList.CreateBuilder<IPEndPoint>();
+
+        localBuilder.Add(new(IPAddress.Parse("127.0.0.1"), port));
+
         ServerIPs = builder.ToImmutable();
+        ServerLocalIPs = localBuilder.ToImmutable();
         ServerName = Environment.GetEnvironmentVariable("NAME");
         ChannelCount = short.Parse(ConstantsMetadataStorage.GetConstant("ChannelCount"));
     }
@@ -37,7 +43,7 @@ public class ServerEnterPacketHandler : LoginPacketHandler<ServerEnterPacketHand
     {
         List<Banner> banners = DatabaseManager.Banners.FindAllBanners();
         session.Send(BannerListPacket.SetBanner(banners));
-        session.Send(ServerListPacket.SetServers(ServerName, ServerIPs, ChannelCount));
+        session.Send(ServerListPacket.SetServers(ServerName, session.IsLocalHost() ? ServerLocalIPs : ServerIPs, ChannelCount));
 
         List<Player> characters = DatabaseManager.Characters.FindAllByAccountId(session.AccountId);
 

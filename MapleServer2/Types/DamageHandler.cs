@@ -80,6 +80,11 @@ public class DamageHandler
 
     public static void ApplyDotDamage(GameSession session, IFieldActor sourceActor, IFieldActor target, DamageSourceParameters dotParameters)
     {
+        if (sourceActor == null)
+        {
+            return;
+        }
+
         DamageHandler damage = DamageHandler.CalculateDamage(dotParameters, sourceActor, target);
 
         if (session != null)
@@ -199,7 +204,7 @@ public class DamageHandler
             double physAttack = source.Stats[StatAttribute.PhysicalAtk].Total;
             double magAttack = source.Stats[StatAttribute.MagicAtk].Total;
 
-            attackType = Math.Max(physAttack, magAttack);
+            attackType = Math.Max(physAttack, magAttack) * 0.5f;
             isPhysical = physAttack > magAttack;
         }
 
@@ -268,7 +273,7 @@ public class DamageHandler
 
         double weaponBonusAttackCoeff = GetRarityBonusAttackMultiplier(rightHand);
 
-        if (ItemMetadataStorage.GetItemSlots(rightHand.Id).Count < 2)
+        if (rightHand != null && ItemMetadataStorage.GetItemSlots(rightHand.Id).Count < 2)
         {
             player.Inventory.Equips.TryGetValue(ItemSlot.LH, out Item leftHand);
 

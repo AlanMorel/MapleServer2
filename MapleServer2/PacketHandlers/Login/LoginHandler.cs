@@ -20,6 +20,7 @@ public class LoginHandler : LoginPacketHandler<LoginHandler>
 
     // TODO: This data needs to be dynamic
     private readonly ImmutableList<IPEndPoint> ServerIPs;
+    private readonly ImmutableList<IPEndPoint> ServerLocalIPs;
     private readonly string ServerName;
     private readonly short ChannelCount;
 
@@ -36,7 +37,11 @@ public class LoginHandler : LoginPacketHandler<LoginHandler>
         int port = int.Parse(Environment.GetEnvironmentVariable("LOGIN_PORT"));
         builder.Add(new(IPAddress.Parse(ipAddress), port));
 
+        ImmutableList<IPEndPoint>.Builder localBuilder = ImmutableList.CreateBuilder<IPEndPoint>();
+        localBuilder.Add(new(IPAddress.Parse("127.0.0.1"), port));
+
         ServerIPs = builder.ToImmutable();
+        ServerLocalIPs = localBuilder.ToImmutable();
         ServerName = Environment.GetEnvironmentVariable("NAME");
         ChannelCount = short.Parse(ConstantsMetadataStorage.GetConstant("ChannelCount"));
     }
@@ -107,12 +112,12 @@ public class LoginHandler : LoginPacketHandler<LoginHandler>
         List<Banner> banners = DatabaseManager.Banners.FindAllBanners();
         session.Send(NpsInfoPacket.SendUsername(account.Username));
         session.Send(BannerListPacket.SetBanner(banners));
-        session.SendFinal(ServerListPacket.SetServers(ServerName, ServerIPs, ChannelCount), logoutNotice: true);
+        session.SendFinal(ServerListPacket.SetServers(ServerName, session.IsLocalHost() ? ServerLocalIPs : ServerIPs, ChannelCount), logoutNotice: true);
     }
 
     private void SendCharacters(LoginSession session, Account account)
     {
-        string serverIp = Environment.GetEnvironmentVariable("IP");
+        string serverIp = session.IsLocalHost() ? "127.0.0.1" : Environment.GetEnvironmentVariable("IP");
         string webServerPort = Environment.GetEnvironmentVariable("WEB_PORT");
         string url = $"http://{serverIp}:{webServerPort}";
 
