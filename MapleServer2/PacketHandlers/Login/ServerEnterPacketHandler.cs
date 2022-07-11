@@ -31,7 +31,7 @@ public class ServerEnterPacketHandler : LoginPacketHandler<ServerEnterPacketHand
 
         ImmutableList<IPEndPoint>.Builder localBuilder = ImmutableList.CreateBuilder<IPEndPoint>();
 
-        localBuilder.Add(new(IPAddress.Parse("127.0.0.1"), port));
+        localBuilder.Add(new(IPAddress.Parse(Constant.LocalHost), port));
 
         ServerIPs = builder.ToImmutable();
         ServerLocalIPs = localBuilder.ToImmutable();

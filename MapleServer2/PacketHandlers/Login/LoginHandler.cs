@@ -38,7 +38,7 @@ public class LoginHandler : LoginPacketHandler<LoginHandler>
         builder.Add(new(IPAddress.Parse(ipAddress), port));
 
         ImmutableList<IPEndPoint>.Builder localBuilder = ImmutableList.CreateBuilder<IPEndPoint>();
-        localBuilder.Add(new(IPAddress.Parse("127.0.0.1"), port));
+        localBuilder.Add(new(IPAddress.Parse(Constant.LocalHost), port));
 
         ServerIPs = builder.ToImmutable();
         ServerLocalIPs = localBuilder.ToImmutable();
@@ -117,7 +117,7 @@ public class LoginHandler : LoginPacketHandler<LoginHandler>
 
     private void SendCharacters(LoginSession session, Account account)
     {
-        string serverIp = session.IsLocalHost() ? "127.0.0.1" : Environment.GetEnvironmentVariable("IP");
+        string serverIp = session.IsLocalHost() ? Constant.LocalHost : Environment.GetEnvironmentVariable("IP");
         string webServerPort = Environment.GetEnvironmentVariable("WEB_PORT");
         string url = $"http://{serverIp}:{webServerPort}";
 

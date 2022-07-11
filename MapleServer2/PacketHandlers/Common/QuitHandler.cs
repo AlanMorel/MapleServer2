@@ -18,7 +18,7 @@ public class QuitHandler : CommonPacketHandler<QuitHandler>
         string ipAddress = Environment.GetEnvironmentVariable("IP");
         int port = int.Parse(Environment.GetEnvironmentVariable("LOGIN_PORT"));
         LoginEndpoint = new(IPAddress.Parse(ipAddress), port);
-        LoginLocalEndpoint = new(IPAddress.Parse("127.0.0.1"), port);
+        LoginLocalEndpoint = new(IPAddress.Parse(Constant.LocalHost), port);
     }
 
     private enum Mode : byte

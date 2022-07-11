@@ -62,7 +62,7 @@ public class CharacterManagementHandler : LoginPacketHandler<CharacterManagement
         packet.ReadShort(); // 01 00
         Logger.Information("Logging in to game with char id: {characterId}", characterId);
 
-        string ipAddress = session.IsLocalHost() ? "127.0.0.1" : Environment.GetEnvironmentVariable("IP");
+        string ipAddress = session.IsLocalHost() ? Constant.LocalHost : Environment.GetEnvironmentVariable("IP");
         int port = int.Parse(Environment.GetEnvironmentVariable("GAME_PORT"));
         IPEndPoint endpoint = new(IPAddress.Parse(ipAddress), port);
 
