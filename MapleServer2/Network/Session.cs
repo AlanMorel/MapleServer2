@@ -79,6 +79,13 @@ public abstract class Session : IDisposable
         RecvCipher = new(VERSION, Riv, BLOCK_IV);
     }
 
+    public bool IsLocalHost()
+    {
+        string[] ipInfo = Name.Split(":");
+
+        return ipInfo?[0] == Constant.LocalHost;
+    }
+
     public void Dispose()
     {
         if (Disposed)
