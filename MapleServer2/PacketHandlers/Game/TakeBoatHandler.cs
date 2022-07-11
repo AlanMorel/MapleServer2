@@ -32,6 +32,9 @@ public class TakeBoatHandler : GamePacketHandler<TakeBoatHandler>
                 mapId = 02000183;
                 mesoCost = 4000;
                 break;
+            case 11001257:
+                mapId = 52000018;
+                break;
             default:
                 Logger.Information($"Unhandled boat npc: {npc.Value.Id}");
                 return;
