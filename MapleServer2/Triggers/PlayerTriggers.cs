@@ -277,7 +277,14 @@ public partial class TriggerContext
         };
         foreach (IFieldObject<Player> player in Field.State.Players.Values)
         {
-            player.Value.Triggers.Add(playerTrigger);
+            PlayerTrigger trigger = player.Value.Triggers.FirstOrDefault(x => x.Key == key);
+            if (trigger is null)
+            {
+                player.Value.Triggers.Add(playerTrigger);
+                continue;
+            }
+            trigger.Value = value;
+            trigger.TriggerId = triggerId;
         }
     }
 
