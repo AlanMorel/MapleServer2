@@ -46,6 +46,9 @@ public static class QuestManager
     {
         GetRelevantQuests(player, ConditionTypes.ItemExist)
             .UpdateRelevantConditions(player.Session, ConditionTypes.ItemExist, item.Id);
+
+        GetRelevantQuests(player, ConditionTypes.ItemPickup)
+            .UpdateRelevantConditions(player.Session, ConditionTypes.ItemPickup, item.Id);
     }
 
     public static void OnSkillUse(Player player, int skillId)

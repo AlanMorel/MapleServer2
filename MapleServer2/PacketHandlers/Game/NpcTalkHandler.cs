@@ -123,7 +123,16 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
             }
             else
             {
-                script = questScript;
+                if (talkScript is not null)
+                {
+                    npcTalk.DialogType |= DialogType.Talk;
+                    npcTalk.DialogType |= DialogType.Options;
+                    script = selectScript;
+                }
+                else
+                {
+                    script = questScript;
+                }
             }
         }
         else
@@ -308,6 +317,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
                 nextScript = GetFirstTalkScript(session, metadata);
                 npcTalk.DialogType = nextScript?.Type == ScriptType.Job ? DialogType.UI : DialogType.Talk;
                 npcTalk.ScriptId = nextScript?.Id ?? 0;
+                npcTalk.QuestId = 0;
                 responseSelection = GetResponseSelection(kind, npcTalk.DialogType, npcTalk.ContentIndex, nextScript);
                 session.Send(NpcTalkPacket.ContinueChat(npcTalk.ScriptId, npcTalk.DialogType, responseSelection, npcTalk.ContentIndex));
                 return;
@@ -513,6 +523,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
         {
             return null;
         }
+
         if (npcTalk.ScriptId == 0)
         {
             QuestStatus questStatus = npcTalk.Quests[index];
@@ -537,6 +548,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
             return scriptMetadata.NpcScripts.FirstOrDefault(x => x.Id >= 300 && x.JobId == (int) session.Player.Job) ??
                    scriptMetadata.NpcScripts.FirstOrDefault(x => x.Id == 300);
         }
+
         return null;
     }
 
