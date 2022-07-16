@@ -1,8 +1,8 @@
 ﻿using Maple2Storage.Enums;
+using Maple2Storage.Types.Metadata;
+using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Types;
-using MapleServer2.Data.Static;
-using Maple2Storage.Types.Metadata;
 
 namespace MapleServer2.Managers.Actors;
 

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Maple2Storage.Types.Metadata;
-using Maple2Storage.Types;
 using Maple2Storage.Enums;
+using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 
 namespace MapleServer2.Types;
@@ -261,7 +261,7 @@ public class SkillTriggerHandler
 
             Task.Run(async () =>
             {
-                await Task.Delay((int)trigger.Delay);
+                await Task.Delay((int) trigger.Delay);
 
                 for (int i = 0; i < trigger.FireCount; ++i)
                 {

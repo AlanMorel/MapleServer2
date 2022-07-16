@@ -348,7 +348,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                     {
                         TriggerSkill splashSkill = data[i].splashSkill[skillIndex];
 
-                        level.SplashSkill.Add(new(splashSkill.skillID, GetSkillLevels(splashSkill.level), splashSkill.splash, (byte)splashSkill.skillTarget, (byte)splashSkill.skillOwner, (short)splashSkill.fireCount, splashSkill.interval, splashSkill.immediateActive)
+                        level.SplashSkill.Add(new(splashSkill.skillID, GetSkillLevels(splashSkill.level), splashSkill.splash, (byte) splashSkill.skillTarget, (byte) splashSkill.skillOwner, (short) splashSkill.fireCount, splashSkill.interval, splashSkill.immediateActive)
                         {
                             Delay = splashSkill.delay,
                             RemoveDelay = splashSkill.removeDelay,
@@ -371,9 +371,9 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                         level.ConditionSkill.Add(new(conditionSkill.skillID, GetSkillLevels(conditionSkill.level), conditionSkill.splash, (byte) conditionSkill.skillTarget, (byte) conditionSkill.skillOwner, (short) conditionSkill.fireCount, conditionSkill.interval, conditionSkill.immediateActive)
                         {
                             Delay = conditionSkill.delay,
-                            RemoveDelay= conditionSkill.removeDelay,
+                            RemoveDelay = conditionSkill.removeDelay,
                             UseDirection = conditionSkill.useDirection,
-                            BeginCondition= ParseBeginCondition(conditionSkill.beginCondition)
+                            BeginCondition = ParseBeginCondition(conditionSkill.beginCondition)
                         });
                     }
                 }
@@ -446,7 +446,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
 
         for (int i = 0; i < levels.Length; i++)
         {
-            result[i] = (short)levels[i];
+            result[i] = (short) levels[i];
         }
 
         return result;

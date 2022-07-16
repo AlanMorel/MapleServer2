@@ -103,7 +103,7 @@ public class DamageHandler
 
         target.Damage(damage, session);
 
-        target.FieldManager.BroadcastPacket(SkillDamagePacket.DotDamage(sourceActor.ObjectId, target.ObjectId, Environment.TickCount, damage.HitType, (int)damage.Damage));
+        target.FieldManager.BroadcastPacket(SkillDamagePacket.DotDamage(sourceActor.ObjectId, target.ObjectId, Environment.TickCount, damage.HitType, (int) damage.Damage));
     }
 
     public static DamageHandler CalculateDamage(DamageSourceParameters parameters, IFieldActor source, IFieldActor target)

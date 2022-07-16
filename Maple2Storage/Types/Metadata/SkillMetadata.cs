@@ -293,8 +293,8 @@ public class SkillCondition
         SkillId = skillId;
         SkillLevel = skillLevel;
         IsSplash = isSplash;
-        Target = (ApplyTarget)target;
-        Owner = (SkillOwner)owner;
+        Target = (ApplyTarget) target;
+        Owner = (SkillOwner) owner;
         FireCount = fireCount;
         Interval = interval;
         ImmediateActive = immediateActive;

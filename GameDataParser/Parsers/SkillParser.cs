@@ -195,7 +195,8 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                 RemoveDelay = removeDelay,
                 UseDirection = useDirection,
                 BeginCondition = ParseBeginCondition(conditionNode)
-            });;
+            });
+            ;
         }
     }
 
