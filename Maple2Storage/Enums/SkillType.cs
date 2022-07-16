@@ -52,3 +52,40 @@ public enum SkillRangeType : byte
     Melee = 0x01,
     Ranged = 0x02
 }
+
+public enum DotUseGrade : byte
+{
+    CantCrit = 0,
+    CanCrit = 1
+}
+
+public enum CompulsionType : byte
+{
+    AlwaysCrit = 2
+}
+
+public enum ApplyTarget : byte
+{
+    Closest = 0,
+    Owner = 1,
+    Target = 2,
+    Caster = 3,
+    PetOwner = 4,
+    Attacker = 5,
+    RegionBuff = 6,
+    RegionDebuff = 7,
+    HungryMobs = 8
+}
+
+// separate enum in case anything is not quite right
+public enum SkillOwner : byte
+{
+    None = 0,
+    Owner = 1,
+    Target = 2,
+    Caster = 3,
+    PetOwner = 4,
+    Attacker = 5, // example: Soul Crystal applying a hit to a target when external attacker hits, but damage is credited to that attacker rather than Soul Crystal's caster
+    RegionBuff = 6,
+    RegionDebuff = 7,
+}

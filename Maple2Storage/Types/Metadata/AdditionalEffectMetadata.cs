@@ -17,7 +17,7 @@ public class AdditionalEffectMetadata
 public class AdditionalEffectLevelMetadata
 {
     [XmlElement(Order = 1)]
-    public EffectBeginConditionMetadata BeginCondition;
+    public SkillBeginCondition BeginCondition;
     [XmlElement(Order = 2)]
     public EffectBasicPropertyMetadata Basic;
     [XmlElement(Order = 3)]
@@ -65,9 +65,9 @@ public class AdditionalEffectLevelMetadata
     [XmlElement(Order = 24)]
     public EffectRideMetadata Ride;
     [XmlElement(Order = 25)]
-    public List<EffectTriggerSkillMetadata> SplashSkill;
+    public List<SkillCondition> SplashSkill;
     [XmlElement(Order = 26)]
-    public List<EffectTriggerSkillMetadata> ConditionSkill;
+    public List<SkillCondition> ConditionSkill;
 }
 
 [XmlType]
@@ -125,6 +125,9 @@ public class EffectBasicPropertyMetadata
 
     [XmlElement(Order = 10)]
     public float CooldownTime;
+
+    [XmlElement(Order = 11)]
+    public int DelayTick;
 }
 
 [XmlType]
@@ -164,13 +167,24 @@ public class EffectResetSkillCooldownTimeMetadata
 [XmlType]
 public class EffectModifyDurationMetadata
 {
+    [XmlElement(Order = 1)]
+    public int[] EffectCodes;
 
+    [XmlElement(Order = 2)]
+    public float[] DurationFactors;
+
+    [XmlElement(Order = 3)]
+    public float[] DurationValues;
 }
 
 [XmlType]
 public class EffectModifyOverlapCountMetadata
 {
+    [XmlElement(Order = 1)]
+    public int[] EffectCodes;
 
+    [XmlElement(Order = 2)]
+    public int[] OffsetCounts;
 }
 
 [XmlType]
@@ -200,13 +214,18 @@ public class EffectFinalStatusMetadata
 [XmlType]
 public class EffectOffensiveMetadata
 {
+    [XmlElement(Order = 1)]
+    public bool AlwaysCrit;
 
+    [XmlElement(Order = 2)]
+    public int ImmuneBreak;
 }
 
 [XmlType]
 public class EffectDefesiveMetadata
 {
-
+    [XmlElement(Order = 1)]
+    public bool Invincible;
 }
 
 [XmlType]
@@ -232,6 +251,8 @@ public class EffectDotDamageMetadata
     public float Value;
     [XmlElement(Order = 4)]
     public int Element;
+    [XmlElement(Order = 5)]
+    public bool UseGrade;
 }
 
 [XmlType]

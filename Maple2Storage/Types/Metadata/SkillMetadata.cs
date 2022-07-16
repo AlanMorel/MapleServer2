@@ -84,18 +84,24 @@ public class SkillLevel
     public readonly SkillUpgrade SkillUpgrade;
     [XmlElement(Order = 8)]
     public readonly float CooldownTime;
+    [XmlElement(Order = 9)]
+    public readonly List<SkillCondition> ConditionSkills;
+    [XmlElement(Order = 10)]
+    public readonly SkillBeginCondition BeginCondition;
 
     public SkillLevel() { }
 
-    public SkillLevel(int level, int spirit, int stamina, string feature, List<SkillMotion> skillMotions, SkillUpgrade skillUpgrade, float cooldownTime)
+    public SkillLevel(int level, int spirit, int stamina, string feature, List<SkillCondition> conditionSkills, List<SkillMotion> skillMotions, SkillUpgrade skillUpgrade, float cooldownTime, SkillBeginCondition beginCondition)
     {
         Level = level;
         Spirit = spirit;
         Stamina = stamina;
         Feature = feature;
+        ConditionSkills = conditionSkills;
         SkillMotions = skillMotions;
         SkillUpgrade = skillUpgrade;
         CooldownTime = cooldownTime;
+        BeginCondition = beginCondition;
     }
 
     public override string ToString()
@@ -147,12 +153,14 @@ public class SkillAttack
     public readonly List<SkillCondition> SkillConditions;
     [XmlElement(Order = 7)]
     public readonly DamageProperty DamageProperty;
+    [XmlElement(Order = 8)]
+    public readonly int[] CompulsionType;
 
     public SkillAttack() { }
 
     public SkillAttack(byte attackPoint, short targetCount, long magicPathId, long cubeMagicPathId, RangeProperty rangeProperty,
         List<SkillCondition> skillConditions,
-        DamageProperty damageProperty)
+        DamageProperty damageProperty, int[] compulsionType)
     {
         AttackPoint = attackPoint;
         TargetCount = targetCount;
@@ -161,6 +169,7 @@ public class SkillAttack
         RangeProperty = rangeProperty;
         SkillConditions = skillConditions;
         DamageProperty = damageProperty;
+        CompulsionType = compulsionType;
     }
 
     public override string ToString()
@@ -253,31 +262,39 @@ public class SkillAdditionalData
 public class SkillCondition
 {
     [XmlElement(Order = 1)]
-    public readonly int SkillId;
+    public readonly int[] SkillId;
     [XmlElement(Order = 2)]
-    public readonly short SkillLevel;
+    public readonly short[] SkillLevel;
     [XmlElement(Order = 3)]
     public readonly bool IsSplash;
     [XmlElement(Order = 4)]
-    public readonly byte Target;
+    public readonly ApplyTarget Target;
     [XmlElement(Order = 5)]
-    public readonly byte Owner;
+    public readonly SkillOwner Owner;
     [XmlElement(Order = 6)]
     public readonly short FireCount;
     [XmlElement(Order = 7)]
     public readonly int Interval;
     [XmlElement(Order = 8)]
     public readonly bool ImmediateActive;
+    [XmlElement(Order = 9)]
+    public uint Delay;
+    [XmlElement(Order = 10)]
+    public int RemoveDelay;
+    [XmlElement(Order = 11)]
+    public SkillBeginCondition BeginCondition;
+    [XmlElement(Order = 12)]
+    public bool UseDirection;
 
     public SkillCondition() { }
 
-    public SkillCondition(int skillId, short skillLevel, bool isSplash, byte target, byte owner, short fireCount, int interval, bool immediateActive)
+    public SkillCondition(int[] skillId, short[] skillLevel, bool isSplash, byte target, byte owner, short fireCount, int interval, bool immediateActive)
     {
         SkillId = skillId;
         SkillLevel = skillLevel;
         IsSplash = isSplash;
-        Target = target;
-        Owner = owner;
+        Target = (ApplyTarget)target;
+        Owner = (SkillOwner)owner;
         FireCount = fireCount;
         Interval = interval;
         ImmediateActive = immediateActive;
@@ -287,6 +304,41 @@ public class SkillCondition
     {
         return $"Id: {SkillId}, Level:{SkillLevel}, Splash:{IsSplash}, Target:{Target}, Owner:{Owner}";
     }
+}
+
+[XmlType]
+public class SkillBeginCondition
+{
+    [XmlElement(Order = 1)]
+    public BeginConditionSubject Owner;
+
+    [XmlElement(Order = 2)]
+    public float Probability;
+
+    [XmlElement(Order = 3)]
+    public BeginConditionSubject Target;
+
+    [XmlElement(Order = 4)]
+    public BeginConditionSubject Caster;
+}
+
+[XmlType]
+public class BeginConditionSubject
+{
+    [XmlElement(Order = 1)]
+    public int[] EventSkillIDs;
+
+    [XmlElement(Order = 2)]
+    public int[] EventEffectIDs;
+
+    [XmlElement(Order = 3)]
+    public int HasBuffId;
+
+    [XmlElement(Order = 4)]
+    public int HasBuffCount;
+
+    [XmlElement(Order = 5)]
+    public int HasNotBuffId;
 }
 
 [XmlType]

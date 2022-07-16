@@ -207,7 +207,7 @@ public class SkillCommand : InGameCommand
     public override void Execute(GameCommandTrigger trigger)
     {
         GameSession gameSession = trigger.Session;
-        IFieldObject<Player> player = gameSession.Player.FieldPlayer;
+        IFieldActor<Player> player = gameSession.Player.FieldPlayer;
 
         int id = trigger.Get<int>("id");
         short level = trigger.Get<short>("level") > 0 ? trigger.Get<short>("level") : (short) 1;
@@ -218,7 +218,7 @@ public class SkillCommand : InGameCommand
             return;
         }
 
-        SkillCast skillCast = new(id, level, GuidGenerator.Long(), gameSession.ServerTick, player.ObjectId, gameSession.ClientTick)
+        SkillCast skillCast = new(id, level, GuidGenerator.Long(), gameSession.ServerTick, player, gameSession.ClientTick)
         {
             Position = player.Coord,
             Direction = default,

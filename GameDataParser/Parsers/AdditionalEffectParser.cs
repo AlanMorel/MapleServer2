@@ -48,7 +48,8 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                         IntervalTick = data[i].BasicProperty.intervalTick,
                         BuffType = (BuffType) data[i].BasicProperty.buffType,
                         BuffSubType = (BuffSubType) data[i].BasicProperty.buffSubType,
-                        CooldownTime = float.Parse(data[i].BasicProperty.coolDownTime ?? "0")
+                        CooldownTime = float.Parse(data[i].BasicProperty.coolDownTime ?? "0"),
+                        DelayTick = data[i].BasicProperty.delayTick
                     },
                     Status = new()
                     {
@@ -283,19 +284,34 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
 
                 if (offensive != null)
                 {
+                    level.Offensive = new()
+                    {
+                        AlwaysCrit = offensive.attackSuccessCritical != 0,
+                        ImmuneBreak = offensive.hitImmuneBreak
+                    };
+
                     AddStat(level.Status, StatAttribute.PhysicalAtk, offensive.papDamageV, offensive.papDamageR);
                     AddStat(level.Status, StatAttribute.MagicAtk, offensive.mapDamageV, offensive.mapDamageR);
-                    //AddStat(level.Status, StatAttribute., offensive.attackSuccessCritical);
-                    //AddStat(level.Status, StatAttribute., offensive.hitImmuneBreak);
                 }
 
                 DefensiveProperty defensive = data[i].DefensiveProperty;
 
                 if (defensive != null)
                 {
+                    level.Defesive = new()
+                    {
+                        Invincible = defensive.invincible != 0
+                    };
+
                     AddStat(level.Status, StatAttribute.PhysicalRes, defensive.papDamageV, defensive.papDamageR);
                     AddStat(level.Status, StatAttribute.MagicRes, defensive.mapDamageV, defensive.mapDamageR);
-                    //AddStat(level.Status, StatAttribute., defensive.invincible);
+                }
+
+                RecoveryProperty recovery = data[i].RecoveryProperty;
+
+                if (recovery != null)
+                {
+
                 }
 
                 CancelEffectProperty cancel = data[i].CancelEffectProperty;
@@ -332,15 +348,12 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                     {
                         TriggerSkill splashSkill = data[i].splashSkill[skillIndex];
 
-                        level.SplashSkill.Add(new()
+                        level.SplashSkill.Add(new(splashSkill.skillID, GetSkillLevels(splashSkill.level), splashSkill.splash, (byte)splashSkill.skillTarget, (byte)splashSkill.skillOwner, (short)splashSkill.fireCount, splashSkill.interval, splashSkill.immediateActive)
                         {
-                            SkillId = splashSkill.skillID,
-                            SkillLevel = splashSkill.level,
-                            Splash = splashSkill.splash,
-                            FireCount = splashSkill.fireCount,
-                            Interval = splashSkill.interval,
                             Delay = splashSkill.delay,
-                            RemoveDelay = splashSkill.removeDelay
+                            RemoveDelay = splashSkill.removeDelay,
+                            UseDirection = splashSkill.useDirection,
+                            BeginCondition = ParseBeginCondition(splashSkill.beginCondition)
                         });
                     }
                 }
@@ -355,16 +368,12 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                     {
                         TriggerSkill conditionSkill = data[i].conditionSkill[skillIndex];
 
-                        level.ConditionSkill.Add(new()
+                        level.ConditionSkill.Add(new(conditionSkill.skillID, GetSkillLevels(conditionSkill.level), conditionSkill.splash, (byte) conditionSkill.skillTarget, (byte) conditionSkill.skillOwner, (short) conditionSkill.fireCount, conditionSkill.interval, conditionSkill.immediateActive)
                         {
-                            SkillId = conditionSkill.skillID,
-                            SkillLevel = conditionSkill.level,
-                            Splash = conditionSkill.splash,
-                            FireCount = conditionSkill.fireCount,
-                            Interval = conditionSkill.interval,
                             Delay = conditionSkill.delay,
-                            RemoveDelay = conditionSkill.removeDelay,
-                            BeginCondition = ParseBeginCondition(conditionSkill.beginCondition)
+                            RemoveDelay= conditionSkill.removeDelay,
+                            UseDirection = conditionSkill.useDirection,
+                            BeginCondition= ParseBeginCondition(conditionSkill.beginCondition)
                         });
                     }
                 }
@@ -395,6 +404,30 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                         Rate = dotDamage.rate,
                         Value = dotDamage.value,
                         Element = dotDamage.element,
+                        UseGrade = dotDamage.useGrade
+                    };
+                }
+
+                ModifyEffectDurationProperty modifyEffect = data[i].ModifyEffectDurationProperty;
+
+                if (modifyEffect != null)
+                {
+                    level.ModifyEffectDuration = new()
+                    {
+                        EffectCodes = modifyEffect.effectCodes,
+                        DurationFactors = modifyEffect.durationFactors,
+                        DurationValues = modifyEffect.durationValues,
+                    };
+                }
+
+                ModifyOverlapCountProperty modifyOverlapCount = data[i].ModifyOverlapCountProperty;
+
+                if (modifyOverlapCount != null)
+                {
+                    level.ModifyOverlapCount = new()
+                    {
+                        EffectCodes = modifyOverlapCount.effectCodes,
+                        OffsetCounts = modifyOverlapCount.offsetCounts,
                     };
                 }
 
@@ -407,31 +440,48 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
         return effects;
     }
 
-    private EffectBeginConditionMetadata ParseBeginCondition(BeginCondition beginCondition)
+    private short[] GetSkillLevels(int[] levels)
+    {
+        short[] result = new short[levels.Length];
+
+        for (int i = 0; i < levels.Length; i++)
+        {
+            result[i] = (short)levels[i];
+        }
+
+        return result;
+    }
+
+    private SkillBeginCondition ParseBeginCondition(BeginCondition beginCondition)
     {
         if (beginCondition == null)
         {
             return null;
         }
 
-        SubConditionTarget ownerCondition = beginCondition.skillOwner;
-
-        EffectBeginConditionOwnerMetadata owner = null;
-
-        if (ownerCondition != null)
+        return new()
         {
-            owner = new()
-            {
-                EventSkillIDs = ownerCondition.eventSkillID,
-                EventEffectIDs = ownerCondition.eventEffectID,
-                HasBuffId = ownerCondition.hasBuffID
-            };
+            Owner = ParseOwnerCondition(beginCondition.skillOwner),
+            Target = ParseOwnerCondition(beginCondition.skillTarget),
+            Caster = ParseOwnerCondition(beginCondition.skillCaster),
+            Probability = beginCondition.probability,
+        };
+    }
+
+    private BeginConditionSubject ParseOwnerCondition(SubConditionTarget ownerCondition)
+    {
+        if (ownerCondition == null)
+        {
+            return null;
         }
 
         return new()
         {
-            Owner = owner,
-            Probability = beginCondition.probability,
+            EventSkillIDs = ownerCondition.eventSkillID,
+            EventEffectIDs = ownerCondition.eventEffectID,
+            HasBuffId = ownerCondition.hasBuffID[0],
+            HasNotBuffId = ownerCondition.hasNotBuffID?.FirstOrDefault(0) ?? 0,
+            HasBuffCount = ownerCondition.hasBuffCount[0],
         };
     }
 

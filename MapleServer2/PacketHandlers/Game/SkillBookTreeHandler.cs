@@ -91,7 +91,7 @@ public class SkillBookTreeHandler : GamePacketHandler<SkillBookTreeHandler>
             DatabaseManager.SkillTabs.Update(skillTab);
         }
 
-        if (selectedTab == 0)
+        if (selectedTab == 0 || selectedTab == activeTabId)
         {
             session.Player.UpdatePassiveSkills();
         }

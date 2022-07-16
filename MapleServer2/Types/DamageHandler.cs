@@ -11,6 +11,7 @@ public class DamageSourceParameters
 {
     public bool IsSkill;
     public bool GuaranteedCrit;
+    public bool CanCrit;
     public Element Element;
     public SkillRangeType RangeType;
     public DamageType DamageType;
@@ -22,6 +23,7 @@ public class DamageSourceParameters
     {
         IsSkill = false;
         GuaranteedCrit = false;
+        CanCrit = true;
         Element = Element.None;
         RangeType = SkillRangeType.Special;
         SkillGroups = null;
@@ -53,10 +55,15 @@ public class DamageHandler
             return new(source, target, target.Stats[StatAttribute.Hp].Total, HitType.Critical);
         }
 
+        if (target.AdditionalEffects.Invincible)
+        {
+            return new(source, target, 0, HitType.Miss);
+        }
+
         DamageSourceParameters parameters = new()
         {
             IsSkill = true,
-            GuaranteedCrit = skill.IsGuaranteedCrit(),
+            GuaranteedCrit = skill.IsGuaranteedCrit() || source.AdditionalEffects.AlwaysCrit,
             Element = skill.GetElement(),
             RangeType = skill.GetRangeType(),
             DamageType = skill.GetSkillDamageType(),
@@ -85,15 +92,18 @@ public class DamageHandler
             return;
         }
 
-        DamageHandler damage = DamageHandler.CalculateDamage(dotParameters, sourceActor, target);
-
-        if (session != null)
+        if (target.AdditionalEffects.Invincible)
         {
-            target.Damage(damage, session);
+            target.FieldManager.BroadcastPacket(SkillDamagePacket.DotDamage(sourceActor.ObjectId, target.ObjectId, Environment.TickCount, HitType.Miss, 0));
+
+            return;
         }
 
-        List<DamageHandler> damages = new() { damage };
-        target.FieldManager.BroadcastPacket(SkillDamagePacket.Damage(dotParameters.ParentSkill, 0, target.Coord, target.Rotation, damages));
+        DamageHandler damage = CalculateDamage(dotParameters, sourceActor, target);
+
+        target.Damage(damage, session);
+
+        target.FieldManager.BroadcastPacket(SkillDamagePacket.DotDamage(sourceActor.ObjectId, target.ObjectId, Environment.TickCount, damage.HitType, (int)damage.Damage));
     }
 
     public static DamageHandler CalculateDamage(DamageSourceParameters parameters, IFieldActor source, IFieldActor target)
@@ -126,7 +136,7 @@ public class DamageHandler
             attackDamage = minDamage + (maxDamage - minDamage) * Random.Shared.NextDouble();
         }
 
-        bool isCrit = parameters.GuaranteedCrit || RollCrit(source, target, luckCoefficient);
+        bool isCrit = parameters.CanCrit && (parameters.GuaranteedCrit || RollCrit(source, target, luckCoefficient));
 
         double finalCritDamage = 1;
 

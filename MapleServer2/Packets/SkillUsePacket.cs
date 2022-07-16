@@ -12,7 +12,7 @@ public static class SkillUsePacket
 
         pWriter.WriteLong(skillCast.SkillSn);
         pWriter.WriteInt(skillCast.ServerTick);
-        pWriter.WriteInt(skillCast.CasterObjectId);
+        pWriter.WriteInt(skillCast.Caster.ObjectId);
         pWriter.WriteInt(skillCast.SkillId);
         pWriter.WriteShort(skillCast.SkillLevel);
         pWriter.WriteByte();
