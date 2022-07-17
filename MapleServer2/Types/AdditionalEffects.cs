@@ -43,7 +43,6 @@ public class AdditionalEffects
     public bool AlwaysCrit { get; private set; }
     public bool Invincible { get; private set; }
     private List<(int, AdditionalEffect)> ListeningSkillIds = new();
-    private Dictionary<int, AdditionalEffect> ListeningSkillIdsDict = new();
 
     public AdditionalEffects(IFieldActor parent = null)
     {
@@ -68,10 +67,10 @@ public class AdditionalEffects
         }
     }
 
-    private int BufferingNewEffects = 0;
+    private int BufferingNewEffects;
     private List<AdditionalEffectParameters> NewEffectBuffer = new();
     private List<AdditionalEffectParameters> NewEffectBackBuffer = new();
-    private bool FlushingBackBuffer = false;
+    private bool FlushingBackBuffer;
 
     public void BufferNewEffects()
     {
@@ -82,26 +81,28 @@ public class AdditionalEffects
     {
         --BufferingNewEffects;
 
-        if (BufferingNewEffects == 0 && !FlushingBackBuffer)
+        if (BufferingNewEffects != 0 || FlushingBackBuffer)
         {
-            FlushingBackBuffer = true;
+            return;
+        }
 
-            while (NewEffectBuffer.Count > 0)
+        FlushingBackBuffer = true;
+
+        while (NewEffectBuffer.Count > 0)
+        {
+            List<AdditionalEffectParameters> buffer = NewEffectBuffer;
+            NewEffectBuffer = NewEffectBackBuffer;
+            NewEffectBackBuffer = buffer;
+
+            foreach (AdditionalEffectParameters effectParams in buffer)
             {
-                List<AdditionalEffectParameters> buffer = NewEffectBuffer;
-                NewEffectBuffer = NewEffectBackBuffer;
-                NewEffectBackBuffer = buffer;
-
-                foreach (AdditionalEffectParameters effectParams in buffer)
-                {
-                    AddEffect(effectParams);
-                }
-
-                buffer.Clear();
+                AddEffect(effectParams);
             }
 
-            FlushingBackBuffer = false;
+            buffer.Clear();
         }
+
+        FlushingBackBuffer = false;
     }
 
     public AdditionalEffect AddEffect(AdditionalEffectParameters parameters)
@@ -327,34 +328,36 @@ public class AdditionalEffects
             {
                 AdditionalEffect affectedEffect = GetEffect(overlapCodes[i]);
 
-                if (affectedEffect != null)
+                if (affectedEffect == null)
                 {
-                    AddEffect(new(affectedEffect.Id, affectedEffect.Level)
-                    {
-                        Stacks = effect.LevelMetadata.ModifyOverlapCount.OffsetCounts[i],
-                        AdjustDuration = false
-                    });
-
                     continue;
                 }
+
+                AddEffect(new(affectedEffect.Id, affectedEffect.Level)
+                {
+                    Stacks = effect.LevelMetadata.ModifyOverlapCount.OffsetCounts[i],
+                    AdjustDuration = false
+                });
             }
         }
 
         EffectModifyDurationMetadata modifyDuration = effect.LevelMetadata.ModifyEffectDuration;
         int[] durationCodes = modifyDuration?.EffectCodes;
 
-        if ((durationCodes?.Length ?? 0) > 0)
+        if (durationCodes?.Length > 0)
         {
             for (int i = 0; i < durationCodes.Length; ++i)
             {
                 AdditionalEffect affectedEffect = GetEffect(durationCodes[i]);
 
-                if (affectedEffect != null)
+                if (affectedEffect == null)
                 {
-                    affectedEffect.Duration = (int) (modifyDuration.DurationFactors[i] * affectedEffect.Duration) + (int) (1000 * modifyDuration.DurationValues[i]);
-
-                    Parent.FieldManager.BroadcastPacket(BuffPacket.UpdateBuff(effect, Parent.ObjectId));
+                    continue;
                 }
+
+                affectedEffect.Duration = (int) (modifyDuration.DurationFactors[i] * affectedEffect.Duration) + (int) (1000 * modifyDuration.DurationValues[i]);
+
+                Parent.FieldManager.BroadcastPacket(BuffPacket.UpdateBuff(effect, Parent.ObjectId));
             }
         }
     }
@@ -370,7 +373,7 @@ public class AdditionalEffects
         int index;
         AdditionalEffect effect;
 
-        if (TryGet(id, level, out effect, out index))
+        if (TryGet(id, out effect, out index))
         {
             RemoveEffect(effect, index, sendPacket);
         }
@@ -393,7 +396,7 @@ public class AdditionalEffects
 
             int timedIndex = -1;
 
-            if (TryGet(effect.Id, effect.Level, out AdditionalEffect removeEffect, out timedIndex, true) && removeEffect.LevelMetadata != null)
+            if (TryGet(effect.Id, out AdditionalEffect removeEffect, out timedIndex, true) && removeEffect.LevelMetadata != null)
             {
                 RemoveAt(timedIndex, true);
             }
@@ -501,7 +504,7 @@ public class AdditionalEffects
         list.RemoveAt(list.Count - 1);
     }
 
-    public bool TryGet(int id, int level, out AdditionalEffect effect, out int index, bool getTimed = false)
+    public bool TryGet(int id, out AdditionalEffect effect, out int index, bool getTimed = false)
     {
         effect = null;
 
@@ -524,7 +527,7 @@ public class AdditionalEffects
     {
         int index = 0;
 
-        return TryGet(id, level, out effect, out index, getTimed);
+        return TryGet(id, out effect, out index, getTimed);
     }
 
     public bool IsListeningForSkill(int skillId)
@@ -569,7 +572,6 @@ public class AdditionalEffects
             foreach (int id in condition.BeginCondition.Owner.EventSkillIDs)
             {
                 ListeningSkillIds.Add((id, effect));
-                ListeningSkillIdsDict[id] = effect;
             }
         }
     }
@@ -595,7 +597,6 @@ public class AdditionalEffects
     public void RefreshListeningSkills()
     {
         ListeningSkillIds.Clear();
-        ListeningSkillIdsDict.Clear();
 
         foreach (AdditionalEffect effect in Effects)
         {

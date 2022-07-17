@@ -121,7 +121,7 @@ public static class SkillDamagePacket
 
         pWriter.Write(Mode.RegionDamage);
         pWriter.WriteLong(); // always 0??
-        pWriter.WriteInt(skillCast.Caster.ObjectId);
+        pWriter.WriteInt(skillCast.Caster?.ObjectId ?? 0);
         pWriter.WriteInt(skillCast.SkillObjectId);
         pWriter.WriteByte();
 

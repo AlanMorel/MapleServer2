@@ -754,31 +754,35 @@ public class Player
 
         foreach ((int id, short level) in PassiveSkillEffects)
         {
+            SkillLevel skillLevel;
+
             if (level < 1)
             {
-                if (EnabledPassiveSkillEffects.TryGetValue(id, out SkillLevel skillLevel))
+                if (!EnabledPassiveSkillEffects.TryGetValue(id, out skillLevel))
                 {
-                    foreach (SkillCondition trigger in skillLevel.ConditionSkills)
-                    {
-                        foreach (int skillId in trigger.SkillId)
-                        {
-                            AdditionalEffects.RemoveEffect(skillId, level);
-                        }
-                    }
-
-                    EnabledPassiveSkillEffects.Remove(id);
+                    continue;
                 }
-            }
-            else
-            {
-                SkillMetadata skill = SkillMetadataStorage.GetSkill(id);
-                SkillLevel skillLevel = skill.SkillLevels.FirstOrDefault(skillLevel => skillLevel.Level == level, skill.SkillLevels[0]);
 
-                EnabledPassiveSkillEffects[id] = skillLevel;
+                foreach (SkillCondition trigger in skillLevel.ConditionSkills)
+                {
+                    foreach (int skillId in trigger.SkillId)
+                    {
+                        AdditionalEffects.RemoveEffect(skillId, level);
+                    }
+                }
 
-                //AdditionalEffects.AddEffect(new(id, level));
-                FieldPlayer.SkillTriggerHandler.FireTriggers(skillLevel.ConditionSkills, triggers);
+                EnabledPassiveSkillEffects.Remove(id);
+
+                continue;
             }
+
+            SkillMetadata skill = SkillMetadataStorage.GetSkill(id);
+            skillLevel = skill.SkillLevels.FirstOrDefault(skillLevel => skillLevel.Level == level, skill.SkillLevels[0]);
+
+            EnabledPassiveSkillEffects[id] = skillLevel;
+
+            //AdditionalEffects.AddEffect(new(id, level));
+            FieldPlayer.SkillTriggerHandler.FireTriggers(skillLevel.ConditionSkills, triggers);
         }
     }
 }
