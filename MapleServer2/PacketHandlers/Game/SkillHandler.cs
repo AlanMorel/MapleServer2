@@ -328,8 +328,8 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             return;
         }
 
-        CoordF splashRotation = skillCondition.UseDirection ? parentSkill.Rotation : new CoordF();
-        CoordF direction = skillCondition.UseDirection ? parentSkill.Direction : new CoordF();
+        CoordF splashRotation = skillCondition.UseDirection ? parentSkill.Rotation : default;
+        CoordF direction = skillCondition.UseDirection ? parentSkill.Direction : default;
         short lookDirection = skillCondition.UseDirection ? parentSkill.LookDirection : (short) 0;
 
         for (int i = 0; i < skillCondition.SkillId.Length; ++i)

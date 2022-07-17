@@ -143,15 +143,7 @@ public class SkillCast
             return false;
         }
 
-        foreach (int compulsionType in SkillAttack.CompulsionType)
-        {
-            if (type == compulsionType)
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return SkillAttack.CompulsionType.Any(compulsionType => type == compulsionType);
     }
 
     public bool IsChainSkill()

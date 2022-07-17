@@ -10,39 +10,6 @@ using MapleServer2.Data.Static;
 
 namespace MapleServer2.Types;
 
-public struct EffectTriggers
-{
-    public bool IsEvent;
-    public int SkillId;
-    public int EffectId;
-    public IFieldActor Owner;
-    public IFieldActor Target;
-    public IFieldActor Caster;
-
-    public EffectTriggers()
-    {
-        IsEvent = false;
-        SkillId = 0;
-        EffectId = 0;
-        Owner = null;
-        Target = null;
-        Caster = null;
-    }
-
-    public void CopyEvents(EffectTriggers source)
-    {
-        IsEvent = source.IsEvent;
-
-        if (!IsEvent)
-        {
-            return;
-        }
-
-        SkillId = source.SkillId;
-        EffectId = source.EffectId;
-    }
-}
-
 public class SkillTriggerHandler
 {
     public IFieldActor Parent;
@@ -231,9 +198,9 @@ public class SkillTriggerHandler
                 {
                     Caster = parentSkill.Caster,
                     Position = target.Coord,
-                    Rotation = trigger.UseDirection ? parentSkill.Rotation : new CoordF(),
-                    Direction = trigger.UseDirection ? parentSkill.Direction : new CoordF(),
-                    LookDirection = trigger.UseDirection ? parentSkill.LookDirection : (short) 0,
+                    Rotation = trigger.UseDirection ? parentSkill.Rotation : default,
+                    Direction = trigger.UseDirection ? parentSkill.Direction : default,
+                    LookDirection = trigger.UseDirection ? parentSkill.LookDirection : default,
                     Duration = duration
                 };
             }
@@ -243,9 +210,6 @@ public class SkillTriggerHandler
                 {
                     Caster = Parent,
                     Position = target.Coord,
-                    Rotation = new CoordF(),
-                    Direction = new CoordF(),
-                    LookDirection = 0,
                     Duration = duration
                 };
             }

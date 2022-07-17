@@ -265,7 +265,7 @@ public static class RegionSkillHandler
 
     private static void HandleRegionDamage(FieldManager field, SkillCast skillCast, SkillCondition condition)
     {
-        if (!(skillCast.Caster is Character caster))
+        if (skillCast.Caster is not Character caster)
         {
             // TODO: Handle NPCs/Triggers sending skills
             field.BroadcastPacket(SkillDamagePacket.RegionDamage(skillCast, new()));
@@ -295,11 +295,7 @@ public static class RegionSkillHandler
                     Target = mob
                 };
 
-                if (skillCast.Owner != null)
-                {
-                    skillCast.Owner.SkillTriggerHandler.FireTriggerSkill(condition, skillCast.ParentSkill, parameters);
-                }
-
+                skillCast.Owner?.SkillTriggerHandler?.FireTriggerSkill(condition, skillCast.ParentSkill, parameters);
                 parameters.Caster.SkillTriggerHandler.SkillTrigger(mob, skillCast);
             }
         }
