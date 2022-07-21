@@ -1,4 +1,6 @@
 ﻿using Maple2Storage.Enums;
+using Maple2Storage.Types.Metadata;
+using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Types;
 
@@ -12,11 +14,6 @@ public class Character : FieldActor<Player>
         set => Value.Stats = value;
     }
 
-    public override AdditionalEffects AdditionalEffects
-    {
-        get => Value.AdditionalEffects;
-    }
-
     private CancellationTokenSource CombatCTS;
 
     private Task HpRegenThread;
@@ -24,10 +21,11 @@ public class Character : FieldActor<Player>
     private Task StaRegenThread;
     public IFieldObject<LiftableObject> CarryingLiftable;
     public Pet ActivePet;
+    public override AdditionalEffects AdditionalEffects { get => Value.AdditionalEffects; }
 
     private DateTime LastConsumeStaminaTime;
 
-    public override FieldManager FieldManager { get => Value.Session.FieldManager; }
+    public override FieldManager FieldManager { get => Value?.Session?.FieldManager; }
 
     public Character(int objectId, Player value, FieldManager fieldManager) : base(objectId, value, fieldManager)
     {
@@ -68,18 +66,15 @@ public class Character : FieldActor<Player>
 
         // TODO: Move this and all others combat cases like recover sp to its own class.
         // Since the cast is always sent by the skill, we have to check buffs even when not doing damage.
-        if (skillCast.IsBuff())
-        {
-            AdditionalEffects.AddEffect(new(skillCast.SkillId, skillCast.SkillLevel)
-            {
-                Duration = skillCast.DurationTick(),
-                IsBuff = true,
-                ParentSkill = skillCast
-            });
+        List<SkillCondition> conditionSkills = SkillMetadataStorage.GetSkill(skillCast.SkillId)?.SkillLevels?.FirstOrDefault(level => level.Level == skillCast.SkillLevel)?.ConditionSkills;
 
-            //Status status = new(skillCast, ObjectId, ObjectId, 1);
-            //StatusHandler.Handle(Value.Session, status);
-        }
+        EffectTriggers triggers = new()
+        {
+            Caster = this,
+            Owner = this
+        };
+
+        SkillTriggerHandler.FireTriggers(conditionSkills, triggers);
 
         Value.Session.FieldManager.BroadcastPacket(SkillUsePacket.SkillUse(skillCast));
         Value.Session.Send(StatPacket.SetStats(this));

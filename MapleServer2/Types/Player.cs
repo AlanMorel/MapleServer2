@@ -172,6 +172,7 @@ public class Player
     public Character FieldPlayer;
 
     private Dictionary<int, short> PassiveSkillEffects = new();
+    private Dictionary<int, SkillLevel> EnabledPassiveSkillEffects = new();
     public Player() { }
 
     // Initializes all values to be saved into the database
@@ -745,16 +746,48 @@ public class Player
             PassiveSkillEffects[id] = level;
         }
 
+        EffectTriggers triggers = new()
+        {
+            Caster = FieldPlayer,
+            Owner = FieldPlayer
+        };
+
         foreach ((int id, short level) in PassiveSkillEffects)
         {
-            if (level == -1)
+            SkillLevel skillLevel;
+
+            if (level < 1)
             {
-                AdditionalEffects.RemoveEffect(id, level);
+                if (!EnabledPassiveSkillEffects.TryGetValue(id, out skillLevel))
+                {
+                    continue;
+                }
+
+                if (skillLevel.ConditionSkills == null)
+                {
+                    continue;
+                }
+
+                foreach (SkillCondition trigger in skillLevel.ConditionSkills)
+                {
+                    foreach (int skillId in trigger.SkillId)
+                    {
+                        AdditionalEffects.RemoveEffect(skillId, level);
+                    }
+                }
+
+                EnabledPassiveSkillEffects.Remove(id);
+
+                continue;
             }
-            else
-            {
-                AdditionalEffects.AddEffect(new(id, level));
-            }
+
+            SkillMetadata skill = SkillMetadataStorage.GetSkill(id);
+            skillLevel = skill.SkillLevels.FirstOrDefault(skillLevel => skillLevel.Level == level, skill.SkillLevels[0]);
+
+            EnabledPassiveSkillEffects[id] = skillLevel;
+
+            //AdditionalEffects.AddEffect(new(id, level));
+            FieldPlayer.SkillTriggerHandler.FireTriggers(skillLevel.ConditionSkills, triggers);
         }
     }
 }

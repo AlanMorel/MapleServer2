@@ -9,7 +9,6 @@ namespace MapleServer2.Types;
 public class SkillCast
 {
     public long SkillSn { get; }
-    public int CasterObjectId { get; set; }
     public int SkillObjectId { get; set; }
     public int SkillId { get; }
     public short SkillLevel { get; }
@@ -29,7 +28,9 @@ public class SkillCast
     public short LookDirection;
     public float AimAngle;
 
+    public IFieldActor Caster;
     public IFieldActor<NpcMetadata> Target;
+    public IFieldActor Owner; // who the skill was casted at, not necessarily the same as caster
 
     public bool MetadataExists => GetSkillMetadata() is not null;
 
@@ -57,23 +58,23 @@ public class SkillCast
     public SkillCast(int id, short level, long skillSn, int serverTick, SkillCast parentSkill) : this(id, level, skillSn, serverTick)
     {
         ParentSkill = parentSkill;
-        CasterObjectId = parentSkill.CasterObjectId;
+        Caster = parentSkill.Caster;
         Position = parentSkill.Position;
         Rotation = parentSkill.Rotation;
         LookDirection = parentSkill.LookDirection;
     }
 
-    public SkillCast(int id, short level, long skillSn, int serverTick, int casterObjectId, int clientTick) : this(id, level, skillSn, serverTick)
+    public SkillCast(int id, short level, long skillSn, int serverTick, IFieldActor caster, int clientTick) : this(id, level, skillSn, serverTick)
     {
-        CasterObjectId = casterObjectId;
+        Caster = caster;
         ClientTick = clientTick;
     }
 
-    public SkillCast(int id, short level, long skillSn, int serverTick, int casterObjectId, int clientTick, byte attackPoint) : this(id, level, skillSn,
+    public SkillCast(int id, short level, long skillSn, int serverTick, IFieldActor caster, int clientTick, byte attackPoint) : this(id, level, skillSn,
         serverTick)
     {
         AttackPoint = attackPoint;
-        CasterObjectId = casterObjectId;
+        Caster = caster;
         ClientTick = clientTick;
     }
 
@@ -91,7 +92,7 @@ public class SkillCast
 
     public bool IsSpRecovery() => GetSkillMetadata().IsSpRecovery;
 
-    public bool IsGuaranteedCrit() => false;
+    public bool IsGuaranteedCrit() => HasCompulsionType(2);
 
     public int DurationTick()
     {
@@ -134,6 +135,16 @@ public class SkillCast
     public bool IsDebuffElement() => VerifySkillTypeOf(SkillType.Active, SkillSubType.Status, BuffType.Debuff, BuffSubType.Element);
 
     public bool IsBuffShield() => VerifySkillTypeOf(SkillType.Active, SkillSubType.Status, BuffType.Buff, BuffSubType.Shield);
+
+    public bool HasCompulsionType(int type)
+    {
+        if (SkillAttack.CompulsionType == null)
+        {
+            return false;
+        }
+
+        return SkillAttack.CompulsionType.Any(compulsionType => type == compulsionType);
+    }
 
     public bool IsChainSkill()
     {

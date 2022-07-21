@@ -170,10 +170,9 @@ public partial class TriggerContext
                 SkillCast skillCast = new(triggerSkill.Value.SkillId, triggerSkill.Value.SkillLevel, GuidGenerator.Long(), Environment.TickCount)
                 {
                     SkillObjectId = triggerSkill.ObjectId,
-                    CasterObjectId = triggerSkill.ObjectId,
                     Position = triggerSkill.Coord
                 };
-                RegionSkillHandler.HandleEffect(Field, skillCast, 0);
+                RegionSkillHandler.HandleEffect(Field, skillCast);
             }
         }
     }

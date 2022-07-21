@@ -306,7 +306,8 @@ public class FieldManager
                 mapTriggerSkill.SkillId,
                 mapTriggerSkill.SkillLevel,
                 mapTriggerSkill.Count,
-                mapTriggerSkill.Position);
+                mapTriggerSkill.Position,
+                null);
             IFieldObject<TriggerSkill> fieldTriggerSkill = RequestFieldObject(triggerSkill);
             fieldTriggerSkill.Coord = fieldTriggerSkill.Value.Position;
 
@@ -474,7 +475,7 @@ public class FieldManager
             SkillCast skillCast = new(70000018, 1)
             {
                 SkillObjectId = healingSpot.ObjectId,
-                CasterObjectId = healingSpot.ObjectId
+                //CasterObjectId = healingSpot.ObjectId
             };
             skillCast.EffectCoords.Add(healingSpot.Value.Coord.ToFloat());
             sender.Send(RegionSkillPacket.Send(skillCast));

@@ -56,8 +56,8 @@ public static class SkillDamagePacket
         pWriter.Write(Mode.Damage);
         pWriter.WriteLong(skillCast.SkillSn);
         pWriter.WriteInt(attackCount);
-        pWriter.WriteInt(skillCast.CasterObjectId);
-        pWriter.WriteInt(skillCast.CasterObjectId);
+        pWriter.WriteInt(skillCast.Caster.ObjectId);
+        pWriter.WriteInt(skillCast.Caster.ObjectId);
         pWriter.WriteInt(skillCast.SkillId);
         pWriter.WriteShort(skillCast.SkillLevel);
         // This values appears on some SkillsId, and others like BossSkill, sometimes is 0
@@ -86,7 +86,7 @@ public static class SkillDamagePacket
         return pWriter;
     }
 
-    public static PacketWriter DotDamage(int ownerId, int targetId, int tick, DamageType damageType, int damage)
+    public static PacketWriter DotDamage(int ownerId, int targetId, int tick, HitType hitType, int damage)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.SkillDamage);
 
@@ -94,7 +94,7 @@ public static class SkillDamagePacket
         pWriter.WriteInt(ownerId);
         pWriter.WriteInt(targetId);
         pWriter.WriteInt(tick);
-        pWriter.Write(damageType);
+        pWriter.Write(hitType);
         pWriter.WriteInt(damage);
 
         return pWriter;
@@ -121,7 +121,7 @@ public static class SkillDamagePacket
 
         pWriter.Write(Mode.RegionDamage);
         pWriter.WriteLong(); // always 0??
-        pWriter.WriteInt(skillCast.CasterObjectId);
+        pWriter.WriteInt(skillCast.Caster?.ObjectId ?? 0);
         pWriter.WriteInt(skillCast.SkillObjectId);
         pWriter.WriteByte();
 

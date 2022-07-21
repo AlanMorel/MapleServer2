@@ -3,6 +3,7 @@ using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Managers.Actors;
+using MapleServer2.PacketHandlers.Game;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
@@ -14,9 +15,10 @@ public struct AdditionalEffectParameters
     public int Id;
     public int Level;
     public int Stacks;
-    public int Source;
+    public IFieldActor Caster;
     public int Duration;
     public bool IsBuff;
+    public bool AdjustDuration;
     public SkillCast ParentSkill;
 
     public AdditionalEffectParameters(int id, int level)
@@ -24,9 +26,10 @@ public struct AdditionalEffectParameters
         Id = id;
         Level = level;
         Stacks = 1;
-        Source = -1;
+        Caster = null;
         Duration = 0;
         IsBuff = false;
+        AdjustDuration = true;
         ParentSkill = null;
     }
 }
@@ -36,57 +39,93 @@ public class AdditionalEffects
     public List<AdditionalEffect> Effects;
     public List<AdditionalEffect> TimedEffects;
     public IFieldActor Parent;
-    private int NextBuffExpiration = -1;
+    private AdditionalEffect NextExpiringBuff = null;
+    public bool AlwaysCrit { get; private set; }
+    public bool Invincible { get; private set; }
+    private List<(int, AdditionalEffect)> ListeningSkillIds = new();
 
     public AdditionalEffects(IFieldActor parent = null)
     {
         Effects = new();
         TimedEffects = new();
         Parent = parent;
+        AlwaysCrit = false;
+        Invincible = false;
     }
 
     public void UpdateEffects()
     {
-        bool recomputedLastIteration = false;
+        int currentTick = Environment.TickCount;
 
-        while (NextBuffExpiration != -1 && TimedEffects.Count > 0 && Environment.TickCount >= NextBuffExpiration)
+        while (NextExpiringBuff != null && currentTick - NextExpiringBuff.Start > NextExpiringBuff.Duration)
         {
-            int index = FindExpiredBuff();
+            int index = GetEffectIndex(NextExpiringBuff.Id);
 
-            if (index == -1)
+            RemoveEffect(NextExpiringBuff, index);
+
+            NextExpiringBuff = FindNextExpiringBuff();
+        }
+    }
+
+    private int BufferingNewEffects;
+    private List<AdditionalEffectParameters> NewEffectBuffer = new();
+    private List<AdditionalEffectParameters> NewEffectBackBuffer = new();
+    private bool FlushingBackBuffer;
+
+    public void BufferNewEffects()
+    {
+        ++BufferingNewEffects;
+    }
+
+    public void FlushEffectsBuffer()
+    {
+        --BufferingNewEffects;
+
+        if (BufferingNewEffects != 0 || FlushingBackBuffer)
+        {
+            return;
+        }
+
+        FlushingBackBuffer = true;
+
+        while (NewEffectBuffer.Count > 0)
+        {
+            List<AdditionalEffectParameters> buffer = NewEffectBuffer;
+            NewEffectBuffer = NewEffectBackBuffer;
+            NewEffectBackBuffer = buffer;
+
+            foreach (AdditionalEffectParameters effectParams in buffer)
             {
-                if (recomputedLastIteration)
-                {
-                    return;
-                }
-
-                RecomputeExpiration();
-
-                recomputedLastIteration = true;
-
-                continue;
+                AddEffect(effectParams);
             }
 
-            recomputedLastIteration = false;
-
-            RemoveEffect(Effects[index], index);
+            buffer.Clear();
         }
+
+        FlushingBackBuffer = false;
     }
 
     public AdditionalEffect AddEffect(AdditionalEffectParameters parameters)
     {
+        if (BufferingNewEffects != 0)
+        {
+            NewEffectBuffer.Add(parameters);
+
+            return null;
+        }
+
         // current default behavior of remove and replace, and add stacks
         // doesnt check for shared buff categories (sigils, whetstones, etc)
         // TODO: add correct refreshing behavior based on attributes from the xmls
 
         AdditionalEffect effect = new(parameters.Id, parameters.Level, parameters.Stacks);
+        int oldEffectIndex = -1;
+        int start = Environment.TickCount;
 
         if (effect.LevelMetadata == null)
         {
             return null;
         }
-
-        effect.ParentSkill = parameters.ParentSkill;
 
         EffectCancelEffectMetadata cancel = effect.LevelMetadata.CancelEffect;
 
@@ -107,88 +146,155 @@ public class AdditionalEffects
 
             if (oldEffect.Id == effect.Id)
             {
-                parameters.Stacks = Math.Min(oldEffect.LevelMetadata.Basic.MaxBuffCount, parameters.Stacks + oldEffect.Stacks);
+                parameters.Stacks = Math.Max(Math.Min(oldEffect.LevelMetadata.Basic.MaxBuffCount, parameters.Stacks + oldEffect.Stacks), 0);
 
-                RemoveEffect(oldEffect, i, true);
+                oldEffect.Level = effect.Level;
+                oldEffect.LevelMetadata = effect.LevelMetadata;
+                effect = oldEffect;
+                oldEffectIndex = i;
+
+                if (parameters.ParentSkill == null)
+                {
+                    parameters.ParentSkill = oldEffect.ParentSkill;
+                    parameters.Caster = oldEffect.Caster;
+                }
+
+                if (!parameters.AdjustDuration)
+                {
+                    start = oldEffect.Start;
+                    parameters.Duration = oldEffect.Duration;
+                }
 
                 break;
             }
+        }
+
+        for (int i = 0; i < Effects.Count; i++)
+        {
+            AdditionalEffect oldEffect = Effects[i];
 
             if (cancel?.CancelEffectCodes?.Contains(oldEffect.Id) == true)
             {
                 RemoveEffect(oldEffect, i, true);
-
-                break;
             }
         }
 
-        effect.BuffId = GuidGenerator.Int();
-        effect.SourceId = parameters.Source == -1 ? Parent.ObjectId : parameters.Source;
-        effect.Start = Environment.TickCount;
+        if (parameters.Stacks == 0)
+        {
+            if (oldEffectIndex != -1)
+            {
+                RemoveEffect(effect, oldEffectIndex, true);
+            }
+
+            return null;
+        }
+
+        effect.ParentSkill = parameters.ParentSkill;
+        effect.Stacks = parameters.Stacks;
+        effect.Caster = parameters.Caster ?? Parent;
+        effect.Start = start;
         effect.Duration = effect.LevelMetadata.Basic?.DurationTick ?? parameters.Duration;
         effect.TickRate = effect.LevelMetadata.Basic?.IntervalTick ?? 0;
 
-        if (parameters.Duration != 0)
+        if (oldEffectIndex != -1)
         {
-            TimedEffects.Add(effect);
-
-            AddExpiringBuffTime(effect.End);
+            Parent.FieldManager.BroadcastPacket(BuffPacket.UpdateBuff(effect, Parent.ObjectId));
         }
 
-        if (parameters.Duration == 0)
+        if (oldEffectIndex == -1)
         {
-            --effect.Start;
+            effect.BuffId = GuidGenerator.Int();
+            effect.LastTick = start - effect.TickRate;
+
+            if (parameters.Duration == 0)
+            {
+                --effect.Start;
+            }
+
+            Effects.Add(effect);
+
+            Parent.FieldManager.BroadcastPacket(BuffPacket.AddBuff(effect, Parent.ObjectId));
+
+            DotEffect(effect, parameters);
+
+            if (effect.Duration != 0)
+            {
+                TimedEffects.Add(effect);
+            }
+
+            AddListeningSkills(effect);
         }
 
-        Effects.Add(effect);
+        if (effect.Duration != 0)
+        {
+            NextExpiringBuff = FindNextExpiringBuff();
+        }
 
         Parent.EffectAdded(effect);
+        ModifyEffect(effect);
+        ApplyStatuses(effect);
 
-        Parent.FieldManager.BroadcastPacket(BuffPacket.AddBuff(effect, Parent.ObjectId));
-
-        if (effect.LevelMetadata.SplashSkill != null)
+        if (oldEffectIndex == -1)
         {
-            foreach (EffectTriggerSkillMetadata skill in effect.LevelMetadata.SplashSkill)
+            EffectTriggers triggers = new()
             {
-                FireTriggerSkill(effect, skill, effect.ParentSkill, Parent, effect.Start);
-            }
+                Caster = effect.Caster,
+                Owner = Parent,
+                Target = Parent
+            };
+
+            Parent.SkillTriggerHandler.FireTriggers(effect, triggers, parameters.ParentSkill, false);
         }
 
+        return effect;
+    }
+
+    public void DotEffect(AdditionalEffect effect, AdditionalEffectParameters parameters)
+    {
         EffectDotDamageMetadata dotDamage = effect.LevelMetadata.DotDamage;
 
-        if (dotDamage?.Rate == 0)
-        {
-            return effect;
-        }
-
-        DamageSourceParameters dotParameters = new()
-        {
-            IsSkill = false,
-            GuaranteedCrit = false,
-            Element = (Element) dotDamage.Element,
-            RangeType = SkillRangeType.Special,
-            DamageType = (DamageType) dotDamage.DamageType,
-            DamageRate = dotDamage.Rate,
-            ParentSkill = parameters.ParentSkill
-        };
-
-        IFieldActor sourceActor = Parent.FieldManager.State.GetActor(parameters.Source);
-
-        // TODO: fix dot damage handling with damage numbers and game session tracking
+        // TODO: fix dot damage handling with game session tracking
 
         GameSession session = null;
 
-        if (sourceActor is Character character)
+        if (effect.Caster is Character character)
         {
             session = character.Value.Session;
         }
 
-        DamageHandler.ApplyDotDamage(session, sourceActor, Parent, dotParameters);
+        DamageSourceParameters dotParameters = null;
 
-        if (effect.Duration < effect.TickRate)
+        if ((dotDamage?.Rate ?? 0) != 0 && effect.Caster != null && session != null)
+        {
+            dotParameters = new()
+            {
+                IsSkill = false,
+                GuaranteedCrit = effect.Caster.AdditionalEffects.AlwaysCrit,
+                CanCrit = effect.LevelMetadata.DotDamage.UseGrade,
+                Element = (Element) dotDamage.Element,
+                RangeType = SkillRangeType.Special,
+                DamageType = (DamageType) dotDamage.DamageType,
+                DamageRate = dotDamage.Rate * effect.Stacks,
+                ParentSkill = parameters.ParentSkill
+            };
+        }
+
+        if (dotParameters != null)
+        {
+            DamageHandler.ApplyDotDamage(session, effect.Caster, Parent, dotParameters);
+        }
+
+        if (effect.TickRate < effect.Duration && effect.TickRate != 0)
         {
             Task.Run(async () =>
             {
+                EffectTriggers triggers = new()
+                {
+                    Caster = effect.Caster,
+                    Owner = Parent,
+                    Target = Parent
+                };
+
                 while (effect.IsAlive && Environment.TickCount - effect.Start < effect.Duration)
                 {
                     await Task.Delay(effect.TickRate);
@@ -198,12 +304,68 @@ public class AdditionalEffects
                         break;
                     }
 
-                    DamageHandler.ApplyDotDamage(session, sourceActor, Parent, dotParameters);
+                    if (dotParameters != null)
+                    {
+                        dotParameters.GuaranteedCrit = effect.Caster.AdditionalEffects.AlwaysCrit;
+                        dotParameters.DamageRate = dotDamage.Rate * effect.Stacks;
+
+                        DamageHandler.ApplyDotDamage(session, effect.Caster, Parent, dotParameters);
+                    }
+
+                    Parent.SkillTriggerHandler.FireTriggers(effect, triggers, parameters.ParentSkill, false);
                 }
             });
         }
+    }
 
-        return effect;
+    public void ModifyEffect(AdditionalEffect effect)
+    {
+        int[] overlapCodes = effect.LevelMetadata.ModifyOverlapCount?.EffectCodes;
+
+        if ((overlapCodes?.Length ?? 0) > 0)
+        {
+            for (int i = 0; i < overlapCodes.Length; ++i)
+            {
+                AdditionalEffect affectedEffect = GetEffect(overlapCodes[i]);
+
+                if (affectedEffect == null)
+                {
+                    continue;
+                }
+
+                AddEffect(new(affectedEffect.Id, affectedEffect.Level)
+                {
+                    Stacks = effect.LevelMetadata.ModifyOverlapCount.OffsetCounts[i],
+                    AdjustDuration = false
+                });
+            }
+        }
+
+        EffectModifyDurationMetadata modifyDuration = effect.LevelMetadata.ModifyEffectDuration;
+        int[] durationCodes = modifyDuration?.EffectCodes;
+
+        if (durationCodes?.Length > 0)
+        {
+            for (int i = 0; i < durationCodes.Length; ++i)
+            {
+                AdditionalEffect affectedEffect = GetEffect(durationCodes[i]);
+
+                if (affectedEffect == null)
+                {
+                    continue;
+                }
+
+                affectedEffect.Duration = (int) (modifyDuration.DurationFactors[i] * affectedEffect.Duration) + (int) (1000 * modifyDuration.DurationValues[i]);
+
+                Parent.FieldManager.BroadcastPacket(BuffPacket.UpdateBuff(effect, Parent.ObjectId));
+            }
+        }
+    }
+
+    public void ApplyStatuses(AdditionalEffect effect)
+    {
+        AlwaysCrit |= effect.LevelMetadata.Offensive.AlwaysCrit;
+        Invincible |= effect.LevelMetadata.Defesive.Invincible;
     }
 
     public void RemoveEffect(int id, int level, bool sendPacket = true)
@@ -211,7 +373,7 @@ public class AdditionalEffects
         int index;
         AdditionalEffect effect;
 
-        if (TryGet(id, level, out effect, out index))
+        if (TryGet(id, out effect, out index))
         {
             RemoveEffect(effect, index, sendPacket);
         }
@@ -234,234 +396,104 @@ public class AdditionalEffects
 
             int timedIndex = -1;
 
-            if (TryGet(effect.Id, effect.Level, out effect, out timedIndex, true) && effect.LevelMetadata != null)
+            if (TryGet(effect.Id, out AdditionalEffect removeEffect, out timedIndex, true) && removeEffect.LevelMetadata != null)
             {
                 RemoveAt(timedIndex, true);
             }
 
-            RecomputeExpiration();
+            NextExpiringBuff = FindNextExpiringBuff();
         }
-    }
 
-    public bool HasEffect(int effectId)
-    {
-        foreach (AdditionalEffect effect in Effects)
+        if (effect.LevelMetadata.Offensive.AlwaysCrit || effect.LevelMetadata.Defesive.Invincible)
         {
-            if (effect.Id == effectId && effect.IsAlive)
+            AlwaysCrit = false;
+            Invincible = false;
+
+            foreach (AdditionalEffect remainingEffect in Effects)
             {
-                return true;
+                ApplyStatuses(remainingEffect);
             }
         }
 
-        return false;
+        if (HasListeningSkills(effect))
+        {
+            RefreshListeningSkills();
+        }
     }
 
-    public bool ShouldEffectBeActive(AdditionalEffect effect)
+    public bool HasEffect(int effectId, int stacks = 0)
     {
-        if (!effect.IsAlive)
+        if (effectId == 0)
+        {
+            return true;
+        }
+
+        AdditionalEffect effect = GetEffect(effectId);
+
+        if (effect == null)
         {
             return false;
         }
 
-        EffectBeginConditionOwnerMetadata owner = effect.LevelMetadata.BeginCondition.Owner;
-
-        if (owner?.HasBuffId != null)
+        if (stacks != 0)
         {
-            foreach (int buffId in owner.HasBuffId)
-            {
-                if (!HasEffect(buffId))
-                {
-                    return false;
-                }
-            }
+            return effect.Stacks == stacks;
         }
 
         return true;
     }
 
-    public static int GetTriggerCooldown(int skillId, int skillLevel)
+    public int GetEffectIndex(int effectId)
     {
-        SkillMetadata skillMeta = SkillMetadataStorage.GetSkill(skillId);
-
-        if (skillMeta?.SkillLevels?[skillLevel] != null)
+        for (int index = 0; index < Effects.Count; ++index)
         {
-            return (int) (1000 * skillMeta.SkillLevels[skillLevel].CooldownTime);
-        }
-
-        AdditionalEffectLevelMetadata levelMeta = AdditionalEffectMetadataStorage.GetLevelMetadata(skillId, skillLevel);
-
-        if (levelMeta?.Basic != null)
-        {
-            return (int) (1000 * levelMeta.Basic.CooldownTime);
-        }
-
-        return 0;
-    }
-
-    public void FireTriggerSkill(AdditionalEffect parent, EffectTriggerSkillMetadata trigger, SkillCast parentSkill, IFieldActor target, int start = -1)
-    {
-        if (start == -1)
-        {
-            start = Environment.TickCount;
-        }
-
-        for (int skillIndex = 0; skillIndex < trigger.SkillId.Length; ++skillIndex)
-        {
-            int skillId = trigger.SkillId[skillIndex];
-            int skillLevel = trigger.SkillLevel[skillIndex];
-
-            if (parent.SkillFiredLast.TryGetValue(skillId, out int lastFired))
+            if (Effects[index].Id == effectId && Effects[index].IsAlive)
             {
-                if (start - lastFired < GetTriggerCooldown(skillId, skillLevel))
-                {
-                    continue;
-                }
-            }
-
-            float probability = trigger.BeginCondition?.Probability ?? 1;
-
-            if (probability != 1 && probability < Random.Shared.NextDouble())
-            {
-                continue;
-            }
-
-            parent.SkillFiredLast[skillId] = start;
-
-            SkillCast skillCast = new(skillId, (short) skillLevel, parentSkill.SkillSn, start, parentSkill)
-            {
-                CasterObjectId = parentSkill.CasterObjectId,
-                Position = Parent.Coord,
-                Interval = trigger.Interval,
-                Duration = parent?.LevelMetadata?.Basic?.DurationTick ?? 100
-            };
-
-            if (trigger.Splash)
-            {
-                RegionSkillHandler.HandleEffect(Parent.FieldManager, skillCast, skillCast.SkillAttack.AttackPoint);
-
-                continue;
-            }
-
-            target.AdditionalEffects.AddEffect(new(skillId, skillLevel)
-            {
-                Duration = skillCast.DurationTick(),
-                Source = parentSkill.CasterObjectId,
-                ParentSkill = parentSkill
-            });
-        }
-    }
-
-    public void SkillTrigger(IFieldActor target, SkillCast skillActivated)
-    {
-        foreach (AdditionalEffect effect in Effects)
-        {
-            if (!effect.ListensForSkills)
-            {
-                continue;
-            }
-
-            if (!ShouldEffectBeActive(effect))
-            {
-                continue;
-            }
-
-            foreach (EffectTriggerSkillMetadata skill in effect.LevelMetadata.ConditionSkill)
-            {
-                if (skill.BeginCondition.Owner.EventSkillIDs == null)
-                {
-                    FireTriggerSkill(effect, skill, skillActivated, target, Environment.TickCount);
-
-                    continue;
-                }
-
-                foreach (int skillId in skill.BeginCondition.Owner.EventSkillIDs)
-                {
-                    if (skillId == skillActivated.SkillId)
-                    {
-                        FireTriggerSkill(effect, skill, skillActivated, target, Environment.TickCount);
-                    }
-                }
-            }
-        }
-    }
-
-    public void EffectTrigger(IFieldActor target, AdditionalEffect effectActivated)
-    {
-        foreach (AdditionalEffect effect in Effects)
-        {
-            if (!effect.ListensForEffects)
-            {
-                continue;
-            }
-
-            foreach (EffectTriggerSkillMetadata skill in effect.LevelMetadata.ConditionSkill)
-            {
-                foreach (int effectId in skill.BeginCondition.Owner.EventSkillIDs)
-                {
-                    if (effectId == effect.Id)
-                    {
-                        FireTriggerSkill(effect, skill, effectActivated.ParentSkill, target, Environment.TickCount);
-                    }
-                }
-            }
-        }
-    }
-
-    public int FindExpiredBuff()
-    {
-        int index = -1;
-
-        for (int i = 0; i < TimedEffects.Count; ++i)
-        {
-            if (TimedEffects[i].End < Environment.TickCount)
-            {
-                index = i;
-            }
-        }
-
-        if (index == -1)
-        {
-            return -1;
-        }
-
-        for (int i = 0; i < Effects.Count; ++i)
-        {
-            if (Effects[i] == TimedEffects[index])
-            {
-                return i;
+                return index;
             }
         }
 
         return -1;
     }
 
-    public void AddExpiringBuffTime(int time)
+    public AdditionalEffect GetEffect(int effectId)
     {
-        if (NextBuffExpiration == -1)
-        {
-            NextBuffExpiration = time;
+        int index = GetEffectIndex(effectId);
 
-            return;
-        }
-
-        NextBuffExpiration = Math.Min(NextBuffExpiration, time);
+        return index == -1 ? null : Effects[index];
     }
 
-    public void RecomputeExpiration()
+    public AdditionalEffect FindNextExpiringBuff()
     {
-        if (TimedEffects.Count > 0)
-        {
-            NextBuffExpiration = TimedEffects[0].End;
+        int currentTick = Environment.TickCount;
 
-            for (int i = 1; i < TimedEffects.Count; ++i)
+        AdditionalEffect effect = null;
+        int lowestRemaining = int.MaxValue;
+
+        foreach (AdditionalEffect timedEffect in TimedEffects)
+        {
+            if (timedEffect.Duration == 0)
             {
-                NextBuffExpiration = Math.Min(NextBuffExpiration, TimedEffects[i].End);
+                continue;
             }
 
-            return;
+            int elapsed = currentTick - timedEffect.Start;
+
+            if (elapsed >= timedEffect.Duration)
+            {
+                return timedEffect;
+            }
+
+            int remaining = timedEffect.Duration - elapsed;
+
+            if (remaining < lowestRemaining)
+            {
+                lowestRemaining = remaining;
+                effect = timedEffect;
+            }
         }
 
-        NextBuffExpiration = -1;
+        return effect;
     }
 
     public void RemoveAt(int index, bool removeTimed = false)
@@ -472,7 +504,7 @@ public class AdditionalEffects
         list.RemoveAt(list.Count - 1);
     }
 
-    public bool TryGet(int id, int level, out AdditionalEffect effect, out int index, bool getTimed = false)
+    public bool TryGet(int id, out AdditionalEffect effect, out int index, bool getTimed = false)
     {
         effect = null;
 
@@ -495,14 +527,81 @@ public class AdditionalEffects
     {
         int index = 0;
 
-        return TryGet(id, level, out effect, out index, getTimed);
+        return TryGet(id, out effect, out index, getTimed);
     }
 
-    public int CountEffects(AdditionalEffectLevelMetadata level)
+    public bool IsListeningForSkill(int skillId)
     {
-        int count = 0;
+        foreach ((int id, AdditionalEffect effect) in ListeningSkillIds)
+        {
+            if (id == skillId)
+            {
+                return true;
+            }
+        }
 
-        return count;
+        return false;
+    }
+    public AdditionalEffect FindListeningForSkill(int skillId)
+    {
+        foreach ((int id, AdditionalEffect effect) in ListeningSkillIds)
+        {
+            if (id == skillId)
+            {
+                return effect;
+            }
+        }
+
+        return null;
+    }
+
+    public void AddListeningSkills(AdditionalEffect effect)
+    {
+        if (effect.LevelMetadata.ConditionSkill == null)
+        {
+            return;
+        }
+
+        foreach (SkillCondition condition in effect.LevelMetadata.ConditionSkill)
+        {
+            if (condition.BeginCondition?.Owner?.EventSkillIDs == null)
+            {
+                continue;
+            }
+
+            foreach (int id in condition.BeginCondition.Owner.EventSkillIDs)
+            {
+                ListeningSkillIds.Add((id, effect));
+            }
+        }
+    }
+
+    public bool HasListeningSkills(AdditionalEffect effect)
+    {
+        if (effect.LevelMetadata.ConditionSkill == null)
+        {
+            return false;
+        }
+
+        foreach (SkillCondition condition in effect.LevelMetadata.ConditionSkill)
+        {
+            if ((condition.BeginCondition?.Owner?.EventSkillIDs?.Length ?? 0) > 0)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void RefreshListeningSkills()
+    {
+        ListeningSkillIds.Clear();
+
+        foreach (AdditionalEffect effect in Effects)
+        {
+            AddListeningSkills(effect);
+        }
     }
 }
 
@@ -514,7 +613,7 @@ public class AdditionalEffect
     public AdditionalEffectLevelMetadata LevelMetadata;
     public int References = 0; // Reference counter. Only remove 
     public int Stacks = 1;
-    public int SourceId = -1;
+    public IFieldActor Caster;
     public int BuffId = -1;
     public int Start = -1;
     public int Duration = 0;
@@ -522,9 +621,7 @@ public class AdditionalEffect
     public int TickRate;
     public bool IsAlive = true;
     public SkillCast ParentSkill;
-    public bool ListensForSkills { get; }
-    public bool ListensForEffects { get; }
-    public Dictionary<int, int> SkillFiredLast = new();
+    public int LastTick = 0;
 
     public AdditionalEffect(int id, int level, int stacks = 1)
     {
@@ -534,22 +631,6 @@ public class AdditionalEffect
 
         Metadata = AdditionalEffectMetadataStorage.GetMetadata(id);
         LevelMetadata = AdditionalEffectMetadataStorage.GetLevelMetadata(id, level);
-
-        if (LevelMetadata?.ConditionSkill == null)
-        {
-            return;
-        }
-
-        foreach (EffectTriggerSkillMetadata skill in LevelMetadata.ConditionSkill)
-        {
-            if (skill.BeginCondition?.Owner != null)
-            {
-                ListensForSkills = (skill.BeginCondition.Owner.EventSkillIDs?.Length ?? 0) > 0;
-                ListensForEffects = (skill.BeginCondition.Owner.EventEffectIDs?.Length ?? 0) > 0;
-            }
-        }
-
-        ListensForSkills |= (LevelMetadata.BeginCondition?.Owner?.HasBuffId?.Length ?? 0) > 0;
     }
 
     public bool Matches(int id)

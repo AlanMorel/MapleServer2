@@ -22,6 +22,7 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
     public bool OnCooldown { get; set; }
     public Agent Agent { get; set; }
     public virtual AdditionalEffects AdditionalEffects { get; }
+    public SkillTriggerHandler SkillTriggerHandler { get; }
 
     public virtual FieldManager FieldManager { get; }
     public FieldNavigator Navigator { get; }
@@ -30,6 +31,9 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
     {
         FieldManager = fieldManager;
         Navigator = fieldManager.Navigator;
+
+        AdditionalEffects = new(this);
+        SkillTriggerHandler = new(this);
     }
 
     public virtual void Cast(SkillCast skillCast)

@@ -1,4 +1,5 @@
 ﻿using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 
 namespace MapleServer2.Types;
 
@@ -93,12 +94,14 @@ public class TriggerSkill : TriggerObject
     public byte Count;
     public short SkillLevel;
     public int SkillId;
+    public SkillCondition Condition;
 
-    public TriggerSkill(int id, int skillId, short skillLevel, byte count, CoordF position) : base(id)
+    public TriggerSkill(int id, int skillId, short skillLevel, byte count, CoordF position, SkillCondition condition) : base(id)
     {
         SkillId = skillId;
         SkillLevel = skillLevel;
         Count = count;
         Position = position;
+        Condition = condition;
     }
 }

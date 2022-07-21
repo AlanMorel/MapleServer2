@@ -16,6 +16,7 @@ public interface IFieldActor : IFieldObject
     public SkillCast SkillCast { get; }
     public bool OnCooldown { get; set; }
     public AdditionalEffects AdditionalEffects { get; }
+    public SkillTriggerHandler SkillTriggerHandler { get; }
 
     public FieldManager FieldManager { get; }
     public FieldNavigator Navigator { get; }

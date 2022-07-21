@@ -53,7 +53,7 @@ public static class BuffPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buff);
         pWriter.Write(Mode.Add);
-        pWriter.WriteBuffOwner(target, status.BuffId, status.SourceId);
+        pWriter.WriteBuffOwner(target, status.BuffId, status.Caster.ObjectId);
 
         pWriter.WriteBuff(status.Start, status.End, status.Id, status.Level, status.Stacks);
         pWriter.WriteByte(1); // sniffs always get 1 but doesn't change behaviour
@@ -66,13 +66,13 @@ public static class BuffPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buff);
         pWriter.Write(Mode.Update);
-        pWriter.WriteBuffOwner(target, status.BuffId, status.SourceId);
+        pWriter.WriteBuffOwner(target, status.BuffId, status.Caster.ObjectId);
 
-        pWriter.WriteInt(target);
+        pWriter.WriteInt(1);
 
         pWriter.WriteBuff(status.Start, status.End, status.Id, status.Level, status.Stacks);
 
-        pWriter.WriteByte();
+        pWriter.WriteByte(1);
         return pWriter;
     }
 
@@ -80,7 +80,7 @@ public static class BuffPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buff);
         pWriter.Write(Mode.Remove);
-        pWriter.WriteBuffOwner(target, status.BuffId, status.SourceId);
+        pWriter.WriteBuffOwner(target, status.BuffId, status.Caster.ObjectId);
 
         return pWriter;
     }
@@ -113,7 +113,7 @@ public static class BuffPacket
 
     public static void WriteFieldEnterBuff(this PacketWriter pWriter, AdditionalEffect status, int target)
     {
-        pWriter.WriteBuffOwner(target, status.BuffId, status.SourceId);
+        pWriter.WriteBuffOwner(target, status.BuffId, status.Caster.ObjectId);
         pWriter.WriteBuff(status.Start, status.End, status.Id, status.Level, status.Stacks);
 
         pWriter.WriteByte(1);

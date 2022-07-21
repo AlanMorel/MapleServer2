@@ -4,6 +4,7 @@ using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Managers;
 using MapleServer2.Managers.Actors;
+using MapleServer2.PacketHandlers.Game;
 using MapleServer2.Packets;
 using MapleServer2.Tools;
 using Serilog;
@@ -14,15 +15,17 @@ public static class RegionSkillHandler
 {
     private static readonly ILogger Logger = Log.Logger.ForContext(typeof(RegionSkillHandler));
 
-    public static void HandleEffect(FieldManager field, SkillCast skillCast, int attackIndex)
+    public static void HandleEffect(FieldManager field, SkillCast skillCast)
     {
-        skillCast.EffectCoords = GetEffectCoords(skillCast, field.MapId, attackIndex, field);
+        skillCast.EffectCoords = GetEffectCoords(skillCast, field.MapId, 0, field);
 
         field.AddRegionSkillEffect(skillCast);
 
         Task removeEffectTask = RemoveEffects(field, skillCast);
 
-        if (skillCast.Interval <= 0)
+        int interval = skillCast.Interval;
+
+        if (interval <= 0)
         {
             HandleRegionSkill(field, skillCast);
             VibrateObjects(field, skillCast);
@@ -38,7 +41,7 @@ public static class RegionSkillHandler
                 VibrateObjects(field, skillCast);
 
                 // TODO: Find the correct delay for the skill
-                await Task.Delay(skillCast.Interval);
+                await Task.Delay(interval);
             }
         });
     }
@@ -48,7 +51,7 @@ public static class RegionSkillHandler
         return Task.Run(async () =>
         {
             // TODO: Get the correct Region Skill Duration when calling chain Skills
-            await Task.Delay(skillCast.Duration);
+            await Task.Delay(Math.Max(skillCast.Duration, 10));
             if (!field.RemoveRegionSkillEffect(skillCast))
             {
                 Logger.Error("Failed to remove Region Skill");
@@ -101,7 +104,7 @@ public static class RegionSkillHandler
         {
             MagicPathMove magicPathMove = magicPathMoves[attackIndex];
 
-            IFieldActor<NpcMetadata> parentSkillTarget = skillCast.ParentSkill.Target;
+            IFieldActor<NpcMetadata> parentSkillTarget = skillCast.ParentSkill?.Target;
             if (parentSkillTarget is not null)
             {
                 effectCoords.Add(parentSkillTarget.Coord);
@@ -191,29 +194,32 @@ public static class RegionSkillHandler
                 {
                     foreach (SkillCondition skillCondition in skillAttack.SkillConditions)
                     {
-                        SkillCast splashSkill = new(skillCondition.SkillId, skillCondition.SkillLevel, GuidGenerator.Long(), skillCast.ServerTick, skillCast)
+                        for (int i = 0; i < skillCondition.SkillId.Length; ++i)
                         {
-                            SkillAttack = skillAttack,
-                            EffectCoords = skillCast.EffectCoords,
-                            SkillObjectId = skillCast.SkillObjectId
-                        };
-                        if (!splashSkill.MetadataExists)
-                        {
-                            return;
-                        }
-
-                        if (!skillCondition.ImmediateActive)
-                        {
-                            if (splashSkill.IsRecoveryFromBuff())
+                            SkillCast splashSkill = new(skillCondition.SkillId[i], skillCondition.SkillLevel[i], GuidGenerator.Long(), skillCast.ServerTick, skillCast)
                             {
-                                HandleRegionHeal(field, splashSkill);
-                                continue;
+                                SkillAttack = skillAttack,
+                                EffectCoords = skillCast.EffectCoords,
+                                SkillObjectId = skillCast.SkillObjectId,
+                                Owner = skillCast.Owner,
+                            };
+                            if (!splashSkill.MetadataExists)
+                            {
+                                return;
                             }
 
-                            HandleRegionDamage(field, splashSkill);
-                            continue;
-                        }
+                            if (!skillCondition.ImmediateActive)
+                            {
+                                if (splashSkill.IsRecoveryFromBuff())
+                                {
+                                    HandleRegionHeal(field, splashSkill);
+                                    continue;
+                                }
 
+                                HandleRegionDamage(field, splashSkill, skillCondition);
+                                continue;
+                            }
+                        }
                         // go to another skill condition?? might cause infinite loop
                         // HandleRegionSkill(session, splashSkill);
                     }
@@ -234,7 +240,7 @@ public static class RegionSkillHandler
                     continue;
                 }
 
-                HandleRegionDamage(field, skillCast);
+                HandleRegionDamage(field, skillCast, null);
             }
         }
     }
@@ -251,15 +257,15 @@ public static class RegionSkillHandler
                 }
 
                 // Use RecoveryRate from skillcast.SkillAttack
-                Status status = new(skillCast, player.ObjectId, skillCast.CasterObjectId, 1);
+                Status status = new(skillCast, player.ObjectId, skillCast.Caster.ObjectId, 1);
                 player.Heal(player.Value.Session, status, 50);
             }
         }
     }
 
-    private static void HandleRegionDamage(FieldManager field, SkillCast skillCast)
+    private static void HandleRegionDamage(FieldManager field, SkillCast skillCast, SkillCondition condition)
     {
-        if (!field.State.Players.TryGetValue(skillCast.CasterObjectId, out Character caster))
+        if (skillCast.Caster is not Character caster)
         {
             // TODO: Handle NPCs/Triggers sending skills
             field.BroadcastPacket(SkillDamagePacket.RegionDamage(skillCast, new()));
@@ -281,6 +287,16 @@ public static class RegionSkillHandler
                 mob.Damage(damage, caster.Value.Session);
 
                 damages.Add(damage);
+
+                EffectTriggers parameters = new()
+                {
+                    Caster = skillCast.Caster,
+                    Owner = skillCast.Owner,
+                    Target = mob
+                };
+
+                skillCast.Owner?.SkillTriggerHandler?.FireTriggerSkill(condition, skillCast.ParentSkill, parameters);
+                parameters.Caster.SkillTriggerHandler.SkillTrigger(mob, skillCast);
             }
         }
 
