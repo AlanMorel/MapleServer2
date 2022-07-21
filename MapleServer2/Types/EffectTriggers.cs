@@ -8,21 +8,15 @@ namespace MapleServer2.Types;
 
 public struct EffectTriggers
 {
-    public bool IsEvent;
-    public int SkillId;
-    public int EffectId;
-    public IFieldActor Owner;
-    public IFieldActor Target;
-    public IFieldActor Caster;
+    public bool IsEvent = false;
+    public int SkillId = 0;
+    public int EffectId = 0;
+    public IFieldActor Owner = null;
+    public IFieldActor Target = null;
+    public IFieldActor Caster = null;
 
     public EffectTriggers()
     {
-        IsEvent = false;
-        SkillId = 0;
-        EffectId = 0;
-        Owner = null;
-        Target = null;
-        Caster = null;
     }
 
     public void CopyEvents(EffectTriggers source)
