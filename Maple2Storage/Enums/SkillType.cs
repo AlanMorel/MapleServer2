@@ -53,12 +53,6 @@ public enum SkillRangeType : byte
     Ranged = 0x02
 }
 
-public enum DotUseGrade : byte
-{
-    CantCrit = 0,
-    CanCrit = 1
-}
-
 public enum CompulsionType : byte
 {
     AlwaysCrit = 2

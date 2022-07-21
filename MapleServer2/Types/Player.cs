@@ -763,6 +763,11 @@ public class Player
                     continue;
                 }
 
+                if (skillLevel.ConditionSkills == null)
+                {
+                    continue;
+                }
+
                 foreach (SkillCondition trigger in skillLevel.ConditionSkills)
                 {
                     foreach (int skillId in trigger.SkillId)
