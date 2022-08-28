@@ -227,7 +227,7 @@ public class FieldManager
         {
             return;
         }
-        
+
         Pet pet = RequestPet(item, player.FieldPlayer);
         if (pet is null)
         {
