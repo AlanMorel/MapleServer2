@@ -49,6 +49,11 @@ public class FieldNavigator : IDisposable
     /// <returns>List of CoordS or null if path is not possible</returns>
     public List<CoordS> GenerateRandomPathAroundCoord(Agent agent, CoordS centerCoord, int radius)
     {
+        if (agent == null)
+        {
+            return null;
+        }
+
         Path path;
         try
         {
@@ -84,12 +89,18 @@ public class FieldNavigator : IDisposable
         Path path;
         try
         {
-            if (!FindFirstPositionBelow(endCoord, out Position position))
+            if (!FindFirstPositionBelow(endCoord, out Position position) || agent == null)
             {
                 return null;
             }
 
-            Position findClosestUnobstructedPosition = agent.findClosestUnobstructedPosition(CollisionContext, 500);
+            Position findClosestUnobstructedPosition = agent?.findClosestUnobstructedPosition(CollisionContext, 500) ?? new();
+
+            if (agent == null)
+            {
+                return null;
+            }
+
             agent.moveTo(findClosestUnobstructedPosition);
 
             path = agent.findShortestPathTo(CollisionContext, position);
@@ -121,8 +132,8 @@ public class FieldNavigator : IDisposable
             return cacheShape;
         }
 
-        int halfWidth = width / 2;
-        int halfHeight = height / 2;
+        int halfWidth = Math.Max(width / 2, 1);
+        int halfHeight = Math.Max(height / 2, 1);
         List<Point> vertices = new()
         {
             new(-halfWidth, -halfHeight),

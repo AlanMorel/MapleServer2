@@ -181,6 +181,12 @@ public unsafe class PacketWriter : IPacketWriter
     public void WriteRawUnicodeString(string value)
     {
         int length = value.Length * 2;
+
+        if (length == 0)
+        {
+            return;
+        }
+
         EnsureCapacity(length);
         fixed (byte* ptr = &Buffer[Length])
         fixed (char* valuePtr = value)

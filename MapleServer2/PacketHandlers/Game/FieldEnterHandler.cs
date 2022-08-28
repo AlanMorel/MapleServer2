@@ -44,7 +44,7 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
             }
         }
 
-        if (account.IsVip())
+        if (account.IsVip() && player.Session != null)
         {
             List<PremiumClubEffectMetadata> effectMetadatas = PremiumClubEffectMetadataStorage.GetBuffs();
             foreach (PremiumClubEffectMetadata effect in effectMetadatas)

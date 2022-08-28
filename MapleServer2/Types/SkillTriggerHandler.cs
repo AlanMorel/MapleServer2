@@ -158,7 +158,7 @@ public class SkillTriggerHandler
             int skillId = trigger.SkillId[skillIndex];
             int skillLevel = trigger.SkillLevel[skillIndex];
             int cooldown = GetTriggerCooldown(skillId, skillLevel);
-            int lastProcced = target.SkillTriggerHandler.HostileSkillProccedLast.GetValueOrDefault(skillId, start - cooldown);
+            int lastProcced = target?.SkillTriggerHandler.HostileSkillProccedLast.GetValueOrDefault(skillId, start - cooldown) ?? 0;
 
             if (start - lastProcced < GetTriggerCooldown(skillId, skillLevel))
             {
@@ -172,7 +172,10 @@ public class SkillTriggerHandler
                 continue;
             }
 
-            target.SkillTriggerHandler.HostileSkillProccedLast[skillId] = start;
+            if (target != null)
+            {
+                target.SkillTriggerHandler.HostileSkillProccedLast[skillId] = start;
+            }
 
             if (!trigger.IsSplash)
             {
@@ -183,7 +186,7 @@ public class SkillTriggerHandler
                     ParentSkill = parentSkill
                 };
 
-                target.AdditionalEffects.AddEffect(effectParams);
+                target?.AdditionalEffects?.AddEffect(effectParams);
 
                 continue;
             }

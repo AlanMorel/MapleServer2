@@ -219,6 +219,33 @@ public class FieldManager
         return pet;
     }
 
+    public void AddPet(GameSession session, long uid)
+    {
+        Player player = session.Player;
+        Item item = player.Inventory.GetByUid(uid);
+        if (item is null)
+        {
+            return;
+        }
+        
+        Pet pet = RequestPet(item, player.FieldPlayer);
+        if (pet is null)
+        {
+            return;
+        }
+
+        if (item.TransferType == TransferType.BindOnSummonEnchantOrReroll & !item.IsBound())
+        {
+            item.BindItem(session.Player);
+        }
+
+        player.ActivePet = pet.Item;
+        player.FieldPlayer.ActivePet = pet;
+
+        session.Send(PetPacket.LoadPetSettings(pet));
+        session.Send(NoticePacket.Notice(SystemNotice.PetSummonOn, NoticeType.Chat | NoticeType.FastText));
+    }
+
     private void AddEntitiesToState()
     {
         // Load default npcs for map from config
@@ -724,7 +751,12 @@ public class FieldManager
 
     public void RemovePortal(IFieldObject<Portal> portal)
     {
-        State.RemovePortal(portal.ObjectId);
+        if (portal == null)
+        {
+            return;
+        }
+
+        State.RemovePortal(portal?.ObjectId ?? 0);
         BroadcastPacket(FieldPortalPacket.RemovePortal(portal.Value));
     }
 
@@ -1030,7 +1062,7 @@ public class FieldManager
 
     private void FreezeField(Player player)
     {
-        UGCBannerTimer.Dispose();
+        UGCBannerTimer?.Dispose();
         UGCBannerTimer = null;
         MapLoopTask = null;
         TriggerTask = null;
