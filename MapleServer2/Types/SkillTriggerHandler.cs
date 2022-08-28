@@ -160,6 +160,7 @@ public class SkillTriggerHandler
             int cooldown = GetTriggerCooldown(skillId, skillLevel);
             int lastProcced = target?.SkillTriggerHandler.HostileSkillProccedLast.GetValueOrDefault(skillId, start - cooldown) ?? 0;
 
+
             if (start - lastProcced < GetTriggerCooldown(skillId, skillLevel))
             {
                 continue;
