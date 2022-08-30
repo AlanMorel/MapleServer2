@@ -353,7 +353,7 @@ public class PetLevelCommand : InGameCommand
         Player player = trigger.Session.Player;
         Item pet = player.ActivePet;
 
-        if (pet == null)
+        if (pet is null)
         {
             trigger.Session.SendNotice("No pet currently equipped.");
 

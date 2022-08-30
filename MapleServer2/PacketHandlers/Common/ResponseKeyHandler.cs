@@ -78,7 +78,7 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
         {
             Club club = GameServer.ClubManager.GetClubById(member.ClubId);
 
-            if (club == null)
+            if (club is null)
             {
                 continue;
             }

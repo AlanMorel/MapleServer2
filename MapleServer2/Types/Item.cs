@@ -469,7 +469,7 @@ public class Item
         Script script = ScriptLoader.GetScript("Functions/calcItemValues");
         DynValue result = script.RunFunction("calcItemGearScore", gearScoreFactor, Rarity, (int) Type, EnchantLevel, LimitBreakLevel);
 
-        if (result == null)
+        if (result is null)
         {
             return 0;
         }

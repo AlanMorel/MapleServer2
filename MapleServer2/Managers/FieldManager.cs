@@ -751,7 +751,7 @@ public class FieldManager
 
     public void RemovePortal(IFieldObject<Portal> portal)
     {
-        if (portal == null)
+        if (portal is null)
         {
             return;
         }

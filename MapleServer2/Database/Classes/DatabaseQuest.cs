@@ -33,7 +33,7 @@ public class DatabaseQuest : DatabaseTable
         {
             QuestStatus questStatus = (QuestStatus) ReadQuest(data);
 
-            if (questStatus == null)
+            if (questStatus is null)
             {
                 continue;
             }
@@ -65,7 +65,7 @@ public class DatabaseQuest : DatabaseTable
 
     private static QuestStatus ReadQuest(dynamic data)
     {
-        if (QuestMetadataStorage.GetMetadata(data.id) == null)
+        if (QuestMetadataStorage.GetMetadata(data.id) is null)
         {
             return null;
         }

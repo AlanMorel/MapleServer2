@@ -89,17 +89,12 @@ public class FieldNavigator : IDisposable
         Path path;
         try
         {
-            if (!FindFirstPositionBelow(endCoord, out Position position) || agent == null)
+            if (!FindFirstPositionBelow(endCoord, out Position position) || agent is null)
             {
                 return null;
             }
 
             Position findClosestUnobstructedPosition = agent?.findClosestUnobstructedPosition(CollisionContext, 500) ?? new();
-
-            if (agent == null)
-            {
-                return null;
-            }
 
             agent.moveTo(findClosestUnobstructedPosition);
 

@@ -180,12 +180,12 @@ public unsafe class PacketWriter : IPacketWriter
 
     public void WriteRawUnicodeString(string value)
     {
-        int length = value.Length * 2;
-
-        if (length == 0)
+        if (value.Length == 0)
         {
             return;
         }
+
+        int length = value.Length * 2;
 
         EnsureCapacity(length);
         fixed (byte* ptr = &Buffer[Length])
