@@ -658,7 +658,7 @@ public class CubeHandler : GamePacketHandler<CubeHandler>
 
         Player player = session.Player;
         Home home = player.Account.Home;
-        if (player.AccountId != home.AccountId)
+        if (player.AccountId != home?.AccountId)
         {
             return;
         }

@@ -59,6 +59,14 @@ public static class JobPacket
 
     public static void WriteJobInfo(this PacketWriter pWriter, Player player, HashSet<int> newSkillIds = null)
     {
+        SkillTab newTab = new(player.CharacterId, player.Job, player.JobCode, player.ActiveSkillTabId, "skills");
+
+        // fail safe in case something like /setjob set an invalid job. the skill tab can be deleted if a bad job id is set
+        if (player.SkillTabs.Count == 0)
+        {
+            player.SkillTabs.Add(newTab);
+        }
+
         SkillTab skillTab = player.SkillTabs.First(x => x.TabId == player.ActiveSkillTabId);
 
         pWriter.Write(player.JobCode);

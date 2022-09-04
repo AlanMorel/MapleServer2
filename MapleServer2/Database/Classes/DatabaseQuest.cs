@@ -1,4 +1,5 @@
 ﻿using Maple2Storage.Enums;
+using MapleServer2.Data.Static;
 using MapleServer2.Types;
 using Newtonsoft.Json;
 using SqlKata.Execution;
@@ -31,6 +32,12 @@ public class DatabaseQuest : DatabaseTable
         foreach (dynamic data in results)
         {
             QuestStatus questStatus = (QuestStatus) ReadQuest(data);
+
+            if (questStatus is null)
+            {
+                continue;
+            }
+
             questStatusList.Add(questStatus.Id, questStatus);
         }
 
@@ -58,6 +65,11 @@ public class DatabaseQuest : DatabaseTable
 
     private static QuestStatus ReadQuest(dynamic data)
     {
+        if (QuestMetadataStorage.GetMetadata(data.id) is null)
+        {
+            return null;
+        }
+
         return new QuestStatus(data.uid, data.id, data.character_id, data.accepted, data.start_timestamp, data.complete_timestamp, JsonConvert.DeserializeObject<List<Condition>>(data.condition), (QuestState) data.state, data.amount_completed);
     }
 }

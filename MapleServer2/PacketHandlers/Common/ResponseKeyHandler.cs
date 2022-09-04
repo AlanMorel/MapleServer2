@@ -77,6 +77,12 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
         foreach (ClubMember member in player.ClubMembers)
         {
             Club club = GameServer.ClubManager.GetClubById(member.ClubId);
+
+            if (club is null)
+            {
+                continue;
+            }
+
             club.Members.First(x => x.Player.CharacterId == player.CharacterId).Player = player;
             club.BroadcastPacketClub(ClubPacket.UpdateClub(club));
             if (!player.IsMigrating)

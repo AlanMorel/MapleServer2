@@ -636,6 +636,21 @@ public class Player
             int totalStat = constantValue + staticValue;
             Stats[stat.ItemAttribute].Add((int) (totalStat * stat.Rate));
         }
+
+        foreach (ItemStat stat in stats.LimitBreakEnchants.Values)
+        {
+            if (stat.ItemAttribute == StatAttribute.MinWeaponAtk || stat.ItemAttribute == StatAttribute.MaxWeaponAtk)
+            {
+                int constantValue = stats.Constants.TryGetValue(stat.ItemAttribute, out ItemStat itemStat) ? itemStat.Flat : 0;
+                int staticValue = stats.Statics.TryGetValue(stat.ItemAttribute, out ItemStat itemStat2) ? itemStat2.Flat : 0;
+                int totalStat = constantValue + staticValue;
+                Stats[stat.ItemAttribute].Add((int) (totalStat * stat.Rate));
+
+                continue;
+            }
+
+            Stats.AddStat(stat.ItemAttribute, stat.AttributeType, stat.Flat, stat.Rate);
+        }
     }
 
     public void AddStats()

@@ -31,6 +31,11 @@ public class MailManager
 
     public void RemoveMail(Mail mail)
     {
+        foreach (Item item in mail.Items)
+        {
+            DatabaseManager.Items.Delete(item.Uid);
+        }
+
         MailList.Remove(mail.Id);
     }
 

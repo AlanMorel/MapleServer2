@@ -600,7 +600,7 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
         {
             if (((GuildRights) guild.Ranks[member.Rank].Rights).HasFlag(GuildRights.CanInvite))
             {
-                member.Player.Session.Send(GuildPacket.SendApplication(application, session.Player));
+                member?.Player?.Session?.Send(GuildPacket.SendApplication(application, session.Player));
             }
         }
     }

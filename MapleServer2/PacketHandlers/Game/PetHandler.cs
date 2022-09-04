@@ -3,6 +3,7 @@ using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Database;
 using MapleServer2.Enums;
+using MapleServer2.Managers;
 using MapleServer2.Managers.Actors;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -58,7 +59,7 @@ public class PetHandler : GamePacketHandler<PetHandler>
     {
         long uid = packet.ReadLong();
 
-        AddPet(session, uid);
+        session.FieldManager.AddPet(session, uid);
     }
 
     private static void HandlePetDismiss(GameSession session, PacketReader packet)
@@ -103,8 +104,7 @@ public class PetHandler : GamePacketHandler<PetHandler>
         }
 
         session.FieldManager.RemovePet(fieldPlayer.ActivePet);
-
-        AddPet(session, uid);
+        session.FieldManager.AddPet(session, uid);
     }
 
     private static void HandlePetPotionSettings(GameSession session, PacketReader packet)
@@ -141,32 +141,5 @@ public class PetHandler : GamePacketHandler<PetHandler>
         session.Send(PetPacket.UpdateLoot(fieldPlayer.ActivePet));
 
         DatabaseManager.Pets.Update(fieldPlayer.ActivePet.Item.PetInfo);
-    }
-
-    private static void AddPet(GameSession session, long uid)
-    {
-        Player player = session.Player;
-        Item item = player.Inventory.GetByUid(uid);
-        if (item is null)
-        {
-            return;
-        }
-
-        Pet pet = session.FieldManager.RequestPet(item, player.FieldPlayer);
-        if (pet is null)
-        {
-            return;
-        }
-
-        if (item.TransferType == TransferType.BindOnSummonEnchantOrReroll & !item.IsBound())
-        {
-            item.BindItem(session.Player);
-        }
-
-        player.ActivePet = pet.Item;
-        player.FieldPlayer.ActivePet = pet;
-
-        session.Send(PetPacket.LoadPetSettings(pet));
-        session.Send(NoticePacket.Notice(SystemNotice.PetSummonOn, NoticeType.Chat | NoticeType.FastText));
     }
 }

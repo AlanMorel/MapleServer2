@@ -70,7 +70,12 @@ public class Npc : FieldActor<NpcMetadata>, INpc
     public override void Animate(string sequenceName, float duration = -1f)
     {
         SequenceMetadata metadata = AnimationStorage.GetSequenceMetadataByName(Value.NpcMetadataModel.Model, sequenceName);
-        Animation = metadata.SequenceId;
+        Animation = metadata?.SequenceId ?? 0;
+
+        if (Animation == 0)
+        {
+            return;
+        }
 
         // Wait for animation to finish and set to idle.
         Task.Run(async () =>
@@ -89,7 +94,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
 
     public override void Damage(DamageHandler damage, GameSession session)
     {
-        if (Value.Type is NpcType.Friendly)
+        if (Value.Type is NpcType.Friendly || IsDead)
         {
             return;
         }
