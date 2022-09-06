@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Enums;
+﻿using Maple2.Trigger.Enum;
+using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Packets;
@@ -43,7 +44,7 @@ public class NpcTalk
 
         List<ActionType> actions = new();
         Script npcScript = ScriptLoader.GetScript($"Npcs/{Npc.Id}");
-        DynValue actionResults = npcScript?.RunFunction(function);
+        DynValue actionResults = npcScript?.RunFunction(function, functionId);
         if (actionResults == null)
         {
             return;
@@ -71,11 +72,11 @@ public class NpcTalk
             switch (action)
             {
                 case ActionType.OpenWindow:
-                    DynValue windowResults = npcScript.RunFunction("actionWindow");
+                    DynValue windowResults = npcScript.RunFunction("actionWindow", functionId);
                     session.Send(NpcTalkPacket.Action(ActionType.OpenWindow, windowResults.Tuple[0].String, windowResults.Tuple[1].String));
                     break;
                 case ActionType.Portal:
-                    DynValue portalResults = npcScript.RunFunction("actionPortal");
+                    DynValue portalResults = npcScript.RunFunction("actionPortal", functionId);
                     portal = MapEntityMetadataStorage.GetPortals(session.Player.MapId).FirstOrDefault(portal => portal.Id == portalResults.Number);
                     if (portal is null)
                     {
@@ -85,7 +86,7 @@ public class NpcTalk
                     session.Send(NpcTalkPacket.Action(ActionType.Portal, "", "", portal.Id));
                     break;
                 case ActionType.ItemReward:
-                    DynValue itemResults = npcScript.RunFunction("actionItemReward"); // TODO: Support > 1 item
+                    DynValue itemResults = npcScript.RunFunction("actionItemReward", functionId); // TODO: Support > 1 item
                     Item item = new(id: (int) itemResults.Tuple[0].Number,
                         amount: (int) itemResults.Tuple[2].Number,
                         rarity: (int) itemResults.Tuple[1].Number);
@@ -93,7 +94,7 @@ public class NpcTalk
                     session.Send(NpcTalkPacket.Action(action, "", "", 0, item));
                     break;
                 case ActionType.MoveMap:
-                    DynValue map = npcScript.RunFunction("actionMoveMap");
+                    DynValue map = npcScript.RunFunction("actionMoveMap", functionId);
 
                     int mapId = (int) map.Tuple[0].Number;
                     int portalId = (int) map.Tuple[1].Number;
