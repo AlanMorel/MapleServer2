@@ -10,7 +10,7 @@ namespace GameDataParser;
 
 internal static class Program
 {
-    private static async Task Main()
+    private static async Task Main(string[] args)
     {
         CultureInfo.CurrentCulture = new("en-US");
 
@@ -18,6 +18,20 @@ internal static class Program
         Directory.CreateDirectory(Paths.RESOURCES_INPUT_DIR);
         Directory.CreateDirectory(Paths.RESOURCES_DIR);
         Directory.CreateDirectory(Paths.NAVMESH_DIR);
+
+        // If parameter --no-cache, delete all files inside resources folder
+        if (args.Contains("--no-cache"))
+        {
+            foreach (string path in Directory.GetFiles(Paths.RESOURCES_DIR))
+            {
+                File.Delete(path);
+            }
+
+            foreach (string path in Directory.GetFiles(Paths.NAVMESH_DIR))
+            {
+                File.Delete(path);
+            }
+        }
 
         Stopwatch runtime = Stopwatch.StartNew();
 
