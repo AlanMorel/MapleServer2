@@ -29,8 +29,10 @@ function rouletteSpin(scriptId)
     return TokenItemId, spinCount, tokenSpinCost
 end
 
-function preTalkActions()
-    return 4
+function preTalkActions(functionId)
+    if functionId == 1 then
+        return 4
+    end
 end
 
 function actionWindow()
