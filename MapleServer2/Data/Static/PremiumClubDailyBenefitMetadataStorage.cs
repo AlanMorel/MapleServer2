@@ -24,13 +24,8 @@ public static class PremiumClubDailyBenefitMetadataStorage
         return PremiumClubDailyBenefitMetadatas.ContainsKey(benefitId);
     }
 
-    public static PremiumClubDailyBenefitMetadata GetMetadata(int benefitId)
+    public static PremiumClubDailyBenefitMetadata? GetMetadata(int benefitId)
     {
         return PremiumClubDailyBenefitMetadatas.GetValueOrDefault(benefitId);
-    }
-
-    public static int GetId(int benefitId)
-    {
-        return PremiumClubDailyBenefitMetadatas.GetValueOrDefault(benefitId).BenefitId;
     }
 }

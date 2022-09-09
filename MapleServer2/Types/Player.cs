@@ -67,11 +67,11 @@ public class Player
 
     public Stats Stats;
 
-    public IFieldObject<Mount> Mount;
-    public IFieldObject<GuideObject> Guide;
-    public IFieldObject<Instrument> Instrument;
+    public IFieldObject<Mount>? Mount;
+    public IFieldObject<GuideObject>? Guide;
+    public IFieldObject<Instrument>? Instrument;
 
-    public Item ActivePet;
+    public Item? ActivePet;
 
     public long HouseStorageAccessTime;
     public long HouseDoctorAccessTime;
@@ -169,7 +169,7 @@ public class Player
 
     public List<PlayerTrigger> Triggers = new();
 
-    public Character FieldPlayer;
+    public Character? FieldPlayer;
 
     private Dictionary<int, short> PassiveSkillEffects = new();
     private Dictionary<int, SkillLevel> EnabledPassiveSkillEffects = new();
@@ -200,8 +200,8 @@ public class Player
             new(MasteryType.Cooking),
             new(MasteryType.PetTaming)
         }, gameSession: null);
-        MapId = JobMetadataStorage.GetStartMapId(job);
-        SavedCoord = MapEntityMetadataStorage.GetRandomPlayerSpawn(MapId).Coord.ToFloat();
+        MapId = JobMetadataStorage.GetStartMapId(job) ?? 0;
+        SavedCoord = MapEntityMetadataStorage.GetRandomPlayerSpawn(MapId)?.Coord.ToFloat() ?? default;
         Stats = new(job);
         Motto = "Motto";
         ProfileUrl = "";
@@ -311,7 +311,7 @@ public class Player
         {
             if (coord is null || rotation is null)
             {
-                MapPlayerSpawn spawn = GetSpawnCoords(mapId);
+                MapPlayerSpawn? spawn = GetSpawnCoords(mapId);
                 if (spawn is null)
                 {
                     Move(SavedCoord, SavedRotation);
@@ -348,8 +348,8 @@ public class Player
     {
         UpdateCoords(mapId, instanceId, coord, rotation);
 
-        string ipAddress = Session.IsLocalHost() ? Constant.LocalHost : Environment.GetEnvironmentVariable("IP");
-        int port = int.Parse(Environment.GetEnvironmentVariable("GAME_PORT"));
+        string ipAddress = Session.IsLocalHost() ? Constant.LocalHost : Environment.GetEnvironmentVariable("IP")!;
+        int port = int.Parse(Environment.GetEnvironmentVariable("GAME_PORT")!);
         IPEndPoint endpoint = new(IPAddress.Parse(ipAddress), port);
 
         IsMigrating = true;
@@ -365,7 +365,7 @@ public class Player
         Session.Send(UserMoveByPortalPacket.Move(FieldPlayer, coord, rotation, isTrigger));
     }
 
-    public Dictionary<ItemSlot, Item> GetEquippedInventory(InventoryTab tab)
+    public Dictionary<ItemSlot, Item>? GetEquippedInventory(InventoryTab tab)
     {
         return tab switch
         {
@@ -401,7 +401,7 @@ public class Player
 
     public void IncrementGatheringCount(int recipeId, int amount)
     {
-        GatheringCount gatheringCount = GatheringCount.FirstOrDefault(x => x.RecipeId == recipeId);
+        GatheringCount? gatheringCount = GatheringCount.FirstOrDefault(x => x.RecipeId == recipeId);
         if (gatheringCount is null)
         {
             int maxLimit = (int) (RecipeMetadataStorage.GetRecipe(recipeId).NormalPropLimitCount * 1.4);
@@ -528,7 +528,7 @@ public class Player
         }
     }
 
-    public bool TryGetWardrobe(int index, out Wardrobe wardrobe)
+    public bool TryGetWardrobe(int index, out Wardrobe? wardrobe)
     {
         if (Wardrobes.ElementAtOrDefault(index) is null)
         {
@@ -540,9 +540,9 @@ public class Player
         return true;
     }
 
-    private MapPlayerSpawn GetSpawnCoords(int mapId)
+    private MapPlayerSpawn? GetSpawnCoords(int mapId)
     {
-        MapPlayerSpawn spawn = MapEntityMetadataStorage.GetRandomPlayerSpawn(mapId);
+        MapPlayerSpawn? spawn = MapEntityMetadataStorage.GetRandomPlayerSpawn(mapId);
         if (spawn is null)
         {
             Session.SendNotice($"Could not find a spawn for map {mapId}");
@@ -573,7 +573,7 @@ public class Player
 
         if (coord is null && rotation is null)
         {
-            MapPlayerSpawn spawn = GetSpawnCoords(mapId);
+            MapPlayerSpawn? spawn = GetSpawnCoords(mapId);
             if (spawn is not null)
             {
                 SavedCoord = spawn.Coord;
@@ -631,18 +631,18 @@ public class Player
 
         foreach (ItemStat stat in stats.Enchants.Values)
         {
-            int constantValue = stats.Constants.TryGetValue(stat.ItemAttribute, out ItemStat itemStat) ? itemStat.Flat : 0;
-            int staticValue = stats.Statics.TryGetValue(stat.ItemAttribute, out ItemStat itemStat2) ? itemStat2.Flat : 0;
+            int constantValue = stats.Constants.TryGetValue(stat.ItemAttribute, out ItemStat? itemStat) ? itemStat.Flat : 0;
+            int staticValue = stats.Statics.TryGetValue(stat.ItemAttribute, out ItemStat? itemStat2) ? itemStat2.Flat : 0;
             int totalStat = constantValue + staticValue;
             Stats[stat.ItemAttribute].Add((int) (totalStat * stat.Rate));
         }
 
         foreach (ItemStat stat in stats.LimitBreakEnchants.Values)
         {
-            if (stat.ItemAttribute == StatAttribute.MinWeaponAtk || stat.ItemAttribute == StatAttribute.MaxWeaponAtk)
+            if (stat.ItemAttribute is StatAttribute.MinWeaponAtk or StatAttribute.MaxWeaponAtk)
             {
-                int constantValue = stats.Constants.TryGetValue(stat.ItemAttribute, out ItemStat itemStat) ? itemStat.Flat : 0;
-                int staticValue = stats.Statics.TryGetValue(stat.ItemAttribute, out ItemStat itemStat2) ? itemStat2.Flat : 0;
+                int constantValue = stats.Constants.TryGetValue(stat.ItemAttribute, out ItemStat? itemStat) ? itemStat.Flat : 0;
+                int staticValue = stats.Statics.TryGetValue(stat.ItemAttribute, out ItemStat? itemStat2) ? itemStat2.Flat : 0;
                 int totalStat = constantValue + staticValue;
                 Stats[stat.ItemAttribute].Add((int) (totalStat * stat.Rate));
 
@@ -655,7 +655,6 @@ public class Player
 
     public void AddStats()
     {
-
         Stats = new(Job);
         Stats.AddBaseStats(this, Levels.Level);
         Stats.RecomputeAllocations(StatPointDistribution);
@@ -664,7 +663,7 @@ public class Player
         {
             ComputeStatContribution(item.Stats);
 
-            foreach (GemSocket socket in item.GemSockets.Sockets)
+            foreach (GemSocket? socket in item.GemSockets.Sockets)
             {
                 if (socket.Gemstone != null)
                 {
@@ -698,15 +697,9 @@ public class Player
         Stats.AddAttackBonus(this);
     }
 
-    public void EffectAdded(AdditionalEffect effect)
-    {
+    public void EffectAdded(AdditionalEffect effect) { }
 
-    }
-
-    public void EffectRemoved(AdditionalEffect effect)
-    {
-
-    }
+    public void EffectRemoved(AdditionalEffect effect) { }
 
     public void InitializeEffects()
     {
@@ -769,7 +762,7 @@ public class Player
 
         foreach ((int id, short level) in PassiveSkillEffects)
         {
-            SkillLevel skillLevel;
+            SkillLevel? skillLevel;
 
             if (level < 1)
             {
@@ -796,8 +789,13 @@ public class Player
                 continue;
             }
 
-            SkillMetadata skill = SkillMetadataStorage.GetSkill(id);
-            skillLevel = skill.SkillLevels.FirstOrDefault(skillLevel => skillLevel.Level == level, skill.SkillLevels[0]);
+            SkillMetadata? skill = SkillMetadataStorage.GetSkill(id);
+            skillLevel = skill?.SkillLevels.FirstOrDefault(x => x.Level == level, skill.SkillLevels[0]);
+
+            if (skillLevel is null)
+            {
+                continue;
+            }
 
             EnabledPassiveSkillEffects[id] = skillLevel;
 

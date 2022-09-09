@@ -24,13 +24,8 @@ public static class InstrumentInfoMetadataStorage
         return Instruments.ContainsKey(instrumentId);
     }
 
-    public static InstrumentInfoMetadata GetMetadata(int instrumentId)
+    public static InstrumentInfoMetadata? GetMetadata(int instrumentId)
     {
         return Instruments.GetValueOrDefault(instrumentId);
-    }
-
-    public static int GetId(int instrumentId)
-    {
-        return Instruments.GetValueOrDefault(instrumentId).InstrumentId;
     }
 }

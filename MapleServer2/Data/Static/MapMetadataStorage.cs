@@ -20,67 +20,73 @@ public static class MapMetadataStorage
         }
     }
 
-    public static MapMetadata GetMetadata(int mapId) => Maps.GetValueOrDefault(mapId);
+    public static MapMetadata? GetMetadata(int mapId) => Maps.GetValueOrDefault(mapId);
 
     public static IEnumerable<MapMetadata> GetAll() => Maps.Values.ToList();
 
     public static bool BlockExists(int mapId, CoordS coord)
     {
-        MapMetadata mapMetadata = GetMetadata(mapId);
-        if (mapMetadata == null)
+        MapMetadata? mapMetadata = GetMetadata(mapId);
+        if (mapMetadata is null)
         {
             return false;
         }
 
-        mapMetadata.Blocks.TryGetValue(coord, out MapBlock block);
-        return block != null;
+        mapMetadata.Blocks.TryGetValue(coord, out MapBlock? block);
+        return block is not null;
     }
 
     public static bool BlockAboveExists(int mapId, CoordS coord)
     {
-        MapMetadata mapMetadata = GetMetadata(mapId);
+        MapMetadata? mapMetadata = GetMetadata(mapId);
         if (mapMetadata is null)
         {
             return false;
         }
 
         coord.Z += Block.BLOCK_SIZE;
-        mapMetadata.Blocks.TryGetValue(coord, out MapBlock block);
+        mapMetadata.Blocks.TryGetValue(coord, out MapBlock? block);
         return block is not null;
     }
 
     public static bool BlockBelowExists(int mapId, CoordS coord)
     {
-        MapMetadata mapMetadata = GetMetadata(mapId);
+        MapMetadata? mapMetadata = GetMetadata(mapId);
         if (mapMetadata is null)
         {
             return false;
         }
 
         coord.Z -= Block.BLOCK_SIZE;
-        mapMetadata.Blocks.TryGetValue(coord, out MapBlock block);
+        mapMetadata.Blocks.TryGetValue(coord, out MapBlock? block);
         return block is not null;
     }
 
-    public static MapBlock GetMapBlock(int mapId, CoordS coord)
+    public static MapBlock? GetMapBlock(int mapId, CoordS coord)
     {
-        MapMetadata mapMetadata = GetMetadata(mapId);
+        MapMetadata? mapMetadata = GetMetadata(mapId);
         if (mapMetadata is null)
         {
             return null;
         }
 
-        mapMetadata.Blocks.TryGetValue(coord, out MapBlock block);
+        mapMetadata.Blocks.TryGetValue(coord, out MapBlock? block);
         return block;
     }
 
     public static int GetPlotNumber(int mapId, CoordB coord)
     {
         CoordS coordS = coord.ToShort();
-        MapMetadata mapMetadata = GetMetadata(mapId);
+        MapMetadata? mapMetadata = GetMetadata(mapId);
+        if (mapMetadata is null)
+        {
+            return 0;
+        }
+
         for (int i = 0; i < 20; i++) // checking 20 blocks in the same Z axis
         {
-            mapMetadata.Blocks.TryGetValue(coordS, out MapBlock block);
+            mapMetadata.Blocks.TryGetValue(coordS, out MapBlock? block);
+
             if (block is null)
             {
                 coordS.Z -= Block.BLOCK_SIZE;
@@ -100,7 +106,7 @@ public static class MapMetadataStorage
 
     public static bool IsLiquidBlock(int mapId, CoordS coord)
     {
-        MapBlock block = GetMapBlock(mapId, coord);
+        MapBlock? block = GetMapBlock(mapId, coord);
         return block is not null && IsLiquidBlock(block);
     }
 
@@ -114,10 +120,10 @@ public static class MapMetadataStorage
         return block.Attribute is "water" or "seawater" or "devilwater" or "lava" or "poison" or "oil" or "emeraldwater";
     }
 
-    public static int GetDistanceToNextBlockBelow(int mapId, CoordS coord, out MapBlock block)
+    public static int GetDistanceToNextBlockBelow(int mapId, CoordS coord, out MapBlock? block)
     {
         CoordS tempCoord = coord;
-        MapMetadata mapMetadata = GetMetadata(mapId);
+        MapMetadata? mapMetadata = GetMetadata(mapId);
         if (mapMetadata is null)
         {
             block = null;
@@ -142,7 +148,7 @@ public static class MapMetadataStorage
 
     public static bool MapIsInstancedOnly(int mapId)
     {
-        MapMetadata mapMetadata = GetMetadata(mapId);
+        MapMetadata? mapMetadata = GetMetadata(mapId);
         if (mapMetadata is null)
         {
             return false;
@@ -153,26 +159,21 @@ public static class MapMetadataStorage
 
     public static bool MapIsTutorial(int mapId)
     {
-        MapMetadata mapMetadata = GetMetadata(mapId);
-        if (mapMetadata is null)
-        {
-            return false;
-        }
-
-        return mapMetadata.Property.IsTutorialMap;
+        MapMetadata? mapMetadata = GetMetadata(mapId);
+        return mapMetadata is not null && mapMetadata.Property.IsTutorialMap;
     }
 
-    public static MapProperty GetMapProperty(int mapId)
+    public static MapProperty? GetMapProperty(int mapId)
     {
         return Maps.GetValueOrDefault(mapId)?.Property;
     }
 
-    public static MapUi GetMapUi(int mapId)
+    public static MapUi? GetMapUi(int mapId)
     {
         return Maps.GetValueOrDefault(mapId)?.Ui;
     }
 
-    public static MapCashCall GetMapCashCall(int mapId)
+    public static MapCashCall? GetMapCashCall(int mapId)
     {
         return Maps.GetValueOrDefault(mapId)?.CashCall;
     }

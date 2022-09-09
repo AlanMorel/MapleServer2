@@ -19,7 +19,7 @@ public static class EnchantScrollMetadataStorage
         }
     }
 
-    public static EnchantScrollMetadata GetMetadata(int scrollId)
+    public static EnchantScrollMetadata? GetMetadata(int scrollId)
     {
         return EnchantScroll.GetValueOrDefault(scrollId);
     }

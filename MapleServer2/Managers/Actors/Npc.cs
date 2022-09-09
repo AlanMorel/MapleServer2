@@ -17,12 +17,12 @@ public class Npc : FieldActor<NpcMetadata>, INpc
     private static readonly Random Rand = Random.Shared;
     private static readonly ILogger Logger = Log.Logger.ForContext<Npc>();
 
-    public MobAI AI;
+    public MobAI? AI;
     public IFieldObject<MobSpawn> OriginSpawn;
     public NpcState State { get; set; }
     public NpcAction Action { get; set; }
     public MobMovement Movement { get; set; }
-    public IFieldActor<Player> Target;
+    public IFieldActor<Player>? Target;
 
     private CoordS NextMovementTarget;
     private float Distance;
@@ -32,7 +32,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
 
     private PatrolData PatrolData;
     private Queue<WayPoint> WayPointQueue = new();
-    private WayPoint CurrentWayPoint;
+    private WayPoint? CurrentWayPoint;
     private bool WaitForAnimation;
 
     public int SpawnPointId;
@@ -69,7 +69,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
 
     public override void Animate(string sequenceName, float duration = -1f)
     {
-        SequenceMetadata metadata = AnimationStorage.GetSequenceMetadataByName(Value.NpcMetadataModel.Model, sequenceName);
+        SequenceMetadata? metadata = AnimationStorage.GetSequenceMetadataByName(Value.NpcMetadataModel.Model, sequenceName);
         Animation = metadata?.SequenceId ?? 0;
 
         if (Animation == 0)
@@ -217,7 +217,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
             return;
         }
 
-        (string actionName, NpcAction actionType) = AI.GetAction(this);
+        (string? actionName, NpcAction actionType) = AI.GetAction(this);
 
         if (actionName is not null)
         {
@@ -262,7 +262,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
                     int moveDistance = Rand.Next(150, Value.MoveRange * 2);
 
                     CoordF originSpawnCoord = OriginSpawn?.Coord ?? Coord;
-                    List<CoordS> coordSPath = Navigator.GenerateRandomPathAroundCoord(Agent, originSpawnCoord, moveDistance);
+                    List<CoordS>? coordSPath = Navigator.GenerateRandomPathAroundCoord(Agent, originSpawnCoord, moveDistance);
                     if (coordSPath is null)
                     {
                         SetMovementTargetToDefault();
@@ -282,7 +282,12 @@ public class Npc : FieldActor<NpcMetadata>, INpc
                 break;
             case MobMovement.Follow: // move towards target
                 {
-                    IEnumerable<CoordS> path = Navigator.FindPath(Agent, Target.Coord.ToShort());
+                    if (Target == null)
+                    {
+                        return;
+                    }
+
+                    IEnumerable<CoordS>? path = Navigator.FindPath(Agent, Target.Coord.ToShort());
                     if (path is null)
                     {
                         SetMovementTargetToDefault();
@@ -387,7 +392,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
             return;
         }
 
-        SequenceMetadata metadata = AnimationStorage.GetSequenceMetadataByName(Value.NpcMetadataModel.Model, CurrentWayPoint.ArriveAnimation);
+        SequenceMetadata? metadata = AnimationStorage.GetSequenceMetadataByName(Value.NpcMetadataModel.Model, CurrentWayPoint.ArriveAnimation);
         if (metadata is null)
         {
             Animation = AnimationStorage.GetSequenceIdBySequenceName(Value.NpcMetadataModel.Model, "Idle_A");
@@ -396,7 +401,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
 
         Animation = metadata.SequenceId;
 
-        KeyMetadata keyMetadata = metadata.Keys.FirstOrDefault(x => x.KeyName == "end");
+        KeyMetadata? keyMetadata = metadata.Keys.FirstOrDefault(x => x.KeyName == "end");
         if (keyMetadata is null)
         {
             return;
@@ -411,7 +416,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
         });
     }
 
-    public void SetPatrolData(PatrolData patrolData)
+    public void SetPatrolData(PatrolData? patrolData)
     {
         if (patrolData is null)
         {
@@ -429,8 +434,8 @@ public class Npc : FieldActor<NpcMetadata>, INpc
 
     private short GetDefaultAnimation()
     {
-        NpcMetadata npcMetadata = NpcMetadataStorage.GetNpcMetadata(Value.Id);
-        if (npcMetadata is null || !npcMetadata.StateActions.TryGetValue(NpcState.Normal, out (string, NpcAction, short)[] stateAction))
+        NpcMetadata? npcMetadata = NpcMetadataStorage.GetNpcMetadata(Value.Id);
+        if (npcMetadata is null || !npcMetadata.StateActions.TryGetValue(NpcState.Normal, out (string, NpcAction, short)[]? stateAction))
         {
             return AnimationStorage.GetSequenceIdBySequenceName(Value.NpcMetadataModel.Model, "Idle_A");
         }

@@ -24,7 +24,7 @@ public static class FishingRodMetadataStorage
         return FishingRod.ContainsKey(rodId);
     }
 
-    public static FishingRodMetadata GetMetadata(int rodId)
+    public static FishingRodMetadata? GetMetadata(int rodId)
     {
         return FishingRod.GetValueOrDefault(rodId);
     }

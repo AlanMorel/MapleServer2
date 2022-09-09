@@ -7,7 +7,7 @@ public class FieldWarManager
 {
     private readonly int[] FieldWarList = new int[] { 10000001, 10000002, 10000005, 10000003 };
     private int LastFieldWarIndex;
-    public FieldWar CurrentFieldWar;
+    public FieldWar? CurrentFieldWar;
 
     public FieldWarManager()
     {

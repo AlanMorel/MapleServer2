@@ -61,8 +61,8 @@ public partial class TriggerContext
     {
         int msTime = time * 1000;
         int endTick = Environment.TickCount + msTime;
-        MapTimer timer = Field.GetMapTimer(id);
-        if (timer == null)
+        MapTimer? timer = Field.GetMapTimer(id);
+        if (timer is null)
         {
             MapTimer newTimer = new(id, endTick);
             Field.AddMapTimer(newTimer);

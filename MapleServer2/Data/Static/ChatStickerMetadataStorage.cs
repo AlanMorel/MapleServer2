@@ -24,18 +24,18 @@ public static class ChatStickerMetadataStorage
         return ChatSticker.ContainsKey(stickerId);
     }
 
-    public static ChatStickerMetadata GetMetadata(int stickerId)
+    public static ChatStickerMetadata? GetMetadata(int stickerId)
     {
         return ChatSticker.GetValueOrDefault(stickerId);
     }
 
     public static byte GetGroupId(int stickerId)
     {
-        return ChatSticker.GetValueOrDefault(stickerId).GroupId;
+        return ChatSticker.GetValueOrDefault(stickerId)?.GroupId ?? 0;
     }
 
     public static short GetCategoryId(int stickerId)
     {
-        return ChatSticker.GetValueOrDefault(stickerId).CategoryId;
+        return ChatSticker.GetValueOrDefault(stickerId)?.CategoryId ?? 0;
     }
 }

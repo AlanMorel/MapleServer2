@@ -19,7 +19,7 @@ public static class InteractObjectMetadataStorage
         }
     }
 
-    public static InteractObjectMetadata GetInteractObjectMetadata(int interactId)
+    public static InteractObjectMetadata? GetInteractObjectMetadata(int interactId)
     {
         return Interacts.GetValueOrDefault(interactId);
     }

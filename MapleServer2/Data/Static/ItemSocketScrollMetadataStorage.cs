@@ -19,7 +19,7 @@ public static class ItemSocketScrollMetadataStorage
         }
     }
 
-    public static ItemSocketScrollMetadata GetMetadata(int scrollId)
+    public static ItemSocketScrollMetadata? GetMetadata(int scrollId)
     {
         return ItemSocketScroll.GetValueOrDefault(scrollId);
     }

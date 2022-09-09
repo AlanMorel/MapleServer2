@@ -45,13 +45,18 @@ public partial class TriggerContext
     {
         foreach (int boxId in triggerBoxIds)
         {
-            MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
+            MapTriggerBox? box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
             if (box is null)
             {
                 return false;
             }
 
-            IFieldObject<LiftableObject> liftable = Field.State.LiftableObjects.Values.FirstOrDefault(x => x.Value.Metadata.ItemId == itemId);
+            IFieldObject<LiftableObject>? liftable = Field.State.LiftableObjects.Values.FirstOrDefault(x => x.Value.Metadata.ItemId == itemId);
+            if (liftable is null)
+            {
+                return false;
+            }
+
             if (FieldManager.IsActorInBox(box, liftable))
             {
                 return true;
@@ -91,8 +96,8 @@ public partial class TriggerContext
         // TODO: Needs a better check for multiple mob spawns
         foreach (int spawnPointId in spawnPointIds)
         {
-            MapEventNpcSpawnPoint spawnPoint = MapEntityMetadataStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnPointId);
-            if (spawnPoint == null)
+            MapEventNpcSpawnPoint? spawnPoint = MapEntityMetadataStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnPointId);
+            if (spawnPoint is null)
             {
                 continue;
             }
@@ -121,7 +126,7 @@ public partial class TriggerContext
 
     public bool NpcDetected(int boxId, int[] spawnPointIds)
     {
-        MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
+        MapTriggerBox? box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
         if (box is null)
         {
             return false;
@@ -129,7 +134,7 @@ public partial class TriggerContext
 
         foreach (int spawnPointId in spawnPointIds)
         {
-            Npc npc = Field.State.Npcs.Values.FirstOrDefault(x => x.SpawnPointId == spawnPointId);
+            Npc? npc = Field.State.Npcs.Values.FirstOrDefault(x => x.SpawnPointId == spawnPointId);
             if (npc is null)
             {
                 continue;
@@ -154,8 +159,8 @@ public partial class TriggerContext
         InteractObjectState objectState = (InteractObjectState) state;
         foreach (int interactId in interactIds)
         {
-            IFieldObject<InteractObject> interactObject = Field.State.InteractObjects.Values.FirstOrDefault(x => x.Value.InteractId == interactId);
-            if (interactObject == null)
+            IFieldObject<InteractObject>? interactObject = Field.State.InteractObjects.Values.FirstOrDefault(x => x.Value.InteractId == interactId);
+            if (interactObject is null)
             {
                 continue;
             }
@@ -179,7 +184,7 @@ public partial class TriggerContext
         byte mode = modes[0];
         foreach (int boxId in boxes)
         {
-            MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
+            MapTriggerBox? box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
             if (box is null)
             {
                 return false;
@@ -196,7 +201,7 @@ public partial class TriggerContext
 
                 foreach (int questId in questIds)
                 {
-                    if (!player.Value.QuestData.TryGetValue(questId, out QuestStatus quest))
+                    if (!player.Value.QuestData.TryGetValue(questId, out QuestStatus? quest))
                     {
                         return false;
                     }
@@ -221,8 +226,8 @@ public partial class TriggerContext
 
     public bool TimeExpired(string id)
     {
-        MapTimer timer = Field.GetMapTimer(id);
-        return timer != null && timer.EndTick < Environment.TickCount;
+        MapTimer? timer = Field.GetMapTimer(id);
+        return timer is not null && timer.EndTick < Environment.TickCount;
     }
 
     public bool UserDetected(int[] boxIds, byte jobId)
@@ -236,8 +241,8 @@ public partial class TriggerContext
 
         foreach (int boxId in boxIds)
         {
-            MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
-            if (box == null)
+            MapTriggerBox? box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
+            if (box is null)
             {
                 return false;
             }
@@ -290,7 +295,7 @@ public partial class TriggerContext
 
     public bool WidgetCondition(WidgetType type, string name, string arg3)
     {
-        Widget widget = Field.GetWidget(type);
+        Widget? widget = Field.GetWidget(type);
         if (widget == null)
         {
             return false;

@@ -3,23 +3,23 @@ using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Managers.Actors;
-using MapleServer2.PacketHandlers.Game;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
+using Serilog;
 
 namespace MapleServer2.Types;
 
 public struct AdditionalEffectParameters
 {
-    public int Id;
-    public int Level;
+    public readonly int Id;
+    public readonly int Level;
     public int Stacks;
-    public IFieldActor Caster;
+    public IFieldActor? Caster;
     public int Duration;
     public bool IsBuff;
     public bool AdjustDuration;
-    public SkillCast ParentSkill;
+    public SkillCast? ParentSkill;
 
     public AdditionalEffectParameters(int id, int level)
     {
@@ -36,15 +36,15 @@ public struct AdditionalEffectParameters
 
 public class AdditionalEffects
 {
-    public List<AdditionalEffect> Effects;
-    public List<AdditionalEffect> TimedEffects;
-    public IFieldActor Parent;
-    private AdditionalEffect NextExpiringBuff = null;
+    public readonly List<AdditionalEffect> Effects;
+    private readonly List<AdditionalEffect> TimedEffects;
+    public IFieldActor? Parent;
+    private AdditionalEffect? NextExpiringBuff;
     public bool AlwaysCrit { get; private set; }
     public bool Invincible { get; private set; }
     private List<(int, AdditionalEffect)> ListeningSkillIds = new();
 
-    public AdditionalEffects(IFieldActor parent = null)
+    public AdditionalEffects(IFieldActor? parent = null)
     {
         Effects = new();
         TimedEffects = new();
@@ -105,7 +105,7 @@ public class AdditionalEffects
         FlushingBackBuffer = false;
     }
 
-    public AdditionalEffect AddEffect(AdditionalEffectParameters parameters)
+    public AdditionalEffect? AddEffect(AdditionalEffectParameters parameters)
     {
         if (BufferingNewEffects != 0)
         {
@@ -122,7 +122,7 @@ public class AdditionalEffects
         int oldEffectIndex = -1;
         int start = Environment.TickCount;
 
-        if (effect.LevelMetadata == null)
+        if (effect.LevelMetadata is null)
         {
             return null;
         }
@@ -132,7 +132,12 @@ public class AdditionalEffects
         for (int i = 0; i < Effects.Count; i++)
         {
             AdditionalEffect oldEffect = Effects[i];
-            EffectImmuneEffectMetadata immune = oldEffect.LevelMetadata.ImmuneEffect;
+            if (oldEffect.LevelMetadata is null)
+            {
+                continue;
+            }
+
+            EffectImmuneEffectMetadata? immune = oldEffect.LevelMetadata.ImmuneEffect;
 
             if (immune?.ImmuneEffectCodes?.Contains(effect.Id) == true)
             {
@@ -144,29 +149,31 @@ public class AdditionalEffects
                 return null;
             }
 
-            if (oldEffect.Id == effect.Id)
+            if (oldEffect.Id != effect.Id)
             {
-                parameters.Stacks = Math.Max(Math.Min(oldEffect.LevelMetadata.Basic.MaxBuffCount, parameters.Stacks + oldEffect.Stacks), 0);
-
-                oldEffect.Level = effect.Level;
-                oldEffect.LevelMetadata = effect.LevelMetadata;
-                effect = oldEffect;
-                oldEffectIndex = i;
-
-                if (parameters.ParentSkill == null)
-                {
-                    parameters.ParentSkill = oldEffect.ParentSkill;
-                    parameters.Caster = oldEffect.Caster;
-                }
-
-                if (!parameters.AdjustDuration)
-                {
-                    start = oldEffect.Start;
-                    parameters.Duration = oldEffect.Duration;
-                }
-
-                break;
+                continue;
             }
+
+            parameters.Stacks = Math.Max(Math.Min(oldEffect.LevelMetadata.Basic.MaxBuffCount, parameters.Stacks + oldEffect.Stacks), 0);
+
+            oldEffect.Level = effect.Level;
+            oldEffect.LevelMetadata = effect.LevelMetadata;
+            effect = oldEffect;
+            oldEffectIndex = i;
+
+            if (parameters.ParentSkill == null)
+            {
+                parameters.ParentSkill = oldEffect.ParentSkill;
+                parameters.Caster = oldEffect.Caster;
+            }
+
+            if (!parameters.AdjustDuration)
+            {
+                start = oldEffect.Start;
+                parameters.Duration = oldEffect.Duration;
+            }
+
+            break;
         }
 
         for (int i = 0; i < Effects.Count; i++)
@@ -175,7 +182,7 @@ public class AdditionalEffects
 
             if (cancel?.CancelEffectCodes?.Contains(oldEffect.Id) == true)
             {
-                RemoveEffect(oldEffect, i, true);
+                RemoveEffect(oldEffect, i);
             }
         }
 
@@ -183,7 +190,7 @@ public class AdditionalEffects
         {
             if (oldEffectIndex != -1)
             {
-                RemoveEffect(effect, oldEffectIndex, true);
+                RemoveEffect(effect, oldEffectIndex);
             }
 
             return null;
@@ -198,7 +205,7 @@ public class AdditionalEffects
 
         if (oldEffectIndex != -1)
         {
-            Parent.FieldManager.BroadcastPacket(BuffPacket.UpdateBuff(effect, Parent.ObjectId));
+            Parent?.FieldManager?.BroadcastPacket(BuffPacket.UpdateBuff(effect, Parent.ObjectId));
         }
 
         if (oldEffectIndex == -1)
@@ -213,7 +220,7 @@ public class AdditionalEffects
 
             Effects.Add(effect);
 
-            Parent.FieldManager.BroadcastPacket(BuffPacket.AddBuff(effect, Parent.ObjectId));
+            Parent?.FieldManager?.BroadcastPacket(BuffPacket.AddBuff(effect, Parent.ObjectId));
 
             DotEffect(effect, parameters);
 
@@ -230,7 +237,7 @@ public class AdditionalEffects
             NextExpiringBuff = FindNextExpiringBuff();
         }
 
-        Parent.EffectAdded(effect);
+        Parent?.EffectAdded(effect);
         ModifyEffect(effect);
         ApplyStatuses(effect);
 
@@ -243,7 +250,10 @@ public class AdditionalEffects
                 Target = Parent
             };
 
-            Parent.SkillTriggerHandler.FireTriggers(effect, triggers, parameters.ParentSkill, false);
+            if (parameters.ParentSkill is not null)
+            {
+                Parent?.SkillTriggerHandler.FireTriggers(effect, triggers, parameters.ParentSkill, false);
+            }
         }
 
         return effect;
@@ -251,20 +261,26 @@ public class AdditionalEffects
 
     public void DotEffect(AdditionalEffect effect, AdditionalEffectParameters parameters)
     {
-        EffectDotDamageMetadata dotDamage = effect.LevelMetadata.DotDamage;
+        EffectDotDamageMetadata? dotDamage = effect.LevelMetadata?.DotDamage;
+
+        if (dotDamage is null)
+        {
+            Log.Logger.Error("Tried to dot effect {0} but it has no dot damage metadata", effect.Id);
+            return;
+        }
 
         // TODO: fix dot damage handling with game session tracking
 
-        GameSession session = null;
+        GameSession? session = null;
 
         if (effect.Caster is Character character)
         {
             session = character.Value.Session;
         }
 
-        DamageSourceParameters dotParameters = null;
+        DamageSourceParameters? dotParameters = null;
 
-        if ((dotDamage?.Rate ?? 0) != 0 && effect.Caster != null && session != null)
+        if ((dotDamage.Rate) is not 0 && effect.Caster is not null && session != null)
         {
             dotParameters = new()
             {
@@ -279,7 +295,7 @@ public class AdditionalEffects
             };
         }
 
-        if (dotParameters != null)
+        if (dotParameters != null && session != null && effect.Caster != null && Parent != null)
         {
             DamageHandler.ApplyDotDamage(session, effect.Caster, Parent, dotParameters);
         }
@@ -312,7 +328,7 @@ public class AdditionalEffects
                         DamageHandler.ApplyDotDamage(session, effect.Caster, Parent, dotParameters);
                     }
 
-                    Parent.SkillTriggerHandler.FireTriggers(effect, triggers, parameters.ParentSkill, false);
+                    Parent?.SkillTriggerHandler.FireTriggers(effect, triggers, parameters.ParentSkill, false);
                 }
             });
         }
@@ -320,15 +336,15 @@ public class AdditionalEffects
 
     public void ModifyEffect(AdditionalEffect effect)
     {
-        int[] overlapCodes = effect.LevelMetadata.ModifyOverlapCount?.EffectCodes;
+        int[]? overlapCodes = effect.LevelMetadata?.ModifyOverlapCount?.EffectCodes;
 
         if ((overlapCodes?.Length ?? 0) > 0)
         {
-            for (int i = 0; i < overlapCodes.Length; ++i)
+            for (int i = 0; i < overlapCodes?.Length; ++i)
             {
-                AdditionalEffect affectedEffect = GetEffect(overlapCodes[i]);
+                AdditionalEffect? affectedEffect = GetEffect(overlapCodes[i]);
 
-                if (affectedEffect == null)
+                if (affectedEffect is null)
                 {
                     continue;
                 }
@@ -348,7 +364,7 @@ public class AdditionalEffects
         {
             for (int i = 0; i < durationCodes.Length; ++i)
             {
-                AdditionalEffect affectedEffect = GetEffect(durationCodes[i]);
+                AdditionalEffect? affectedEffect = GetEffect(durationCodes[i]);
 
                 if (affectedEffect == null)
                 {
@@ -357,7 +373,7 @@ public class AdditionalEffects
 
                 affectedEffect.Duration = (int) (modifyDuration.DurationFactors[i] * affectedEffect.Duration) + (int) (1000 * modifyDuration.DurationValues[i]);
 
-                Parent.FieldManager.BroadcastPacket(BuffPacket.UpdateBuff(effect, Parent.ObjectId));
+                Parent?.FieldManager?.BroadcastPacket(BuffPacket.UpdateBuff(effect, Parent.ObjectId));
             }
         }
     }
@@ -385,18 +401,16 @@ public class AdditionalEffects
 
         effect.IsAlive = false;
 
-        Parent.EffectRemoved(effect);
+        Parent?.EffectRemoved(effect);
 
         if (effect.BuffId != -1)
         {
             if (sendPacket)
             {
-                Parent.FieldManager.BroadcastPacket(BuffPacket.RemoveBuff(effect, Parent.ObjectId));
+                Parent?.FieldManager?.BroadcastPacket(BuffPacket.RemoveBuff(effect, Parent.ObjectId));
             }
 
-            int timedIndex = -1;
-
-            if (TryGet(effect.Id, out AdditionalEffect removeEffect, out timedIndex, true) && removeEffect.LevelMetadata != null)
+            if (TryGet(effect.Id, out AdditionalEffect removeEffect, out int timedIndex, true) && removeEffect.LevelMetadata != null)
             {
                 RemoveAt(timedIndex, true);
             }
@@ -428,9 +442,9 @@ public class AdditionalEffects
             return true;
         }
 
-        AdditionalEffect effect = GetEffect(effectId);
+        AdditionalEffect? effect = GetEffect(effectId);
 
-        if (effect == null)
+        if (effect is null)
         {
             return false;
         }
@@ -456,7 +470,7 @@ public class AdditionalEffects
         return -1;
     }
 
-    public AdditionalEffect GetEffect(int effectId)
+    public AdditionalEffect? GetEffect(int effectId)
     {
         int index = GetEffectIndex(effectId);
 
@@ -467,7 +481,7 @@ public class AdditionalEffects
     {
         int currentTick = Environment.TickCount;
 
-        AdditionalEffect effect = null;
+        AdditionalEffect? effect = null;
         int lowestRemaining = int.MaxValue;
 
         foreach (AdditionalEffect timedEffect in TimedEffects)
@@ -500,11 +514,11 @@ public class AdditionalEffects
     {
         List<AdditionalEffect> list = removeTimed ? TimedEffects : Effects;
 
-        list[index] = list[list.Count - 1];
+        list[index] = list[^1];
         list.RemoveAt(list.Count - 1);
     }
 
-    public bool TryGet(int id, out AdditionalEffect effect, out int index, bool getTimed = false)
+    public bool TryGet(int id, out AdditionalEffect? effect, out int index, bool getTimed = false)
     {
         effect = null;
 
@@ -523,11 +537,9 @@ public class AdditionalEffects
         return false;
     }
 
-    public bool TryGet(int id, int level, out AdditionalEffect effect, bool getTimed = false)
+    public bool TryGet(int id, int level, out AdditionalEffect? effect, bool getTimed = false)
     {
-        int index = 0;
-
-        return TryGet(id, out effect, out index, getTimed);
+        return TryGet(id, out effect, out _, getTimed);
     }
 
     public bool IsListeningForSkill(int skillId)
@@ -542,7 +554,8 @@ public class AdditionalEffects
 
         return false;
     }
-    public AdditionalEffect FindListeningForSkill(int skillId)
+
+    public AdditionalEffect? FindListeningForSkill(int skillId)
     {
         foreach ((int id, AdditionalEffect effect) in ListeningSkillIds)
         {
@@ -609,19 +622,19 @@ public class AdditionalEffect
 {
     public int Id;
     public int Level;
-    public AdditionalEffectMetadata Metadata;
-    public AdditionalEffectLevelMetadata LevelMetadata;
+    public AdditionalEffectMetadata? Metadata;
+    public AdditionalEffectLevelMetadata? LevelMetadata;
     public int References = 0; // Reference counter. Only remove 
-    public int Stacks = 1;
-    public IFieldActor Caster;
+    public int Stacks;
+    public IFieldActor? Caster;
     public int BuffId = -1;
     public int Start = -1;
-    public int Duration = 0;
+    public int Duration;
     public int End { get => Start + Duration; }
     public int TickRate;
     public bool IsAlive = true;
-    public SkillCast ParentSkill;
-    public int LastTick = 0;
+    public SkillCast? ParentSkill;
+    public int LastTick;
 
     public AdditionalEffect(int id, int level, int stacks = 1)
     {

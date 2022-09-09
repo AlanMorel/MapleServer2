@@ -24,7 +24,7 @@ public static class RecipeMetadataStorage
         return new(Recipes.Keys);
     }
 
-    public static RecipeMetadata GetRecipe(int id)
+    public static RecipeMetadata? GetRecipe(int id)
     {
         return Recipes.GetValueOrDefault(id);
     }

@@ -29,7 +29,7 @@ public class FieldNavigator : IDisposable
     /// Creates a path from the agent position to the random position.
     /// </summary>
     /// <returns>List of CoordS or null if path is not possible</returns>
-    public List<CoordS> GenerateRandomPathAroundAgent(Agent agent, int radius)
+    public List<CoordS>? GenerateRandomPathAroundAgent(Agent agent, int radius)
     {
         Position randomPositionLocally = Mesh.generateRandomPositionLocally(agent.getPosition(), radius);
 
@@ -47,7 +47,7 @@ public class FieldNavigator : IDisposable
     /// Creates a path from the centerCoord to the random position.
     /// </summary>
     /// <returns>List of CoordS or null if path is not possible</returns>
-    public List<CoordS> GenerateRandomPathAroundCoord(Agent agent, CoordS centerCoord, int radius)
+    public List<CoordS>? GenerateRandomPathAroundCoord(Agent? agent, CoordS centerCoord, int radius)
     {
         if (agent == null)
         {
@@ -84,7 +84,7 @@ public class FieldNavigator : IDisposable
     /// Find the shortest path from the agent to the target position.
     /// </summary>
     /// <returns>List of CoordS or null if path is not possible</returns>
-    public List<CoordS> FindPath(Agent agent, CoordS endCoord)
+    public List<CoordS>? FindPath(Agent? agent, CoordS endCoord)
     {
         Path path;
         try
@@ -94,7 +94,7 @@ public class FieldNavigator : IDisposable
                 return null;
             }
 
-            Position findClosestUnobstructedPosition = agent?.findClosestUnobstructedPosition(CollisionContext, 500) ?? new();
+            Position findClosestUnobstructedPosition = agent.findClosestUnobstructedPosition(CollisionContext, 500);
 
             agent.moveTo(findClosestUnobstructedPosition);
 
@@ -107,7 +107,7 @@ public class FieldNavigator : IDisposable
         catch (Exception e)
         {
             Logger.Error("Error in FindPath. Agent position: {0}. End coord: {1}. {2}",
-                agent.getPosition(), endCoord, e.Message);
+                agent?.getPosition(), endCoord, e.Message);
             return null;
         }
 
@@ -122,7 +122,7 @@ public class FieldNavigator : IDisposable
         int width = metadata.Radius; // Using radius for width
         int height = metadata.Height;
 
-        if (Shapes.TryGetValue((width, height), out Shape cacheShape))
+        if (Shapes.TryGetValue((width, height), out Shape? cacheShape))
         {
             return cacheShape;
         }
@@ -150,7 +150,7 @@ public class FieldNavigator : IDisposable
     /// Creates an agent from the given sh2ape, also adds it to the mesh and to the collision context.
     /// </summary>
     /// <returns>Agent or null if position isn't valid</returns>
-    public Agent AddAgent(IFieldActor actor, Shape shape)
+    public Agent? AddAgent(IFieldActor actor, Shape shape)
     {
         Position position = FindPositionFromCoordS(actor.Coord.ToShort());
         if (!PositionIsValid(position))
@@ -260,7 +260,7 @@ public class FieldNavigator : IDisposable
         return GetCoordSFromPosition(unobstructedPosition);
     }
 
-    private List<CoordS> PathToCoordS(Path path)
+    private List<CoordS>? PathToCoordS(Path? path)
     {
         if (path is null)
         {
@@ -289,7 +289,7 @@ public class FieldNavigator : IDisposable
 
     public void Dispose()
     {
-        Mesh?.Dispose();
+        Mesh.Dispose();
         GC.SuppressFinalize(this);
     }
 

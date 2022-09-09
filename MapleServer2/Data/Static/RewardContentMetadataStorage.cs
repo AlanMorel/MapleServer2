@@ -20,9 +20,14 @@ public static class RewardContentMetadataStorage
         }
     }
 
-    public static List<Item> GetRewardItems(int id, int playerLevel)
+    public static List<Item>? GetRewardItems(int id, int playerLevel)
     {
-        RewardContentMetadata metadata = RewardContent.GetValueOrDefault(id);
+        RewardContentMetadata? metadata = RewardContent.GetValueOrDefault(id);
+        if (metadata is null)
+        {
+            return null;
+        }
+
         List<Item> items = new();
         foreach (RewardContentItemMetadata rewardItem in metadata.RewardItems)
         {

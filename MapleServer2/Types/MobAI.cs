@@ -14,7 +14,7 @@ public class MobAI
         Rules = new();
     }
 
-    public (string, NpcAction) GetAction(INpc mob)
+    public (string?, NpcAction) GetAction(INpc mob)
     {
         if (mob.State == NpcState.Dead)
         {

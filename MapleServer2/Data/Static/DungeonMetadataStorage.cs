@@ -19,7 +19,7 @@ public static class DungeonStorage
         }
     }
 
-    public static DungeonMetadata GetDungeonByDungeonId(int dungeonId)
+    public static DungeonMetadata? GetDungeonByDungeonId(int dungeonId)
     {
         return Dungeons.GetValueOrDefault(dungeonId);
     }

@@ -24,18 +24,13 @@ public static class UgcMapMetadataStorage
         return UgcMap.ContainsKey(mapId);
     }
 
-    public static UgcMapGroup GetGroupMetadata(int mapId, byte groupId)
+    public static UgcMapGroup? GetGroupMetadata(int mapId, byte groupId)
     {
-        return GetMetadata(mapId).Groups.FirstOrDefault(x => x.Id == groupId);
+        return GetMetadata(mapId)?.Groups.FirstOrDefault(x => x.Id == groupId);
     }
 
-    public static UgcMapMetadata GetMetadata(int mapId)
+    public static UgcMapMetadata? GetMetadata(int mapId)
     {
         return UgcMap.GetValueOrDefault(mapId);
-    }
-
-    public static int GetId(int exchangeId)
-    {
-        return UgcMap.GetValueOrDefault(exchangeId).MapId;
     }
 }

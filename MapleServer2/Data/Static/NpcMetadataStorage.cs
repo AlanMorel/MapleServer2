@@ -19,7 +19,7 @@ public static class NpcMetadataStorage
         }
     }
 
-    public static NpcMetadata GetNpcMetadata(int id) => Npcs.GetValueOrDefault(id);
+    public static NpcMetadata? GetNpcMetadata(int id) => Npcs.GetValueOrDefault(id);
 
     public static List<NpcMetadata> GetNpcsByMainTag(string mainTag) => Npcs.Values.Where(x => x.NpcMetadataBasic.MainTags.Contains(mainTag)).ToList();
 

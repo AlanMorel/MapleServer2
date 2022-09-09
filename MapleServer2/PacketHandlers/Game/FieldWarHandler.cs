@@ -28,18 +28,24 @@ public class FieldWarHandler : GamePacketHandler<FieldWarHandler>
 
     private static void HandleLegionEnter(GameSession session)
     {
-        FieldWar currentFieldWar = GameServer.FieldWarManager.CurrentFieldWar;
+        FieldWar? currentFieldWar = GameServer.FieldWarManager.CurrentFieldWar;
 
         if (currentFieldWar is null)
         {
             return;
         }
+
         if (currentFieldWar.EntryClosureTime < DateTimeOffset.UtcNow)
         {
             return;
         }
 
-        int mapId = FieldWarMetadataStorage.MapId(currentFieldWar.Id);
-        session.Player.Warp(mapId);
+        int? mapId = FieldWarMetadataStorage.MapId(currentFieldWar.Id);
+        if (mapId is null)
+        {
+            return;
+        }
+
+        session.Player.Warp((int) mapId);
     }
 }

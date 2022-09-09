@@ -2,7 +2,6 @@
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
-using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -14,17 +13,17 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
     public CoordF Velocity { get; set; }
     public short Animation { get; set; }
 
-    public virtual Stats Stats { get; set; }
+    public virtual Stats Stats { get; set; } = null!;
     public bool IsDead { get; set; }
 
-    public List<Status> Statuses { get; set; }
-    public SkillCast SkillCast { get; set; }
+    public List<Status>? Statuses { get; set; }
+    public SkillCast? SkillCast { get; set; }
     public bool OnCooldown { get; set; }
-    public Agent Agent { get; set; }
-    public virtual AdditionalEffects AdditionalEffects { get; }
+    public Agent? Agent { get; set; }
+    public virtual AdditionalEffects? AdditionalEffects { get; }
     public SkillTriggerHandler SkillTriggerHandler { get; }
 
-    public virtual FieldManager FieldManager { get; }
+    public virtual FieldManager? FieldManager { get; }
     public FieldNavigator Navigator { get; }
 
     protected FieldActor(int objectId, T value, FieldManager fieldManager) : base(objectId, value)
@@ -44,7 +43,7 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
         // Since the cast is always sent by the skill, we have to check buffs even when not doing damage.
         if (skillCast.IsBuffToOwner() || skillCast.IsBuffToEntity() || skillCast.IsBuffShield() || skillCast.IsDebuffToOwner())
         {
-            Status status = new(skillCast, ObjectId, ObjectId, 1);
+            // Status status = new(skillCast, ObjectId, ObjectId, 1);
             //StatusHandler.Handle(Value.Session, status);
         }
     }
@@ -113,7 +112,6 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
 
         lock (Stats)
         {
-            Stat stat = Stats[StatAttribute.Spirit];
             Stats[StatAttribute.Spirit].AddValue(-amount);
         }
     }
@@ -144,7 +142,6 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
 
         lock (Stats)
         {
-            Stat stat = Stats[StatAttribute.Stamina];
             Stats[StatAttribute.Stamina].AddValue(-amount);
         }
     }
@@ -164,13 +161,11 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
         IsDead = true;
     }
 
-    public virtual void Animate(string sequenceName, float duration = -1)
-    {
-    }
+    public virtual void Animate(string sequenceName, float duration = -1) { }
 
     public void IncreaseStats(AdditionalEffect effect)
     {
-        if (effect.LevelMetadata?.Status?.Stats != null)
+        if (effect.LevelMetadata?.Status?.Stats is not null)
         {
             foreach ((StatAttribute stat, EffectStatMetadata statValue) in effect.LevelMetadata.Status.Stats)
             {
@@ -178,23 +173,25 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
             }
         }
 
-        EffectInvokeMetadata invoke = effect.LevelMetadata?.InvokeEffect;
+        EffectInvokeMetadata? invoke = effect.LevelMetadata?.InvokeEffect;
 
-        if (invoke != null)
+        if (invoke is null)
         {
-            if (invoke.SkillGroupId != 0)
-            {
-                Stats.AddSkillGroup(invoke.SkillGroupId, invoke.Values[0], invoke.Rates[0]);
-            }
+            return;
+        }
 
-            if (invoke.EffectGroupId != 0)
-            {
-                Stats.AddEffectGroup(invoke.EffectGroupId, invoke.Values[0], invoke.Rates[0]);
-            }
+        if (invoke.SkillGroupId != 0)
+        {
+            Stats.AddSkillGroup(invoke.SkillGroupId, invoke.Values[0], invoke.Rates[0]);
+        }
+
+        if (invoke.EffectGroupId != 0)
+        {
+            Stats.AddEffectGroup(invoke.EffectGroupId, invoke.Values[0], invoke.Rates[0]);
         }
     }
 
-    public virtual void EffectAdded(AdditionalEffect effect)
+    public virtual void EffectAdded(AdditionalEffect? effect)
     {
         if ((effect?.LevelMetadata?.Status?.Stats?.Count ?? 0) > 0)
         {
@@ -202,7 +199,7 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
         }
     }
 
-    public virtual void EffectRemoved(AdditionalEffect effect)
+    public virtual void EffectRemoved(AdditionalEffect? effect)
     {
         if ((effect?.LevelMetadata?.Status?.Stats?.Count ?? 0) > 0)
         {
@@ -234,13 +231,7 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
         StatsComputed();
     }
 
-    public virtual void AddStats()
-    {
+    public virtual void AddStats() { }
 
-    }
-
-    public virtual void StatsComputed()
-    {
-
-    }
+    public virtual void StatsComputed() { }
 }

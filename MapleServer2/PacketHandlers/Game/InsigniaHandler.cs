@@ -25,7 +25,7 @@ public class InsigniaHandler : GamePacketHandler<InsigniaHandler>
 
     private static bool CanEquipInsignia(GameSession session, short insigniaId)
     {
-        string type = InsigniaMetadataStorage.GetConditionType(insigniaId);
+        string? type = InsigniaMetadataStorage.GetConditionType(insigniaId);
 
         switch (type) // TODO: handling survivallevel
         {
@@ -38,7 +38,8 @@ public class InsigniaHandler : GamePacketHandler<InsigniaHandler>
             case "trophy_point":
                 return session.Player.TrophyCount[0] + session.Player.TrophyCount[1] + session.Player.TrophyCount[2] > 1000;
             case "title":
-                return session.Player.Titles.Contains(InsigniaMetadataStorage.GetTitleId(insigniaId));
+                int? titleId = InsigniaMetadataStorage.GetTitleId(insigniaId);
+                return titleId is not null && session.Player.Titles.Contains((int) titleId);
             case "adventure_level":
                 return session.Player.Levels.PrestigeLevel >= 100;
             default:

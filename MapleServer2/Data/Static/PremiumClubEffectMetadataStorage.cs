@@ -19,7 +19,6 @@ public static class PremiumClubEffectMetadataStorage
         }
     }
 
-
     public static List<PremiumClubEffectMetadata> GetBuffs()
     {
         return PremiumClubDailyBenefitMetadatas.Values.ToList();

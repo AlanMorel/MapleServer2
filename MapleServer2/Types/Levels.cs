@@ -182,14 +182,18 @@ public class Levels
 
         // user already has some exp in mastery, so simply update it
         Session.Send(MasteryPacket.SetExp(type, masteryExp.CurrentExp += amount));
-        int currLevel = MasteryMetadataStorage.GetGradeFromXP(type, masteryExp.CurrentExp);
+        int? currLevel = MasteryMetadataStorage.GetGradeFromXP(type, masteryExp.CurrentExp);
+        if (currLevel is null)
+        {
+            return;
+        }
 
         if (currLevel <= masteryExp.Level)
         {
             return;
         }
 
-        masteryExp.Level = currLevel;
+        masteryExp.Level = (int) currLevel;
         TrophyManager.OnGainMasteryLevel(Player, masteryExp.Type);
     }
 }

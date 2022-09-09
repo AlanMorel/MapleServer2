@@ -21,11 +21,18 @@ public static class DefaultItemsMetadataStorage
 
     public static bool IsValid(int job, int itemId)
     {
-        DefaultItemsMetadata metadata = Jobs.GetValueOrDefault(job);
-        if (!metadata.DefaultItems.Any(x => x.ItemId == itemId))
+        DefaultItemsMetadata? metadata = Jobs.GetValueOrDefault(job);
+        if (metadata is null)
         {
-            return Jobs.GetValueOrDefault(0).DefaultItems.Any(x => x.ItemId == itemId);
+            return false;
         }
-        return metadata.DefaultItems.Any(x => x.ItemId == itemId);
+
+        if (metadata.DefaultItems.Any(x => x.ItemId == itemId))
+        {
+            return metadata.DefaultItems.Any(x => x.ItemId == itemId);
+        }
+
+        DefaultItemsMetadata? job0 = Jobs.GetValueOrDefault(0);
+        return job0 is not null && job0.DefaultItems.Any(x => x.ItemId == itemId);
     }
 }

@@ -21,7 +21,7 @@ public static class SkillMetadataStorage
         }
     }
 
-    public static SkillMetadata GetSkill(int id) => Skills.GetValueOrDefault(id);
+    public static SkillMetadata? GetSkill(int id) => Skills.GetValueOrDefault(id);
 
     public static List<int> GetEmotes() => Skills.Values.Where(x => x.SkillId / 100000 == 902).Select(x => x.SkillId).ToList();
 
@@ -35,7 +35,7 @@ public static class SkillMetadataStorage
             return GameMasterSkills.Select(skillId => Skills[skillId]);
         }
 
-        List<JobSkillMetadata> jobSkills = JobMetadataStorage.GetJobSkills(job);
+        List<JobSkillMetadata>? jobSkills = JobMetadataStorage.GetJobSkills(job);
         if (jobSkills is null)
         {
             return skillMetadatas;
@@ -43,7 +43,7 @@ public static class SkillMetadataStorage
 
         foreach (JobSkillMetadata jobSkill in jobSkills)
         {
-            SkillMetadata skillMetadata = GetSkill(jobSkill.SkillId);
+            SkillMetadata? skillMetadata = GetSkill(jobSkill.SkillId);
             if (skillMetadata is null)
             {
                 continue;

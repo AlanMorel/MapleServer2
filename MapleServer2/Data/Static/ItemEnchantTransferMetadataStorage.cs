@@ -20,7 +20,7 @@ public static class ItemEnchantTransferMetadataStorage
         }
     }
 
-    public static ItemEnchantTransferMetadata GetMetadata(int rarity, int itemId, int enchantLevel)
+    public static ItemEnchantTransferMetadata? GetMetadata(int rarity, int itemId, int enchantLevel)
     {
         return ItemEnchantTransfer.Values.FirstOrDefault(x => x.InputRarity == rarity &&
                                                               x.InputItemIds.Contains(itemId) && x.InputEnchantLevel == enchantLevel);

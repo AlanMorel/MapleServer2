@@ -14,7 +14,7 @@ public class Status
     public int End { get; set; }
     public int Duration { get; set; }
 
-    public SkillCast SkillCast { get; set; }
+    public SkillCast? SkillCast;
 
     public Status() { }
 

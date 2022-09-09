@@ -24,7 +24,7 @@ public static class MasteryFactorMetadataStorage
         return new(MasteryFactorMetadatas.Keys);
     }
 
-    public static int GetFactor(int id)
+    public static int? GetFactor(int id)
     {
         return MasteryFactorMetadatas.GetValueOrDefault(id).Factor;
     }

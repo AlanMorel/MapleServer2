@@ -19,7 +19,7 @@ public static class ExpMetadataStorage
         }
     }
 
-    public static ExpMetadata GetMetadata(short level)
+    public static ExpMetadata? GetMetadata(short level)
     {
         return ExpMetadatas.GetValueOrDefault(level);
     }
@@ -31,6 +31,6 @@ public static class ExpMetadataStorage
 
     public static long GetExpToLevel(short level)
     {
-        return LevelExist(level) ? ExpMetadatas.GetValueOrDefault(level).Experience : 0;
+        return GetMetadata(level)?.Experience ?? 0;
     }
 }

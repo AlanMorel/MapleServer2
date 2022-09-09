@@ -24,18 +24,14 @@ public static class ItemExtractionMetadataStorage
         return ItemExtractionMetadatas.ContainsKey(itemId);
     }
 
-    public static ItemExtractionMetadata GetMetadata(int itemId)
+    public static ItemExtractionMetadata? GetMetadata(int itemId)
     {
         return ItemExtractionMetadatas.GetValueOrDefault(itemId);
     }
 
     public static byte GetExtractionCount(int itemId)
     {
-        ItemExtractionMetadata metadata = ItemExtractionMetadatas.GetValueOrDefault(itemId);
-        if (metadata == null)
-        {
-            return 0;
-        }
-        return ItemExtractionMetadatas.GetValueOrDefault(itemId).TryCount;
+        ItemExtractionMetadata? metadata = GetMetadata(itemId);
+        return metadata?.TryCount ?? 0;
     }
 }

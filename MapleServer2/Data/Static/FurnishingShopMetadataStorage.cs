@@ -24,7 +24,7 @@ public static class FurnishingShopMetadataStorage
         return FurnishingShop.ContainsKey(itemId);
     }
 
-    public static FurnishingShopMetadata GetMetadata(int itemId)
+    public static FurnishingShopMetadata? GetMetadata(int itemId)
     {
         return FurnishingShop.GetValueOrDefault(itemId);
     }

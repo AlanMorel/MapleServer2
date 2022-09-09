@@ -19,7 +19,7 @@ public static class MagicPathMetadataStorage
         }
     }
 
-    public static MagicPathMetadata GetMagicPath(long id)
+    public static MagicPathMetadata? GetMagicPath(long id)
     {
         return MagicPaths.GetValueOrDefault(id);
     }

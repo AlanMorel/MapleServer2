@@ -19,9 +19,9 @@ public static class ItemOptionRandomMetadataStorage
         }
     }
 
-    public static ItemOptionRandom GetMetadata(int id, int rarity)
+    public static ItemOptionRandom? GetMetadata(int id, int rarity)
     {
-        ItemOptionRandomMetadata metadata = ItemOptionRandom.Values.FirstOrDefault(x => x.Id == id);
+        ItemOptionRandomMetadata? metadata = ItemOptionRandom.Values.FirstOrDefault(x => x.Id == id);
         return metadata?.ItemOptions.FirstOrDefault(x => x.Rarity == rarity);
     }
 }

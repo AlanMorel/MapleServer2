@@ -31,7 +31,7 @@ public class FieldManager
     public readonly int Capacity;
     public readonly bool IsTutorialMap;
     public readonly FieldState State = new();
-    public readonly CoordS[] BoundingBox;
+    public readonly CoordS[]? BoundingBox;
     public readonly TriggerScript[] Triggers;
 
     private static int GlobalIdCounter = 1_000_000;
@@ -39,10 +39,10 @@ public class FieldManager
     private int PlayerCount;
     private readonly List<MapTimer> MapTimers = new();
     private readonly List<Widget> Widgets = new();
-    private Task MapLoopTask;
-    private Task TriggerTask;
-    private Task NpcMovementTask;
-    private Timer UGCBannerTimer;
+    private Task? MapLoopTask;
+    private Task? TriggerTask;
+    private Task? NpcMovementTask;
+    private Timer? UGCBannerTimer;
     private static readonly TriggerLoader TriggerLoader = new();
     public readonly FieldNavigator Navigator;
 
@@ -151,7 +151,13 @@ public class FieldManager
             return;
         }
 
-        npc.SetPatrolData(MapEntityMetadataStorage.GetPatrolDataByUuid(MapId, mapNpc.PatrolDataUuid!.Replace("-", string.Empty)));
+        PatrolData? patrolDataByUuid = MapEntityMetadataStorage.GetPatrolDataByUuid(MapId, mapNpc.PatrolDataUuid!.Replace("-", string.Empty));
+        if (patrolDataByUuid is null)
+        {
+            return;
+        }
+
+        npc.SetPatrolData(patrolDataByUuid);
     }
 
     private void RequestMob(int mobId, IFieldObject<MobSpawn> spawnPoint)
@@ -186,7 +192,7 @@ public class FieldManager
         AddNpc(npc);
     }
 
-    public Pet RequestPet(Item item, Character character)
+    public Pet? RequestPet(Item item, Character character)
     {
         Pet pet = new(NextLocalId(), item, character, fieldManager: this);
 
@@ -222,13 +228,18 @@ public class FieldManager
     public void AddPet(GameSession session, long uid)
     {
         Player player = session.Player;
-        Item item = player.Inventory.GetByUid(uid);
+        Item? item = player.Inventory.GetByUid(uid);
         if (item is null)
         {
             return;
         }
 
-        Pet pet = RequestPet(item, player.FieldPlayer);
+        if (player.FieldPlayer == null)
+        {
+            return;
+        }
+
+        Pet? pet = RequestPet(item, player.FieldPlayer);
         if (pet is null)
         {
             return;
@@ -249,13 +260,13 @@ public class FieldManager
     private void AddEntitiesToState()
     {
         // Load default npcs for map from config
-        foreach (MapNpc npc in MapEntityMetadataStorage.GetNpcs(MapId))
+        foreach (MapNpc npc in MapEntityMetadataStorage.GetNpcs(MapId)!)
         {
             RequestNpc(npc, npc.Coord.ToFloat(), npc.Rotation.ToFloat());
         }
 
         // Spawn map's mobs at the mob spawners
-        foreach (MapMobSpawn mobSpawn in MapEntityMetadataStorage.GetMobSpawns(MapId))
+        foreach (MapMobSpawn mobSpawn in MapEntityMetadataStorage.GetMobSpawns(MapId)!)
         {
             if (mobSpawn.SpawnData is null)
             {
@@ -270,7 +281,7 @@ public class FieldManager
         }
 
         // Load default portals for map from config
-        foreach (MapPortal portal in MapEntityMetadataStorage.GetPortals(MapId))
+        foreach (MapPortal portal in MapEntityMetadataStorage.GetPortals(MapId)!)
         {
             IFieldObject<Portal> fieldPortal = RequestFieldObject(new Portal(portal.Id)
             {
@@ -287,47 +298,47 @@ public class FieldManager
             AddPortal(fieldPortal);
         }
 
-        foreach (MapTriggerMesh mapTriggerMesh in MapEntityMetadataStorage.GetTriggerMeshes(MapId))
+        foreach (MapTriggerMesh mapTriggerMesh in MapEntityMetadataStorage.GetTriggerMeshes(MapId)!)
         {
             State.AddTriggerObject(new TriggerMesh(mapTriggerMesh.Id, mapTriggerMesh.IsVisible));
         }
 
-        foreach (MapTriggerEffect mapTriggerEffect in MapEntityMetadataStorage.GetTriggerEffects(MapId))
+        foreach (MapTriggerEffect mapTriggerEffect in MapEntityMetadataStorage.GetTriggerEffects(MapId)!)
         {
             State.AddTriggerObject(new TriggerEffect(mapTriggerEffect.Id, mapTriggerEffect.IsVisible));
         }
 
-        foreach (MapTriggerActor mapTriggerActor in MapEntityMetadataStorage.GetTriggerActors(MapId))
+        foreach (MapTriggerActor mapTriggerActor in MapEntityMetadataStorage.GetTriggerActors(MapId)!)
         {
             State.AddTriggerObject(new TriggerActor(mapTriggerActor.Id, mapTriggerActor.IsVisible, mapTriggerActor.InitialSequence));
         }
 
-        foreach (MapTriggerCamera mapTriggerCamera in MapEntityMetadataStorage.GetTriggerCameras(MapId))
+        foreach (MapTriggerCamera mapTriggerCamera in MapEntityMetadataStorage.GetTriggerCameras(MapId)!)
         {
             State.AddTriggerObject(new TriggerCamera(mapTriggerCamera.Id, mapTriggerCamera.IsEnabled));
         }
 
-        foreach (MapTriggerCube mapTriggerCube in MapEntityMetadataStorage.GetTriggerCubes(MapId))
+        foreach (MapTriggerCube mapTriggerCube in MapEntityMetadataStorage.GetTriggerCubes(MapId)!)
         {
             State.AddTriggerObject(new TriggerCube(mapTriggerCube.Id, mapTriggerCube.IsVisible));
         }
 
-        foreach (MapTriggerLadder mapTriggerLadder in MapEntityMetadataStorage.GetTriggerLadders(MapId))
+        foreach (MapTriggerLadder mapTriggerLadder in MapEntityMetadataStorage.GetTriggerLadders(MapId)!)
         {
             State.AddTriggerObject(new TriggerLadder(mapTriggerLadder.Id, mapTriggerLadder.IsVisible));
         }
 
-        foreach (MapTriggerRope mapTriggerRope in MapEntityMetadataStorage.GetTriggerRopes(MapId))
+        foreach (MapTriggerRope mapTriggerRope in MapEntityMetadataStorage.GetTriggerRopes(MapId)!)
         {
             State.AddTriggerObject(new TriggerRope(mapTriggerRope.Id, mapTriggerRope.IsVisible));
         }
 
-        foreach (MapTriggerSound mapTriggerSound in MapEntityMetadataStorage.GetTriggerSounds(MapId))
+        foreach (MapTriggerSound mapTriggerSound in MapEntityMetadataStorage.GetTriggerSounds(MapId)!)
         {
             State.AddTriggerObject(new TriggerSound(mapTriggerSound.Id, mapTriggerSound.IsEnabled));
         }
 
-        foreach (MapTriggerSkill mapTriggerSkill in MapEntityMetadataStorage.GetTriggerSkills(MapId))
+        foreach (MapTriggerSkill mapTriggerSkill in MapEntityMetadataStorage.GetTriggerSkills(MapId)!)
         {
             TriggerSkill triggerSkill = new(mapTriggerSkill.Id,
                 mapTriggerSkill.SkillId,
@@ -342,18 +353,18 @@ public class FieldManager
         }
 
         // Load breakables
-        foreach (MapBreakableActorObject mapActor in MapEntityMetadataStorage.GetBreakableActors(MapId))
+        foreach (MapBreakableActorObject mapActor in MapEntityMetadataStorage.GetBreakableActors(MapId)!)
         {
             State.AddBreakable(new BreakableActorObject(mapActor.EntityId, mapActor.IsEnabled, mapActor.HideDuration, mapActor.ResetDuration));
         }
 
-        foreach (MapBreakableNifObject mapNif in MapEntityMetadataStorage.GetBreakableNifs(MapId))
+        foreach (MapBreakableNifObject mapNif in MapEntityMetadataStorage.GetBreakableNifs(MapId)!)
         {
             State.AddBreakable(new BreakableNifObject(mapNif.EntityId, mapNif.IsEnabled, mapNif.TriggerId, mapNif.HideDuration, mapNif.ResetDuration));
         }
 
         // Load interact objects
-        foreach (MapInteractObject mapInteract in MapEntityMetadataStorage.GetInteractObjects(MapId))
+        foreach (MapInteractObject mapInteract in MapEntityMetadataStorage.GetInteractObjects(MapId)!)
         {
             FieldObject<InteractObject> fieldInteractObject =
                 WrapObject(new InteractObject(mapInteract.EntityId, mapInteract.InteractId, mapInteract.Type, InteractObjectState.Default));
@@ -362,7 +373,7 @@ public class FieldManager
             State.AddInteractObject(fieldInteractObject);
         }
 
-        foreach (MapLiftableObject liftable in MapEntityMetadataStorage.GetLiftablesObjects(MapId))
+        foreach (MapLiftableObject liftable in MapEntityMetadataStorage.GetLiftablesObjects(MapId)!)
         {
             FieldObject<LiftableObject> fieldLiftableObject = WrapObject(new LiftableObject(liftable.EntityId, liftable));
             fieldLiftableObject.Coord = liftable.Position;
@@ -370,7 +381,7 @@ public class FieldManager
             State.AddLiftableObject(fieldLiftableObject);
         }
 
-        foreach (MapChestMetadata mapChest in MapEntityMetadataStorage.GetMapChests(MapId))
+        foreach (MapChestMetadata mapChest in MapEntityMetadataStorage.GetMapChests(MapId)!)
         {
             // TODO: Create a chest manager to spawn chests randomly and
             // TODO: Golden chests ids should always increase by 1 when a new chest is added
@@ -390,12 +401,12 @@ public class FieldManager
             State.AddInteractObject(fieldChest);
         }
 
-        foreach (CoordS coord in MapEntityMetadataStorage.GetHealingSpot(MapId))
+        foreach (CoordS coord in MapEntityMetadataStorage.GetHealingSpot(MapId)!)
         {
             State.AddHealingSpot(RequestFieldObject(new HealingSpot(coord)));
         }
 
-        foreach (MapVibrateObject mapVibrateObject in MapEntityMetadataStorage.GetVibrateObjects(MapId))
+        foreach (MapVibrateObject mapVibrateObject in MapEntityMetadataStorage.GetVibrateObjects(MapId)!)
         {
             State.AddVibrateObject(mapVibrateObject);
         }
@@ -412,14 +423,23 @@ public class FieldManager
     public void AddPlayer(GameSession sender)
     {
         Player player = sender.Player;
-        Debug.Assert(player.FieldPlayer.ObjectId > 0, "Player was added to field without initialized objectId.");
+        Debug.Assert(player.FieldPlayer?.ObjectId > 0, "Player was added to field without initialized objectId.");
 
         player.MapId = MapId;
         if (Capacity == 0 || IsTutorialMap)
         {
-            MapPlayerSpawn spawn = MapEntityMetadataStorage.GetRandomPlayerSpawn(MapId);
-            player.FieldPlayer.Coord = spawn.Coord.ToFloat();
-            player.FieldPlayer.Rotation = spawn.Rotation.ToFloat();
+            MapPlayerSpawn? spawn = MapEntityMetadataStorage.GetRandomPlayerSpawn(MapId);
+
+            if (spawn is not null)
+            {
+                player.FieldPlayer.Coord = spawn.Coord.ToFloat();
+                player.FieldPlayer.Rotation = spawn.Rotation.ToFloat();
+            }
+            else
+            {
+                player.FieldPlayer.Coord = player.SavedCoord;
+                player.FieldPlayer.Rotation = player.SavedRotation;
+            }
         }
         else
         {
@@ -553,6 +573,11 @@ public class FieldManager
 
     public void RemovePlayer(Player player)
     {
+        if (player.FieldPlayer is null)
+        {
+            return;
+        }
+
         if (!State.RemovePlayer(player.FieldPlayer.ObjectId))
         {
             return;
@@ -585,11 +610,6 @@ public class FieldManager
 
     public static bool IsActorInBox(MapTriggerBox box, IFieldObject actor)
     {
-        if (box is null)
-        {
-            return false;
-        }
-
         CoordF minCoord = CoordF.From(
             box.Position.X - box.Dimension.X / 2,
             box.Position.Y - box.Dimension.Y / 2,
@@ -725,8 +745,10 @@ public class FieldManager
     {
         if (cube.Value.Item.Id == 50400158) // portal cube
         {
-            State.Portals.TryGetValue(cube.Value.PortalSettings.PortalObjectId, out IFieldObject<Portal> fieldPortal);
-            RemovePortal(fieldPortal);
+            if (State.Portals.TryGetValue(cube.Value.PortalSettings.PortalObjectId, out IFieldObject<Portal>? fieldPortal))
+            {
+                RemovePortal(fieldPortal);
+            }
         }
 
         State.RemoveCube(cube.ObjectId);
@@ -751,16 +773,11 @@ public class FieldManager
 
     public void RemovePortal(IFieldObject<Portal> portal)
     {
-        if (portal is null)
-        {
-            return;
-        }
-
-        State.RemovePortal(portal?.ObjectId ?? 0);
+        State.RemovePortal(portal.ObjectId);
         BroadcastPacket(FieldPortalPacket.RemovePortal(portal.Value));
     }
 
-    public void AddItem(Character character, Item item, IFieldActor source = null)
+    public void AddItem(Character character, Item item, IFieldActor? source = null)
     {
         item.DropInformation = new()
         {
@@ -823,7 +840,7 @@ public class FieldManager
         MapTimers.Add(existingTimer);
     }
 
-    public MapTimer GetMapTimer(string id)
+    public MapTimer? GetMapTimer(string id)
     {
         return MapTimers.FirstOrDefault(x => x.Id == id);
     }
@@ -833,7 +850,7 @@ public class FieldManager
         Widgets.Add(widget);
     }
 
-    public Widget GetWidget(WidgetType type)
+    public Widget? GetWidget(WidgetType type)
     {
         return Widgets.FirstOrDefault(x => x.Type == type);
     }
@@ -842,9 +859,14 @@ public class FieldManager
 
     public bool RemoveSkillCast(long skillSn, out SkillCast skillCast) => State.RemoveSkillCast(skillSn, out skillCast);
 
-    public IFieldObject<InteractObject> AddAdBalloon(AdBalloon adBalloon)
+    public IFieldObject<InteractObject>? AddAdBalloon(AdBalloon adBalloon)
     {
         IFieldObject<InteractObject> fieldAdBalloon = WrapObject(adBalloon);
+        if (adBalloon.Owner.FieldPlayer == null)
+        {
+            return null;
+        }
+
         fieldAdBalloon.Coord = adBalloon.Owner.FieldPlayer.Coord;
         fieldAdBalloon.Rotation = adBalloon.Owner.FieldPlayer.Rotation;
 
@@ -1007,7 +1029,7 @@ public class FieldManager
 
     private void AddHomeCubes(Player player)
     {
-        Home home = GameServer.HomeManager.GetHomeById(player.VisitingHomeId);
+        Home? home = GameServer.HomeManager.GetHomeById(player.VisitingHomeId);
         if (home is null)
         {
             return;
@@ -1087,7 +1109,7 @@ public class FieldManager
             return;
         }
 
-        DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSessionBySessionId(player.DungeonSessionId);
+        DungeonSession? dungeonSession = GameServer.DungeonManager.GetDungeonSessionBySessionId(player.DungeonSessionId);
 
         //If instance is destroyed, reset dungeonSession
         //further conditions for dungeon completion could be checked here.

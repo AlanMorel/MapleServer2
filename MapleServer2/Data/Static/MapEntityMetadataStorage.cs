@@ -68,101 +68,101 @@ public static class MapEntityMetadataStorage
         MapChests.Add(mapId, entity.MapChests);
     }
 
-    public static IEnumerable<MapNpc> GetNpcs(int mapId) => Npcs.GetValueOrDefault(mapId);
+    public static IEnumerable<MapNpc>? GetNpcs(int mapId) => Npcs.GetValueOrDefault(mapId);
 
-    public static IEnumerable<MapPortal> GetPortals(int mapId) => Portals.GetValueOrDefault(mapId);
+    public static IEnumerable<MapPortal>? GetPortals(int mapId) => Portals.GetValueOrDefault(mapId);
 
-    public static IEnumerable<MapPlayerSpawn> GetPlayerSpawns(int mapId) => PlayerSpawns.GetValueOrDefault(mapId);
+    public static IEnumerable<MapPlayerSpawn>? GetPlayerSpawns(int mapId) => PlayerSpawns.GetValueOrDefault(mapId);
 
-    public static IEnumerable<MapMobSpawn> GetMobSpawns(int mapId) => MobSpawns.GetValueOrDefault(mapId);
+    public static IEnumerable<MapMobSpawn>? GetMobSpawns(int mapId) => MobSpawns.GetValueOrDefault(mapId);
 
-    public static IEnumerable<MapInteractObject> GetInteractObject(int mapId) => InteractObject.GetValueOrDefault(mapId);
+    public static IEnumerable<MapInteractObject>? GetInteractObject(int mapId) => InteractObject.GetValueOrDefault(mapId);
 
-    public static MapPlayerSpawn GetRandomPlayerSpawn(int mapId)
+    public static MapPlayerSpawn? GetRandomPlayerSpawn(int mapId)
     {
-        List<MapPlayerSpawn> list = PlayerSpawns.GetValueOrDefault(mapId);
+        List<MapPlayerSpawn>? list = PlayerSpawns.GetValueOrDefault(mapId);
         return list?.Count > 0 ? list[Random.Shared.Next(list.Count)] : null;
     }
 
     public static bool HasPortals(int mapId)
     {
-        List<MapPortal> items = Portals.GetValueOrDefault(mapId);
+        List<MapPortal>? items = Portals.GetValueOrDefault(mapId);
         return items?.Count > 0;
     }
 
-    public static MapPortal GetFirstPortal(int mapId)
+    public static MapPortal? GetFirstPortal(int mapId)
     {
-        List<MapPortal> items = Portals.GetValueOrDefault(mapId);
+        List<MapPortal>? items = Portals.GetValueOrDefault(mapId);
         return items?.Count > 0 ? items[0] : null;
     }
 
-    public static CoordS[] GetBoundingBox(int mapId) => BoundingBox.GetValueOrDefault(mapId);
+    public static CoordS[]? GetBoundingBox(int mapId) => BoundingBox.GetValueOrDefault(mapId);
 
     public static bool HasSafePortal(int mapId)
     {
-        List<MapPortal> items = Portals.GetValueOrDefault(mapId).Where(x => x.TargetPortalId != 0).ToList();
-        return items.Count != 0;
+        List<MapPortal>? items = Portals.GetValueOrDefault(mapId)?.Where(x => x.TargetPortalId != 0).ToList();
+        return items?.Count != 0;
     }
 
-    public static List<CoordS> GetHealingSpot(int mapId) => HealthSpot.GetValueOrDefault(mapId);
+    public static List<CoordS>? GetHealingSpot(int mapId) => HealthSpot.GetValueOrDefault(mapId);
 
-    public static PatrolData GetPatrolData(int mapId, string patrolDataName)
+    public static PatrolData? GetPatrolData(int mapId, string patrolDataName)
     {
         return GetPatrolData(mapId)?.FirstOrDefault(x => x.Name == patrolDataName);
     }
 
-    public static PatrolData GetPatrolDataByUuid(int mapId, string uuid)
+    public static PatrolData? GetPatrolDataByUuid(int mapId, string uuid)
     {
         return GetPatrolData(mapId)?.FirstOrDefault(x => x.Uuid == uuid);
     }
 
-    private static IEnumerable<PatrolData> GetPatrolData(int mapId)
+    private static IEnumerable<PatrolData>? GetPatrolData(int mapId)
     {
         return PatrolDatas.GetValueOrDefault(mapId);
     }
 
-    public static WayPoint GetWayPoint(int mapId, string id) => WayPoints.GetValueOrDefault(mapId)?.FirstOrDefault(x => x.Id == id);
+    public static WayPoint? GetWayPoint(int mapId, string id) => WayPoints.GetValueOrDefault(mapId)?.FirstOrDefault(x => x.Id == id);
 
-    public static MapEventNpcSpawnPoint GetMapEventNpcSpawnPoint(int mapId, int spawnPointId) =>
-        EventNpcSpawnPoints.GetValueOrDefault(mapId).FirstOrDefault(x => x.Id == spawnPointId);
+    public static MapEventNpcSpawnPoint? GetMapEventNpcSpawnPoint(int mapId, int spawnPointId) =>
+        EventNpcSpawnPoints.GetValueOrDefault(mapId)?.FirstOrDefault(x => x.Id == spawnPointId);
 
-    public static List<MapTriggerMesh> GetTriggerMeshes(int mapId) => TriggerMeshes.GetValueOrDefault(mapId);
+    public static List<MapTriggerMesh>? GetTriggerMeshes(int mapId) => TriggerMeshes.GetValueOrDefault(mapId);
 
-    public static List<MapTriggerEffect> GetTriggerEffects(int mapId) => TriggerEffects.GetValueOrDefault(mapId);
+    public static List<MapTriggerEffect>? GetTriggerEffects(int mapId) => TriggerEffects.GetValueOrDefault(mapId);
 
-    public static List<MapTriggerCamera> GetTriggerCameras(int mapId) => TriggerCameras.GetValueOrDefault(mapId);
+    public static List<MapTriggerCamera>? GetTriggerCameras(int mapId) => TriggerCameras.GetValueOrDefault(mapId);
 
-    public static MapTriggerBox GetTriggerBox(int mapId, int boxId) => TriggerBoxes.GetValueOrDefault(mapId).FirstOrDefault(x => x.Id == boxId);
+    public static MapTriggerBox? GetTriggerBox(int mapId, int boxId) => TriggerBoxes.GetValueOrDefault(mapId)?.FirstOrDefault(x => x.Id == boxId);
 
-    public static List<MapTriggerBox> GetTriggerBoxes(int mapId) => TriggerBoxes.GetValueOrDefault(mapId);
+    public static List<MapTriggerBox>? GetTriggerBoxes(int mapId) => TriggerBoxes.GetValueOrDefault(mapId);
 
-    public static List<MapTriggerActor> GetTriggerActors(int mapId) => TriggerActors.GetValueOrDefault(mapId);
+    public static List<MapTriggerActor>? GetTriggerActors(int mapId) => TriggerActors.GetValueOrDefault(mapId);
 
-    public static List<MapTriggerCube> GetTriggerCubes(int mapId) => TriggerCubes.GetValueOrDefault(mapId);
+    public static List<MapTriggerCube>? GetTriggerCubes(int mapId) => TriggerCubes.GetValueOrDefault(mapId);
 
-    public static List<MapTriggerLadder> GetTriggerLadders(int mapId) => TriggerLadders.GetValueOrDefault(mapId);
+    public static List<MapTriggerLadder>? GetTriggerLadders(int mapId) => TriggerLadders.GetValueOrDefault(mapId);
 
-    public static List<MapTriggerRope> GetTriggerRopes(int mapId) => TriggerRopes.GetValueOrDefault(mapId);
+    public static List<MapTriggerRope>? GetTriggerRopes(int mapId) => TriggerRopes.GetValueOrDefault(mapId);
 
-    public static List<MapTriggerSound> GetTriggerSounds(int mapId) => TriggerSounds.GetValueOrDefault(mapId);
+    public static List<MapTriggerSound>? GetTriggerSounds(int mapId) => TriggerSounds.GetValueOrDefault(mapId);
 
-    public static List<MapTriggerSkill> GetTriggerSkills(int mapId) => TriggerSkills.GetValueOrDefault(mapId);
+    public static List<MapTriggerSkill>? GetTriggerSkills(int mapId) => TriggerSkills.GetValueOrDefault(mapId);
 
-    public static List<MapBreakableActorObject> GetBreakableActors(int mapId) => BreakableActors.GetValueOrDefault(mapId);
+    public static List<MapBreakableActorObject>? GetBreakableActors(int mapId) => BreakableActors.GetValueOrDefault(mapId);
 
-    public static List<MapBreakableNifObject> GetBreakableNifs(int mapId) => BreakableNifs.GetValueOrDefault(mapId);
+    public static List<MapBreakableNifObject>? GetBreakableNifs(int mapId) => BreakableNifs.GetValueOrDefault(mapId);
 
-    public static List<MapVibrateObject> GetVibrateObjects(int mapId) => VibrateObjects.GetValueOrDefault(mapId);
+    public static List<MapVibrateObject>? GetVibrateObjects(int mapId) => VibrateObjects.GetValueOrDefault(mapId);
 
     public static bool IsVibrateObject(int mapId, string entityId) =>
-        VibrateObjects.GetValueOrDefault(mapId).FirstOrDefault(x => x.EntityId == entityId) != default;
+        VibrateObjects.GetValueOrDefault(mapId)?.FirstOrDefault(x => x.EntityId == entityId) != default;
 
-    public static List<MapInteractObject> GetInteractObjects(int mapId) => InteractObjects.GetValueOrDefault(mapId);
+    public static List<MapInteractObject>? GetInteractObjects(int mapId) => InteractObjects.GetValueOrDefault(mapId);
 
     public static int GetWeaponObjectItemId(int mapId, CoordB coord)
     {
-        MapWeaponObject weaponObject = WeaponObjects.GetValueOrDefault(mapId).FirstOrDefault(x => x.Coord == coord);
-        if (weaponObject == null)
+        MapWeaponObject? weaponObject = WeaponObjects.GetValueOrDefault(mapId)?.FirstOrDefault(x => x.Coord == coord);
+        if (weaponObject is null)
         {
             return 0;
         }
@@ -172,9 +172,9 @@ public static class MapEntityMetadataStorage
         return weaponObject.WeaponItemIds[index];
     }
 
-    public static IEnumerable<MapLiftableObject> GetLiftablesObjects(int mapId) => LiftableObjects.GetValueOrDefault(mapId);
+    public static IEnumerable<MapLiftableObject>? GetLiftablesObjects(int mapId) => LiftableObjects.GetValueOrDefault(mapId);
 
-    public static IEnumerable<MapLiftableTarget> GetLiftablesTargets(int mapId) => LiftableTargets.GetValueOrDefault(mapId);
+    public static IEnumerable<MapLiftableTarget>? GetLiftablesTargets(int mapId) => LiftableTargets.GetValueOrDefault(mapId);
 
-    public static IEnumerable<MapChestMetadata> GetMapChests(int mapId) => MapChests.GetValueOrDefault(mapId);
+    public static IEnumerable<MapChestMetadata>? GetMapChests(int mapId) => MapChests.GetValueOrDefault(mapId);
 }

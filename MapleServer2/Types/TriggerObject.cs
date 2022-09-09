@@ -94,9 +94,9 @@ public class TriggerSkill : TriggerObject
     public byte Count;
     public short SkillLevel;
     public int SkillId;
-    public SkillCondition Condition;
+    public SkillCondition? Condition;
 
-    public TriggerSkill(int id, int skillId, short skillLevel, byte count, CoordF position, SkillCondition condition) : base(id)
+    public TriggerSkill(int id, int skillId, short skillLevel, byte count, CoordF position, SkillCondition? condition) : base(id)
     {
         SkillId = skillId;
         SkillLevel = skillLevel;

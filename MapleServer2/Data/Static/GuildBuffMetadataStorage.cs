@@ -34,9 +34,9 @@ public static class GuildBuffMetadataStorage
         return buffIds;
     }
 
-    public static GuildBuffLevel GetGuildBuffLevelData(int buffId, int buffLevel)
+    public static GuildBuffLevel? GetGuildBuffLevelData(int buffId, int buffLevel)
     {
-        GuildBuffMetadata metadata = Buffs.GetValueOrDefault(buffId);
-        return metadata.Levels.FirstOrDefault(x => x.Level == buffLevel);
+        GuildBuffMetadata? metadata = Buffs.GetValueOrDefault(buffId);
+        return metadata?.Levels.FirstOrDefault(x => x.Level == buffLevel);
     }
 }

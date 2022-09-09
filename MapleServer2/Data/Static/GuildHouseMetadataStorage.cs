@@ -19,13 +19,14 @@ public static class GuildHouseMetadataStorage
         }
     }
 
-    public static GuildHouseMetadata GetMetadataByThemeId(int level, int themeId)
+    public static GuildHouseMetadata? GetMetadataByThemeId(int level, int themeId)
     {
         return Houses.Values.FirstOrDefault(x => x.Level == level && x.Theme == themeId);
     }
 
     public static int GetFieldId(int level, int themeId)
     {
-        return Houses.Values.FirstOrDefault(x => x.Level == level && x.Theme == themeId).FieldId;
+        GuildHouseMetadata? metadata = GetMetadataByThemeId(level, themeId);
+        return metadata?.FieldId ?? 0;
     }
 }

@@ -14,18 +14,18 @@ public class Character : FieldActor<Player>
         set => Value.Stats = value;
     }
 
-    private CancellationTokenSource CombatCTS;
+    private CancellationTokenSource? CombatCTS;
 
-    private Task HpRegenThread;
-    private Task SpRegenThread;
-    private Task StaRegenThread;
-    public IFieldObject<LiftableObject> CarryingLiftable;
-    public Pet ActivePet;
+    private Task? HpRegenThread;
+    private Task? SpRegenThread;
+    private Task? StaRegenThread;
+    public IFieldObject<LiftableObject>? CarryingLiftable;
+    public Pet? ActivePet;
     public override AdditionalEffects AdditionalEffects { get => Value.AdditionalEffects; }
 
     private DateTime LastConsumeStaminaTime;
 
-    public override FieldManager FieldManager { get => Value?.Session?.FieldManager; }
+    public override FieldManager? FieldManager { get => Value?.Session?.FieldManager; }
 
     public Character(int objectId, Player value, FieldManager fieldManager) : base(objectId, value, fieldManager)
     {
@@ -66,7 +66,12 @@ public class Character : FieldActor<Player>
 
         // TODO: Move this and all others combat cases like recover sp to its own class.
         // Since the cast is always sent by the skill, we have to check buffs even when not doing damage.
-        List<SkillCondition> conditionSkills = SkillMetadataStorage.GetSkill(skillCast.SkillId)?.SkillLevels?.FirstOrDefault(level => level.Level == skillCast.SkillLevel)?.ConditionSkills;
+        List<SkillCondition>? conditionSkills = SkillMetadataStorage.GetSkill(skillCast.SkillId)?.SkillLevels
+            ?.FirstOrDefault(level => level.Level == skillCast.SkillLevel)?.ConditionSkills;
+        if (conditionSkills is null)
+        {
+            return;
+        }
 
         EffectTriggers triggers = new()
         {
@@ -146,7 +151,6 @@ public class Character : FieldActor<Player>
 
         lock (Stats)
         {
-            Stat stat = Stats[StatAttribute.Spirit];
             Stats[StatAttribute.Spirit].AddValue(-amount);
         }
 
@@ -188,7 +192,6 @@ public class Character : FieldActor<Player>
 
         lock (Stats)
         {
-            Stat stat = Stats[StatAttribute.Stamina];
             Stats[StatAttribute.Stamina].AddValue(-amount);
             LastConsumeStaminaTime = DateTime.Now;
         }
@@ -277,14 +280,24 @@ public class Character : FieldActor<Player>
         }
     }
 
-    public override void EffectAdded(AdditionalEffect effect)
+    public override void EffectAdded(AdditionalEffect? effect)
     {
+        if (effect is null)
+        {
+            return;
+        }
+
         base.EffectAdded(effect);
         Value.EffectAdded(effect);
     }
 
-    public override void EffectRemoved(AdditionalEffect effect)
+    public override void EffectRemoved(AdditionalEffect? effect)
     {
+        if (effect is null)
+        {
+            return;
+        }
+
         base.EffectRemoved(effect);
         Value.EffectRemoved(effect);
     }

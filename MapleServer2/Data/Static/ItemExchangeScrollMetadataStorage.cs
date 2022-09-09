@@ -24,13 +24,8 @@ public static class ItemExchangeScrollMetadataStorage
         return ItemExchangeScrollMetadatas.ContainsKey(exchangeId);
     }
 
-    public static ItemExchangeScrollMetadata GetMetadata(int exchangeId)
+    public static ItemExchangeScrollMetadata? GetMetadata(int exchangeId)
     {
         return ItemExchangeScrollMetadatas.GetValueOrDefault(exchangeId);
-    }
-
-    public static int GetId(int exchangeId)
-    {
-        return ItemExchangeScrollMetadatas.GetValueOrDefault(exchangeId).ExchangeId;
     }
 }

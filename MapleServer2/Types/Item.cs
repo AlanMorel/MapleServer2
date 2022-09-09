@@ -91,7 +91,7 @@ public class Item
 
     public ItemAdditionalEffectMetadata AdditionalEffects;
 
-    public PetInfo PetInfo;
+    public PetInfo? PetInfo;
 
     public Item() { }
 
@@ -113,6 +113,7 @@ public class Item
         {
             ItemSlot = slots.First();
         }
+
         if (ItemMetadataStorage.GetIsUGC(id))
         {
             Ugc = new();
@@ -240,12 +241,14 @@ public class Item
 
     public static bool IsAccessory(List<ItemSlot> slots)
     {
-        return slots.Contains(ItemSlot.FH) || slots.Contains(ItemSlot.EA) || slots.Contains(ItemSlot.PD) || slots.Contains(ItemSlot.BE) || slots.Contains(ItemSlot.RI);
+        return slots.Contains(ItemSlot.FH) || slots.Contains(ItemSlot.EA) || slots.Contains(ItemSlot.PD) || slots.Contains(ItemSlot.BE) ||
+               slots.Contains(ItemSlot.RI);
     }
 
     public static bool IsArmor(List<ItemSlot> slots)
     {
-        return slots.Contains(ItemSlot.CP) || slots.Contains(ItemSlot.CL) || slots.Contains(ItemSlot.GL) || slots.Contains(ItemSlot.SH) || slots.Contains(ItemSlot.MT);
+        return slots.Contains(ItemSlot.CP) || slots.Contains(ItemSlot.CL) || slots.Contains(ItemSlot.GL) || slots.Contains(ItemSlot.SH) ||
+               slots.Contains(ItemSlot.MT);
     }
 
     public bool IsPet()
@@ -306,8 +309,18 @@ public class Item
         ItemMusicMetadata music = ItemMetadataStorage.GetMusicMetadata(Id);
         ItemSkillMetadata skill = ItemMetadataStorage.GetSkillMetadata(Id);
         ItemHousingMetadata housing = ItemMetadataStorage.GetHousingMetadata(Id);
-        InventoryTab = ItemMetadataStorage.GetTab(Id);
-        GemSlot = ItemMetadataStorage.GetGem(Id);
+        InventoryTab? inventoryTab = ItemMetadataStorage.GetTab(Id);
+        if (inventoryTab is not null)
+        {
+            InventoryTab = (InventoryTab) inventoryTab;
+        }
+
+        GemSlot? gemSlot = ItemMetadataStorage.GetGem(Id);
+        if (gemSlot is not null)
+        {
+            GemSlot = (GemSlot) gemSlot;
+        }
+
         StackLimit = property.StackLimit;
         EnableBreak = limit.Breakable;
         IsCustomScore = music.IsCustomScore;
@@ -317,7 +330,7 @@ public class Item
         RecommendJobs = ItemMetadataStorage.GetRecommendJobs(Id);
         Function = ItemMetadataStorage.GetFunctionMetadata(Id);
         Tag = ItemMetadataStorage.GetTag(Id);
-        ShopID = ItemMetadataStorage.GetShopID(Id);
+        ShopID = ItemMetadataStorage.GetShopID(Id) ?? 0;
         TransferType = limit.TransferType;
         TransferFlag = ItemMetadataStorage.GetTransferFlag(Id, Rarity);
         HousingCategory = housing.HousingCategory;
@@ -467,7 +480,7 @@ public class Item
     {
         int gearScoreFactor = ItemMetadataStorage.GetPropertyMetadata(Id).GearScoreFactor;
         Script script = ScriptLoader.GetScript("Functions/calcItemValues");
-        DynValue result = script.RunFunction("calcItemGearScore", gearScoreFactor, Rarity, (int) Type, EnchantLevel, LimitBreakLevel);
+        DynValue? result = script.RunFunction("calcItemGearScore", gearScoreFactor, Rarity, (int) Type, EnchantLevel, LimitBreakLevel);
 
         if (result is null)
         {

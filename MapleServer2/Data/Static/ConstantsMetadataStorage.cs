@@ -21,15 +21,20 @@ public static class ConstantsMetadataStorage
 
         // add/override
         string json = File.ReadAllText($"{Paths.JSON_DIR}/Constants.json");
-        List<ConstantsMetadata> addedConstants = JsonConvert.DeserializeObject<List<ConstantsMetadata>>(json);
+        List<ConstantsMetadata>? addedConstants = JsonConvert.DeserializeObject<List<ConstantsMetadata>>(json);
+        if (addedConstants is null)
+        {
+            return;
+        }
+
         foreach (ConstantsMetadata constant in addedConstants)
         {
             Constants[constant.Key] = constant;
         }
     }
 
-    public static string GetConstant(string key)
+    public static string? GetConstant(string key)
     {
-        return Constants.GetValueOrDefault(key).Value;
+        return Constants.GetValueOrDefault(key)?.Value;
     }
 }

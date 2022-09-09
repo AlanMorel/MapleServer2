@@ -24,7 +24,7 @@ public static class FishMetadataStorage
         return FishMetadatas.ContainsKey(fishId);
     }
 
-    public static FishMetadata GetMetadata(int fishId)
+    public static FishMetadata? GetMetadata(int fishId)
     {
         return FishMetadatas.GetValueOrDefault(fishId);
     }
@@ -34,8 +34,9 @@ public static class FishMetadataStorage
         if (habitat == "water") // temp fix for maps with seawater. 
         {
             return FishMetadatas.Values.Where(x => x.HabitatMapId.Contains(mapId) &&
-                                        (x.Habitat == habitat || x.Habitat == "seawater")).ToList();
+                                                   (x.Habitat == habitat || x.Habitat == "seawater")).ToList();
         }
+
         return FishMetadatas.Values.Where(x => x.HabitatMapId.Contains(mapId) && x.Habitat == habitat).ToList();
     }
 }

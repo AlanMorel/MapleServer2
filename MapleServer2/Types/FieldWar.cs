@@ -15,7 +15,7 @@ public class FieldWar
     public FieldWar(int id)
     {
         Id = id;
-        MapId = FieldWarMetadataStorage.MapId(id);
+        MapId = FieldWarMetadataStorage.MapId(id) ?? 0;
 
         List<Player> onlinePlayers = GameServer.PlayerManager.GetAllPlayers().Where(x => !MapMetadataStorage.MapIsInstancedOnly(x.MapId)).ToList();
 

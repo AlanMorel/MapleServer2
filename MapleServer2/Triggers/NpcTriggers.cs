@@ -21,7 +21,7 @@ public partial class TriggerContext
             return;
         }
 
-        Npc npc = Field.State.Npcs.Values.FirstOrDefault(x => x.SpawnPointId == spawnPointId);
+        Npc? npc = Field.State.Npcs.Values.FirstOrDefault(x => x.SpawnPointId == spawnPointId);
         if (npc is null)
         {
             return;
@@ -41,7 +41,7 @@ public partial class TriggerContext
     {
         foreach (int spawnPointId in spawnPointIds)
         {
-            MapEventNpcSpawnPoint spawnPoint = MapEntityMetadataStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnPointId);
+            MapEventNpcSpawnPoint? spawnPoint = MapEntityMetadataStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnPointId);
             if (spawnPoint is null)
             {
                 continue;
@@ -59,8 +59,8 @@ public partial class TriggerContext
                     short animation = -1;
                     if (spawnAnimation)
                     {
-                        NpcMetadata npcMetadata = NpcMetadataStorage.GetNpcMetadata(id);
-                        if (npcMetadata is null || !npcMetadata.StateActions.TryGetValue(NpcState.Normal, out (string, NpcAction, short)[] stateAction))
+                        NpcMetadata? npcMetadata = NpcMetadataStorage.GetNpcMetadata(id);
+                        if (npcMetadata is null || !npcMetadata.StateActions.TryGetValue(NpcState.Normal, out (string, NpcAction, short)[]? stateAction))
                         {
                             continue;
                         }
@@ -82,22 +82,22 @@ public partial class TriggerContext
 
     public void ChangeMonster(int removeSpawnPointId, int addSpawnPointId)
     {
-        Npc fieldNpc = Field.State.Npcs.Values.FirstOrDefault(x => x.SpawnPointId == removeSpawnPointId);
+        Npc? fieldNpc = Field.State.Npcs.Values.FirstOrDefault(x => x.SpawnPointId == removeSpawnPointId);
         if (fieldNpc is not null)
         {
             Field.RemoveNpc(fieldNpc);
         }
         else
         {
-            Npc fieldMob = Field.State.Mobs.Values.FirstOrDefault(x => x.SpawnPointId == removeSpawnPointId);
+            Npc? fieldMob = Field.State.Mobs.Values.FirstOrDefault(x => x.SpawnPointId == removeSpawnPointId);
             if (fieldMob is not null)
             {
                 Field.RemoveMob(fieldMob);
             }
         }
 
-        MapEventNpcSpawnPoint spawnPoint = MapEntityMetadataStorage.GetMapEventNpcSpawnPoint(Field.MapId, addSpawnPointId);
-        if (spawnPoint == null)
+        MapEventNpcSpawnPoint? spawnPoint = MapEntityMetadataStorage.GetMapEventNpcSpawnPoint(Field.MapId, addSpawnPointId);
+        if (spawnPoint is null)
         {
             return;
         }
@@ -133,14 +133,14 @@ public partial class TriggerContext
                 continue;
             }
 
-            Npc fieldNpc = Field.State.Npcs.Values.FirstOrDefault(x => x.SpawnPointId == spawnPointId);
+            Npc? fieldNpc = Field.State.Npcs.Values.FirstOrDefault(x => x.SpawnPointId == spawnPointId);
             if (fieldNpc is not null)
             {
                 Field.RemoveNpc(fieldNpc);
                 continue;
             }
 
-            Npc fieldMob = Field.State.Mobs.Values.FirstOrDefault(x => x.SpawnPointId == spawnPointId);
+            Npc? fieldMob = Field.State.Mobs.Values.FirstOrDefault(x => x.SpawnPointId == spawnPointId);
             if (fieldMob is not null)
             {
                 Field.RemoveMob(fieldMob);
@@ -156,7 +156,7 @@ public partial class TriggerContext
 
     public void MoveNpc(int spawnTriggerId, string patrolDataName)
     {
-        PatrolData patrolData = MapEntityMetadataStorage.GetPatrolData(Field.MapId, patrolDataName);
+        PatrolData? patrolData = MapEntityMetadataStorage.GetPatrolData(Field.MapId, patrolDataName);
 
         Field.State.Npcs.Values.FirstOrDefault(x => x.SpawnPointId == spawnTriggerId)?.SetPatrolData(patrolData);
     }
@@ -171,14 +171,14 @@ public partial class TriggerContext
 
     public void SetNpcEmotionLoop(int spawnTriggerId, string sequenceName, float duration)
     {
-        IFieldActor<NpcMetadata> fieldNpc = Field.State.Npcs.Values.FirstOrDefault(x => x.SpawnPointId == spawnTriggerId);
+        IFieldActor<NpcMetadata>? fieldNpc = Field.State.Npcs.Values.FirstOrDefault(x => x.SpawnPointId == spawnTriggerId);
 
         fieldNpc?.Animate(sequenceName, duration);
     }
 
     public void SetNpcEmotionSequence(int spawnTriggerId, string sequenceName, int arg3)
     {
-        IFieldActor<NpcMetadata> fieldNpc = Field.State.Npcs.Values.FirstOrDefault(x => x.SpawnPointId == spawnTriggerId);
+        IFieldActor<NpcMetadata>? fieldNpc = Field.State.Npcs.Values.FirstOrDefault(x => x.SpawnPointId == spawnTriggerId);
 
         fieldNpc?.Animate(sequenceName);
     }
@@ -189,8 +189,8 @@ public partial class TriggerContext
     {
         foreach (int spawnPointId in rangeId)
         {
-            MapEventNpcSpawnPoint spawnPoint = MapEntityMetadataStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnPointId);
-            if (spawnPoint == null)
+            MapEventNpcSpawnPoint? spawnPoint = MapEntityMetadataStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnPointId);
+            if (spawnPoint is null)
             {
                 continue;
             }

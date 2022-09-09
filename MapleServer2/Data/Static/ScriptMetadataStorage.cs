@@ -27,12 +27,12 @@ public static class ScriptMetadataStorage
         }
     }
 
-    public static ScriptMetadata GetQuestScriptMetadata(int questId)
+    public static ScriptMetadata? GetQuestScriptMetadata(int questId)
     {
         return QuestScripts.GetValueOrDefault(questId);
     }
 
-    public static ScriptMetadata GetNpcScriptMetadata(int npcId)
+    public static ScriptMetadata? GetNpcScriptMetadata(int npcId)
     {
         return NpcScripts.GetValueOrDefault(npcId);
     }

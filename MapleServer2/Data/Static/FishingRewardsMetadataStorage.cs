@@ -10,7 +10,12 @@ public static class FishingRewardsMetadataStorage
     public static void Init()
     {
         string json = File.ReadAllText($"{Paths.JSON_DIR}/FishingRewards.json");
-        List<FishingRewardItem> items = JsonConvert.DeserializeObject<List<FishingRewardItem>>(json);
+        List<FishingRewardItem>? items = JsonConvert.DeserializeObject<List<FishingRewardItem>>(json);
+        if (items is null)
+        {
+            return;
+        }
+
         foreach (FishingRewardItem item in items)
         {
             FishItems[item.Id] = item;
@@ -25,6 +30,7 @@ public static class FishingRewardsMetadataStorage
         return items[index];
     }
 }
+
 public class FishingRewardItem
 {
     public int Id;
@@ -32,6 +38,7 @@ public class FishingRewardItem
     public int Amount;
     public int Rarity;
 }
+
 public enum FishingItemType
 {
     Trash = 0,

@@ -71,7 +71,7 @@ public class DungeonManager
         return sessionId;
     }
 
-    public DungeonSession GetDungeonSessionBySessionId(int dungeonSessionId)
+    public DungeonSession? GetDungeonSessionBySessionId(int dungeonSessionId)
     {
         return !DungeonSessionList.ContainsKey(dungeonSessionId) ? null : DungeonSessionList[dungeonSessionId];
     }
@@ -80,8 +80,8 @@ public class DungeonManager
     {
         // fieldManager.MapId: left map that is to be destroyed
         // player.MapId: travel destination of the player
-        DungeonSession currentDungeonSession = GetDungeonSessionBySessionId(player.DungeonSessionId);
-        if (currentDungeonSession == null) // is not null after entering dungeon via directory
+        DungeonSession? currentDungeonSession = GetDungeonSessionBySessionId(player.DungeonSessionId);
+        if (currentDungeonSession is null) // is not null after entering dungeon via directory
         {
             return false; // no dungeon session -> the map is unused by dungeon
         }
@@ -104,11 +104,6 @@ public class DungeonManager
 
     public void ResetDungeonSession(Player player, DungeonSession dungeonSession)
     {
-        if (dungeonSession is null)
-        {
-            return;
-        }
-
         RemoveDungeonSession(dungeonSession.SessionId);
         // if last player leaves lobby or dungeon map -> destroy dungeonSession.
         if (dungeonSession.DungeonType is DungeonType.Group && player.Party is not null)

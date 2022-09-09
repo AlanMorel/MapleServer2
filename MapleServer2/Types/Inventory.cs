@@ -176,7 +176,8 @@ public sealed class Inventory : IInventory
 
             // If slot is occupied
             // Finds item in inventory with same id, rarity and a stack not full
-            Item existingItem = Items.Values.FirstOrDefault(x => x.Id == item.Id && x.Amount < x.StackLimit && x.Rarity == item.Rarity && x.ExpiryTime == item.ExpiryTime);
+            Item existingItem = Items.Values.FirstOrDefault(x =>
+                x.Id == item.Id && x.Amount < x.StackLimit && x.Rarity == item.Rarity && x.ExpiryTime == item.ExpiryTime);
             if (existingItem is not null)
             {
                 // Updates item amount
@@ -419,6 +420,7 @@ public sealed class Inventory : IInventory
                 }
             }
         }
+
         return true;
     }
 
@@ -453,8 +455,10 @@ public sealed class Inventory : IInventory
                     }
                 }
             }
+
             return true;
         }
+
         return false;
     }
 
@@ -504,7 +508,7 @@ public sealed class Inventory : IInventory
 
     public bool HasItem(int id) => Items.Values.Any(i => i.Id == id);
 
-    public Item GetByUid(long uid) => Items.TryGetValue(uid, out Item item) ? item : null;
+    public Item? GetByUid(long uid) => Items.TryGetValue(uid, out Item? item) ? item : null;
 
     public Item GetById(int id) => Items.Values.FirstOrDefault(x => x.Id == id);
 
@@ -675,7 +679,8 @@ public sealed class Inventory : IInventory
 
     public bool CanHold(int itemId, int amount)
     {
-        return CanHold(itemId, amount, ItemMetadataStorage.GetTab(itemId));
+        InventoryTab? inventoryTab = ItemMetadataStorage.GetTab(itemId);
+        return inventoryTab is not null && CanHold(itemId, amount, (InventoryTab) inventoryTab);
     }
 
     public bool SlotTaken(Item item, short slot = -1)

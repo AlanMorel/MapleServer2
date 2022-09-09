@@ -9,18 +9,13 @@ namespace MapleServer2.Triggers;
 
 public partial class TriggerContext
 {
-    public void StartMiniGame(int boxId, byte round, MiniGame type, bool isShowResultUI)
-    {
-    }
+    public void StartMiniGame(int boxId, byte round, MiniGame type, bool isShowResultUI) { }
 
-    public void StartMiniGameRound(int boxId, byte round)
-    {
-
-    }
+    public void StartMiniGameRound(int boxId, byte round) { }
 
     public void EndMiniGame(int winnerBoxId, MiniGame type, bool isOnlyWinner)
     {
-        MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, winnerBoxId);
+        MapTriggerBox? box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, winnerBoxId);
         if (box is null)
         {
             return;
@@ -36,7 +31,12 @@ public partial class TriggerContext
             switch (type)
             {
                 case MiniGame.LudibriumEscape:
-                    PlayerTrigger trigger = player.Value.Triggers.FirstOrDefault(x => x.Key == "gameStart");
+                    PlayerTrigger? trigger = player.Value.Triggers.FirstOrDefault(x => x.Key == "gameStart");
+                    if (trigger is null)
+                    {
+                        break;
+                    }
+
                     player.Value.Triggers.Remove(trigger);
                     player.Value.Session.Send(ResultsPacket.Rounds(1, 1));
                     break;
@@ -49,7 +49,7 @@ public partial class TriggerContext
 
     public void EndMiniGameRound(int winnerBoxId, float expRate, bool isOnlyWinner, bool isGainLoserBonus, bool meso, MiniGame type)
     {
-        MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, winnerBoxId);
+        MapTriggerBox? box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, winnerBoxId);
         if (box is null)
         {
             return;
@@ -67,7 +67,7 @@ public partial class TriggerContext
 
     public void MiniGameCameraDirection(int boxId, int cameraId)
     {
-        MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
+        MapTriggerBox? box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
         if (box is null)
         {
             return;
@@ -88,13 +88,11 @@ public partial class TriggerContext
         Field.BroadcastPacket(LocalCameraPacket.Camera(cameraId, 1, randomPlayer.ObjectId));
     }
 
-    public void MiniGameGiveExp(int boxId, float expRate, bool isOutSide)
-    {
-    }
+    public void MiniGameGiveExp(int boxId, float expRate, bool isOutSide) { }
 
     public void MiniGameGiveReward(int winnerBoxId, string contentType, MiniGame type)
     {
-        MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, winnerBoxId);
+        MapTriggerBox? box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, winnerBoxId);
         if (box is null)
         {
             return;
@@ -108,6 +106,7 @@ public partial class TriggerContext
                 players.Add(player);
             }
         }
+
         foreach (IFieldObject<Player> player in players)
         {
             if (contentType == "miniGame")
@@ -119,73 +118,45 @@ public partial class TriggerContext
                 }
             }
             else if (contentType == "UserOpenMiniGameExtraReward")
-            {
-
-            }
+            { }
         }
     }
 
-    public void SetMiniGameAreaForHack(int boxId)
-    {
-    }
+    public void SetMiniGameAreaForHack(int boxId) { }
 
-    public void UnSetMiniGameAreaForHack()
-    {
-    }
+    public void UnSetMiniGameAreaForHack() { }
 
-    public void SetState(byte arg1, string arg2, bool arg3)
-    {
-    }
+    public void SetState(byte arg1, string arg2, bool arg3) { }
 
-    public void UseState(byte arg1, bool arg2)
-    {
-    }
+    public void UseState(byte arg1, bool arg2) { }
 
     #region FieldGame
-    public void CreateFieldGame(FieldGame type, bool reset)
-    {
-    }
 
-    public void FieldGameConstant(string key, string value, string feature, Locale locale)
-    {
-    }
+    public void CreateFieldGame(FieldGame type, bool reset) { }
 
-    public void FieldGameMessage(byte custom, string type, byte arg1, string arg2, int arg3)
-    {
-    }
+    public void FieldGameConstant(string key, string value, string feature, Locale locale) { }
+
+    public void FieldGameMessage(byte custom, string type, byte arg1, string arg2, int arg3) { }
+
     #endregion
 
     #region GuildVsGame
-    public void GuildVsGameEndGame()
-    {
-    }
 
-    public void GuildVsGameGiveContribution(int teamId, bool isWin, string desc)
-    {
-    }
+    public void GuildVsGameEndGame() { }
 
-    public void GuildVsGameGiveReward(GuildReward type, int teamId, bool isWin, string desc)
-    {
-    }
+    public void GuildVsGameGiveContribution(int teamId, bool isWin, string desc) { }
 
-    public void GuildVsGameLogResult(string desc)
-    {
-    }
+    public void GuildVsGameGiveReward(GuildReward type, int teamId, bool isWin, string desc) { }
 
-    public void GuildVsGameLogWonByDefault(int teamId, string desc)
-    {
-    }
+    public void GuildVsGameLogResult(string desc) { }
 
-    public void GuildVsGameResult(string desc)
-    {
-    }
+    public void GuildVsGameLogWonByDefault(int teamId, string desc) { }
 
-    public void GuildVsGameScoreByUser(int triggerBoxId, bool score, string desc)
-    {
-    }
+    public void GuildVsGameResult(string desc) { }
 
-    public void SetUserValueFromGuildVsGameScore(int teamId, string key)
-    {
-    }
+    public void GuildVsGameScoreByUser(int triggerBoxId, bool score, string desc) { }
+
+    public void SetUserValueFromGuildVsGameScore(int teamId, string key) { }
+
     #endregion
 }

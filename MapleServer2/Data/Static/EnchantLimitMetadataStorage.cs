@@ -22,7 +22,7 @@ public static class EnchantLimitMetadataStorage
 
     public static bool IsEnchantable(ItemType type, int itemLevel, int enchantLevel)
     {
-        EnchantLimitMetadata metadata = EnchantLimit.GetValueOrDefault((int) type);
+        EnchantLimitMetadata? metadata = EnchantLimit.GetValueOrDefault((int) type);
         if (metadata is null)
         {
             return false;

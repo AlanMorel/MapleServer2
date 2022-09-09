@@ -21,7 +21,7 @@ public class PacketStructureResolver
 
     private readonly string DefaultValue;
     private readonly ushort OpCode;
-    private readonly string PacketName;
+    private readonly string? PacketName;
     private readonly PacketWriter Packet;
     private static readonly ILogger Logger = Log.Logger.ForContext<PacketStructureResolver>();
 
@@ -35,7 +35,7 @@ public class PacketStructureResolver
 
     // resolve opcode
     // Example: resolve 81
-    public static PacketStructureResolver Parse(string input)
+    public static PacketStructureResolver? Parse(string input)
     {
         string[] args = input.Split(" ", StringSplitOptions.RemoveEmptyEntries);
 
@@ -133,7 +133,7 @@ public class PacketStructureResolver
 
     public void Start(Session session)
     {
-        session.OnError = AppendAndRetry;
+        session.OnError = AppendAndRetry!;
 
         // Start off the feedback loop
         session.Send(Packet);
