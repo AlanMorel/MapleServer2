@@ -1,14 +1,10 @@
-﻿using System.Web;
-using System.Xml;
-using GameDataParser.Files;
-using Maple2.File.IO.Crypto.Common;
+﻿using GameDataParser.Files;
 using Maple2.File.Parser.Tools;
 using Maple2.File.Parser.Xml.AdditionalEffect;
 using Maple2.File.Parser.Xml.Skill;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
-using MapleServer2.Enums;
 
 namespace GameDataParser.Parsers;
 

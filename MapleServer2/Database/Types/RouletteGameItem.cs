@@ -1,6 +1,4 @@
-﻿using Maple2Storage.Enums;
-
-namespace MapleServer2.Database.Types;
+﻿namespace MapleServer2.Database.Types;
 
 public class RouletteGameItem
 {

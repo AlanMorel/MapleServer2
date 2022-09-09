@@ -2,8 +2,6 @@
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.PacketHandlers.Game.Helpers;
-using MapleServer2.Tools;
-using MoonSharp.Interpreter;
 
 namespace MapleServer2.Types;
 

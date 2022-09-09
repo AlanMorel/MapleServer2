@@ -6,7 +6,6 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MoonSharp.Interpreter;
-using Serilog.Core;
 
 namespace MapleServer2.Types;
 

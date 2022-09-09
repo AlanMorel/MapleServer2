@@ -1,6 +1,5 @@
 ﻿using System.Xml.Serialization;
 using Maple2Storage.Enums;
-using MapleServer2.Enums;
 
 namespace Maple2Storage.Types.Metadata;
 

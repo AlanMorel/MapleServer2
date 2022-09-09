@@ -1,6 +1,5 @@
 ﻿using Maple2Storage.Enums;
 using Maple2Storage.Types;
-using MapleServer2.Data.Static;
 using MapleServer2.Types;
 using Newtonsoft.Json;
 using SqlKata.Execution;

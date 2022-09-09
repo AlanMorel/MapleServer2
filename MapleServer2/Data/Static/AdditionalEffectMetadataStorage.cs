@@ -1,9 +1,6 @@
-﻿using Maple2Storage.Enums;
-using Maple2Storage.Types;
+﻿using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
-using MapleServer2.Enums;
 using MapleServer2.Tools;
-using MapleServer2.Types;
 using ProtoBuf;
 
 namespace MapleServer2.Data.Static;
@@ -24,18 +21,18 @@ public static class AdditionalEffectMetadataStorage
 
     public static bool IsValid(int effectId) => AdditionalEffectMetadatas.ContainsKey(effectId);
 
-    public static AdditionalEffectMetadata GetMetadata(int effectId) => AdditionalEffectMetadatas.GetValueOrDefault(effectId);
+    public static AdditionalEffectMetadata? GetMetadata(int effectId) => AdditionalEffectMetadatas.GetValueOrDefault(effectId);
 
-    public static AdditionalEffectLevelMetadata GetLevelMetadata(int effectId, int level)
+    public static AdditionalEffectLevelMetadata? GetLevelMetadata(int effectId, int level)
     {
-        AdditionalEffectMetadata meta = GetMetadata(effectId);
+        AdditionalEffectMetadata? meta = GetMetadata(effectId);
 
-        if (meta == null)
+        if (meta is null)
         {
             return null;
         }
 
-        AdditionalEffectLevelMetadata levelMeta;
+        AdditionalEffectLevelMetadata? levelMeta;
         meta.Levels.TryGetValue(level, out levelMeta);
 
         return levelMeta;
