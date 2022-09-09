@@ -11,6 +11,7 @@ namespace MapleServer2.Managers;
 public class UGCBannerManager
 {
     private readonly ConcurrentDictionary<long, UGCBanner> UGCBanners = new();
+    private readonly ILogger Logger = Log.Logger.ForContext<UGCBannerManager>();
 
     public UGCBannerManager()
     {
@@ -27,21 +28,27 @@ public class UGCBannerManager
         }
     }
 
-    public UGCBanner GetBanner(long id)
+    public UGCBanner? GetBanner(long id)
     {
-        return UGCBanners.TryGetValue(id, out UGCBanner banner) ? banner : null;
+        return UGCBanners.TryGetValue(id, out UGCBanner? banner) ? banner : null;
     }
 
-    public UGCBanner UpdateBannerSlots(UGC ugc)
+    public UGCBanner? UpdateBannerSlots(UGC ugc)
     {
-        UGCBanner ugcBanner = UGCBanners.Values.FirstOrDefault(x => x.Slots.Any(y => y.UGC.Uid == ugc.Uid));
+        UGCBanner? ugcBanner = UGCBanners.Values.FirstOrDefault(x => x.Slots.Any(y => y.UGC?.Uid == ugc.Uid));
         if (ugcBanner is null)
         {
             return null;
         }
 
-        foreach (BannerSlot slot in ugcBanner.Slots.Where(slot => slot.UGC.Uid == ugc.Uid))
+        foreach (BannerSlot slot in ugcBanner.Slots.Where(slot => slot.UGC?.Uid == ugc.Uid))
         {
+            if (slot.UGC is null)
+            {
+                Logger.Error($"UGC Banner {ugcBanner.Id}, Slot {slot.Id} UGC is null");
+                continue;
+            }
+
             slot.UGC.Url = ugc.Url;
         }
 
@@ -52,7 +59,7 @@ public class UGCBannerManager
     {
         if (!UGCBanners.ContainsKey(banner.Id))
         {
-            Log.Logger.ForContext<UGCBannerManager>().Warning("Tried to update a banner that doesn't exist");
+            Logger.Warning("Tried to update a banner that doesn't exist");
             return;
         }
 
@@ -78,11 +85,15 @@ public class UGCBannerManager
 
             field.BroadcastPacket(UGCPacket.ActivateBanner(ugcBanner));
         }
+
+        foreach (UGCBanner ugcBanner in UGCBanners.Values)
+        {
+            ugcBanner.Slots.RemoveAll(x => x.Expired);
+        }
     }
 
     private static void DeleteOldBannerSlots(UGCBanner ugcBanner, DateTimeOffset dateTimeOffset)
     {
-        List<BannerSlot> oldBannerSlots = new();
         foreach (BannerSlot bannerSlot in ugcBanner.Slots)
         {
             // check if the banner is expired
@@ -92,18 +103,15 @@ public class UGCBannerManager
                 continue;
             }
 
-            oldBannerSlots.Add(bannerSlot);
-            DatabaseManager.BannerSlot.Delete(bannerSlot.Id);
+            bannerSlot.Expired = true;
         }
-
-        ugcBanner.Slots.RemoveAll(x => oldBannerSlots.Contains(x));
     }
 
     private static bool ActivateBannerSlots(UGCBanner ugcBanner, DateTimeOffset dateTimeOffset)
     {
-        BannerSlot slot = ugcBanner.Slots.FirstOrDefault(x => x.ActivateTime.Day == dateTimeOffset.Day && x.ActivateTime.Hour == dateTimeOffset.Hour);
+        BannerSlot? slot = ugcBanner.Slots.FirstOrDefault(x => x.ActivateTime.Day == dateTimeOffset.Day && x.ActivateTime.Hour == dateTimeOffset.Hour);
 
-        if (slot is null)
+        if (slot is null || slot.Expired)
         {
             return false;
         }
