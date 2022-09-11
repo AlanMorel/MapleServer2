@@ -1,5 +1,4 @@
 ﻿using Maple2Storage.Enums;
-using Org.BouncyCastle.Ocsp;
 
 namespace MapleServer2.Database.Types;
 

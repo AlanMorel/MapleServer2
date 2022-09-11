@@ -17,23 +17,28 @@ public static class ScriptLoader
     /// If a session is provided, it'll create a new script every time.
     /// </summary>
     /// <returns><see cref="Script"/></returns>
-    public static Script GetScript(string scriptName, GameSession session = null)
+    public static Script? GetScript(string scriptName, GameSession? session = null)
     {
         // If session is not null, create a new script every time.
         if (session is not null)
         {
-            NewScript(scriptName, out Script newScript, session);
+            NewScript(scriptName, out Script? newScript, session);
             return newScript;
         }
 
         // If session is null, use the cached script.
-        if (Scripts.TryGetValue(scriptName, out Script script))
+        if (Scripts.TryGetValue(scriptName, out Script? script))
         {
             return script;
         }
 
         // If the script is not in the cache, create a new script.
         if (!NewScript(scriptName, out script))
+        {
+            return null;
+        }
+
+        if (script == null)
         {
             return null;
         }
@@ -46,7 +51,7 @@ public static class ScriptLoader
     /// Calls the specified function.
     /// </summary>
     /// <exception cref="ArgumentException"></exception>
-    public static DynValue RunFunction(this Script script, string functionName, params object[] args)
+    public static DynValue? RunFunction(this Script script, string functionName, params object[] args)
     {
         if (script.Globals[functionName] == null)
         {
@@ -69,7 +74,7 @@ public static class ScriptLoader
         }
     }
 
-    private static bool NewScript(string scriptName, out Script script, GameSession session = null)
+    private static bool NewScript(string scriptName, out Script? script, GameSession? session = null)
     {
         script = null;
         string scriptPath = $"{Paths.SCRIPTS_DIR}/{scriptName}.lua";

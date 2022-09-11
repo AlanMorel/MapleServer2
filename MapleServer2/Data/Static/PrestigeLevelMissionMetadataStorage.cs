@@ -22,5 +22,5 @@ public static class PrestigeLevelMissionMetadataStorage
 
     public static List<PrestigeMission> GetPrestigeMissions => Rewards.Values.Select(metadata => new PrestigeMission(metadata.Id)).ToList();
 
-    public static PrestigeLevelMissionMetadata GetMetadata(int id) => Rewards.GetValueOrDefault(id);
+    public static PrestigeLevelMissionMetadata? GetMetadata(int id) => Rewards.GetValueOrDefault(id);
 }

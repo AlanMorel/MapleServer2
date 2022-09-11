@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using MapleServer2.Managers;
-using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 
 namespace MapleServer2.Tools;
@@ -16,7 +15,7 @@ public static class FieldManagerFactory
 
     public static FieldManager GetManager(Player player)
     {
-        if (!Managers.TryGetValue(player.MapId, out List<FieldManager> list))
+        if (!Managers.TryGetValue(player.MapId, out List<FieldManager>? list))
         {
             list = new()
             {
@@ -25,7 +24,7 @@ public static class FieldManagerFactory
             Managers[player.MapId] = list;
         }
 
-        FieldManager manager = list.FirstOrDefault(x => x.InstanceId == player.InstanceId);
+        FieldManager? manager = list.FirstOrDefault(x => x.InstanceId == player.InstanceId);
         if (manager is null)
         {
             manager = new(player);
@@ -37,7 +36,7 @@ public static class FieldManagerFactory
 
     public static void ReleaseManager(FieldManager manager)
     {
-        if (!Managers.TryGetValue(manager.MapId, out List<FieldManager> list))
+        if (!Managers.TryGetValue(manager.MapId, out List<FieldManager>? list))
         {
             return;
         }

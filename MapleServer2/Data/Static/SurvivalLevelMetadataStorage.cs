@@ -21,7 +21,7 @@ public static class SurvivaLevelMetadataStorage
 
     public static long GetExpToNextLevel(int level)
     {
-        return LevelExist(level + 1) ? SurvivalLevelMetadatas.GetValueOrDefault(level + 1).RequiredExp : 0;
+        return LevelExist(level + 1) ? SurvivalLevelMetadatas[level + 1].RequiredExp : 0;
     }
 
     public static bool LevelExist(int level)

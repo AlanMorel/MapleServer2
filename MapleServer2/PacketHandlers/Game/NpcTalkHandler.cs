@@ -11,7 +11,6 @@ using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
 using MoonSharp.Interpreter;
-using Ubiety.Dns.Core;
 
 namespace MapleServer2.PacketHandlers.Game;
 

@@ -37,7 +37,7 @@ public interface IInventory
     /// </summary>
     /// <param name="uid">The UID of the item</param>
     /// <remarks>Can return null</remarks>
-    Item GetByUid(long uid);
+    Item? GetByUid(long uid);
 
     /// <summary>
     /// Gets the first item matching the given Item ID

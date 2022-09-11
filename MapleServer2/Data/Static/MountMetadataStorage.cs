@@ -19,5 +19,5 @@ public static class MountMetadataStorage
         }
     }
 
-    public static MountMetadata GetMountMetadata(int id) => Mounts.GetValueOrDefault(id);
+    public static MountMetadata? GetMountMetadata(int id) => Mounts.GetValueOrDefault(id);
 }

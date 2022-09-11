@@ -24,18 +24,18 @@ public static class InsigniaMetadataStorage
         return Insignias.ContainsKey(insigniaId);
     }
 
-    public static InsigniaMetadata GetMetadata(int insigniaId)
+    public static InsigniaMetadata? GetMetadata(int insigniaId)
     {
         return Insignias.GetValueOrDefault(insigniaId);
     }
 
-    public static int GetTitleId(int insigniaId)
+    public static int? GetTitleId(int insigniaId)
     {
-        return Insignias.GetValueOrDefault(insigniaId).TitleId;
+        return GetMetadata(insigniaId)?.TitleId;
     }
 
-    public static string GetConditionType(int insigniaId)
+    public static string? GetConditionType(int insigniaId)
     {
-        return Insignias.GetValueOrDefault(insigniaId).ConditionType;
+        return GetMetadata(insigniaId)?.ConditionType;
     }
 }

@@ -6,8 +6,8 @@ public class TriggerScript
 {
     private readonly TriggerContext Context;
 
-    private TriggerState State;
-    private TriggerState NextState;
+    private TriggerState? State;
+    private TriggerState? NextState;
 
     public TriggerScript(TriggerContext context, TriggerState start)
     {
@@ -26,7 +26,7 @@ public class TriggerScript
             NextState = null;
         }
 
-        NextState = State.Execute();
+        NextState = State?.Execute();
     }
 
     public void SkipScene() => NextState = Context.SkipSceneState;

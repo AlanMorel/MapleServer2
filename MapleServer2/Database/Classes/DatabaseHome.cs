@@ -37,12 +37,12 @@ public class DatabaseHome : DatabaseTable
         });
     }
 
-    public Home FindById(long id)
+    public Home? FindById(long id)
     {
         return ReadHome(QueryFactory.Query(TableName).Where("id", id).FirstOrDefault());
     }
 
-    public Home FindByAccountId(long accountId)
+    public Home? FindByAccountId(long accountId)
     {
         return ReadHome(QueryFactory.Query(TableName).Where("account_id", accountId).FirstOrDefault());
     }

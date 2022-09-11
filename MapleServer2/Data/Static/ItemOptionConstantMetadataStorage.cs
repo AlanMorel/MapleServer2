@@ -24,9 +24,9 @@ public static class ItemOptionConstantMetadataStorage
         return ItemOptionConstant.ContainsKey(id);
     }
 
-    public static ItemOptionsConstant GetMetadata(int id, int rarity)
+    public static ItemOptionsConstant? GetMetadata(int id, int rarity)
     {
-        ItemOptionConstantMetadata metadata = ItemOptionConstant.Values.FirstOrDefault(x => x.Id == id);
+        ItemOptionConstantMetadata? metadata = ItemOptionConstant.Values.FirstOrDefault(x => x.Id == id);
         return metadata?.ItemOptions.FirstOrDefault(x => x.Rarity == rarity);
     }
 }

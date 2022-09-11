@@ -25,13 +25,13 @@ public static class MasteryMetadataStorage
         return new(Masteries.Keys);
     }
 
-    public static MasteryMetadata GetMastery(int type)
+    public static MasteryMetadata? GetMastery(int type)
     {
         return Masteries.GetValueOrDefault(type);
     }
 
-    public static int GetGradeFromXP(MasteryType type, long xp)
+    public static int? GetGradeFromXP(MasteryType type, long xp)
     {
-        return GetMastery((int) type).Grades.Count(x => x.Value <= xp);
+        return GetMastery((int) type)?.Grades.Count(x => x.Value <= xp);
     }
 }

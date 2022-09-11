@@ -19,7 +19,7 @@ public static class PrestigeMetadataStorage
         }
     }
 
-    public static PrestigeReward GetReward(int level)
+    public static PrestigeReward? GetReward(int level)
     {
         return Rewards.GetValueOrDefault(level);
     }

@@ -2,7 +2,6 @@
 using Autofac;
 using MapleServer2.Network;
 using MapleServer2.PacketHandlers;
-using MapleServer2.Tools;
 
 namespace MapleServer2.Servers.Game;
 

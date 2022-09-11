@@ -11,7 +11,12 @@ public static class GlobalEventsMetadataStorage
     public static void Init()
     {
         string json = File.ReadAllText($"{Paths.JSON_DIR}/GlobalEvents.json");
-        List<GlobalEvent> items = JsonConvert.DeserializeObject<List<GlobalEvent>>(json);
+        List<GlobalEvent>? items = JsonConvert.DeserializeObject<List<GlobalEvent>>(json);
+        if (items is null)
+        {
+            return;
+        }
+
         foreach (GlobalEvent item in items)
         {
             GlobalEvents[item.Id] = item;

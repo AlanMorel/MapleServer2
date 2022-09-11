@@ -12,7 +12,7 @@ namespace MapleServer2.Triggers;
 public partial class TriggerContext : ITriggerContext
 {
     public int NextTick;
-    public TriggerState SkipSceneState;
+    public TriggerState? SkipSceneState;
 
     private readonly FieldManager Field;
     private readonly ILogger Logger;
@@ -104,14 +104,14 @@ public partial class TriggerContext : ITriggerContext
             return Field.State.Players.Values.Count;
         }
 
-        MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
+        MapTriggerBox? box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
         if (box is null)
         {
             return 0;
         }
 
         int userCount = 0;
-        foreach (IFieldActor<Player> player in Field.State.Players.Values)
+        foreach (Character player in Field.State.Players.Values)
         {
             if (FieldManager.IsActorInBox(box, player))
             {
@@ -138,8 +138,8 @@ public partial class TriggerContext : ITriggerContext
             }
         }
 
-        IFieldObject<Player> player = Field.State.Players.Values.FirstOrDefault(x => x.Value.Triggers.Any(y => y.Key == key));
-        if (player == null)
+        IFieldObject<Player>? player = Field.State.Players.Values.FirstOrDefault(x => x.Value.Triggers.Any(y => y.Key == key));
+        if (player is null)
         {
             return 0;
         }

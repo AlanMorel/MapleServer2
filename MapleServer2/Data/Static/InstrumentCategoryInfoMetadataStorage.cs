@@ -24,13 +24,8 @@ public static class InstrumentCategoryInfoMetadataStorage
         return Instruments.ContainsKey(categoryId);
     }
 
-    public static InstrumentCategoryInfoMetadata GetMetadata(int categoryId)
+    public static InstrumentCategoryInfoMetadata? GetMetadata(int categoryId)
     {
         return Instruments.GetValueOrDefault(categoryId);
-    }
-
-    public static int GetId(int categoryId)
-    {
-        return Instruments.GetValueOrDefault(categoryId).CategoryId;
     }
 }

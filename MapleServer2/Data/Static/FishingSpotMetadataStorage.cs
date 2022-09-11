@@ -24,18 +24,16 @@ public static class FishingSpotMetadataStorage
         return FishingSpot.ContainsKey(mapId);
     }
 
-    public static FishingSpotMetadata GetMetadata(int mapId)
+    public static FishingSpotMetadata? GetMetadata(int mapId)
     {
         return FishingSpot.GetValueOrDefault(mapId);
     }
 
     public static bool CanFish(int mapId, long playerExp)
     {
-        int minExpRequired = FishingSpot.Values.FirstOrDefault(x => x.Id == mapId).MinMastery;
-        if (playerExp < minExpRequired)
-        {
-            return false;
-        }
-        return true;
+        FishingSpotMetadata? fishingSpotMetadata = FishingSpot.Values.FirstOrDefault(x => x.Id == mapId);
+
+        int? minExpRequired = fishingSpotMetadata?.MinMastery;
+        return playerExp >= minExpRequired;
     }
 }

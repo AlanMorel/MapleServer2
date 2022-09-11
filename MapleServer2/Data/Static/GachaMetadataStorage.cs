@@ -24,7 +24,7 @@ public static class GachaMetadataStorage
         return Gacha.ContainsKey(gachaId);
     }
 
-    public static GachaMetadata GetMetadata(int gachaId)
+    public static GachaMetadata? GetMetadata(int gachaId)
     {
         return Gacha.GetValueOrDefault(gachaId);
     }

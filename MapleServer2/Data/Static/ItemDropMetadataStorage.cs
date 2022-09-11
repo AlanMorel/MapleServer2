@@ -19,7 +19,7 @@ public static class ItemDropMetadataStorage
         }
     }
 
-    public static ItemDropMetadata GetItemDropMetadata(int boxId)
+    public static ItemDropMetadata? GetItemDropMetadata(int boxId)
     {
         return Drops.GetValueOrDefault(boxId);
     }

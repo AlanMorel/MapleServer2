@@ -1,8 +1,5 @@
-﻿using System.Xml;
-using GameDataParser.Files;
-using GameDataParser.Tools;
+﻿using GameDataParser.Files;
 using M2dXmlGenerator;
-using Maple2.File.IO.Crypto.Common;
 using Maple2.File.Parser.Tools;
 using Maple2.File.Parser.Xml.Quest;
 using Maple2Storage.Enums;

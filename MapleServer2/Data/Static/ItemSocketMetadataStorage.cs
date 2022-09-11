@@ -19,7 +19,7 @@ public static class ItemSocketMetadataStorage
         }
     }
 
-    public static ItemSocketRarityData GetMetadata(int socketDataId, int rarity)
+    public static ItemSocketRarityData? GetMetadata(int socketDataId, int rarity)
     {
         return ItemSocketMetadatas.GetValueOrDefault(socketDataId)?.RarityData.FirstOrDefault(x => x.Rarity == rarity);
     }

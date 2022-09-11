@@ -9,7 +9,7 @@ public partial class TriggerContext
 {
     public void SetActor(int actorId, bool isVisible, string stateName, bool arg4, bool arg5)
     {
-        if (!Field.State.TriggerActors.TryGetValue(actorId, out TriggerActor stateTriggerActor))
+        if (!Field.State.TriggerActors.TryGetValue(actorId, out TriggerActor? stateTriggerActor))
         {
             Logger.Warning("SetActor: Actor not found: {0}", actorId);
             return;
@@ -35,7 +35,7 @@ public partial class TriggerContext
     {
         foreach (int triggerId in triggerIds)
         {
-            if (!Field.State.TriggerEffects.TryGetValue(triggerId, out TriggerEffect triggerEffect))
+            if (!Field.State.TriggerEffects.TryGetValue(triggerId, out TriggerEffect? triggerEffect))
             {
                 continue;
             }
@@ -55,8 +55,8 @@ public partial class TriggerContext
         InteractObjectState objectState = (InteractObjectState) state;
         foreach (int interactObjectId in interactObjectIds)
         {
-            IFieldObject<InteractObject> interactObject = Field.State.InteractObjects.Values.FirstOrDefault(x => x.Value.InteractId == interactObjectId);
-            if (interactObject == null)
+            IFieldObject<InteractObject>? interactObject = Field.State.InteractObjects.Values.FirstOrDefault(x => x.Value.InteractId == interactObjectId);
+            if (interactObject is null)
             {
                 continue;
             }
@@ -68,7 +68,7 @@ public partial class TriggerContext
 
     public void SetLadder(int ladderId, bool isVisible, bool animationEffect, byte animationDelay)
     {
-        if (!Field.State.TriggerLadders.TryGetValue(ladderId, out TriggerLadder ladder))
+        if (!Field.State.TriggerLadders.TryGetValue(ladderId, out TriggerLadder? ladder))
         {
             return;
         }
@@ -85,7 +85,7 @@ public partial class TriggerContext
         {
             foreach (int triggerMeshId in meshIds)
             {
-                if (!Field.State.TriggerMeshes.TryGetValue(triggerMeshId, out TriggerMesh triggerMesh))
+                if (!Field.State.TriggerMeshes.TryGetValue(triggerMeshId, out TriggerMesh? triggerMesh))
                 {
                     continue;
                 }
@@ -103,8 +103,8 @@ public partial class TriggerContext
     {
         foreach (int triggerId in triggerIds)
         {
-            BreakableNifObject breakable = Field.State.BreakableNifs.Values.FirstOrDefault(x => x.TriggerId == triggerId);
-            if (breakable == null)
+            BreakableNifObject? breakable = Field.State.BreakableNifs.Values.FirstOrDefault(x => x.TriggerId == triggerId);
+            if (breakable is null)
             {
                 continue;
             }
@@ -121,8 +121,8 @@ public partial class TriggerContext
             return;
         }
 
-        IFieldObject<Portal> portal = Field.State.Portals.Values.FirstOrDefault(p => p.Value.Id == portalId);
-        if (portal == null)
+        IFieldObject<Portal>? portal = Field.State.Portals.Values.FirstOrDefault(p => p.Value.Id == portalId);
+        if (portal is null)
         {
             return;
         }
@@ -134,7 +134,7 @@ public partial class TriggerContext
     public void SetRandomMesh(int[] meshIds, bool isVisible, byte meshCount, int arg4, int delayTime)
     {
         Random random = Random.Shared;
-        int[] pickedMeshIds = meshIds.OrderBy(x => random.Next()).Take(meshCount).ToArray();
+        int[] pickedMeshIds = meshIds.OrderBy(_ => random.Next()).Take(meshCount).ToArray();
         Task.Run(async () =>
         {
             foreach (int triggerMeshId in pickedMeshIds)

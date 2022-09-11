@@ -59,7 +59,7 @@ public class ChatStickerHandler : GamePacketHandler<ChatStickerHandler>
 
         byte groupId = ChatStickerMetadataStorage.GetGroupId(stickerId);
 
-        if (!session.Player.ChatSticker.Any(p => p.GroupId == groupId))
+        if (session.Player.ChatSticker.All(p => p.GroupId != groupId))
         {
             return;
         }

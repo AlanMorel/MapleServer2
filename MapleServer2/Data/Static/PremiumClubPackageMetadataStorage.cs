@@ -24,13 +24,8 @@ public static class PremiumClubPackageMetadataStorage
         return PremiumClubPackage.ContainsKey(packageId);
     }
 
-    public static PremiumClubPackageMetadata GetMetadata(int packageId)
+    public static PremiumClubPackageMetadata? GetMetadata(int packageId)
     {
         return PremiumClubPackage.GetValueOrDefault(packageId);
-    }
-
-    public static int GetId(int packageId)
-    {
-        return PremiumClubPackage.GetValueOrDefault(packageId).Id;
     }
 }

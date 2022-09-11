@@ -19,33 +19,13 @@ public static class FieldWarMetadataStorage
         }
     }
 
-    public static IEnumerable<FieldWarMetadata> GetAll()
-    {
-        return FieldWar.Values;
-    }
-
-    public static bool IsValid(int fieldWarId)
-    {
-        return FieldWar.ContainsKey(fieldWarId);
-    }
-
-    public static FieldWarMetadata GetMetadata(int fieldWarId)
+    public static FieldWarMetadata? GetMetadata(int fieldWarId)
     {
         return FieldWar.GetValueOrDefault(fieldWarId);
     }
 
-    public static int GetFieldWarId(int fieldWarId)
+    public static int? MapId(int fieldWarId)
     {
-        return GetMetadata(fieldWarId).FieldWarId;
-    }
-
-    public static int GetRewardId(int fieldWarId)
-    {
-        return GetMetadata(fieldWarId).RewardId;
-    }
-
-    public static int MapId(int fieldWarId)
-    {
-        return GetMetadata(fieldWarId).MapId;
+        return GetMetadata(fieldWarId)?.MapId;
     }
 }

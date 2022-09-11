@@ -23,7 +23,8 @@ public class BannerSlot
     public readonly int Hour;
     public readonly long BannerId;
     public bool Active;
-    public UGC UGC;
+    public UGC? UGC;
+    public bool Expired;
 
     public readonly DateTimeOffset ActivateTime;
 

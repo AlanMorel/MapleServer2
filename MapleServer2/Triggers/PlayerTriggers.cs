@@ -12,17 +12,11 @@ namespace MapleServer2.Triggers;
 
 public partial class TriggerContext
 {
-    public void AddEffectNif(int spawnPointId, string nifPath, bool isOutline, float scale, int rotateZ)
-    {
-    }
+    public void AddEffectNif(int spawnPointId, string nifPath, bool isOutline, float scale, int rotateZ) { }
 
-    public void RemoveEffectNif(int spawnPointId)
-    {
-    }
+    public void RemoveEffectNif(int spawnPointId) { }
 
-    public void EnableSpawnPointPc(int spawnPointId, bool isEnable)
-    {
-    }
+    public void EnableSpawnPointPc(int spawnPointId, bool isEnable) { }
 
     public void FaceEmotion(int spawnPointId, string emotionName)
     {
@@ -33,7 +27,7 @@ public partial class TriggerContext
             return;
         }
 
-        MapEventNpcSpawnPoint spawnPoint = MapEntityMetadataStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnPointId);
+        MapEventNpcSpawnPoint? spawnPoint = MapEntityMetadataStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnPointId);
         if (spawnPoint is null)
         {
             return;
@@ -46,13 +40,13 @@ public partial class TriggerContext
                 continue;
             }
 
-            if (Field.State.Npcs.TryGetValue(id, out Npc npc))
+            if (Field.State.Npcs.TryGetValue(id, out Npc? npc))
             {
                 Field.BroadcastPacket(TriggerPacket.SetFaceEmotion(npc.ObjectId, emotionName));
                 return;
             }
 
-            if (Field.State.Mobs.TryGetValue(id, out Npc mob))
+            if (Field.State.Mobs.TryGetValue(id, out Npc? mob))
             {
                 Field.BroadcastPacket(TriggerPacket.SetFaceEmotion(mob.ObjectId, emotionName));
                 return;
@@ -60,36 +54,24 @@ public partial class TriggerContext
         }
     }
 
-    public void GiveExp(byte arg1, byte arg2)
-    {
-    }
+    public void GiveExp(byte arg1, byte arg2) { }
 
-    public void GiveGuildExp(bool boxId, byte type)
-    {
-    }
+    public void GiveGuildExp(bool boxId, byte type) { }
 
-    public void GiveRewardContent(int rewardId)
-    {
-    }
+    public void GiveRewardContent(int rewardId) { }
 
-    public void KickMusicAudience(int targetBoxId, int targetPortalId)
-    {
-    }
+    public void KickMusicAudience(int targetBoxId, int targetPortalId) { }
 
-    public void MoveRandomUser(int arg1, byte arg2, int arg3, byte arg4)
-    {
-    }
+    public void MoveRandomUser(int arg1, byte arg2, int arg3, byte arg4) { }
 
-    public void MoveToPortal(int userTagId, int portalId, int boxId)
-    {
-    }
+    public void MoveToPortal(int userTagId, int portalId, int boxId) { }
 
     public void MoveUser(int mapId, int triggerId, int boxId)
     {
         List<Character> players = Field.State.Players.Values.ToList();
         if (boxId != 0)
         {
-            MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
+            MapTriggerBox? box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
             if (box is null)
             {
                 return;
@@ -111,7 +93,12 @@ public partial class TriggerContext
 
         if (mapId == Field.MapId)
         {
-            IFieldObject<Portal> portal = Field.State.Portals.Values.First(p => p.Value.Id == triggerId);
+            IFieldObject<Portal>? portal = Field.State.Portals.Values.FirstOrDefault(p => p.Value.Id == triggerId);
+            if (portal is null)
+            {
+                return;
+            }
+
             foreach (IFieldObject<Player> player in players)
             {
                 player.Value.Move(portal.Coord, portal.Rotation, isTrigger: true);
@@ -120,19 +107,27 @@ public partial class TriggerContext
             return;
         }
 
-        CoordF moveCoord;
-        CoordF moveRotation;
-        MapPortal dstPortal = MapEntityMetadataStorage.GetPortals(mapId).FirstOrDefault(portal => portal.Id == triggerId);
-        if (dstPortal == null)
+        CoordF? moveCoord = null;
+        CoordF? moveRotation = null;
+        MapPortal? dstPortal = MapEntityMetadataStorage.GetPortals(mapId)?.FirstOrDefault(portal => portal.Id == triggerId);
+        if (dstPortal is null)
         {
-            MapPlayerSpawn spawn = MapEntityMetadataStorage.GetRandomPlayerSpawn(mapId);
-            moveCoord = spawn.Coord.ToFloat();
-            moveRotation = spawn.Rotation.ToFloat();
+            MapPlayerSpawn? spawn = MapEntityMetadataStorage.GetRandomPlayerSpawn(mapId);
+            if (spawn is not null)
+            {
+                moveCoord = spawn.Coord.ToFloat();
+                moveRotation = spawn.Rotation.ToFloat();
+            }
         }
         else
         {
             moveCoord = dstPortal.Coord.ToFloat();
             moveRotation = dstPortal.Rotation.ToFloat();
+        }
+
+        if (moveCoord is null || moveRotation is null)
+        {
+            return;
         }
 
         foreach (IFieldObject<Player> player in players)
@@ -143,26 +138,22 @@ public partial class TriggerContext
 
     public void MoveUserPath(string movePath)
     {
-        PatrolData patrolData = MapEntityMetadataStorage.GetPatrolData(Field.MapId, movePath);
-        Field.MovePlayerAlongPath(Field.State.Players.First().Value, patrolData);
+        PatrolData? patrolData = MapEntityMetadataStorage.GetPatrolData(Field.MapId, movePath);
+        if (patrolData is not null)
+        {
+            Field.MovePlayerAlongPath(Field.State.Players.First().Value, patrolData);
+        }
     }
 
-    public void MoveUserToBox(int boxId, bool portalId)
-    {
-    }
+    public void MoveUserToBox(int boxId, bool portalId) { }
 
-    public void MoveUserToPos(Vector3 pos, Vector3 rot)
-    {
-    }
+    public void MoveUserToPos(Vector3 pos, Vector3 rot) { }
 
-    public void PatrolConditionUser(string patrolName, byte patrolIndex, int additionalEffectId)
-    {
-    }
+    public void PatrolConditionUser(string patrolName, byte patrolIndex, int additionalEffectId) { }
 
     public void RandomAdditionalEffect(string target, int triggerBoxId, int spawnPointId, byte targetCount, int tick, int waitTick, string targetEffect,
         int additionalEffectId)
-    {
-    }
+    { }
 
     public void SetPcEmotionLoop(string animationState, float duration, bool isLoop)
     {
@@ -174,16 +165,14 @@ public partial class TriggerContext
         Field.BroadcastPacket(TriggerPacket.SetAnimationSequence(animation));
     }
 
-    public void SetPcRotation(Vector3 rotation)
-    {
-    }
+    public void SetPcRotation(Vector3 rotation) { }
 
     public void SetAchievement(int boxId, string type, string code)
     {
         List<Character> players = Field.State.Players.Values.ToList();
         if (boxId != 0)
         {
-            MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
+            MapTriggerBox? box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
             if (box is null)
             {
                 return;
@@ -206,7 +195,7 @@ public partial class TriggerContext
     {
         if (npcId == 0)
         {
-            IFieldActor<Player> player = Field.State.Players.Values.FirstOrDefault();
+            IFieldActor<Player>? player = Field.State.Players.Values.FirstOrDefault();
             if (player is null)
             {
                 return;
@@ -218,7 +207,7 @@ public partial class TriggerContext
 
         if (arg1 == 1) // Use npc object id?
         {
-            Npc npc = Field.State.Npcs.Values.FirstOrDefault(x => x.SpawnPointId == npcId);
+            Npc? npc = Field.State.Npcs.Values.FirstOrDefault(x => x.SpawnPointId == npcId);
             if (npc is null)
             {
                 return;
@@ -245,7 +234,7 @@ public partial class TriggerContext
     {
         foreach (int boxId in boxIds)
         {
-            MapTriggerBox box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
+            MapTriggerBox? box = MapEntityMetadataStorage.GetTriggerBox(Field.MapId, boxId);
             if (box is null)
             {
                 return;
@@ -260,13 +249,9 @@ public partial class TriggerContext
         }
     }
 
-    public void RemoveBuff(int arg1, int arg2, bool arg3)
-    {
-    }
+    public void RemoveBuff(int arg1, int arg2, bool arg3) { }
 
-    public void AddUserValue(string key, int value)
-    {
-    }
+    public void AddUserValue(string key, int value) { }
 
     public void SetUserValue(int triggerId, string key, int value)
     {
@@ -277,26 +262,21 @@ public partial class TriggerContext
         };
         foreach (IFieldObject<Player> player in Field.State.Players.Values)
         {
-            PlayerTrigger trigger = player.Value.Triggers.FirstOrDefault(x => x.Key == key);
+            PlayerTrigger? trigger = player.Value.Triggers.FirstOrDefault(x => x.Key == key);
             if (trigger is null)
             {
                 player.Value.Triggers.Add(playerTrigger);
                 continue;
             }
+
             trigger.Value = value;
             trigger.TriggerId = triggerId;
         }
     }
 
-    public void SetUserValueFromDungeonRewardCount(string key, int dungeonRewardId)
-    {
-    }
+    public void SetUserValueFromDungeonRewardCount(string key, int dungeonRewardId) { }
 
-    public void SetUserValueFromUserCount(int triggerBoxId, string key, int userTagId)
-    {
-    }
+    public void SetUserValueFromUserCount(int triggerBoxId, string key, int userTagId) { }
 
-    public void UserValueToNumberMesh(string key, int startMeshId, byte digitCount)
-    {
-    }
+    public void UserValueToNumberMesh(string key, int startMeshId, byte digitCount) { }
 }

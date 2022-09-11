@@ -12,13 +12,13 @@ public interface IFieldActor : IFieldObject
     public Stats Stats { get; }
     public bool IsDead { get; }
 
-    public List<Status> Statuses { get; set; }
-    public SkillCast SkillCast { get; }
+    public List<Status>? Statuses { get; set; }
+    public SkillCast? SkillCast { get; }
     public bool OnCooldown { get; set; }
-    public AdditionalEffects AdditionalEffects { get; }
+    public AdditionalEffects? AdditionalEffects { get; }
     public SkillTriggerHandler SkillTriggerHandler { get; }
 
-    public FieldManager FieldManager { get; }
+    public FieldManager? FieldManager { get; }
     public FieldNavigator Navigator { get; }
 
     public void Cast(SkillCast skillCast);

@@ -21,7 +21,7 @@ public static class MetadataHelper
         foreach (Type staticClass in listStaticClass)
         {
             tasks.Add(Task.Run(() => staticClass.GetMethod("Init")?.Invoke(null, null))
-                .ContinueWith(t =>
+                .ContinueWith(_ =>
                 {
                     ConsoleUtility.WriteProgressBar((float) count++ / listStaticClass.Count * 100);
                 }));

@@ -21,18 +21,18 @@ public static class ItemRepackageMetadataStorage
 
     public static bool ItemCanRepackage(int functionId, int itemLevel, int rarity)
     {
-        ItemRepackageMetadata metadata = ItemsRepackageMetadatas.GetValueOrDefault(functionId);
+        ItemRepackageMetadata? metadata = ItemsRepackageMetadatas.GetValueOrDefault(functionId);
+        if (metadata is null)
+        {
+            return false;
+        }
+
         if (itemLevel < metadata.MinLevel || itemLevel > metadata.MaxLevel)
         {
             return false;
         }
 
-        if (!metadata.Rarities.Contains(rarity))
-        {
-            return false;
-        }
-
         // TODO: Check if slot is valid. Unsure where slot values are assigned in each item
-        return true;
+        return metadata.Rarities.Contains(rarity);
     }
 }

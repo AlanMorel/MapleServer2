@@ -2,7 +2,6 @@
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Commands.Core;
 using MapleServer2.Data.Static;
-using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 

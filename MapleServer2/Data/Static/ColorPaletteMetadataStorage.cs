@@ -24,7 +24,7 @@ public static class ColorPaletteMetadataStorage
         return Palette.ContainsKey(paletteId);
     }
 
-    public static ColorPaletteMetadata GetMetadata(int paletteId)
+    public static ColorPaletteMetadata? GetMetadata(int paletteId)
     {
         return Palette.GetValueOrDefault(paletteId);
     }

@@ -20,7 +20,7 @@ public class Pet : FieldActor<NpcMetadata>, INpc
     public NpcAction Action { get; set; }
     public MobMovement Movement { get; set; }
 
-    public IFieldActor Target;
+    public IFieldActor? Target;
 
     private CoordS NextMovementTarget;
     private float Distance;

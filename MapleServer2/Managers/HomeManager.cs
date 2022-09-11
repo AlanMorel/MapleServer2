@@ -28,10 +28,10 @@ public class HomeManager
         HomeList.Remove(home.Id, out _);
     }
 
-    public Home GetHomeById(long id)
+    public Home? GetHomeById(long id)
     {
-        HomeList.TryGetValue(id, out Home home);
-        if (home != null)
+        HomeList.TryGetValue(id, out Home? home);
+        if (home is not null)
         {
             return home;
         }
@@ -47,9 +47,9 @@ public class HomeManager
         return home;
     }
 
-    public Home GetHomeByAccountId(long accountId)
+    public Home? GetHomeByAccountId(long accountId)
     {
-        Home home = HomeList.Values.FirstOrDefault(x => x.AccountId == accountId);
+        Home? home = HomeList.Values.FirstOrDefault(x => x.AccountId == accountId);
         if (home != null)
         {
             return home;

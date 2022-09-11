@@ -1,5 +1,4 @@
-﻿using Maple2Storage.Types;
-using Maple2Storage.Types.Metadata;
+﻿using Maple2Storage.Types.Metadata;
 
 namespace MapleServer2.Types;
 

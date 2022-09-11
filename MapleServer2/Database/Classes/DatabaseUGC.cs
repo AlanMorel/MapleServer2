@@ -41,7 +41,7 @@ public class DatabaseUGC : DatabaseTable
         });
     }
 
-    public UGC FindByUid(long uid)
+    public UGC? FindByUid(long uid)
     {
         dynamic result = QueryFactory.Query(TableName).Where("uid", uid).FirstOrDefault();
         if (result == null)

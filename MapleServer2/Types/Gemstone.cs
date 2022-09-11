@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Maple2Storage.Enums;
+﻿using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Tools;
@@ -25,7 +20,7 @@ public class Gemstone
 public class GemSocket
 {
     public bool IsUnlocked;
-    public Gemstone Gemstone;
+    public Gemstone? Gemstone;
 }
 
 public class GemSockets

@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class WorldMapGraphStorage
 {
-    private static Graph WorldMapGraph { get; set; }
+    private static Graph WorldMapGraph { get; set; } = null!;
 
     public static void Init()
     {
@@ -432,8 +432,8 @@ public static class WorldMapGraphStorage
     {
         mapCount = 0;
         PathFinder pathFinder = new(WorldMapGraph);
-        Node originNode = WorldMapGraph.Nodes.FirstOrDefault(x => x.Id == mapOrigin);
-        Node destinationNode = WorldMapGraph.Nodes.FirstOrDefault(x => x.Id == mapDestination);
+        Node? originNode = WorldMapGraph.Nodes.FirstOrDefault(x => x.Id == mapOrigin);
+        Node? destinationNode = WorldMapGraph.Nodes.FirstOrDefault(x => x.Id == mapDestination);
 
         if (originNode == default && destinationNode == default)
         {

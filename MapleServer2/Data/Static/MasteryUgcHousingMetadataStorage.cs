@@ -19,9 +19,9 @@ public static class MasteryUgcHousingMetadataStorage
         }
     }
 
-    public static MasteryUgcHousingMetadata GetMetadata(byte grade)
+    public static MasteryUgcHousingMetadata? GetMetadata(byte grade)
     {
-        MasteryMetadata.TryGetValue(grade, out MasteryUgcHousingMetadata metadata);
+        MasteryMetadata.TryGetValue(grade, out MasteryUgcHousingMetadata? metadata);
         return metadata;
     }
 }

@@ -21,15 +21,15 @@ public static class QuestMetadataStorage
         }
     }
 
-    public static QuestMetadata GetMetadata(int questId) => Quests.GetValueOrDefault(questId);
+    public static QuestMetadata? GetMetadata(int questId) => Quests.GetValueOrDefault(questId);
 
     public static List<QuestMetadata> GetAvailableQuests(int level, Job job)
     {
         // TODO: Check achievement
         return Quests.Values.Where(questMetadata => questMetadata.Require.Level <= level
-                                                 && (questMetadata.Require.Job.Contains((short) job) || questMetadata.Require.Job.Count == 0)
-                                                 && questMetadata.Require.RequiredQuests.Count == 0
-                                                 && questMetadata.Basic.QuestType is QuestType.Epic or QuestType.World)
+                                                    && (questMetadata.Require.Job.Contains((short) job) || questMetadata.Require.Job.Count == 0)
+                                                    && questMetadata.Require.RequiredQuests.Count == 0
+                                                    && questMetadata.Basic.QuestType is QuestType.Epic or QuestType.World)
             .ToList();
     }
 

@@ -19,13 +19,13 @@ public static class ItemGemstoneUpgradeMetadataStorage
         }
     }
 
-    public static ItemGemstoneUpgradeMetadata GetMetadata(int itemId)
+    public static ItemGemstoneUpgradeMetadata? GetMetadata(int itemId)
     {
         return ItemGemstoneUpgradeMetadatas.GetValueOrDefault(itemId);
     }
 
     public static int GetGemLevel(int itemId)
     {
-        return ItemGemstoneUpgradeMetadatas.GetValueOrDefault(itemId).GemLevel;
+        return GetMetadata(itemId)?.GemLevel ?? 0;
     }
 }

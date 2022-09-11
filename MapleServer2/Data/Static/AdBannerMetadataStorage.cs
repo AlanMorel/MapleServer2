@@ -19,7 +19,7 @@ public static class AdBannerMetadataStorage
         }
     }
 
-    public static AdBannerMetadata GetMetadata(long bannerId)
+    public static AdBannerMetadata? GetMetadata(long bannerId)
     {
         return AdBanner.GetValueOrDefault(bannerId);
     }

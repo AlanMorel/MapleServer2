@@ -19,7 +19,7 @@ public static class SurvivalPeriodMetadataStorage
         }
     }
 
-    public static SurvivalPeriodMetadata GetMetadata()
+    public static SurvivalPeriodMetadata? GetMetadata()
     {
         // Currently set to get the first value. Normally it should be getting the value that is in between start and end time. The XML needs to be edited first to properly grab it, as the current End Date is already passed.
         // return SurvivalPeriodMetadatas.Values.FirstOrDefault(x => x.StartTime <= DateTime.UtcNow && x.EndTime >= DateTime.UtcNow);

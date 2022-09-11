@@ -2,7 +2,7 @@
 
 public class TaskScheduler
 {
-    private static TaskScheduler _instance;
+    private static TaskScheduler? _instance;
     private readonly List<Timer> Timers = new();
 
     private TaskScheduler() { }
@@ -24,7 +24,7 @@ public class TaskScheduler
             timeToGo = TimeSpan.Zero;
         }
 
-        Timer timer = new(x =>
+        Timer timer = new(_ =>
         {
             task.Invoke();
         }, null, timeToGo, TimeSpan.FromMinutes(intervalInMinutes));

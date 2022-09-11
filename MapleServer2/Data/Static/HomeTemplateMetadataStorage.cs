@@ -19,9 +19,9 @@ public static class HomeTemplateMetadataStorage
         }
     }
 
-    public static HomeTemplateMetadata GetTemplate(string id)
+    public static HomeTemplateMetadata? GetTemplate(string id)
     {
-        Templates.TryGetValue(id, out HomeTemplateMetadata metadata);
+        Templates.TryGetValue(id, out HomeTemplateMetadata? metadata);
         return metadata;
     }
 }

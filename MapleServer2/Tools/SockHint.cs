@@ -15,21 +15,18 @@ public enum SockHint
 }
 public struct SockHintInfo
 {
-    public SockHint Hint;
+    private readonly SockHint Hint;
     // Values
-    public byte ByteValue;
-    public short ShortValue;
-    public int IntValue;
-    public long LongValue;
-    public string StringValue;
+    private readonly byte ByteValue;
+    private readonly short ShortValue;
+    private readonly int IntValue;
+    private readonly long LongValue;
+    private readonly string StringValue;
 
-    public string Name; // Name of node
-
-    public SockHintInfo(SockHint hint, string value, string name = "Unknown")
+    public SockHintInfo(SockHint hint, string value)
     {
         Hint = hint;
         StringValue = value == "0" ? "" : value;
-        Name = name;
         ByteValue = 0;
         ShortValue = 0;
         IntValue = 0;

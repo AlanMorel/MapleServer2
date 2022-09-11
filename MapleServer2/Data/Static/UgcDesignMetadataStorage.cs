@@ -19,5 +19,5 @@ public static class UgcDesignMetadataStorage
         }
     }
 
-    public static UgcDesignMetadata GetItem(int itemId) => UgcDesign.TryGetValue(itemId, out UgcDesignMetadata item) ? item : null;
+    public static UgcDesignMetadata? GetItem(int itemId) => UgcDesign.TryGetValue(itemId, out UgcDesignMetadata? item) ? item : null;
 }
