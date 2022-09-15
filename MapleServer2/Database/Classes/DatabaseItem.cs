@@ -69,7 +69,7 @@ public class DatabaseItem : DatabaseTable
         });
     }
 
-    public Item FindByUid(long uid)
+    public Item? FindByUid(long uid)
     {
         dynamic result = QueryFactory.Query(TableName).Where("uid", uid).FirstOrDefault();
 
@@ -81,7 +81,7 @@ public class DatabaseItem : DatabaseTable
         return ReadItem(result);
     }
 
-    public Item FindByUgcUid(long ugcUid)
+    public Item? FindByUgcUid(long ugcUid)
     {
         dynamic result = QueryFactory.Query(TableName).Where("ugc_uid", ugcUid).FirstOrDefault();
 

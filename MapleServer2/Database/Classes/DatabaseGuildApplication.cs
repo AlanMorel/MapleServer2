@@ -17,7 +17,7 @@ public class DatabaseGuildApplication : DatabaseTable
         });
     }
 
-    public GuildApplication FindById(long id)
+    public GuildApplication? FindById(long id)
     {
         return QueryFactory.Query(TableName).Where("id", id).Get<GuildApplication>().FirstOrDefault();
     }

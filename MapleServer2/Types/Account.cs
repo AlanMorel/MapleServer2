@@ -24,17 +24,17 @@ public class Account
     public int MesoMarketMonthlyPurchases { get; set; }
 
     public long HomeId;
-    public Home Home;
+    public Home? Home;
     public BankInventory BankInventory;
-    public Dictionary<MedalSlot, Medal> EquippedMedals;
+    public Dictionary<MedalSlot, Medal?> EquippedMedals;
     public List<Medal> Medals;
     public MushkingRoyaleStats MushkingRoyaleStats;
 
-    public AuthData AuthData;
+    public AuthData? AuthData;
 
     public Account() { }
 
-    public Account(long accountId, dynamic data, BankInventory bankInventory, MushkingRoyaleStats royaleStats, List<Medal> medals, AuthData authData, GameSession gameSession)
+    public Account(long accountId, dynamic data, BankInventory bankInventory, MushkingRoyaleStats royaleStats, List<Medal> medals, AuthData? authData, GameSession? gameSession)
     {
         Id = accountId;
         Username = data.username;
@@ -143,7 +143,7 @@ public class Account
 
     public void UnequipMedal(MedalSlot slot)
     {
-        Medal oldMedal = EquippedMedals[slot];
+        Medal? oldMedal = EquippedMedals[slot];
         if (oldMedal is not null)
         {
             oldMedal.IsEquipped = false;

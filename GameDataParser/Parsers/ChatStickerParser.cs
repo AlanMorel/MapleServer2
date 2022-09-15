@@ -1,5 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -21,15 +23,24 @@ public class ChatStickerParser : Exporter<List<ChatStickerMetadata>>
             }
 
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-            XmlNodeList nodes = document.SelectNodes("/ms2/chatEmoticon");
+            XmlNodeList? nodes = document.SelectNodes("/ms2/chatEmoticon");
+            if (nodes is null)
+            {
+                continue;
+            }
 
             foreach (XmlNode node in nodes)
             {
+                if (ParserHelper.CheckForNull(node, "id", "group_id", "category_id"))
+                {
+                    continue;
+                }
+
                 ChatStickerMetadata metadata = new()
                 {
-                    StickerId = int.Parse(node.Attributes["id"].Value),
-                    GroupId = byte.Parse(node.Attributes["group_id"].Value),
-                    CategoryId = short.Parse(node.Attributes["category_id"].Value)
+                    StickerId = int.Parse(node.Attributes!["id"]!.Value),
+                    GroupId = byte.Parse(node.Attributes["group_id"]!.Value),
+                    CategoryId = short.Parse(node.Attributes["category_id"]!.Value)
                 };
 
                 chatStickers.Add(metadata);

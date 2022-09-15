@@ -1,5 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -21,16 +23,25 @@ public class FishingSpotParser : Exporter<List<FishingSpotMetadata>>
             }
 
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-            XmlNodeList nodes = document.SelectNodes("/ms2/spot");
+            XmlNodeList? nodes = document.SelectNodes("/ms2/spot");
+            if (nodes is null)
+            {
+                continue;
+            }
 
             foreach (XmlNode node in nodes)
             {
+                if (ParserHelper.CheckForNull(node, "id", "minMastery", "maxMastery", "liquidType"))
+                {
+                    continue;
+                }
+
                 FishingSpotMetadata metadata = new()
                 {
-                    Id = int.Parse(node.Attributes["id"].Value),
-                    MinMastery = short.Parse(node.Attributes["minMastery"].Value),
-                    MaxMastery = short.Parse(node.Attributes["maxMastery"].Value),
-                    LiquidType = node.Attributes["liquidType"].Value.Split(",").ToList()
+                    Id = int.Parse(node.Attributes!["id"]!.Value),
+                    MinMastery = short.Parse(node.Attributes["minMastery"]!.Value),
+                    MaxMastery = short.Parse(node.Attributes["maxMastery"]!.Value),
+                    LiquidType = node.Attributes["liquidType"]!.Value.Split(",").ToList()
                 };
 
                 spots.Add(metadata);

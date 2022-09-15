@@ -49,6 +49,7 @@ public class DatabaseWardrobe : DatabaseTable
         {
             wardrobes.Add(ReadWardrobe(entry));
         }
+
         return wardrobes;
     }
 
@@ -58,9 +59,15 @@ public class DatabaseWardrobe : DatabaseTable
         List<long> equipUids = JsonConvert.DeserializeObject<List<long>>(entry.equip_uids);
         foreach (long equipUid in equipUids)
         {
-            Item equip = DatabaseManager.Items.FindByUid(equipUid);
+            Item? equip = DatabaseManager.Items.FindByUid(equipUid);
+            if (equip is null)
+            {
+                continue;
+            }
+
             equips[equip.ItemSlot] = new(equip);
         }
+
         return new()
         {
             Type = entry.type,

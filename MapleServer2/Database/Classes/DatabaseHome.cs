@@ -55,6 +55,7 @@ public class DatabaseHome : DatabaseTable
         {
             homes.Add((Home) ReadHome(data));
         }
+
         return homes;
     }
 
@@ -84,12 +85,13 @@ public class DatabaseHome : DatabaseTable
             interior_rewards_claimed = JsonConvert.SerializeObject(home.InteriorRewardsClaimed)
         });
 
-        foreach (Item item in home.WarehouseInventory.Where(item => item.Value != null).Select(x => x.Value))
+        foreach ((long _, Item item) in home.WarehouseInventory)
         {
             item.HomeId = home.Id;
             DatabaseManager.Items.Update(item);
         }
-        foreach (Cube cube in home.FurnishingInventory.Where(cube => cube.Value != null).Select(x => x.Value))
+
+        foreach ((long _, Cube cube) in home.FurnishingInventory)
         {
             DatabaseManager.Cubes.Update(cube);
         }
@@ -100,12 +102,13 @@ public class DatabaseHome : DatabaseTable
         return QueryFactory.Query(TableName).Where("id", id).Delete() == 1;
     }
 
-    private static Home ReadHome(dynamic data)
+    private static Home? ReadHome(dynamic data)
     {
         if (data == null)
         {
             return null;
         }
+
         Dictionary<long, Item> warehouseItems = DatabaseManager.Items.FindAllByHomeId(data.id);
         Dictionary<long, Cube> furnishingCubes = DatabaseManager.Cubes.FindAllByHomeId(data.id);
         List<HomeLayout> layouts = DatabaseManager.HomeLayouts.FindAllByHomeId(data.id);

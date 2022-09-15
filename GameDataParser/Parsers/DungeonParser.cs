@@ -1,5 +1,6 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Files.MetadataExporter;
 using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
@@ -22,10 +23,19 @@ public class DungeonParser : Exporter<List<DungeonMetadata>>
             }
 
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-            XmlNodeList nodes = document.SelectNodes("/ms2/dungeonRoom");
+            XmlNodeList? nodes = document.SelectNodes("/ms2/dungeonRoom");
+            if (nodes is null)
+            {
+                continue;
+            }
 
             foreach (XmlNode dungeonNode in nodes)
             {
+                if (dungeonNode.Attributes is null)
+                {
+                    continue;
+                }
+
                 DungeonMetadata metadata = new()
                 {
                     DungeonRoomId = int.Parse(dungeonNode.Attributes["dungeonRoomID"]?.Value ?? "0"),

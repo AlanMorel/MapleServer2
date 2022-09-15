@@ -1,5 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -21,9 +23,20 @@ public class ConstantsParser : Exporter<List<ConstantsMetadata>>
             }
 
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-            foreach (XmlNode node in document.DocumentElement.ChildNodes)
+            XmlNodeList? childNodes = document.DocumentElement?.ChildNodes;
+            if (childNodes is null)
             {
-                string locale = string.IsNullOrEmpty(node.Attributes["locale"]?.Value) ? "" : node.Attributes["locale"].Value;
+                continue;
+            }
+
+            foreach (XmlNode node in childNodes)
+            {
+                if (ParserHelper.CheckForNull(node, "key", "value"))
+                {
+                    continue;
+                }
+
+                string locale = node.Attributes!["locale"]?.Value ?? node.Attributes["locale"]!.Value;
                 if (locale != "NA" && locale != "")
                 {
                     continue;
@@ -34,7 +47,7 @@ public class ConstantsParser : Exporter<List<ConstantsMetadata>>
                     continue;
                 }
 
-                constants.Add(new(node.Attributes["key"].Value, node.Attributes["value"].Value));
+                constants.Add(new(node.Attributes["key"]!.Value, node.Attributes["value"]!.Value));
             }
         }
 
