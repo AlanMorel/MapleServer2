@@ -1,9 +1,10 @@
 -- Evan
-local nextScriptIds = { [21] = true, [31] = true, [41] = true, [51] = true}
-local posterGiveFunctions = { [1] = true, [2] = true, [3] = true, [4] = true}
-local player = ScriptManager.GetPlayer()
+local nextScriptIds = { [21] = true, [31] = true, [41] = true, [51] = true }
+local posterGiveFunctions = { [1] = true, [2] = true, [3] = true, [4] = true }
 
 function getFirstScriptId()
+    local player = ScriptManager.GetPlayer()
+
     --poster quest 1
     if player.HasQuestStarted(10001222) then
         return 20
@@ -26,9 +27,9 @@ function getFirstScriptId()
     end
     return 60
 end
-    
+
 function handleGoto(nextScript)
-    local posterCount = player.GetItemCount(30000038);
+    local posterCount = ScriptManager.GetPlayer().GetItemCount(30000038);
     local x = nextScript
 
     if nextScriptIds[nextScript] and posterCount >= 1 then
