@@ -1,5 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -22,18 +24,28 @@ public class GuildHouseParser : Exporter<List<GuildHouseMetadata>>
 
             // Parse XML
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-            XmlNodeList properties = document.SelectNodes("/ms2/guildHouse");
+            XmlNodeList? properties = document.SelectNodes("/ms2/guildHouse");
+
+            if (properties is null)
+            {
+                continue;
+            }
 
             foreach (XmlNode property in properties)
             {
+                if (ParserHelper.CheckForNull(property, "fieldID", "level", "theme", "upgradeReqGuildLevel", "upgradeCost", "rethemeCost"))
+                {
+                    continue;
+                }
+
                 GuildHouseMetadata metadata = new()
                 {
-                    FieldId = int.Parse(property.Attributes["fieldID"].Value),
-                    Level = int.Parse(property.Attributes["level"].Value),
-                    Theme = int.Parse(property.Attributes["theme"].Value),
-                    RequiredLevel = int.Parse(property.Attributes["upgradeReqGuildLevel"].Value),
-                    UpgradeCost = int.Parse(property.Attributes["upgradeCost"].Value),
-                    RethemeCost = int.Parse(property.Attributes["rethemeCost"].Value)
+                    FieldId = int.Parse(property.Attributes!["fieldID"]!.Value),
+                    Level = int.Parse(property.Attributes["level"]!.Value),
+                    Theme = int.Parse(property.Attributes["theme"]!.Value),
+                    RequiredLevel = int.Parse(property.Attributes["upgradeReqGuildLevel"]!.Value),
+                    UpgradeCost = int.Parse(property.Attributes["upgradeCost"]!.Value),
+                    RethemeCost = int.Parse(property.Attributes["rethemeCost"]!.Value)
                 };
 
                 houses.Add(metadata);

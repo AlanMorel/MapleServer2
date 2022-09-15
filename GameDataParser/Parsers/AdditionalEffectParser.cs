@@ -1,4 +1,5 @@
 ﻿using GameDataParser.Files;
+using GameDataParser.Files.MetadataExporter;
 using Maple2.File.Parser.Tools;
 using Maple2.File.Parser.Xml.AdditionalEffect;
 using Maple2.File.Parser.Xml.Skill;
@@ -62,14 +63,17 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                     AddStat(level.Status, StatAttribute.Luk, stat.lukvalue, stat.lukrate);
                     AddStat(level.Status, StatAttribute.Dex, stat.dexvalue, stat.dexrate);
                     AddStat(level.Status, StatAttribute.Hp, stat.hpvalue, stat.hprate);
-                    AddStat(level.Status, StatAttribute.HpRegen, stat.hp_rgpvalue, stat.hp_rgprate);               // these might need to be looked at in closer detail
-                    AddStat(level.Status, StatAttribute.HpRegenInterval, stat.hp_invvalue, stat.hp_invrate);       // these might need to be looked at in closer detail
-                    AddStat(level.Status, StatAttribute.Spirit, stat.spvalue, stat.sprate);                    // these might need to be looked at in closer detail
-                    AddStat(level.Status, StatAttribute.SpRegen, stat.sp_rgpvalue, stat.sp_rgprate);               // these might need to be looked at in closer detail
-                    AddStat(level.Status, StatAttribute.SpRegenInterval, stat.sp_invvalue, stat.sp_invrate);       // these might need to be looked at in closer detail
-                    AddStat(level.Status, StatAttribute.Stamina, stat.epvalue, stat.eprate);                   // these might need to be looked at in closer detail
-                    AddStat(level.Status, StatAttribute.StaminaRegen, stat.ep_rgpvalue, stat.ep_rgprate);          // these might need to be looked at in closer detail
-                    AddStat(level.Status, StatAttribute.StaminaRegenInterval, stat.ep_invvalue, stat.ep_invrate);  // these might need to be looked at in closer detail
+                    AddStat(level.Status, StatAttribute.HpRegen, stat.hp_rgpvalue, stat.hp_rgprate); // these might need to be looked at in closer detail
+                    AddStat(level.Status, StatAttribute.HpRegenInterval, stat.hp_invvalue,
+                        stat.hp_invrate); // these might need to be looked at in closer detail
+                    AddStat(level.Status, StatAttribute.Spirit, stat.spvalue, stat.sprate); // these might need to be looked at in closer detail
+                    AddStat(level.Status, StatAttribute.SpRegen, stat.sp_rgpvalue, stat.sp_rgprate); // these might need to be looked at in closer detail
+                    AddStat(level.Status, StatAttribute.SpRegenInterval, stat.sp_invvalue,
+                        stat.sp_invrate); // these might need to be looked at in closer detail
+                    AddStat(level.Status, StatAttribute.Stamina, stat.epvalue, stat.eprate); // these might need to be looked at in closer detail
+                    AddStat(level.Status, StatAttribute.StaminaRegen, stat.ep_rgpvalue, stat.ep_rgprate); // these might need to be looked at in closer detail
+                    AddStat(level.Status, StatAttribute.StaminaRegenInterval, stat.ep_invvalue,
+                        stat.ep_invrate); // these might need to be looked at in closer detail
                     AddStat(level.Status, StatAttribute.AttackSpeed, stat.aspvalue, stat.asprate);
                     AddStat(level.Status, StatAttribute.MovementSpeed, stat.mspvalue, stat.msprate);
                     AddStat(level.Status, StatAttribute.Accuracy, stat.atpvalue, stat.atprate);
@@ -83,9 +87,9 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                     AddStat(level.Status, StatAttribute.Damage, stat.dmgvalue, stat.dmgrate);
                     AddStat(level.Status, StatAttribute.MinWeaponAtk, stat.wapminvalue, stat.wapminrate);
                     AddStat(level.Status, StatAttribute.MaxWeaponAtk, stat.wapmaxvalue, stat.wapmaxrate);
-                    AddStat(level.Status, StatAttribute.MagicRes, stat.marvalue, stat.marrate);  // revisit these to make sure they're right
+                    AddStat(level.Status, StatAttribute.MagicRes, stat.marvalue, stat.marrate); // revisit these to make sure they're right
                     AddStat(level.Status, StatAttribute.MagicAtk, stat.mapvalue, stat.maprate);
-                    AddStat(level.Status, StatAttribute.PhysicalRes, stat.parvalue, stat.parrate);  // revisit these to make sure they're right
+                    AddStat(level.Status, StatAttribute.PhysicalRes, stat.parvalue, stat.parrate); // revisit these to make sure they're right
                     AddStat(level.Status, StatAttribute.PhysicalAtk, stat.papvalue, stat.paprate);
                     AddStat(level.Status, StatAttribute.JumpHeight, stat.jmpvalue, stat.jmprate);
                     AddStat(level.Status, StatAttribute.PerfectGuard, stat.abpvalue, stat.abprate);
@@ -97,7 +101,8 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                 if (special != null)
                 {
                     // TODO: finish adding all these stats to the correct attrib type
-                    AddStat(level.Status, StatAttribute.ExpBonus, special.segvalue, special.segrate); // gm emote exp boost for monster hunting, fishing, performing?
+                    AddStat(level.Status, StatAttribute.ExpBonus, special.segvalue,
+                        special.segrate); // gm emote exp boost for monster hunting, fishing, performing?
                     AddStat(level.Status, StatAttribute.MesoBonus, special.smdvalue, special.smdrate); // smh. gm emote meso boost?
                     AddStat(level.Status, StatAttribute.SwimSpeed, special.sssvalue, special.sssrate); // swim speed
                     AddStat(level.Status, StatAttribute.DashDistance, special.dashdistancevalue, special.dashdistancerate); // 
@@ -159,16 +164,22 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                     AddStat(level.Status, StatAttribute.GuildCoin, special.improveguildcoinvalue, special.improveguildcoinrate); // 
                     AddStat(level.Status, StatAttribute.McKayXpOrb, special.improvemassiveeventbexpballvalue, special.improvemassiveeventbexpballrate); // 
                     AddStat(level.Status, StatAttribute.BlackMarketReduce, special.reduce_meso_trade_feevalue, special.reduce_meso_trade_feerate); // 
-                    AddStat(level.Status, StatAttribute.EnchantCatalystDiscount, special.reduce_enchant_matrial_feevalue, special.reduce_enchant_matrial_feerate); // 
+                    AddStat(level.Status, StatAttribute.EnchantCatalystDiscount, special.reduce_enchant_matrial_feevalue,
+                        special.reduce_enchant_matrial_feerate); // 
                     AddStat(level.Status, StatAttribute.MeretReviveFee, special.reduce_merat_revival_feevalue, special.reduce_merat_revival_feerate); // 
                     AddStat(level.Status, StatAttribute.MiningBonus, special.improve_mining_reward_itemvalue, special.improve_mining_reward_itemrate); // 
                     AddStat(level.Status, StatAttribute.RanchingBonus, special.improve_breeding_reward_itemvalue, special.improve_breeding_reward_itemrate); // 
-                    AddStat(level.Status, StatAttribute.SmithingExp, special.improve_blacksmithing_reward_masteryvalue, special.improve_blacksmithing_reward_masteryrate); // 
-                    AddStat(level.Status, StatAttribute.HandicraftMastery, special.improve_engraving_reward_masteryvalue, special.improve_engraving_reward_masteryrate); //  
-                    AddStat(level.Status, StatAttribute.ForagingBonus, special.improve_gathering_reward_itemvalue, special.improve_gathering_reward_itemrate); // 
+                    AddStat(level.Status, StatAttribute.SmithingExp, special.improve_blacksmithing_reward_masteryvalue,
+                        special.improve_blacksmithing_reward_masteryrate); // 
+                    AddStat(level.Status, StatAttribute.HandicraftMastery, special.improve_engraving_reward_masteryvalue,
+                        special.improve_engraving_reward_masteryrate); //  
+                    AddStat(level.Status, StatAttribute.ForagingBonus, special.improve_gathering_reward_itemvalue,
+                        special.improve_gathering_reward_itemrate); // 
                     AddStat(level.Status, StatAttribute.FarmingBonus, special.improve_farming_reward_itemvalue, special.improve_farming_reward_itemrate); //  
-                    AddStat(level.Status, StatAttribute.AlchemyMastery, special.improve_alchemist_reward_masteryvalue, special.improve_alchemist_reward_masteryrate); // 
-                    AddStat(level.Status, StatAttribute.CookingMastery, special.improve_cooking_reward_masteryvalue, special.improve_cooking_reward_masteryrate); // 
+                    AddStat(level.Status, StatAttribute.AlchemyMastery, special.improve_alchemist_reward_masteryvalue,
+                        special.improve_alchemist_reward_masteryrate); // 
+                    AddStat(level.Status, StatAttribute.CookingMastery, special.improve_cooking_reward_masteryvalue,
+                        special.improve_cooking_reward_masteryrate); // 
                     AddStat(level.Status, StatAttribute.ForagingExp, special.improve_acquire_gathering_expvalue, special.improve_acquire_gathering_exprate); //
                     AddStat(level.Status, StatAttribute.TECH, special.skill_levelup_tier_1value, special.skill_levelup_tier_1rate); // 
                     AddStat(level.Status, StatAttribute.TECH_2, special.skill_levelup_tier_2value, special.skill_levelup_tier_2rate); // 
@@ -185,41 +196,67 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                     AddStat(level.Status, StatAttribute.TECH_40, special.skill_levelup_tier_13value, special.skill_levelup_tier_13rate); // 
                     AddStat(level.Status, StatAttribute.TECH_43, special.skill_levelup_tier_14value, special.skill_levelup_tier_14rate); // 
                     AddStat(level.Status, StatAttribute.OXQuizExp, special.improve_massive_ox_expvalue, special.improve_massive_ox_exprate); // 
-                    AddStat(level.Status, StatAttribute.TrapMasterExp, special.improve_massive_trapmaster_expvalue, special.improve_massive_trapmaster_exprate); // 
-                    AddStat(level.Status, StatAttribute.SoleSurvivorExp, special.improve_massive_finalsurvival_expvalue, special.improve_massive_finalsurvival_exprate); //
-                    AddStat(level.Status, StatAttribute.CrazyRunnerExp, special.improve_massive_crazyrunner_expvalue, special.improve_massive_crazyrunner_exprate); //
-                    AddStat(level.Status, StatAttribute.ShanghaiCrazyRunnersExp, special.improve_massive_sh_crazyrunner_expvalue, special.improve_massive_sh_crazyrunner_exprate); //
+                    AddStat(level.Status, StatAttribute.TrapMasterExp, special.improve_massive_trapmaster_expvalue,
+                        special.improve_massive_trapmaster_exprate); // 
+                    AddStat(level.Status, StatAttribute.SoleSurvivorExp, special.improve_massive_finalsurvival_expvalue,
+                        special.improve_massive_finalsurvival_exprate); //
+                    AddStat(level.Status, StatAttribute.CrazyRunnerExp, special.improve_massive_crazyrunner_expvalue,
+                        special.improve_massive_crazyrunner_exprate); //
+                    AddStat(level.Status, StatAttribute.ShanghaiCrazyRunnersExp, special.improve_massive_sh_crazyrunner_expvalue,
+                        special.improve_massive_sh_crazyrunner_exprate); //
                     AddStat(level.Status, StatAttribute.LudiEscapeExp, special.improve_massive_escape_expvalue, special.improve_massive_escape_exprate); //
-                    AddStat(level.Status, StatAttribute.SpringBeachExp, special.improve_massive_springbeach_expvalue, special.improve_massive_springbeach_exprate); //
-                    AddStat(level.Status, StatAttribute.DanceDanceExp, special.improve_massive_dancedance_expvalue, special.improve_massive_dancedance_exprate); //
+                    AddStat(level.Status, StatAttribute.SpringBeachExp, special.improve_massive_springbeach_expvalue,
+                        special.improve_massive_springbeach_exprate); //
+                    AddStat(level.Status, StatAttribute.DanceDanceExp, special.improve_massive_dancedance_expvalue,
+                        special.improve_massive_dancedance_exprate); //
                     AddStat(level.Status, StatAttribute.OXMovementSpeed, special.improve_massive_ox_mspvalue, special.improve_massive_ox_msprate); //
-                    AddStat(level.Status, StatAttribute.TrapMasterMovementSpeed, special.improve_massive_trapmaster_mspvalue, special.improve_massive_trapmaster_msprate); // 
-                    AddStat(level.Status, StatAttribute.SoleSurvivorMovementSpeed, special.improve_massive_finalsurvival_mspvalue, special.improve_massive_finalsurvival_msprate); //
-                    AddStat(level.Status, StatAttribute.CrazyRunnerMovementSpeed, special.improve_massive_crazyrunner_mspvalue, special.improve_massive_crazyrunner_msprate); //
-                    AddStat(level.Status, StatAttribute.ShanghaiCrazyRunnersMovementSpeed, special.improve_massive_sh_crazyrunner_mspvalue, special.improve_massive_sh_crazyrunner_msprate); //
-                    AddStat(level.Status, StatAttribute.LudiEscapeMovementSpeed, special.improve_massive_escape_mspvalue, special.improve_massive_escape_msprate); //
-                    AddStat(level.Status, StatAttribute.SpringBeachMovementSpeed, special.improve_massive_springbeach_mspvalue, special.improve_massive_springbeach_msprate); //
-                    AddStat(level.Status, StatAttribute.DanceDanceStopMovementSpeed, special.improve_massive_dancedance_mspvalue, special.improve_massive_dancedance_msprate); //
+                    AddStat(level.Status, StatAttribute.TrapMasterMovementSpeed, special.improve_massive_trapmaster_mspvalue,
+                        special.improve_massive_trapmaster_msprate); // 
+                    AddStat(level.Status, StatAttribute.SoleSurvivorMovementSpeed, special.improve_massive_finalsurvival_mspvalue,
+                        special.improve_massive_finalsurvival_msprate); //
+                    AddStat(level.Status, StatAttribute.CrazyRunnerMovementSpeed, special.improve_massive_crazyrunner_mspvalue,
+                        special.improve_massive_crazyrunner_msprate); //
+                    AddStat(level.Status, StatAttribute.ShanghaiCrazyRunnersMovementSpeed, special.improve_massive_sh_crazyrunner_mspvalue,
+                        special.improve_massive_sh_crazyrunner_msprate); //
+                    AddStat(level.Status, StatAttribute.LudiEscapeMovementSpeed, special.improve_massive_escape_mspvalue,
+                        special.improve_massive_escape_msprate); //
+                    AddStat(level.Status, StatAttribute.SpringBeachMovementSpeed, special.improve_massive_springbeach_mspvalue,
+                        special.improve_massive_springbeach_msprate); //
+                    AddStat(level.Status, StatAttribute.DanceDanceStopMovementSpeed, special.improve_massive_dancedance_mspvalue,
+                        special.improve_massive_dancedance_msprate); //
                     AddStat(level.Status, StatAttribute.GenerateSpiritOrbs, special.npc_hit_reward_sp_ballvalue, special.npc_hit_reward_sp_ballrate); //
                     AddStat(level.Status, StatAttribute.GenerateStaminaOrbs, special.npc_hit_reward_ep_ballvalue, special.npc_hit_reward_ep_ballrate); //
                     AddStat(level.Status, StatAttribute.ValorTokens, special.improve_honor_tokenvalue, special.improve_honor_tokenrate); //
                     AddStat(level.Status, StatAttribute.PvPExp, special.improve_pvp_expvalue, special.improve_pvp_exprate); //
-                    AddStat(level.Status, StatAttribute.DarkDescentDamageBonus, special.improve_darkstream_damagevalue, special.improve_darkstream_damagerate); //
+                    AddStat(level.Status, StatAttribute.DarkDescentDamageBonus, special.improve_darkstream_damagevalue,
+                        special.improve_darkstream_damagerate); //
                     AddStat(level.Status, StatAttribute.DarkDescentDamageReduce, special.improve_darkstream_evpvalue, special.improve_darkstream_evprate); //
-                    AddStat(level.Status, StatAttribute.DarkDescentEvasion, special.reduce_darkstream_recive_damagevalue, special.reduce_darkstream_recive_damagerate); //
+                    AddStat(level.Status, StatAttribute.DarkDescentEvasion, special.reduce_darkstream_recive_damagevalue,
+                        special.reduce_darkstream_recive_damagerate); //
                     AddStat(level.Status, StatAttribute.DoubleFishingMastery, special.fishing_double_masteryvalue, special.fishing_double_masteryrate); //
-                    AddStat(level.Status, StatAttribute.DoublePerformanceMastery, special.playinstrument_double_masteryvalue, special.playinstrument_double_masteryrate); //
-                    AddStat(level.Status, StatAttribute.ExploredAreasMovementSpeed, special.complete_fieldmission_mspvalue, special.complete_fieldmission_msprate); //
-                    AddStat(level.Status, StatAttribute.AirMountAscentSpeed, special.improve_glide_vertical_velocityvalue, special.improve_glide_vertical_velocityrate); //
+                    AddStat(level.Status, StatAttribute.DoublePerformanceMastery, special.playinstrument_double_masteryvalue,
+                        special.playinstrument_double_masteryrate); //
+                    AddStat(level.Status, StatAttribute.ExploredAreasMovementSpeed, special.complete_fieldmission_mspvalue,
+                        special.complete_fieldmission_msprate); //
+                    AddStat(level.Status, StatAttribute.AirMountAscentSpeed, special.improve_glide_vertical_velocityvalue,
+                        special.improve_glide_vertical_velocityrate); //
                     //AddStat(level.Status, StatAttribute.Unknown, special.additionaleffect_95000018value, special.additionaleffect_95000018rate); //
-                    AddStat(level.Status, StatAttribute.EnemyDefenseDecreaseOnHit, special.additionaleffect_95000012value, special.additionaleffect_95000012rate); //
-                    AddStat(level.Status, StatAttribute.EnemyAttackDecreaseOnHit, special.additionaleffect_95000014value, special.additionaleffect_95000014rate); //
-                    AddStat(level.Status, StatAttribute.IncreaseTotalDamageIf1NearbyEnemy, special.additionaleffect_95000020value, special.additionaleffect_95000020rate); //
-                    AddStat(level.Status, StatAttribute.IncreaseTotalDamageIf3NearbyEnemies, special.additionaleffect_95000021value, special.additionaleffect_95000021rate); //
-                    AddStat(level.Status, StatAttribute.IncreaseTotalDamageIf80Spirit, special.additionaleffect_95000022value, special.additionaleffect_95000022rate); //
-                    AddStat(level.Status, StatAttribute.IncreaseTotalDamageIfFullStamina, special.additionaleffect_95000023value, special.additionaleffect_95000023rate); //
-                    AddStat(level.Status, StatAttribute.IncreaseTotalDamageIfHerbEffectActive, special.additionaleffect_95000024value, special.additionaleffect_95000024rate); //
-                    AddStat(level.Status, StatAttribute.IncreaseTotalDamageToWorldBoss, special.additionaleffect_95000025value, special.additionaleffect_95000025rate); //
+                    AddStat(level.Status, StatAttribute.EnemyDefenseDecreaseOnHit, special.additionaleffect_95000012value,
+                        special.additionaleffect_95000012rate); //
+                    AddStat(level.Status, StatAttribute.EnemyAttackDecreaseOnHit, special.additionaleffect_95000014value,
+                        special.additionaleffect_95000014rate); //
+                    AddStat(level.Status, StatAttribute.IncreaseTotalDamageIf1NearbyEnemy, special.additionaleffect_95000020value,
+                        special.additionaleffect_95000020rate); //
+                    AddStat(level.Status, StatAttribute.IncreaseTotalDamageIf3NearbyEnemies, special.additionaleffect_95000021value,
+                        special.additionaleffect_95000021rate); //
+                    AddStat(level.Status, StatAttribute.IncreaseTotalDamageIf80Spirit, special.additionaleffect_95000022value,
+                        special.additionaleffect_95000022rate); //
+                    AddStat(level.Status, StatAttribute.IncreaseTotalDamageIfFullStamina, special.additionaleffect_95000023value,
+                        special.additionaleffect_95000023rate); //
+                    AddStat(level.Status, StatAttribute.IncreaseTotalDamageIfHerbEffectActive, special.additionaleffect_95000024value,
+                        special.additionaleffect_95000024rate); //
+                    AddStat(level.Status, StatAttribute.IncreaseTotalDamageToWorldBoss, special.additionaleffect_95000025value,
+                        special.additionaleffect_95000025rate); //
                     AddStat(level.Status, StatAttribute.Effect95000026, special.additionaleffect_95000026value, special.additionaleffect_95000026rate); //
                     AddStat(level.Status, StatAttribute.Effect95000027, special.additionaleffect_95000027value, special.additionaleffect_95000027rate); //
                     AddStat(level.Status, StatAttribute.Effect95000028, special.additionaleffect_95000028value, special.additionaleffect_95000028rate); //
@@ -230,16 +267,20 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                     AddStat(level.Status, StatAttribute.DoubleRanchingProduction, special.breeding_double_rewardvalue, special.breeding_double_rewardrate);
                     AddStat(level.Status, StatAttribute.DoubleForagingProduction, special.gathering_double_rewardvalue, special.gathering_double_rewardrate); //
                     AddStat(level.Status, StatAttribute.DoubleFarmingProduction, special.farming_double_rewardvalue, special.farming_double_rewardrate); //
-                    AddStat(level.Status, StatAttribute.DoubleSmithingProduction, special.blacksmithing_double_rewardvalue, special.blacksmithing_double_rewardrate); //
-                    AddStat(level.Status, StatAttribute.DoubleHandicraftProduction, special.engraving_double_rewardvalue, special.engraving_double_rewardrate); //
+                    AddStat(level.Status, StatAttribute.DoubleSmithingProduction, special.blacksmithing_double_rewardvalue,
+                        special.blacksmithing_double_rewardrate); //
+                    AddStat(level.Status, StatAttribute.DoubleHandicraftProduction, special.engraving_double_rewardvalue,
+                        special.engraving_double_rewardrate); //
                     AddStat(level.Status, StatAttribute.DoubleAlchemyProduction, special.alchemist_double_rewardvalue, special.alchemist_double_rewardrate); //
                     AddStat(level.Status, StatAttribute.DoubleCookingProduction, special.cooking_double_rewardvalue, special.cooking_double_rewardrate); //
                     AddStat(level.Status, StatAttribute.DoubleMiningMastery, special.mining_double_masteryvalue, special.mining_double_masteryrate); //
                     AddStat(level.Status, StatAttribute.DoubleRanchingMastery, special.breeding_double_masteryvalue, special.breeding_double_masteryrate); //
                     AddStat(level.Status, StatAttribute.DoubleForagingMastery, special.gathering_double_masteryvalue, special.gathering_double_masteryrate); //
                     AddStat(level.Status, StatAttribute.DoubleFarmingMastery, special.farming_double_masteryvalue, special.farming_double_masteryrate); //
-                    AddStat(level.Status, StatAttribute.DoubleSmithingMastery, special.blacksmithing_double_masteryvalue, special.blacksmithing_double_masteryrate); //
-                    AddStat(level.Status, StatAttribute.DoubleHandicraftMastery, special.engraving_double_masteryvalue, special.engraving_double_masteryrate); //
+                    AddStat(level.Status, StatAttribute.DoubleSmithingMastery, special.blacksmithing_double_masteryvalue,
+                        special.blacksmithing_double_masteryrate); //
+                    AddStat(level.Status, StatAttribute.DoubleHandicraftMastery, special.engraving_double_masteryvalue,
+                        special.engraving_double_masteryrate); //
                     AddStat(level.Status, StatAttribute.DoubleAlchemyMastery, special.alchemist_double_masteryvalue, special.alchemist_double_masteryrate); //
                     AddStat(level.Status, StatAttribute.DoubleCookingMastery, special.cooking_double_masteryvalue, special.cooking_double_masteryrate); //
                     AddStat(level.Status, StatAttribute.ChaosRaidWeaponAttack, special.improve_chaosraid_wapvalue, special.improve_chaosraid_waprate); //
@@ -248,15 +289,18 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                     AddStat(level.Status, StatAttribute.ChaosRaidHealth, special.improve_chaosraid_hpvalue, special.improve_chaosraid_hprate);
                     AddStat(level.Status, StatAttribute.StaminaAndSpiritFromOrbs, special.improve_recovery_ballvalue, special.improve_recovery_ballrate); //
                     AddStat(level.Status, StatAttribute.WorldBossExp, special.improve_fieldboss_kill_expvalue, special.improve_fieldboss_kill_exprate); //
-                    AddStat(level.Status, StatAttribute.WorldBossDropRate, special.improve_fieldboss_kill_dropvalue, special.improve_fieldboss_kill_droprate); //
-                    AddStat(level.Status, StatAttribute.WorldBossDamageReduce, special.reduce_fieldboss_recive_damagevalue, special.reduce_fieldboss_recive_damagerate); //
+                    AddStat(level.Status, StatAttribute.WorldBossDropRate, special.improve_fieldboss_kill_dropvalue,
+                        special.improve_fieldboss_kill_droprate); //
+                    AddStat(level.Status, StatAttribute.WorldBossDamageReduce, special.reduce_fieldboss_recive_damagevalue,
+                        special.reduce_fieldboss_recive_damagerate); //
                     AddStat(level.Status, StatAttribute.Effect9500016, special.additionaleffect_95000016value, special.additionaleffect_95000016rate); //
                     AddStat(level.Status, StatAttribute.PetCaptureRewards, special.improve_pettrap_rewardvalue, special.improve_pettrap_rewardrate); //
                     AddStat(level.Status, StatAttribute.MiningEfficency, special.mining_multiactionvalue, special.mining_multiactionrate); //
                     AddStat(level.Status, StatAttribute.RanchingEfficiency, special.breeding_multiactionvalue, special.breeding_multiactionrate); //
                     AddStat(level.Status, StatAttribute.ForagingEfficiency, special.gathering_multiactionvalue, special.gathering_multiactionrate); //
                     AddStat(level.Status, StatAttribute.FarmingEfficiency, special.farming_multiactionvalue, special.farming_multiactionrate); //
-                    AddStat(level.Status, StatAttribute.HealthBasedDamageReduce, special.reduce_damage_by_targetmaxhpvalue, special.reduce_damage_by_targetmaxhprate); //
+                    AddStat(level.Status, StatAttribute.HealthBasedDamageReduce, special.reduce_damage_by_targetmaxhpvalue,
+                        special.reduce_damage_by_targetmaxhprate); //
                     // TODO: add enum values for things after here. enum ended here so i stopped adding
                     //AddStat(level.Status, StatAttribute.Unknown, special.reduce_meso_revival_feevalue, special.reduce_meso_revival_feerate); //
                     //AddStat(level.Status, StatAttribute.Unknown, special.improve_riding_run_speedvalue, special.improve_riding_run_speedrate); //
@@ -271,7 +315,8 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                     //AddStat(level.Status, StatAttribute.Unknown, special.improve_riding_speedvalue, special.improve_riding_speedrate); //
                     //AddStat(level.Status, StatAttribute.Unknown, special.improve_survival_kill_expvalue, special.improve_survival_kill_exprate); //
                     //AddStat(level.Status, StatAttribute.Unknown, special.improve_survival_time_expvalue, special.improve_survival_time_exprate); //
-                    AddStat(level.Status, StatAttribute.PhysicalAtk, special.offensive_physicaldamagevalue, special.offensive_physicaldamagerate); // revisit these
+                    AddStat(level.Status, StatAttribute.PhysicalAtk, special.offensive_physicaldamagevalue,
+                        special.offensive_physicaldamagerate); // revisit these
                     AddStat(level.Status, StatAttribute.MagicAtk, special.offensive_magicaldamagevalue, special.offensive_magicaldamagerate); // revisit these
                     //AddStat(level.Status, StatAttribute.Unknown, special.reduce_gameitem_socket_unlock_feevalue, special.reduce_gameitem_socket_unlock_feerate); //
                 }
@@ -306,9 +351,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                 RecoveryProperty recovery = data[i].RecoveryProperty;
 
                 if (recovery != null)
-                {
-
-                }
+                { }
 
                 CancelEffectProperty cancel = data[i].CancelEffectProperty;
 
@@ -344,7 +387,8 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                     {
                         TriggerSkill splashSkill = data[i].splashSkill[skillIndex];
 
-                        level.SplashSkill.Add(new(splashSkill.skillID, GetSkillLevels(splashSkill.level), splashSkill.splash, (byte) splashSkill.skillTarget, (byte) splashSkill.skillOwner, (short) splashSkill.fireCount, splashSkill.interval, splashSkill.immediateActive)
+                        level.SplashSkill.Add(new(splashSkill.skillID, GetSkillLevels(splashSkill.level), splashSkill.splash, (byte) splashSkill.skillTarget,
+                            (byte) splashSkill.skillOwner, (short) splashSkill.fireCount, splashSkill.interval, splashSkill.immediateActive)
                         {
                             Delay = splashSkill.delay,
                             RemoveDelay = splashSkill.removeDelay,
@@ -364,7 +408,9 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                     {
                         TriggerSkill conditionSkill = data[i].conditionSkill[skillIndex];
 
-                        level.ConditionSkill.Add(new(conditionSkill.skillID, GetSkillLevels(conditionSkill.level), conditionSkill.splash, (byte) conditionSkill.skillTarget, (byte) conditionSkill.skillOwner, (short) conditionSkill.fireCount, conditionSkill.interval, conditionSkill.immediateActive)
+                        level.ConditionSkill.Add(new(conditionSkill.skillID, GetSkillLevels(conditionSkill.level), conditionSkill.splash,
+                            (byte) conditionSkill.skillTarget, (byte) conditionSkill.skillOwner, (short) conditionSkill.fireCount, conditionSkill.interval,
+                            conditionSkill.immediateActive)
                         {
                             Delay = conditionSkill.delay,
                             RemoveDelay = conditionSkill.removeDelay,
@@ -448,7 +494,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
         return result;
     }
 
-    private SkillBeginCondition ParseBeginCondition(BeginCondition beginCondition)
+    private SkillBeginCondition? ParseBeginCondition(BeginCondition? beginCondition)
     {
         if (beginCondition == null)
         {
@@ -464,7 +510,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
         };
     }
 
-    private BeginConditionSubject ParseOwnerCondition(SubConditionTarget ownerCondition)
+    private BeginConditionSubject? ParseOwnerCondition(SubConditionTarget? ownerCondition)
     {
         if (ownerCondition == null)
         {
@@ -488,9 +534,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
             return;
         }
 
-        EffectStatMetadata currentValue;
-
-        if (status.Stats.TryGetValue(stat, out currentValue))
+        if (status.Stats.TryGetValue(stat, out EffectStatMetadata? currentValue))
         {
             currentValue.Flat += (long) (flat * 1000);
             currentValue.Rate += rate;
@@ -513,9 +557,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
             return;
         }
 
-        EffectStatMetadata currentValue;
-
-        if (status.Stats.TryGetValue(stat, out currentValue))
+        if (status.Stats.TryGetValue(stat, out EffectStatMetadata? currentValue))
         {
             currentValue.Flat += flat;
             currentValue.Rate += rate;

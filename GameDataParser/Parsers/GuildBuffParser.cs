@@ -1,5 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -24,18 +26,29 @@ public class GuildBuffParser : Exporter<List<GuildBuffMetadata>>
 
             // Parse XML
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-            XmlNodeList contributions = document.SelectNodes("/ms2/guildBuff");
+            XmlNodeList? contributions = document.SelectNodes("/ms2/guildBuff");
+            if (contributions is null)
+            {
+                continue;
+            }
+
 
             foreach (XmlNode contribution in contributions)
             {
-                int buffId = int.Parse(contribution.Attributes["id"].Value);
-                byte level = byte.Parse(contribution.Attributes["level"].Value);
-                int additionalEffectId = int.Parse(contribution.Attributes["additionalEffectId"].Value);
-                byte additionalEffectLevel = byte.Parse(contribution.Attributes["additionalEffectLevel"].Value);
-                byte levelRequirement = byte.Parse(contribution.Attributes["requireLevel"].Value);
-                int upgradeCost = int.Parse(contribution.Attributes["upgradeCost"].Value);
-                int cost = int.Parse(contribution.Attributes["cost"].Value);
-                short duration = short.Parse(contribution.Attributes["duration"].Value);
+                if (ParserHelper.CheckForNull(contribution, "id", "level", "additionalEffectId", "additionalEffectLevel", "requireLevel", "upgradeCost", "cost",
+                        "duration"))
+                {
+                    continue;
+                }
+
+                int buffId = int.Parse(contribution.Attributes!["id"]!.Value);
+                byte level = byte.Parse(contribution.Attributes["level"]!.Value);
+                int additionalEffectId = int.Parse(contribution.Attributes["additionalEffectId"]!.Value);
+                byte additionalEffectLevel = byte.Parse(contribution.Attributes["additionalEffectLevel"]!.Value);
+                byte levelRequirement = byte.Parse(contribution.Attributes["requireLevel"]!.Value);
+                int upgradeCost = int.Parse(contribution.Attributes["upgradeCost"]!.Value);
+                int cost = int.Parse(contribution.Attributes["cost"]!.Value);
+                short duration = short.Parse(contribution.Attributes["duration"]!.Value);
 
                 GuildBuffLevel buffLevel = new()
                 {

@@ -2,7 +2,7 @@
 using Maple2Storage.Types;
 using ProtoBuf;
 
-namespace GameDataParser.Files;
+namespace GameDataParser.Files.MetadataExporter;
 
 public abstract class MetadataExporter
 {

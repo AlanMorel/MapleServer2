@@ -1,5 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -13,7 +15,7 @@ public class FieldWarParser : Exporter<List<FieldWarMetadata>>
     protected override List<FieldWarMetadata> Parse()
     {
         List<FieldWarMetadata> fieldWar = new();
-        PackFileEntry fieldWarData = Resources.XmlReader.Files.FirstOrDefault(x => x.Name.StartsWith("table/fieldwardata"));
+        PackFileEntry? fieldWarData = Resources.XmlReader.Files.FirstOrDefault(x => x.Name.StartsWith("table/fieldwardata"));
 
         if (fieldWarData is null)
         {
@@ -21,16 +23,25 @@ public class FieldWarParser : Exporter<List<FieldWarMetadata>>
         }
 
         XmlDocument document = Resources.XmlReader.GetXmlDocument(fieldWarData);
-        XmlNodeList nodes = document.SelectNodes("/ms2/fieldWar");
+        XmlNodeList? nodes = document.SelectNodes("/ms2/fieldWar");
+        if (nodes is null)
+        {
+            return fieldWar;
+        }
 
         foreach (XmlNode node in nodes)
         {
+            if (ParserHelper.CheckForNull(node, "fieldWarID", "rewardID", "fieldID", "fieldWarGroupID"))
+            {
+                continue;
+            }
+
             FieldWarMetadata metadata = new()
             {
-                FieldWarId = int.Parse(node.Attributes["fieldWarID"].Value),
-                RewardId = int.Parse(node.Attributes["rewardID"].Value),
-                MapId = int.Parse(node.Attributes["fieldID"].Value),
-                GroupId = byte.Parse(node.Attributes["fieldWarGroupID"].Value)
+                FieldWarId = int.Parse(node.Attributes!["fieldWarID"]!.Value),
+                RewardId = int.Parse(node.Attributes["rewardID"]!.Value),
+                MapId = int.Parse(node.Attributes["fieldID"]!.Value),
+                GroupId = byte.Parse(node.Attributes["fieldWarGroupID"]!.Value)
             };
 
             fieldWar.Add(metadata);
