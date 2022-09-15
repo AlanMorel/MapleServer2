@@ -159,11 +159,6 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
             }
         }
 
-        if (script is null)
-        {
-            return;
-        }
-
         switch (kind)
         {
             // reputation NPCs only have UI Dialog Type even if they have quests to accept/accepted.
@@ -191,7 +186,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
                 break;
         }
 
-        npcTalk.ScriptId = script.Id;
+        npcTalk.ScriptId = script?.Id ?? 0;
         ResponseSelection responseSelection = GetResponseSelection(kind, npcTalk.DialogType, contentIndex, script);
 
         if (npcTalk.DialogType.HasFlag(DialogType.Quest))
@@ -202,7 +197,10 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
         QuestManager.OnTalkNpc(session.Player, npc.Value.Id, npcTalk.ScriptId);
         session.Send(NpcTalkPacket.Respond(npc, npcTalk.DialogType, contentIndex, responseSelection, npcTalk.ScriptId));
 
-        npcTalk.TalkFunction(session, script.Contents[npcTalk.ContentIndex].FunctionId, "preTalkActions");
+        if (script is not null)
+        {
+            npcTalk.TalkFunction(session, script.Contents[npcTalk.ContentIndex].FunctionId, "preTalkActions");
+        }
     }
 
     private static ResponseSelection GetResponseSelection(NpcKind npcKind, DialogType type, int contentIndex, NpcScript? npcScript)
