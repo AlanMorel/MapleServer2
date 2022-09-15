@@ -32,7 +32,7 @@ public class DatabasePets : DatabaseTable
         });
     }
 
-    public PetInfo Get(long petUid)
+    public PetInfo? Get(long petUid)
     {
         dynamic result = QueryFactory.Query(TableName).Where("uid", petUid).FirstOrDefault();
         if (result == null)

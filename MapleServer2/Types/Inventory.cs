@@ -21,8 +21,8 @@ public sealed class Inventory : IInventory
     private readonly Dictionary<long, Item> Items;
     public Dictionary<ItemSlot, Item> Equips { get; }
     public Dictionary<ItemSlot, Item> Cosmetics { get; }
-    public Item[] Badges { get; }
-    public Item[] LapenshardStorage { get; }
+    public Item?[] Badges { get; }
+    public Item?[] LapenshardStorage { get; }
 
     // Map of Slot to Uid for each inventory
     private readonly Dictionary<short, long>[] SlotMaps;
@@ -176,7 +176,7 @@ public sealed class Inventory : IInventory
 
             // If slot is occupied
             // Finds item in inventory with same id, rarity and a stack not full
-            Item existingItem = Items.Values.FirstOrDefault(x =>
+            Item? existingItem = Items.Values.FirstOrDefault(x =>
                 x.Id == item.Id && x.Amount < x.StackLimit && x.Rarity == item.Rarity && x.ExpiryTime == item.ExpiryTime);
             if (existingItem is not null)
             {
@@ -242,7 +242,7 @@ public sealed class Inventory : IInventory
 
     public void ConsumeItem(GameSession session, long uid, int amount)
     {
-        if (!Items.TryGetValue(uid, out Item item) || amount > item.Amount)
+        if (!Items.TryGetValue(uid, out Item? item) || amount > item.Amount)
         {
             return;
         }
@@ -272,7 +272,7 @@ public sealed class Inventory : IInventory
 
     public void DropItem(GameSession session, Item item, int amount)
     {
-        if (ItemMetadataStorage.GetPropertyMetadata(item.Id).DisableDrop)
+        if (ItemMetadataStorage.GetPropertyMetadata(item.Id)?.DisableDrop ?? true)
         {
             session.Send(NoticePacket.Notice(SystemNotice.ItemErrDrop));
             return;
@@ -367,7 +367,7 @@ public sealed class Inventory : IInventory
             return false;
         }
 
-        Item item = GetByUid(uid);
+        Item? item = GetByUid(uid);
         if (item is null || !item.CanEquip(session))
         {
             return false;
@@ -379,18 +379,22 @@ public sealed class Inventory : IInventory
         Player player = session.Player;
 
         // Get correct equipped inventory
-        Dictionary<ItemSlot, Item> equippedInventory = player.GetEquippedInventory(item.InventoryTab);
-        if (equippedInventory == null)
+        Dictionary<ItemSlot, Item>? equippedInventory = player.GetEquippedInventory(item.InventoryTab);
+        if (equippedInventory is null)
         {
             Logger.Warning("equippedInventory was null: {inventoryTab}", item.InventoryTab);
             return false;
         }
 
         // Unequip multiple slots if new item takes two slots (overalls, 2H weps)
-        List<ItemSlot> metadataSlots = ItemMetadataStorage.GetItemSlots(item.Id);
+        List<ItemSlot>? metadataSlots = ItemMetadataStorage.GetItemSlots(item.Id);
+        if (metadataSlots is null)
+        {
+            return false;
+        }
         foreach (ItemSlot slot in metadataSlots)
         {
-            if (equippedInventory.TryGetValue(slot, out Item equip))
+            if (equippedInventory.TryGetValue(slot, out Item? equip))
             {
                 TryUnequip(session, equip.Uid);
             }
@@ -427,15 +431,19 @@ public sealed class Inventory : IInventory
     public bool TryUnequip(GameSession session, long uid)
     {
         Player player = session.Player;
-        Item item = player.Inventory.GetEquippedItem(uid);
+        Item? item = player.Inventory.GetEquippedItem(uid);
         if (item is null)
         {
             return false;
         }
 
-        Dictionary<ItemSlot, Item> equippedInventory = player.GetEquippedInventory(item.InventoryTab);
+        Dictionary<ItemSlot, Item>? equippedInventory = player.GetEquippedInventory(item.InventoryTab);
+        if (equippedInventory is null)
+        {
+            return false;
+        }
 
-        if (equippedInventory.Remove(item.ItemSlot, out Item prevItem))
+        if (equippedInventory.Remove(item.ItemSlot, out Item? prevItem))
         {
             prevItem.Slot = -1;
             prevItem.IsEquipped = false;
@@ -510,9 +518,9 @@ public sealed class Inventory : IInventory
 
     public Item? GetByUid(long uid) => Items.TryGetValue(uid, out Item? item) ? item : null;
 
-    public Item GetById(int id) => Items.Values.FirstOrDefault(x => x.Id == id);
+    public Item? GetById(int id) => Items.Values.FirstOrDefault(x => x.Id == id);
 
-    public Item GetFromInventoryOrEquipped(long uid)
+    public Item? GetFromInventoryOrEquipped(long uid)
     {
         if (HasItem(uid))
         {
@@ -524,18 +532,18 @@ public sealed class Inventory : IInventory
 
     public bool ItemIsEquipped(long itemUid) => Equips.Values.Any(x => x.Uid == itemUid) || Cosmetics.Values.Any(x => x.Uid == itemUid);
 
-    public Item GetEquippedItem(long itemUid)
+    public Item? GetEquippedItem(long itemUid)
     {
-        Item gearItem = Equips.FirstOrDefault(x => x.Value.Uid == itemUid).Value;
+        Item? gearItem = Equips.Values.FirstOrDefault(x => x.Uid == itemUid);
         if (gearItem is not null)
         {
             return gearItem;
         }
 
-        return Cosmetics.FirstOrDefault(x => x.Value.Uid == itemUid).Value;
+        return Cosmetics.Values.FirstOrDefault(x => x.Uid == itemUid);
     }
 
-    public IEnumerable<Item> GetItemsNotNull() => Items.Values.Where(x => x != null).ToArray();
+    public IEnumerable<Item> GetItemsNotNull() => Items.Values.ToList();
 
     public IReadOnlyCollection<Item> GetAllById(int id) => Items.Values.Where(x => x.Id == id).ToArray();
 
@@ -581,7 +589,7 @@ public sealed class Inventory : IInventory
         // Delete items that got grouped
         foreach (Item oldItem in tabItems)
         {
-            Item newItem = groupedItems.FirstOrDefault(x => x.Uid == oldItem.Uid);
+            Item? newItem = groupedItems.FirstOrDefault(x => x.Uid == oldItem.Uid);
             if (newItem is null)
             {
                 Items.Remove(oldItem.Uid);
@@ -653,7 +661,7 @@ public sealed class Inventory : IInventory
 
     public void ExpandInventory(GameSession session, InventoryTab tab)
     {
-        long meretPrice = long.Parse(ConstantsMetadataStorage.GetConstant("InventoryExpandPrice1Row"));
+        long meretPrice = long.Parse(ConstantsMetadataStorage.GetConstant("InventoryExpandPrice1Row") ?? "0");
         const short ExpansionAmount = 6;
 
         if (!session.Player.Account.RemoveMerets(meretPrice))

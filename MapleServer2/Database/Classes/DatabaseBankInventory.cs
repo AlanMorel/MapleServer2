@@ -30,7 +30,7 @@ public class DatabaseBankInventory : DatabaseTable
         });
 
         List<Item> items = new();
-        items.AddRange(bankInventory.Items.Where(item => item != null).ToList());
+        items.AddRange(bankInventory.Items.Where(item => item is not null).ToList()!);
         foreach (Item item in items)
         {
             item.BankInventoryId = bankInventory.Id;

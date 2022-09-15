@@ -143,8 +143,9 @@ public class DatabaseEvent : DatabaseTable
     private static BlueMarble ReadMapleopolyEvent(IEnumerable<dynamic> data)
     {
         List<BlueMarbleReward> rewards = new();
-        dynamic baseEvent = ReadBaseGameEvent((int) data.First().game_event_id);
-        foreach (dynamic item in data)
+        IEnumerable<dynamic> dataList = data.ToList();
+        dynamic baseEvent = ReadBaseGameEvent((int) dataList.First().game_event_id);
+        foreach (dynamic item in dataList)
         {
             BlueMarbleReward reward = new(item.trip_amount, item.item_id, item.item_rarity, item.item_amount);
             rewards.Add(reward);

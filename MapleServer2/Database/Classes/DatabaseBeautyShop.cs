@@ -7,9 +7,9 @@ public class DatabaseBeautyShop : DatabaseTable
 {
     public DatabaseBeautyShop() : base("beauty_shops") { }
 
-    public BeautyShop FindById(int id)
+    public BeautyShop? FindById(int id)
     {
-        dynamic data = QueryFactory.Query(TableName).Where("id", id).Get().FirstOrDefault();
+        dynamic? data = QueryFactory.Query(TableName).Where("id", id).Get().FirstOrDefault();
         if (data == null)
         {
             return null;
@@ -27,7 +27,7 @@ public class DatabaseBeautyShop : DatabaseTable
 
     public int GetSpecialVoucher()
     {
-        dynamic data = QueryFactory.Query(TableName).Where("id", 509).Get().FirstOrDefault();
-        return data?.required_item_id;
+        dynamic? data = QueryFactory.Query(TableName).Where("id", 509).Get().FirstOrDefault();
+        return data?.required_item_id ?? 0;
     }
 }

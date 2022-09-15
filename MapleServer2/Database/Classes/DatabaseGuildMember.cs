@@ -24,7 +24,7 @@ public class DatabaseGuildMember : DatabaseTable
         });
     }
 
-    public GuildMember FindById(long id)
+    public GuildMember? FindById(long id)
     {
         return QueryFactory.Query(TableName).Where("id", id).Get<GuildMember>().FirstOrDefault();
     }

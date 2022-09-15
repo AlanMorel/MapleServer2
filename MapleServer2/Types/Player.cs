@@ -17,7 +17,7 @@ namespace MapleServer2.Types;
 public class Player
 {
     public long SessionId;
-    public GameSession Session;
+    public GameSession? Session;
 
     public Account Account;
 
@@ -127,7 +127,7 @@ public class Player
     public LockInventory LockInventory = new();
     public HairInventory HairInventory = new();
     public TradeInventory TradeInventory;
-    public ItemEnchant ItemEnchant; // Current item player is enchanting
+    public ItemEnchant? ItemEnchant; // Current item player is enchanting
     public List<Wardrobe> Wardrobes = new();
 
     public List<Mail> Mailbox = new();
@@ -142,8 +142,8 @@ public class Player
     public List<GroupChat> GroupChats = new();
 
     public long GuildId;
-    public Guild Guild;
-    public GuildMember GuildMember;
+    public Guild? Guild;
+    public GuildMember? GuildMember;
     public List<GuildApplication> GuildApplications = new();
 
     public Dictionary<int, Fishing> FishAlbum = new();
@@ -245,7 +245,7 @@ public class Player
         GatheringCount = new();
         TrophyCount = new int[3];
         ReturnMapId = (int) Map.Tria;
-        ReturnCoord = MapEntityMetadataStorage.GetRandomPlayerSpawn(ReturnMapId).Coord.ToFloat();
+        ReturnCoord = MapEntityMetadataStorage.GetRandomPlayerSpawn(ReturnMapId)?.Coord.ToFloat() ?? default;
         PrestigeMissions = PrestigeLevelMissionMetadataStorage.GetPrestigeMissions;
         SkinColor = skinColor;
         UnlockedTaxis = new();
@@ -283,8 +283,8 @@ public class Player
             }
 
             Buddy myBuddy = GameServer.BuddyManager.GetBuddyByPlayerAndId(buddy.Friend, buddy.SharedId);
-            buddy.Friend.Session.Send(BuddyPacket.LoginLogoutNotification(myBuddy));
-            buddy.Friend.Session.Send(BuddyPacket.UpdateBuddy(myBuddy));
+            buddy.Friend.Session?.Send(BuddyPacket.LoginLogoutNotification(myBuddy));
+            buddy.Friend.Session?.Send(BuddyPacket.UpdateBuddy(myBuddy));
         });
     }
 
@@ -301,7 +301,7 @@ public class Player
 
     public void Warp(int mapId, CoordF? coord = null, CoordF? rotation = null, long instanceId = -1)
     {
-        if (MapMetadataStorage.GetMetadata(mapId).Property.IsTutorialMap)
+        if (MapMetadataStorage.GetMetadata(mapId)?.Property.IsTutorialMap ?? true)
         {
             WarpGameToGame(mapId, instanceId, coord, rotation);
             return;
@@ -328,9 +328,9 @@ public class Player
 
         UpdateCoords(mapId, instanceId, coord, rotation);
 
-        Session.FieldManager.RemovePlayer(this);
+        Session?.FieldManager.RemovePlayer(this);
         DatabaseManager.Characters.Update(this);
-        Session.Send(FieldEnterPacket.RequestEnter(FieldPlayer));
+        Session?.Send(FieldEnterPacket.RequestEnter(FieldPlayer));
         Party?.BroadcastPacketParty(PartyPacket.UpdateMemberLocation(this));
         Guild?.BroadcastPacketGuild(GuildPacket.UpdateMemberLocation(Name, MapId));
         foreach (Club club in Clubs)
@@ -348,13 +348,13 @@ public class Player
     {
         UpdateCoords(mapId, instanceId, coord, rotation);
 
-        string ipAddress = Session.IsLocalHost() ? Constant.LocalHost : Environment.GetEnvironmentVariable("IP")!;
+        string ipAddress = (Session?.IsLocalHost() ?? true) ? Constant.LocalHost : Environment.GetEnvironmentVariable("IP")!;
         int port = int.Parse(Environment.GetEnvironmentVariable("GAME_PORT")!);
         IPEndPoint endpoint = new(IPAddress.Parse(ipAddress), port);
 
         IsMigrating = true;
 
-        Session.SendFinal(MigrationPacket.GameToGame(endpoint, this), logoutNotice: false);
+        Session?.SendFinal(MigrationPacket.GameToGame(endpoint, this), logoutNotice: false);
     }
 
     public void Move(CoordF coord, CoordF rotation, bool isTrigger = false)
@@ -362,7 +362,7 @@ public class Player
         FieldPlayer.Coord = coord;
         FieldPlayer.Rotation = rotation;
 
-        Session.Send(UserMoveByPortalPacket.Move(FieldPlayer, coord, rotation, isTrigger));
+        Session?.Send(UserMoveByPortalPacket.Move(FieldPlayer, coord, rotation, isTrigger));
     }
 
     public Dictionary<ItemSlot, Item>? GetEquippedInventory(InventoryTab tab)
@@ -381,7 +381,7 @@ public class Player
         {
             while (Session is not null)
             {
-                Session.Send(TimeSyncPacket.Request());
+                Session?.Send(TimeSyncPacket.Request());
                 await Task.Delay(TimeSpan.FromSeconds(1), OnlineCTS.Token);
             }
         }, OnlineCTS.Token);
@@ -393,7 +393,7 @@ public class Player
         {
             while (Session != null)
             {
-                Session.Send(RequestPacket.TickSync());
+                Session?.Send(RequestPacket.TickSync());
                 await Task.Delay(TimeSpan.FromMinutes(5));
             }
         });
@@ -404,7 +404,13 @@ public class Player
         GatheringCount? gatheringCount = GatheringCount.FirstOrDefault(x => x.RecipeId == recipeId);
         if (gatheringCount is null)
         {
-            int maxLimit = (int) (RecipeMetadataStorage.GetRecipe(recipeId).NormalPropLimitCount * 1.4);
+            RecipeMetadata? recipeMetadata = RecipeMetadataStorage.GetRecipe(recipeId);
+            if (recipeMetadata is null)
+            {
+                return;
+            }
+
+            int maxLimit = (int) (recipeMetadata.NormalPropLimitCount * 1.4);
             gatheringCount = new(recipeId, 0, maxLimit);
             GatheringCount.Add(gatheringCount);
         }
@@ -436,13 +442,13 @@ public class Player
     public void AddStatPoint(int amount, OtherStatsIndex index)
     {
         StatPointDistribution.AddTotalStatPoints(amount, index);
-        Session.Send(StatPointPacket.WriteTotalStatPoints(this));
+        Session?.Send(StatPointPacket.WriteTotalStatPoints(this));
     }
 
     public void AddSkillPoint(int amount, int rank, SkillPointSource index)
     {
         StatPointDistribution.AddTotalSkillPoints(amount, rank, index);
-        Session.Send(SkillPointPacket.ExtraSkillPoints(this));
+        Session?.Send(SkillPointPacket.ExtraSkillPoints(this));
     }
 
     public void GetUnreadMailCount(bool sendExpiryNotification = false)
@@ -450,16 +456,16 @@ public class Player
         int unreadCount = Mailbox.Count(x => x.ReadTimestamp == 0);
         if (sendExpiryNotification)
         {
-            Session.Send(MailPacket.ExpireNotification());
+            Session?.Send(MailPacket.ExpireNotification());
         }
 
-        Session.Send(MailPacket.Notify(unreadCount, true));
+        Session?.Send(MailPacket.Notify(unreadCount, true));
     }
 
     public void FallDamage()
     {
-        MapUi mapUi = MapMetadataStorage.GetMapUi(MapId);
-        if (!mapUi.EnableFallDamage)
+        MapUi? mapUi = MapMetadataStorage.GetMapUi(MapId);
+        if (mapUi is { EnableFallDamage: false })
         {
             return;
         }
@@ -467,8 +473,8 @@ public class Player
         long currentHp = Stats[StatAttribute.Hp].TotalLong;
         int fallDamage = (int) (currentHp * Math.Clamp(currentHp * 4 / 100 - 1, 0, 25) / 100); // TODO: Create accurate damage model
         FieldPlayer.ConsumeHp(fallDamage);
-        Session.Send(StatPacket.UpdateStats(FieldPlayer, StatAttribute.Hp));
-        Session.Send(FallDamagePacket.FallDamage(FieldPlayer.ObjectId, fallDamage));
+        Session?.Send(StatPacket.UpdateStats(FieldPlayer, StatAttribute.Hp));
+        Session?.Send(FallDamagePacket.FallDamage(FieldPlayer.ObjectId, fallDamage));
     }
 
     public void GetMeretMarketPersonalListings()
@@ -485,13 +491,13 @@ public class Player
             }
         }
 
-        Session.Send(MeretMarketPacket.LoadPersonalListings(items));
+        Session?.Send(MeretMarketPacket.LoadPersonalListings(items));
     }
 
     public void GetMeretMarketSales()
     {
         List<UgcMarketSale> sales = GameServer.UgcMarketManager.GetSalesByCharacterId(CharacterId);
-        Session.Send(MeretMarketPacket.LoadSales(sales));
+        Session?.Send(MeretMarketPacket.LoadSales(sales));
     }
 
     /// <summary>
@@ -545,7 +551,7 @@ public class Player
         MapPlayerSpawn? spawn = MapEntityMetadataStorage.GetRandomPlayerSpawn(mapId);
         if (spawn is null)
         {
-            Session.SendNotice($"Could not find a spawn for map {mapId}");
+            Session?.SendNotice($"Could not find a spawn for map {mapId}");
             return null;
         }
 
@@ -659,7 +665,7 @@ public class Player
         Stats.AddBaseStats(this, Levels.Level);
         Stats.RecomputeAllocations(StatPointDistribution);
 
-        foreach ((ItemSlot slot, Item item) in Inventory.Equips)
+        foreach ((ItemSlot _, Item item) in Inventory.Equips)
         {
             ComputeStatContribution(item.Stats);
 
@@ -705,7 +711,7 @@ public class Player
     {
         AdditionalEffects.Parent = FieldPlayer;
 
-        foreach (Item item in Inventory.LapenshardStorage)
+        foreach (Item? item in Inventory.LapenshardStorage)
         {
             if (item != null)
             {
@@ -716,9 +722,9 @@ public class Player
         UpdatePassiveSkills();
     }
 
-    public void AddEffects(ItemAdditionalEffectMetadata effects)
+    public void AddEffects(ItemAdditionalEffectMetadata? effects)
     {
-        if (effects?.Level == null || effects?.Id == null)
+        if (effects?.Level == null || effects.Id == null)
         {
             return;
         }
@@ -729,7 +735,7 @@ public class Player
         }
     }
 
-    public void RemoveEffects(ItemAdditionalEffectMetadata effects)
+    public void RemoveEffects(ItemAdditionalEffectMetadata? effects)
     {
         if (effects?.Level == null || effects?.Id == null)
         {
@@ -744,7 +750,7 @@ public class Player
 
     public void UpdatePassiveSkills()
     {
-        foreach ((int id, short level) in PassiveSkillEffects)
+        foreach ((int id, short _) in PassiveSkillEffects)
         {
             PassiveSkillEffects[id] = -1;
         }

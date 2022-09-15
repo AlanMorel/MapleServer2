@@ -20,8 +20,6 @@ public class DatabaseRouletteGameItem : DatabaseTable
 
     private static RouletteGameItem ReadRouletteItem(dynamic data)
     {
-        return new RouletteGameItem(data)
-        {
-        };
+        return new RouletteGameItem(data);
     }
 }
