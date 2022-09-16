@@ -124,7 +124,14 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
             {
                 if (talkScript is not null)
                 {
-                    npcTalk.DialogType |= DialogType.Talk;
+                    if (talkScript.Type == ScriptType.Job)
+                    {
+                        npcTalk.DialogType |= DialogType.UI;
+                    }
+                    else
+                    {
+                        npcTalk.DialogType |= DialogType.Talk;
+                    }
                     npcTalk.DialogType |= DialogType.Options;
                     script = selectScript;
                 }
