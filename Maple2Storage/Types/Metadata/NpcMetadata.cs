@@ -19,7 +19,7 @@ public class NpcMetadata
     [XmlElement(Order = 6)]
     public byte Level;
     [XmlElement(Order = 7)]
-    public Dictionary<NpcState, (string, NpcAction, short)[]> StateActions = new();
+    public Dictionary<NpcState, (string id, NpcAction action, short chance)[]> StateActions = new();
     [XmlElement(Order = 8)]
     public string AiInfo = string.Empty; // This should be a deep structure, parsing the values in path to the XML referenced here.
     [XmlElement(Order = 9)]

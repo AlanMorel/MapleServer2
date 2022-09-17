@@ -153,6 +153,11 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
         }
     }
 
+    public virtual bool CheckHPThreshold(int percentage)
+    {
+        return Stats[StatAttribute.Hp].Total <= (Stats[StatAttribute.Hp].Bonus * percentage / 100);
+    }
+
     public virtual void Damage(DamageHandler damage, GameSession session)
     {
         Stat health = Stats[StatAttribute.Hp];

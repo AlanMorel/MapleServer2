@@ -124,20 +124,6 @@ public partial class TriggerContext : ITriggerContext
 
     public int GetUserValue(string key)
     {
-        // TODO: Fix when Mob AI infra is ready.
-        // This is a hack. This probably is handled from mob AI.
-        if (key == "battleStop")
-        {
-            foreach (KeyValuePair<int, Npc> mob in Field.State.Mobs)
-            {
-                // check if mob is 50% hp or less
-                if (mob.Value.Stats[StatAttribute.Hp].Total <= mob.Value.Stats[StatAttribute.Hp].Base / 2)
-                {
-                    return 1;
-                }
-            }
-        }
-
         IFieldObject<Player>? player = Field.State.Players.Values.FirstOrDefault(x => x.Value.Triggers.Any(y => y.Key == key));
         if (player is null)
         {

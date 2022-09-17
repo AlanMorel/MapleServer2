@@ -2,11 +2,14 @@
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
+using MapleServer2.AIScripts;
+using MapleServer2.AIScripts.Default;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Tools;
 using MapleServer2.Types;
 using Serilog;
 
@@ -14,33 +17,30 @@ namespace MapleServer2.Managers.Actors;
 
 public class Npc : FieldActor<NpcMetadata>, INpc
 {
-    private static readonly Random Rand = Random.Shared;
     private static readonly ILogger Logger = Log.Logger.ForContext<Npc>();
 
     public MobAI? AI;
-    public IFieldObject<MobSpawn>? OriginSpawn;
+    public readonly BehaviorScript Behavior;
+    public IFieldObject<MobSpawn> OriginSpawn;
     public NpcState State { get; set; }
     public NpcAction Action { get; set; }
     public MobMovement Movement { get; set; }
     public IFieldActor<Player>? Target;
 
     private CoordS NextMovementTarget;
-    private float Distance;
+    public float Distance;
+    public int LastMovementTime;
 
-    private int LastMovementTime;
     private float BaseVelocity => Movement is MobMovement.Follow or MobMovement.Run ? Value.NpcMetadataSpeed.RunSpeed : Value.NpcMetadataSpeed.WalkSpeed;
 
     private PatrolData PatrolData;
     private Queue<WayPoint> WayPointQueue = new();
     private WayPoint? CurrentWayPoint;
-    private bool WaitForAnimation;
+    private bool IsInAnimation;
 
     public int SpawnPointId;
 
-    public Npc(int objectId, int mobId, FieldManager fieldManager) : this(objectId, NpcMetadataStorage.GetNpcMetadata(mobId), fieldManager)
-    {
-
-    }
+    public Npc(int objectId, int mobId, FieldManager fieldManager) : this(objectId, NpcMetadataStorage.GetNpcMetadata(mobId), fieldManager) { }
 
     public Npc(int objectId, NpcMetadata metadata, FieldManager fieldManager) : base(objectId, metadata, fieldManager)
     {
@@ -49,21 +49,30 @@ public class Npc : FieldActor<NpcMetadata>, INpc
         Stats = new(metadata);
         State = NpcState.Normal;
         Action = NpcAction.Idle;
+        Behavior = new(this, AiHelper.AIStates.ContainsKey(metadata.Id) ? AiHelper.AIStates[metadata.Id] : new DefaultState());
     }
 
     public void Attack()
     {
-        int roll = Rand.Next(100);
-        for (int i = 0; i < Value.NpcMetadataSkill.SkillIds.Length; i++)
+        int roll = Random.Shared.Next(100);
+        NpcMetadataSkill metadata = Value.NpcMetadataSkill;
+        for (int i = 0; i < metadata.SkillIds.Length; i++)
         {
-            if (roll < Value.NpcMetadataSkill.SkillProbs[i])
+            if (roll < metadata.SkillProbs[i])
             {
                 // Rolled this skill.
-                Cast(new(Value.NpcMetadataSkill.SkillIds[i], Value.NpcMetadataSkill.SkillLevels[i]));
-                StartSkillTimer((Value.NpcMetadataSkill.SkillCooldown > 0) ? Value.NpcMetadataSkill.SkillCooldown : 1000);
+                SkillCast skillCast = new(metadata.SkillIds[i], metadata.SkillLevels[i], GuidGenerator.Long(), Target!.Value.Session!.ServerTick, this,
+                    Target.Value.Session.ClientTick, 1)
+                {
+                    Position = Coord,
+                    Direction = default,
+                    Rotation = default,
+                };
+                Cast(skillCast);
+                StartSkillTimer((metadata.SkillCooldown > 0) ? metadata.SkillCooldown : 1000);
             }
 
-            roll -= Value.NpcMetadataSkill.SkillProbs[i];
+            roll -= metadata.SkillProbs[i];
         }
     }
 
@@ -178,7 +187,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
     /// <returns>True if NextMovementTarget was set.</returns>
     private bool GetNextPath()
     {
-        if (WaitForAnimation)
+        if (IsInAnimation)
         {
             return false;
         }
@@ -210,126 +219,70 @@ public class Npc : FieldActor<NpcMetadata>, INpc
         return true;
     }
 
-    public void Act()
+    public void Patrol()
     {
-        if (AI is null)
+        int moveDistance = Random.Shared.Next(150, Value.MoveRange * 2);
+
+        CoordF originSpawnCoord = OriginSpawn?.Coord ?? Coord;
+        List<CoordS>? coordSPath = Navigator.GenerateRandomPathAroundCoord(Agent, originSpawnCoord, moveDistance);
+        if (coordSPath is null)
         {
+            SetMovementTargetToDefault();
             return;
         }
 
-        (string? actionName, NpcAction actionType) = AI.GetAction(this);
-
-        if (actionName is not null)
+        CoordS nextMovementTarget = coordSPath.Skip(1).FirstOrDefault();
+        if (nextMovementTarget == default)
         {
-            Animation = AnimationStorage.GetSequenceIdBySequenceName(Value.NpcMetadataModel.Model, actionName);
+            SetMovementTargetToDefault();
+            return;
         }
 
-        Action = actionType;
-        Movement = AI.GetMovementAction(this);
-
-        switch (Action)
-        {
-            case NpcAction.Idle:
-            case NpcAction.Bore:
-                Move(MobMovement.Hold); // temp, maybe remove the option to specify movement in AI
-                break;
-            case NpcAction.Walk:
-            case NpcAction.Run:
-                Move(Movement);
-                break;
-            case NpcAction.Skill:
-                // Cast skill
-                if (!OnCooldown)
-                {
-                    Attack();
-                    Move(MobMovement.Hold);
-                    break;
-                }
-
-                Move(Movement);
-                break;
-            case NpcAction.Jump:
-                break;
-        }
+        NextMovementTarget = nextMovementTarget;
+        Distance = (nextMovementTarget.ToFloat() - Coord).Length();
     }
 
-    private void Move(MobMovement moveType)
+    public void Follow(CoordF targetCoords)
     {
-        switch (moveType)
+        IEnumerable<CoordS>? path = Navigator.FindPath(Agent, targetCoords.ToShort());
+        if (path is null)
         {
-            case MobMovement.Patrol:
-                {
-                    int moveDistance = Rand.Next(150, Value.MoveRange * 2);
-
-                    CoordF originSpawnCoord = OriginSpawn?.Coord ?? Coord;
-                    List<CoordS>? coordSPath = Navigator.GenerateRandomPathAroundCoord(Agent, originSpawnCoord, moveDistance);
-                    if (coordSPath is null)
-                    {
-                        SetMovementTargetToDefault();
-                        return;
-                    }
-
-                    CoordS nextMovementTarget = coordSPath.Skip(1).FirstOrDefault();
-                    if (nextMovementTarget == default)
-                    {
-                        SetMovementTargetToDefault();
-                        return;
-                    }
-
-                    NextMovementTarget = nextMovementTarget;
-                    Distance = (nextMovementTarget.ToFloat() - Coord).Length();
-                }
-                break;
-            case MobMovement.Follow: // move towards target
-                {
-                    if (Target == null)
-                    {
-                        return;
-                    }
-
-                    IEnumerable<CoordS>? path = Navigator.FindPath(Agent, Target.Coord.ToShort());
-                    if (path is null)
-                    {
-                        SetMovementTargetToDefault();
-                        Logger.Debug("Path for mob {0} towards target {1} is null.", Value.Id, Target.Value.Name);
-                        return;
-                    }
-
-                    CoordS coordS = path.Skip(1).FirstOrDefault();
-                    if (coordS == default)
-                    {
-                        SetMovementTargetToDefault();
-                        return;
-                    }
-
-                    NextMovementTarget = coordS;
-                    Distance = (coordS.ToFloat() - Coord).Length();
-                }
-                break;
-            case MobMovement.Strafe: // move around target
-            case MobMovement.Run: // move away from target
-            case MobMovement.LookAt:
-            case MobMovement.Hold:
-            default:
-                Velocity = default;
-                break;
+            SetMovementTargetToDefault();
+            Logger.Debug("Path for mob {0} towards target {1} is null.", Value.Id, Target.Value.Name);
+            return;
         }
+
+        CoordS coordS = path.Skip(1).FirstOrDefault();
+        if (coordS == default)
+        {
+            SetMovementTargetToDefault();
+            return;
+        }
+
+        if ((coordS.ToFloat() - Coord).Length() <= Value.NpcMetadataDistance.Avoid)
+        {
+            SetMovementTargetToDefault();
+            return;
+        }
+
+        NextMovementTarget = coordS;
+        Distance = (coordS.ToFloat() - Coord).Length() - Value.NpcMetadataDistance.Avoid;
     }
 
     private static void HandleMobKill(GameSession session, Npc npc)
     {
         // TODO: Add trophy + item drops
         // Drop Money
-        bool dropMeso = Rand.Next(2) == 0;
+        bool dropMeso = Random.Shared.Next(2) == 0;
         if (dropMeso)
         {
             // TODO: Calculate meso drop rate
-            Item meso = new(id: 90000001, amount: Rand.Next(2, 800), saveToDatabase: false);
+            Item meso = new(id: 90000001, amount: Random.Shared.Next(2, 800), saveToDatabase: false);
             session.FieldManager.AddItem(session.Player.FieldPlayer, meso, npc);
         }
 
         // Drop Meret
-        bool dropMeret = Rand.Next(40) == 0;
+        bool dropMeret = Random.Shared.Next(40) == 0;
         if (dropMeret)
         {
             Item meret = new(id: 90000004, amount: 20, saveToDatabase: false);
@@ -337,7 +290,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
         }
 
         // Drop SP
-        bool dropSP = Rand.Next(6) == 0;
+        bool dropSP = Random.Shared.Next(6) == 0;
         if (dropSP)
         {
             Item spBall = new(id: 90000009, amount: 20, saveToDatabase: false);
@@ -345,7 +298,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
         }
 
         // Drop EP
-        bool dropEP = Rand.Next(10) == 0;
+        bool dropEP = Random.Shared.Next(10) == 0;
         if (dropEP)
         {
             Item epBall = new(id: 90000010, amount: 20, saveToDatabase: false);
@@ -410,9 +363,9 @@ public class Npc : FieldActor<NpcMetadata>, INpc
         // wait until animation is done
         Task.Run(async () =>
         {
-            WaitForAnimation = true;
+            IsInAnimation = true;
             await Task.Delay(TimeSpan.FromSeconds(keyMetadata.KeyTime));
-            WaitForAnimation = false;
+            IsInAnimation = false;
         });
     }
 
@@ -441,5 +394,54 @@ public class Npc : FieldActor<NpcMetadata>, INpc
         }
 
         return AnimationStorage.GetSequenceIdBySequenceName(Value.NpcMetadataModel.Model, stateAction.Length == 0 ? "Idle_A" : stateAction[0].Item1);
+    }
+
+    public (string id, NpcAction action, short chance) GetRandomAction()
+    {
+        int[] probabilities = Value.StateActions[NpcState.Normal].Select(x => (int) x.chance).OrderBy(x => x).ToArray();
+
+        int chance = Random.Shared.Next(probabilities.Sum());
+
+        int sum = 0;
+        for (int i = 0; i < probabilities.Length; i++)
+        {
+            sum += probabilities[i];
+            if (chance < sum)
+            {
+                return Value.StateActions[NpcState.Normal][i];
+            }
+        }
+
+        return Value.StateActions[NpcState.Normal][0];
+    }
+
+    public bool TryDefineTarget()
+    {
+        if (FieldManager is null)
+        {
+            return false;
+        }
+
+        // Manage mob aggro + targets
+        foreach (IFieldActor<Player> player in FieldManager.State.Players.Values)
+        {
+            float playerMobDist = CoordF.Distance(player.Coord, Coord);
+            if (playerMobDist <= Value.NpcMetadataDistance.Sight)
+            {
+                State = NpcState.Combat;
+                Target = player;
+                return true;
+            }
+
+            if (State != NpcState.Combat)
+            {
+                continue;
+            }
+
+            State = NpcState.Normal;
+            Target = null;
+        }
+
+        return false;
     }
 }

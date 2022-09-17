@@ -155,7 +155,7 @@ public class NpcParser : Exporter<List<NpcMetadata>>
             }
 
             // Parse normal state
-            List<(string, NpcAction, short)> normalActions = new();
+            List<(string id, NpcAction action, short chance)> normalActions = new();
             string[] normalActionIds = npcNormalNode.Attributes["action"]?.Value.Split(",") ?? Array.Empty<string>();
             if (normalActionIds.Length > 0)
             {
