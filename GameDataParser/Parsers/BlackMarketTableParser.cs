@@ -38,13 +38,8 @@ public class BlackMarketTableParser : Exporter<List<BlackMarketTableMetadata>>
 
                 foreach (XmlNode tabNode in node)
                 {
-                    if (tabNode.Attributes?["category"] is not null)
+                    if (tabNode.Attributes?["category"] is not null && tabNode.Attributes["id"] is not null)
                     {
-                        if (ParserHelper.CheckForNull(tabNode, "id", "category"))
-                        {
-                            continue;
-                        }
-
                         BlackMarketTableMetadata metadata = new()
                         {
                             CategoryId = int.Parse(tabNode.Attributes["id"]!.Value),
@@ -56,13 +51,8 @@ public class BlackMarketTableParser : Exporter<List<BlackMarketTableMetadata>>
 
                     foreach (XmlNode subtabNode in tabNode.ChildNodes)
                     {
-                        if (subtabNode.Attributes?["category"] != null)
+                        if (subtabNode.Attributes?["category"] is not null && subtabNode.Attributes["id"] is not null)
                         {
-                            if (ParserHelper.CheckForNull(subtabNode, "id", "category"))
-                            {
-                                continue;
-                            }
-
                             BlackMarketTableMetadata metadata = new()
                             {
                                 CategoryId = int.Parse(subtabNode.Attributes["id"]!.Value),
@@ -79,12 +69,7 @@ public class BlackMarketTableParser : Exporter<List<BlackMarketTableMetadata>>
 
                         foreach (XmlNode subsubNode in subtabNode.ChildNodes)
                         {
-                            if (subsubNode.Attributes?["category"] == null)
-                            {
-                                continue;
-                            }
-
-                            if (ParserHelper.CheckForNull(subtabNode, "id", "category"))
+                            if (subsubNode.Attributes?["category"] is null || subsubNode.Attributes["id"] is null)
                             {
                                 continue;
                             }

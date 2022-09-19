@@ -58,7 +58,7 @@ public class AnimationParser : Exporter<List<AnimationMetadata>>
 
                     foreach (XmlNode keyNode in sequenceNode)
                     {
-                        if (ParserHelper.CheckForNull(sequenceNode, "time", "name"))
+                        if (ParserHelper.CheckForNull(keyNode, "time", "name"))
                         {
                             continue;
                         }

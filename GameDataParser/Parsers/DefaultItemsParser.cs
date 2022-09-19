@@ -44,7 +44,7 @@ public class DefaultItemsParser : Exporter<List<DefaultItemsMetadata>>
 
                 foreach (XmlNode childNode in keyNode)
                 {
-                    if (ParserHelper.CheckForNull(childNode, "name", "id"))
+                    if (ParserHelper.CheckForNull(childNode, "name"))
                     {
                         continue;
                     }

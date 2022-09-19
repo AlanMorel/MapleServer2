@@ -29,7 +29,7 @@ public static class DefaultItemsMetadataStorage
 
         if (metadata.DefaultItems.Any(x => x.ItemId == itemId))
         {
-            return metadata.DefaultItems.Any(x => x.ItemId == itemId);
+            return true;
         }
 
         DefaultItemsMetadata? job0 = Jobs.GetValueOrDefault(0);
