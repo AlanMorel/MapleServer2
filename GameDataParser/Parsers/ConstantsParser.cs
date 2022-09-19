@@ -36,7 +36,7 @@ public class ConstantsParser : Exporter<List<ConstantsMetadata>>
                     continue;
                 }
 
-                string locale = node.Attributes!["locale"]?.Value ?? node.Attributes["locale"]!.Value;
+                string locale = string.IsNullOrEmpty(node.Attributes!["locale"]?.Value) ? "" : node.Attributes["locale"]!.Value;
                 if (locale != "NA" && locale != "")
                 {
                     continue;
