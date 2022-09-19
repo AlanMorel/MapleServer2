@@ -18,7 +18,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
     private static readonly ILogger Logger = Log.Logger.ForContext<Npc>();
 
     public MobAI? AI;
-    public IFieldObject<MobSpawn> OriginSpawn;
+    public IFieldObject<MobSpawn>? OriginSpawn;
     public NpcState State { get; set; }
     public NpcAction Action { get; set; }
     public MobMovement Movement { get; set; }
