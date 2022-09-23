@@ -827,7 +827,7 @@ public class SetUserValueCommand : InGameCommand
         };
         Usage = "/setuservalue [key] [value]";
     }
-    
+
     public override void Execute(GameCommandTrigger trigger)
     {
         string key = trigger.Get<string>("key");
