@@ -810,3 +810,41 @@ public class ClearInventoryCommand : InGameCommand
         trigger.Session.SendNotice($"Cleared {inventory}");
     }
 }
+
+public class SetUserValueCommand : InGameCommand
+{
+    public SetUserValueCommand()
+    {
+        Aliases = new()
+        {
+            "setuservalue"
+        };
+        Description = "Sets a user's values for map triggers.";
+        Parameters = new()
+        {
+            new Parameter<byte>("key", "Key of the User Value"),
+            new Parameter<byte>("value", "Value used within the key. Must be an integer.")
+        };
+        Usage = "/setuservalue [key] [value]";
+    }
+    
+    public override void Execute(GameCommandTrigger trigger)
+    {
+        string key = trigger.Get<string>("key");
+        int value = trigger.Get<int>("value");
+
+        PlayerTrigger newPlayerTrigger = new(key)
+        {
+            Value = value
+        };
+
+        PlayerTrigger? playerTrigger = trigger.Session.Player.Triggers.FirstOrDefault(x => x.Key == key);
+        if (playerTrigger is null)
+        {
+            trigger.Session.Player.Triggers.Add(newPlayerTrigger);
+            return;
+        }
+
+        playerTrigger.Value = value;
+    }
+}
