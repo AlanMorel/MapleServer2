@@ -842,9 +842,11 @@ public class SetUserValueCommand : InGameCommand
         if (playerTrigger is null)
         {
             trigger.Session.Player.Triggers.Add(newPlayerTrigger);
+            trigger.Session.SendNotice($"Added key [{key}] with value of [{value}]");
             return;
         }
 
         playerTrigger.Value = value;
+        trigger.Session.SendNotice($"Modified key [{key}] with value of [{value}]");
     }
 }
