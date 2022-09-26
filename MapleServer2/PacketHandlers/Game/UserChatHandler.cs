@@ -27,7 +27,7 @@ public class UserChatHandler : GamePacketHandler<UserChatHandler>
         if (message.Length > 0 && message[..1].Equals("/"))
         {
             string[] args = message[1..].Split(" ");
-            if (!GameServer.CommandManager.HandleCommand(new GameCommandTrigger(args, session)))
+            if (!GameServer.CommandManager.HandleCommand(new GameCommandTrigger(args, session, type)))
             {
                 session.SendNotice($"No command were found with alias: {args[0]}");
             }

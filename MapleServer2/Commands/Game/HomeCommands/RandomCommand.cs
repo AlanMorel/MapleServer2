@@ -1,7 +1,9 @@
 ﻿using MapleServer2.Commands.Core;
 using MapleServer2.Constants;
 using MapleServer2.Enums;
+using MapleServer2.Managers;
 using MapleServer2.Packets;
+using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 
 namespace MapleServer2.Commands.Game.HomeCommands;
@@ -56,15 +58,16 @@ public class RandomNumberCommand : InGameCommand
 
     public override void Execute(GameCommandTrigger trigger)
     {
-        // TODO: Check if the command is being executed in party chat.
         Player player = trigger.Session.Player;
         bool mapIsHome = player.MapId == (int) Map.PrivateResidence;
 
-        if (!mapIsHome)
+        DungeonSession? dungeonSession = GameServer.DungeonManager.GetDungeonSessionBySessionId(player.DungeonSessionId);
+        if (mapIsHome || dungeonSession is not null || trigger.ChatType is ChatType.Party)
         {
+            trigger.Session.FieldManager.BroadcastPacket(HomeActionPacket.Roll(trigger.Session.Player, Random.Shared.Next(100)));
             return;
         }
 
-        trigger.Session.FieldManager.BroadcastPacket(HomeActionPacket.Roll(trigger.Session.Player, Random.Shared.Next(100)));
+        trigger.Session.FieldManager.BroadcastPacket(NoticePacket.Notice(SystemNotice.UgcMapFunRollError, NoticeType.Chat));
     }
 }
