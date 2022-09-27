@@ -569,6 +569,8 @@ public class FieldManager
         TriggerTask ??= StartTriggerTask();
 
         UGCBannerTimer ??= TaskScheduler.Instance.ScheduleTask(0, 0, 60, () => { GameServer.UGCBannerManager.UGCBannerLoop(this); });
+
+        player.Inventory.RecomputeSetBonuses(player.Session);
     }
 
     public void RemovePlayer(Player player)
@@ -1269,19 +1271,11 @@ public class FieldManager
         foreach (Npc mob in State.Mobs.Values)
         {
             mob.Act();
-            mob.AdditionalEffects?.UpdateEffects();
         }
 
         foreach (Pet pet in State.Pets.Values)
         {
             pet.Act();
-
-            pet.AdditionalEffects?.UpdateEffects();
-        }
-
-        foreach (Character player in State.Players.Values)
-        {
-            player.AdditionalEffects.UpdateEffects();
         }
     }
 
@@ -1297,14 +1291,15 @@ public class FieldManager
                     continue;
                 }
 
-                int healAmount = (int) (player.Value.Stats[StatAttribute.Hp].Bonus * 0.03);
-                Status status = new(new(70000018, 1, 0, 1), player.ObjectId, healingSpot.ObjectId, 1);
-
-                player.Value.Session.Send(BuffPacket.AddBuff(status));
-                BroadcastPacket(SkillDamagePacket.Heal(status, healAmount));
-
-                player.Stats[StatAttribute.Hp].AddValue(healAmount);
-                player.Value.Session.Send(StatPacket.UpdateStats(player, StatAttribute.Hp));
+                player.AdditionalEffects.AddEffect(new(70000018, 1));
+                //int healAmount = (int) (player.Value.Stats[StatAttribute.Hp].Bonus * 0.03);
+                //Status status = new(new(70000018, 1, 0, 1), player.ObjectId, healingSpot.ObjectId, 1);
+                //
+                //player.Value.Session.Send(BuffPacket.AddBuff(status));
+                //BroadcastPacket(SkillDamagePacket.Heal(status, healAmount));
+                //
+                //player.Stats[StatAttribute.Hp].AddValue(healAmount);
+                //player.Value.Session.Send(StatPacket.UpdateStats(player, StatAttribute.Hp));
             }
         }
     }

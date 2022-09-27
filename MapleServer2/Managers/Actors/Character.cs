@@ -52,6 +52,10 @@ public class Character : FieldActor<Player>
         int spiritCost = skillCast.GetSpCost();
         int staminaCost = skillCast.GetStaCost();
 
+        InvokeStatValue invokeStat = Stats.GetSkillStats(skillCast.SkillId, skillCast.GetSkillGroups(), InvokeEffectType.ReduceSpiritCost);
+
+        spiritCost = Math.Max(0, (int) (-invokeStat.Value + (1 - invokeStat.Rate) * spiritCost));
+
         if (Value.Stats[StatAttribute.Spirit].Total < spiritCost || Value.Stats[StatAttribute.Stamina].Total < staminaCost)
         {
             return;
@@ -66,23 +70,31 @@ public class Character : FieldActor<Player>
 
         // TODO: Move this and all others combat cases like recover sp to its own class.
         // Since the cast is always sent by the skill, we have to check buffs even when not doing damage.
-        List<SkillCondition>? conditionSkills = SkillMetadataStorage.GetSkill(skillCast.SkillId)?.SkillLevels
-            ?.FirstOrDefault(level => level.Level == skillCast.SkillLevel)?.ConditionSkills;
+        SkillLevel? skillLevel = SkillMetadataStorage.GetSkill(skillCast.SkillId)?.SkillLevels
+            ?.FirstOrDefault(level => level.Level == skillCast.SkillLevel);
+        List<SkillCondition>? conditionSkills = skillLevel?.ConditionSkills;
         if (conditionSkills is null)
         {
             return;
         }
 
-        EffectTriggers triggers = new()
-        {
-            Caster = this,
-            Owner = this
-        };
+        float cooldown = skillLevel.BeginCondition.CooldownTime;
 
-        SkillTriggerHandler.FireTriggers(conditionSkills, triggers);
+        SkillTriggerHandler.FireEvents(new(this, this, this), EffectEvent.OnSkillCasted, skillCast.SkillId);
+        SkillTriggerHandler.FireTriggerSkills(conditionSkills, skillCast, new(this, this, this));
 
         Value.Session.FieldManager.BroadcastPacket(SkillUsePacket.SkillUse(skillCast));
         Value.Session.Send(StatPacket.SetStats(this));
+
+
+        InvokeStatValue skillModifier = Stats.GetSkillStats(skillCast.SkillId, InvokeEffectType.ReduceCooldown);
+
+        if (skillModifier.Value != 0 || skillModifier.Rate != 0)
+        {
+            cooldown = Math.Max(0, (1 - skillModifier.Rate) * cooldown - skillModifier.Value);
+
+            Value.Session.FieldManager.BroadcastPacket(SkillCooldownPacket.SetCooldown(skillCast.SkillId, Environment.TickCount + (int)(1000 * cooldown)));
+        }
 
         StartCombatStance();
     }

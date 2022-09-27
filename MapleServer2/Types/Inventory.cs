@@ -6,6 +6,7 @@ using MapleServer2.Enums;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using Maple2Storage.Types.Metadata;
 using Serilog;
 
 // TODO: make this class thread safe?
@@ -23,6 +24,7 @@ public sealed class Inventory : IInventory
     public Dictionary<ItemSlot, Item> Cosmetics { get; }
     public Item[] Badges { get; }
     public Item[] LapenshardStorage { get; }
+    public List<SetBonus> SetBonuses { get; }
 
     // Map of Slot to Uid for each inventory
     private readonly Dictionary<short, long>[] SlotMaps;
@@ -77,6 +79,7 @@ public sealed class Inventory : IInventory
         Badges = new Item[12];
         Items = new();
         LapenshardStorage = new Item[6];
+        SetBonuses = new();
 
         byte maxTabs = Enum.GetValues(typeof(InventoryTab)).Cast<byte>().Max();
         SlotMaps = new Dictionary<short, long>[maxTabs + 1];
@@ -135,6 +138,151 @@ public sealed class Inventory : IInventory
     #endregion
 
     #region Public Methods
+
+    public void RecomputeSetBonuses(GameSession session)
+    {
+        foreach (SetBonus setBonus in SetBonuses)
+        {
+            foreach (SetBonusMetadata bonus in setBonus.Bonuses.Parts)
+            {
+                for (int i = 0; i < bonus.AdditionalEffectIds.Length; ++i)
+                {
+                    int id = bonus.AdditionalEffectIds[i];
+
+                    if (id != 0)
+                    {
+                        session.Player.FieldPlayer?.AdditionalEffects.GetEffect(id)?.Stop(session.Player.FieldPlayer);
+                    }
+                }
+            }
+        }
+
+        foreach ((ItemSlot slot, Item item) in Cosmetics)
+        {
+            ItemEquipped(session, item);
+        }
+
+        foreach ((ItemSlot slot, Item item) in Equips)
+        {
+            ItemEquipped(session, item);
+        }
+    }
+
+    public void IncrementSetBonus(GameSession session, SetBonus setBonus)
+    {
+        setBonus.EquipCount++;
+
+        bool addedEffect = false;
+        bool recompute = false;
+
+        foreach (SetBonusMetadata bonus in setBonus.Bonuses.Parts)
+        {
+            if (bonus.Count != setBonus.EquipCount)
+            {
+                continue;
+            }
+
+            for (int i = 0; i < bonus.AdditionalEffectIds.Length; ++i)
+            {
+                int id = bonus.AdditionalEffectIds[i];
+                int level = bonus.AdditionalEffectLevels[i];
+
+                if (id != 0)
+                {
+                    session.Player.FieldPlayer?.AdditionalEffects.AddEffect(new(id, level));
+                }
+            }
+
+            addedEffect |= bonus.AdditionalEffectIds.Length > 0;
+            recompute |= bonus.AdditionalEffectIds.Length == 0;
+        }
+
+        if (recompute && !addedEffect)
+        {
+            session.Player.FieldPlayer?.ComputeStats();
+        }
+    }
+
+    public void ItemEquipped(GameSession session, Item item)
+    {
+        foreach (SetBonus setBonus in SetBonuses)
+        {
+            if (!setBonus.HasItem(item))
+            {
+                continue;
+            }
+
+            IncrementSetBonus(session, setBonus);
+
+            return;
+        }
+
+        SetBonus? newBonus = SetBonus.From(item);
+
+        if (newBonus is null)
+        {
+            return;
+        }
+
+        SetBonuses.Add(newBonus);
+
+        IncrementSetBonus(session, newBonus);
+    }
+
+    public void ItemUnequipped(GameSession session, Item item)
+    {
+        SetBonus? removeBonus = null;
+
+        foreach (SetBonus setBonus in SetBonuses)
+        {
+            if (!setBonus.HasItem(item))
+            {
+                continue;
+            }
+
+            removeBonus = setBonus;
+
+            break;
+        }
+
+        if (removeBonus is null)
+        {
+            return;
+        }
+
+        removeBonus.EquipCount--;
+
+        if (removeBonus.EquipCount == 0)
+        {
+            SetBonuses.Remove(removeBonus);
+        }
+
+        bool removedEffect = false;
+        bool recompute = false;
+
+        foreach (SetBonusMetadata bonus in removeBonus.Bonuses.Parts)
+        {
+            if (bonus.Count != removeBonus.EquipCount - 1)
+            {
+                continue;
+            }
+
+            for (int i = 0; i < bonus.AdditionalEffectIds.Length; ++i)
+            {
+                session.Player.FieldPlayer?.AdditionalEffects.GetEffect(bonus.AdditionalEffectIds[i])?.Stop(session.Player.FieldPlayer);
+            }
+
+            removedEffect |= bonus.AdditionalEffectIds.Length > 0;
+            recompute |= bonus.AdditionalEffectIds.Length == 0;
+
+            break;
+        }
+
+        if (recompute && !removedEffect)
+        {
+            session.Player.FieldPlayer?.ComputeStats();
+        }
+    }
 
     public void AddItem(GameSession session, Item item, bool isNew)
     {
@@ -402,6 +550,7 @@ public sealed class Inventory : IInventory
         }
 
         // Equip new item
+        ItemEquipped(session, item);
         item.IsEquipped = true;
         item.ItemSlot = equipSlot;
         equippedInventory[equipSlot] = item;
@@ -437,6 +586,7 @@ public sealed class Inventory : IInventory
 
         if (equippedInventory.Remove(item.ItemSlot, out Item prevItem))
         {
+            ItemUnequipped(session, item);
             prevItem.Slot = -1;
             prevItem.IsEquipped = false;
             player.Inventory.AddItem(session, prevItem, false);

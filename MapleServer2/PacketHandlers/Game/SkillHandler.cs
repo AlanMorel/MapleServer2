@@ -6,6 +6,7 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
+using Maple2Storage.Enums;
 
 namespace MapleServer2.PacketHandlers.Game;
 
@@ -220,16 +221,16 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             return;
         }
 
-        // TODO: Verify if its the player or an ally
-        if (skillCast.IsRecovery())
-        {
-            Status status = new(skillCast, fieldPlayer.ObjectId, fieldPlayer.ObjectId, 1);
-            StatusHandler.Handle(session, status);
-
-            // TODO: Heal based on stats
-            fieldPlayer.Heal(session, status, 50);
-            return;
-        }
+        //// TODO: Verify if its the player or an ally
+        //if (skillCast.IsRecovery())
+        //{
+        //    Status status = new(skillCast, fieldPlayer.ObjectId, fieldPlayer.ObjectId, 1);
+        //    StatusHandler.Handle(session, status);
+        //
+        //    // TODO: Heal based on stats
+        //    fieldPlayer.Heal(session, status, 50);
+        //    return;
+        //}
 
         int tick = Environment.TickCount;
 
@@ -239,12 +240,9 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             int entityId = packet.ReadInt();
             packet.ReadByte();
 
-            if (entityId == playerObjectId)
-            {
-                continue;
-            }
+            IFieldActor? mob = session.FieldManager.State.Mobs.GetValueOrDefault(entityId);
+            mob = mob ?? session.FieldManager.State.Players.GetValueOrDefault(entityId);
 
-            IFieldActor<NpcMetadata> mob = session.FieldManager.State.Mobs.GetValueOrDefault(entityId);
             if (mob == null)
             {
                 continue;
@@ -259,6 +257,15 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
 
                 skillCast.SkillAttack = attack;
 
+                if (entityId == playerObjectId && attack.RangeProperty.ApplyTarget != ApplyTarget.Ally)
+                {
+                    continue;
+                }
+
+                ConditionSkillTarget castInfo = new(fieldPlayer, mob, fieldPlayer);
+                bool hitCrit = false;
+                bool hitMissed = false;
+
                 if (skillCast.GetDamageRate() != 0)
                 {
                     DamageHandler damage = DamageHandler.CalculateDamage(skillCast, fieldPlayer, mob);
@@ -266,23 +273,31 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
                     mob.Damage(damage, session);
 
                     damages.Add(damage);
+
+                    hitCrit = damage.HitType == Enums.HitType.Critical;
+                    hitMissed = damage.HitType == Enums.HitType.Miss;
                 }
 
-                fieldPlayer.SkillTriggerHandler.SkillTrigger(mob, skillCast);
+                fieldPlayer.SkillTriggerHandler.FireTriggerSkills(attack.SkillConditions, skillCast, castInfo);
 
-                if (attack?.SkillConditions == null)
+                Task.Run(async () =>
                 {
-                    continue;
-                }
+                    await Task.Delay(10);
 
-                EffectTriggers parameters = new()
-                {
-                    Caster = fieldPlayer,
-                    Owner = fieldPlayer,
-                    Target = mob
-                };
+                    if (hitCrit)
+                    {
+                        fieldPlayer.SkillTriggerHandler.FireEvents(castInfo, EffectEvent.OnOwnerAttackCrit, skillCast.SkillId);
+                    }
 
-                fieldPlayer.SkillTriggerHandler.FireTriggers(attack.SkillConditions, parameters, skillCast, tick);
+                    if (hitMissed)
+                    {
+                        fieldPlayer.SkillTriggerHandler.FireEvents(castInfo, EffectEvent.OnAttackMiss, skillCast.SkillId);
+                        mob.SkillTriggerHandler.FireEvents(new(mob, fieldPlayer, mob), EffectEvent.OnEvade, skillCast.SkillId);
+                    }
+
+                    fieldPlayer.SkillTriggerHandler.FireEvents(castInfo, EffectEvent.OnOwnerAttackHit, skillCast.SkillId);
+                    mob.SkillTriggerHandler.FireEvents(new(mob, fieldPlayer, mob, fieldPlayer), EffectEvent.OnAttacked, skillCast.SkillId);
+                });
             }
         }
 
@@ -326,9 +341,9 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             return;
         }
 
-        CoordF splashRotation = skillCondition.UseDirection ? parentSkill.Rotation : default;
-        CoordF direction = skillCondition.UseDirection ? parentSkill.Direction : default;
-        short lookDirection = skillCondition.UseDirection ? parentSkill.LookDirection : (short) 0;
+        CoordF splashRotation = skillCondition.UseDirection ? parentSkill.Rotation : default;//parentSkill.Caster.Rotation;
+        CoordF direction = skillCondition.UseDirection ? parentSkill.Direction : default;//CoordF.From(1, parentSkill.Caster.LookDirection);
+        short lookDirection = skillCondition.UseDirection ? parentSkill.LookDirection : (short) 0;//parentSkill.Caster.LookDirection;
 
         for (int i = 0; i < skillCondition.SkillId.Length; ++i)
         {

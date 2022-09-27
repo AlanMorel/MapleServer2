@@ -51,7 +51,6 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
             {
                 player.FieldPlayer.AdditionalEffects.AddEffect(new(effect.EffectId, effect.EffectLevel)
                 {
-                    Duration = (int) (Math.Min(account.VIPExpiration - TimeInfo.Now(), 0x0FFFFFFF)),
                     IsBuff = true
                 });
             }

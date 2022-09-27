@@ -24,7 +24,7 @@ public class AdditionalEffectLevelMetadata
     [XmlElement(Order = 4)]
     public EffectCancelEffectMetadata CancelEffect;
     [XmlElement(Order = 5)]
-    public EffectImmuneEffectMetadata ImmuneEffect;
+    public EffectImmuneEffectMetadata? ImmuneEffect;
     [XmlElement(Order = 6)]
     public EffectResetSkillCooldownTimeMetadata ResetCoolDownTime;
     [XmlElement(Order = 7)]
@@ -99,19 +99,19 @@ public class EffectBasicPropertyMetadata
     public int MaxBuffCount;
 
     [XmlElement(Order = 2)]
-    public int SkillGroupType;
+    public SkillGroupType SkillGroupType;
 
     [XmlElement(Order = 3)]
-    public int[] GroupIds;
+    public int Group;
 
     [XmlElement(Order = 4)]
-    public int DotCondition;
+    public EffectDotCondition DotCondition;
 
     [XmlElement(Order = 5)]
     public int DurationTick;
 
     [XmlElement(Order = 6)]
-    public int KeepCondition;
+    public EffectKeepCondition KeepCondition;
 
     [XmlElement(Order = 7)]
     public int IntervalTick;
@@ -123,10 +123,46 @@ public class EffectBasicPropertyMetadata
     public BuffSubType BuffSubType;
 
     [XmlElement(Order = 10)]
-    public float CooldownTime;
+    public BuffCategory BuffCategory;
 
     [XmlElement(Order = 11)]
+    public float CooldownTime;
+
+    [XmlElement(Order = 12)]
     public int DelayTick;
+
+    [XmlElement(Order = 13)]
+    public bool UseInGameTime; // count down only if in game
+
+    [XmlElement(Order = 14)]
+    public bool InvokeEvent;
+
+    [XmlElement(Order = 15)]
+    public bool DeadKeepEffect;
+
+    [XmlElement(Order = 16)]
+    public bool LogoutClearEffect;
+
+    [XmlElement(Order = 17)]
+    public bool LeaveFieldClearEffect;
+
+    [XmlElement(Order = 18)]
+    public CasterIndividualEffect CasterIndividualEffect;
+
+    [XmlElement(Order = 19)]
+    public float ClearDistanceFromCaster;
+
+    [XmlElement(Order = 20)]
+    public bool ClearEffectFromPvpZone;
+
+    [XmlElement(Order = 21)]
+    public bool DoNotClearEffectFromEnterPvpZone;
+
+    [XmlElement(Order = 22)]
+    public bool ClearCooldownFromPvpZone;
+
+    [XmlElement(Order = 23)]
+    public EffectResetCondition ResetCondition;
 }
 
 [XmlType]
@@ -155,12 +191,24 @@ public class EffectImmuneEffectMetadata
     public int[] ImmuneEffectCodes;
     [XmlElement(Order = 2)]
     public int[] ImmuneBuffCategories;
+
+    public EffectImmuneEffectMetadata()
+    {
+        ImmuneEffectCodes = new int[0];
+        ImmuneBuffCategories = new int[0];
+    }
 }
 
 [XmlType]
 public class EffectResetSkillCooldownTimeMetadata
 {
+    [XmlElement(Order = 1)]
+    public int[] SkillCodes;
 
+    public EffectResetSkillCooldownTimeMetadata()
+    {
+        SkillCodes = new int[0];
+    }
 }
 
 [XmlType]
@@ -230,7 +278,26 @@ public class EffectDefesiveMetadata
 [XmlType]
 public class EffectRecoveryMetadata
 {
+    [XmlElement(Order = 1)]
+    public float RecoveryRate;
 
+    [XmlElement(Order = 2)]
+    public float HpRate;
+
+    [XmlElement(Order = 3)]
+    public long HpValue;
+
+    [XmlElement(Order = 4)]
+    public float SpRate;
+
+    [XmlElement(Order = 5)]
+    public long SpValue;
+
+    [XmlElement(Order = 6)]
+    public float EpRate;
+
+    [XmlElement(Order = 7)]
+    public long EpValue;
 }
 
 [XmlType]
@@ -298,7 +365,7 @@ public class EffectInvokeMetadata
     [XmlElement(Order = 2)]
     public float[] Rates;
     [XmlElement(Order = 3)]
-    public int[] Types;
+    public InvokeEffectType[] Types;
     [XmlElement(Order = 4)]
     public int EffectId;
     [XmlElement(Order = 5)]
