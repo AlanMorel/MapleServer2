@@ -8,7 +8,7 @@ function handleGoto(nextScript)
     end
 end
 
-function preTalkActions(functionID)
+function preTalkActions(functionId)
     if functionId == 1 then
         return 5
     end

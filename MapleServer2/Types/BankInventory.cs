@@ -13,7 +13,7 @@ public class BankInventory
     public int ExtraSize;
     public Currency Mesos;
 
-    public Item[] Items = new Item[36];
+    public Item?[] Items = new Item[36];
 
     public BankInventory()
     {

@@ -1,4 +1,4 @@
-﻿namespace GameDataParser.Files;
+﻿namespace GameDataParser.Files.MetadataExporter;
 
 public abstract class Exporter<Metadata> : MetadataExporter
 {

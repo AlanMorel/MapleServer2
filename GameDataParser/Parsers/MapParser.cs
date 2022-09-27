@@ -1,5 +1,6 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Files.MetadataExporter;
 using GameDataParser.Tools;
 using Maple2.File.Flat;
 using Maple2.File.Flat.maplestory2library;

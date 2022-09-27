@@ -1,5 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -21,13 +23,19 @@ public class AnimationParser : Exporter<List<AnimationMetadata>>
             }
 
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-            foreach (XmlNode animationNode in document.DocumentElement.ChildNodes)
+            XmlNodeList? childNodes = document.DocumentElement?.ChildNodes;
+            if (childNodes is null)
+            {
+                continue;
+            }
+
+            foreach (XmlNode animationNode in childNodes)
             {
                 AnimationMetadata metadata = new();
 
                 if (animationNode.Name == "kfm")
                 {
-                    metadata.ActorId = animationNode.Attributes["name"].Value;
+                    metadata.ActorId = animationNode.Attributes?["name"]?.Value;
                 }
 
                 foreach (XmlNode sequenceNode in animationNode)
@@ -37,17 +45,28 @@ public class AnimationParser : Exporter<List<AnimationMetadata>>
                         continue;
                     }
 
+                    if (ParserHelper.CheckForNull(sequenceNode, "id", "name"))
+                    {
+                        continue;
+                    }
+
                     SequenceMetadata sequence = new()
                     {
-                        SequenceId = short.Parse(sequenceNode.Attributes["id"].Value),
-                        SequenceName = sequenceNode.Attributes["name"].Value
+                        SequenceId = short.Parse(sequenceNode.Attributes!["id"]!.Value),
+                        SequenceName = sequenceNode.Attributes!["name"]!.Value
                     };
+
                     foreach (XmlNode keyNode in sequenceNode)
                     {
+                        if (ParserHelper.CheckForNull(keyNode, "time", "name"))
+                        {
+                            continue;
+                        }
+
                         KeyMetadata key = new()
                         {
-                            KeyName = keyNode.Attributes["name"].Value,
-                            KeyTime = float.Parse(keyNode.Attributes["time"].Value)
+                            KeyName = keyNode.Attributes!["name"]!.Value,
+                            KeyTime = float.Parse(keyNode.Attributes["time"]!.Value)
                         };
                         sequence.Keys.Add(key);
                     }

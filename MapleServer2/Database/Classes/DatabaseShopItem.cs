@@ -24,7 +24,7 @@ public class DatabaseShopItem : DatabaseTable
         return items;
     }
 
-    public ShopItem FindByItemId(int itemId)
+    public ShopItem? FindByItemId(int itemId)
     {
         dynamic result = QueryFactory.Query(TableName).Where("item_id", itemId).FirstOrDefault();
 

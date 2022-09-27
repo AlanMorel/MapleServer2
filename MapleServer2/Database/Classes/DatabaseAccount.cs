@@ -41,7 +41,7 @@ public class DatabaseAccount : DatabaseTable
         return ReadAccount(QueryFactory.Query(TableName).Where("username", username).FirstOrDefault());
     }
 
-    public bool Authenticate(string username, string password, out Account account)
+    public bool Authenticate(string username, string password, out Account? account)
     {
         account = null;
         Account dbAccount = FindByUsername(username);

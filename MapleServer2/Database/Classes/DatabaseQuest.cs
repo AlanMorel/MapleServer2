@@ -63,7 +63,7 @@ public class DatabaseQuest : DatabaseTable
         return QueryFactory.Query(TableName).Where("uid", uid).Delete() == 1;
     }
 
-    private static QuestStatus ReadQuest(dynamic data)
+    private static QuestStatus? ReadQuest(dynamic data)
     {
         if (QuestMetadataStorage.GetMetadata(data.id) is null)
         {

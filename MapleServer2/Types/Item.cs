@@ -79,7 +79,7 @@ public class Item
     public ItemStats Stats;
     public GemSockets GemSockets;
 
-    public UGC Ugc;
+    public UGC? Ugc;
 
     public long InventoryId;
     public long BankInventoryId;
@@ -89,7 +89,7 @@ public class Item
     // For items that are in the field
     public DropInformation DropInformation = new();
 
-    public ItemAdditionalEffectMetadata AdditionalEffects;
+    public ItemAdditionalEffectMetadata? AdditionalEffects;
 
     public PetInfo? PetInfo;
 

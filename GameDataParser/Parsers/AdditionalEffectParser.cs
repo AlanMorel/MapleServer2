@@ -1,4 +1,5 @@
 ﻿using GameDataParser.Files;
+using GameDataParser.Files.MetadataExporter;
 using Maple2.File.Parser.Tools;
 using Maple2.File.Parser.Xml.AdditionalEffect;
 using Maple2.File.Parser.Xml.Skill;
@@ -274,6 +275,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                     AddStatRate(level.Status, StatAttribute.ForagingEfficiency, special.gathering_multiactionvalue, special.gathering_multiactionrate); //
                     AddStatRate(level.Status, StatAttribute.FarmingEfficiency, special.farming_multiactionvalue, special.farming_multiactionrate); //
                     AddStatRate(level.Status, StatAttribute.HealthBasedDamageReduce, special.reduce_damage_by_targetmaxhpvalue, special.reduce_damage_by_targetmaxhprate); //
+
                     // TODO: add enum values for things after here. enum ended here so i stopped adding
                     //AddStat(level.Status, StatAttribute.Unknown, special.reduce_meso_revival_feevalue, special.reduce_meso_revival_feerate); //
                     //AddStat(level.Status, StatAttribute.Unknown, special.improve_riding_run_speedvalue, special.improve_riding_run_speedrate); //
@@ -374,7 +376,8 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                     {
                         TriggerSkill splashSkill = data[i].splashSkill[skillIndex];
 
-                        level.SplashSkill.Add(new(splashSkill.skillID, GetSkillLevels(splashSkill.level), splashSkill.splash, (byte) splashSkill.skillTarget, (byte) splashSkill.skillOwner, (short) splashSkill.fireCount, splashSkill.interval, splashSkill.immediateActive)
+                        level.SplashSkill.Add(new(splashSkill.skillID, GetSkillLevels(splashSkill.level), splashSkill.splash, (byte) splashSkill.skillTarget,
+                            (byte) splashSkill.skillOwner, (short) splashSkill.fireCount, splashSkill.interval, splashSkill.immediateActive)
                         {
                             Delay = splashSkill.delay,
                             RemoveDelay = splashSkill.removeDelay,
@@ -402,7 +405,9 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                     {
                         TriggerSkill conditionSkill = data[i].conditionSkill[skillIndex];
 
-                        level.ConditionSkill.Add(new(conditionSkill.skillID, GetSkillLevels(conditionSkill.level), conditionSkill.splash, (byte) conditionSkill.skillTarget, (byte) conditionSkill.skillOwner, (short) conditionSkill.fireCount, conditionSkill.interval, conditionSkill.immediateActive)
+                        level.ConditionSkill.Add(new(conditionSkill.skillID, GetSkillLevels(conditionSkill.level), conditionSkill.splash,
+                            (byte) conditionSkill.skillTarget, (byte) conditionSkill.skillOwner, (short) conditionSkill.fireCount, conditionSkill.interval,
+                            conditionSkill.immediateActive)
                         {
                             Delay = conditionSkill.delay,
                             RemoveDelay = conditionSkill.removeDelay,
@@ -499,7 +504,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
         return result;
     }
 
-    private SkillBeginCondition ParseBeginCondition(BeginCondition beginCondition)
+    private SkillBeginCondition? ParseBeginCondition(BeginCondition? beginCondition)
     {
         if (beginCondition == null)
         {
@@ -527,7 +532,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
         };
     }
 
-    private BeginConditionSubject ParseOwnerCondition(SubConditionTarget ownerCondition)
+    private BeginConditionSubject? ParseOwnerCondition(SubConditionTarget? ownerCondition)
     {
         if (ownerCondition == null)
         {
@@ -570,9 +575,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
             return;
         }
 
-        EffectStatMetadata currentValue;
-
-        if (status.Stats.TryGetValue(stat, out currentValue))
+        if (status.Stats.TryGetValue(stat, out EffectStatMetadata? currentValue))
         {
             currentValue.Flat += (long) (flat * 1000);
             currentValue.Rate += rate;
@@ -595,9 +598,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
             return;
         }
 
-        EffectStatMetadata currentValue;
-
-        if (status.Stats.TryGetValue(stat, out currentValue))
+        if (status.Stats.TryGetValue(stat, out EffectStatMetadata? currentValue))
         {
             currentValue.Flat += flat;
             currentValue.Rate += rate;

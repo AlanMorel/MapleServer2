@@ -30,11 +30,11 @@ public class DatabaseInventory : DatabaseTable
         });
 
         List<Item> items = new();
-        items.AddRange(inventory.GetItemsNotNull().ToList());
-        items.AddRange(inventory.Equips.Values.Where(x => x != null).ToList());
-        items.AddRange(inventory.Badges.Where(x => x != null).ToList());
-        items.AddRange(inventory.Cosmetics.Values.Where(x => x != null).ToList());
-        items.AddRange(inventory.LapenshardStorage.Where(x => x != null).ToList());
+        items.AddRange(inventory.GetItemsNotNull());
+        items.AddRange(inventory.Equips.Values.ToList());
+        items.AddRange(inventory.Badges.Where(x => x is not null).ToList()!);
+        items.AddRange(inventory.Cosmetics.Values.ToList());
+        items.AddRange(inventory.LapenshardStorage.Where(x => x is not null).ToList()!);
 
         foreach (Item item in items)
         {

@@ -7,9 +7,9 @@ public class DatabaseShop : DatabaseTable
 {
     public DatabaseShop() : base("shops") { }
 
-    public Shop FindById(int id)
+    public Shop? FindById(int id)
     {
-        dynamic data = QueryFactory.Query(TableName).Where("id", id).Get().FirstOrDefault();
+        dynamic? data = QueryFactory.Query(TableName).Where("id", id).Get().FirstOrDefault();
         if (data == null)
         {
             return null;

@@ -44,19 +44,30 @@ public class FieldManager
     private Task? NpcMovementTask;
     private Timer? UGCBannerTimer;
     private static readonly TriggerLoader TriggerLoader = new();
-    public readonly FieldNavigator Navigator;
+    public readonly FieldNavigator? Navigator;
 
     #region Constructors
 
     public FieldManager(Player player)
     {
+        MapMetadata? metadata = MapMetadataStorage.GetMetadata(player.MapId);
+
+        if (metadata is null)
+        {
+            throw new($"No metadata found for map {player.MapId}");
+        }
+
         MapId = player.MapId;
-
-        MapMetadata metadata = MapMetadataStorage.GetMetadata(MapId);
-
         Capacity = metadata.Property.Capacity;
         IsTutorialMap = metadata.Property.IsTutorialMap;
-        Navigator = new(metadata.XBlockName);
+        if (File.Exists(Paths.NAVMESH_DIR + $"/{metadata.XBlockName}.tok"))
+        {
+            Navigator = new(metadata.XBlockName);
+        }
+        else
+        {
+            Logger.Warning("No navmesh found for map {0}", metadata.XBlockName);
+        }
 
         BoundingBox = MapEntityMetadataStorage.GetBoundingBox(MapId);
 
@@ -116,12 +127,16 @@ public class FieldManager
 
     public Character RequestCharacter(Player player) => player.FieldPlayer ?? WrapPlayer(player);
 
-    public Npc RequestNpc(int npcId, CoordF coord = default, CoordF rotation = default, short animation = -1)
+    public Npc? RequestNpc(int npcId, CoordF coord = default, CoordF rotation = default, short animation = -1)
     {
-        NpcMetadata meta = NpcMetadataStorage.GetNpcMetadata(npcId);
+        NpcMetadata? meta = NpcMetadataStorage.GetNpcMetadata(npcId);
+        if (meta is null)
+        {
+            return null;
+        }
 
         Npc npc = WrapNpc(meta);
-        if (Navigator.FindFirstCoordSBelow(coord, out CoordS coordBelow))
+        if (Navigator?.FindFirstCoordSBelow(coord, out CoordS coordBelow) ?? false)
         {
             npc.Coord = coordBelow;
         }
@@ -131,7 +146,7 @@ public class FieldManager
         }
 
         npc.Rotation = rotation;
-        npc.Agent = Navigator.AddAgent(npc, Navigator.AddShape(meta.NpcMetadataCapsule));
+        npc.Agent = Navigator?.AddAgent(npc, Navigator.AddShape(meta.NpcMetadataCapsule));
 
         if (animation != -1)
         {
@@ -144,20 +159,20 @@ public class FieldManager
 
     private void RequestNpc(MapNpc mapNpc, CoordF coord, CoordF rotation)
     {
-        Npc npc = RequestNpc(mapNpc.Id, coord, rotation);
+        Npc? npc = RequestNpc(mapNpc.Id, coord, rotation);
 
         if (string.IsNullOrEmpty(mapNpc.PatrolDataUuid))
         {
             return;
         }
 
-        PatrolData? patrolDataByUuid = MapEntityMetadataStorage.GetPatrolDataByUuid(MapId, mapNpc.PatrolDataUuid!.Replace("-", string.Empty));
+        PatrolData? patrolDataByUuid = MapEntityMetadataStorage.GetPatrolDataByUuid(MapId, mapNpc.PatrolDataUuid.Replace("-", string.Empty));
         if (patrolDataByUuid is null)
         {
             return;
         }
 
-        npc.SetPatrolData(patrolDataByUuid);
+        npc?.SetPatrolData(patrolDataByUuid);
     }
 
     private void RequestMob(int mobId, IFieldObject<MobSpawn> spawnPoint)
@@ -165,13 +180,19 @@ public class FieldManager
         Npc npc = WrapMob(mobId);
         npc.OriginSpawn = spawnPoint;
 
+        if (Navigator is null)
+        {
+            return;
+        }
+
         Shape shape = Navigator.AddShape(npc.Value.NpcMetadataCapsule);
         Position spawnPointPosition = Navigator.FindPositionFromCoordS(spawnPoint.Coord);
         if (!Navigator.PositionIsValid(spawnPointPosition))
         {
             if (!Navigator.FindFirstPositionBelow(spawnPoint.Coord, out spawnPointPosition))
             {
-                Logger.Warning("Could not find a random position around spawn point {0}, in map ID {1} for mob ID {2}", spawnPoint.Coord, MapId, npc.Value.Id);
+                Logger.Warning("Could not find a random position around spawn point {0}, in map ID {1} for mob ID {2}", spawnPoint.Coord, MapId,
+                    npc.Value.Id);
                 return;
             }
         }
@@ -186,7 +207,7 @@ public class FieldManager
         npc.Coord = randomPositionAround.Value.ToFloat();
         npc.Rotation = default;
         npc.Animation = default;
-        npc.Agent = Navigator.AddAgent(npc, shape);
+        npc.Agent = Navigator?.AddAgent(npc, shape);
 
         npc.OriginSpawn.Value.Mobs.Add(npc);
         AddNpc(npc);
@@ -195,6 +216,10 @@ public class FieldManager
     public Pet? RequestPet(Item item, Character character)
     {
         Pet pet = new(NextLocalId(), item, character, fieldManager: this);
+        if (Navigator is null)
+        {
+            return null;
+        }
 
         Shape shape = Navigator.AddShape(pet.Value.NpcMetadataCapsule);
         Position spawnPointPosition = Navigator.FindPositionFromCoordS(character.Coord);
@@ -262,7 +287,15 @@ public class FieldManager
         // Load default npcs for map from config
         foreach (MapNpc npc in MapEntityMetadataStorage.GetNpcs(MapId)!)
         {
-            RequestNpc(npc, npc.Coord.ToFloat(), npc.Rotation.ToFloat());
+            try
+            {
+                RequestNpc(npc, npc.Coord.ToFloat(), npc.Rotation.ToFloat());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         // Spawn map's mobs at the mob spawners
@@ -698,7 +731,7 @@ public class FieldManager
             return false;
         }
 
-        IFieldObject<MobSpawn> originSpawn = mob.OriginSpawn;
+        IFieldObject<MobSpawn>? originSpawn = mob.OriginSpawn;
         if (originSpawn is not null && originSpawn.Value.Mobs.Remove(mob) && originSpawn.Value.Mobs.Count == 0)
         {
             StartSpawnTimer(originSpawn);
@@ -891,7 +924,7 @@ public class FieldManager
     }
 
     // Providing a session will result in packet not being broadcast to self.
-    public void BroadcastPacket(PacketWriter packet, GameSession sender = null)
+    public void BroadcastPacket(PacketWriter packet, GameSession? sender = null)
     {
         Broadcast(session =>
         {
@@ -964,10 +997,15 @@ public class FieldManager
     {
         int dummyNpcId = player.Value.Gender is Gender.Male ? 2040998 : 2040999; // dummy npc must match player gender
 
-        Npc dummyNpc = RequestNpc(dummyNpcId, player.Coord, player.Rotation);
+        Npc? dummyNpc = RequestNpc(dummyNpcId, player.Coord, player.Rotation);
+        if (dummyNpc is null)
+        {
+            return;
+        }
+
         dummyNpc.SetPatrolData(patrolData);
 
-        player.Value.Session.Send(FollowNpcPacket.FollowNpc(dummyNpc.ObjectId));
+        player.Value.Session?.Send(FollowNpcPacket.FollowNpc(dummyNpc.ObjectId));
 
         Task.Run(async () =>
         {
@@ -1292,14 +1330,6 @@ public class FieldManager
                 }
 
                 player.AdditionalEffects.AddEffect(new(70000018, 1));
-                //int healAmount = (int) (player.Value.Stats[StatAttribute.Hp].Bonus * 0.03);
-                //Status status = new(new(70000018, 1, 0, 1), player.ObjectId, healingSpot.ObjectId, 1);
-                //
-                //player.Value.Session.Send(BuffPacket.AddBuff(status));
-                //BroadcastPacket(SkillDamagePacket.Heal(status, healAmount));
-                //
-                //player.Stats[StatAttribute.Hp].AddValue(healAmount);
-                //player.Value.Session.Send(StatPacket.UpdateStats(player, StatAttribute.Hp));
             }
         }
     }
@@ -1322,7 +1352,7 @@ public class FieldManager
                         // Disconnect everyone in the field if a trigger has an exception
                         foreach (IFieldActor<Player> fieldPlayers in State.Players.Values)
                         {
-                            fieldPlayers.Value.Session.Disconnect(logoutNotice: true);
+                            fieldPlayers.Value.Session?.Disconnect(logoutNotice: true);
                         }
                     }
                 }

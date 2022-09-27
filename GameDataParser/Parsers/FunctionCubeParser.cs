@@ -1,5 +1,6 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Files.MetadataExporter;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -24,7 +25,7 @@ public class FunctionCubeParser : Exporter<List<FunctionCubeMetadata>>
 
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
 
-            string recipeString = document.DocumentElement.SelectSingleNode("FunctionCube")?.Attributes["receipeID"]?.Value;
+            string? recipeString = document.DocumentElement?.SelectSingleNode("FunctionCube")?.Attributes?["receipeID"]?.Value;
             int recipeId = string.IsNullOrEmpty(recipeString) ? 0 : int.Parse(recipeString);
 
             metadatas.Add(new(cubeId, recipeId));

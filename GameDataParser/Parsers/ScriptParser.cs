@@ -1,4 +1,5 @@
 ﻿using GameDataParser.Files;
+using GameDataParser.Files.MetadataExporter;
 using GameDataParser.Tools;
 using Maple2.File.Parser.Tools;
 using Maple2.File.Parser.Xml.Script;

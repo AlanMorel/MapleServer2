@@ -26,9 +26,9 @@ public class DatabaseAuthData : DatabaseTable
         });
     }
 
-    public AuthData GetByAccountId(long accountId)
+    public AuthData? GetByAccountId(long accountId)
     {
-        dynamic result = QueryFactory.Query(TableName).Where("account_id", accountId).FirstOrDefault();
+        dynamic? result = QueryFactory.Query(TableName).Where("account_id", accountId).FirstOrDefault();
         if (result is null)
         {
             return null;

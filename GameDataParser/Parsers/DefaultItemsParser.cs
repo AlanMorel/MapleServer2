@@ -1,5 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
@@ -28,7 +30,12 @@ public class DefaultItemsParser : Exporter<List<DefaultItemsMetadata>>
 
             foreach (XmlNode keyNode in keyNodes)
             {
-                int jobCode = int.Parse(keyNode.Attributes["jobCode"].Value);
+                if (ParserHelper.CheckForNull(keyNode, "jobCode"))
+                {
+                    continue;
+                }
+
+                int jobCode = int.Parse(keyNode.Attributes!["jobCode"]!.Value);
 
                 DefaultItemsMetadata metadata = new()
                 {
@@ -37,13 +44,23 @@ public class DefaultItemsParser : Exporter<List<DefaultItemsMetadata>>
 
                 foreach (XmlNode childNode in keyNode)
                 {
-                    _ = Enum.TryParse(childNode.Attributes["name"].Value, out ItemSlot slot);
+                    if (ParserHelper.CheckForNull(childNode, "name"))
+                    {
+                        continue;
+                    }
+
+                    _ = Enum.TryParse(childNode.Attributes!["name"]!.Value, out ItemSlot slot);
                     foreach (XmlNode itemNode in childNode)
                     {
+                        if (ParserHelper.CheckForNull(itemNode, "id"))
+                        {
+                            continue;
+                        }
+
                         DefaultItem defaultItem = new()
                         {
                             ItemSlot = slot,
-                            ItemId = int.Parse(itemNode.Attributes["id"].Value)
+                            ItemId = int.Parse(itemNode.Attributes!["id"]!.Value)
                         };
                         metadata.DefaultItems.Add(defaultItem);
                     }

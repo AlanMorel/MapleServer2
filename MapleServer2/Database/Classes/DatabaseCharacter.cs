@@ -360,14 +360,14 @@ public class DatabaseCharacter : DatabaseTable
         return QueryFactory.Query(TableName).Where("name", name).AsCount().FirstOrDefault().count == 1;
     }
 
-    private static Player ReadPartialPlayer(dynamic data)
+    private static Player? ReadPartialPlayer(dynamic? data)
     {
         if (data is null)
         {
             return null;
         }
 
-        Home home = null;
+        Home? home = null;
         if (data.homeid is not null)
         {
             home = new()

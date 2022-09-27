@@ -107,7 +107,11 @@ public class DatabaseGuild : DatabaseTable
         List<UGC> banners = new();
         foreach (long ugcUid in JsonConvert.DeserializeObject<List<long>>(data.banners))
         {
-            banners.Add(DatabaseManager.UGC.FindByUid(ugcUid));
+            UGC? findByUid = DatabaseManager.UGC.FindByUid(ugcUid);
+            if (findByUid != null)
+            {
+                banners.Add(findByUid);
+            }
         }
 
         return new()

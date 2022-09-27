@@ -1,5 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -21,21 +23,30 @@ public class GachaParser : Exporter<List<GachaMetadata>>
             }
 
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-            XmlNodeList nodes = document.SelectNodes("/ms2/individualDropBox");
+            XmlNodeList? nodes = document.SelectNodes("/ms2/individualDropBox");
+            if (nodes is null)
+            {
+                continue;
+            }
 
             foreach (XmlNode node in nodes)
             {
+                if (ParserHelper.CheckForNull(node, "item", "smartDropRate", "minCount", "maxCount", "PackageUIShowGrade"))
+                {
+                    continue;
+                }
+
                 GachaContent metadata = new()
                 {
-                    ItemId = int.Parse(node.Attributes["item"].Value),
-                    SmartDrop = byte.Parse(node.Attributes["smartDropRate"].Value),
+                    ItemId = int.Parse(node.Attributes!["item"]!.Value),
+                    SmartDrop = byte.Parse(node.Attributes["smartDropRate"]!.Value),
                     SmartGender = bool.Parse(node.Attributes["isApplySmartGenderDrop"]?.Value ?? "false"),
-                    MinAmount = short.Parse(node.Attributes["minCount"].Value),
-                    MaxAmount = short.Parse(node.Attributes["maxCount"].Value),
-                    Rarity = byte.Parse(node.Attributes["PackageUIShowGrade"].Value)
+                    MinAmount = short.Parse(node.Attributes["minCount"]!.Value),
+                    MaxAmount = short.Parse(node.Attributes["maxCount"]!.Value),
+                    Rarity = byte.Parse(node.Attributes["PackageUIShowGrade"]!.Value)
                 };
 
-                string individualDropBoxId = node.Attributes["individualDropBoxID"].Value;
+                string individualDropBoxId = node.Attributes["individualDropBoxID"]!.Value;
                 if (gachaContent.ContainsKey(int.Parse(individualDropBoxId)))
                 {
                     gachaContent[int.Parse(individualDropBoxId)].Add(metadata);
@@ -59,22 +70,33 @@ public class GachaParser : Exporter<List<GachaMetadata>>
             }
 
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-            foreach (XmlNode node in document.DocumentElement.ChildNodes)
+            XmlNodeList? childNodes = document.DocumentElement?.ChildNodes;
+            if (childNodes is null)
             {
-                if (node.Name != "randomBox")
+                continue;
+            }
+
+            foreach (XmlNode node in childNodes)
+            {
+                if (node.Name != "randomBox" || node.Attributes is null)
                 {
                     continue;
                 }
 
-                int dropBoxId = int.Parse(node.Attributes["individualDropBoxID"].Value);
+                if (ParserHelper.CheckForNull(node, "individualDropBoxID", "randomBoxID", "randomBoxGroup"))
+                {
+                    continue;
+                }
+
+                int dropBoxId = int.Parse(node.Attributes["individualDropBoxID"]!.Value);
                 _ = int.TryParse(node.Attributes["shopID"]?.Value ?? "0", out int shopId);
                 _ = int.TryParse(node.Attributes["coinItemID"]?.Value ?? "0", out int coinItemId);
                 _ = byte.TryParse(node.Attributes["coinItemAmount"]?.Value ?? "0", out byte coinAmount);
 
                 GachaMetadata metadata = new()
                 {
-                    GachaId = int.Parse(node.Attributes["randomBoxID"].Value),
-                    BoxGroup = byte.Parse(node.Attributes["randomBoxGroup"].Value),
+                    GachaId = int.Parse(node.Attributes["randomBoxID"]!.Value),
+                    BoxGroup = byte.Parse(node.Attributes["randomBoxGroup"]!.Value),
                     DropBoxId = dropBoxId,
                     ShopId = shopId,
                     CoinId = coinItemId,

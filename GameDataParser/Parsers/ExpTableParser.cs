@@ -1,5 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -21,11 +23,20 @@ internal class ExpParser : Exporter<List<ExpMetadata>>
             }
 
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-            XmlNodeList nodes = document.SelectNodes("/ms2/exp");
+            XmlNodeList? nodes = document.SelectNodes("/ms2/exp");
+            if (nodes is null)
+            {
+                continue;
+            }
 
             foreach (XmlNode node in nodes)
             {
-                byte level = byte.Parse(node.Attributes["level"].Value);
+                if (ParserHelper.CheckForNull(node, "level", "value"))
+                {
+                    continue;
+                }
+
+                byte level = byte.Parse(node.Attributes!["level"]!.Value);
                 if (level == 0)
                 {
                     continue;
@@ -34,7 +45,7 @@ internal class ExpParser : Exporter<List<ExpMetadata>>
                 ExpMetadata expTable = new()
                 {
                     Level = level,
-                    Experience = long.Parse(node.Attributes["value"].Value)
+                    Experience = long.Parse(node.Attributes["value"]!.Value)
                 };
                 expList.Add(expTable);
             }

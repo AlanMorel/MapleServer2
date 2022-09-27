@@ -1,4 +1,5 @@
 ﻿using GameDataParser.Files;
+using GameDataParser.Files.MetadataExporter;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
 

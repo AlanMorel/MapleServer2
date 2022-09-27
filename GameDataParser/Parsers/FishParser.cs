@@ -1,5 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
+using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
@@ -22,19 +24,21 @@ public class FishParser : Exporter<List<FishMetadata>>
             }
 
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-            XmlNodeList nodes = document.SelectNodes("/ms2/fish");
+            XmlNodeList? nodes = document.SelectNodes("/ms2/fish");
+            if (nodes is null)
+            {
+                continue;
+            }
 
             foreach (XmlNode node in nodes)
             {
-                int fishId = int.Parse(node.Attributes["id"].Value);
-
-                string habitatString = node.Attributes["habitat"]?.Value;
-                if (string.IsNullOrEmpty(habitatString))
+                if (ParserHelper.CheckForNull(node, "id", "habitat"))
                 {
                     continue;
                 }
 
-                List<int> habitat = habitatString.SplitAndParseToInt(',').ToList();
+                int fishId = int.Parse(node.Attributes!["id"]!.Value);
+                List<int> habitat = node.Attributes["habitat"]!.Value.SplitAndParseToInt(',').ToList();
 
                 if (fishHabitat.ContainsKey(fishId))
                 {
@@ -56,27 +60,38 @@ public class FishParser : Exporter<List<FishMetadata>>
             }
 
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-            foreach (XmlNode fishnode in document.DocumentElement.ChildNodes)
+            XmlNodeList? childNodes = document.DocumentElement?.ChildNodes;
+            if (childNodes is null)
+            {
+                continue;
+            }
+
+            foreach (XmlNode fishnode in childNodes)
             {
                 if (fishnode.Name != "fish")
                 {
                     continue;
                 }
 
+                if (ParserHelper.CheckForNull(fishnode, "id", "habitat"))
+                {
+                    continue;
+                }
+
                 FishMetadata metadata = new()
                 {
-                    Id = int.Parse(fishnode.Attributes["id"].Value),
-                    Habitat = fishnode.Attributes["habitat"].Value,
+                    Id = int.Parse(fishnode.Attributes!["id"]!.Value),
+                    Habitat = fishnode.Attributes["habitat"]!.Value,
                     CompanionId = int.Parse(fishnode.Attributes["companion"]?.Value ?? "0"),
                     Mastery = short.Parse(fishnode.Attributes["fishMastery"]?.Value ?? "0"),
-                    Rarity = byte.Parse(fishnode.Attributes["rank"].Value),
-                    SmallSize = fishnode.Attributes["smallSize"].Value.SplitAndParseToShort('-').ToArray(),
-                    BigSize = fishnode.Attributes["bigSize"].Value.SplitAndParseToShort('-').ToArray()
+                    Rarity = byte.Parse(fishnode.Attributes["rank"]!.Value),
+                    SmallSize = fishnode.Attributes["smallSize"]!.Value.SplitAndParseToShort('-').ToArray(),
+                    BigSize = fishnode.Attributes["bigSize"]!.Value.SplitAndParseToShort('-').ToArray()
                 };
 
-                if (fishnode.Attributes["ignoreSpotMastery"] != null)
+                if (fishnode.Attributes["ignoreSpotMastery"]?.Value != null)
                 {
-                    byte ignoreSpotMastery = byte.Parse(fishnode.Attributes["ignoreSpotMastery"].Value);
+                    byte ignoreSpotMastery = byte.Parse(fishnode.Attributes["ignoreSpotMastery"]!.Value);
                     if (ignoreSpotMastery == 1)
                     {
                         metadata.IgnoreMastery = true;

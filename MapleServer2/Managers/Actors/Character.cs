@@ -68,6 +68,8 @@ public class Character : FieldActor<Player>
 
         QuestManager.OnSkillUse(Value, skillCast.SkillId);
 
+        StartCombatStance();
+
         // TODO: Move this and all others combat cases like recover sp to its own class.
         // Since the cast is always sent by the skill, we have to check buffs even when not doing damage.
         SkillLevel? skillLevel = SkillMetadataStorage.GetSkill(skillCast.SkillId)?.SkillLevels
@@ -85,7 +87,6 @@ public class Character : FieldActor<Player>
 
         Value.Session.FieldManager.BroadcastPacket(SkillUsePacket.SkillUse(skillCast));
         Value.Session.Send(StatPacket.SetStats(this));
-
 
         InvokeStatValue skillModifier = Stats.GetSkillStats(skillCast.SkillId, InvokeEffectType.ReduceCooldown);
 
@@ -263,7 +264,7 @@ public class Character : FieldActor<Player>
         Value.Session.FieldManager.BroadcastPacket(UserBattlePacket.UserBattle(this, true));
         return Task.Run(async () =>
         {
-            await Task.Delay(5000);
+            await Task.Delay(5000, cts.Token);
 
             if (!cts.Token.IsCancellationRequested)
             {

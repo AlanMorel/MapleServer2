@@ -150,7 +150,7 @@ public class FieldNavigator : IDisposable
     /// Creates an agent from the given sh2ape, also adds it to the mesh and to the collision context.
     /// </summary>
     /// <returns>Agent or null if position isn't valid</returns>
-    public Agent? AddAgent(IFieldActor actor, Shape shape)
+    public Agent? AddAgent(IFieldActor actor, Shape? shape)
     {
         Position position = FindPositionFromCoordS(actor.Coord.ToShort());
         if (!PositionIsValid(position))
