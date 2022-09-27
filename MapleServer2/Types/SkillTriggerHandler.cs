@@ -294,7 +294,7 @@ public class SkillTriggerHandler
             }
         }
     }
-    
+
     public void FireEvent(SkillCondition trigger, SkillCast? parentSkill, ConditionSkillTarget castInfo, EffectEvent effectEvent, int eventIdArgument, int start = -1)
     {
         ConditionSkillTarget eventCastInfo = new(castInfo.Owner, GetTarget(trigger.Target, castInfo) ?? castInfo.Target, GetOwner(trigger.Owner, castInfo) ?? castInfo.Owner, castInfo.Attacker);
@@ -337,7 +337,7 @@ public class SkillTriggerHandler
 
             if (trigger.FireCount > 0 && !trigger.ImmediateActive)
             {
-                delay += (uint)trigger.Interval;
+                delay += (uint) trigger.Interval;
             }
 
             if (delay > 0)

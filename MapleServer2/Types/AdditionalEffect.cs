@@ -1,10 +1,10 @@
-﻿using MapleServer2.Data.Static;
+﻿using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
+using MapleServer2.Data.Static;
+using MapleServer2.Enums;
+using MapleServer2.Managers.Actors;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Managers.Actors;
-using MapleServer2.Enums;
-using Maple2Storage.Enums;
 using Serilog;
 
 namespace MapleServer2.Types;
@@ -34,7 +34,7 @@ public class AdditionalEffect
         Id = id;
         Level = level;
         Stacks = stacks;
-        
+
         AdditionalEffectMetadata? metadata = AdditionalEffectMetadataStorage.GetMetadata(id);
         AdditionalEffectLevelMetadata? levelMetadata = AdditionalEffectMetadataStorage.GetLevelMetadata(id, level);
 
@@ -177,16 +177,16 @@ public class AdditionalEffect
         }
 
         int healedAmount = (int) (Caster.Stats[StatAttribute.MagicAtk].TotalLong * recovery.RecoveryRate);
-        healedAmount += (int) (parent.Stats[StatAttribute.Hp].BonusLong * recovery.HpRate) + (int)recovery.HpValue;
+        healedAmount += (int) (parent.Stats[StatAttribute.Hp].BonusLong * recovery.HpRate) + (int) recovery.HpValue;
 
-        float healRate = (float)(1000 + Caster.Stats[StatAttribute.Heal].TotalLong) / 1000;
+        float healRate = (float) (1000 + Caster.Stats[StatAttribute.Heal].TotalLong) / 1000;
         InvokeStatValue invokeStat = Caster.Stats.GetEffectStats(Id, LevelMetadata.Basic.Group, InvokeEffectType.IncreaseHealing);
 
         healRate *= Math.Max(0, 1 + invokeStat.Rate);
 
         if (healedAmount > 0)
         {
-            parent.Heal(session, this, (int)(healedAmount * healRate));
+            parent.Heal(session, this, (int) (healedAmount * healRate));
         }
 
         int recoveredSp = (int) (parent.Stats[StatAttribute.Spirit].BonusLong * recovery.SpRate) + (int) recovery.SpValue;
@@ -292,7 +292,7 @@ public class AdditionalEffect
 
         Stop(parent);
     }
-    
+
     public void Process(IFieldActor parent)
     {
         if (LevelMetadata.CancelEffect is not null)

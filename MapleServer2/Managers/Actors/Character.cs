@@ -94,7 +94,7 @@ public class Character : FieldActor<Player>
         {
             cooldown = Math.Max(0, (1 - skillModifier.Rate) * cooldown - skillModifier.Value);
 
-            Value.Session.FieldManager.BroadcastPacket(SkillCooldownPacket.SetCooldown(skillCast.SkillId, Environment.TickCount + (int)(1000 * cooldown)));
+            Value.Session.FieldManager.BroadcastPacket(SkillCooldownPacket.SetCooldown(skillCast.SkillId, Environment.TickCount + (int) (1000 * cooldown)));
         }
 
         StartCombatStance();

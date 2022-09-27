@@ -1,6 +1,6 @@
 ﻿using System.Xml;
-using GameDataParser.Tools;
 using GameDataParser.Files;
+using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
@@ -28,7 +28,7 @@ public class SetItemInfoParser : Exporter<List<SetItemInfoMetadata>>
             foreach (XmlNode node in nodeList)
             {
                 int id = int.Parse(node.Attributes["id"].Value);
-                int[] itemIds =  node.Attributes["itemIDs"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? new int[0];
+                int[] itemIds = node.Attributes["itemIDs"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? new int[0];
                 int optionId = int.Parse(node.Attributes["optionID"].Value);
                 string feature = node.Attributes["feature"]?.Value ?? "";
                 bool showEffectIfItsSetItemMotion = int.Parse(node.Attributes["showEffectIfItsSetItemMotion"]?.Value ?? "0") == 1;

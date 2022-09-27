@@ -136,7 +136,7 @@ public struct CoordF
             coord.Z - value);
     }
 
-    public static CoordF operator-(CoordF coord)
+    public static CoordF operator -(CoordF coord)
     {
         return From(-coord.X, -coord.Y, -coord.Z);
     }

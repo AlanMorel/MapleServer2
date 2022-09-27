@@ -17,7 +17,7 @@ public static class SetItemInfoMetadataStorage
         foreach (SetItemInfoMetadata set in sets)
         {
             SetItemInfo[set.Id] = set;
-            
+
             foreach (int itemId in set.ItemIds)
             {
                 ItemIdMap[itemId] = set;

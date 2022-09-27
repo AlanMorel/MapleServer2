@@ -1,11 +1,11 @@
-﻿using Maple2Storage.Types;
+﻿using Maple2Storage.Enums;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Managers;
 using MapleServer2.Managers.Actors;
 using MapleServer2.Packets;
 using MapleServer2.Tools;
-using Maple2Storage.Enums;
 using Serilog;
 
 namespace MapleServer2.Types;
@@ -88,7 +88,7 @@ public static class RegionSkillHandler
             //MapMetadataStorage.GetDistanceToNextBlockBelow(mapId, Block.ClosestBlock(skillCast.Position), out MapBlock block);
             //if (block is null)
             //{
-                effectCoords.Add(skillCast.Position);
+            effectCoords.Add(skillCast.Position);
             //}
             //else
             //{
@@ -132,7 +132,7 @@ public static class RegionSkillHandler
             if (!cubeMagicPathMove.IgnoreAdjust)
             {
                 // Rotate the offset coord based on the look direction
-                CoordF rotatedOffset =- CoordF.Rotate(offSetCoord, skillCast.Caster.LookDirection);
+                CoordF rotatedOffset = -CoordF.Rotate(offSetCoord, skillCast.Caster.LookDirection);
 
                 // Create new effect coord based on offset rotation and source coord
                 effectCoords.Add(rotatedOffset + skillCast.Position);

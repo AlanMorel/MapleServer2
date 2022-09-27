@@ -138,7 +138,7 @@ public enum EffectEvent : byte
     OnEffectRemoved = 17, // owner
     OnLifeSkillGather = 18, // owner
     OnAttackMiss = 19, // owner,
-    
+
     UnknownKritiasPuzzleEvent = 20, // owner
     UnknownWizardEvent = 102,
     UnknownStrikerEvent = 103 // owner
@@ -225,7 +225,7 @@ public enum SkillGroupType : byte
 }
 
 public enum InvokeEffectType : byte
-{ 
+{
     ReduceCooldown = 1,
     IncreaseSkillDamage = 2,
     IncreaseDuration = 3,

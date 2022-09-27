@@ -204,7 +204,7 @@ public class DamageHandler
         damageBonus += AttackSpeedWeakness * FetchMultiplier(source.Stats, StatAttribute.AttackSpeed);
 
         InvokeStatValue skillModifier;
-        
+
         if (parameters.IsSkill)
         {
             skillModifier = source.Stats.GetSkillStats(parameters.Id, parameters.SkillGroups, InvokeEffectType.IncreaseSkillDamage);
@@ -213,7 +213,7 @@ public class DamageHandler
         {
             skillModifier = source.Stats.GetEffectStats(parameters.Id, parameters.EventGroup, InvokeEffectType.IncreaseDotDamage);
         }
-        
+
         double damageMultiplier = damageBonus * (1 + skillModifier.Rate) * (parameters.DamageRate + skillModifier.Value);
 
         // TODO: properly fetch enemy pierce resistance from enemy buff. new stat recommended

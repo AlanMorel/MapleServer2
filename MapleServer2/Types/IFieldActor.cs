@@ -1,7 +1,7 @@
-﻿using Maple2Storage.Types;
+﻿using Maple2Storage.Enums;
+using Maple2Storage.Types;
 using MapleServer2.Managers;
 using MapleServer2.Servers.Game;
-using Maple2Storage.Enums;
 
 namespace MapleServer2.Types;
 
