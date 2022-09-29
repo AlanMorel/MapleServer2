@@ -393,10 +393,10 @@ public class BeginConditionSubject
     public int[] EventEffectIDs;
 
     [XmlElement(Order = 3)]
-    public int HasBuffId;
+    public int RequireBuffId;
 
     [XmlElement(Order = 4)]
-    public int HasBuffCount;
+    public int RequireBuffCount;
 
     [XmlElement(Order = 5)]
     public int HasNotBuffId;
@@ -429,10 +429,10 @@ public class BeginConditionSubject
     public CompareStatCondition? CompareStat;
 
     [XmlElement(Order = 14)]
-    public ConditionOperator HasBuffCountCompare;
+    public ConditionOperator RequireBuffCountCompare;
 
     [XmlElement(Order = 15)]
-    public int HasBuffLevel;
+    public int RequireBuffLevel;
 }
 
 [XmlType]

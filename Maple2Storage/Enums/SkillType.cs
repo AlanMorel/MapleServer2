@@ -92,10 +92,10 @@ public enum ApplyTarget : byte
     None = 0, // used on skill attacks whos sole purpose is deploying a region skill/self buff
     Enemy = 1,
     Ally = 2,
-    Player1 = 3,
-    Player2 = 5,
-    Player3 = 6, // Recovery
-    Player4 = 7, // Debuff (Archeon's ice bombs)
+    Player1 = 3, // Unknown, 
+    Player2 = 5, // Unknown, 
+    Player3 = 6, // Unknown, Recovery
+    Player4 = 7, // Unknown, Debuff (Archeon's ice bombs)
 
     HungryMobs = 8
 }

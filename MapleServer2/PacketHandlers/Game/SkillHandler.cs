@@ -221,17 +221,6 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             return;
         }
 
-        //// TODO: Verify if its the player or an ally
-        //if (skillCast.IsRecovery())
-        //{
-        //    Status status = new(skillCast, fieldPlayer.ObjectId, fieldPlayer.ObjectId, 1);
-        //    StatusHandler.Handle(session, status);
-        //
-        //    // TODO: Heal based on stats
-        //    fieldPlayer.Heal(session, status, 50);
-        //    return;
-        //}
-
         int tick = Environment.TickCount;
 
         List<DamageHandler> damages = new();
@@ -240,15 +229,15 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             int entityId = packet.ReadInt();
             packet.ReadByte();
 
-            IFieldActor? mob = session.FieldManager.State.Mobs.GetValueOrDefault(entityId);
-            mob = mob ?? session.FieldManager.State.Players.GetValueOrDefault(entityId);
+            IFieldActor? target = session.FieldManager.State.Mobs.GetValueOrDefault(entityId);
+            target = target ?? session.FieldManager.State.Players.GetValueOrDefault(entityId);
 
-            if (mob == null)
+            if (target is null)
             {
                 continue;
             }
 
-            skillCast.Target = mob;
+            skillCast.Target = target;
             skillCast.AttackPoint = (byte) attackPoint;
 
             foreach (SkillMotion motion in skillCast.GetSkillMotions())
@@ -262,15 +251,15 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
                     continue;
                 }
 
-                ConditionSkillTarget castInfo = new(fieldPlayer, mob, fieldPlayer);
+                ConditionSkillTarget castInfo = new(fieldPlayer, target, fieldPlayer);
                 bool hitCrit = false;
                 bool hitMissed = false;
 
                 if (skillCast.GetDamageRate() != 0)
                 {
-                    DamageHandler damage = DamageHandler.CalculateDamage(skillCast, fieldPlayer, mob);
+                    DamageHandler damage = DamageHandler.CalculateDamage(skillCast, fieldPlayer, target);
 
-                    mob.Damage(damage, session);
+                    target.Damage(damage, session);
 
                     damages.Add(damage);
 
@@ -292,11 +281,11 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
                     if (hitMissed)
                     {
                         fieldPlayer.SkillTriggerHandler.FireEvents(castInfo, EffectEvent.OnAttackMiss, skillCast.SkillId);
-                        mob.SkillTriggerHandler.FireEvents(new(mob, fieldPlayer, mob), EffectEvent.OnEvade, skillCast.SkillId);
+                        target.SkillTriggerHandler.FireEvents(new(target, fieldPlayer, target), EffectEvent.OnEvade, skillCast.SkillId);
                     }
 
                     fieldPlayer.SkillTriggerHandler.FireEvents(castInfo, EffectEvent.OnOwnerAttackHit, skillCast.SkillId);
-                    mob.SkillTriggerHandler.FireEvents(new(mob, fieldPlayer, mob, fieldPlayer), EffectEvent.OnAttacked, skillCast.SkillId);
+                    target.SkillTriggerHandler.FireEvents(new(target, fieldPlayer, target, fieldPlayer), EffectEvent.OnAttacked, skillCast.SkillId);
                 });
             }
         }
@@ -341,9 +330,9 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             return;
         }
 
-        CoordF splashRotation = skillCondition.UseDirection ? parentSkill.Rotation : default;//parentSkill.Caster.Rotation;
-        CoordF direction = skillCondition.UseDirection ? parentSkill.Direction : default;//CoordF.From(1, parentSkill.Caster.LookDirection);
-        short lookDirection = skillCondition.UseDirection ? parentSkill.LookDirection : (short) 0;//parentSkill.Caster.LookDirection;
+        CoordF splashRotation = skillCondition.UseDirection ? parentSkill.Rotation : default;
+        CoordF direction = skillCondition.UseDirection ? parentSkill.Direction : default;
+        short lookDirection = skillCondition.UseDirection ? parentSkill.LookDirection : (short) 0;
 
         for (int i = 0; i < skillCondition.SkillId.Length; ++i)
         {

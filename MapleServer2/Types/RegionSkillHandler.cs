@@ -85,15 +85,7 @@ public static class RegionSkillHandler
         List<CoordF> effectCoords = new();
         if (skillMovesCount <= 0)
         {
-            //MapMetadataStorage.GetDistanceToNextBlockBelow(mapId, Block.ClosestBlock(skillCast.Position), out MapBlock block);
-            //if (block is null)
-            //{
             effectCoords.Add(skillCast.Position);
-            //}
-            //else
-            //{
-            //    effectCoords.Add(block.Coord);
-            //}
 
             return effectCoords;
         }

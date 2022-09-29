@@ -207,7 +207,7 @@ public class EffectResetSkillCooldownTimeMetadata
 
     public EffectResetSkillCooldownTimeMetadata()
     {
-        SkillCodes = new int[0];
+        SkillCodes = Array.Empty<int>();
     }
 }
 

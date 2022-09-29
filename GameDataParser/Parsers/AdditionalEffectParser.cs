@@ -73,7 +73,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
 
                 Stat stat = data[i].StatusProperty.Stat;
 
-                if (stat != null)
+                if (stat is not null)
                 {
                     AddStatFlat(level.Status, StatAttribute.Str, stat.strvalue, stat.strrate);
                     AddStatFlat(level.Status, StatAttribute.Int, stat.intvalue, stat.intrate);
@@ -112,7 +112,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
 
                 SpecialAbility special = data[i].StatusProperty.SpecialAbility;
 
-                if (special != null)
+                if (special is not null)
                 {
                     // TODO: finish adding all these stats to the correct attrib type
                     AddStatRate(level.Status, StatAttribute.ExpBonus, special.segvalue, special.segrate); // gm emote exp boost for monster hunting, fishing, performing?
@@ -297,7 +297,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
 
                 OffensiveProperty offensive = data[i].OffensiveProperty;
 
-                if (offensive != null)
+                if (offensive is not null)
                 {
                     level.Offensive = new()
                     {
@@ -311,7 +311,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
 
                 DefensiveProperty defensive = data[i].DefensiveProperty;
 
-                if (defensive != null)
+                if (defensive is not null)
                 {
                     level.Defesive = new()
                     {
@@ -324,7 +324,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
 
                 RecoveryProperty recovery = data[i].RecoveryProperty;
 
-                if (recovery != null)
+                if (recovery is not null)
                 {
                     level.Recovery = new()
                     {
@@ -334,7 +334,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
 
                 CancelEffectProperty cancel = data[i].CancelEffectProperty;
 
-                if (cancel != null)
+                if (cancel is not null)
                 {
                     level.CancelEffect = new()
                     {
@@ -347,7 +347,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
 
                 ImmuneEffectProperty immune = data[i].ImmuneEffectProperty;
 
-                if (immune != null)
+                if (immune is not null)
                 {
                     level.ImmuneEffect = new()
                     {
@@ -358,7 +358,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
 
                 ResetSkillCoolDownTimeProperty cooldownReset = data[i].ResetSkillCoolDownTimeProperty;
 
-                if (cooldownReset != null)
+                if (cooldownReset is not null)
                 {
                     level.ResetCoolDownTime = new()
                     {
@@ -368,7 +368,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
 
                 List<TriggerSkill> splashSkills = data[i].splashSkill;
 
-                if (splashSkills != null)
+                if (splashSkills is not null)
                 {
                     level.SplashSkill = new();
 
@@ -397,7 +397,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
 
                 List<TriggerSkill> conditionSkills = data[i].conditionSkill;
 
-                if (conditionSkills != null)
+                if (conditionSkills is not null)
                 {
                     level.ConditionSkill = new();
 
@@ -427,7 +427,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
 
                 InvokeEffectProperty invoke = data[i].InvokeEffectProperty;
 
-                if (invoke != null)
+                if (invoke is not null)
                 {
                     level.InvokeEffect = new()
                     {
@@ -448,7 +448,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
 
                 DotDamageProperty dotDamage = data[i].DotDamageProperty;
 
-                if (dotDamage != null)
+                if (dotDamage is not null)
                 {
                     level.DotDamage = new()
                     {
@@ -462,7 +462,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
 
                 ModifyEffectDurationProperty modifyEffect = data[i].ModifyEffectDurationProperty;
 
-                if (modifyEffect != null)
+                if (modifyEffect is not null)
                 {
                     level.ModifyEffectDuration = new()
                     {
@@ -474,7 +474,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
 
                 ModifyOverlapCountProperty modifyOverlapCount = data[i].ModifyOverlapCountProperty;
 
-                if (modifyOverlapCount != null)
+                if (modifyOverlapCount is not null)
                 {
                     level.ModifyOverlapCount = new()
                     {
@@ -506,7 +506,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
 
     private SkillBeginCondition? ParseBeginCondition(BeginCondition? beginCondition)
     {
-        if (beginCondition == null)
+        if (beginCondition is null)
         {
             return null;
         }
@@ -534,7 +534,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
 
     private BeginConditionSubject? ParseOwnerCondition(SubConditionTarget? ownerCondition)
     {
-        if (ownerCondition == null)
+        if (ownerCondition is null)
         {
             return null;
         }
@@ -553,11 +553,11 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
         {
             EventSkillIDs = ownerCondition.eventSkillID,
             EventEffectIDs = ownerCondition.eventEffectID,
-            HasBuffId = ownerCondition.hasBuffID[0],
+            RequireBuffId = ownerCondition.hasBuffID[0],
             HasNotBuffId = ownerCondition.hasNotBuffID?.FirstOrDefault(0) ?? 0,
-            HasBuffCount = ownerCondition.hasBuffCount[0],
-            HasBuffCountCompare = hasBuffCountCompare,
-            HasBuffLevel = ownerCondition.hasBuffLevel[0],
+            RequireBuffCount = ownerCondition.hasBuffCount[0],
+            RequireBuffCountCompare = hasBuffCountCompare,
+            RequireBuffLevel = ownerCondition.hasBuffLevel[0],
             EventCondition = (EffectEvent) ownerCondition.eventCondition,
             IgnoreOwnerEvent = ownerCondition.ignoreOwnerEvent,
             TargetCheckRange = ownerCondition.targetCheckRange,

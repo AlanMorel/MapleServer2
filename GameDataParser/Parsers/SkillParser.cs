@@ -179,8 +179,8 @@ public class SkillParser : Exporter<List<SkillMetadata>>
     {
         foreach (XmlNode conditionNode in parentNode.SelectNodes("conditionSkill"))
         {
-            int[] conditionSkillId = conditionNode.Attributes["skillID"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? new int[0];
-            short[] conditionSkillLevel = conditionNode.Attributes["level"]?.Value?.SplitAndParseToShort(',')?.ToArray() ?? new short[0];
+            int[] conditionSkillId = conditionNode.Attributes["skillID"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>();
+            short[] conditionSkillLevel = conditionNode.Attributes["level"]?.Value?.SplitAndParseToShort(',')?.ToArray() ?? Array.Empty<short>();
             bool splash = conditionNode.Attributes["splash"]?.Value == "1";
             byte target = byte.Parse(conditionNode.Attributes["skillTarget"].Value ?? "0");
             byte owner = byte.Parse(conditionNode.Attributes["skillOwner"]?.Value ?? "0");
@@ -191,7 +191,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
             int removeDelay = int.Parse(conditionNode.Attributes["removeDelay"]?.Value ?? "0");
             bool useDirection = int.Parse(conditionNode.Attributes["useDirection"]?.Value ?? "0") == 1;
             bool randomCast = int.Parse(conditionNode.Attributes["randomCast"]?.Value ?? "0") == 1;
-            int[] linkSkillID = conditionNode.Attributes["linkSkillID"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? new int[0];
+            int[] linkSkillID = conditionNode.Attributes["linkSkillID"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>();
             int overlapCount = int.Parse(conditionNode.Attributes["overlapCount"]?.Value ?? "0");
             bool nonTargetActive = int.Parse(conditionNode.Attributes["nonTargetActive"]?.Value ?? "0") == 1;
             bool onlySensingActive = int.Parse(conditionNode.Attributes["onlySensingActive"]?.Value ?? "0") == 1;
@@ -217,19 +217,6 @@ public class SkillParser : Exporter<List<SkillMetadata>>
         }
     }
 
-    private static Dictionary<string, bool> statIgnoreList = new()
-    {
-        ["hp"] = true,
-        ["func"] = true
-    };
-
-    private static Dictionary<string, bool> statIgnoreList2 = new()
-    {
-        ["hp"] = true,
-        ["sp"] = true,
-        ["ep"] = true, // 10500153
-    };
-
     private static SkillBeginCondition ParseBeginCondition(XmlNode parent)
     {
         SkillBeginCondition beginCondition = null;
@@ -238,18 +225,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
 
         foreach (XmlNode beginNode in parent.SelectNodes("beginCondition"))
         {
-            foreach (XmlNode compareStat in beginNode.SelectNodes("stat"))
-            {
-                foreach (XmlAttribute attribute in compareStat.Attributes)
-                {
-                    if (!statIgnoreList2.ContainsKey(attribute.Name))
-                    {
-                        count += 0;
-                    }
-                }
-
-                count += 0;
-            }
+            // <stat> can only contain hp, sp, and ep
 
             beginCondition = new()
             {
@@ -277,12 +253,8 @@ public class SkillParser : Exporter<List<SkillMetadata>>
 
     private static BeginConditionSubject ParseConditionSubject(XmlNode parentNode, string tagName)
     {
-        int count = 0;
-
         foreach (XmlNode ownerNode in parentNode.SelectNodes(tagName))
         {
-            ++count;
-
             if (!Enum.TryParse(ownerNode.Attributes["targetCountSign"]?.Value ?? "", out ConditionOperator targetCountSign))
             {
                 targetCountSign = ConditionOperator.None;
@@ -293,28 +265,17 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                 targetCountSign = ConditionOperator.None;
             }
 
-            foreach (XmlNode compareStat in ownerNode.SelectNodes("compareStat"))
-            {
-                foreach (XmlAttribute attribute in compareStat.Attributes)
-                {
-                    if (!statIgnoreList.ContainsKey(attribute.Name))
-                    {
-                        count += 0;
-                    }
-                }
-
-                count += 0;
-            }
+            // <compareStat> can only contain hp and func
 
             return new()
             {
                 EventSkillIDs = ownerNode.Attributes["eventSkillID"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? new int[0],
                 EventEffectIDs = ownerNode.Attributes["eventEffectID"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? new int[0],
-                HasBuffId = int.Parse(ownerNode.Attributes["hasBuffID"].Value ?? "0"),
+                RequireBuffId = int.Parse(ownerNode.Attributes["hasBuffID"].Value ?? "0"),
                 HasNotBuffId = int.Parse(ownerNode.Attributes["hasNotBuffID"]?.Value ?? "0"),
-                HasBuffCount = int.Parse(ownerNode.Attributes["hasBuffCount"]?.Value ?? "0"),
-                HasBuffCountCompare = hasBuffCountCompare,
-                HasBuffLevel = int.Parse(ownerNode.Attributes["hasBuffLevel"]?.Value ?? "0"),
+                RequireBuffCount = int.Parse(ownerNode.Attributes["hasBuffCount"]?.Value ?? "0"),
+                RequireBuffCountCompare = hasBuffCountCompare,
+                RequireBuffLevel = int.Parse(ownerNode.Attributes["hasBuffLevel"]?.Value ?? "0"),
                 EventCondition = (EffectEvent) int.Parse(ownerNode.Attributes["eventCondition"]?.Value ?? "0"),
                 IgnoreOwnerEvent = int.Parse(ownerNode.Attributes["ignoreOwnerEvent"]?.Value ?? "0"),
                 TargetCheckRange = int.Parse(ownerNode.Attributes["targetCheckRange"]?.Value ?? "0"),
@@ -323,11 +284,6 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                 TargetFriendly = (TargetAllieganceType) int.Parse(ownerNode.Attributes["targetFriendly"]?.Value ?? "0"),
                 TargetCountSign = targetCountSign
             };
-        }
-
-        if (count > 1)
-        {
-            count += 0;
         }
 
         return null;

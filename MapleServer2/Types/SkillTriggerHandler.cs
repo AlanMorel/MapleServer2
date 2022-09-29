@@ -54,12 +54,12 @@ public class SkillTriggerHandler
 
     public bool IsConditionMet(BeginConditionSubject? subjectCondition, IFieldActor? subject, EffectEvent effectEvent, int eventIdArgument)
     {
-        if (subjectCondition == null)
+        if (subjectCondition is null)
         {
             return true;
         }
 
-        if (subject == null)
+        if (subject is null)
         {
             return false;
         }
@@ -76,18 +76,18 @@ public class SkillTriggerHandler
                 EffectEvent.OnOwnerAttackHit => (subjectCondition.EventSkillIDs?.Length ?? 0) == 0 || subjectCondition.EventSkillIDs.Contains(eventIdArgument),
                 EffectEvent.OnSkillCasted => (subjectCondition.EventSkillIDs?.Length ?? 0) == 0 || subjectCondition.EventSkillIDs.Contains(eventIdArgument),
 
-                EffectEvent.OnBuffStacksReached => subjectCondition.HasBuffId == eventIdArgument,
+                EffectEvent.OnBuffStacksReached => subjectCondition.RequireBuffId == eventIdArgument,
                 EffectEvent.OnInvestigate => true,
                 EffectEvent.OnBuffTimeExpiring => true, // check
                 EffectEvent.OnSkillCastEnd => (subjectCondition.EventSkillIDs?.Length ?? 0) == 0 || subjectCondition.EventSkillIDs.Contains(eventIdArgument),
-                EffectEvent.OnEffectApplied => subjectCondition.HasBuffId == 0 ? (subjectCondition.EventEffectIDs?.Length ?? 0) == 0 || subjectCondition.EventEffectIDs.Contains(eventIdArgument) : subjectCondition.HasBuffId == eventIdArgument,
+                EffectEvent.OnEffectApplied => subjectCondition.RequireBuffId == 0 ? (subjectCondition.EventEffectIDs?.Length ?? 0) == 0 || subjectCondition.EventEffectIDs.Contains(eventIdArgument) : subjectCondition.RequireBuffId == eventIdArgument,
                 EffectEvent.OnEffectRemoved => (subjectCondition.EventEffectIDs?.Length ?? 0) == 0 || subjectCondition.EventEffectIDs.Contains(eventIdArgument),
                 EffectEvent.OnLifeSkillGather => true,
                 EffectEvent.OnAttackMiss => true,
 
                 EffectEvent.UnknownKritiasPuzzleEvent => (subjectCondition.EventSkillIDs?.Length ?? 0) == 0 || subjectCondition.EventSkillIDs.Contains(eventIdArgument),
                 EffectEvent.UnknownWizardEvent => (subjectCondition.EventEffectIDs?.Length ?? 0) == 0 || subjectCondition.EventEffectIDs.Contains(eventIdArgument),
-                EffectEvent.UnknownStrikerEvent => subjectCondition.HasBuffId == 0 || subjectCondition.HasBuffId == eventIdArgument,
+                EffectEvent.UnknownStrikerEvent => subjectCondition.RequireBuffId == 0 || subjectCondition.RequireBuffId == eventIdArgument,
                 _ => true
             };
 
@@ -97,9 +97,9 @@ public class SkillTriggerHandler
             }
         }
 
-        ConditionOperator buffOperator = subjectCondition.HasBuffCount == 0 ? ConditionOperator.GreaterEquals : subjectCondition.HasBuffCountCompare;
+        ConditionOperator buffOperator = subjectCondition.RequireBuffCount == 0 ? ConditionOperator.GreaterEquals : subjectCondition.RequireBuffCountCompare;
 
-        if (subjectCondition.HasBuffId != 0 && !subject.AdditionalEffects.HasEffect(subjectCondition.HasBuffId, subjectCondition.HasBuffCount, buffOperator, subjectCondition.HasBuffLevel))
+        if (subjectCondition.RequireBuffId != 0 && !subject.AdditionalEffects.HasEffect(subjectCondition.RequireBuffId, subjectCondition.RequireBuffCount, buffOperator, subjectCondition.RequireBuffLevel))
         {
             return false;
         }
@@ -167,7 +167,7 @@ public class SkillTriggerHandler
 
     public EffectEvent GetEvent(BeginConditionSubject? subjectCondition)
     {
-        if (subjectCondition == null)
+        if (subjectCondition is null)
         {
             return EffectEvent.Activate;
         }
@@ -278,20 +278,20 @@ public class SkillTriggerHandler
         if (trigger.IsSplash)
         {
             RegionSkillHandler.HandleEffect(Parent.FieldManager, skillCast, castInfo.Target);
-        }
-        else
-        {
-            for (int i = 0; i < trigger.SkillId.Length; ++i)
-            {
-                skillCast.SkillId = trigger.SkillId[i];
-                skillCast.SkillLevel = trigger.SkillLevel[i];
 
-                castInfo.Target.AdditionalEffects.AddEffect(new(trigger.SkillId[i], trigger.SkillLevel[i])
-                {
-                    Caster = castInfo.Caster,
-                    ParentSkill = skillCast.ParentSkill
-                });
-            }
+            return;
+        }
+
+        for (int i = 0; i < trigger.SkillId.Length; ++i)
+        {
+            skillCast.SkillId = trigger.SkillId[i];
+            skillCast.SkillLevel = trigger.SkillLevel[i];
+
+            castInfo.Target.AdditionalEffects.AddEffect(new(trigger.SkillId[i], trigger.SkillLevel[i])
+            {
+                Caster = castInfo.Caster,
+                ParentSkill = skillCast.ParentSkill
+            });
         }
     }
 
@@ -369,7 +369,7 @@ public class SkillTriggerHandler
 
     public void FireEvents(List<SkillCondition>? triggers, SkillCast parentSkill, ConditionSkillTarget castInfo, EffectEvent effectEvent, int eventIdArgument, int start = -1)
     {
-        if (triggers == null)
+        if (triggers is null)
         {
             return;
         }
@@ -387,7 +387,7 @@ public class SkillTriggerHandler
 
     public void FireTriggerSkills(List<SkillCondition>? triggers, SkillCast parentSkill, ConditionSkillTarget castInfo, int start = -1, bool hitTarget = true)
     {
-        if (triggers == null)
+        if (triggers is null)
         {
             return;
         }

@@ -29,7 +29,7 @@ public class SetItemInfoParser : Exporter<List<SetItemInfoMetadata>>
             foreach (XmlNode node in nodeList)
             {
                 int id = int.Parse(node.Attributes["id"].Value);
-                int[] itemIds = node.Attributes["itemIDs"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? new int[0];
+                int[] itemIds = node.Attributes["itemIDs"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>();
                 int optionId = int.Parse(node.Attributes["optionID"].Value);
                 string feature = node.Attributes["feature"]?.Value ?? "";
                 bool showEffectIfItsSetItemMotion = int.Parse(node.Attributes["showEffectIfItsSetItemMotion"]?.Value ?? "0") == 1;

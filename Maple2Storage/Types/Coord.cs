@@ -49,7 +49,7 @@ public struct CoordF
         {
             X = (float) (cos * vector.X - sin * vector.Y),
             Y = (float) (sin * vector.X + cos * vector.Y),
-            Z = vector.Z // xy plane rotation won't chan;ge z
+            Z = vector.Z // xy plane rotation won't change z
         };
     }
 

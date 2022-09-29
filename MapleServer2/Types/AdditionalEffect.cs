@@ -116,24 +116,26 @@ public class AdditionalEffect
     {
         int[] overlapCodes = modifyOverlap.EffectCodes;
 
-        if (overlapCodes.Length > 0)
+        if (overlapCodes.Length == 0)
         {
-            for (int i = 0; i < overlapCodes.Length; ++i)
+            return;
+        }
+
+        for (int i = 0; i < overlapCodes.Length; ++i)
+        {
+            AdditionalEffect? affectedEffect = parent.AdditionalEffects.GetEffect(overlapCodes[i]);
+
+            if (affectedEffect is null)
             {
-                AdditionalEffect? affectedEffect = parent.AdditionalEffects.GetEffect(overlapCodes[i]);
-
-                if (affectedEffect is null)
-                {
-                    continue;
-                }
-
-                parent.AdditionalEffects.AddEffect(new(affectedEffect.Id, affectedEffect.Level)
-                {
-                    Stacks = modifyOverlap.OffsetCounts[i],
-                    AdjustDuration = false,
-                    Caster = Caster
-                });
+                continue;
             }
+
+            parent.AdditionalEffects.AddEffect(new(affectedEffect.Id, affectedEffect.Level)
+            {
+                Stacks = modifyOverlap.OffsetCounts[i],
+                AdjustDuration = false,
+                Caster = Caster
+            });
         }
     }
 
@@ -141,30 +143,34 @@ public class AdditionalEffect
     {
         int[] durationCodes = modifyDuration.EffectCodes;
 
-        if (durationCodes?.Length > 0)
+        if (durationCodes is null || durationCodes?.Length == 0)
         {
-            for (int i = 0; i < durationCodes.Length; ++i)
+            return;
+        }
+
+        for (int i = 0; i < durationCodes.Length; ++i)
+        {
+            AdditionalEffect? affectedEffect = parent.AdditionalEffects.GetEffect(durationCodes[i]);
+
+            if (affectedEffect is null)
             {
-                AdditionalEffect? affectedEffect = parent.AdditionalEffects.GetEffect(durationCodes[i]);
-
-                if (affectedEffect == null)
-                {
-                    continue;
-                }
-
-                affectedEffect.Duration = (int) (modifyDuration.DurationFactors[i] * affectedEffect.Duration) + (int) (1000 * modifyDuration.DurationValues[i]);
-
-                parent.FieldManager?.BroadcastPacket(BuffPacket.UpdateBuff(affectedEffect, parent.ObjectId));
+                continue;
             }
+
+            affectedEffect.Duration = (int) (modifyDuration.DurationFactors[i] * affectedEffect.Duration) + (int) (1000 * modifyDuration.DurationValues[i]);
+
+            parent.FieldManager?.BroadcastPacket(BuffPacket.UpdateBuff(affectedEffect, parent.ObjectId));
         }
     }
 
     public void ResetCooldown(IFieldActor parent, EffectResetSkillCooldownTimeMetadata resetCooldown)
     {
-        if (resetCooldown.SkillCodes.Length > 0)
+        if (resetCooldown.SkillCodes.Length == 0)
         {
-            parent.FieldManager?.BroadcastPacket(SkillCooldownPacket.SetCooldowns(resetCooldown.SkillCodes, new int[resetCooldown.SkillCodes.Length]));
+            return;
         }
+
+        parent.FieldManager?.BroadcastPacket(SkillCooldownPacket.SetCooldowns(resetCooldown.SkillCodes, new int[resetCooldown.SkillCodes.Length]));
     }
 
     public void Recovery(IFieldActor parent, EffectRecoveryMetadata recovery)
