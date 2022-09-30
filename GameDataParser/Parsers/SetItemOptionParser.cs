@@ -47,7 +47,10 @@ public class SetItemOptionParser : Exporter<List<SetItemOptionMetadata>>
 
                     SetBonusMetadata setBonus = new(additionalEffectID, additionalEffectLevel, stats)
                     {
-                        Count = count
+                        Count = count,
+                        AdditionalEffectIds = additionalEffectID,
+                        AdditionalEffectLevels = additionalEffectLevel,
+                        Stats = stats
                     };
 
                     foreach (XmlAttribute attribute in partNode.Attributes)
