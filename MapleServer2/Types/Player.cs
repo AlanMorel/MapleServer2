@@ -37,18 +37,18 @@ public class Player
     public bool Awakened { get; set; }
 
     // Job Group, according to jobgroupname.xml
-    public Job Job { get; set; }
+    public JobCode JobCode { get; set; }
 
-    public JobCode JobCode
+    public SubJobCode SubJobCode
     {
         get
         {
-            if (Job == Job.GameMaster)
+            if (JobCode == JobCode.GameMaster)
             {
-                return JobCode.GameMaster;
+                return SubJobCode.GameMaster;
             }
 
-            return (JobCode) ((int) Job * 10 + (Awakened ? 1 : 0));
+            return (SubJobCode) ((int) JobCode * 10 + (Awakened ? 1 : 0));
         }
     }
 
@@ -176,14 +176,14 @@ public class Player
     public Player() { }
 
     // Initializes all values to be saved into the database
-    public Player(Account account, string name, Gender gender, Job job, SkinColor skinColor)
+    public Player(Account account, string name, Gender gender, JobCode jobCode, SkinColor skinColor)
     {
         AccountId = account.Id;
         Account = account;
         Name = name;
         Gender = gender;
-        Job = job;
-        GameOptions = new(job);
+        JobCode = jobCode;
+        GameOptions = new(jobCode);
         Macros = new();
         Wallet = new(meso: 0, valorToken: 0, treva: 0, rue: 0, haviFruit: 0, gameSession: null);
         Levels = new(playerLevel: 1, exp: 0, restExp: 0, prestigeLevel: 1, prestigeExp: 0, masteryExp: new()
@@ -200,9 +200,9 @@ public class Player
             new(MasteryType.Cooking),
             new(MasteryType.PetTaming)
         }, gameSession: null);
-        MapId = JobMetadataStorage.GetStartMapId(job) ?? 0;
+        MapId = JobMetadataStorage.GetStartMapId(jobCode) ?? 0;
         SavedCoord = MapEntityMetadataStorage.GetRandomPlayerSpawn(MapId)?.Coord.ToFloat() ?? default;
-        Stats = new(job);
+        Stats = new(jobCode);
         Motto = "Motto";
         ProfileUrl = "";
         CreationTime = TimeInfo.Now();
@@ -254,11 +254,11 @@ public class Player
         CharacterId = DatabaseManager.Characters.Insert(this);
         SkillTabs = new()
         {
-            new(CharacterId, job, JobCode, id: 1, name: "Build 1")
+            new(CharacterId, jobCode, SubJobCode, id: 1, name: "Build 1")
         };
 
         // Add initial quests
-        foreach (QuestMetadata questMetadata in QuestMetadataStorage.GetAvailableQuests(Levels.Level, job))
+        foreach (QuestMetadata questMetadata in QuestMetadataStorage.GetAvailableQuests(Levels.Level, jobCode))
         {
             QuestData.Add(questMetadata.Basic.Id, new(CharacterId, questMetadata));
         }
@@ -661,7 +661,7 @@ public class Player
 
     public void AddStats()
     {
-        Stats = new(Job);
+        Stats = new(JobCode);
         Stats.AddBaseStats(this, Levels.Level);
         Stats.RecomputeAllocations(StatPointDistribution);
 
@@ -695,7 +695,7 @@ public class Player
 
         Stats.ComputeStatBonuses();
 
-        if (Job == Job.Runeblade)
+        if (JobCode == JobCode.Runeblade)
         {
             Stats.Data[StatAttribute.Int].AddBonus((long) (0.7f * Stats.Data[StatAttribute.Str].TotalLong));
         }

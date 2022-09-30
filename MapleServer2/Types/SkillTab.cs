@@ -17,10 +17,10 @@ public class SkillTab
 
     public SkillTab() { }
 
-    public SkillTab(long characterId, Job job, JobCode jobCode, long id, string name)
+    public SkillTab(long characterId, JobCode jobCode, SubJobCode subJobCode, long id, string name)
     {
         Name = name;
-        ResetSkillTree(job, jobCode);
+        ResetSkillTree(jobCode, subJobCode);
         TabId = id;
         Uid = DatabaseManager.SkillTabs.Insert(this, characterId);
     }
@@ -30,7 +30,7 @@ public class SkillTab
         Name = name;
         TabId = tabId;
         Uid = uid;
-        SkillJob = GetSkillsMetadata((Job) jobId);
+        SkillJob = GetSkillsMetadata((JobCode) jobId);
         SkillLevels = skillLevels;
     }
 
@@ -48,17 +48,17 @@ public class SkillTab
         }
     }
 
-    public void ResetSkillTree(Job job, JobCode jobCode)
+    public void ResetSkillTree(JobCode jobCode, SubJobCode subJobCode)
     {
-        SkillJob = GetSkillsMetadata(job);
-        if (job is Job.GameMaster)
+        SkillJob = GetSkillsMetadata(jobCode);
+        if (jobCode is JobCode.GameMaster)
         {
             SkillLevels = SkillJob.Keys.ToDictionary(skillId => skillId, _ => (short) 1);
             return;
         }
 
         SkillLevels = SkillJob.Keys.ToDictionary(skillId => skillId, _ => (short) 0);
-        LearnDefaultSkills(job, jobCode);
+        LearnDefaultSkills(jobCode, subJobCode);
     }
 
     /// <summary>
@@ -92,14 +92,14 @@ public class SkillTab
         return skills;
     }
 
-    private static Dictionary<int, SkillMetadata> GetSkillsMetadata(Job job)
+    private static Dictionary<int, SkillMetadata> GetSkillsMetadata(JobCode jobCode)
     {
-        return SkillMetadataStorage.GetJobSkills(job).ToDictionary(x => x.SkillId, x => x);
+        return SkillMetadataStorage.GetJobSkills(jobCode).ToDictionary(x => x.SkillId, x => x);
     }
 
-    public void LearnDefaultSkills(Job job, JobCode jobCode)
+    public void LearnDefaultSkills(JobCode jobCode, SubJobCode subJobCode)
     {
-        JobMetadata jobMetadata = JobMetadataStorage.GetJobMetadata(job);
+        JobMetadata jobMetadata = JobMetadataStorage.GetJobMetadata(jobCode);
         if (jobMetadata is null)
         {
             return;
@@ -111,7 +111,7 @@ public class SkillTab
         foreach (int skillId in skillIds)
         {
             JobSkillMetadata jobSkillMetadata = jobMetadata.Skills.First(x => x.SkillId == skillId);
-            if (jobSkillMetadata.SubJobCode != (int) jobCode && jobSkillMetadata.SubJobCode != 0)
+            if (jobSkillMetadata.SubJobCode != (int) subJobCode && jobSkillMetadata.SubJobCode != 0)
             {
                 continue;
             }

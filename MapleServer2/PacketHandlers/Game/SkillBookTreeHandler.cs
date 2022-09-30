@@ -63,7 +63,7 @@ public class SkillBookTreeHandler : GamePacketHandler<SkillBookTreeHandler>
             SkillTab skillTab = player.SkillTabs.FirstOrDefault(x => x.TabId == tabId);
             if (skillTab is null)
             {
-                skillTab = new(player.CharacterId, player.Job, player.JobCode, tabId, tabName);
+                skillTab = new(player.CharacterId, player.JobCode, player.SubJobCode, tabId, tabName);
                 player.SkillTabs.Add(skillTab);
             }
             else

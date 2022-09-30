@@ -551,7 +551,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
         if (questStatus.State is not QuestState.Started)
         {
             // Talking to npc that start the quest and isn't started
-            return scriptMetadata.NpcScripts.FirstOrDefault(x => x.Id < 200 && x.JobId == (int) session.Player.Job) ??
+            return scriptMetadata.NpcScripts.FirstOrDefault(x => x.Id < 200 && x.JobId == (int) session.Player.JobCode) ??
                    scriptMetadata.NpcScripts.FirstOrDefault(x => x.Id == 100);
         }
 
@@ -560,13 +560,13 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
             // Talking to npc that start the quest and condition is not completed
             if (questStatus.Condition.Count != questStatus.Condition.Count(x => x.Completed))
             {
-                return scriptMetadata.NpcScripts.FirstOrDefault(x => x.Id is >= 200 and <= 299 && x.JobId == (int) session.Player.Job) ??
+                return scriptMetadata.NpcScripts.FirstOrDefault(x => x.Id is >= 200 and <= 299 && x.JobId == (int) session.Player.JobCode) ??
                        scriptMetadata.NpcScripts.FirstOrDefault(x => x.Id == 200);
             }
         }
 
         // Talking to npc that end the quest
-        return scriptMetadata.NpcScripts.FirstOrDefault(x => x.Id >= 300 && x.JobId == (int) session.Player.Job) ??
+        return scriptMetadata.NpcScripts.FirstOrDefault(x => x.Id >= 300 && x.JobId == (int) session.Player.JobCode) ??
                scriptMetadata.NpcScripts.FirstOrDefault(x => x.Id == 300);
     }
 

@@ -21,8 +21,8 @@ public static class ItemBoxHelper
         {
             if (dropContent.SmartDropRate == 100)
             {
-                List<Job> recommendJobs = ItemMetadataStorage.GetRecommendJobs(id);
-                if (!recommendJobs.Contains(player.Job) && !recommendJobs.Contains(Job.None))
+                List<JobCode> recommendJobs = ItemMetadataStorage.GetRecommendJobs(id);
+                if (!recommendJobs.Contains(player.JobCode) && !recommendJobs.Contains(JobCode.None))
                 {
                     continue;
                 }
@@ -78,8 +78,8 @@ public static class ItemBoxHelper
             {
                 if (dropGroupContent.SmartDropRate == 100)
                 {
-                    List<Job> recommendJobs = ItemMetadataStorage.GetRecommendJobs(dropGroupContent.ItemIds.First());
-                    if (recommendJobs.Contains(session.Player.Job) || recommendJobs.Contains(Job.None))
+                    List<JobCode> recommendJobs = ItemMetadataStorage.GetRecommendJobs(dropGroupContent.ItemIds.First());
+                    if (recommendJobs.Contains(session.Player.JobCode) || recommendJobs.Contains(JobCode.None))
                     {
                         dropContentsList.Add(dropGroupContent);
                     }

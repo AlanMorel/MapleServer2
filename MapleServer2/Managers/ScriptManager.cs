@@ -30,7 +30,7 @@ public class ScriptManager
         private Account Account => Player.Account;
 
         // Attributes need to be public so LUA scripts can access it.
-        public int JobId => (int) Player.Job;
+        public int JobId => (int) Player.JobCode;
         public int MapId => Player.MapId;
         public int Level => Player.Levels.Level;
         public long MesoAmount => Wallet.Meso.Amount;

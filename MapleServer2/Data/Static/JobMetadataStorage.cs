@@ -20,16 +20,16 @@ public static class JobMetadataStorage
         }
     }
 
-    public static JobMetadata? GetJobMetadata(Job job)
+    public static JobMetadata? GetJobMetadata(JobCode jobCode)
     {
-        return Jobs.GetValueOrDefault((int) job);
+        return Jobs.GetValueOrDefault((int) jobCode);
     }
 
-    public static List<TutorialItemMetadata>? GetTutorialItems(Job job) => GetJobMetadata(job)?.TutorialItems;
+    public static List<TutorialItemMetadata>? GetTutorialItems(JobCode jobCode) => GetJobMetadata(jobCode)?.TutorialItems;
 
-    public static List<JobLearnedSkillsMetadata>? GetLearnedSkills(Job job) => GetJobMetadata(job)?.LearnedSkills;
+    public static List<JobLearnedSkillsMetadata>? GetLearnedSkills(JobCode jobCode) => GetJobMetadata(jobCode)?.LearnedSkills;
 
-    public static List<JobSkillMetadata>? GetJobSkills(Job job) => GetJobMetadata(job)?.Skills;
+    public static List<JobSkillMetadata>? GetJobSkills(JobCode jobCode) => GetJobMetadata(jobCode)?.Skills;
 
-    public static int? GetStartMapId(Job job) => GetJobMetadata(job)?.StartMapId;
+    public static int? GetStartMapId(JobCode jobCode) => GetJobMetadata(jobCode)?.StartMapId;
 }

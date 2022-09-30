@@ -190,8 +190,8 @@ public static class BuddyPacket
         pWriter.WriteUnicodeString(buddy.Message);
         pWriter.WriteShort();
         pWriter.WriteInt(buddy.Friend.Account.Home?.MapId ?? 0);
-        pWriter.Write(buddy.Friend.Job);
         pWriter.Write(buddy.Friend.JobCode);
+        pWriter.Write(buddy.Friend.SubJobCode);
         pWriter.WriteShort(buddy.Friend.Levels.Level);
         pWriter.WriteBool(buddy.IsFriendRequest);
         pWriter.WriteBool(buddy.IsPending);

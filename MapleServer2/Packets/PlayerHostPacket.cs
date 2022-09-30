@@ -81,7 +81,7 @@ public static class PlayerHostPacket
         pWriter.WriteUnicodeString(balloon.Owner.ProfileUrl);
         pWriter.WriteUnicodeString(balloon.Owner.Name);
         pWriter.WriteShort(balloon.Owner.Levels.Level);
-        pWriter.Write(balloon.Owner.Job);
+        pWriter.Write(balloon.Owner.JobCode);
         pWriter.WriteUnicodeString(balloon.Title);
         pWriter.WriteUnicodeString(balloon.Description);
         pWriter.WriteBool(balloon.PublicHouse);

@@ -548,8 +548,8 @@ public static class GuildPacket
         pWriter.WriteLong(player.CharacterId);
         pWriter.WriteUnicodeString(player.Name);
         pWriter.WriteUnicodeString(player.ProfileUrl);
-        pWriter.Write(player.Job);
         pWriter.Write(player.JobCode);
+        pWriter.Write(player.SubJobCode);
         pWriter.WriteInt(player.Levels.Level);
         foreach (int trophyCategory in player.TrophyCount)
         {
@@ -903,8 +903,8 @@ public static class GuildPacket
         pWriter.WriteLong(member.CharacterId);
         pWriter.WriteUnicodeString(member.Name);
         pWriter.Write(member.Gender);
-        pWriter.Write(member.Job);
         pWriter.Write(member.JobCode);
+        pWriter.Write(member.SubJobCode);
         pWriter.WriteShort(member.Levels.Level);
         pWriter.WriteInt(); // player gearscore
         pWriter.WriteInt(member.MapId);
