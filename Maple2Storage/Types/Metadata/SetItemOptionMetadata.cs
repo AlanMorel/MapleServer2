@@ -28,11 +28,11 @@ public class SetBonusMetadata
     [XmlElement(Order = 6)]
     public SgiTarget SgiBossTarget;
 
-    public SetBonusMetadata()
+    public SetBonusMetadata(int[]? additionalEffectIds = null, int[]? additionalEffectLevels = null, Dictionary<StatAttribute, EffectStatMetadata>? stats = null)
     {
         Count = 0;
-        AdditionalEffectIds = new int[0];
-        AdditionalEffectLevels = new int[0];
-        Stats = new();
+        AdditionalEffectIds = additionalEffectIds ?? Array.Empty<int>();
+        AdditionalEffectLevels = additionalEffectLevels ?? Array.Empty<int>();
+        Stats = stats ?? new();
     }
 }

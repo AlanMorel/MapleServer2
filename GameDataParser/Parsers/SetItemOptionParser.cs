@@ -45,12 +45,9 @@ public class SetItemOptionParser : Exporter<List<SetItemOptionMetadata>>
                     int[] additionalEffectLevel = partNode.Attributes["additionalEffectLevel"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>();
                     Dictionary<StatAttribute, EffectStatMetadata> stats = new();
 
-                    SetBonusMetadata setBonus = new()
+                    SetBonusMetadata setBonus = new(additionalEffectID, additionalEffectLevel, stats)
                     {
-                        Count = count,
-                        AdditionalEffectIds = additionalEffectID,
-                        AdditionalEffectLevels = additionalEffectLevel,
-                        Stats = stats
+                        Count = count
                     };
 
                     foreach (XmlAttribute attribute in partNode.Attributes)

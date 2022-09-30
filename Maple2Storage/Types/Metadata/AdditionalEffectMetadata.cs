@@ -203,11 +203,11 @@ public class EffectImmuneEffectMetadata
 public class EffectResetSkillCooldownTimeMetadata
 {
     [XmlElement(Order = 1)]
-    public int[] SkillCodes;
+    public long[] SkillCodes;
 
     public EffectResetSkillCooldownTimeMetadata()
     {
-        SkillCodes = Array.Empty<int>();
+        SkillCodes = Array.Empty<long>();
     }
 }
 

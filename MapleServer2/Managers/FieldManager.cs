@@ -1329,7 +1329,7 @@ public class FieldManager
                     continue;
                 }
 
-                player.AdditionalEffects.AddEffect(new(70000018, 1));
+                player.AdditionalEffects.AddEffect(new(70000018, 1)); // applies a healing effect to the player
             }
         }
     }

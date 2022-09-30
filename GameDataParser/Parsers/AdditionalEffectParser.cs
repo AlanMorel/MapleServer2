@@ -362,7 +362,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                 {
                     level.ResetCoolDownTime = new()
                     {
-                        SkillCodes = cooldownReset.skillCodes
+                        SkillCodes = cooldownReset.skillCodes.Select(x => (long) x).ToArray()
                     };
                 }
 
