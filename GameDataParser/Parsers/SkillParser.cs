@@ -221,8 +221,6 @@ public class SkillParser : Exporter<List<SkillMetadata>>
     {
         SkillBeginCondition beginCondition = null;
 
-        int count = 0;
-
         foreach (XmlNode beginNode in parent.SelectNodes("beginCondition"))
         {
             // <stat> can only contain hp, sp, and ep

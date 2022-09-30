@@ -31,18 +31,12 @@ public class SetItemInfoParser : Exporter<List<SetItemInfoMetadata>>
                 int id = int.Parse(node.Attributes["id"].Value);
                 int[] itemIds = node.Attributes["itemIDs"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>();
                 int optionId = int.Parse(node.Attributes["optionID"].Value);
-                string feature = node.Attributes["feature"]?.Value ?? "";
-                bool showEffectIfItsSetItemMotion = int.Parse(node.Attributes["showEffectIfItsSetItemMotion"]?.Value ?? "0") == 1;
-                bool isDisableTooltip = node.Attributes["isDisableTooltip"]?.Value == "true";
 
                 sets.Add(new()
                 {
                     Id = id,
                     ItemIds = itemIds,
                     OptionId = optionId,
-                    Feature = feature,
-                    ShowEffectIfItsSetItemMotion = showEffectIfItsSetItemMotion,
-                    IsDisableTooltip = isDisableTooltip
                 });
             }
         }

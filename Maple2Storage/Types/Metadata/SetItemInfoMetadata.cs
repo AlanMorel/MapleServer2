@@ -12,10 +12,4 @@ public class SetItemInfoMetadata
     public int[] ItemIds;
     [XmlElement(Order = 3)]
     public int OptionId;
-    [XmlElement(Order = 4)]
-    public string Feature;
-    [XmlElement(Order = 5)]
-    public bool ShowEffectIfItsSetItemMotion;
-    [XmlElement(Order = 6)]
-    public bool IsDisableTooltip;
 }
