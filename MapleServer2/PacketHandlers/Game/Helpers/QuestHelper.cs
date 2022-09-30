@@ -8,7 +8,7 @@ public static class QuestHelper
 {
     public static void GetNewQuests(Player player)
     {
-        List<QuestMetadata> questList = QuestMetadataStorage.GetAvailableQuests(player.Levels.Level, player.Job);
+        List<QuestMetadata> questList = QuestMetadataStorage.GetAvailableQuests(player.Levels.Level, player.JobCode);
         foreach (QuestMetadata quest in questList)
         {
             if (player.QuestData.ContainsKey(quest.Basic.Id))

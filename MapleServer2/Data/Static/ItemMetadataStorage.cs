@@ -125,23 +125,23 @@ public static class ItemMetadataStorage
 
     public static bool? IsFusionable(int itemId) => GetMetadata(itemId)?.Fusion.Fusionable;
 
-    public static List<Job> GetRecommendJobs(int itemId)
+    public static List<JobCode> GetRecommendJobs(int itemId)
     {
-        static Job Converter(int integer) => (Job) integer;
+        static JobCode Converter(int integer) => (JobCode) integer;
 
-        return GetMetadata(itemId)?.Limit.JobRecommendations?.ConvertAll(Converter) ?? new List<Job>
+        return GetMetadata(itemId)?.Limit.JobRecommendations?.ConvertAll(Converter) ?? new List<JobCode>
         {
-            Job.None
+            JobCode.None
         };
     }
 
-    public static List<Job> GetRequiredJobs(int itemId)
+    public static List<JobCode> GetRequiredJobs(int itemId)
     {
-        static Job Converter(int integer) => (Job) integer;
+        static JobCode Converter(int integer) => (JobCode) integer;
 
-        return GetMetadata(itemId)?.Limit.JobRequirements?.ConvertAll(Converter) ?? new List<Job>
+        return GetMetadata(itemId)?.Limit.JobRequirements?.ConvertAll(Converter) ?? new List<JobCode>
         {
-            Job.None
+            JobCode.None
         };
     }
 

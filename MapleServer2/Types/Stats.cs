@@ -161,29 +161,29 @@ public class Stats
         };
     }
 
-    public Stats(Job job)
+    public Stats(JobCode jobCode)
     {
         Data = new()
         {
             {
                 StatAttribute.Str,
-                new(BaseStats.Strength(job, 1))
+                new(BaseStats.Strength(jobCode, 1))
             },
             {
                 StatAttribute.Dex,
-                new(BaseStats.Dexterity(job, 1))
+                new(BaseStats.Dexterity(jobCode, 1))
             },
             {
                 StatAttribute.Int,
-                new(BaseStats.Intelligence(job, 1))
+                new(BaseStats.Intelligence(jobCode, 1))
             },
             {
                 StatAttribute.Luk,
-                new(BaseStats.Luck(job, 1))
+                new(BaseStats.Luck(jobCode, 1))
             },
             {
                 StatAttribute.Hp,
-                new(BaseStats.Health(job, 1)) // Max = 0 on login
+                new(BaseStats.Health(jobCode, 1)) // Max = 0 on login
             },
             {
                 StatAttribute.HpRegen,
@@ -227,15 +227,15 @@ public class Stats
             },
             {
                 StatAttribute.Accuracy,
-                new(BaseStats.Accuracy(job, 1))
+                new(BaseStats.Accuracy(jobCode, 1))
             },
             {
                 StatAttribute.Evasion,
-                new(BaseStats.Evasion(job, 1)) // TODO: changes with job
+                new(BaseStats.Evasion(jobCode, 1)) // TODO: changes with job
             },
             {
                 StatAttribute.CritRate,
-                new(BaseStats.CriticalRate(job, 1)) // TODO: changes with job
+                new(BaseStats.CriticalRate(jobCode, 1)) // TODO: changes with job
             },
             {
                 StatAttribute.CritDamage,
@@ -372,11 +372,11 @@ public class Stats
     // TODO: level 50+ has a different formula
     public void AddBaseStats(Player player, short level = 1)
     {
-        long str = BaseStats.Strength(player.Job, level);
-        long dex = BaseStats.Dexterity(player.Job, level);
-        long luk = BaseStats.Luck(player.Job, level);
-        long inte = BaseStats.Intelligence(player.Job, level);
-        long hp = BaseStats.Health(player.Job, level);
+        long str = BaseStats.Strength(player.JobCode, level);
+        long dex = BaseStats.Dexterity(player.JobCode, level);
+        long luk = BaseStats.Luck(player.JobCode, level);
+        long inte = BaseStats.Intelligence(player.JobCode, level);
+        long hp = BaseStats.Health(player.JobCode, level);
 
         Data[StatAttribute.Str].Value.BaseLong = str;
         Data[StatAttribute.Dex].Value.BaseLong = dex;
@@ -384,8 +384,8 @@ public class Stats
         Data[StatAttribute.Int].Value.BaseLong = inte;
         Data[StatAttribute.Hp].Value.BaseLong = hp;
 
-        Data[StatAttribute.PhysicalAtk].Value.BaseLong = BaseStats.PhysicalAttack(player.Job, str, dex, luk);
-        Data[StatAttribute.MagicAtk].Value.BaseLong = BaseStats.MagicAttack(player.Job, inte);
+        Data[StatAttribute.PhysicalAtk].Value.BaseLong = BaseStats.PhysicalAttack(player.JobCode, str, dex, luk);
+        Data[StatAttribute.MagicAtk].Value.BaseLong = BaseStats.MagicAttack(player.JobCode, inte);
     }
 
     public void AddAttackBonus(Player player)
@@ -396,8 +396,8 @@ public class Stats
         long inte = Data[StatAttribute.Int].Value.BonusAmountLong;
         long hp = Data[StatAttribute.Hp].Value.BonusAmountLong;
 
-        Data[StatAttribute.PhysicalAtk].AddBonus(BaseStats.PhysicalAttack(player.Job, str, dex, luk));
-        Data[StatAttribute.MagicAtk].AddBonus(BaseStats.MagicAttack(player.Job, inte));
+        Data[StatAttribute.PhysicalAtk].AddBonus(BaseStats.PhysicalAttack(player.JobCode, str, dex, luk));
+        Data[StatAttribute.MagicAtk].AddBonus(BaseStats.MagicAttack(player.JobCode, inte));
     }
 
     public void AddStat(StatAttribute attribute, StatAttributeType type, long flat, float rate)

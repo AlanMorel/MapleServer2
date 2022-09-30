@@ -25,7 +25,7 @@ public class Item
     public Gender Gender { get; private set; }
     public string FileName { get; set; }
     public int SkillId { get; set; }
-    public List<Job> RecommendJobs { get; set; }
+    public List<JobCode> RecommendJobs { get; set; }
     public ItemFunctionMetadata Function { get; set; }
     public string Tag { get; set; }
     public int ShopID { get; set; }
@@ -400,8 +400,8 @@ public class Item
             return false;
         }
 
-        List<Job> jobs = ItemMetadataStorage.GetRequiredJobs(Id);
-        if (!jobs.Contains(Job.None) && !jobs.Contains(session.Player.Job))
+        List<JobCode> jobs = ItemMetadataStorage.GetRequiredJobs(Id);
+        if (!jobs.Contains(JobCode.None) && !jobs.Contains(session.Player.JobCode))
         {
             session.Send(NoticePacket.Notice(SystemNotice.ItemErrPutonJob, noticeType));
             return false;
@@ -446,8 +446,8 @@ public class Item
             return false;
         }
 
-        List<Job> jobs = ItemMetadataStorage.GetRequiredJobs(Id);
-        if (!jobs.Contains(Job.None) && !jobs.Contains(session.Player.Job))
+        List<JobCode> jobs = ItemMetadataStorage.GetRequiredJobs(Id);
+        if (!jobs.Contains(JobCode.None) && !jobs.Contains(session.Player.JobCode))
         {
             session.Send(NoticePacket.Notice(SystemNotice.ItemErrDisableJob, noticeType));
             return false;

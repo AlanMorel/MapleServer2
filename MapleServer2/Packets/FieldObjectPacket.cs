@@ -33,8 +33,8 @@ public static class FieldObjectPacket
         pWriter.WriteByte();
         pWriter.Write(fieldPlayer.Coord);
         pWriter.WriteShort(player.Levels.Level);
-        pWriter.WriteShort((short) player.Job);
         pWriter.WriteShort((short) player.JobCode);
+        pWriter.WriteShort((short) player.SubJobCode);
         pWriter.WriteShort();
         pWriter.WriteInt(player.MapId);
         pWriter.WriteLong(1); // unk

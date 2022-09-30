@@ -122,7 +122,7 @@ public class DamageHandler
 
         if (source is IFieldActor<Player> player)
         {
-            luckCoefficient = GetClassLuckCoefficient(player.Value.Job);
+            luckCoefficient = GetClassLuckCoefficient(player.Value.JobCode);
 
             double bonusAttack = player.Stats[StatAttribute.BonusAtk].Total + Constant.PetAttackMultiplier * player.Stats[StatAttribute.PetBonusAtk].Total;
 
@@ -293,47 +293,47 @@ public class DamageHandler
         return weaponBonusAttackCoeff;
     }
 
-    private static double GetClassBonusAttackMultiplier(Job job)
+    private static double GetClassBonusAttackMultiplier(JobCode jobCode)
     {
-        return job switch
+        return jobCode switch
         {
-            Job.Beginner => 1.039,
-            Job.Knight => 1.105,
-            Job.Berserker => 1.354,
-            Job.Wizard => 1.398,
-            Job.Priest => 0.975,
-            Job.Archer => 1.143,
-            Job.HeavyGunner => 1.364,
-            Job.Thief => 1.151,
-            Job.Assassin => 1.114,
-            Job.Runeblade => 1.259,
-            Job.Striker => 1.264,
-            Job.SoulBinder => 1.177,
+            JobCode.Beginner => 1.039,
+            JobCode.Knight => 1.105,
+            JobCode.Berserker => 1.354,
+            JobCode.Wizard => 1.398,
+            JobCode.Priest => 0.975,
+            JobCode.Archer => 1.143,
+            JobCode.HeavyGunner => 1.364,
+            JobCode.Thief => 1.151,
+            JobCode.Assassin => 1.114,
+            JobCode.Runeblade => 1.259,
+            JobCode.Striker => 1.264,
+            JobCode.SoulBinder => 1.177,
             _ => 1,
         };
     }
 
     private static double GetBonusAttackCoefficient(Player player)
     {
-        return 4.96 * GetWeaponBonusAttackMultiplier(player) * GetClassBonusAttackMultiplier(player.Job);
+        return 4.96 * GetWeaponBonusAttackMultiplier(player) * GetClassBonusAttackMultiplier(player.JobCode);
     }
 
-    private static double GetClassLuckCoefficient(Job job)
+    private static double GetClassLuckCoefficient(JobCode jobCode)
     {
-        return job switch
+        return jobCode switch
         {
-            Job.Beginner => 1,
-            Job.Knight => 3.78,
-            Job.Berserker => 4.305,
-            Job.Wizard => 3.40375,
-            Job.Priest => 7.34125,
-            Job.Archer => 6.4575,
-            Job.HeavyGunner => 2.03875,
-            Job.Thief => 0.60375,
-            Job.Assassin => 0.55125,
-            Job.Runeblade => 3.78,
-            Job.Striker => 2.03875,
-            Job.SoulBinder => 3.40375,
+            JobCode.Beginner => 1,
+            JobCode.Knight => 3.78,
+            JobCode.Berserker => 4.305,
+            JobCode.Wizard => 3.40375,
+            JobCode.Priest => 7.34125,
+            JobCode.Archer => 6.4575,
+            JobCode.HeavyGunner => 2.03875,
+            JobCode.Thief => 0.60375,
+            JobCode.Assassin => 0.55125,
+            JobCode.Runeblade => 3.78,
+            JobCode.Striker => 2.03875,
+            JobCode.SoulBinder => 3.40375,
             _ => 1,
         };
     }

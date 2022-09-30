@@ -10,7 +10,7 @@ public class GameOptions
     public List<Hotbar> Hotbars { get; private set; }
     public short ActiveHotbarId { get; private set; }
 
-    public GameOptions(Job job)
+    public GameOptions(JobCode jobCode)
     {
         KeyBinds = new();
         Id = DatabaseManager.GameOptions.Insert(this);
@@ -22,7 +22,7 @@ public class GameOptions
         {
             if (i == 0)
             {
-                Hotbars.Add(new(Id, job));
+                Hotbars.Add(new(Id, jobCode));
                 continue;
             }
 

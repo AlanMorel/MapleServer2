@@ -138,7 +138,7 @@ public class Levels
         Session.FieldManager.BroadcastPacket(FieldObjectPacket.UpdateCharacterLevel(Player));
 
         // Find all new skills for current level
-        HashSet<int> newSkillIds = SkillMetadataStorage.GetJobSkills(Player.Job)
+        HashSet<int> newSkillIds = SkillMetadataStorage.GetJobSkills(Player.JobCode)
             .Where(x => x.SkillLevels.First().SkillUpgrade.LevelRequired == Level)
             .Select(x => x.SkillId).ToHashSet();
         Session.FieldManager.BroadcastPacket(JobPacket.UpdateSkillTab(FieldPlayer, newSkillIds));
