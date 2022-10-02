@@ -693,6 +693,22 @@ public class Player
             FieldPlayer.IncreaseStats(effect);
         }
 
+        foreach (SetBonus setBonus in Inventory.SetBonuses)
+        {
+            foreach (SetBonusMetadata bonus in setBonus.Bonuses.Parts)
+            {
+                if (bonus.Count > setBonus.EquipCount)
+                {
+                    continue;
+                }
+
+                foreach ((StatAttribute attribute, EffectStatMetadata stat) in bonus.Stats)
+                {
+                    Stats.AddStat(attribute, stat.AttributeType, stat.Flat, stat.Rate);
+                }
+            }
+        }
+
         Stats.ComputeStatBonuses();
 
         if (JobCode == JobCode.Runeblade)
@@ -744,7 +760,7 @@ public class Player
 
         for (int i = 0; i < effects.Level.Length; ++i)
         {
-            AdditionalEffects.RemoveEffect(effects.Id[i], effects.Level[i]);
+            AdditionalEffects.GetEffect(effects.Id[i], 0, ConditionOperator.GreaterEquals, effects.Level[i], FieldPlayer);
         }
     }
 
@@ -759,12 +775,6 @@ public class Player
         {
             PassiveSkillEffects[id] = level;
         }
-
-        EffectTriggers triggers = new()
-        {
-            Caster = FieldPlayer,
-            Owner = FieldPlayer
-        };
 
         foreach ((int id, short level) in PassiveSkillEffects)
         {
@@ -786,7 +796,7 @@ public class Player
                 {
                     foreach (int skillId in trigger.SkillId)
                     {
-                        AdditionalEffects.RemoveEffect(skillId, level);
+                        AdditionalEffects.GetEffect(skillId, 0, ConditionOperator.GreaterEquals, level).Stop(FieldPlayer);
                     }
                 }
 
@@ -805,8 +815,7 @@ public class Player
 
             EnabledPassiveSkillEffects[id] = skillLevel;
 
-            //AdditionalEffects.AddEffect(new(id, level));
-            FieldPlayer.SkillTriggerHandler.FireTriggers(skillLevel.ConditionSkills, triggers);
+            FieldPlayer.SkillTriggerHandler.FireTriggerSkills(skillLevel.ConditionSkills, new(id, level, 0, 0), new(FieldPlayer, FieldPlayer, FieldPlayer));
         }
     }
 }

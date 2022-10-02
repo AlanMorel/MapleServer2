@@ -16,8 +16,10 @@ public class DamageSourceParameters
     public SkillRangeType RangeType;
     public DamageType DamageType;
     public int[] SkillGroups;
+    public int EventGroup;
     public float DamageRate;
     public SkillCast ParentSkill;
+    public int Id;
 
     public DamageSourceParameters()
     {
@@ -27,9 +29,11 @@ public class DamageSourceParameters
         Element = Element.None;
         RangeType = SkillRangeType.Special;
         SkillGroups = null;
+        EventGroup = 0;
         DamageRate = 0;
         DamageType = DamageType.None;
         ParentSkill = null;
+        Id = 0;
     }
 }
 
@@ -48,11 +52,14 @@ public class DamageHandler
         HitType = hitType;
     }
 
-    public static DamageHandler CalculateDamage(SkillCast skill, IFieldActor<Player> source, IFieldActor target)
+    public static DamageHandler CalculateDamage(SkillCast skill, IFieldActor source, IFieldActor target)
     {
-        if (source.Value.GmFlags.Contains("oneshot"))
+        if (source is Managers.Actors.Character character)
         {
-            return new(source, target, target.Stats[StatAttribute.Hp].Total, HitType.Critical);
+            if (character.Value.GmFlags.Contains("oneshot"))
+            {
+                return new(source, target, target.Stats[StatAttribute.Hp].Total, HitType.Critical);
+            }
         }
 
         if (target.AdditionalEffects.Invincible)
@@ -69,6 +76,7 @@ public class DamageHandler
             DamageType = skill.GetSkillDamageType(),
             SkillGroups = skill.GetSkillGroups(),
             DamageRate = skill.GetDamageRate(),
+            Id = skill.SkillId
         };
 
         // get luck coefficient from class. new stat recommended, can be refactored away like isCrit was
@@ -195,8 +203,18 @@ public class DamageHandler
 
         damageBonus += AttackSpeedWeakness * FetchMultiplier(source.Stats, StatAttribute.AttackSpeed);
 
-        StatGroup skillModifier = source.Stats.GetSkillStats(parameters.SkillGroups);
-        double damageMultiplier = damageBonus * skillModifier.Rate * (parameters.DamageRate + skillModifier.Value);
+        InvokeStatValue skillModifier;
+
+        if (parameters.IsSkill)
+        {
+            skillModifier = source.Stats.GetSkillStats(parameters.Id, parameters.SkillGroups, InvokeEffectType.IncreaseSkillDamage);
+        }
+        else
+        {
+            skillModifier = source.Stats.GetEffectStats(parameters.Id, parameters.EventGroup, InvokeEffectType.IncreaseDotDamage);
+        }
+
+        double damageMultiplier = damageBonus * (1 + skillModifier.Rate) * (parameters.DamageRate + skillModifier.Value);
 
         // TODO: properly fetch enemy pierce resistance from enemy buff. new stat recommended
         const double EnemyPierceResistance = 1;

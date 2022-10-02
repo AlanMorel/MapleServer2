@@ -124,7 +124,6 @@ public class PremiumClubHandler : GamePacketHandler<PremiumClubHandler>
         {
             session.Player.FieldPlayer.AdditionalEffects.AddEffect(new(effect.EffectId, effect.EffectLevel)
             {
-                Duration = (int) (Math.Min(account.VIPExpiration - TimeInfo.Now(), 0x0FFFFFFF)),
                 IsBuff = true
             });
         }

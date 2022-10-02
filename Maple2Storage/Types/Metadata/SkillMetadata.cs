@@ -155,12 +155,14 @@ public class SkillAttack
     public readonly DamageProperty DamageProperty;
     [XmlElement(Order = 8)]
     public readonly int[] CompulsionType;
+    [XmlElement(Order = 9)]
+    public readonly SkillDirection Direction;
 
     public SkillAttack() { }
 
     public SkillAttack(byte attackPoint, short targetCount, long magicPathId, long cubeMagicPathId, RangeProperty rangeProperty,
         List<SkillCondition> skillConditions,
-        DamageProperty damageProperty, int[] compulsionType)
+        DamageProperty damageProperty, int[] compulsionType, SkillDirection direction)
     {
         AttackPoint = attackPoint;
         TargetCount = targetCount;
@@ -170,6 +172,7 @@ public class SkillAttack
         SkillConditions = skillConditions;
         DamageProperty = damageProperty;
         CompulsionType = compulsionType;
+        Direction = direction;
     }
 
     public override string ToString()
@@ -185,14 +188,17 @@ public class DamageProperty
     public readonly float DamageRate;
     [XmlElement(Order = 2)]
     public readonly float HitSpeedRate;
+    [XmlElement(Order = 3)]
+    public readonly int Count;
     // TODO: Parse push attributes.
 
     public DamageProperty() { }
 
-    public DamageProperty(float damageRate, float hitSpeedRate)
+    public DamageProperty(float damageRate, float hitSpeedRate, int count)
     {
         DamageRate = damageRate;
         HitSpeedRate = hitSpeedRate;
+        Count = count;
     }
 }
 
@@ -268,7 +274,7 @@ public class SkillCondition
     [XmlElement(Order = 3)]
     public readonly bool IsSplash;
     [XmlElement(Order = 4)]
-    public readonly ApplyTarget Target;
+    public readonly SkillTarget Target;
     [XmlElement(Order = 5)]
     public readonly SkillOwner Owner;
     [XmlElement(Order = 6)]
@@ -285,6 +291,22 @@ public class SkillCondition
     public SkillBeginCondition BeginCondition;
     [XmlElement(Order = 12)]
     public bool UseDirection;
+    [XmlElement(Order = 13)]
+    public bool RandomCast;
+    [XmlElement(Order = 14)]
+    public int[] LinkSkillId;
+    [XmlElement(Order = 15)]
+    public int OverlapCount;
+    [XmlElement(Order = 16)]
+    public bool NonTargetActive;
+    [XmlElement(Order = 17)]
+    public bool OnlySensingActive;
+    [XmlElement(Order = 18)]
+    public bool DependOnCasterState;
+    [XmlElement(Order = 19)]
+    public bool ActiveByIntervalTick;
+    [XmlElement(Order = 20)]
+    public bool DependOnDamageCount;
 
     public SkillCondition() { }
 
@@ -293,7 +315,7 @@ public class SkillCondition
         SkillId = skillId;
         SkillLevel = skillLevel;
         IsSplash = isSplash;
-        Target = (ApplyTarget) target;
+        Target = (SkillTarget) target;
         Owner = (SkillOwner) owner;
         FireCount = fireCount;
         Interval = interval;
@@ -320,6 +342,45 @@ public class SkillBeginCondition
 
     [XmlElement(Order = 4)]
     public BeginConditionSubject Caster;
+
+    [XmlElement(Order = 5)]
+    public float InvokeEffectFactor;
+
+    [XmlElement(Order = 6)]
+    public float CooldownTime;
+
+    [XmlElement(Order = 7)]
+    public float DefaultRechargingCooldownTime;
+
+    [XmlElement(Order = 8)]
+    public bool AllowDeadState;
+
+    [XmlElement(Order = 9)]
+    public float RequireDurationWithoutMove;
+
+    [XmlElement(Order = 10)]
+    public bool UseTargetCountFactor;
+
+    [XmlElement(Order = 11)]
+    public StatCondition? Stat;
+
+    [XmlElement(Order = 12)]
+    public List<RequireSkillCodeCondition> RequireSkillCodes;
+
+    [XmlElement(Order = 13)]
+    public List<RequireMapCodeCondition> RequireMapCodes;
+
+    [XmlElement(Order = 14)]
+    public List<RequireMapCategoryCodeCondition> RequireMapCategoryCodes;
+
+    [XmlElement(Order = 15)]
+    public List<RequireDungeonRoomCondition> RequireDungeonRooms;
+
+    [XmlElement(Order = 16)]
+    public List<JobCondition> Jobs;
+
+    [XmlElement(Order = 17)]
+    public List<RequireContinentCondition> MapContinents;
 }
 
 [XmlType]
@@ -332,13 +393,118 @@ public class BeginConditionSubject
     public int[] EventEffectIDs;
 
     [XmlElement(Order = 3)]
-    public int HasBuffId;
+    public int RequireBuffId;
 
     [XmlElement(Order = 4)]
-    public int HasBuffCount;
+    public int RequireBuffCount;
 
     [XmlElement(Order = 5)]
     public int HasNotBuffId;
+
+    [XmlElement(Order = 6)]
+    public EffectEvent EventCondition;
+
+    [XmlElement(Order = 7)]
+    public int IgnoreOwnerEvent;
+    // 0: require specific ids with the event
+    // 1: dont require specific ids with the event
+    // ID: ignore specific event ids
+
+    [XmlElement(Order = 8)]
+    public int TargetCheckRange;
+
+    [XmlElement(Order = 9)]
+    public int TargetCheckMinRange;
+
+    [XmlElement(Order = 10)]
+    public int TargetInRangeCount;
+
+    [XmlElement(Order = 11)]
+    public TargetAllieganceType TargetFriendly;
+
+    [XmlElement(Order = 12)]
+    public ConditionOperator TargetCountSign;
+
+    [XmlElement(Order = 13)]
+    public CompareStatCondition? CompareStat;
+
+    [XmlElement(Order = 14)]
+    public ConditionOperator RequireBuffCountCompare;
+
+    [XmlElement(Order = 15)]
+    public int RequireBuffLevel;
+}
+
+[XmlType]
+public class CompareStatCondition
+{
+    [XmlElement(Order = 1)]
+    public int Hp;
+
+    [XmlElement(Order = 2)]
+    public ConditionOperator Func;
+}
+
+[XmlType]
+public class StatCondition
+{
+    [XmlElement(Order = 1)]
+    public int Hp;
+
+    [XmlElement(Order = 2)]
+    public int Sp;
+}
+
+[XmlType]
+public class RequireSkillCodeCondition
+{
+    [XmlElement(Order = 1)]
+    public int[] Code;
+}
+
+[XmlType]
+public class RequireMapCodeCondition
+{
+    [XmlElement(Order = 1)]
+    public int[] Code;
+}
+
+[XmlType]
+public class RequireMapCategoryCodeCondition
+{
+    [XmlElement(Order = 1)]
+    public int[] Code;
+}
+
+[XmlType]
+public class RequireDungeonRoomCondition
+{
+    [XmlElement(Order = 1)]
+    public DungeonRoomGroupType[] Code;
+}
+
+[XmlType]
+public class JobCondition
+{
+    [XmlElement(Order = 1)]
+    public int[] Code;
+}
+
+[XmlType]
+public class RequireContinentCondition
+{
+    [XmlElement(Order = 1)]
+    public ContinentCode Code;
+}
+
+[XmlType]
+public class WeaponCondition
+{
+    [XmlElement(Order = 1)]
+    public ItemPresetType LeftHand;
+
+    [XmlElement(Order = 2)]
+    public ItemPresetType RightHand;
 }
 
 [XmlType]
@@ -354,15 +520,18 @@ public class RangeProperty
     public readonly CoordF RangeAdd;
     [XmlElement(Order = 5)]
     public readonly CoordF RangeOffset;
+    [XmlElement(Order = 6)]
+    public readonly ApplyTarget ApplyTarget;
 
     public RangeProperty() { }
 
-    public RangeProperty(bool includeCaster, string rangeType, int distance, CoordF rangeAdd, CoordF rangeOffset)
+    public RangeProperty(bool includeCaster, string rangeType, int distance, CoordF rangeAdd, CoordF rangeOffset, ApplyTarget applyTarget)
     {
         IncludeCaster = includeCaster;
         RangeType = rangeType;
         Distance = distance;
         RangeAdd = rangeAdd;
         RangeOffset = rangeOffset;
+        ApplyTarget = applyTarget;
     }
 }

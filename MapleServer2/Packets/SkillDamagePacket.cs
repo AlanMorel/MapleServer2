@@ -115,6 +115,21 @@ public static class SkillDamagePacket
         return pWriter;
     }
 
+    public static PacketWriter Heal(AdditionalEffect effect, int healAmount)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.SkillDamage);
+
+        pWriter.Write(Mode.Heal);
+        pWriter.WriteInt(effect.Caster.ObjectId);
+        pWriter.WriteInt(effect.Parent.ObjectId);
+        pWriter.WriteInt(effect.BuffId);
+        pWriter.WriteInt(healAmount);
+        pWriter.WriteLong();
+        pWriter.WriteByte(1);
+
+        return pWriter;
+    }
+
     public static PacketWriter RegionDamage(SkillCast skillCast, List<DamageHandler> damageHandlers)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.SkillDamage);

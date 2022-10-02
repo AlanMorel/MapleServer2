@@ -10,15 +10,15 @@ public class SkillCast
 {
     public long SkillSn { get; }
     public int SkillObjectId { get; set; }
-    public int SkillId { get; }
-    public short SkillLevel { get; }
+    public int SkillId;
+    public short SkillLevel;
     public int ClientTick { get; }
     public int ServerTick { get; }
     public byte MotionPoint { get; }
     public byte AttackPoint { get; set; }
     public int Duration;
     public int Interval;
-    public SkillCast ParentSkill { get; }
+    public SkillCast? ParentSkill;
 
     public SkillAttack SkillAttack;
 
@@ -29,7 +29,7 @@ public class SkillCast
     public float AimAngle;
 
     public IFieldActor Caster;
-    public IFieldActor<NpcMetadata> Target;
+    public IFieldActor Target;
     public IFieldActor Owner; // who the skill was casted at, not necessarily the same as caster
 
     public bool MetadataExists => GetSkillMetadata() is not null;
