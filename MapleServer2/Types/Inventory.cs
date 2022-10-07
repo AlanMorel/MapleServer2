@@ -399,6 +399,30 @@ public sealed class Inventory : IInventory
                 TryUnequip(session, equip.Uid);
             }
         }
+        
+        // unequip two slot items if new one slot item replaces it
+        switch (equipSlot)
+        {
+            case ItemSlot.PA:
+                if (equippedInventory.ContainsKey(ItemSlot.CL))
+                {
+                    if (ItemMetadataStorage.GetItemSlots(equippedInventory[ItemSlot.CL].Id).Count > 1)
+                    {
+                        TryUnequip(session, equippedInventory[ItemSlot.CL].Uid);
+                    }
+                }
+                break;
+            case ItemSlot.LH:
+            case ItemSlot.RH:
+                if (equippedInventory.ContainsKey(ItemSlot.RH))
+                {
+                    if (ItemMetadataStorage.GetItemSlots(equippedInventory[ItemSlot.RH].Id).Count > 1)
+                    {
+                        TryUnequip(session, equippedInventory[ItemSlot.RH].Uid);
+                    }
+                }
+                break;
+        }
 
         if (item.TransferType == TransferType.BindOnEquip & !item.IsBound())
         {
