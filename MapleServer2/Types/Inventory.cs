@@ -610,7 +610,6 @@ public sealed class Inventory : IInventory
         }
 
         // Equip new item
-        equip-slots
         newEquip.IsEquipped = true;
         newEquip.ItemSlot = equipSlot;
         equippedInventory[equipSlot] = newEquip;
