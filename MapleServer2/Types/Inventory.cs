@@ -410,7 +410,7 @@ public sealed class Inventory : IInventory
                         equipSlot = ItemSlot.RH;
                     }
                     break;
-            }   
+            }
         }
 
         foreach (ItemSlot slot in metadataSlots)
@@ -420,7 +420,7 @@ public sealed class Inventory : IInventory
                 TryUnequip(session, equip.Uid);
             }
         }
-        
+
         // unequip two slot items if new one slot item replaces it
         switch (equipSlot)
         {
