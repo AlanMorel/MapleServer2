@@ -367,35 +367,42 @@ public sealed class Inventory : IInventory
             return false;
         }
 
-        Item? item = GetByUid(uid);
-        if (item is null || !item.CanEquip(session))
+        Item? newEquip = GetByUid(uid);
+        if (newEquip is null || !newEquip.CanEquip(session))
         {
             return false;
         }
 
         // Remove the item from the users inventory
-        RemoveItem(session, uid, out item);
+        RemoveItem(session, uid, out newEquip);
 
         Player player = session.Player;
 
         // Get correct equipped inventory
-        Dictionary<ItemSlot, Item>? equippedInventory = player.GetEquippedInventory(item.InventoryTab);
+        Dictionary<ItemSlot, Item>? equippedInventory = player.GetEquippedInventory(newEquip.InventoryTab);
         if (equippedInventory is null)
         {
-            Logger.Warning("equippedInventory was null: {inventoryTab}", item.InventoryTab);
+            Logger.Warning("equippedInventory was null: {inventoryTab}", newEquip.InventoryTab);
             return false;
         }
 
-        // Unequip multiple slots if new item takes two slots (overalls, 2H weps)
-        List<ItemSlot>? metadataSlots = ItemMetadataStorage.GetItemSlots(item.Id);
+        List<ItemSlot>? metadataSlots = ItemMetadataStorage.GetItemSlots(newEquip.Id);
         if (metadataSlots is null)
         {
             return false;
         }
 
-        // prohibit player from equipping overall/2h weapons in the wrong slot.
         if (metadataSlots.Count > 1)
         {
+            foreach (ItemSlot slot in metadataSlots)
+            {
+                if (equippedInventory.TryGetValue(slot, out Item? equip))
+                {
+                    TryUnequip(session, equip.Uid);
+                }
+            }
+
+            // prohibit player from equipping overall/2h weapons in the wrong slot.
             switch (equipSlot)
             {
                 case ItemSlot.PA:
@@ -412,13 +419,9 @@ public sealed class Inventory : IInventory
                     break;
             }
         }
-
-        foreach (ItemSlot slot in metadataSlots)
+        else if (equippedInventory.TryGetValue(equipSlot, out Item? oldEquip))
         {
-            if (equippedInventory.TryGetValue(slot, out Item? equip))
-            {
-                TryUnequip(session, equip.Uid);
-            }
+            TryUnequip(session, oldEquip.Uid);
         }
 
         // unequip two slot items if new one slot item replaces it
@@ -434,7 +437,6 @@ public sealed class Inventory : IInventory
                 }
                 break;
             case ItemSlot.LH:
-            case ItemSlot.RH:
                 if (equippedInventory.ContainsKey(ItemSlot.RH))
                 {
                     if (ItemMetadataStorage.GetItemSlots(equippedInventory[ItemSlot.RH].Id).Count > 1)
@@ -443,25 +445,34 @@ public sealed class Inventory : IInventory
                     }
                 }
                 break;
+            case ItemSlot.RH:
+                if (equippedInventory.ContainsKey(ItemSlot.LH))
+                {
+                    if (ItemMetadataStorage.GetItemSlots(equippedInventory[ItemSlot.LH].Id).Count > 1)
+                    {
+                        TryUnequip(session, equippedInventory[ItemSlot.LH].Uid);
+                    }
+                }
+                break;
         }
 
-        if (item.TransferType == TransferType.BindOnEquip & !item.IsBound())
+        if (newEquip.TransferType == TransferType.BindOnEquip & !newEquip.IsBound())
         {
-            item.BindItem(session.Player);
+            newEquip.BindItem(session.Player);
         }
 
         // Equip new item
-        item.IsEquipped = true;
-        item.ItemSlot = equipSlot;
-        equippedInventory[equipSlot] = item;
-        session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(player.FieldPlayer, item, equipSlot));
+        newEquip.IsEquipped = true;
+        newEquip.ItemSlot = equipSlot;
+        equippedInventory[equipSlot] = newEquip;
+        session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(player.FieldPlayer, newEquip, equipSlot));
         player.FieldPlayer?.ComputeStats();
 
-        if (item.AdditionalEffects != null)
+        if (newEquip.AdditionalEffects != null)
         {
-            player.AddEffects(item.AdditionalEffects);
+            player.AddEffects(newEquip.AdditionalEffects);
 
-            foreach (GemSocket socket in item.GemSockets.Sockets)
+            foreach (GemSocket socket in newEquip.GemSockets.Sockets)
             {
                 if (socket.Gemstone != null)
                 {
