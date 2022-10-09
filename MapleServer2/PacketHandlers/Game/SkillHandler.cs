@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Types;
+﻿using Maple2Storage.Enums;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
@@ -220,17 +221,6 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             return;
         }
 
-        // TODO: Verify if its the player or an ally
-        if (skillCast.IsRecovery())
-        {
-            Status status = new(skillCast, fieldPlayer.ObjectId, fieldPlayer.ObjectId, 1);
-            StatusHandler.Handle(session, status);
-
-            // TODO: Heal based on stats
-            fieldPlayer.Heal(session, status, 50);
-            return;
-        }
-
         int tick = Environment.TickCount;
 
         List<DamageHandler> damages = new();
@@ -239,18 +229,15 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             int entityId = packet.ReadInt();
             packet.ReadByte();
 
-            if (entityId == playerObjectId)
+            IFieldActor? target = session.FieldManager.State.Mobs.GetValueOrDefault(entityId);
+            target = target ?? session.FieldManager.State.Players.GetValueOrDefault(entityId);
+
+            if (target is null)
             {
                 continue;
             }
 
-            IFieldActor<NpcMetadata> mob = session.FieldManager.State.Mobs.GetValueOrDefault(entityId);
-            if (mob == null)
-            {
-                continue;
-            }
-
-            skillCast.Target = mob;
+            skillCast.Target = target;
             skillCast.AttackPoint = (byte) attackPoint;
 
             foreach (SkillMotion motion in skillCast.GetSkillMotions())
@@ -259,30 +246,47 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
 
                 skillCast.SkillAttack = attack;
 
-                if (skillCast.GetDamageRate() != 0)
-                {
-                    DamageHandler damage = DamageHandler.CalculateDamage(skillCast, fieldPlayer, mob);
-
-                    mob.Damage(damage, session);
-
-                    damages.Add(damage);
-                }
-
-                fieldPlayer.SkillTriggerHandler.SkillTrigger(mob, skillCast);
-
-                if (attack?.SkillConditions == null)
+                if (entityId == playerObjectId && attack.RangeProperty.ApplyTarget != ApplyTarget.Ally)
                 {
                     continue;
                 }
 
-                EffectTriggers parameters = new()
-                {
-                    Caster = fieldPlayer,
-                    Owner = fieldPlayer,
-                    Target = mob
-                };
+                ConditionSkillTarget castInfo = new(fieldPlayer, target, fieldPlayer);
+                bool hitCrit = false;
+                bool hitMissed = false;
 
-                fieldPlayer.SkillTriggerHandler.FireTriggers(attack.SkillConditions, parameters, skillCast, tick);
+                if (skillCast.GetDamageRate() != 0)
+                {
+                    DamageHandler damage = DamageHandler.CalculateDamage(skillCast, fieldPlayer, target);
+
+                    target.Damage(damage, session);
+
+                    damages.Add(damage);
+
+                    hitCrit = damage.HitType == Enums.HitType.Critical;
+                    hitMissed = damage.HitType == Enums.HitType.Miss;
+                }
+
+                fieldPlayer.SkillTriggerHandler.FireTriggerSkills(attack.SkillConditions, skillCast, castInfo);
+
+                Task.Run(async () =>
+                {
+                    await Task.Delay(10);
+
+                    if (hitCrit)
+                    {
+                        fieldPlayer.SkillTriggerHandler.FireEvents(castInfo, EffectEvent.OnOwnerAttackCrit, skillCast.SkillId);
+                    }
+
+                    if (hitMissed)
+                    {
+                        fieldPlayer.SkillTriggerHandler.FireEvents(castInfo, EffectEvent.OnAttackMiss, skillCast.SkillId);
+                        target.SkillTriggerHandler.FireEvents(new(target, fieldPlayer, target), EffectEvent.OnEvade, skillCast.SkillId);
+                    }
+
+                    fieldPlayer.SkillTriggerHandler.FireEvents(castInfo, EffectEvent.OnOwnerAttackHit, skillCast.SkillId);
+                    target.SkillTriggerHandler.FireEvents(new(target, fieldPlayer, target, fieldPlayer), EffectEvent.OnAttacked, skillCast.SkillId);
+                });
             }
         }
 

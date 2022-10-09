@@ -38,7 +38,7 @@ public class DatabaseMeretMarket : DatabaseTable
                 continue;
             }
 
-            List<Job> jobs = ItemMetadataStorage.GetRecommendJobs(meretMarketItem.ItemId);
+            List<JobCode> jobs = ItemMetadataStorage.GetRecommendJobs(meretMarketItem.ItemId);
             if (!JobHelper.CheckJobFlagForJob(jobs, jobFlag))
             {
                 continue;

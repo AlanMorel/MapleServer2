@@ -55,6 +55,13 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
         session.Send(StatPacket.UpdateStats(this, StatAttribute.Hp));
     }
 
+    public virtual void Heal(GameSession session, AdditionalEffect effect, int amount)
+    {
+        session.FieldManager.BroadcastPacket(SkillDamagePacket.Heal(effect, amount));
+        Stats[StatAttribute.Hp].AddValue(amount);
+        session.Send(StatPacket.UpdateStats(this, StatAttribute.Hp));
+    }
+
     public virtual void RecoverHp(int amount)
     {
         if (amount <= 0)
@@ -180,20 +187,56 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
             return;
         }
 
+        if (invoke.SkillId != 0)
+        {
+            for (int i = 0; i < invoke.Types.Length; ++i)
+            {
+                Stats.AddSkillStats(invoke.SkillId, invoke.Types[i], invoke.Values[i], invoke.Rates[i]);
+            }
+        }
+
         if (invoke.SkillGroupId != 0)
         {
-            Stats.AddSkillGroup(invoke.SkillGroupId, invoke.Values[0], invoke.Rates[0]);
+            for (int i = 0; i < invoke.Types.Length; ++i)
+            {
+                Stats.AddSkillGroupStats(invoke.SkillGroupId, invoke.Types[i], invoke.Values[i], invoke.Rates[i]);
+            }
+        }
+
+        if (invoke.EffectId != 0)
+        {
+            for (int i = 0; i < invoke.Types.Length; ++i)
+            {
+                Stats.AddEffectStats(invoke.EffectId, invoke.Types[i], invoke.Values[i], invoke.Rates[i]);
+            }
         }
 
         if (invoke.EffectGroupId != 0)
         {
-            Stats.AddEffectGroup(invoke.EffectGroupId, invoke.Values[0], invoke.Rates[0]);
+            for (int i = 0; i < invoke.Types.Length; ++i)
+            {
+                Stats.AddEffectGroupStats(invoke.EffectGroupId, invoke.Types[i], invoke.Values[i], invoke.Rates[i]);
+            }
         }
+    }
+
+    public bool IsRemoved()
+    {
+        bool sessionDisconnected = false;
+        bool isPlayer = false;
+
+        if (this is Character character)
+        {
+            isPlayer = true;
+            sessionDisconnected = character.Value.Session is null;
+        }
+
+        return FieldManager is null && !(isPlayer && !sessionDisconnected);
     }
 
     public virtual void EffectAdded(AdditionalEffect? effect)
     {
-        if ((effect?.LevelMetadata?.Status?.Stats?.Count ?? 0) > 0)
+        if (!IsRemoved() && (effect?.LevelMetadata?.Status?.Stats?.Count ?? 0) > 0)
         {
             ComputeStats();
         }
@@ -201,7 +244,7 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
 
     public virtual void EffectRemoved(AdditionalEffect? effect)
     {
-        if ((effect?.LevelMetadata?.Status?.Stats?.Count ?? 0) > 0)
+        if (!IsRemoved() && (effect?.LevelMetadata?.Status?.Stats?.Count ?? 0) > 0)
         {
             ComputeStats();
         }

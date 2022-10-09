@@ -24,8 +24,8 @@ public static class CharacterInfoPacket
         characterBuffer.WriteLong(player.CharacterId);
         characterBuffer.WriteUnicodeString(player.Name);
         characterBuffer.WriteShort(player.Levels.Level);
-        characterBuffer.Write(player.Job);
         characterBuffer.Write(player.JobCode);
+        characterBuffer.Write(player.SubJobCode);
         characterBuffer.WriteInt((int) player.Gender);
         characterBuffer.WriteInt(player.Levels.PrestigeLevel);
         characterBuffer.WriteByte();

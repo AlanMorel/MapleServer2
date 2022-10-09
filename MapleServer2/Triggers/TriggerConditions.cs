@@ -232,11 +232,11 @@ public partial class TriggerContext
 
     public bool UserDetected(int[] boxIds, byte jobId)
     {
-        Job job = (Job) jobId;
+        JobCode jobCode = (JobCode) jobId;
         List<Character> players = Field.State.Players.Values.ToList();
-        if (job != Job.None)
+        if (jobCode != JobCode.None)
         {
-            players = players.Where(x => x.Value.Job == job).ToList();
+            players = players.Where(x => x.Value.JobCode == jobCode).ToList();
         }
 
         foreach (int boxId in boxIds)

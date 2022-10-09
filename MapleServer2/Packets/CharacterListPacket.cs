@@ -128,8 +128,8 @@ public static class CharacterListPacket
         pWriter.WriteInt();
         pWriter.WriteShort(player.Levels.Level);
         pWriter.WriteShort(player.ChannelId);
-        pWriter.Write(player.Job);
         pWriter.Write(player.JobCode);
+        pWriter.Write(player.SubJobCode);
         pWriter.WriteInt(player.Stats[StatAttribute.Hp].Total);
         pWriter.WriteInt(player.Stats[StatAttribute.Hp].Bonus);
         pWriter.WriteShort();

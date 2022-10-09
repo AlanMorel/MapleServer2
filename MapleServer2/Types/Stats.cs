@@ -4,13 +4,27 @@ using MapleServer2.Enums;
 
 namespace MapleServer2.Types;
 
+public class InvokeStatValue
+{
+    public InvokeEffectType Type;
+    public float Value;
+    public float Rate;
+}
+
+public class InvokeStat
+{
+    public List<InvokeStatValue> Values = new();
+}
+
 public class Stats
 {
     // TODO: Handle stat allocation in here?
     // ReSharper disable once FieldCanBeMadeReadOnly.Global - JsonConvert.DeserializeObject can't set values if it's readonly
     public Dictionary<StatAttribute, Stat> Data;
-    public Dictionary<int, StatGroup> EffectGroups = new();
-    public Dictionary<int, StatGroup> SkillGroups = new();
+    public Dictionary<int, InvokeStat> Effects = new();
+    public Dictionary<int, InvokeStat> EffectGroups = new();
+    public Dictionary<int, InvokeStat> Skills = new();
+    public Dictionary<int, InvokeStat> SkillGroups = new();
 
     public Stats() { }
 
@@ -161,29 +175,29 @@ public class Stats
         };
     }
 
-    public Stats(Job job)
+    public Stats(JobCode jobCode)
     {
         Data = new()
         {
             {
                 StatAttribute.Str,
-                new(BaseStats.Strength(job, 1))
+                new(BaseStats.Strength(jobCode, 1))
             },
             {
                 StatAttribute.Dex,
-                new(BaseStats.Dexterity(job, 1))
+                new(BaseStats.Dexterity(jobCode, 1))
             },
             {
                 StatAttribute.Int,
-                new(BaseStats.Intelligence(job, 1))
+                new(BaseStats.Intelligence(jobCode, 1))
             },
             {
                 StatAttribute.Luk,
-                new(BaseStats.Luck(job, 1))
+                new(BaseStats.Luck(jobCode, 1))
             },
             {
                 StatAttribute.Hp,
-                new(BaseStats.Health(job, 1)) // Max = 0 on login
+                new(BaseStats.Health(jobCode, 1)) // Max = 0 on login
             },
             {
                 StatAttribute.HpRegen,
@@ -227,15 +241,15 @@ public class Stats
             },
             {
                 StatAttribute.Accuracy,
-                new(BaseStats.Accuracy(job, 1))
+                new(BaseStats.Accuracy(jobCode, 1))
             },
             {
                 StatAttribute.Evasion,
-                new(BaseStats.Evasion(job, 1)) // TODO: changes with job
+                new(BaseStats.Evasion(jobCode, 1)) // TODO: changes with job
             },
             {
                 StatAttribute.CritRate,
-                new(BaseStats.CriticalRate(job, 1)) // TODO: changes with job
+                new(BaseStats.CriticalRate(jobCode, 1)) // TODO: changes with job
             },
             {
                 StatAttribute.CritDamage,
@@ -354,7 +368,9 @@ public class Stats
             }
         }
 
+        Effects.Clear();
         EffectGroups.Clear();
+        Skills.Clear();
         SkillGroups.Clear();
     }
 
@@ -372,11 +388,11 @@ public class Stats
     // TODO: level 50+ has a different formula
     public void AddBaseStats(Player player, short level = 1)
     {
-        long str = BaseStats.Strength(player.Job, level);
-        long dex = BaseStats.Dexterity(player.Job, level);
-        long luk = BaseStats.Luck(player.Job, level);
-        long inte = BaseStats.Intelligence(player.Job, level);
-        long hp = BaseStats.Health(player.Job, level);
+        long str = BaseStats.Strength(player.JobCode, level);
+        long dex = BaseStats.Dexterity(player.JobCode, level);
+        long luk = BaseStats.Luck(player.JobCode, level);
+        long inte = BaseStats.Intelligence(player.JobCode, level);
+        long hp = BaseStats.Health(player.JobCode, level);
 
         Data[StatAttribute.Str].Value.BaseLong = str;
         Data[StatAttribute.Dex].Value.BaseLong = dex;
@@ -384,8 +400,8 @@ public class Stats
         Data[StatAttribute.Int].Value.BaseLong = inte;
         Data[StatAttribute.Hp].Value.BaseLong = hp;
 
-        Data[StatAttribute.PhysicalAtk].Value.BaseLong = BaseStats.PhysicalAttack(player.Job, str, dex, luk);
-        Data[StatAttribute.MagicAtk].Value.BaseLong = BaseStats.MagicAttack(player.Job, inte);
+        Data[StatAttribute.PhysicalAtk].Value.BaseLong = BaseStats.PhysicalAttack(player.JobCode, str, dex, luk);
+        Data[StatAttribute.MagicAtk].Value.BaseLong = BaseStats.MagicAttack(player.JobCode, inte);
     }
 
     public void AddAttackBonus(Player player)
@@ -396,8 +412,8 @@ public class Stats
         long inte = Data[StatAttribute.Int].Value.BonusAmountLong;
         long hp = Data[StatAttribute.Hp].Value.BonusAmountLong;
 
-        Data[StatAttribute.PhysicalAtk].AddBonus(BaseStats.PhysicalAttack(player.Job, str, dex, luk));
-        Data[StatAttribute.MagicAtk].AddBonus(BaseStats.MagicAttack(player.Job, inte));
+        Data[StatAttribute.PhysicalAtk].AddBonus(BaseStats.PhysicalAttack(player.JobCode, str, dex, luk));
+        Data[StatAttribute.MagicAtk].AddBonus(BaseStats.MagicAttack(player.JobCode, inte));
     }
 
     public void AddStat(StatAttribute attribute, StatAttributeType type, long flat, float rate)
@@ -414,77 +430,162 @@ public class Stats
         stat.Add(flat, rate);
     }
 
-    public void AddEffectGroup(int id, float value, float rate)
+    public InvokeStatValue GetStat(InvokeStat stats, InvokeEffectType type)
     {
-        if (!EffectGroups.TryGetValue(id, out StatGroup stat))
+        InvokeStatValue? stat = stats.Values.FirstOrDefault(stat => stat.Type == type, null);
+
+        if (stat is null)
         {
-            stat = new StatGroup();
+            stat = new()
+            {
+                Type = type
+            };
+
+            stats.Values.Add(stat);
         }
+
+        return stat;
+    }
+
+    public InvokeStatValue GetStat(int id, Dictionary<int, InvokeStat> statDictionary, InvokeEffectType type)
+    {
+        if (!statDictionary.TryGetValue(id, out InvokeStat stats))
+        {
+            stats = new InvokeStat();
+            statDictionary[id] = stats;
+        }
+
+        return GetStat(stats, type);
+    }
+
+    public void AddSkillStats(int id, InvokeEffectType type, float value, float rate)
+    {
+        InvokeStatValue stat = GetStat(id, Skills, type);
 
         stat.Value += value;
         stat.Rate += rate;
-
-        EffectGroups[id] = stat;
     }
 
-    public void AddSkillGroup(int id, float value, float rate)
+    public void AddSkillGroupStats(int id, InvokeEffectType type, float value, float rate)
     {
-        if (!SkillGroups.TryGetValue(id, out StatGroup stat))
-        {
-            stat = new StatGroup();
-        }
+        InvokeStatValue stat = GetStat(id, SkillGroups, type);
 
         stat.Value += value;
         stat.Rate += rate;
-
-        SkillGroups[id] = stat;
     }
 
-    public StatGroup GetEffectStats(int[] ids)
+    public void AddEffectStats(int id, InvokeEffectType type, float value, float rate)
     {
-        StatGroup stat = new()
+        InvokeStatValue stat = GetStat(id, Effects, type);
+
+        stat.Value += value;
+        stat.Rate += rate;
+    }
+
+    public void AddEffectGroupStats(int id, InvokeEffectType type, float value, float rate)
+    {
+        InvokeStatValue stat = GetStat(id, EffectGroups, type);
+
+        stat.Value += value;
+        stat.Rate += rate;
+    }
+
+    public InvokeStatValue GetSkillStats(int id, InvokeEffectType type)
+    {
+        return GetStat(id, Skills, type);
+    }
+
+    public InvokeStatValue GetSkillGroupStats(int id, InvokeEffectType type)
+    {
+        return GetStat(id, SkillGroups, type);
+    }
+
+    public InvokeStatValue GetSkillGroupStats(int[]? ids, InvokeEffectType type)
+    {
+        InvokeStatValue stat = new()
         {
-            Rate = 1
+            Type = type
         };
 
-        if (ids == null)
+        if (ids is null)
         {
             return stat;
         }
 
         foreach (int id in ids)
         {
-            if (EffectGroups.TryGetValue(id, out StatGroup statGroup))
-            {
-                stat.Value += statGroup.Value;
-                stat.Rate += statGroup.Rate;
-            }
+            InvokeStatValue idStat = GetStat(id, SkillGroups, type);
+
+            stat.Value += idStat.Value;
+            stat.Rate += idStat.Rate;
         }
 
         return stat;
     }
 
-    public StatGroup GetSkillStats(int[] ids)
+    public InvokeStatValue GetSkillStats(int id, int[]? groupIds, InvokeEffectType type)
     {
-        StatGroup stat = new()
+        InvokeStatValue groupStat = GetSkillGroupStats(groupIds, type);
+        InvokeStatValue stat = GetSkillStats(id, type);
+
+        groupStat.Rate += stat.Rate;
+        groupStat.Value += stat.Value;
+
+        return groupStat;
+    }
+
+    public InvokeStatValue GetEffectStats(int id, InvokeEffectType type)
+    {
+        return GetStat(id, Effects, type);
+    }
+
+    public InvokeStatValue GetEffectGroupStats(int id, InvokeEffectType type)
+    {
+        return GetStat(id, EffectGroups, type);
+    }
+
+    public InvokeStatValue GetEffectGroupStats(int[]? ids, InvokeEffectType type)
+    {
+        InvokeStatValue stat = new()
         {
-            Rate = 1
+            Type = type
         };
 
-        if (ids == null)
+        if (ids is null)
         {
             return stat;
         }
 
         foreach (int id in ids)
         {
-            if (SkillGroups.TryGetValue(id, out StatGroup statGroup))
-            {
-                stat.Value += statGroup.Value;
-                stat.Rate += statGroup.Rate;
-            }
+            InvokeStatValue idStat = GetStat(id, EffectGroups, type);
+
+            stat.Value += idStat.Value;
+            stat.Rate += idStat.Rate;
         }
 
         return stat;
+    }
+
+    public InvokeStatValue GetEffectStats(int id, int[]? groupIds, InvokeEffectType type)
+    {
+        InvokeStatValue groupStat = GetEffectGroupStats(groupIds, type);
+        InvokeStatValue stat = GetEffectStats(id, type);
+
+        groupStat.Rate += stat.Rate;
+        groupStat.Value += stat.Value;
+
+        return groupStat;
+    }
+
+    public InvokeStatValue GetEffectStats(int id, int groupId, InvokeEffectType type)
+    {
+        InvokeStatValue groupStat = GetEffectGroupStats(groupId, type);
+        InvokeStatValue stat = GetEffectStats(id, type);
+
+        groupStat.Rate += stat.Rate;
+        groupStat.Value += stat.Value;
+
+        return groupStat;
     }
 }

@@ -313,8 +313,8 @@ public static class ClubPacket
         pWriter.WriteLong(member.Player.CharacterId);
         pWriter.WriteUnicodeString(member.Player.Name);
         pWriter.WriteByte();
-        pWriter.Write(member.Player.Job);
         pWriter.Write(member.Player.JobCode);
+        pWriter.Write(member.Player.SubJobCode);
         pWriter.WriteShort(member.Player.Levels.Level);
         pWriter.WriteInt(member.Player.MapId);
         pWriter.WriteShort(member.Player.ChannelId);

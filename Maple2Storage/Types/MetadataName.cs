@@ -64,6 +64,8 @@ public static class MetadataName
     public const string Quest = "quest";
     public const string Recipe = "recipe";
     public const string RewardContent = "reward-content";
+    public const string SetItemInfo = "set-item-info";
+    public const string SetItemOption = "set-item-option";
     public const string Script = "script";
     public const string Skill = "skill";
     public const string SurvivalGoldPassReward = "survival-gold-pass-reward";

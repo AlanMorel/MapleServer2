@@ -107,7 +107,7 @@ public class QuestHandler : GamePacketHandler<QuestHandler>
         {
             Item newItem = new(reward.Code, reward.Count, reward.Rank);
             List<int> limitJobRequirements = ItemMetadataStorage.GetMetadata(reward.Code).Limit.JobRequirements;
-            if (limitJobRequirements.Contains((int) session.Player.Job) || limitJobRequirements.Contains(0))
+            if (limitJobRequirements.Contains((int) session.Player.JobCode) || limitJobRequirements.Contains(0))
             {
                 session.Player.Inventory.AddItem(session, newItem, true);
             }

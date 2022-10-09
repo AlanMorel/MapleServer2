@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Types;
+﻿using Maple2Storage.Enums;
+using Maple2Storage.Types;
 using MapleServer2.Managers;
 using MapleServer2.Servers.Game;
 
@@ -11,11 +12,12 @@ public interface IFieldActor : IFieldObject
 
     public Stats Stats { get; }
     public bool IsDead { get; }
+    //public int LastMoved { get; }
 
     public List<Status>? Statuses { get; set; }
     public SkillCast? SkillCast { get; }
     public bool OnCooldown { get; set; }
-    public AdditionalEffects? AdditionalEffects { get; }
+    public AdditionalEffects AdditionalEffects { get; }
     public SkillTriggerHandler SkillTriggerHandler { get; }
 
     public FieldManager? FieldManager { get; }
@@ -24,6 +26,7 @@ public interface IFieldActor : IFieldObject
     public void Cast(SkillCast skillCast);
     public void Damage(DamageHandler damage, GameSession session);
     public void Heal(GameSession session, Status status, int amount);
+    public void Heal(GameSession session, AdditionalEffect effect, int amount);
 
     public void RecoverHp(int amount);
     public void ConsumeHp(int amount);

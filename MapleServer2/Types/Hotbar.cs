@@ -23,7 +23,7 @@ public class Hotbar
         Id = DatabaseManager.Hotbars.Insert(this, gameOptionsId);
     }
 
-    public Hotbar(long gameOptionsId, Job job)
+    public Hotbar(long gameOptionsId, JobCode jobCode)
     {
         Slots = new QuickSlot[MaxSlots];
 
@@ -38,7 +38,7 @@ public class Hotbar
 
         void AddDefaultSkills()
         {
-            JobMetadata jobMetadata = JobMetadataStorage.GetJobMetadata(job);
+            JobMetadata jobMetadata = JobMetadataStorage.GetJobMetadata(jobCode);
             if (jobMetadata is null)
             {
                 return;

@@ -84,7 +84,7 @@ public class CharacterManagementHandler : LoginPacketHandler<CharacterManagement
     private static void HandleCreate(LoginSession session, PacketReader packet)
     {
         Gender gender = (Gender) packet.ReadByte();
-        Job job = (Job) packet.ReadShort();
+        JobCode jobCode = (JobCode) packet.ReadShort();
         string name = packet.ReadUnicodeString();
         SkinColor skinColor = packet.Read<SkinColor>();
         packet.Skip(2);
@@ -105,7 +105,7 @@ public class CharacterManagementHandler : LoginPacketHandler<CharacterManagement
             return;
         }
 
-        if (CharacterCreateMetadataStorage.JobIsDisabled((int) job))
+        if (CharacterCreateMetadataStorage.JobIsDisabled((int) jobCode))
         {
             session.Send(ResponseCharCreatePacket.Error(ResponseCharCreatePacket.Mode.JobRestriction));
             return;
@@ -119,7 +119,7 @@ public class CharacterManagementHandler : LoginPacketHandler<CharacterManagement
         {
             int id = packet.ReadInt();
             string typeStr = packet.ReadUnicodeString();
-            if (!Enum.TryParse(typeStr, out ItemSlot type) || !DefaultItemsMetadataStorage.IsValid((int) job, id))
+            if (!Enum.TryParse(typeStr, out ItemSlot type) || !DefaultItemsMetadataStorage.IsValid((int) jobCode, id))
             {
                 session.Send(ResponseCharCreatePacket.Error(ResponseCharCreatePacket.Mode.IncorrectGear));
                 return;
@@ -155,7 +155,7 @@ public class CharacterManagementHandler : LoginPacketHandler<CharacterManagement
         }
 
         // create character
-        Player newCharacter = new(account, name, gender, job, skinColor);
+        Player newCharacter = new(account, name, gender, jobCode, skinColor);
         session.CharacterId = newCharacter.CharacterId;
 
         // equip each item

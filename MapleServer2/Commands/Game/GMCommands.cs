@@ -70,7 +70,7 @@ public class SetJobCommand : InGameCommand
 
         if (string.IsNullOrEmpty(jobName))
         {
-            string[] classes = Enum.GetNames(typeof(Job));
+            string[] classes = Enum.GetNames(typeof(JobCode));
 
             player.Session.Send(NoticePacket.Notice(
                 "You have to give a classname and specify awakening (1 or 0)\nAvailable classes:\n".Bold().Color(Color.DarkOrange) +
@@ -79,13 +79,13 @@ public class SetJobCommand : InGameCommand
             return;
         }
 
-        if (!Enum.TryParse(jobName, true, out Job job))
+        if (!Enum.TryParse(jobName, true, out JobCode job))
         {
             player.Session.SendNotice($"{jobName} is not a valid class name");
             return;
         }
 
-        if (job == Job.None)
+        if (job == JobCode.None)
         {
             player.Session.SendNotice("None is not a valid class");
             return;
@@ -93,16 +93,16 @@ public class SetJobCommand : InGameCommand
 
         player.Awakened = awakened == 1;
 
-        if (job != player.Job)
+        if (job != player.JobCode)
         {
-            player.Job = job;
+            player.JobCode = job;
             DatabaseManager.SkillTabs.Delete(skillTab.Uid);
 
-            SkillTab newSkillTab = new(player.CharacterId, job, player.JobCode, skillTab.TabId, skillTab.Name);
+            SkillTab newSkillTab = new(player.CharacterId, job, player.SubJobCode, skillTab.TabId, skillTab.Name);
             player.SkillTabs[player.SkillTabs.IndexOf(skillTab)] = newSkillTab;
         }
 
-        player.SkillTabs.FirstOrDefault(x => x.TabId == activeSkillTabId)?.LearnDefaultSkills(player.Job, player.JobCode);
+        player.SkillTabs.FirstOrDefault(x => x.TabId == activeSkillTabId)?.LearnDefaultSkills(player.JobCode, player.SubJobCode);
         trigger.Session.Send(JobPacket.SendJob(fieldPlayer));
     }
 }

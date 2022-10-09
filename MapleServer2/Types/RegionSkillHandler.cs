@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Types;
+﻿using Maple2Storage.Enums;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Managers;
@@ -13,8 +14,10 @@ public static class RegionSkillHandler
 {
     private static readonly ILogger Logger = Log.Logger.ForContext(typeof(RegionSkillHandler));
 
-    public static void HandleEffect(FieldManager field, SkillCast skillCast)
+    public static void HandleEffect(FieldManager field, SkillCast skillCast, IFieldActor? target = null)
     {
+        skillCast.Caster.SkillTriggerHandler.FireEvents(new ConditionSkillTarget(skillCast.Owner, target, skillCast.Caster), EffectEvent.OnSkillCasted, skillCast.SkillId);
+
         skillCast.EffectCoords = GetEffectCoords(skillCast, field.MapId, 0, field);
 
         field.AddRegionSkillEffect(skillCast);
@@ -82,15 +85,7 @@ public static class RegionSkillHandler
         List<CoordF> effectCoords = new();
         if (skillMovesCount <= 0)
         {
-            MapMetadataStorage.GetDistanceToNextBlockBelow(mapId, Block.ClosestBlock(skillCast.Position), out MapBlock block);
-            if (block is null)
-            {
-                effectCoords.Add(skillCast.Position);
-            }
-            else
-            {
-                effectCoords.Add(block.Coord);
-            }
+            effectCoords.Add(skillCast.Position);
 
             return effectCoords;
         }
@@ -102,7 +97,7 @@ public static class RegionSkillHandler
         {
             MagicPathMove magicPathMove = magicPathMoves[attackIndex];
 
-            IFieldActor<NpcMetadata> parentSkillTarget = skillCast.ParentSkill?.Target;
+            IFieldActor? parentSkillTarget = skillCast.ParentSkill?.Target;
             if (parentSkillTarget is not null)
             {
                 effectCoords.Add(parentSkillTarget.Coord);
@@ -111,7 +106,7 @@ public static class RegionSkillHandler
             }
 
             // Rotate the offset coord and distance based on the look direction
-            CoordF rotatedOffset = CoordF.From(magicPathMove.FireOffsetPosition.Length(), skillCast.LookDirection);
+            CoordF rotatedOffset = CoordF.Rotate(magicPathMove.FireOffsetPosition, skillCast.LookDirection);
             CoordF distance = CoordF.From(magicPathMove.Distance, skillCast.LookDirection);
 
             // Create new effect coord based on offset rotation and distance
@@ -129,7 +124,7 @@ public static class RegionSkillHandler
             if (!cubeMagicPathMove.IgnoreAdjust)
             {
                 // Rotate the offset coord based on the look direction
-                CoordF rotatedOffset = CoordF.From(offSetCoord.Length(), skillCast.LookDirection);
+                CoordF rotatedOffset = -CoordF.Rotate(offSetCoord, skillCast.Caster.LookDirection);
 
                 // Create new effect coord based on offset rotation and source coord
                 effectCoords.Add(rotatedOffset + skillCast.Position);
@@ -184,126 +179,160 @@ public static class RegionSkillHandler
 
     private static void HandleRegionSkill(FieldManager field, SkillCast skillCast)
     {
+        List<DamageHandler> damages = new();
+
         foreach (SkillMotion skillMotion in skillCast.GetSkillMotions())
         {
             foreach (SkillAttack skillAttack in skillMotion.SkillAttacks)
             {
-                if (skillAttack.SkillConditions?.Count > 0)
-                {
-                    foreach (SkillCondition skillCondition in skillAttack.SkillConditions)
-                    {
-                        for (int i = 0; i < skillCondition.SkillId.Length; ++i)
-                        {
-                            SkillCast splashSkill = new(skillCondition.SkillId[i], skillCondition.SkillLevel[i], GuidGenerator.Long(), skillCast.ServerTick, skillCast)
-                            {
-                                SkillAttack = skillAttack,
-                                EffectCoords = skillCast.EffectCoords,
-                                SkillObjectId = skillCast.SkillObjectId,
-                                Owner = skillCast.Owner,
-                            };
-                            if (!splashSkill.MetadataExists)
-                            {
-                                return;
-                            }
-
-                            if (!skillCondition.ImmediateActive)
-                            {
-                                if (splashSkill.IsRecoveryFromBuff())
-                                {
-                                    HandleRegionHeal(field, splashSkill);
-                                    continue;
-                                }
-
-                                HandleRegionDamage(field, splashSkill, skillCondition);
-                                continue;
-                            }
-                        }
-                        // go to another skill condition?? might cause infinite loop
-                        // HandleRegionSkill(session, splashSkill);
-                    }
-
-                    continue;
-                }
+                int hitsRemaining = skillAttack.TargetCount;
 
                 skillCast.SkillAttack = skillAttack;
 
-                if (!skillCast.MetadataExists)
+                switch (skillAttack.RangeProperty.ApplyTarget)
                 {
-                    return;
-                }
+                    case ApplyTarget.None:
+                        break;
+                    case ApplyTarget.Enemy:
+                        RegionHitEnemy(field, skillCast, ref hitsRemaining, damages);
 
-                if (skillCast.IsRecoveryFromBuff())
-                {
-                    HandleRegionHeal(field, skillCast);
-                    continue;
-                }
+                        break;
+                    case ApplyTarget.Ally:
+                        RegionHitAlly(field, skillCast, ref hitsRemaining, damages);
 
-                HandleRegionDamage(field, skillCast, null);
+                        break;
+                    case ApplyTarget.Player1:
+                    case ApplyTarget.Player2:
+                    case ApplyTarget.Player3:
+                    case ApplyTarget.Player4:
+                        RegionHitPlayer(field, skillCast, ref hitsRemaining, damages);
+
+                        break;
+                    case ApplyTarget.HungryMobs:
+                        RegionHitHungryMobs(field, skillCast, ref hitsRemaining, damages);
+
+                        break;
+                }
             }
-        }
-    }
-
-    private static void HandleRegionHeal(FieldManager field, SkillCast skillCast)
-    {
-        foreach (IFieldActor<Player> player in field.State.Players.Values)
-        {
-            foreach (CoordF effectCoord in skillCast.EffectCoords)
-            {
-                if ((player.Coord - effectCoord).Length() > skillCast.SkillAttack.RangeProperty.Distance)
-                {
-                    continue;
-                }
-
-                // Use RecoveryRate from skillcast.SkillAttack
-                Status status = new(skillCast, player.ObjectId, skillCast.Caster.ObjectId, 1);
-                player.Heal(player.Value.Session, status, 50);
-            }
-        }
-    }
-
-    private static void HandleRegionDamage(FieldManager field, SkillCast skillCast, SkillCondition condition)
-    {
-        if (skillCast.Caster is not Character caster)
-        {
-            // TODO: Handle NPCs/Triggers sending skills
-            field.BroadcastPacket(SkillDamagePacket.RegionDamage(skillCast, new()));
-            return;
-        }
-
-        List<DamageHandler> damages = new();
-
-        foreach (IFieldActor<NpcMetadata> mob in field.State.Mobs.Values)
-        {
-            foreach (CoordF effectCoord in skillCast.EffectCoords)
-            {
-                if ((mob.Coord - effectCoord).Length() > skillCast.SkillAttack.RangeProperty.Distance)
-                {
-                    continue;
-                }
-
-                DamageHandler damage = DamageHandler.CalculateDamage(skillCast, caster, mob);
-                mob.Damage(damage, caster.Value.Session);
-
-                damages.Add(damage);
-
-                EffectTriggers parameters = new()
-                {
-                    Caster = skillCast.Caster,
-                    Owner = skillCast.Owner,
-                    Target = mob
-                };
-
-                skillCast.Owner?.SkillTriggerHandler?.FireTriggerSkill(condition, skillCast.ParentSkill, parameters);
-                parameters.Caster.SkillTriggerHandler.SkillTrigger(mob, skillCast);
-            }
-        }
-
-        if (damages.Count <= 0)
-        {
-            return;
         }
 
         field.BroadcastPacket(SkillDamagePacket.RegionDamage(skillCast, damages));
+    }
+
+    private static void RegionHitAlly(FieldManager field, SkillCast skillCast, ref int hitsRemaining, List<DamageHandler> damages)
+    {
+        foreach (IFieldActor<Player> player in field.State.Players.Values)
+        {
+            if (hitsRemaining == 0)
+            {
+                return;
+            }
+
+            RegionHitTarget(field, skillCast, ref hitsRemaining, damages, player, false);
+        }
+    }
+
+    private static void RegionHitEnemy(FieldManager field, SkillCast skillCast, ref int hitsRemaining, List<DamageHandler> damages)
+    {
+        foreach (IFieldActor<NpcMetadata> mob in field.State.Mobs.Values)
+        {
+            if (hitsRemaining == 0)
+            {
+                return;
+            }
+
+            RegionHitTarget(field, skillCast, ref hitsRemaining, damages, mob, true);
+        }
+    }
+
+    private static void RegionHitPlayer(FieldManager field, SkillCast skillCast, ref int hitsRemaining, List<DamageHandler> damages)
+    {
+        foreach (IFieldActor<Player> player in field.State.Players.Values)
+        {
+            if (hitsRemaining == 0)
+            {
+                return;
+            }
+
+            RegionHitTarget(field, skillCast, ref hitsRemaining, damages, player, true);
+        }
+    }
+
+    private static void RegionHitHungryMobs(FieldManager field, SkillCast skillCast, ref int hitsRemaining, List<DamageHandler> damages)
+    {
+
+    }
+
+    private static void RegionHitTarget(FieldManager field, SkillCast skillCast, ref int hitsRemaining, List<DamageHandler> damages, IFieldActor target, bool damaging)
+    {
+        if (hitsRemaining == 0)
+        {
+            return;
+        }
+
+        Servers.Game.GameSession session = null;
+        IFieldActor caster = skillCast.Caster;
+
+        if (caster is Character character)
+        {
+            session = character.Value.Session;
+        }
+
+        foreach (CoordF effectCoord in skillCast.EffectCoords)
+        {
+            if ((target.Coord - effectCoord).Length() > skillCast.SkillAttack.RangeProperty.Distance)
+            {
+                continue;
+            }
+
+            ConditionSkillTarget castInfo = new(caster, target, caster);
+            bool hitTarget = false;
+            bool hitCrit = false;
+            bool hitMissed = false;
+
+            if (skillCast.SkillAttack.DamageProperty.DamageRate != 0)
+            {
+                for (int i = 0; i < skillCast.SkillAttack.DamageProperty.Count; ++i)
+                {
+                    DamageHandler damage = DamageHandler.CalculateDamage(skillCast, caster, target);
+                    target.Damage(damage, session);
+
+                    damages.Add(damage);
+
+                    hitCrit |= damage.HitType == Enums.HitType.Critical;
+                    hitMissed |= damage.HitType == Enums.HitType.Miss;
+                    hitTarget |= damage.HitType != Enums.HitType.Miss;
+                }
+            }
+
+            if (damaging)
+            {
+                Task.Run(async () =>
+                {
+                    await Task.Delay(10);
+
+                    if (hitCrit)
+                    {
+                        caster.SkillTriggerHandler.FireEvents(castInfo, EffectEvent.OnOwnerAttackCrit, skillCast.SkillId);
+                    }
+
+                    if (hitMissed)
+                    {
+                        caster.SkillTriggerHandler.FireEvents(castInfo, EffectEvent.OnAttackMiss, skillCast.SkillId);
+                        target.SkillTriggerHandler.FireEvents(new(target, caster, target), EffectEvent.OnEvade, skillCast.SkillId);
+                    }
+
+                    caster.SkillTriggerHandler.FireEvents(castInfo, EffectEvent.OnOwnerAttackHit, skillCast.SkillId);
+                    target.SkillTriggerHandler.FireEvents(new(target, caster, target, caster), EffectEvent.OnAttacked, skillCast.SkillId);
+                });
+            }
+
+            castInfo.Owner.SkillTriggerHandler.FireTriggerSkills(skillCast.SkillAttack.SkillConditions, skillCast, castInfo, -1, hitTarget);
+
+            hitsRemaining--;
+
+            return;
+        }
     }
 
     private static void VibrateObjects(FieldManager field, SkillCast skillCast)

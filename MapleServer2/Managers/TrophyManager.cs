@@ -42,7 +42,7 @@ internal static class TrophyManager
 
     public static void OnLevelUp(Player player)
     {
-        int jobId = (int) player.Job;
+        int jobId = (int) player.JobCode;
         int level = player.Levels.Level;
         IEnumerable<TrophyMetadata> jobSpecificLevelTrophies = GetRelevantTrophies(TrophyTypes.LevelUp)
             .Where(t => ConditionHelper.IsMatching(t.ConditionCodes, jobId) &&
