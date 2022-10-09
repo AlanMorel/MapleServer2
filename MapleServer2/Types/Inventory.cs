@@ -392,6 +392,27 @@ public sealed class Inventory : IInventory
         {
             return false;
         }
+
+        // prohibit player from equipping overall/2h weapons in the wrong slot.
+        if (metadataSlots.Count > 1)
+        {
+            switch (equipSlot)
+            {
+                case ItemSlot.PA:
+                    if (metadataSlots.Contains(ItemSlot.PA))
+                    {
+                        equipSlot = ItemSlot.CL;
+                    }
+                    break;
+                case ItemSlot.LH:
+                    if (metadataSlots.Contains(ItemSlot.LH))
+                    {
+                        equipSlot = ItemSlot.RH;
+                    }
+                    break;
+            }   
+        }
+
         foreach (ItemSlot slot in metadataSlots)
         {
             if (equippedInventory.TryGetValue(slot, out Item? equip))
