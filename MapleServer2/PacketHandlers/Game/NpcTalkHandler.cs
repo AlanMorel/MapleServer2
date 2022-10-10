@@ -111,7 +111,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
             case NpcKind.SkyRoyalGuardCommander:
             case NpcKind.KritiasLumiknightCommander:
             case NpcKind.KritiasGreenHoodCommander:
-            case NpcKind.KritiasMapleAllianceCommander: 
+            case NpcKind.KritiasMapleAllianceCommander:
             case NpcKind.Humanitas:
             case NpcKind.BalmyShop:
             case NpcKind.FixedShop:
@@ -141,12 +141,12 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
                     NpcKind.KritiasMapleAllianceCommander or
                     NpcKind.Humanitas)
                 {
-                   if (npcQuests.Any(x => x.CanComplete))
-                   {
-                       npcTalk.DialogType |= DialogType.Quest;
-                       script = selectScript;
-                       npcTalk.DialogType |= DialogType.Options;
-                   }
+                    if (npcQuests.Any(x => x.CanComplete))
+                    {
+                        npcTalk.DialogType |= DialogType.Quest;
+                        script = selectScript;
+                        npcTalk.DialogType |= DialogType.Options;
+                    }
                 }
                 else
                 {
@@ -185,8 +185,8 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
         {
             if (talkScript is not null)
             {
-                if (kind is NpcKind.BalmyShop or 
-                    NpcKind.FixedShop or 
+                if (kind is NpcKind.BalmyShop or
+                    NpcKind.FixedShop or
                     NpcKind.RotatingShop)
                 {
                     script = selectScript;
