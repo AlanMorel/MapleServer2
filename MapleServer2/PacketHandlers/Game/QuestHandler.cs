@@ -95,7 +95,7 @@ public class QuestHandler : GamePacketHandler<QuestHandler>
         {
             return;
         }
-    
+
         if (questStatus.State is QuestState.Completed || !questStatus.CanComplete)
         {
             return;
