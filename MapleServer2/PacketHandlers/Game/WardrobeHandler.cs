@@ -53,7 +53,7 @@ public class WardrobeHandler : GamePacketHandler<WardrobeHandler>
     {
         int index = packet.ReadInt();
         int type = packet.ReadInt();
-        Dictionary<ItemSlot, Item> wardRobeEquips = new();
+        Dictionary<ItemSlot, Item> wardrobeEquips = new();
         Dictionary<ItemSlot, Item>? equippedInventory = session.Player.GetEquippedInventory((InventoryTab) type);
         if (equippedInventory is null)
         {
@@ -72,10 +72,10 @@ public class WardrobeHandler : GamePacketHandler<WardrobeHandler>
             {
                 continue;
             }
-            wardRobeEquips[equip.ItemSlot] = equip;
+            wardrobeEquips[equip.ItemSlot] = equip;
         }
 
-        wardrobe.Equips = new(wardRobeEquips);
+        wardrobe.Equips = new(wardrobeEquips);
         wardrobe.Type = type;
 
         DatabaseManager.Wardrobes.Update(wardrobe, session.Player.CharacterId);
