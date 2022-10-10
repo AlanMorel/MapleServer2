@@ -22,7 +22,7 @@ public class DatabaseBeautyShopItem : DatabaseTable
 
     public List<BeautyShopItem> FindAllByShopIdAndGender(int shopId, Gender gender)
     {
-        return FindAllByShopId(shopId).Where(x => x.Gender == gender).ToList();
+        return FindAllByShopId(shopId).Where(x => x.Gender == gender || x.Gender == Gender.Neutral).ToList();
     }
 
     private static BeautyShopItem ReadShopItem(dynamic data)
