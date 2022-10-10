@@ -53,24 +53,29 @@ public class WardrobeHandler : GamePacketHandler<WardrobeHandler>
     {
         int index = packet.ReadInt();
         int type = packet.ReadInt();
-        Dictionary<ItemSlot, Item> equips = type == 0 ? session.Player.Inventory.Equips : session.Player.Inventory.Cosmetics;
+        Dictionary<ItemSlot, Item> wardRobeEquips = new();
+        Dictionary<ItemSlot, Item>? equippedInventory = session.Player.GetEquippedInventory((InventoryTab) type);
+        if (equippedInventory is null)
+        {
+            return;
+        }
 
         if (!session.Player.TryGetWardrobe(index, out Wardrobe wardrobe))
         {
             return;
         }
 
-        foreach (Item equip in equips.Values)
+        foreach (Item equip in equippedInventory.Values)
         {
             // remove to not save Hair, Face, Ears, or Face Decoration
             if (equip.ItemSlot is ItemSlot.HR or ItemSlot.ER or ItemSlot.FD or ItemSlot.FA)
             {
-                equips.Remove(equip.ItemSlot);
                 continue;
             }
+            wardRobeEquips[equip.ItemSlot] = equip;
         }
 
-        wardrobe.Equips = new(equips);
+        wardrobe.Equips = new(wardRobeEquips);
         wardrobe.Type = type;
 
         DatabaseManager.Wardrobes.Update(wardrobe, session.Player.CharacterId);
