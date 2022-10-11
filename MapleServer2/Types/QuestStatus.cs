@@ -69,6 +69,8 @@ public class QuestStatus
         Reward = metadata.Reward;
         RewardItems = metadata.RewardItem;
     }
+
+    public bool CanComplete => Condition.All(condition => condition.Completed);
 }
 
 public class Condition

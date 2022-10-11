@@ -91,7 +91,12 @@ public class QuestHandler : GamePacketHandler<QuestHandler>
         int questId = packet.ReadInt();
         int objectId = packet.ReadInt();
 
-        if (!session.Player.QuestData.TryGetValue(questId, out QuestStatus questStatus) || questStatus.State is QuestState.Completed)
+        if (!session.Player.QuestData.TryGetValue(questId, out QuestStatus questStatus))
+        {
+            return;
+        }
+
+        if (questStatus.State is QuestState.Completed || !questStatus.CanComplete)
         {
             return;
         }

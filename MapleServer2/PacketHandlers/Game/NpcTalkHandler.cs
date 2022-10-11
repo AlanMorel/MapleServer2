@@ -102,26 +102,66 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
         // find any quest scripts
         NpcScript? questScript = GetFirstQuestScript(session, npcTalk, npcQuests);
 
-        if (npc.Value.ShopId != 0)
+        switch (kind)
         {
-            npcTalk.DialogType |= DialogType.UI;
+            case NpcKind.SkyLumiknightCommander:
+            case NpcKind.SkyGreenHoodCommander:
+            case NpcKind.SkyDarkWindCommander:
+            case NpcKind.SkyMapleAllianceCommander:
+            case NpcKind.SkyRoyalGuardCommander:
+            case NpcKind.KritiasLumiknightCommander:
+            case NpcKind.KritiasGreenHoodCommander:
+            case NpcKind.KritiasMapleAllianceCommander:
+            case NpcKind.Humanitas:
+            case NpcKind.BalmyShop:
+            case NpcKind.FixedShop:
+            case NpcKind.RotatingShop:
+                npcTalk.DialogType |= DialogType.UI;
+                ShopHandler.HandleOpen(session, npc, npc.Value.Id);
+                break;
+            case NpcKind.Storage:
+            case NpcKind.BlackMarket:
+            case NpcKind.Birthday: // TODO: needs a special case? select if birthday. script if not
+                npcTalk.DialogType = DialogType.UI;
+                break;
         }
 
         // determine which script to use
         if (questScript is not null)
         {
-            npcTalk.DialogType |= DialogType.Quest;
             if (npcTalk.DialogType.HasFlag(DialogType.UI))
             {
-                script = selectScript;
-                npcTalk.DialogType |= DialogType.Options;
-                if (talkScript is not null)
+                if (kind is NpcKind.SkyLumiknightCommander or
+                    NpcKind.SkyDarkWindCommander or
+                    NpcKind.SkyGreenHoodCommander or
+                    NpcKind.SkyMapleAllianceCommander or
+                    NpcKind.SkyRoyalGuardCommander or
+                    NpcKind.KritiasLumiknightCommander or
+                    NpcKind.KritiasGreenHoodCommander or
+                    NpcKind.KritiasMapleAllianceCommander or
+                    NpcKind.Humanitas)
                 {
-                    npcTalk.DialogType |= DialogType.Talk;
+                    if (npcQuests.Any(x => x.CanComplete))
+                    {
+                        npcTalk.DialogType |= DialogType.Quest;
+                        script = selectScript;
+                        npcTalk.DialogType |= DialogType.Options;
+                    }
+                }
+                else
+                {
+                    npcTalk.DialogType |= DialogType.Quest;
+                    script = selectScript;
+                    npcTalk.DialogType |= DialogType.Options;
+                    if (talkScript is not null)
+                    {
+                        npcTalk.DialogType |= DialogType.Talk;
+                    }
                 }
             }
             else
             {
+                npcTalk.DialogType |= DialogType.Quest;
                 if (talkScript is not null)
                 {
                     if (talkScript.Type == ScriptType.Job)
@@ -145,11 +185,25 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
         {
             if (talkScript is not null)
             {
-                if (kind is NpcKind.BalmyShop or NpcKind.FixedShop or NpcKind.RotatingShop)
+                if (kind is NpcKind.BalmyShop or
+                    NpcKind.FixedShop or
+                    NpcKind.RotatingShop)
                 {
                     script = selectScript;
                     npcTalk.DialogType |= DialogType.Options;
                     npcTalk.DialogType |= DialogType.Talk;
+                }
+                else if (kind is NpcKind.SkyLumiknightCommander or
+                         NpcKind.SkyDarkWindCommander or
+                         NpcKind.SkyGreenHoodCommander or
+                         NpcKind.SkyMapleAllianceCommander or
+                         NpcKind.SkyRoyalGuardCommander or
+                         NpcKind.KritiasLumiknightCommander or
+                         NpcKind.KritiasGreenHoodCommander or
+                         NpcKind.KritiasMapleAllianceCommander or
+                         NpcKind.Humanitas)
+                {
+                    npcTalk.DialogType = DialogType.UI;
                 }
                 else
                 {
@@ -164,33 +218,6 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
                     }
                 }
             }
-        }
-
-        switch (kind)
-        {
-            // reputation NPCs only have UI Dialog Type even if they have quests to accept/accepted.
-            case NpcKind.SkyLumiknightCommander:
-            case NpcKind.SkyGreenHoodCommander:
-            case NpcKind.SkyDarkWindCommander:
-            case NpcKind.SkyMapleAllianceCommander:
-            case NpcKind.SkyRoyalGuardCommander:
-            case NpcKind.KritiasLumiknightCommander:
-            case NpcKind.KritiasGreenHoodCommander:
-            case NpcKind.KritiasMapleAllianceCommander:
-            case NpcKind.Humanitas:
-                npcTalk.DialogType = DialogType.UI;
-                ShopHandler.HandleOpen(session, npc, npc.Value.Id);
-                break;
-            case NpcKind.BalmyShop:
-            case NpcKind.FixedShop:
-            case NpcKind.RotatingShop:
-                ShopHandler.HandleOpen(session, npc, npc.Value.Id);
-                break;
-            case NpcKind.Storage:
-            case NpcKind.BlackMarket:
-            case NpcKind.Birthday: // TODO: needs a special case? select if birthday. script if not
-                npcTalk.DialogType = DialogType.UI;
-                break;
         }
 
         npcTalk.ScriptId = script?.Id ?? 0;
