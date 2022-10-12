@@ -145,32 +145,61 @@ public static class ItemMetadataStorage
         };
     }
 
-    public static long GetSellPrice(int itemId)
+    public static long GetSellPrice(int itemId, int rarity)
     {
-        // get random selling price from price points
+        // invalid rarities
+        if (rarity is < 1 or > 6)
+        {
+            return 0;
+        }
+        
         List<long>? pricePoints = GetMetadata(itemId)?.Property.Sell.SellPrice;
-        if (pricePoints == null || !pricePoints.Any())
+        List<long>? customPricePoints = GetMetadata(itemId)?.Property.Sell.SellPriceCustom;
+        if (customPricePoints[rarity - 1] > 0)
         {
-            return 0;
+            if (rarity < 4)
+            {
+                //TODO: ONLY FRACTION IT IF ITS AN EQUIP
+                return customPricePoints[rarity - 1] /3;
+            }
+            return customPricePoints[rarity - 1];
+        }
+        
+        int itemLevel = GetLimitMetadata(itemId).LevelLimitMin;
+        
+        // hardcoded values from client
+        if (itemLevel >= 57)
+        {
+            switch (rarity)
+            {
+                case 1: // Common
+                    pricePoints[0] = 1;
+                    break;
+                case 2: // Rare
+                    pricePoints[1] = 2;
+                    break;
+                case 3: // Exceptional
+                    pricePoints[2] = 3;
+                    break;
+                case 4: // Epic
+                    pricePoints[3] = 9256;
+                    break;
+                case 5: // Legendary
+                    pricePoints[4] = 11339;
+                    break;
+                case 6: // Ascendant
+                    pricePoints[5] = 4;
+                    break;
+            }
         }
 
-        int rand = Random.Shared.Next(0, pricePoints.Count);
-
-        return pricePoints.ElementAt(rand);
-    }
-
-    public static long GetCustomSellPrice(int itemId)
-    {
-        // get random selling price from price points
-        List<long>? pricePoints = GetMetadata(itemId)?.Property.Sell.SellPriceCustom;
-        if (pricePoints == null || !pricePoints.Any())
+        // rarities below 4 only sell for a third of the price listed in the xmls
+        if (itemLevel < 57 && rarity < 4)
         {
-            return 0;
+            return pricePoints[rarity - 1] / 3;
         }
-
-        int rand = Random.Shared.Next(0, pricePoints.Count);
-
-        return pricePoints.ElementAt(rand);
+        
+        return pricePoints[rarity - 1];
     }
 
     public static string? GetTag(int itemId) => GetMetadata(itemId)?.Basic.Tag;
