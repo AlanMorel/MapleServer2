@@ -85,8 +85,7 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
             return;
         }
 
-        long price = ItemMetadataStorage.GetSellPrice(item.Id, item.Rarity);
-        session.SendNotice(price.ToString());
+        long price = ItemMetadataStorage.GetSellPrice(item.Id, item.Rarity, item.GetItemType());
         session.Player.Wallet.Meso.Modify(price * quantity);
 
         session.Player.Inventory.ConsumeItem(session, item.Uid, quantity);

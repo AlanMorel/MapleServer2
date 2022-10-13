@@ -145,7 +145,7 @@ public static class ItemMetadataStorage
         };
     }
 
-    public static long GetSellPrice(int itemId, int rarity)
+    public static long GetSellPrice(int itemId, int rarity, ItemType itemType)
     {
         // invalid rarities
         if (rarity is < 1 or > 6)
@@ -157,10 +157,9 @@ public static class ItemMetadataStorage
         List<long>? customPricePoints = GetMetadata(itemId)?.Property.Sell.SellPriceCustom;
         if (customPricePoints[rarity - 1] > 0)
         {
-            if (rarity < 4)
+            if (rarity < 4 && itemType is >= ItemType.Earring and <= ItemType.Orb)
             {
-                //TODO: ONLY FRACTION IT IF ITS AN EQUIP
-                return customPricePoints[rarity - 1] /3;
+                return (long) Math.Floor(customPricePoints[rarity - 1] * 0.333);
             }
             return customPricePoints[rarity - 1];
         }
@@ -194,9 +193,9 @@ public static class ItemMetadataStorage
         }
 
         // rarities below 4 only sell for a third of the price listed in the xmls
-        if (itemLevel < 57 && rarity < 4)
+        if (itemLevel < 57 && rarity < 4 && itemType is >= ItemType.Earring and <= ItemType.Orb)
         {
-            return pricePoints[rarity - 1] / 3;
+            return (long) Math.Floor(pricePoints[rarity - 1] * 0.333);
         }
         
         return pricePoints[rarity - 1];
