@@ -4,27 +4,27 @@ namespace MapleServer2.Database.Types;
 
 public class Shop
 {
-    public int Id { get; set; }
-    public int Category { get; set; }
-    public string Name { get; set; }
-    public ShopType ShopType { get; set; }
-    public bool RestrictSales { get; set; }
-    public bool CanRestock { get; set; }
-    public long NextRestock { get; set; }
-    public bool AllowBuyback { get; set; }
-    public List<ShopItem> Items { get; set; }
+    public readonly int Id;
+    public readonly int Category;
+    public readonly string Name;
+    public readonly ShopType ShopType;
+    public readonly bool RestrictSales;
+    public readonly bool CanRestock;
+    public readonly long NextRestock;
+    public readonly bool AllowBuyback;
+    public List<ShopItem> Items;
 
     public Shop() { }
 
-    public Shop(int id, int category, string name, byte shop_type, bool restrict_sales, bool can_restock, long next_restock, bool allow_buyback)
+    public Shop(int id, int category, string name, byte shopType, bool restrictSales, bool canRestock, long nextRestock, bool allowBuyback)
     {
         Id = id;
         Category = category;
         Name = name;
-        ShopType = (ShopType) shop_type;
-        RestrictSales = restrict_sales;
-        CanRestock = can_restock;
-        NextRestock = next_restock;
-        AllowBuyback = allow_buyback;
+        ShopType = (ShopType) shopType;
+        RestrictSales = restrictSales;
+        CanRestock = canRestock;
+        NextRestock = nextRestock;
+        AllowBuyback = allowBuyback;
     }
 }

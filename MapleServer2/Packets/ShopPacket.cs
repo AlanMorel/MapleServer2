@@ -11,11 +11,15 @@ public static class ShopPacket
 {
     private enum Mode : byte
     {
-        Open = 0x0,
-        LoadProducts = 0x1,
-        Buy = 0x4,
-        Sell = 0x5,
-        Reload = 0x6
+        Open = 0,
+        LoadProducts = 1,
+        Buyback = 3,
+        Buy = 4,
+        Sell = 5,
+        EndLoad = 6,
+        AddRepurchase = 7,
+        RemoveRepurchase = 8,
+        Refresh = 10
     }
 
     public static PacketWriter Open(Shop shop, int npcId)
@@ -26,7 +30,7 @@ public static class ShopPacket
         pWriter.WriteInt(shop.Id);
         pWriter.WriteLong(shop.NextRestock);
         pWriter.WriteInt();
-        pWriter.WriteShort(4);
+        pWriter.WriteShort(4); // item count
         pWriter.WriteInt(shop.Category);
         pWriter.WriteBool(false);
         pWriter.WriteBool(shop.RestrictSales);
@@ -38,17 +42,27 @@ public static class ShopPacket
         pWriter.WriteBool(false);
         pWriter.WriteBool(false);
         pWriter.WriteString(shop.Name);
-
+        if (shop.CanRestock)
+        {
+            pWriter.WriteByte();
+            pWriter.WriteByte();
+            pWriter.WriteInt();
+            pWriter.WriteInt(); // restock cost
+            pWriter.WriteBool(false);
+            pWriter.WriteInt();
+            pWriter.WriteByte(); // shop type again?
+            pWriter.WriteBool(false);
+            pWriter.WriteBool(false);
+        }
         return pWriter;
     }
 
-    public static PacketWriter Reload()
+    public static PacketWriter EndLoad()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Shop);
-        pWriter.Write(Mode.Reload);
+        pWriter.Write(Mode.EndLoad);
         pWriter.WriteByte();
         pWriter.WriteByte();
-
         return pWriter;
     }
 
@@ -56,7 +70,6 @@ public static class ShopPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Shop);
         pWriter.WriteShort();
-
         return pWriter;
     }
 
@@ -69,7 +82,6 @@ public static class ShopPacket
         pWriter.WriteInt(price * quantity);
         pWriter.Write(shopCurrencyType);
         pWriter.WriteByte();
-
         return pWriter;
     }
 
@@ -85,7 +97,6 @@ public static class ShopPacket
         pWriter.WriteByte();
         pWriter.WriteInt();
         pWriter.WriteItem(item);
-
         return pWriter;
     }
 
@@ -93,37 +104,8 @@ public static class ShopPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Shop);
         pWriter.Write(Mode.LoadProducts);
-        pWriter.WriteByte(1);
-        pWriter.WriteInt(product.Uid);
-        pWriter.WriteInt(product.ItemId);
-        pWriter.Write(product.TokenType);
-        pWriter.WriteInt(product.RequiredItemId);
-        pWriter.WriteInt();
-        pWriter.WriteInt(product.Price);
-        pWriter.WriteInt(product.SalePrice);
-        pWriter.WriteByte(product.ItemRank);
-        pWriter.Write(0xEFDA5D2D);
-        pWriter.WriteInt(product.StockCount);
-        pWriter.WriteInt(product.StockPurchased);
-        pWriter.WriteInt(product.GuildTrophy);
-        pWriter.WriteString(product.Category);
-        pWriter.WriteInt(product.RequiredAchievementId);
-        pWriter.WriteInt(product.RequiredAchievementGrade);
-        pWriter.WriteByte(product.RequiredChampionshipGrade);
-        pWriter.WriteShort(product.RequiredChampionshipJoinCount);
-        pWriter.WriteByte(product.RequiredGuildMerchantType);
-        pWriter.WriteShort(product.RequiredGuildMerchantLevel);
-        pWriter.WriteBool(false);
-        pWriter.WriteShort(product.Quantity);
-        pWriter.WriteByte(1);
-        pWriter.Write(product.Flag);
-        pWriter.WriteString(product.TemplateName);
-        pWriter.WriteShort(product.RequiredQuestAlliance);
-        pWriter.WriteInt(product.RequiredFameGrade);
-        pWriter.WriteBool(product.AutoPreviewEquip);
-        pWriter.WriteByte();
-        pWriter.WriteItem(new(product.ItemId, product.Quantity, product.ItemRank, false));
-
+        pWriter.WriteByte(1); // quantity of shop items. GMS2 loads one item at a time, while KMS2 does all.
+        pWriter.WriteClass(product);
         return pWriter;
     }
 }

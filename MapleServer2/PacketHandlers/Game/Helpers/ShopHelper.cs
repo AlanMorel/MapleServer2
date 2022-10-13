@@ -23,7 +23,7 @@ public static class ShopHelper
             session.Send(ShopPacket.LoadProducts(shopItem));
         }
 
-        session.Send(ShopPacket.Reload());
+        session.Send(ShopPacket.EndLoad());
         session.Send(SystemShopPacket.Open());
     }
 }

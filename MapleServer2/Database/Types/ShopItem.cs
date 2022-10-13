@@ -1,8 +1,10 @@
 ﻿using Maple2Storage.Enums;
+using MaplePacketLib2.Tools;
+using MapleServer2.Packets.Helpers;
 
 namespace MapleServer2.Database.Types;
 
-public class ShopItem
+public class ShopItem : IPacketSerializable
 {
     public readonly int Uid;
     public readonly int ItemId;
@@ -53,5 +55,38 @@ public class ShopItem
         TemplateName = data.template_name;
         TokenType = (ShopCurrencyType) data.token_type;
         Quantity = data.quantity;
+    }
+    
+    public void WriteTo(PacketWriter pWriter)
+    {
+        pWriter.WriteInt(Uid);
+        pWriter.WriteInt(ItemId);
+        pWriter.Write(TokenType);
+        pWriter.WriteInt(RequiredItemId);
+        pWriter.WriteInt();
+        pWriter.WriteInt(Price);
+        pWriter.WriteInt(SalePrice);
+        pWriter.WriteByte(ItemRank);
+        pWriter.WriteInt();
+        pWriter.WriteInt(StockCount);
+        pWriter.WriteInt(StockPurchased);
+        pWriter.WriteInt(GuildTrophy);
+        pWriter.WriteString(Category);
+        pWriter.WriteInt(RequiredAchievementId);
+        pWriter.WriteInt(RequiredAchievementGrade);
+        pWriter.WriteByte(RequiredChampionshipGrade);
+        pWriter.WriteShort(RequiredChampionshipJoinCount);
+        pWriter.WriteByte(RequiredGuildMerchantType);
+        pWriter.WriteShort(RequiredGuildMerchantLevel);
+        pWriter.WriteBool(false);
+        pWriter.WriteShort(Quantity);
+        pWriter.WriteByte(1);
+        pWriter.Write(Flag);
+        pWriter.WriteString(TemplateName); // currency ID STR
+        pWriter.WriteShort(RequiredQuestAlliance);
+        pWriter.WriteInt(RequiredFameGrade);
+        pWriter.WriteBool(AutoPreviewEquip);
+        pWriter.WriteByte(); // has buy period
+        pWriter.WriteItem(new(ItemId, Quantity, ItemRank, false));
     }
 }

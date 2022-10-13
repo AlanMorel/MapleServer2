@@ -17,10 +17,10 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
 
     private enum Mode : byte
     {
-        Buy = 0x4,
-        Sell = 0x5,
-        Close = 0x6,
-        OpenViaItem = 0x0A
+        Buy = 4,
+        Sell = 5,
+        Close = 6,
+        OpenViaItem = 10
     }
 
     public override void Handle(GameSession session, PacketReader packet)
@@ -63,7 +63,7 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
         {
             session.Send(ShopPacket.LoadProducts(shopItem));
         }
-        session.Send(ShopPacket.Reload());
+        session.Send(ShopPacket.EndLoad());
         session.Player.ShopId = shop.Id;
     }
 
@@ -167,6 +167,6 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
         {
             session.Send(ShopPacket.LoadProducts(shopItem));
         }
-        session.Send(ShopPacket.Reload());
+        session.Send(ShopPacket.EndLoad());
     }
 }
