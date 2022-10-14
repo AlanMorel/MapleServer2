@@ -1,4 +1,5 @@
 ﻿using Maple2Storage.Enums;
+using MapleServer2.Types;
 
 namespace MapleServer2.Database.Types;
 

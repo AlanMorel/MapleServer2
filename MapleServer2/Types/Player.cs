@@ -152,6 +152,8 @@ public class Player
     public Wallet Wallet { get; set; }
     public Dictionary<int, QuestStatus> QuestData;
 
+    public Dictionary<int, PlayerShopLog> ShopLogs = new();
+
     public CancellationTokenSource OnlineCTS;
     public Task OnlineTimeThread;
     public Task TimeSyncTask;

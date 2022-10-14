@@ -1,6 +1,6 @@
 ﻿namespace Maple2Storage.Enums;
 
-public enum ShopItemFlag : byte
+public enum ShopItemLabel : byte
 {
     None = 0,
     New = 1,

@@ -7,7 +7,7 @@ public class BeautyShopItem
     public long Uid;
     public int ItemId;
     public Gender Gender;
-    public ShopItemFlag Flag;
+    public ShopItemLabel Label;
     public short RequiredLevel;
     public int RequiredAchievementId;
     public byte RequiredAchievementGrade;
@@ -20,7 +20,7 @@ public class BeautyShopItem
         Uid = data.uid;
         ItemId = data.item_id;
         Gender = (Gender) data.gender;
-        Flag = (ShopItemFlag) data.flag;
+        Label = (ShopItemLabel) data.flag;
         RequiredLevel = data.required_level;
         RequiredAchievementId = data.required_achievement_id;
         RequiredAchievementGrade = (byte) data.required_achievement_grade;

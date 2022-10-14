@@ -8,7 +8,7 @@ CREATE TABLE `shop_items`
     `uid`                              int              NOT NULL AUTO_INCREMENT,
     `auto_preview_equip`               tinyint(1)       NOT NULL,
     `category`                         varchar(25) DEFAULT NULL,
-    `flag`                             tinyint unsigned NOT NULL,
+    `label`                             tinyint unsigned NOT NULL,
     `guild_trophy`                     int              NOT NULL,
     `item_id`                          int              NOT NULL,
     `item_rank`                        tinyint unsigned NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE `shop_items`
     `shop_id`                          int         DEFAULT NULL,
     `stock_count`                      int              NOT NULL,
     `stock_purchased`                  int              NOT NULL,
-    `template_name`                    varchar(25) DEFAULT NULL,
+    `currency_id`                    varchar(25) DEFAULT NULL,
     `token_type`                       tinyint unsigned NOT NULL,
     PRIMARY KEY (`uid`),
     KEY `ix_shopitems_shopid` (`shop_id`),
@@ -36,12 +36,12 @@ CREATE TABLE `shop_items`
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
 
-INSERT INTO `shop_items` (`auto_preview_equip`, `category`, `flag`, `guild_trophy`, `item_id`, `item_rank`, `price`,
+INSERT INTO `shop_items` (`auto_preview_equip`, `category`, `label`, `guild_trophy`, `item_id`, `item_rank`, `price`,
                           `quantity`, `required_achievement_grade`, `required_achievement_id`,
                           `required_championship_grade`, `required_championship_join_count`, `required_fame_grade`,
                           `required_guild_merchant_level`, `required_guild_merchant_type`, `required_item_id`,
                           `required_quest_alliance`, `sale_price`, `shop_id`, `stock_count`, `stock_purchased`,
-                          `template_name`, `token_type`)
+                          `currency_id`, `token_type`)
 VALUES (0, 'PS', 0, 0, 63000000, 1, 1000, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 103, 0, 0, '', 0),
        (1, 'Excellecnt02', 0, 0, 11720040, 4, 33, 1, 0, 0, 0, 0, 0, 0, 0, 22201010, 0, 0, 101010, 0, 0, '22201001', 1),
        (1, 'Excellecnt02', 0, 0, 11820039, 4, 34, 1, 0, 0, 0, 0, 0, 0, 0, 22201010, 0, 0, 101010, 0, 0, '22201001', 1),

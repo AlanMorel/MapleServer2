@@ -2,7 +2,7 @@
 using MaplePacketLib2.Tools;
 using MapleServer2.Packets.Helpers;
 
-namespace MapleServer2.Database.Types;
+namespace MapleServer2.Types;
 
 public class ShopItem : IPacketSerializable
 {
@@ -24,8 +24,8 @@ public class ShopItem : IPacketSerializable
     public readonly byte RequiredGuildMerchantType;
     public readonly short RequiredGuildMerchantLevel;
     public readonly short Quantity;
-    public readonly ShopItemFlag Flag;
-    public readonly string TemplateName;
+    public readonly ShopItemLabel Label;
+    public readonly string CurrencyId;
     public readonly short RequiredQuestAlliance;
     public readonly int RequiredFameGrade;
     public readonly bool AutoPreviewEquip;
@@ -35,7 +35,7 @@ public class ShopItem : IPacketSerializable
         Uid = data.uid;
         AutoPreviewEquip = data.auto_preview_equip;
         Category = data.category;
-        Flag = (ShopItemFlag) data.flag;
+        Label = (ShopItemLabel) data.label;
         GuildTrophy = data.guild_trophy;
         ItemId = data.item_id;
         ItemRank = data.item_rank;
@@ -52,7 +52,7 @@ public class ShopItem : IPacketSerializable
         SalePrice = data.sale_price;
         StockCount = data.stock_count;
         StockPurchased = data.stock_purchased;
-        TemplateName = data.template_name;
+        CurrencyId = data.currency_id;
         TokenType = (ShopCurrencyType) data.token_type;
         Quantity = data.quantity;
     }
@@ -81,8 +81,8 @@ public class ShopItem : IPacketSerializable
         pWriter.WriteBool(false);
         pWriter.WriteShort(Quantity);
         pWriter.WriteByte(1);
-        pWriter.Write(Flag);
-        pWriter.WriteString(TemplateName); // currency ID STR
+        pWriter.Write(Label);
+        pWriter.WriteString(CurrencyId);
         pWriter.WriteShort(RequiredQuestAlliance);
         pWriter.WriteInt(RequiredFameGrade);
         pWriter.WriteBool(AutoPreviewEquip);
