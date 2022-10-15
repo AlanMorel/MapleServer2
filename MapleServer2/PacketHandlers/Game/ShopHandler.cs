@@ -20,7 +20,9 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
         Buy = 4,
         Sell = 5,
         Close = 6,
+       //InstantRestock = 9,
         OpenViaItem = 10
+        // LoadNew = 13
     }
 
     public override void Handle(GameSession session, PacketReader packet)
@@ -57,6 +59,22 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
             Logger.Warning("Unknown shop ID: {shopId}", metadata.ShopId);
             return;
         }
+
+        List<ShopItem> shopItems = shop.Items;
+
+
+
+        if (shop.CanRestock)
+        {
+            if (!session.Player.ShopLogs.ContainsKey(shop.Id))
+            {
+                session.Player.ShopLogs[shop.Id] = new(shop.Id, TimeInfo.Now(), shop.Items);
+            }
+
+            shopItems = session.Player.ShopLogs[shop.Id].ShopItems;
+
+        }
+        
 
         session.Send(ShopPacket.Open(shop, npcId));
         foreach (ShopItem shopItem in shop.Items)
@@ -145,7 +163,10 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
 
     private static void HandleOpenViaItem(GameSession session, PacketReader packet)
     {
+        return;
+
         byte unk = packet.ReadByte();
+
         int itemId = packet.ReadInt();
 
         IInventory inventory = session.Player.Inventory;

@@ -13,6 +13,15 @@ public class Shop
     public readonly bool CanRestock;
     public readonly long NextRestock;
     public readonly bool AllowBuyback;
+    public readonly bool OpenWallet;
+    public readonly bool DisplayNew;
+    public readonly ShopCurrencyType RestockCurrencyType;
+    public readonly ShopCurrencyType ExcessRestockCurrencyType;
+    public readonly int RestockCost;
+    public readonly bool EnableRestockCostMultiplier;
+    public readonly int TotalRestockCount;
+    public readonly bool EnableInstantRestock;
+    public readonly bool PersistantInventory;
     public List<ShopItem> Items;
 
     public Shop() { }

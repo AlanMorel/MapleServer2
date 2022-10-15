@@ -4,6 +4,7 @@ using MapleServer2.Constants;
 using MapleServer2.Database.Types;
 using MapleServer2.Packets.Helpers;
 using MapleServer2.Types;
+using Org.BouncyCastle.Asn1.X509;
 
 namespace MapleServer2.Packets;
 
@@ -28,11 +29,11 @@ public static class ShopPacket
         pWriter.Write(Mode.Open);
         pWriter.WriteInt(npcId);
         pWriter.WriteInt(shop.Id);
-        pWriter.WriteLong(shop.NextRestock);
+        pWriter.WriteLong(shop.NextRestock + TimeInfo.Now() + 1000000);
         pWriter.WriteInt();
-        pWriter.WriteShort(4); // item count
+        pWriter.WriteShort((short) shop.Items.Count);
         pWriter.WriteInt(shop.Category);
-        pWriter.WriteBool(false);
+        pWriter.WriteBool(shop.OpenWallet);
         pWriter.WriteBool(shop.RestrictSales);
         pWriter.WriteBool(shop.CanRestock);
         pWriter.WriteBool(false);
@@ -40,19 +41,19 @@ public static class ShopPacket
         pWriter.WriteBool(shop.AllowBuyback);
         pWriter.WriteBool(false);
         pWriter.WriteBool(false);
-        pWriter.WriteBool(false);
+        pWriter.WriteBool(shop.DisplayNew);
         pWriter.WriteString(shop.Name);
         if (shop.CanRestock)
         {
-            pWriter.WriteByte();
-            pWriter.WriteByte();
-            pWriter.WriteInt();
-            pWriter.WriteInt(); // restock cost
-            pWriter.WriteBool(false);
-            pWriter.WriteInt();
-            pWriter.WriteByte(); // shop type again?
-            pWriter.WriteBool(false);
-            pWriter.WriteBool(false);
+            pWriter.Write(shop.RestockCurrencyType);
+            pWriter.Write(shop.ExcessRestockCurrencyType);
+            pWriter.WriteInt(); // currency item id ?
+            pWriter.WriteInt(shop.RestockCost);
+            pWriter.WriteBool(shop.EnableRestockCostMultiplier);
+            pWriter.WriteInt(shop.TotalRestockCount);
+            pWriter.WriteByte(); // this controls the placement/speed of the restock bar
+            pWriter.WriteBool(shop.EnableInstantRestock);
+            pWriter.WriteBool(shop.PersistantInventory);
         }
         return pWriter;
     }

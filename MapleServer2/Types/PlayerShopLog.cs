@@ -13,7 +13,7 @@ public class PlayerShopLog
 
     public PlayerShopLog() { }
 
-    public PlayerShopLog(int shopId, int createTime, List<ShopItem> items)
+    public PlayerShopLog(int shopId, long createTime, List<ShopItem> items)
     {
         ShopId = shopId;
         CreateTime = createTime;
