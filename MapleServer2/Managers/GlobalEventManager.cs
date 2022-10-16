@@ -44,7 +44,7 @@ public class GlobalEventManager
 
         foreach (GlobalEvent globalEvent in events)
         {
-            TaskScheduler.Instance.ScheduleTask(globalEvent.FirstHour, globalEvent.FirstMinutesOnHour, globalEvent.MinutesToRunPerDay, globalEvent.Start);
+            TaskScheduler.Instance.ScheduleTask(globalEvent.FirstHour, globalEvent.FirstMinutesOnHour, globalEvent.MinutesInterval, globalEvent.Start);
         }
     }
 }

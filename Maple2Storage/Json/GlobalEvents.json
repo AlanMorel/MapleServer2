@@ -3,7 +3,7 @@
     "Id": 1,
     "FirstHour": 0,
     "FirstMinutesOnHour": 5,
-    "MinutesToRunPerDay": 90,
+    "MinutesInterval": 90,
     "Events": [
       "treasure_island",
       "great_escape",
@@ -14,7 +14,7 @@
     "Id": 2,
     "FirstHour": 0,
     "FirstMinutesOnHour": 35,
-    "MinutesToRunPerDay": 90,
+    "MinutesInterval": 90,
     "Events": [
       "blood_mine",
       "spring_beach",
@@ -25,7 +25,7 @@
     "Id": 3,
     "FirstHour": 1,
     "FirstMinutesOnHour": 5,
-    "MinutesToRunPerDay": 180,
+    "MinutesInterval": 180,
     "Events": [
       "red_arena",
       "dancedance_stop",
@@ -36,7 +36,7 @@
     "Id": 4,
     "FirstHour": 2,
     "FirstMinutesOnHour": 35,
-    "MinutesToRunPerDay": 180,
+    "MinutesInterval": 180,
     "Events": [
       "red_arena",
       "dancedance_stop",

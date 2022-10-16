@@ -68,7 +68,12 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
         {
             if (!session.Player.ShopLogs.ContainsKey(shop.Id))
             {
-                session.Player.ShopLogs[shop.Id] = new(shop.Id, TimeInfo.Now(), shop.Items);
+                session.Player.ShopLogs[shop.Id] = new(shop.Id, TimeInfo.Now());
+                if (!shop.PersistantInventory)
+                {
+                    session.Player.ShopLogs[shop.Id].ShopItems = shopItems.OrderBy(x => Random.Shared.Next()).Take(12).ToList();
+
+                }
             }
 
             shopItems = session.Player.ShopLogs[shop.Id].ShopItems;
@@ -76,13 +81,15 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
         }
         
 
-        session.Send(ShopPacket.Open(shop, npcId));
-        foreach (ShopItem shopItem in shop.Items)
+        session.Send(ShopPacket.Open(shop, npcId, (short) shopItems.Count));
+        foreach (ShopItem shopItem in shopItems)
         {
             session.Send(ShopPacket.LoadProducts(shopItem));
         }
         session.Send(ShopPacket.EndLoad());
         session.Player.ShopId = shop.Id;
+        Console.WriteLine($"Current Timestamp: {TimeInfo.Now()}, Shop Timestamp: {shop.RestockTime}");
+
     }
 
     private static void HandleClose(GameSession session)

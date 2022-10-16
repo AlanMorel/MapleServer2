@@ -10,7 +10,7 @@ public class GlobalEvent
     public int Id;
     public int FirstHour;
     public int FirstMinutesOnHour;
-    public int MinutesToRunPerDay;
+    public int MinutesInterval;
     public List<GlobalEventType> Events = new();
 
     public GlobalEvent()

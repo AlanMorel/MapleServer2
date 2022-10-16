@@ -8,15 +8,14 @@ namespace MapleServer2.Types;
 public class PlayerShopLog
 {
     public int ShopId;
-    public long CreateTime;
+    public long NextRestockTime;
     public List<ShopItem> ShopItems;
 
     public PlayerShopLog() { }
 
-    public PlayerShopLog(int shopId, long createTime, List<ShopItem> items)
+    public PlayerShopLog(int shopId, long nextRestockTime)
     {
         ShopId = shopId;
-        CreateTime = createTime;
-        ShopItems = items;
+        NextRestockTime = nextRestockTime;
     }
 }

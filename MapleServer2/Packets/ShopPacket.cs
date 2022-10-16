@@ -23,22 +23,22 @@ public static class ShopPacket
         Refresh = 10
     }
 
-    public static PacketWriter Open(Shop shop, int npcId)
+    public static PacketWriter Open(Shop shop, int npcId, short itemCount)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Shop);
         pWriter.Write(Mode.Open);
         pWriter.WriteInt(npcId);
         pWriter.WriteInt(shop.Id);
-        pWriter.WriteLong(shop.NextRestock + TimeInfo.Now() + 1000000);
+        pWriter.WriteLong(shop.RestockTime);
         pWriter.WriteInt();
-        pWriter.WriteShort((short) shop.Items.Count);
+        pWriter.WriteShort(itemCount);
         pWriter.WriteInt(shop.Category);
         pWriter.WriteBool(shop.OpenWallet);
-        pWriter.WriteBool(shop.RestrictSales);
+        pWriter.WriteBool(shop.DisableBuyback);
         pWriter.WriteBool(shop.CanRestock);
         pWriter.WriteBool(false);
         pWriter.Write(shop.ShopType);
-        pWriter.WriteBool(shop.AllowBuyback);
+        pWriter.WriteBool(shop.HideUnuseable);
         pWriter.WriteBool(false);
         pWriter.WriteBool(false);
         pWriter.WriteBool(shop.DisplayNew);
