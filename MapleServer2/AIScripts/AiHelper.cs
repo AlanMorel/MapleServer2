@@ -1,5 +1,6 @@
 ﻿using MapleServer2.AIScripts._29000282;
 using MapleServer2.Managers.Actors;
+using MapleServer2.Types;
 
 namespace MapleServer2.AIScripts;
 
