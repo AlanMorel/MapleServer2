@@ -10,7 +10,6 @@ namespace MapleServer2.AI.Scripts;
 
 // ReSharper disable once InconsistentNaming
 public class AI_DefaultNew : AIState
-
 {
     public AI_DefaultNew(AIContext context) : base(context) { }
 

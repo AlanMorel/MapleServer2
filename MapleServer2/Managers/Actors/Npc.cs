@@ -396,17 +396,17 @@ public class Npc : FieldActor<NpcMetadata>, INpc
     private short GetDefaultAnimation()
     {
         NpcMetadata? npcMetadata = NpcMetadataStorage.GetNpcMetadata(Value.Id);
-        if (npcMetadata is null || !npcMetadata.StateActions.TryGetValue(NpcState.Normal, out (string, NpcAction, short)[]? stateAction))
+        if (npcMetadata is null || !npcMetadata.StateActions.TryGetValue(NpcState.Normal, out NpcActionChance[]? stateAction))
         {
             return AnimationStorage.GetSequenceIdBySequenceName(Value.NpcMetadataModel.Model, "Idle_A");
         }
 
-        return AnimationStorage.GetSequenceIdBySequenceName(Value.NpcMetadataModel.Model, stateAction.Length == 0 ? "Idle_A" : stateAction[0].Item1);
+        return AnimationStorage.GetSequenceIdBySequenceName(Value.NpcMetadataModel.Model, stateAction.Length == 0 ? "Idle_A" : stateAction[0].Id);
     }
 
-    public (string id, NpcAction action, short chance) GetRandomAction()
+    public NpcActionChance GetRandomAction()
     {
-        int[] probabilities = Value.StateActions[NpcState.Normal].Select(x => (int) x.chance).OrderBy(x => x).ToArray();
+        int[] probabilities = Value.StateActions[NpcState.Normal].Select(x => (int) x.Chance).OrderBy(x => x).ToArray();
 
         int chance = Random.Shared.Next(probabilities.Sum());
 

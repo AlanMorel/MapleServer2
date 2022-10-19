@@ -1,5 +1,6 @@
 ﻿using Maple2Storage.Enums;
 using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Types;
@@ -45,11 +46,11 @@ public partial class AIContext
 
     public void Patrol()
     {
-        (string id, NpcAction action, short _) = Npc.GetRandomAction();
-        Npc.Action = action;
-        Npc.Animation = AnimationStorage.GetSequenceIdBySequenceName(Npc.Value.NpcMetadataModel.Model, id);
+        NpcActionChance actionChance = Npc.GetRandomAction();
+        Npc.Action = actionChance.Action;
+        Npc.Animation = AnimationStorage.GetSequenceIdBySequenceName(Npc.Value.NpcMetadataModel.Model, actionChance.Id);
 
-        if (action == NpcAction.Walk)
+        if (actionChance.Action == NpcAction.Walk)
         {
             Npc.Patrol();
         }

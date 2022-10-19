@@ -60,7 +60,7 @@ public partial class TriggerContext
                     if (spawnAnimation)
                     {
                         NpcMetadata? npcMetadata = NpcMetadataStorage.GetNpcMetadata(id);
-                        if (npcMetadata is null || !npcMetadata.StateActions.TryGetValue(NpcState.Normal, out (string, NpcAction, short)[]? stateAction))
+                        if (npcMetadata is null || !npcMetadata.StateActions.TryGetValue(NpcState.Normal, out NpcActionChance[]? stateAction))
                         {
                             continue;
                         }
@@ -70,7 +70,7 @@ public partial class TriggerContext
                             continue;
                         }
 
-                        animation = AnimationStorage.GetSequenceIdBySequenceName(npcMetadata.NpcMetadataModel.Model, stateAction[0].Item1);
+                        animation = AnimationStorage.GetSequenceIdBySequenceName(npcMetadata.NpcMetadataModel.Model, stateAction[0].Id);
                     }
 
                     Npc npc = Field.RequestNpc(id, spawnPoint.Position, spawnPoint.Rotation, animation);

@@ -155,14 +155,14 @@ public class NpcParser : Exporter<List<NpcMetadata>>
             }
 
             // Parse normal state
-            List<(string id, NpcAction action, short chance)> normalActions = new();
+            List<NpcActionChance> normalActions = new();
             string[] normalActionIds = npcNormalNode.Attributes["action"]?.Value.Split(",") ?? Array.Empty<string>();
             if (normalActionIds.Length > 0)
             {
                 short[] actionProbs = npcNormalNode.Attributes["prob"]?.Value.SplitAndParseToShort(',').ToArray();
                 for (int i = 0; i < normalActionIds.Length; i++)
                 {
-                    normalActions.Add((normalActionIds[i], GetNpcAction(normalActionIds[i]), actionProbs[i]));
+                    normalActions.Add(new(normalActionIds[i], GetNpcAction(normalActionIds[i]), actionProbs[i]));
                 }
 
                 metadata.StateActions[NpcState.Normal] = normalActions.ToArray();
@@ -171,7 +171,7 @@ public class NpcParser : Exporter<List<NpcMetadata>>
             metadata.MoveRange = short.Parse(npcNormalNode.Attributes["movearea"]?.Value ?? "0");
 
             // HACK: Parse combat/skills state (does not actually exist)
-            List<(string, NpcAction, short)> combatActions = new();
+            List<NpcActionChance> combatActions = new();
             string[] combatActionsIds =
             {
                 "Run_A"
@@ -180,21 +180,21 @@ public class NpcParser : Exporter<List<NpcMetadata>>
             {
                 int equalProb = 10000 / combatActionsIds.Length;
                 int remainder = 10000 % (equalProb * combatActionsIds.Length);
-                combatActions.Add((combatActionsIds[0], GetNpcAction(combatActionsIds[0]), (short) (equalProb + remainder)));
+                combatActions.Add(new(combatActionsIds[0], GetNpcAction(combatActionsIds[0]), (short) (equalProb + remainder)));
                 metadata.StateActions[NpcState.Combat] = combatActions.ToArray();
             }
 
             // Parse dead state
-            List<(string, NpcAction, short)> deadActions = new();
+            List<NpcActionChance> deadActions = new();
             string[] deadActionIds = npcDeadNode.Attributes["defaultaction"]?.Value.Split(",") ?? Array.Empty<string>();
             if (deadActionIds.Length > 0)
             {
                 int equalProb = 10000 / deadActionIds.Length;
                 int remainder = 10000 % (equalProb * deadActionIds.Length);
-                deadActions.Add((deadActionIds[0], GetNpcAction(deadActionIds[0]), (short) (equalProb + remainder)));
+                deadActions.Add(new(deadActionIds[0], GetNpcAction(deadActionIds[0]), (short) (equalProb + remainder)));
                 for (int i = 1; i < deadActionIds.Length; i++)
                 {
-                    deadActions.Add((deadActionIds[i], GetNpcAction(deadActionIds[i]), (short) equalProb));
+                    deadActions.Add(new(deadActionIds[i], GetNpcAction(deadActionIds[i]), (short) equalProb));
                 }
 
                 metadata.StateActions[NpcState.Dead] = deadActions.ToArray();
