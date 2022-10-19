@@ -242,14 +242,23 @@ public class NpcMetadataModel
 }
 
 [XmlType]
-public record NpcActionChance(string Id, NpcAction Action, short Chance)
+public class NpcActionChance
 {
     [XmlElement(Order = 1)]
-    public string Id = Id;
+    public string Id;
 
     [XmlElement(Order = 2)]
-    public NpcAction Action = Action;
+    public NpcAction Action;
 
     [XmlElement(Order = 3)]
-    public short Chance = Chance;
+    public short Chance;
+
+    public NpcActionChance() { }
+
+    public NpcActionChance(string id, NpcAction action, short chance)
+    {
+        Id = id;
+        Action = action;
+        Chance = chance;
+    }
 }
