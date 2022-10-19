@@ -49,7 +49,7 @@ public class DefaultAttackState : AIState
             return new DefaultPatrolState(Context);
         }
 
-        if (Context.InSight())
+        if (!Context.OutOfSight())
         {
             Context.Follow();
             return null;

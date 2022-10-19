@@ -22,17 +22,6 @@ public partial class AIContext
         return playerMobDist > Npc.Value.NpcMetadataDistance.Sight * 2;
     }
 
-    public bool InSight()
-    {
-        if (Npc.Target is null)
-        {
-            return true;
-        }
-
-        float playerMobDist = GetDistanceToTarget();
-        return playerMobDist < Npc.Value.NpcMetadataDistance.Sight * 2;
-    }
-
     public float GetDistanceToNextCoord()
     {
         return Npc.Distance;

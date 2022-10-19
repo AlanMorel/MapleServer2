@@ -31,7 +31,7 @@ public class AI_PrisonGovernor2_battle : AIState
             return null;
         }
 
-        if (Context.InSight())
+        if (!Context.OutOfSight())
         {
             Context.Follow();
             return null;
