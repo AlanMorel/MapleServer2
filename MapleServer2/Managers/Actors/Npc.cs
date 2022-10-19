@@ -3,7 +3,6 @@ using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.AIScripts;
-using MapleServer2.AIScripts.Default;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
@@ -49,7 +48,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
         Stats = new(metadata);
         State = NpcState.Normal;
         Action = NpcAction.Idle;
-        Behavior = new(this, AiHelper.AIStates.ContainsKey(metadata.Id) ? AiHelper.AIStates[metadata.Id] : new DefaultState());
+        Behavior = new(this, AiHelper.GetAIState(metadata.AiInfo));
     }
 
     public void Attack()

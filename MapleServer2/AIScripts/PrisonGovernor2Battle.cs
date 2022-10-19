@@ -1,30 +1,30 @@
 ﻿using Maple2Storage.Types;
 using MapleServer2.Data.Static;
-using MapleServer2.Enums;
 using MapleServer2.Managers.Actors;
 using MapleServer2.Types;
 
-namespace MapleServer2.AIScripts.Default;
+namespace MapleServer2.AIScripts;
 
-public class DefaultAttackState : AIState
+public class PrisonGovernor2Battle : AIState
 {
     public override void OnEnter(Npc npc)
     {
-        npc.Movement = MobMovement.Follow;
+        // Ok to assume this will only happen on tutorial, so always attack the only player available
+        npc.Target = npc.FieldManager!.State.Players.FirstOrDefault().Value;
     }
 
     public override AIState? Execute(Npc npc)
     {
-        if (npc.Target is null)
+        if (npc.CheckHPThreshold(50))
         {
-            return new DefaultPatrolState();
+            return new BattleStop();
         }
 
-        float playerMobDist = CoordF.Distance(npc.Target.Coord, npc.Coord);
+        float playerMobDist = CoordF.Distance(npc.Target!.Coord, npc.Coord);
 
         if (playerMobDist > npc.Value.NpcMetadataDistance.Sight)
         {
-            return new DefaultPatrolState();
+            return null;
         }
 
         if (playerMobDist >= npc.Value.NpcMetadataDistance.Avoid * 2)
@@ -44,6 +44,26 @@ public class DefaultAttackState : AIState
 
         // TODO: Attack
         // npc.Attack();
+        return null;
+    }
+
+    public override void OnExit(Npc npc) { }
+}
+
+public class BattleStop : AIState
+{
+    public override void OnEnter(Npc npc) { }
+
+    public override AIState? Execute(Npc npc)
+    {
+        PlayerTrigger? playerTrigger = npc.Target!.Value.Triggers.FirstOrDefault(y => y.Key == "battleStop");
+        if (playerTrigger is not null)
+        {
+            playerTrigger.Value = 1;
+            return null;
+        }
+
+        npc.Target.Value.Triggers.Add(new("battleStop", 1));
         return null;
     }
 
