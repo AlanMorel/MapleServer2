@@ -2,7 +2,8 @@
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
-using MapleServer2.AIScripts;
+using MapleServer2.AI;
+using MapleServer2.AI.Functions;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
@@ -19,7 +20,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
     private static readonly ILogger Logger = Log.Logger.ForContext<Npc>();
 
     public MobAI? AI;
-    public readonly BehaviorScript Behavior;
+    public readonly AIScript? Behavior;
     public IFieldObject<MobSpawn> OriginSpawn;
     public NpcState State { get; set; }
     public NpcAction Action { get; set; }
@@ -48,7 +49,15 @@ public class Npc : FieldActor<NpcMetadata>, INpc
         Stats = new(metadata);
         State = NpcState.Normal;
         Action = NpcAction.Idle;
-        Behavior = new(this, AiHelper.GetAIState(metadata.AiInfo));
+
+        if (string.IsNullOrEmpty(metadata.AiInfo))
+        {
+            return;
+        }
+
+        AIContext aiContext = new(this);
+        AIState aiState = AIHelper.GetAIState(metadata.AiInfo.Split(".")[0], aiContext);
+        Behavior = new(aiContext, aiState);
     }
 
     public void Attack()
@@ -412,35 +421,5 @@ public class Npc : FieldActor<NpcMetadata>, INpc
         }
 
         return Value.StateActions[NpcState.Normal][0];
-    }
-
-    public bool TryDefineTarget()
-    {
-        if (FieldManager is null)
-        {
-            return false;
-        }
-
-        // Manage mob aggro + targets
-        foreach (IFieldActor<Player> player in FieldManager.State.Players.Values)
-        {
-            float playerMobDist = CoordF.Distance(player.Coord, Coord);
-            if (playerMobDist <= Value.NpcMetadataDistance.Sight)
-            {
-                State = NpcState.Combat;
-                Target = player;
-                return true;
-            }
-
-            if (State != NpcState.Combat)
-            {
-                continue;
-            }
-
-            State = NpcState.Normal;
-            Target = null;
-        }
-
-        return false;
     }
 }

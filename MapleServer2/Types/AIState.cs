@@ -1,12 +1,17 @@
-﻿using MapleServer2.Managers.Actors;
+﻿using MapleServer2.AI.Functions;
+using MapleServer2.Managers.Actors;
 
 namespace MapleServer2.Types;
 
 public abstract class AIState
 {
-    public abstract void OnEnter(Npc npc);
+    protected readonly AIContext Context;
 
-    public abstract AIState? Execute(Npc npc);
+    protected AIState(AIContext context) => Context = context;
 
-    public abstract void OnExit(Npc npc);
+    public abstract void OnEnter();
+
+    public abstract AIState? Execute();
+
+    public abstract void OnExit();
 }
