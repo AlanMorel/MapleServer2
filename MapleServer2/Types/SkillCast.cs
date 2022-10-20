@@ -28,9 +28,9 @@ public class SkillCast
     public short LookDirection;
     public float AimAngle;
 
-    public IFieldActor Caster;
+    public IFieldActor? Caster;
     public IFieldActor Target;
-    public IFieldActor Owner; // who the skill was casted at, not necessarily the same as caster
+    public IFieldActor? Owner; // who the skill was casted at, not necessarily the same as caster
 
     public bool MetadataExists => GetSkillMetadata() is not null;
 

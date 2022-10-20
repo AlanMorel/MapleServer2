@@ -34,14 +34,14 @@ public class MobAI
             if (mob.Value.StateActions[mob.State].Length > 0)
             {
                 int roll = Random.Shared.Next(10000);
-                foreach ((string name, NpcAction type, int probability) in mob.Value.StateActions[mob.State])
+                foreach (NpcActionChance? action in mob.Value.StateActions[mob.State])
                 {
-                    if (roll < probability)
+                    if (roll < action.Chance)
                     {
-                        return (name, type);
+                        return (action.Id, action.Action);
                     }
 
-                    roll -= probability;
+                    roll -= action.Chance;
                 }
             }
         }

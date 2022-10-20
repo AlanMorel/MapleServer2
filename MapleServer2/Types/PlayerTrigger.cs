@@ -10,4 +10,10 @@ public class PlayerTrigger
     {
         Key = key;
     }
+
+    public PlayerTrigger(string key, int value)
+    {
+        Key = key;
+        Value = value;
+    }
 }

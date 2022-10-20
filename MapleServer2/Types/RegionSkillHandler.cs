@@ -16,7 +16,11 @@ public static class RegionSkillHandler
 
     public static void HandleEffect(FieldManager field, SkillCast skillCast, IFieldActor? target = null)
     {
-        skillCast.Caster.SkillTriggerHandler.FireEvents(new ConditionSkillTarget(skillCast.Owner, target, skillCast.Caster), EffectEvent.OnSkillCasted, skillCast.SkillId);
+        if (skillCast.Owner is not null && skillCast.Caster is not null)
+        {
+            skillCast.Caster.SkillTriggerHandler.FireEvents(new(skillCast.Owner, target, skillCast.Caster), EffectEvent.OnSkillCasted,
+                skillCast.SkillId);
+        }
 
         skillCast.EffectCoords = GetEffectCoords(skillCast, field.MapId, 0, field);
 
@@ -258,12 +262,10 @@ public static class RegionSkillHandler
         }
     }
 
-    private static void RegionHitHungryMobs(FieldManager field, SkillCast skillCast, ref int hitsRemaining, List<DamageHandler> damages)
-    {
+    private static void RegionHitHungryMobs(FieldManager field, SkillCast skillCast, ref int hitsRemaining, List<DamageHandler> damages) { }
 
-    }
-
-    private static void RegionHitTarget(FieldManager field, SkillCast skillCast, ref int hitsRemaining, List<DamageHandler> damages, IFieldActor target, bool damaging)
+    private static void RegionHitTarget(FieldManager field, SkillCast skillCast, ref int hitsRemaining, List<DamageHandler> damages, IFieldActor target,
+        bool damaging)
     {
         if (hitsRemaining == 0)
         {

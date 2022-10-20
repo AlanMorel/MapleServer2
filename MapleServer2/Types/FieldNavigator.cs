@@ -54,7 +54,6 @@ public class FieldNavigator : IDisposable
             return null;
         }
 
-        Path path;
         try
         {
             Position position = FindPositionFromCoordS(centerCoord);
@@ -64,7 +63,7 @@ public class FieldNavigator : IDisposable
             Position findClosestUnobstructedPosition = agent.findClosestUnobstructedPosition(CollisionContext, 500);
             agent.moveTo(findClosestUnobstructedPosition);
 
-            path = agent.findShortestPathTo(CollisionContext, randomPositionLocally);
+            return PathToCoordS(agent.findShortestPathTo(CollisionContext, randomPositionLocally));
         }
         catch (InvalidPositionException)
         {
@@ -76,8 +75,6 @@ public class FieldNavigator : IDisposable
                 agent.getPosition(), centerCoord, e.Message);
             return null;
         }
-
-        return PathToCoordS(path);
     }
 
     /// <summary>
@@ -86,7 +83,6 @@ public class FieldNavigator : IDisposable
     /// <returns>List of CoordS or null if path is not possible</returns>
     public List<CoordS>? FindPath(Agent? agent, CoordS endCoord)
     {
-        Path path;
         try
         {
             if (!FindFirstPositionBelow(endCoord, out Position position) || agent is null)
@@ -98,7 +94,7 @@ public class FieldNavigator : IDisposable
 
             agent.moveTo(findClosestUnobstructedPosition);
 
-            path = agent.findShortestPathTo(CollisionContext, position);
+            return PathToCoordS(agent.findShortestPathTo(CollisionContext, position));
         }
         catch (InvalidPositionException)
         {
@@ -110,8 +106,6 @@ public class FieldNavigator : IDisposable
                 agent?.getPosition(), endCoord, e.Message);
             return null;
         }
-
-        return PathToCoordS(path);
     }
 
     /// <summary>
