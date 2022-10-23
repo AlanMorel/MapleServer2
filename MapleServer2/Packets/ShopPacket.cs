@@ -2,9 +2,9 @@
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Database.Types;
+using MapleServer2.Enums;
 using MapleServer2.Packets.Helpers;
 using MapleServer2.Types;
-using Org.BouncyCastle.Asn1.X509;
 
 namespace MapleServer2.Packets;
 
@@ -14,99 +14,139 @@ public static class ShopPacket
     {
         Open = 0,
         LoadProducts = 1,
-        Buyback = 3,
+        UpdateProduct = 2,
         Buy = 4,
-        Sell = 5,
-        EndLoad = 6,
-        AddRepurchase = 7,
-        RemoveRepurchase = 8,
-        Refresh = 10
+        LoadBuyBackItemCount = 6,
+        AddBuyBackItem = 7,
+        RemoveBuyBackItem = 8,
+        InstantRestock = 9,
+        LoadNew = 14,
+        Notice = 15
     }
 
-    public static PacketWriter Open(Shop shop, int npcId, short itemCount)
+    public static PacketWriter Open(Shop shop)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Shop);
         pWriter.Write(Mode.Open);
-        pWriter.WriteInt(npcId);
-        pWriter.WriteInt(shop.Id);
-        pWriter.WriteLong(shop.RestockTime);
-        pWriter.WriteInt();
+        pWriter.WriteClass(shop);
+        return pWriter;
+    }
+
+    public static PacketWriter UpdateProduct(ShopItem item, int totalQuantityPurchased)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Shop);
+        pWriter.Write(Mode.UpdateProduct);
+        pWriter.WriteInt(item.ShopItemUid);
+        pWriter.WriteInt(totalQuantityPurchased);
+        return pWriter;
+    }
+
+    public static PacketWriter LoadBuybackItemCount(short itemCount)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Shop);
+        pWriter.Write(Mode.LoadBuyBackItemCount);
         pWriter.WriteShort(itemCount);
-        pWriter.WriteInt(shop.Category);
-        pWriter.WriteBool(shop.OpenWallet);
-        pWriter.WriteBool(shop.DisableBuyback);
-        pWriter.WriteBool(shop.CanRestock);
-        pWriter.WriteBool(false);
-        pWriter.Write(shop.ShopType);
-        pWriter.WriteBool(shop.HideUnuseable);
-        pWriter.WriteBool(false);
-        pWriter.WriteBool(false);
-        pWriter.WriteBool(shop.DisplayNew);
-        pWriter.WriteString(shop.Name);
-        if (shop.CanRestock)
-        {
-            pWriter.Write(shop.RestockCurrencyType);
-            pWriter.Write(shop.ExcessRestockCurrencyType);
-            pWriter.WriteInt(); // currency item id ?
-            pWriter.WriteInt(shop.RestockCost);
-            pWriter.WriteBool(shop.EnableRestockCostMultiplier);
-            pWriter.WriteInt(shop.TotalRestockCount);
-            pWriter.WriteByte(); // this controls the placement/speed of the restock bar
-            pWriter.WriteBool(shop.EnableInstantRestock);
-            pWriter.WriteBool(shop.PersistantInventory);
-        }
         return pWriter;
     }
 
-    public static PacketWriter EndLoad()
+    public static PacketWriter RemoveBuyBackItem(int index)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Shop);
-        pWriter.Write(Mode.EndLoad);
-        pWriter.WriteByte();
+        pWriter.Write(Mode.RemoveBuyBackItem);
+        pWriter.WriteInt(index);
+        return pWriter;
+    }
+
+    public static PacketWriter InstantRestock()
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Shop);
+        pWriter.Write(Mode.InstantRestock);
         pWriter.WriteByte();
         return pWriter;
     }
 
-    public static PacketWriter Close()
-    {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.Shop);
-        pWriter.WriteShort();
-        return pWriter;
-    }
-
-    public static PacketWriter Buy(int itemId, int quantity, int price, ShopCurrencyType shopCurrencyType)
+    public static PacketWriter Buy(int itemId, int quantity, int price, byte rarity, bool toGuildStorage = false)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Shop);
         pWriter.Write(Mode.Buy);
         pWriter.WriteInt(itemId);
         pWriter.WriteInt(quantity);
         pWriter.WriteInt(price * quantity);
-        pWriter.Write(shopCurrencyType);
-        pWriter.WriteByte();
+        pWriter.WriteByte(rarity);
+        pWriter.WriteBool(toGuildStorage);
         return pWriter;
     }
 
-    public static PacketWriter Sell(Item item, int quantity)
+    public static PacketWriter AddBuyBackItem(BuyBackItem?[] buyBackItems, short itemCount)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Shop);
-        pWriter.Write(Mode.Sell);
-        pWriter.WriteInt(quantity);
-        pWriter.WriteShort();
-        pWriter.WriteInt(item.Id);
-        pWriter.WriteByte(1);
-        pWriter.WriteByte(1);
-        pWriter.WriteByte();
-        pWriter.WriteInt();
-        pWriter.WriteItem(item);
+        pWriter.Write(Mode.AddBuyBackItem);
+        pWriter.WriteShort(itemCount);
+        for (int i = 0; i < itemCount; i++)
+        {
+            if (buyBackItems[i] is not null)
+            {
+                pWriter.WriteInt(i);
+                pWriter.WriteInt(buyBackItems[i].Item.Id);
+                pWriter.WriteByte((byte) buyBackItems[i].Item.Rarity);
+                pWriter.WriteLong(buyBackItems[i].Price);
+                pWriter.WriteItem(buyBackItems[i].Item);
+            }
+        }
         return pWriter;
     }
 
-    public static PacketWriter LoadProducts(ShopItem product)
+    public static PacketWriter AddBuyBackItem(BuyBackItem buyBackItem, int index)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Shop);
+        pWriter.Write(Mode.AddBuyBackItem);
+        pWriter.WriteShort(1);
+        pWriter.WriteInt(index);
+        pWriter.WriteInt(buyBackItem.Item.Id);
+        pWriter.WriteByte((byte) buyBackItem.Item.Rarity);
+        pWriter.WriteLong(buyBackItem.Price);
+        pWriter.WriteItem(buyBackItem.Item);
+        return pWriter;
+    }
+
+    public static PacketWriter LoadProducts(List<ShopItem> products)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Shop);
         pWriter.Write(Mode.LoadProducts);
-        pWriter.WriteByte(1); // quantity of shop items. GMS2 loads one item at a time, while KMS2 does all.
-        pWriter.WriteClass(product);
+        pWriter.WriteByte((byte) products.Count);
+        foreach (ShopItem product in products)
+        {
+            pWriter.WriteClass(product);
+        }
+        return pWriter;
+    }
+
+    public static PacketWriter LoadNew(List<ShopItem> products)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Shop);
+        pWriter.Write(Mode.LoadNew);
+        pWriter.WriteByte((byte) products.Count);
+        foreach (ShopItem product in products)
+        {
+            pWriter.WriteInt(product.Item.Id);
+            pWriter.WriteBool(false);
+            pWriter.WriteByte((byte) product.Item.Rarity);
+            pWriter.WriteString(product.Item.Name);
+            pWriter.WriteByte();
+            pWriter.WriteByte();
+            pWriter.WriteBool(false); // buy period
+            pWriter.WriteItem(product.Item);
+        }
+        return pWriter;
+    }
+
+    public static PacketWriter Notice(ShopNotice notice, int stringId = 0)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Shop);
+        pWriter.Write(Mode.Notice);
+        pWriter.Write(notice);
+        pWriter.WriteByte();
+        pWriter.WriteInt(stringId);
         return pWriter;
     }
 }

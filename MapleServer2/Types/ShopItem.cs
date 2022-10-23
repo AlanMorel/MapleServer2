@@ -1,20 +1,22 @@
 ﻿using Maple2Storage.Enums;
 using MaplePacketLib2.Tools;
+using MapleServer2.Database;
 using MapleServer2.Packets.Helpers;
+using MapleServer2.Servers.Game;
 
 namespace MapleServer2.Types;
 
 public class ShopItem : IPacketSerializable
 {
-    public readonly int Uid;
+    public readonly int ShopItemUid;
     public readonly int ItemId;
-    public readonly ShopCurrencyType TokenType;
+    public readonly ShopCurrencyType CurrencyType;
     public readonly int RequiredItemId;
     public readonly int Price;
     public readonly int SalePrice;
-    public readonly byte ItemRank;
-    public readonly int StockCount;
-    public readonly int StockPurchased;
+    public readonly byte Rarity;
+    public int StockCount;
+    public int StockPurchased;
     public readonly int GuildTrophy;
     public readonly string Category;
     public readonly int RequiredAchievementId;
@@ -29,16 +31,17 @@ public class ShopItem : IPacketSerializable
     public readonly short RequiredQuestAlliance;
     public readonly int RequiredFameGrade;
     public readonly bool AutoPreviewEquip;
+    public Item? Item;
 
     public ShopItem(dynamic data)
     {
-        Uid = data.uid;
+        ShopItemUid = data.uid;
         AutoPreviewEquip = data.auto_preview_equip;
         Category = data.category;
         Label = (ShopItemLabel) data.label;
         GuildTrophy = data.guild_trophy;
         ItemId = data.item_id;
-        ItemRank = data.item_rank;
+        Rarity = data.rarity;
         Price = data.price;
         RequiredAchievementGrade = data.required_achievement_grade;
         RequiredAchievementId = data.required_achievement_id;
@@ -51,25 +54,47 @@ public class ShopItem : IPacketSerializable
         RequiredQuestAlliance = data.required_quest_alliance;
         SalePrice = data.sale_price;
         StockCount = data.stock_count;
-        StockPurchased = data.stock_purchased;
         CurrencyId = data.currency_id;
-        TokenType = (ShopCurrencyType) data.token_type;
+        CurrencyType = (ShopCurrencyType) data.currency_type;
         Quantity = data.quantity;
+    }
+
+    public bool IsOutOfStock(int quantity)
+    {
+        // No stock on the DB means it's unlimited stock
+        ShopItem serverShopItem = DatabaseManager.ShopItems.FindByUid(ShopItemUid);
+        if (serverShopItem.StockCount == 0)
+        {
+            return false;
+        }
+
+        return quantity > StockCount - StockPurchased;
+    }
+
+    public bool CanPurchase(GameSession session)
+    {
+        if (RequiredAchievementId != 0)
+        {
+            return session.Player.HasTrophy(RequiredAchievementId, RequiredAchievementGrade);
+        }
+        return true;
+
+        //TODO: Add championship, guild merchant, alliance, and reputation checks
     }
     
     public void WriteTo(PacketWriter pWriter)
     {
-        pWriter.WriteInt(Uid);
+        pWriter.WriteInt(ShopItemUid);
         pWriter.WriteInt(ItemId);
-        pWriter.Write(TokenType);
+        pWriter.Write(CurrencyType);
         pWriter.WriteInt(RequiredItemId);
         pWriter.WriteInt();
         pWriter.WriteInt(Price);
         pWriter.WriteInt(SalePrice);
-        pWriter.WriteByte(ItemRank);
+        pWriter.WriteByte(Rarity);
         pWriter.WriteInt();
         pWriter.WriteInt(StockCount);
-        pWriter.WriteInt(StockPurchased);
+        pWriter.WriteInt(StockPurchased * Quantity);
         pWriter.WriteInt(GuildTrophy);
         pWriter.WriteString(Category);
         pWriter.WriteInt(RequiredAchievementId);
@@ -80,13 +105,32 @@ public class ShopItem : IPacketSerializable
         pWriter.WriteShort(RequiredGuildMerchantLevel);
         pWriter.WriteBool(false);
         pWriter.WriteShort(Quantity);
-        pWriter.WriteByte(1);
+        pWriter.WriteByte();
         pWriter.Write(Label);
         pWriter.WriteString(CurrencyId);
         pWriter.WriteShort(RequiredQuestAlliance);
         pWriter.WriteInt(RequiredFameGrade);
         pWriter.WriteBool(AutoPreviewEquip);
-        pWriter.WriteByte(); // has buy period
-        pWriter.WriteItem(new(ItemId, Quantity, ItemRank, false));
+        bool hasBuyPeriod = false;
+        pWriter.WriteBool(hasBuyPeriod);
+        if (hasBuyPeriod)
+        {
+            bool timeSpecific = true;
+            pWriter.WriteBool(timeSpecific); 
+            pWriter.WriteLong(1666337871); // start timestamp
+            pWriter.WriteLong(1686357871); // end timestamp
+            pWriter.WriteBool(true); // unk bool
+            pWriter.WriteByte(1); // amount of buy periods. loop
+            // loop start
+            pWriter.WriteInt(1200); // time begin in seconds. ex 1200 = 12:20 AM
+            pWriter.WriteInt(10600); // time end in seconds. ex 10600 = 2:56 AM
+            // loop end
+            
+            pWriter.WriteByte(1); // days of the week you can buy at. loop
+            // loop start
+            pWriter.WriteByte(4); // 1 = Sunday, 7 = Saturday
+            // loop end
+        }
+        pWriter.WriteItem(Item ?? new(ItemId, Quantity, Rarity, false));
     }
 }

@@ -45,6 +45,7 @@ public class SystemShopHandler : GamePacketHandler<SystemShopHandler>
 
         if (!openShop)
         {
+            
             return;
         }
 

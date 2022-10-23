@@ -18,6 +18,16 @@ public class DatabaseShop : DatabaseTable
         shop.Items = DatabaseManager.ShopItems.FindAllByShopId(shop.Id);
         return shop;
     }
+
+    public long GetNextRestockTime(int id)
+    {
+        dynamic? data = QueryFactory.Query(TableName).Where("id", id).Get().FirstOrDefault();
+        if (data == null)
+        {
+            return 0;
+        }
+        return data.next_restock_timestamp;
+    }
     
     public List<Shop> FindAll()
     {

@@ -5,6 +5,7 @@ using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
+using MapleServer2.Database.Types;
 using MapleServer2.Enums;
 using MapleServer2.Managers;
 using MapleServer2.Managers.Actors;
@@ -152,7 +153,10 @@ public class Player
     public Wallet Wallet { get; set; }
     public Dictionary<int, QuestStatus> QuestData;
 
+    public Dictionary<int, Shop> Shops = new();
     public Dictionary<int, PlayerShopLog> ShopLogs = new();
+    public Dictionary<int, PlayerShopItemLog> ShopItemLogs = new();
+    public BuyBackItem?[] BuyBackItems = new BuyBackItem[12];
 
     public CancellationTokenSource OnlineCTS;
     public Task OnlineTimeThread;
@@ -601,6 +605,15 @@ public class Player
         {
             UnlockedMaps.Add(MapId);
         }
+    }
+
+    public bool HasTrophy(int trophyId, int grade)
+    {
+        if (TrophyData.ContainsKey(trophyId))
+        {
+            return TrophyData[trophyId].GradeCondition.Grade == grade;
+        }
+        return false;
     }
 
     public void UpdateGearScore(Item item, int value)

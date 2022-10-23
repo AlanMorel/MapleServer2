@@ -28,11 +28,11 @@ public class ShopManager
             
             while (TimeInfo.Now() > shop.RestockTime)
             {
-                shop.RestockTime += shop.RestockInterval * 60; // convert to seconds
+                shop.RestockTime += shop.RestockMinInterval * 60; // convert to seconds
             }
             DatabaseManager.Shops.Update(shop);
 
-            TaskScheduler.Instance.ScheduleTask(shop.RestockTime, shop.RestockInterval, shop.Update);
+            TaskScheduler.Instance.ScheduleTask(shop.RestockTime, shop.RestockMinInterval, shop.Update);
         }
     }
 }

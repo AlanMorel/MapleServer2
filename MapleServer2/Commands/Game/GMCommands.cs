@@ -214,47 +214,33 @@ public class AttributeCommand : InGameCommand
             itemStat = new BasicStat(newAttribute, value, attributeType);
         }
 
-        if (category == 0)
+        switch (category)
         {
-            if (value == 0)
-            {
+            case 0 when value == 0:
                 item.Stats.Constants.Remove(newAttribute);
-            }
-            else
-            {
+                break;
+            case 0:
                 item.Stats.Constants[newAttribute] = itemStat;
-            }
-
-        }
-        else if (category == 1)
-        {
-            if (value == 0)
-            {
+                break;
+            case 1 when value == 0:
                 item.Stats.Statics.Remove(newAttribute);
-            }
-            else
-            {
+                break;
+            case 1:
                 item.Stats.Statics[newAttribute] = itemStat;
-            }
-        }
-        else if (category == 2)
-        {
-            if (value == 0)
-            {
+                break;
+            case 2 when value == 0:
                 item.Stats.Randoms.Remove(newAttribute);
-            }
-            else
-            {
+                break;
+            case 2:
                 item.Stats.Randoms[newAttribute] = itemStat;
-            }
+                break;
         }
 
         if (!isPet)
         {
             trigger.Session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(player.FieldPlayer, item, itemSlot));
         }
-
-        if (isPet)
+        else
         {
             player.Inventory.RemoveItem(player.Session, item.Uid, out Item _);
             player.Inventory.AddItem(player.Session, item, true);
