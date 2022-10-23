@@ -19,7 +19,7 @@ public class DatabasePlayerShopLog : DatabaseTable
             is_persistant = shopLog.IsPersistant
         });
     }
-    
+
     public Dictionary<int, PlayerShopLog> FindAllByCharacterId(long id)
     {
         Dictionary<int, PlayerShopLog> shopLogs = new();
@@ -32,7 +32,7 @@ public class DatabasePlayerShopLog : DatabaseTable
 
         return shopLogs;
     }
-    
+
     public void Update(PlayerShopLog shop)
     {
         QueryFactory.Query(TableName).Where("uid", shop.Uid).Update(new
@@ -41,7 +41,7 @@ public class DatabasePlayerShopLog : DatabaseTable
             total_restock_count = shop.TotalRestockCount
         });
     }
-    
+
     public bool Delete(long uid)
     {
         return QueryFactory.Query(TableName).Where("uid", uid).Delete() == 1;

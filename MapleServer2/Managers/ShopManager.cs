@@ -14,9 +14,9 @@ public class ShopManager
     {
         ShopList = new();
     }
-    
+
     public void AddShop(Shop shop) => ShopList.Add(shop.Id, shop);
-    
+
     public void UpdateShops()
     {
         foreach (Shop shop in ShopList.Values)
@@ -25,7 +25,7 @@ public class ShopManager
             {
                 continue;
             }
-            
+
             while (TimeInfo.Now() > shop.RestockTime)
             {
                 shop.RestockTime += shop.RestockMinInterval * 60; // convert to seconds

@@ -36,7 +36,7 @@ public class SystemShopHandler : GamePacketHandler<SystemShopHandler>
                 break;
             default:
                 LogUnknownMode(mode);
-                return;
+                break;
         }
     }
 

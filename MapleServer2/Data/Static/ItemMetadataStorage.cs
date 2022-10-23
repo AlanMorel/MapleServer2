@@ -152,7 +152,7 @@ public static class ItemMetadataStorage
         {
             return 0;
         }
-        
+
         List<long>? pricePoints = GetMetadata(itemId)?.Property.Sell.SellPrice;
         List<long>? customPricePoints = GetMetadata(itemId)?.Property.Sell.SellPriceCustom;
         if (customPricePoints[rarity - 1] > 0)
@@ -163,9 +163,9 @@ public static class ItemMetadataStorage
             }
             return customPricePoints[rarity - 1];
         }
-        
+
         int itemLevel = GetLimitMetadata(itemId).LevelLimitMin;
-        
+
         // hardcoded values from client
         if (itemLevel >= 57)
         {
@@ -197,7 +197,7 @@ public static class ItemMetadataStorage
         {
             return (long) Math.Floor(pricePoints[rarity - 1] * 0.333);
         }
-        
+
         return pricePoints[rarity - 1];
     }
 

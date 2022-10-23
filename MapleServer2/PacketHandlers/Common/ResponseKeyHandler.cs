@@ -104,7 +104,7 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
                 groupChat.BroadcastPacketGroupChat(GroupChatPacket.LoginNotice(groupChat, player));
             }
         }
-        
+
         // Get Shop Logs
         player.ShopLogs = DatabaseManager.ShopLogs.FindAllByCharacterId(player.CharacterId);
         player.ShopItemLogs = DatabaseManager.ShopItemLogs.FindAllByCharacterId(player.CharacterId, player.AccountId);

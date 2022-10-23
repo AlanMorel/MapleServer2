@@ -21,7 +21,7 @@ public class DatabasePlayerShopItemLog : DatabaseTable
             is_persistant = itemLog.IsPersistant
         });
     }
-    
+
     public Dictionary<int, PlayerShopItemLog> FindAllByCharacterId(long characterId, long accountId)
     {
         Dictionary<int, PlayerShopItemLog> shopItemLogs = new();
@@ -31,13 +31,14 @@ public class DatabasePlayerShopItemLog : DatabaseTable
             PlayerShopItemLog shopItemLog = ReadShopItemLog(result);
             shopItemLogs.Add(shopItemLog.ShopItemUid, shopItemLog);
         }
-        
+
         // find account wide logs
-        IEnumerable<dynamic> accountResults = QueryFactory.Query(TableName).Where(new {
+        IEnumerable<dynamic> accountResults = QueryFactory.Query(TableName).Where(new
+        {
             account_id = accountId,
             is_persistant = true,
         }).Get();
-        
+
         foreach (dynamic result in accountResults)
         {
             if (result.character_id == characterId)
@@ -50,12 +51,12 @@ public class DatabasePlayerShopItemLog : DatabaseTable
 
         return shopItemLogs;
     }
-    
+
     public bool Delete(long uid)
     {
         return QueryFactory.Query(TableName).Where("uid", uid).Delete() == 1;
     }
-    
+
     public void Update(PlayerShopItemLog itemLog)
     {
         QueryFactory.Query(TableName).Where("uid", itemLog.Uid).Update(new

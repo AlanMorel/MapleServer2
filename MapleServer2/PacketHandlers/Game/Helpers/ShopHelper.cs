@@ -27,7 +27,7 @@ public static class ShopHelper
         }
         session.Player.ShopId = shop.Id;
     }
-    
+
     public static void LoadShop(GameSession session, Shop shop)
     {
         if (shop.CanRestock)

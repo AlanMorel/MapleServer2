@@ -116,7 +116,7 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
             buyBackItems[designatedSlot] = null;
             session.Send(ShopPacket.RemoveBuyBackItem(designatedSlot));
         }
-        
+
         if (quantity < item.Amount)
         {
             if (item.TrySplit(quantity, out Item splitItem))
