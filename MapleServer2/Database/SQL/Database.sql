@@ -928,6 +928,7 @@ CREATE TABLE `shops`
     `disable_buyback`                 tinyint(1) NOT NULL,
     `open_wallet`                     tinyint(1) NOT NULL,
     `display_new`                     tinyint(1) NOT NULL,
+    `randomize_order`                 tinyint(1) NOT NULL,
     `can_restock`                     tinyint(1) NOT NULL,
     `next_restock_timestamp`          bigint NOT NULL,
     `restock_min_interval`            int NOT NULL,

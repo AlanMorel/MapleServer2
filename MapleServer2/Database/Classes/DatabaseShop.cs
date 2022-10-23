@@ -1,4 +1,5 @@
 ﻿using MapleServer2.Database.Types;
+using MapleServer2.Types;
 using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes;
@@ -7,7 +8,7 @@ public class DatabaseShop : DatabaseTable
 {
     public DatabaseShop() : base("shops") { }
 
-    public Shop? FindById(int id)
+    public Shop FindById(int id)
     {
         dynamic? data = QueryFactory.Query(TableName).Where("id", id).Get().FirstOrDefault();
         if (data == null)
@@ -19,16 +20,6 @@ public class DatabaseShop : DatabaseTable
         return shop;
     }
 
-    public long GetNextRestockTime(int id)
-    {
-        dynamic? data = QueryFactory.Query(TableName).Where("id", id).Get().FirstOrDefault();
-        if (data == null)
-        {
-            return 0;
-        }
-        return data.next_restock_timestamp;
-    }
-    
     public List<Shop> FindAll()
     {
         IEnumerable<dynamic> result = QueryFactory.Query(TableName).Get();
@@ -40,7 +31,7 @@ public class DatabaseShop : DatabaseTable
 
         return shops;
     }
-    
+
     public void Update(Shop shop)
     {
         QueryFactory.Query(TableName).Where("id", shop.Id).Update(new

@@ -73,15 +73,10 @@ public class ShopItem : IPacketSerializable
 
     public bool CanPurchase(GameSession session)
     {
-        if (RequiredAchievementId != 0)
-        {
-            return session.Player.HasTrophy(RequiredAchievementId, RequiredAchievementGrade);
-        }
-        return true;
-
         //TODO: Add championship, guild merchant, alliance, and reputation checks
+        return RequiredAchievementId == 0 || session.Player.HasTrophy(RequiredAchievementId, RequiredAchievementGrade);
     }
-    
+
     public void WriteTo(PacketWriter pWriter)
     {
         pWriter.WriteInt(ShopItemUid);
@@ -116,7 +111,7 @@ public class ShopItem : IPacketSerializable
         if (hasBuyPeriod)
         {
             bool timeSpecific = true;
-            pWriter.WriteBool(timeSpecific); 
+            pWriter.WriteBool(timeSpecific);
             pWriter.WriteLong(1666337871); // start timestamp
             pWriter.WriteLong(1686357871); // end timestamp
             pWriter.WriteBool(true); // unk bool
@@ -125,7 +120,7 @@ public class ShopItem : IPacketSerializable
             pWriter.WriteInt(1200); // time begin in seconds. ex 1200 = 12:20 AM
             pWriter.WriteInt(10600); // time end in seconds. ex 10600 = 2:56 AM
             // loop end
-            
+
             pWriter.WriteByte(1); // days of the week you can buy at. loop
             // loop start
             pWriter.WriteByte(4); // 1 = Sunday, 7 = Saturday

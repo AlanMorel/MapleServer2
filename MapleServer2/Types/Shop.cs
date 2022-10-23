@@ -1,9 +1,9 @@
 ﻿using Maple2Storage.Enums;
 using MaplePacketLib2.Tools;
+using MapleServer2.Database;
 using MapleServer2.Enums;
-using MapleServer2.Types;
 
-namespace MapleServer2.Database.Types;
+namespace MapleServer2.Types;
 
 public class Shop : IPacketSerializable
 {
@@ -17,6 +17,7 @@ public class Shop : IPacketSerializable
     public readonly bool DisableBuyback;
     public readonly bool OpenWallet;
     public readonly bool DisplayNew;
+    public readonly bool RandomizeOrder;
     public readonly bool CanRestock;
     public long RestockTime;
     public readonly int RestockMinInterval;
@@ -44,6 +45,7 @@ public class Shop : IPacketSerializable
         DisableBuyback = data.disable_buyback;
         OpenWallet = data.open_wallet;
         DisplayNew = data.display_new;
+        RandomizeOrder = data.randomize_order;
         CanRestock = data.can_restock;
         RestockTime = data.next_restock_timestamp;
         RestockMinInterval = data.restock_min_interval;
@@ -57,7 +59,7 @@ public class Shop : IPacketSerializable
         PullCount = data.pull_count;
     }
 
-    public Shop(Shop serverShop, Player player, PlayerShopLog log)
+    public Shop(Shop serverShop, PlayerShopLog log)
     {
         Id = serverShop.Id;
         Category = serverShop.Category;
@@ -68,6 +70,7 @@ public class Shop : IPacketSerializable
         DisableBuyback = serverShop.DisableBuyback;
         OpenWallet = serverShop.OpenWallet;
         DisplayNew = serverShop.DisplayNew;
+        RandomizeOrder = serverShop.RandomizeOrder;
         CanRestock = serverShop.CanRestock;
         RestockTime = log.RestockTime;
         RestockMinInterval = serverShop.RestockMinInterval;
@@ -84,18 +87,17 @@ public class Shop : IPacketSerializable
     }
 
     public void Update() => UpdateRestockTime();
-    
+
     private async Task UpdateRestockTime()
     {
         while (TimeInfo.Now() >= RestockTime)
         {
             RestockTime = TimeInfo.Now() + RestockMinInterval * 60; // convert to seconds
-            Console.WriteLine($"Restock time: {RestockTime}, TimeNow: {TimeInfo.Now()}");
         }
-        
+
         DatabaseManager.Shops.Update(this);
     }
-    
+
     public void WriteTo(PacketWriter pWriter)
     {
         pWriter.WriteInt(NpcId);
@@ -107,7 +109,7 @@ public class Shop : IPacketSerializable
         pWriter.WriteBool(OpenWallet);
         pWriter.WriteBool(DisableBuyback);
         pWriter.WriteBool(CanRestock);
-        pWriter.WriteBool(false);
+        pWriter.WriteBool(RandomizeOrder);
         pWriter.Write(ShopType);
         pWriter.WriteBool(HideUnuseable);
         pWriter.WriteBool(HideStats);

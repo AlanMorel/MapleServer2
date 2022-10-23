@@ -529,7 +529,7 @@ public class GMShopCommand : InGameCommand
 
     public override void Execute(GameCommandTrigger trigger)
     {
-        ShopHelper.OpenSystemShop(trigger.Session, 999999, 29000307);
+        ShopHelper.OpenShop(trigger.Session, 999999, 29000307);
     }
 }
 

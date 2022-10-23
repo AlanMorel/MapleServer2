@@ -1,36 +1,54 @@
 ﻿using MapleServer2.Database;
-using MapleServer2.Database.Types;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
-using MySqlX.XDevAPI;
-using Serilog;
 
 namespace MapleServer2.PacketHandlers.Game.Helpers;
 
 public static class ShopHelper
 {
-    public static void OpenSystemShop(GameSession session, int shopId, int npcId)
+    public static void OpenShop(GameSession session, int shopId, int npcId)
     {
         Shop shop = DatabaseManager.Shops.FindById(shopId);
-        if (shop is null)
+        if (shop == null)
         {
-            Log.Logger.ForContext(typeof(ShopHelper)).Warning("Unknown shop ID: {shopID}", shopId);
+            //Logger.Warning("Unknown shop ID: {shopId}", shopId);
+            return;
+        }
+        shop.NpcId = npcId;
+
+        LoadShop(session, shop);
+
+        short itemCount = (short) session.Player.BuyBackItems.Count(x => x != null);
+        session.Send(ShopPacket.LoadBuybackItemCount(itemCount));
+        if (!shop.DisableBuyback & itemCount > 0)
+        {
+            session.Send(ShopPacket.AddBuyBackItem(session.Player.BuyBackItems, itemCount));
+        }
+        session.Player.ShopId = shop.Id;
+    }
+    
+    public static void LoadShop(GameSession session, Shop shop)
+    {
+        if (shop.CanRestock)
+        {
+            shop = GetShopInstance(shop, session.Player);
+            session.Send(ShopPacket.Open(shop));
+            session.Send(ShopPacket.LoadProducts(shop.Items));
             return;
         }
 
         session.Send(ShopPacket.Open(shop));
         foreach (ShopItem shopItem in shop.Items)
         {
-            session.Send(ShopPacket.LoadProducts(new(){shopItem}));
+            session.Send(ShopPacket.LoadProducts(new()
+            {
+                shopItem
+            }));
         }
-
-        //session.Send(ShopPacket.LoadBuybackItemCount((short) session.Player.BuyBackItems.Count));
-        session.Player.ShopId = shopId;
-        session.Send(SystemShopPacket.Open());
     }
 
-    public static Shop GetShopInstance(Shop serverShop, Player player)
+    private static Shop GetShopInstance(Shop serverShop, Player player)
     {
         if (!player.Shops.ContainsKey(serverShop.Id))
         {
@@ -39,11 +57,11 @@ public static class ShopHelper
                 log = new(serverShop, player);
                 player.ShopLogs.Add(serverShop.Id, log);
             }
-            
-            player.Shops[serverShop.Id] = new(serverShop, player, log);
+
+            player.Shops[serverShop.Id] = new(serverShop, log);
             player.Shops[serverShop.Id].Items = GetShopItems(serverShop, player);
         }
-        
+
         // if expired, delete old entries and create new ones
         if (player.Shops[serverShop.Id].RestockTime <= TimeInfo.Now())
         {
@@ -68,11 +86,8 @@ public static class ShopHelper
         player.ShopLogs.Remove(serverShop.Id);
         // create new shop instance
         player.ShopLogs[serverShop.Id] = new(serverShop, player);
-        player.Shops[serverShop.Id] = new(serverShop, player, player.ShopLogs[serverShop.Id]);
+        player.Shops[serverShop.Id] = new(serverShop, player.ShopLogs[serverShop.Id]);
         player.Shops[serverShop.Id].Items = GetShopItems(serverShop, player);
-        //player.Shops[serverShop.Id].RestockTime += 60;
-        Console.WriteLine($"Shop expiration: {player.Shops[serverShop.Id].RestockTime}, Time Now: {TimeInfo.Now()}");
-        player.Session.SendNotice($"Shop expiration: {player.Shops[serverShop.Id].RestockTime}, Time Now: {TimeInfo.Now()}");
         return player.Shops[serverShop.Id];
     }
 
@@ -103,20 +118,17 @@ public static class ShopHelper
             return instanceShopItems;
         }
 
-        // ?? huh above is good but cant be in the same functino with below. 
-        
-        if (!serverShop.PersistantInventory)
+        if (serverShop.PullCount > 0)
         {
-            shopItems = shopItems.OrderBy(x => Random.Shared.Next()).Take(12).ToList();
+            shopItems = shopItems.OrderBy(x => Random.Shared.Next()).Take(serverShop.PullCount).ToList();
         }
-        
+
         foreach (ShopItem shopItem in shopItems)
         {
             Item item = null;
             if (!player.ShopItemLogs.TryGetValue(shopItem.ShopItemUid, out PlayerShopItemLog itemLog))
             {
-                itemLog = new(shopItem, player, serverShop, out item);
-
+                player.ShopItemLogs.Add(shopItem.ShopItemUid, new(shopItem, player, serverShop, out item));
             }
             shopItem.Item = item;
             shopItem.StockPurchased = player.ShopItemLogs[shopItem.ShopItemUid].StockPurchased;

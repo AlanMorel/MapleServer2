@@ -1,10 +1,8 @@
 ﻿using Maple2Storage.Enums;
-using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
-using MapleServer2.Database.Types;
 using MapleServer2.Enums;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
@@ -57,29 +55,6 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
         }
     }
 
-    public static void HandleOpen(GameSession session, IFieldObject<NpcMetadata> npcFieldObject)
-    {
-        NpcMetadata metadata = npcFieldObject.Value;
-
-        Shop shop = DatabaseManager.Shops.FindById(metadata.ShopId);
-        if (shop == null)
-        {
-            Logger.Warning("Unknown shop ID: {shopId}", metadata.ShopId);
-            return;
-        }
-        shop.NpcId = metadata.Id;
-
-        LoadShop(session, shop);
-
-        short itemCount = (short) session.Player.BuyBackItems.Count(x => x != null);
-        session.Send(ShopPacket.LoadBuybackItemCount(itemCount));
-        if (itemCount > 0)
-        {
-            session.Send(ShopPacket.AddBuyBackItem(session.Player.BuyBackItems, itemCount));
-        }
-        session.Player.ShopId = shop.Id;
-    }
-
     private static void HandlePurchaseBuyBack(GameSession session, PacketReader packet)
     {
         int index = packet.ReadInt();
@@ -100,26 +75,8 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
         session.Player.Inventory.AddItem(session, item.Item, true);
     }
 
-    private static void LoadShop(GameSession session, Shop shop)
-    {
-        if (shop.CanRestock)
-        {
-            shop = ShopHelper.GetShopInstance(shop, session.Player);
-            session.Send(ShopPacket.Open(shop));
-            session.Send(ShopPacket.LoadProducts(shop.Items));
-            return;
-        }
-        
-        session.Send(ShopPacket.Open(shop));
-        foreach (ShopItem shopItem in shop.Items)
-        {
-            session.Send(ShopPacket.LoadProducts(new(){shopItem}));
-        }
-    }
-
     private static void HandleSell(GameSession session, PacketReader packet)
     {
-        // sell to shop
         long itemUid = packet.ReadLong();
         int quantity = packet.ReadInt();
 
@@ -128,13 +85,13 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
         {
             return;
         }
-        
+
         if (shop.DisableBuyback)
         {
             session.Send(ShopPacket.Notice(ShopNotice.CantSellItemsInThisShop));
             return;
         }
-        
+
         Item item = session.Player.Inventory.GetByUid(itemUid);
         if (item == null)
         {
@@ -146,8 +103,6 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
             session.Send(ShopPacket.Notice(ShopNotice.CannotBeSold));
             return;
         }
-        
-        //TODO EXTRACT QUANTITY
 
         long price = ItemMetadataStorage.GetSellPrice(item.Id, item.Rarity, item.GetItemType());
         session.Player.Wallet.Meso.Modify(price * quantity);
@@ -161,7 +116,19 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
             buyBackItems[designatedSlot] = null;
             session.Send(ShopPacket.RemoveBuyBackItem(designatedSlot));
         }
-        session.Player.Inventory.RemoveItem(session, itemUid, out Item _);
+        
+        if (quantity < item.Amount)
+        {
+            if (item.TrySplit(quantity, out Item splitItem))
+            {
+                session.Send(ItemInventoryPacket.UpdateAmount(item.Uid, item.Amount));
+                item = splitItem;
+            }
+        }
+        else
+        {
+            session.Player.Inventory.RemoveItem(session, itemUid, out Item _);
+        }
         BuyBackItem buyBackItem = new(item, price);
         buyBackItems[designatedSlot] = buyBackItem;
         session.Send(ShopPacket.AddBuyBackItem(buyBackItem, designatedSlot));
@@ -184,7 +151,7 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
         {
             return;
         }
-        
+
         if (!Pay(session, shopItem.CurrencyType, shopItem.Price, shopItem.Quantity, shopItem.RequiredItemId))
         {
             return;
@@ -216,9 +183,9 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
         {
             return;
         }
-        
+
         // TODO: Implement restock cost multiplier
-        
+
         long restockTime = TimeInfo.Now() + (instanceShop.RestockMinInterval * 60);
         Shop serverShop = DatabaseManager.Shops.FindById(instanceShop.Id);
         instanceShop = ShopHelper.RecreateShop(session.Player, serverShop);
@@ -226,7 +193,7 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
 
         DatabaseManager.ShopLogs.Update(session.Player.ShopLogs[instanceShop.Id]);
         session.Send(ShopPacket.InstantRestock());
-        LoadShop(session, instanceShop);
+        ShopHelper.LoadShop(session, instanceShop);
     }
 
     private static void HandleRefresh(GameSession session)
@@ -237,7 +204,7 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
             return;
         }
 
-        LoadShop(session, serverShop);
+        ShopHelper.LoadShop(session, serverShop);
     }
 
     private static void HandleLoadNew(GameSession session)
@@ -246,29 +213,29 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
         session.Send(ShopPacket.LoadNew(session.Player.Shops[session.Player.ShopId].Items));
     }
 
-    private static bool BuyFromInstanceShop(GameSession session, Shop shop, int shopItemUid, int quantity)
+    private static void BuyFromInstanceShop(GameSession session, Shop shop, int shopItemUid, int quantity)
     {
         ShopItem shopItem = shop.Items.FirstOrDefault(x => x.ShopItemUid == shopItemUid);
         if (shopItem is null)
         {
             session.Send(ShopPacket.Notice(ShopNotice.ItemNotFound));
-            return false;
+            return;
         }
-        
+
         if (!shopItem.CanPurchase(session))
         {
-            return false;
+            return;
         }
 
         if (shopItem.IsOutOfStock(quantity))
         {
             session.Send(ShopPacket.Notice(ShopNotice.NotEnoughSupplies));
-            return false;
+            return;
         }
 
         if (!Pay(session, shopItem.CurrencyType, shopItem.Price, shopItem.Quantity, shopItem.RequiredItemId))
         {
-            return false;
+            return;
         }
 
         PlayerShopItemLog itemLog = session.Player.ShopItemLogs[shopItem.ShopItemUid];
@@ -288,7 +255,6 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
         // complete purchase
         session.Send(ShopPacket.UpdateProduct(shopItem, shopItem.StockPurchased * shopItem.Quantity));
         session.Send(ShopPacket.Buy(shopItem.ItemId, quantity, shopItem.Price, shopItem.Rarity));
-        return true;
     }
 
     private static bool Pay(GameSession session, ShopCurrencyType currencyType, int price, int quantity, int itemId = 0)
