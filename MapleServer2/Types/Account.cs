@@ -23,7 +23,7 @@ public class Account
 
     public int MesoMarketDailyListings { get; set; }
     public int MesoMarketMonthlyPurchases { get; set; }
-    
+
     public List<int> PremiumClubRewardsClaimed { get; set; }
 
     public long HomeId;
