@@ -8,7 +8,7 @@ public class DatabaseShop : DatabaseTable
 {
     public DatabaseShop() : base("shops") { }
 
-    public Shop FindById(int id)
+    public Shop? FindById(int id)
     {
         dynamic? data = QueryFactory.Query(TableName).Where("id", id).Get().FirstOrDefault();
         if (data == null)
@@ -32,7 +32,7 @@ public class DatabaseShop : DatabaseTable
         return shops;
     }
 
-    public void Update(Shop shop)
+    public void UpdateRestockTime(Shop shop)
     {
         QueryFactory.Query(TableName).Where("id", shop.Id).Update(new
         {

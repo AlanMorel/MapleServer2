@@ -60,7 +60,6 @@ public class SystemShopHandler : GamePacketHandler<SystemShopHandler>
 
         ShopHelper.OpenShop(session, item.Shop.ShopId, 0);
         session.Send(SystemShopPacket.Open());
-
     }
 
     private static void HandleFishingShop(GameSession session, PacketReader packet)

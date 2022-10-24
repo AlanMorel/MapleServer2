@@ -30,7 +30,7 @@ public class ShopManager
             {
                 shop.RestockTime += shop.RestockMinInterval * 60; // convert to seconds
             }
-            DatabaseManager.Shops.Update(shop);
+            DatabaseManager.Shops.UpdateRestockTime(shop);
 
             TaskScheduler.Instance.ScheduleTask(shop.RestockTime, shop.RestockMinInterval, shop.Update);
         }

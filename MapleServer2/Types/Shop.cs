@@ -95,7 +95,7 @@ public class Shop : IPacketSerializable
             RestockTime = TimeInfo.Now() + RestockMinInterval * 60; // convert to seconds
         }
 
-        DatabaseManager.Shops.Update(this);
+        DatabaseManager.Shops.UpdateRestockTime(this);
     }
 
     public void WriteTo(PacketWriter pWriter)
