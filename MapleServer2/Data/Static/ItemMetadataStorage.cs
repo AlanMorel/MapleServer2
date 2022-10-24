@@ -172,13 +172,13 @@ public static class ItemMetadataStorage
             switch (rarity)
             {
                 case 1: // Common
-                    pricePoints[0] = 1;
+                    pricePoints[0] = 1541;
                     break;
                 case 2: // Rare
-                    pricePoints[1] = 2;
+                    pricePoints[1] = 1926;
                     break;
                 case 3: // Exceptional
-                    pricePoints[2] = 3;
+                    pricePoints[2] = 2465;
                     break;
                 case 4: // Epic
                     pricePoints[3] = 9256;
@@ -187,7 +187,7 @@ public static class ItemMetadataStorage
                     pricePoints[4] = 11339;
                     break;
                 case 6: // Ascendant
-                    pricePoints[5] = 4;
+                    pricePoints[5] = 13653;
                     break;
             }
         }
