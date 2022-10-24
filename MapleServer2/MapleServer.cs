@@ -178,6 +178,8 @@ public static class MapleServer
                 DatabaseManager.GameEventUserValue.Delete(userValue);
                 player.EventUserValues.Remove(userValue);
             }
+
+            player.Account.PremiumClubRewardsClaimed = new();
         }
 
         // Weekly reset
@@ -187,6 +189,7 @@ public static class MapleServer
         }
 
         DatabaseManager.RunQuery("UPDATE `characters` SET gathering_count = '[]'");
+        DatabaseManager.RunQuery("UPDATE `accounts` SET prestige_rewards_claimed = '[]'");
 
         DatabaseManager.ServerInfo.SetLastDailyReset(TimeInfo.CurrentDate());
     }

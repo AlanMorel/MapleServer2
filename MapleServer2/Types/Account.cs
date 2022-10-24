@@ -2,6 +2,7 @@
 using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using Newtonsoft.Json;
 
 namespace MapleServer2.Types;
 
@@ -22,6 +23,8 @@ public class Account
 
     public int MesoMarketDailyListings { get; set; }
     public int MesoMarketMonthlyPurchases { get; set; }
+    
+    public List<int> PremiumClubRewardsClaimed { get; set; }
 
     public long HomeId;
     public Home? Home;
@@ -52,6 +55,7 @@ public class Account
         HomeId = data.home_id ?? 0;
         MesoMarketDailyListings = data.meso_market_daily_listings;
         MesoMarketMonthlyPurchases = data.meso_market_monthly_purchases;
+        PremiumClubRewardsClaimed = JsonConvert.DeserializeObject<List<int>>(data.premium_rewards_claimed);
         AuthData = authData;
         EquippedMedals = new()
         {
@@ -107,6 +111,7 @@ public class Account
         };
         Medals = new();
         MushkingRoyaleStats = new();
+        PremiumClubRewardsClaimed = new();
         Id = DatabaseManager.Accounts.Insert(this);
         AuthData = new(Id);
     }

@@ -1,4 +1,5 @@
 ﻿using MapleServer2.Types;
+using Newtonsoft.Json;
 using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes;
@@ -24,7 +25,8 @@ public class DatabaseAccount : DatabaseTable
             mushking_royale_id = account.MushkingRoyaleStats.Id,
             vip_expiration = account.VIPExpiration,
             meso_market_daily_listings = account.MesoMarketDailyListings,
-            meso_market_monthly_purchases = account.MesoMarketMonthlyPurchases
+            meso_market_monthly_purchases = account.MesoMarketMonthlyPurchases,
+            premium_rewards_claimed = JsonConvert.SerializeObject(account.PremiumClubRewardsClaimed)
         });
     }
 
@@ -72,7 +74,8 @@ public class DatabaseAccount : DatabaseTable
             meso_token = account.MesoToken.Amount,
             vip_expiration = account.VIPExpiration,
             meso_market_daily_listings = account.MesoMarketDailyListings,
-            meso_market_monthly_purchases = account.MesoMarketMonthlyPurchases
+            meso_market_monthly_purchases = account.MesoMarketMonthlyPurchases,
+            premium_rewards_claimed = JsonConvert.SerializeObject(account.PremiumClubRewardsClaimed),
         });
         DatabaseManager.BankInventories.Update(account.BankInventory);
         DatabaseManager.MushkingRoyaleStats.Update(account.MushkingRoyaleStats);

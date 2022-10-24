@@ -47,13 +47,16 @@ public class PremiumClubHandler : GamePacketHandler<PremiumClubHandler>
 
     private static void HandleOpen(GameSession session)
     {
-        session.Send(PremiumClubPacket.Open());
+        session.Send(PremiumClubPacket.LoadItems(session.Player.Account.PremiumClubRewardsClaimed));
     }
 
     private static void HandleClaimItems(GameSession session, PacketReader packet)
     {
         int benefitId = packet.ReadInt();
-        session.Send(PremiumClubPacket.ClaimItem(benefitId));
+        if (session.Player.Account.PremiumClubRewardsClaimed.Contains(benefitId))
+        {
+            return;
+        }
 
         if (!PremiumClubDailyBenefitMetadataStorage.IsValid(benefitId))
         {
@@ -64,9 +67,9 @@ public class PremiumClubHandler : GamePacketHandler<PremiumClubHandler>
 
         Item benefitRewardItem = new(benefit.ItemId, benefit.ItemAmount, benefit.ItemRarity);
 
+        session.Player.Account.PremiumClubRewardsClaimed.Add(benefitId);
         session.Player.Inventory.AddItem(session, benefitRewardItem, true);
-
-        // TODO only claim once a day
+        session.Send(PremiumClubPacket.ClaimItem(benefitId));
     }
 
     private static void HandleOpenPurchaseWindow(GameSession session)
