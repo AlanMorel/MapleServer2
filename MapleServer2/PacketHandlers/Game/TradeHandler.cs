@@ -127,6 +127,7 @@ public class TradeHandler : GamePacketHandler<TradeHandler>
         {
             return;
         }
+
         otherPlayer?.TradeInventory.SendItems(otherPlayer, false);
         otherPlayer.TradeInventory = null;
 
