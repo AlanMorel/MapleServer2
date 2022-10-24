@@ -121,15 +121,17 @@ public class TradeHandler : GamePacketHandler<TradeHandler>
 
         // Return items back to player's inventory
         tradeInventory.SendItems(session.Player, false);
-        tradeInventory = null;
+        session.Player.TradeInventory = null;
 
         if (otherPlayer?.TradeInventory is null)
         {
             return;
         }
+        otherPlayer?.TradeInventory.SendItems(otherPlayer, false);
+        otherPlayer.TradeInventory = null;
 
         session.Send(TradePacket.TradeStatus(false));
-        otherPlayer.Session?.Send(TradePacket.TradeStatus(false));
+        otherPlayer?.Session?.Send(TradePacket.TradeStatus(false));
     }
 
     private static void HandleAddItemToTrade(GameSession session, PacketReader packet)
