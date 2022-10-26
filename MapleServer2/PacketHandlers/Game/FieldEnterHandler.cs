@@ -58,6 +58,7 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
 
             session.Send(PremiumClubPacket.ActivatePremium(player.FieldPlayer, account.VIPExpiration));
         }
+        session.Send(PremiumClubPacket.LoadItems(account.PremiumClubRewardsClaimed));
 
         session.Send(EmotePacket.LoadEmotes(player));
         session.Send(MacroPacket.LoadControls(player.Macros));

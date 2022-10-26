@@ -80,7 +80,7 @@ public class DatabaseCharacter : DatabaseTable
             .Select(
                 "characters.{*}",
                 "levels.{level, exp, rest_exp, prestige_level, prestige_exp, mastery_exp}",
-                "accounts.{username, password_hash, creation_time, last_log_time, character_slots, meret, game_meret, event_meret, meso_token, bank_inventory_id, mushking_royale_id, vip_expiration, meso_market_daily_listings, meso_market_monthly_purchases}",
+                "accounts.{username, password_hash, creation_time, last_log_time, character_slots, meret, game_meret, event_meret, meso_token, bank_inventory_id, mushking_royale_id, vip_expiration, premium_rewards_claimed, meso_market_daily_listings, meso_market_monthly_purchases}",
                 "game_options.{keybinds, active_hotbar_id}",
                 "wallets.{meso, valor_token, treva, rue, havi_fruit}",
                 "homes.id as home_id",
