@@ -21,15 +21,15 @@ public class DatabasePlayerShopInfo : DatabaseTable
 
     public Dictionary<int, PlayerShopInfo> FindAllByCharacterId(long id)
     {
-        Dictionary<int, PlayerShopInfo> shopLogs = new();
+        Dictionary<int, PlayerShopInfo> shopInfos = new();
         IEnumerable<dynamic> results = QueryFactory.Query(TableName).Where("character_id", id).Get();
         foreach (dynamic result in results)
         {
-            PlayerShopInfo shopInfo = ReadShopLog(result);
-            shopLogs.Add(shopInfo.ShopId, shopInfo);
+            PlayerShopInfo shopInfo = ReadShopInfo(result);
+            shopInfos.Add(shopInfo.ShopId, shopInfo);
         }
 
-        return shopLogs;
+        return shopInfos;
     }
 
     public void Update(PlayerShopInfo shop)
@@ -46,7 +46,7 @@ public class DatabasePlayerShopInfo : DatabaseTable
         return QueryFactory.Query(TableName).Where("uid", uid).Delete() == 1;
     }
 
-    private static PlayerShopInfo ReadShopLog(dynamic data)
+    private static PlayerShopInfo ReadShopInfo(dynamic data)
     {
         return new(data);
     }

@@ -23,15 +23,15 @@ public class DatabasePlayerShopInventory : DatabaseTable
 
     public Dictionary<int, PlayerShopInventory> FindAllByCharacterId(long characterId, long accountId)
     {
-        Dictionary<int, PlayerShopInventory> shopItemLogs = new();
+        Dictionary<int, PlayerShopInventory> shopInventories = new();
         IEnumerable<dynamic> results = QueryFactory.Query(TableName).Where("character_id", characterId).Get();
         foreach (dynamic result in results)
         {
-            PlayerShopInventory shopInventory = ReadShopItemLog(result);
-            shopItemLogs.Add(shopInventory.ShopItemUid, shopInventory);
+            PlayerShopInventory shopInventory = ReadShopInventory(result);
+            shopInventories.Add(shopInventory.ShopItemUid, shopInventory);
         }
 
-        // find account wide logs
+        // find account wide inventories
         IEnumerable<dynamic> accountResults = QueryFactory.Query(TableName).Where(new
         {
             account_id = accountId,
@@ -44,11 +44,11 @@ public class DatabasePlayerShopInventory : DatabaseTable
             {
                 continue;
             }
-            PlayerShopInventory shopInventory = ReadShopItemLog(result);
-            shopItemLogs.Add(shopInventory.ShopItemUid, shopInventory);
+            PlayerShopInventory shopInventory = ReadShopInventory(result);
+            shopInventories.Add(shopInventory.ShopItemUid, shopInventory);
         }
 
-        return shopItemLogs;
+        return shopInventories;
     }
 
     public bool Delete(long uid)
@@ -64,7 +64,7 @@ public class DatabasePlayerShopInventory : DatabaseTable
         });
     }
 
-    private static PlayerShopInventory ReadShopItemLog(dynamic data)
+    private static PlayerShopInventory ReadShopInventory(dynamic data)
     {
         return new(data);
     }
