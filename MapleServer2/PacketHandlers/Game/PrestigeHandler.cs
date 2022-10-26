@@ -46,17 +46,18 @@ public class PrestigeHandler : GamePacketHandler<PrestigeHandler>
         }
 
         // Get reward data
-        PrestigeReward reward = PrestigeMetadataStorage.GetReward(rank);
+        PrestigeRewardMetadata reward = PrestigeRewardMetadataStorage.GetReward(rank);
 
         switch (reward.Type)
         {
             case "item":
-                Item item = new(reward.Id, rarity: 4);
+                Item item = new(reward.Id, reward.Amount,reward.Rarity);
 
                 session.Player.Inventory.AddItem(session, item, true);
                 break;
             case "statPoint":
-                session.Player.AddStatPoint(reward.Value, OtherStatsIndex.Trophy);
+                session.Player.AddStatPoint(reward.Amount, OtherStatsIndex.Prestige);
+                //TODO: Give stat points to all characters.
                 break;
         }
 

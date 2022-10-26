@@ -189,7 +189,7 @@ public static class MapleServer
         }
 
         DatabaseManager.RunQuery("UPDATE `characters` SET gathering_count = '[]'");
-        DatabaseManager.RunQuery("UPDATE `accounts` SET prestige_rewards_claimed = '[]'");
+        DatabaseManager.RunQuery("UPDATE `accounts` SET premium_rewards_claimed = '[]'");
 
         DatabaseManager.ServerInfo.SetLastDailyReset(TimeInfo.CurrentDate());
     }
