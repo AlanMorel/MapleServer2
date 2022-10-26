@@ -2,6 +2,7 @@
 using System.Xml;
 using GameDataParser.Files;
 using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
@@ -23,28 +24,33 @@ public class SkillParser : Exporter<List<SkillMetadata>>
             if (entry.Name.StartsWith("skill"))
             {
                 XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-                XmlNode ui = document.SelectSingleNode("/ms2/basic/ui");
-                XmlNode kinds = document.SelectSingleNode("/ms2/basic/kinds");
-                XmlNode stateAttr = document.SelectSingleNode("/ms2/basic/stateAttr");
-                XmlNodeList levels = document.SelectNodes("/ms2/level");
+                XmlNode? ui = document.SelectSingleNode("/ms2/basic/ui");
+                XmlNode? kinds = document.SelectSingleNode("/ms2/basic/kinds");
+                XmlNode? stateAttr = document.SelectSingleNode("/ms2/basic/stateAttr");
+                XmlNodeList? levels = document.SelectNodes("/ms2/level");
+
+                if (levels is null)
+                {
+                    continue;
+                }
 
                 int skillId = int.Parse(Path.GetFileNameWithoutExtension(entry.Name));
-                string skillState = kinds.Attributes["state"]?.Value ?? "";
-                byte skillAttackType = byte.Parse(ui.Attributes["attackType"]?.Value ?? "0");
-                SkillType skillType = (SkillType) byte.Parse(kinds.Attributes["type"].Value);
-                SkillSubType skillSubType = (SkillSubType) byte.Parse(kinds.Attributes["subType"]?.Value ?? "0");
-                SkillRangeType skillRangeType = (SkillRangeType) byte.Parse(kinds.Attributes["rangeType"]?.Value ?? "0");
-                byte skillElement = byte.Parse(kinds.Attributes["element"].Value);
-                byte skillSuperArmor = byte.Parse(stateAttr.Attributes["superArmor"].Value);
-                bool skillRecovery = int.Parse(kinds.Attributes["spRecoverySkill"]?.Value ?? "0") == 1;
-                int[] groupIds = kinds.Attributes["groupIDs"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? new int[0];
+                string skillState = kinds?.Attributes?["state"]?.Value ?? "";
+                byte skillAttackType = byte.Parse(ui?.Attributes?["attackType"]?.Value ?? "0");
+                SkillType skillType = (SkillType) byte.Parse(kinds?.Attributes?["type"]?.Value ?? "0");
+                SkillSubType skillSubType = (SkillSubType) byte.Parse(kinds?.Attributes?["subType"]?.Value ?? "0");
+                SkillRangeType skillRangeType = (SkillRangeType) byte.Parse(kinds?.Attributes?["rangeType"]?.Value ?? "0");
+                byte skillElement = byte.Parse(kinds?.Attributes?["element"]?.Value ?? "0");
+                byte skillSuperArmor = byte.Parse(stateAttr?.Attributes?["superArmor"]?.Value ?? "0");
+                bool skillRecovery = int.Parse(kinds?.Attributes?["spRecoverySkill"]?.Value ?? "0") == 1;
+                int[] groupIds = kinds?.Attributes?["groupIDs"]?.Value.SplitAndParseToInt(',').ToArray() ?? Array.Empty<int>();
 
                 List<SkillLevel> skillLevels = new();
                 foreach (XmlNode level in levels)
                 {
                     // Getting all skills level
-                    string feature = level.Attributes["feature"]?.Value ?? "";
-                    int levelValue = int.Parse(level.Attributes["value"].Value ?? "0");
+                    string feature = level.Attributes?["feature"]?.Value ?? "";
+                    int levelValue = int.Parse(level.Attributes?["value"]?.Value ?? "0");
                     // We prevent duplicates levels from older balances.
                     if (skillLevels.Exists(x => x.Level == levelValue))
                     {
@@ -53,23 +59,24 @@ public class SkillParser : Exporter<List<SkillMetadata>>
 
                     float cooldown = 0;
 
-                    foreach (XmlNode beginCondition in level.SelectNodes("beginCondition"))
+                    foreach (XmlNode? beginCondition in level.SelectNodes("beginCondition")!)
                     {
-                        cooldown = float.Parse(beginCondition.Attributes["cooldownTime"]?.Value ?? "0");
+                        cooldown = float.Parse(beginCondition?.Attributes?["cooldownTime"]?.Value ?? "0");
                     }
 
                     List<SkillCondition> levelSkillConditions = new();
 
                     ParseConditionSkill(level, levelSkillConditions);
 
+
                     List<SkillMotion> skillMotions = new();
-                    foreach (XmlNode motionNode in level.SelectNodes("motion"))
+                    foreach (XmlNode? motionNode in level.SelectNodes("motion")!)
                     {
-                        string sequenceName = motionNode.SelectSingleNode("motionProperty")?.Attributes["sequenceName"].Value ?? "";
-                        string motionEffect = motionNode.SelectSingleNode("motionProperty")?.Attributes["motionEffect"].Value ?? "";
+                        string sequenceName = motionNode?.SelectSingleNode("motionProperty")?.Attributes?["sequenceName"]?.Value ?? "";
+                        string motionEffect = motionNode?.SelectSingleNode("motionProperty")?.Attributes?["motionEffect"]?.Value ?? "";
 
                         List<SkillAttack> skillAttacks = new();
-                        foreach (XmlNode attackNode in motionNode.SelectNodes("attack"))
+                        foreach (XmlNode? attackNode in motionNode?.SelectNodes("attack")!)
                         {
                             // TODO: Parse other properties like: pause, arrow
                             DamageProperty damageProperty = ParseDamageProperty(attackNode);
@@ -79,7 +86,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                             short targetCount = short.Parse(attackNode.Attributes["targetCount"].Value);
                             long magicPathId = long.Parse(attackNode.Attributes["magicPathID"]?.Value ?? "0");
                             long cubeMagicPathId = long.Parse(attackNode.Attributes["cubeMagicPathID"]?.Value ?? "0");
-                            int[] compulsionType = attackNode.Attributes["compulsionType"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? new int[0];
+                            int[] compulsionType = attackNode.Attributes["compulsionType"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>();
                             SkillDirection direction = (SkillDirection) int.Parse(attackNode.Attributes["direction"]?.Value ?? "0");
 
                             List<SkillCondition> skillConditions = new();
@@ -94,29 +101,42 @@ public class SkillParser : Exporter<List<SkillMetadata>>
 
                     SkillUpgrade skillUpgrade = ParseSkillUpgrade(level);
                     (int spirit, int stamina) = ParseConsume(level);
+                    RangeProperty rangePropertySkill = ParseDetectProperty(level);
 
-                    skillLevels.Add(new(levelValue, spirit, stamina, feature, levelSkillConditions, skillMotions, skillUpgrade, cooldown, ParseBeginCondition(level)));
+                    skillLevels.Add(new(levelValue, spirit, stamina, feature, levelSkillConditions, skillMotions, skillUpgrade, cooldown,
+                        ParseBeginCondition(level), rangePropertySkill));
                 }
 
-                skillList.Add(new(skillId, skillLevels, skillState, skillAttackType, skillType, skillSubType, skillElement, skillSuperArmor, skillRecovery, skillRangeType, groupIds));
+                skillList.Add(new(skillId, skillLevels, skillState, skillAttackType, skillType, skillSubType, skillElement, skillSuperArmor, skillRecovery,
+                    skillRangeType, groupIds));
             }
 
             // Parsing SubSkills
             if (entry.Name.StartsWith("table/job"))
             {
                 XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-                XmlNodeList jobs = document.SelectNodes("/ms2/job");
+                XmlNodeList? jobs = document.SelectNodes("/ms2/job");
+                if (jobs is null)
+                {
+                    continue;
+                }
+
                 foreach (XmlNode job in jobs)
                 {
                     // Grabs all the skills and them the jobCode.
-                    XmlNodeList skills = job.SelectNodes("skills/skill");
-                    int jobCode = int.Parse(job.Attributes["code"].Value);
+                    XmlNodeList? skills = job.SelectNodes("skills/skill");
+                    int jobCode = int.Parse(job.Attributes!["code"]!.Value);
+                    if (skills is null)
+                    {
+                        continue;
+                    }
+
                     foreach (XmlNode skill in skills)
                     {
-                        int id = int.Parse(skill.Attributes["main"].Value);
+                        int id = int.Parse(skill.Attributes!["main"]!.Value);
                         short maxLevel = short.Parse(skill.Attributes["maxLevel"]?.Value ?? "1");
-                        skillList.Find(x => x.SkillId == id).Job = jobCode;
-                        skillList.Find(x => x.SkillId == id).MaxLevel = maxLevel;
+                        skillList.Find(x => x.SkillId == id)!.Job = jobCode;
+                        skillList.Find(x => x.SkillId == id)!.MaxLevel = maxLevel;
 
                         // If it has subSkill, add as well.
                         if (skill.Attributes["sub"] == null)
@@ -124,11 +144,11 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                             continue;
                         }
 
-                        int[] sub = skill.Attributes["sub"].Value.SplitAndParseToInt(',').ToArray();
-                        skillList.Find(x => x.SkillId == id).SubSkills = sub;
+                        int[] sub = skill.Attributes["sub"]!.Value.SplitAndParseToInt(',').ToArray();
+                        skillList.Find(x => x.SkillId == id)!.SubSkills = sub;
                         foreach (int subSkillId in sub)
                         {
-                            SkillMetadata subSkill = skillList.FirstOrDefault(x => x.SkillId == subSkillId);
+                            SkillMetadata? subSkill = skillList.FirstOrDefault(x => x.SkillId == subSkillId);
                             if (subSkill is null)
                             {
                                 continue;
@@ -150,19 +170,19 @@ public class SkillParser : Exporter<List<SkillMetadata>>
             }
 
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-            XmlNodeList levelNodes = document.SelectNodes("/ms2/level");
+            XmlNodeList? levelNodes = document.SelectNodes("/ms2/level");
             int skillId = int.Parse(Path.GetFileNameWithoutExtension(entry.Name));
 
-            SkillMetadata skill = skillList.FirstOrDefault(x => x.SkillId == skillId);
-            if (skill is null)
+            SkillMetadata? skill = skillList.FirstOrDefault(x => x.SkillId == skillId);
+            if (skill is null || levelNodes is null)
             {
                 continue;
             }
 
             foreach (XmlNode levelNode in levelNodes)
             {
-                int currentLevel = int.Parse(levelNode.SelectSingleNode("BasicProperty").Attributes["level"]?.Value ?? "0");
-                SkillLevel skillLevel = skill.SkillLevels.FirstOrDefault(x => x.Level == currentLevel);
+                int currentLevel = int.Parse(levelNode.SelectSingleNode("BasicProperty")?.Attributes?["level"]?.Value ?? "0");
+                SkillLevel? skillLevel = skill.SkillLevels.FirstOrDefault(x => x.Level == currentLevel);
                 if (skillLevel is null)
                 {
                     continue;
@@ -175,9 +195,9 @@ public class SkillParser : Exporter<List<SkillMetadata>>
         return skillList;
     }
 
-    private static void ParseConditionSkill(XmlNode parentNode, List<SkillCondition> skillConditions)
+    private static void ParseConditionSkill(XmlNode? parentNode, List<SkillCondition> skillConditions)
     {
-        foreach (XmlNode conditionNode in parentNode.SelectNodes("conditionSkill"))
+        foreach (XmlNode? conditionNode in parentNode?.SelectNodes("conditionSkill")!)
         {
             int[] conditionSkillId = conditionNode.Attributes["skillID"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>();
             short[] conditionSkillLevel = conditionNode.Attributes["level"]?.Value?.SplitAndParseToShort(',')?.ToArray() ?? Array.Empty<short>();
@@ -217,11 +237,11 @@ public class SkillParser : Exporter<List<SkillMetadata>>
         }
     }
 
-    private static SkillBeginCondition ParseBeginCondition(XmlNode parent)
+    private static SkillBeginCondition? ParseBeginCondition(XmlNode? parent)
     {
-        SkillBeginCondition beginCondition = null;
+        SkillBeginCondition? beginCondition = null;
 
-        foreach (XmlNode beginNode in parent.SelectNodes("beginCondition"))
+        foreach (XmlNode? beginNode in parent?.SelectNodes("beginCondition")!)
         {
             // <stat> can only contain hp, sp, and ep
 
@@ -249,9 +269,9 @@ public class SkillParser : Exporter<List<SkillMetadata>>
         return beginCondition;
     }
 
-    private static BeginConditionSubject ParseConditionSubject(XmlNode parentNode, string tagName)
+    private static BeginConditionSubject? ParseConditionSubject(XmlNode? parentNode, string tagName)
     {
-        foreach (XmlNode ownerNode in parentNode.SelectNodes(tagName))
+        foreach (XmlNode? ownerNode in parentNode?.SelectNodes(tagName)!)
         {
             if (!Enum.TryParse(ownerNode.Attributes["targetCountSign"]?.Value ?? "", out ConditionOperator targetCountSign))
             {
@@ -267,8 +287,8 @@ public class SkillParser : Exporter<List<SkillMetadata>>
 
             return new()
             {
-                EventSkillIDs = ownerNode.Attributes["eventSkillID"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? new int[0],
-                EventEffectIDs = ownerNode.Attributes["eventEffectID"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? new int[0],
+                EventSkillIDs = ownerNode.Attributes["eventSkillID"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>(),
+                EventEffectIDs = ownerNode.Attributes["eventEffectID"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>(),
                 RequireBuffId = int.Parse(ownerNode.Attributes["hasBuffID"].Value ?? "0"),
                 HasNotBuffId = int.Parse(ownerNode.Attributes["hasNotBuffID"]?.Value ?? "0"),
                 RequireBuffCount = int.Parse(ownerNode.Attributes["hasBuffCount"]?.Value ?? "0"),
@@ -287,7 +307,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
         return null;
     }
 
-    private static DamageProperty ParseDamageProperty(XmlNode attack)
+    private static DamageProperty ParseDamageProperty(XmlNode? attack)
     {
         float damageRate = float.Parse(attack.SelectSingleNode("damageProperty")?.Attributes?["rate"]?.Value ?? "0");
         float hitSpeedRate = float.Parse(attack.SelectSingleNode("damageProperty")?.Attributes?["hitSpeedRate"]?.Value ?? "0");
@@ -305,38 +325,70 @@ public class SkillParser : Exporter<List<SkillMetadata>>
 
     private static SkillUpgrade ParseSkillUpgrade(XmlNode level)
     {
-        XmlNode upgradeNode = level.SelectSingleNode("upgrade");
+        XmlNode? upgradeNode = level.SelectSingleNode("upgrade");
         int upgradeLevel = int.Parse(upgradeNode?.Attributes?["level"]?.Value ?? "0");
-        int[] upgradeSkills = upgradeNode?.Attributes?["skillIDs"]?.Value.SplitAndParseToInt(',').ToArray();
-        short[] upgradeSkillsLevel = upgradeNode?.Attributes?["skillLevels"]?.Value.SplitAndParseToShort(',').ToArray();
+        int[]? upgradeSkills = upgradeNode?.Attributes?["skillIDs"]?.Value.SplitAndParseToInt(',').ToArray();
+        short[]? upgradeSkillsLevel = upgradeNode?.Attributes?["skillLevels"]?.Value.SplitAndParseToShort(',').ToArray();
 
         return new(upgradeLevel, upgradeSkills, upgradeSkillsLevel);
     }
 
-    private static RangeProperty ParseRangeProperty(XmlNode attackNode)
+    private static RangeProperty ParseRangeProperty(XmlNode? attackNode)
     {
-        XmlNode rangeNode = attackNode.SelectSingleNode("rangeProperty");
+        XmlNode? rangeNode = attackNode?.SelectSingleNode("rangeProperty");
 
-        bool includeCaster = rangeNode.Attributes["includeCaster"]?.Value == "1";
-        string rangeType = rangeNode.Attributes["rangeType"].Value;
-        _ = int.TryParse(rangeNode.Attributes["distance"].Value, out int distance);
-        CoordF rangeAdd = CoordF.Parse(rangeNode.Attributes["rangeAdd"].Value);
-        CoordF rangeOffset = CoordF.Parse(rangeNode.Attributes["rangeOffset"].Value);
-        ApplyTarget applyTarget = (ApplyTarget) int.Parse(rangeNode.Attributes["applyTarget"].Value);
+        ParseRange(rangeNode, out string rangeType, out int distance, out CoordF rangeAdd, out CoordF rangeOffset, out bool includeCaster, out ApplyTarget applyTarget);
 
         return new(includeCaster, rangeType, distance, rangeAdd, rangeOffset, applyTarget);
     }
 
+    private static RangeProperty ParseDetectProperty(XmlNode attackNode)
+    {
+        XmlNode? rangeNode = attackNode.SelectSingleNode("detectProperty");
+
+        ParseRange(rangeNode, out string rangeType, out int distance, out CoordF rangeAdd, out CoordF rangeOffset, out bool includeCaster, out ApplyTarget applyTarget);
+
+        return new(includeCaster, rangeType, distance, rangeAdd, rangeOffset, applyTarget);
+    }
+
+    private static void ParseRange(XmlNode? rangeNode, out string rangeType, out int distance, out CoordF rangeAdd, out CoordF rangeOffset,
+        out bool includeCaster, out ApplyTarget applyTarget)
+    {
+        rangeType = "";
+        distance = 0;
+        includeCaster = false;
+        rangeAdd = default;
+        rangeOffset = default;
+        applyTarget = ApplyTarget.None;
+
+        if (rangeNode is null)
+        {
+            return;
+        }
+
+        if (ParserHelper.CheckForNull(rangeNode, "includeCaster", "rangeType", "distance", "rangeAdd", "rangeOffset", "applyTarget"))
+        {
+            return;
+        }
+
+        includeCaster = rangeNode.Attributes!["includeCaster"]!.Value == "1";
+        rangeType = rangeNode.Attributes["rangeType"]!.Value;
+        _ = int.TryParse(rangeNode.Attributes["distance"]!.Value, out distance);
+        rangeAdd = CoordF.Parse(rangeNode.Attributes["rangeAdd"]!.Value);
+        rangeOffset = CoordF.Parse(rangeNode.Attributes["rangeOffset"]!.Value);
+        applyTarget = (ApplyTarget) int.Parse(rangeNode.Attributes["applyTarget"]!.Value);
+    }
+
     private static SkillAdditionalData ParseSkillData(XmlNode level)
     {
-        XmlNode basicProperty = level.SelectSingleNode("BasicProperty");
+        XmlNode? basicProperty = level.SelectSingleNode("BasicProperty");
 
-        int duration = int.Parse(basicProperty.Attributes["durationTick"]?.Value ?? "0");
-        BuffType buffType = (BuffType) int.Parse(basicProperty.Attributes["buffType"]?.Value ?? "0");
-        BuffSubType buffSubType = (BuffSubType) int.Parse(basicProperty.Attributes["buffSubType"]?.Value ?? "0");
-        int buffCategory = int.Parse(basicProperty.Attributes["buffCategory"]?.Value ?? "0");
-        int maxStack = int.Parse(basicProperty.Attributes["maxBuffCount"]?.Value ?? "0");
-        byte keepCondition = byte.Parse(basicProperty.Attributes["keepCondition"]?.Value ?? "0");
+        int duration = int.Parse(basicProperty?.Attributes?["durationTick"]?.Value ?? "0");
+        BuffType buffType = (BuffType) int.Parse(basicProperty?.Attributes?["buffType"]?.Value ?? "0");
+        BuffSubType buffSubType = (BuffSubType) int.Parse(basicProperty?.Attributes?["buffSubType"]?.Value ?? "0");
+        int buffCategory = int.Parse(basicProperty?.Attributes?["buffCategory"]?.Value ?? "0");
+        int maxStack = int.Parse(basicProperty?.Attributes?["maxBuffCount"]?.Value ?? "0");
+        byte keepCondition = byte.Parse(basicProperty?.Attributes?["keepCondition"]?.Value ?? "0");
 
         return new(duration, buffType, buffSubType, buffCategory, maxStack, keepCondition);
     }

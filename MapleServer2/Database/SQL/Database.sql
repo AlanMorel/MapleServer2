@@ -34,6 +34,7 @@ CREATE TABLE `accounts`
     `bank_inventory_id`             bigint DEFAULT NULL,
     `mushking_royale_id`            bigint       NOT NULL,
     `vip_expiration`                bigint       NOT NULL,
+    `premium_rewards_claimed`       text,
     `meso_market_daily_listings`    int          NOT NULL,
     `meso_market_monthly_purchases` int          NOT NULL,
     PRIMARY KEY (`id`),

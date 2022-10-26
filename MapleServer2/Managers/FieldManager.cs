@@ -1169,7 +1169,6 @@ public class FieldManager
         {
             while (PlayerCount > 0)
             {
-                UpdateMobEvents();
                 UpdatePetEvents();
                 UpdateObjects();
                 HealingSpot();
@@ -1251,32 +1250,6 @@ public class FieldManager
         return updates;
     }
 
-    private void UpdateMobEvents()
-    {
-        // Manage mob aggro + targets
-        foreach (IFieldActor<Player> player in State.Players.Values)
-        {
-            foreach (Npc mob in State.Mobs.Values)
-            {
-                float playerMobDist = CoordF.Distance(player.Coord, mob.Coord);
-                if (playerMobDist <= mob.Value.NpcMetadataDistance.Sight)
-                {
-                    mob.State = NpcState.Combat;
-                    mob.Target = player;
-                    continue;
-                }
-
-                if (mob.State != NpcState.Combat)
-                {
-                    continue;
-                }
-
-                mob.State = NpcState.Normal;
-                mob.Target = null;
-            }
-        }
-    }
-
     private void UpdatePetEvents()
     {
         // TODO: loop trough all mobs and check if pet should attack mob
@@ -1308,7 +1281,7 @@ public class FieldManager
     {
         foreach (Npc mob in State.Mobs.Values)
         {
-            mob.Act();
+            mob.Behavior.Next();
         }
 
         foreach (Pet pet in State.Pets.Values)

@@ -164,16 +164,14 @@ public partial class TriggerContext
         foreach (int triggerId in triggerIds)
         {
             IFieldObject<TriggerSkill> triggerSkill = Field.State.GetTriggerSkill(triggerId);
-            if (triggerSkill != null)
+
+            // this is 100% not perfect.
+            SkillCast skillCast = new(triggerSkill.Value.SkillId, triggerSkill.Value.SkillLevel, GuidGenerator.Long(), Environment.TickCount)
             {
-                // this is 100% not perfect.
-                SkillCast skillCast = new(triggerSkill.Value.SkillId, triggerSkill.Value.SkillLevel, GuidGenerator.Long(), Environment.TickCount)
-                {
-                    SkillObjectId = triggerSkill.ObjectId,
-                    Position = triggerSkill.Coord
-                };
-                RegionSkillHandler.HandleEffect(Field, skillCast);
-            }
+                SkillObjectId = triggerSkill.ObjectId,
+                Position = triggerSkill.Coord
+            };
+            RegionSkillHandler.HandleEffect(Field, skillCast);
         }
     }
 

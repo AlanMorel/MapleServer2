@@ -5,8 +5,12 @@ This is an open source MapleStory2 server emulation project created in C#. It is
 This software is licensed under the GNU GPL. Because of this, every user is free to use this software and choose how they want to use it, and assume all liability and risks themselves for that choice. Please read the license if you are unsure about your rights.
 
 More Information/Docs
-Docs: https://mapleme.me/docs
-Setup Guide: https://mapleme.me/docs/setup/prerequisites
-FAQ: https://mapleme.me/docs/faq
+Docs: <https://mapleme.me/docs>
+Setup Guide: <https://mapleme.me/docs/setup/prerequisites>
+FAQ: <https://mapleme.me/docs/faq>
 
 Join the [community discord](https://discord.gg/mABkFFhBuU) if you are interested in contributing to this project or would like assistance getting set up.
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=AlanMorel/MapleServer2&type=Timeline)](https://star-history.com/#AlanMorel/MapleServer2&Timeline)

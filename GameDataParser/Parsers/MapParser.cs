@@ -271,27 +271,26 @@ public class MapParser : Exporter<List<MapMetadata>>
                     mapEntity.LiftableTargets.Add(new(liftableTargetBox.liftableTarget, CoordF.FromVector3(liftableTargetBox.Position),
                         CoordF.FromVector3(liftableTargetBox.ShapeDimensions)));
                     break;
-                case IMS2Liftable liftable:
-                    mapEntity.LiftableObjects.Add(new(liftable.EntityId, (int) liftable.ItemID, liftable.ItemStackCount, liftable.MaskQuestID,
-                        liftable.MaskQuestState, liftable.EffectQuestID, liftable.EffectQuestState, liftable.ItemLifeTime,
-                        liftable.LiftableRegenCheckTime, liftable.LiftableFinishTime, CoordF.FromVector3(liftable.Position),
-                        CoordF.FromVector3(liftable.Rotation)));
-                    break;
-                case IMS2CubeProp prop:
-                    if (prop is IMS2Vibrate vibrate)
+                case IMS2PhysXProp physxProp:
+                    if (physxProp.IsObjectWeapon)
                     {
-                        mapEntity.VibrateObjects.Add(new(vibrate.EntityId, CoordF.FromVector3(prop.Position)));
+                        List<int> weaponIds = physxProp.ObjectWeaponItemCode.SplitAndParseToInt(',').ToList();
+                        mapEntity.WeaponObjects.Add(new(CoordB.FromVector3(physxProp.Position), weaponIds));
                         break;
                     }
 
-                    if (!prop.IsObjectWeapon)
+                    switch (physxProp)
                     {
-                        break;
+                        case IMS2Liftable liftable:
+                            mapEntity.LiftableObjects.Add(new(liftable.EntityId, (int) liftable.ItemID, liftable.ItemStackCount, liftable.MaskQuestID,
+                                liftable.MaskQuestState, liftable.EffectQuestID, liftable.EffectQuestState, liftable.ItemLifeTime,
+                                liftable.LiftableRegenCheckTime, liftable.LiftableFinishTime, CoordF.FromVector3(liftable.Position),
+                                CoordF.FromVector3(liftable.Rotation)));
+                            break;
+                        case IMS2Vibrate vibrate:
+                            mapEntity.VibrateObjects.Add(new(vibrate.EntityId, CoordF.FromVector3(physxProp.Position)));
+                            break;
                     }
-
-                    List<int> weaponIds = prop.ObjectWeaponItemCode.SplitAndParseToInt(',').ToList();
-                    mapEntity.WeaponObjects.Add(new(CoordB.FromVector3(prop.Position), weaponIds));
-
                     break;
             }
         }

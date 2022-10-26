@@ -9,17 +9,21 @@ public static class PremiumClubPacket
     private enum Mode : byte
     {
         ActivatePremium = 0x0,
-        Open = 0x1,
+        LoadItems = 0x1,
         ClaimItem = 0x2,
         OpenPurchaseWindow = 0x3,
         PurchaseMembership = 0x4
     }
 
-    public static PacketWriter Open()
+    public static PacketWriter LoadItems(List<int> benefitItemIds)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.PremiumClub);
-        pWriter.Write(Mode.Open);
-        pWriter.WriteInt();
+        pWriter.Write(Mode.LoadItems);
+        pWriter.WriteInt(benefitItemIds.Count);
+        foreach (int benefitId in benefitItemIds)
+        {
+            pWriter.WriteInt(benefitId);
+        }
         return pWriter;
     }
 

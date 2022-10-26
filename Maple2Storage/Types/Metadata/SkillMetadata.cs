@@ -88,10 +88,13 @@ public class SkillLevel
     public readonly List<SkillCondition> ConditionSkills;
     [XmlElement(Order = 10)]
     public readonly SkillBeginCondition BeginCondition;
+    [XmlElement(Order = 11)]
+    public readonly RangeProperty DetectProperty;
 
     public SkillLevel() { }
 
-    public SkillLevel(int level, int spirit, int stamina, string feature, List<SkillCondition> conditionSkills, List<SkillMotion> skillMotions, SkillUpgrade skillUpgrade, float cooldownTime, SkillBeginCondition beginCondition)
+    public SkillLevel(int level, int spirit, int stamina, string feature, List<SkillCondition> conditionSkills, List<SkillMotion> skillMotions,
+        SkillUpgrade skillUpgrade, float cooldownTime, SkillBeginCondition beginCondition, RangeProperty detectProperty)
     {
         Level = level;
         Spirit = spirit;
@@ -102,6 +105,7 @@ public class SkillLevel
         SkillUpgrade = skillUpgrade;
         CooldownTime = cooldownTime;
         BeginCondition = beginCondition;
+        DetectProperty = detectProperty;
     }
 
     public override string ToString()
