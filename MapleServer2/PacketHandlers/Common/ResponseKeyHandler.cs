@@ -105,6 +105,10 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
             }
         }
 
+        // Get Shop Logs
+        player.ShopLogs = DatabaseManager.ShopLogs.FindAllByCharacterId(player.CharacterId);
+        player.ShopItemLogs = DatabaseManager.ShopItemLogs.FindAllByCharacterId(player.CharacterId, player.AccountId);
+
         //session.Send(0x27, 0x01); // Meret market related...?
         session.Send(MushkingRoyaleSystemPacket.LoadStats(player.Account.MushkingRoyaleStats));
         session.Send(MushkingRoyaleSystemPacket.LoadMedals(player.Account));

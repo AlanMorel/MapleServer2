@@ -33,4 +33,25 @@ public class TaskScheduler
 
         return timer;
     }
+
+    public Timer ScheduleTask(long timestamp, double intervalInMinutes, Action task)
+    {
+        DateTime now = DateTime.Now;
+        DateTimeOffset firstRun = DateTimeOffset.FromUnixTimeSeconds(timestamp);
+
+        TimeSpan timeToGo = firstRun - now;
+        if (timeToGo <= TimeSpan.Zero)
+        {
+            timeToGo = TimeSpan.Zero;
+        }
+
+        Timer timer = new(_ =>
+        {
+            task.Invoke();
+        }, null, timeToGo, TimeSpan.FromMinutes(intervalInMinutes));
+
+        Timers.Add(timer);
+
+        return timer;
+    }
 }

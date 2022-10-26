@@ -1,10 +1,10 @@
 ﻿using Maple2Storage.Enums;
-using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
-using MapleServer2.Database.Types;
+using MapleServer2.Enums;
+using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -17,10 +17,12 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
 
     private enum Mode : byte
     {
-        Buy = 0x4,
-        Sell = 0x5,
-        Close = 0x6,
-        OpenViaItem = 0x0A
+        PurchaseBuyBack = 3,
+        Buy = 4,
+        Sell = 5,
+        InstantRestock = 9,
+        Refresh = 10,
+        LoadNew = 13
     }
 
     public override void Handle(GameSession session, PacketReader packet)
@@ -29,8 +31,8 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
 
         switch (mode)
         {
-            case Mode.Close:
-                HandleClose(session);
+            case Mode.PurchaseBuyBack:
+                HandlePurchaseBuyBack(session, packet);
                 break;
             case Mode.Buy:
                 HandleBuy(session, packet);
@@ -38,8 +40,14 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
             case Mode.Sell:
                 HandleSell(session, packet);
                 break;
-            case Mode.OpenViaItem:
-                HandleOpenViaItem(session, packet);
+            case Mode.InstantRestock:
+                HandleInstantRestock(session, packet);
+                break;
+            case Mode.Refresh:
+                HandleRefresh(session);
+                break;
+            case Mode.LoadNew:
+                HandleLoadNew(session);
                 break;
             default:
                 LogUnknownMode(mode);
@@ -47,37 +55,42 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
         }
     }
 
-    public static void HandleOpen(GameSession session, IFieldObject<NpcMetadata> npcFieldObject, int npcId)
+    private static void HandlePurchaseBuyBack(GameSession session, PacketReader packet)
     {
-        NpcMetadata metadata = npcFieldObject.Value;
+        int index = packet.ReadInt();
 
-        Shop shop = DatabaseManager.Shops.FindById(metadata.ShopId);
-        if (shop == null)
+        BuyBackItem item = session.Player.BuyBackItems.ElementAtOrDefault(index);
+        if (item is null)
         {
-            Logger.Warning("Unknown shop ID: {shopId}", metadata.ShopId);
             return;
         }
 
-        session.Send(ShopPacket.Open(shop, npcId));
-        foreach (ShopItem shopItem in shop.Items)
+        if (!session.Player.Wallet.Meso.Modify(-item.Price))
         {
-            session.Send(ShopPacket.LoadProducts(shopItem));
+            return;
         }
-        session.Send(ShopPacket.Reload());
-        session.Player.ShopId = shop.Id;
-    }
 
-    private static void HandleClose(GameSession session)
-    {
-        session.Send(ShopPacket.Close());
-        session.Player.ShopId = 0;
+        session.Player.BuyBackItems[index] = null;
+        session.Send(ShopPacket.RemoveBuyBackItem(index));
+        session.Player.Inventory.AddItem(session, item.Item, true);
     }
 
     private static void HandleSell(GameSession session, PacketReader packet)
     {
-        // sell to shop
         long itemUid = packet.ReadLong();
         int quantity = packet.ReadInt();
+
+        Shop shop = DatabaseManager.Shops.FindById(session.Player.ShopId);
+        if (shop is null)
+        {
+            return;
+        }
+
+        if (shop.DisableBuyback)
+        {
+            session.Send(ShopPacket.Notice(ShopNotice.CantSellItemsInThisShop));
+            return;
+        }
 
         Item item = session.Player.Inventory.GetByUid(itemUid);
         if (item == null)
@@ -85,88 +98,207 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
             return;
         }
 
-        long price = ItemMetadataStorage.GetCustomSellPrice(item.Id);
+        if (!ItemMetadataStorage.GetLimitMetadata(item.Id).Sellable)
+        {
+            session.Send(ShopPacket.Notice(ShopNotice.CannotBeSold));
+            return;
+        }
+
+        long price = ItemMetadataStorage.GetSellPrice(item.Id, item.Rarity, item.GetItemType());
         session.Player.Wallet.Meso.Modify(price * quantity);
 
-        session.Player.Inventory.ConsumeItem(session, item.Uid, quantity);
+        BuyBackItem?[] buyBackItems = session.Player.BuyBackItems;
+        int designatedSlot = Array.FindIndex(buyBackItems, x => x == null);
+        if (designatedSlot == -1)
+        {
+            BuyBackItem oldestItem = buyBackItems.MinBy(x => x.AddedTimestamp);
+            designatedSlot = Array.FindIndex(buyBackItems, x => x == oldestItem);
+            buyBackItems[designatedSlot] = null;
+            session.Send(ShopPacket.RemoveBuyBackItem(designatedSlot));
+        }
 
-        session.Send(ShopPacket.Sell(item, quantity));
+        if (quantity < item.Amount)
+        {
+            if (item.TrySplit(quantity, out Item splitItem))
+            {
+                session.Send(ItemInventoryPacket.UpdateAmount(item.Uid, item.Amount));
+                item = splitItem;
+            }
+        }
+        else
+        {
+            session.Player.Inventory.RemoveItem(session, itemUid, out Item _);
+        }
+        BuyBackItem buyBackItem = new(item, price);
+        buyBackItems[designatedSlot] = buyBackItem;
+        session.Send(ShopPacket.AddBuyBackItem(buyBackItem, designatedSlot));
     }
 
     private static void HandleBuy(GameSession session, PacketReader packet)
     {
-        int itemUid = packet.ReadInt();
+        int shopItemUid = packet.ReadInt();
         int quantity = packet.ReadInt();
 
-        ShopItem shopItem = DatabaseManager.ShopItems.FindByUid(itemUid);
+        if (session.Player.Shops.TryGetValue(session.Player.ShopId, out Shop shop))
+        {
+            BuyFromInstanceShop(session, shop, shopItemUid, quantity);
+            return;
+        }
 
-        switch (shopItem.TokenType)
+        ShopItem shopItem = DatabaseManager.ShopItems.FindByUid(shopItemUid);
+
+        if (!shopItem.CanPurchase(session))
+        {
+            return;
+        }
+
+        if (!Pay(session, shopItem.CurrencyType, shopItem.Price, shopItem.Quantity, shopItem.RequiredItemId))
+        {
+            return;
+        }
+
+        // add item to inventory
+        Item item = new(shopItem.ItemId, quantity * shopItem.Quantity, shopItem.Rarity);
+        session.Player.Inventory.AddItem(session, item, true);
+
+        // complete purchase
+        session.Send(ShopPacket.Buy(shopItem.ItemId, quantity, shopItem.Price, shopItem.Rarity));
+    }
+
+    private static void HandleInstantRestock(GameSession session, PacketReader packet)
+    {
+        int cost = packet.ReadInt();
+
+        if (!session.Player.Shops.TryGetValue(session.Player.ShopId, out Shop instanceShop))
+        {
+            return;
+        }
+
+        if (!instanceShop.CanRestock || instanceShop.DisableBuyback)
+        {
+            return;
+        }
+
+        if (!Pay(session, instanceShop.RestockCurrencyType, instanceShop.RestockCost, 1))
+        {
+            return;
+        }
+
+        // TODO: Implement restock cost multiplier
+
+        long restockTime = TimeInfo.Now() + (instanceShop.RestockMinInterval * 60);
+        Shop serverShop = DatabaseManager.Shops.FindById(instanceShop.Id);
+        instanceShop = ShopHelper.RecreateShop(session.Player, serverShop);
+        instanceShop.RestockTime = restockTime;
+
+        DatabaseManager.ShopLogs.Update(session.Player.ShopLogs[instanceShop.Id]);
+        session.Send(ShopPacket.InstantRestock());
+        ShopHelper.LoadShop(session, instanceShop);
+    }
+
+    private static void HandleRefresh(GameSession session)
+    {
+        Shop serverShop = DatabaseManager.Shops.FindById(session.Player.ShopId);
+        if (serverShop is null)
+        {
+            return;
+        }
+
+        ShopHelper.LoadShop(session, serverShop);
+    }
+
+    private static void HandleLoadNew(GameSession session)
+    {
+        // This doesn't seem to work properly... It didn't exist in GMS2.
+        session.Send(ShopPacket.LoadNew(session.Player.Shops[session.Player.ShopId].Items));
+    }
+
+    private static void BuyFromInstanceShop(GameSession session, Shop shop, int shopItemUid, int quantity)
+    {
+        ShopItem shopItem = shop.Items.FirstOrDefault(x => x.ShopItemUid == shopItemUid);
+        if (shopItem is null)
+        {
+            session.Send(ShopPacket.Notice(ShopNotice.ItemNotFound));
+            return;
+        }
+
+        if (!shopItem.CanPurchase(session))
+        {
+            return;
+        }
+
+        if (shopItem.IsOutOfStock(quantity))
+        {
+            session.Send(ShopPacket.Notice(ShopNotice.NotEnoughSupplies));
+            return;
+        }
+
+        if (!Pay(session, shopItem.CurrencyType, shopItem.Price, shopItem.Quantity, shopItem.RequiredItemId))
+        {
+            return;
+        }
+
+        PlayerShopItemLog itemLog = session.Player.ShopItemLogs[shopItem.ShopItemUid];
+        shopItem.StockPurchased += quantity;
+        itemLog.StockPurchased += quantity;
+
+        DatabaseManager.ShopItemLogs.Update(itemLog);
+        Item item = new(shopItem.Item)
+        {
+            Amount = quantity * shopItem.Quantity
+        };
+        item.Uid = DatabaseManager.Items.Insert(item);
+
+        // add item to inventory
+        session.Player.Inventory.AddItem(session, item, true);
+
+        // complete purchase
+        session.Send(ShopPacket.UpdateProduct(shopItem, shopItem.StockPurchased * shopItem.Quantity));
+        session.Send(ShopPacket.Buy(shopItem.ItemId, quantity, shopItem.Price, shopItem.Rarity));
+    }
+
+    private static bool Pay(GameSession session, ShopCurrencyType currencyType, int price, int quantity, int itemId = 0)
+    {
+        switch (currencyType)
         {
             case ShopCurrencyType.Meso:
-                session.Player.Wallet.Meso.Modify(-(shopItem.Price * quantity));
-                break;
+                if (!session.Player.Wallet.Meso.Modify(-(price * quantity)))
+                {
+                    session.Send(ShopPacket.Notice(ShopNotice.NotEnoughMesos));
+                    return false;
+                }
+                return true;
             case ShopCurrencyType.ValorToken:
-                session.Player.Wallet.ValorToken.Modify(-(shopItem.Price * quantity));
-                break;
+                return session.Player.Wallet.ValorToken.Modify(-(price * quantity));
             case ShopCurrencyType.Treva:
-                session.Player.Wallet.Treva.Modify(-(shopItem.Price * quantity));
-                break;
+                return session.Player.Wallet.Treva.Modify(-(price * quantity));
             case ShopCurrencyType.Rue:
-                session.Player.Wallet.Rue.Modify(-(shopItem.Price * quantity));
-                break;
+                return session.Player.Wallet.Rue.Modify(-(price * quantity));
             case ShopCurrencyType.HaviFruit:
-                session.Player.Wallet.HaviFruit.Modify(-(shopItem.Price * quantity));
+                session.Player.Wallet.HaviFruit.Modify(-(price * quantity));
                 break;
             case ShopCurrencyType.Meret:
             case ShopCurrencyType.GameMeret:
             case ShopCurrencyType.EventMeret:
-                session.Player.Account.RemoveMerets(shopItem.Price * quantity);
-                break;
-            case ShopCurrencyType.Item:
-                Item itemCost = session.Player.Inventory.GetById(shopItem.RequiredItemId);
-                if (itemCost.Amount < shopItem.Price)
+                if (!session.Player.Account.RemoveMerets(price * quantity))
                 {
-                    return;
+                    session.Send(ShopPacket.Notice(ShopNotice.NotEnoughMerets));
+                    return false;
                 }
-                session.Player.Inventory.ConsumeItem(session, itemCost.Uid, shopItem.Price);
-                break;
+                return true;
+            case ShopCurrencyType.Item:
+                Item itemCost = session.Player.Inventory.GetById(itemId);
+                if (itemCost is null || itemCost.Amount < price)
+                {
+                    return false;
+                }
+                session.Player.Inventory.ConsumeItem(session, itemCost.Uid, price);
+                return true;
             default:
-                session.SendNotice($"Unknown currency: {shopItem.TokenType}");
-                return;
+                session.Send(ShopPacket.Notice(ShopNotice.NotEnoughSupplies));
+                Logger.Warning("Unknown currency: {CurrencyType}", currencyType);
+                return false;
         }
-
-        // add item to inventory
-        Item item = new(shopItem.ItemId, quantity * shopItem.Quantity, shopItem.ItemRank);
-        session.Player.Inventory.AddItem(session, item, true);
-
-        // complete purchase
-        session.Send(ShopPacket.Buy(shopItem.ItemId, quantity, shopItem.Price, shopItem.TokenType));
-    }
-
-    private static void HandleOpenViaItem(GameSession session, PacketReader packet)
-    {
-        byte unk = packet.ReadByte();
-        int itemId = packet.ReadInt();
-
-        IInventory inventory = session.Player.Inventory;
-        Item item = inventory.GetById(itemId);
-        if (item == null)
-        {
-            return;
-        }
-
-        Shop shop = DatabaseManager.Shops.FindById(item.ShopID);
-        if (shop == null)
-        {
-            Logger.Warning("Unknown shop ID: {shopID}", item.ShopID);
-            return;
-        }
-
-        session.Send(ShopPacket.Open(shop, 0));
-        foreach (ShopItem shopItem in shop.Items)
-        {
-            session.Send(ShopPacket.LoadProducts(shopItem));
-        }
-        session.Send(ShopPacket.Reload());
+        return false;
     }
 }
