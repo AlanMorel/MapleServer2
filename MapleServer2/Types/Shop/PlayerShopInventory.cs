@@ -3,7 +3,7 @@ using MapleServer2.Database.Types;
 
 namespace MapleServer2.Types;
 
-public class PlayerShopItemLog
+public class PlayerShopInventory
 {
     public readonly long Uid;
     public int ShopItemUid;
@@ -14,7 +14,7 @@ public class PlayerShopItemLog
     public int StockPurchased;
     public bool IsPersistant; // Account wide
 
-    public PlayerShopItemLog(dynamic data)
+    public PlayerShopInventory(dynamic data)
     {
         Uid = data.uid;
         ShopItemUid = data.shop_item_uid;
@@ -26,7 +26,7 @@ public class PlayerShopItemLog
         IsPersistant = data.is_persistant;
     }
 
-    public PlayerShopItemLog(ShopItem shopItem, Player player, Shop shop, out Item item)
+    public PlayerShopInventory(ShopItem shopItem, Player player, Shop shop, out Item item)
     {
         item = new(shopItem.ItemId, shopItem.Quantity, shopItem.Rarity);
         shopItem.Item = item;
@@ -36,6 +36,6 @@ public class PlayerShopItemLog
         ItemUid = item.Uid;
         CharacterId = player.CharacterId;
         AccountId = player.AccountId;
-        Uid = DatabaseManager.ShopItemLogs.Insert(this);
+        Uid = DatabaseManager.PlayerShopInventories.Insert(this);
     }
 }

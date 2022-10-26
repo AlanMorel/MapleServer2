@@ -154,8 +154,8 @@ public class Player
     public Dictionary<int, QuestStatus> QuestData;
 
     public Dictionary<int, Shop> Shops = new();
-    public Dictionary<int, PlayerShopLog> ShopLogs = new();
-    public Dictionary<int, PlayerShopItemLog> ShopItemLogs = new();
+    public Dictionary<int, PlayerShopInfo> ShopInfos = new();
+    public Dictionary<int, PlayerShopInventory> ShopInventories = new();
     public BuyBackItem?[] BuyBackItems = new BuyBackItem[12];
 
     public CancellationTokenSource OnlineCTS;

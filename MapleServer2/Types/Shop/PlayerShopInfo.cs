@@ -5,7 +5,7 @@ using MapleServer2.Database.Types;
 
 namespace MapleServer2.Types;
 
-public class PlayerShopLog
+public class PlayerShopInfo
 {
     public long Uid;
     public int ShopId;
@@ -16,18 +16,18 @@ public class PlayerShopLog
     public bool IsPersistant; // Account wide
     public List<ShopItem> ShopItems;
 
-    public PlayerShopLog() { }
+    public PlayerShopInfo() { }
 
-    public PlayerShopLog(Shop shop, Player player)
+    public PlayerShopInfo(Shop shop, Player player)
     {
         ShopId = shop.Id;
         RestockTime = shop.RestockTime;
         CharacterId = player.CharacterId;
         AccountId = player.AccountId;
-        Uid = DatabaseManager.ShopLogs.Insert(this);
+        Uid = DatabaseManager.PlayerShopInfos.Insert(this);
     }
 
-    public PlayerShopLog(dynamic data)
+    public PlayerShopInfo(dynamic data)
     {
         Uid = data.uid;
         ShopId = data.shop_id;

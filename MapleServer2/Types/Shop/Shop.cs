@@ -59,7 +59,7 @@ public class Shop : IPacketSerializable
         PullCount = data.pull_count;
     }
 
-    public Shop(Shop serverShop, PlayerShopLog log)
+    public Shop(Shop serverShop, PlayerShopInfo info)
     {
         Id = serverShop.Id;
         Category = serverShop.Category;
@@ -72,14 +72,14 @@ public class Shop : IPacketSerializable
         DisplayNew = serverShop.DisplayNew;
         RandomizeOrder = serverShop.RandomizeOrder;
         CanRestock = serverShop.CanRestock;
-        RestockTime = log.RestockTime;
+        RestockTime = info.RestockTime;
         RestockMinInterval = serverShop.RestockMinInterval;
         RestockInterval = serverShop.RestockInterval;
         RestockCurrencyType = serverShop.RestockCurrencyType;
         ExcessRestockCurrencyType = serverShop.ExcessRestockCurrencyType;
         RestockCost = serverShop.RestockCost;
         EnableRestockCostMultiplier = serverShop.EnableRestockCostMultiplier;
-        TotalRestockCount = log.TotalRestockCount;
+        TotalRestockCount = info.TotalRestockCount;
         DisableInstantRestock = serverShop.DisableInstantRestock;
         PersistantInventory = serverShop.PersistantInventory;
         PullCount = serverShop.PullCount;
