@@ -26,6 +26,8 @@ public class DatabaseAccount : DatabaseTable
             vip_expiration = account.VIPExpiration,
             meso_market_daily_listings = account.MesoMarketDailyListings,
             meso_market_monthly_purchases = account.MesoMarketMonthlyPurchases,
+            prestige_rewards_claimed = JsonConvert.SerializeObject(account.PrestigeRewardsClaimed),
+            prestige_missions = JsonConvert.SerializeObject(account.PrestigeMissions),
             premium_rewards_claimed = JsonConvert.SerializeObject(account.PremiumClubRewardsClaimed)
         });
     }
@@ -75,6 +77,8 @@ public class DatabaseAccount : DatabaseTable
             vip_expiration = account.VIPExpiration,
             meso_market_daily_listings = account.MesoMarketDailyListings,
             meso_market_monthly_purchases = account.MesoMarketMonthlyPurchases,
+            prestige_rewards_claimed = JsonConvert.SerializeObject(account.PrestigeRewardsClaimed),
+            prestige_missions = JsonConvert.SerializeObject(account.PrestigeMissions),
             premium_rewards_claimed = JsonConvert.SerializeObject(account.PremiumClubRewardsClaimed),
         });
         DatabaseManager.BankInventories.Update(account.BankInventory);

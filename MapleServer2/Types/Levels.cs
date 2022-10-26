@@ -85,7 +85,7 @@ public class Levels
     public void PrestigeLevelUp()
     {
         PrestigeLevel++;
-        foreach (PrestigeMission mission in Session.Player.PrestigeMissions)
+        foreach (PrestigeMission mission in Session.Player.Account.PrestigeMissions)
         {
             mission.LevelCount++;
         }

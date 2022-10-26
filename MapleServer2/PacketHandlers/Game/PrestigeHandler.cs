@@ -40,7 +40,7 @@ public class PrestigeHandler : GamePacketHandler<PrestigeHandler>
     {
         int rank = packet.ReadInt();
 
-        if (session.Player.PrestigeRewardsClaimed.Contains(rank))
+        if (session.Player.Account.PrestigeRewardsClaimed.Contains(rank))
         {
             return;
         }
@@ -52,7 +52,6 @@ public class PrestigeHandler : GamePacketHandler<PrestigeHandler>
         {
             case "item":
                 Item item = new(reward.Id, reward.Amount,reward.Rarity);
-
                 session.Player.Inventory.AddItem(session, item, true);
                 break;
             case "statPoint":
@@ -62,7 +61,7 @@ public class PrestigeHandler : GamePacketHandler<PrestigeHandler>
         }
 
         session.Send(PrestigePacket.Reward(rank));
-        session.Player.PrestigeRewardsClaimed.Add(rank);
+        session.Player.Account.PrestigeRewardsClaimed.Add(rank);
     }
 
     private static void HandleClaimMissionReward(GameSession session, PacketReader packet)
@@ -74,7 +73,7 @@ public class PrestigeHandler : GamePacketHandler<PrestigeHandler>
             return;
         }
 
-        PrestigeMission mission = session.Player.PrestigeMissions.FirstOrDefault(x => x.Id == missionId);
+        PrestigeMission mission = session.Player.Account.PrestigeMissions.FirstOrDefault(x => x.Id == missionId);
         if (mission is null || mission.Claimed || mission.LevelCount < metadata.MissionCount)
         {
             return;
@@ -84,6 +83,6 @@ public class PrestigeHandler : GamePacketHandler<PrestigeHandler>
         Item reward = new(metadata.RewardItemId, metadata.RewardItemAmount, metadata.RewardItemRarity);
 
         session.Player.Inventory.AddItem(session, reward, true);
-        session.Send(PrestigePacket.UpdateMissions(session.Player.PrestigeMissions));
+        session.Send(PrestigePacket.UpdateMissions(session.Player.Account.PrestigeMissions));
     }
 }

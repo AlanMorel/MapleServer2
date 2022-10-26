@@ -198,11 +198,11 @@ public static class MapleServer
     {
         foreach (Player player in players)
         {
-            player.PrestigeMissions = PrestigeLevelMissionMetadataStorage.GetPrestigeMissions;
+            player.Account.PrestigeMissions = PrestigeLevelMissionMetadataStorage.GetPrestigeMissions;
         }
 
         string missions = JsonConvert.SerializeObject(PrestigeLevelMissionMetadataStorage.GetPrestigeMissions);
-        DatabaseManager.RunQuery($"UPDATE `characters` SET prestige_missions = '{missions}'");
+        DatabaseManager.RunQuery($"UPDATE `accounts` SET prestige_missions = '{missions}'");
     }
 
     public static void BroadcastPacketAll(PacketWriter packet, GameSession sender = null)

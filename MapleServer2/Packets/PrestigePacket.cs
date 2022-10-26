@@ -24,7 +24,7 @@ public static class PrestigePacket
         pWriter.WriteInt(player.Levels.PrestigeLevel);
         pWriter.WriteLong(player.Levels.PrestigeExp);
 
-        List<int> rankRewardsClaimed = player.PrestigeRewardsClaimed;
+        List<int> rankRewardsClaimed = player.Account.PrestigeRewardsClaimed;
         pWriter.WriteInt(rankRewardsClaimed.Count);
         foreach (int rank in rankRewardsClaimed)
         {

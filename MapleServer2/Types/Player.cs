@@ -63,8 +63,6 @@ public class Player
     public short InsigniaId { get; set; }
     public int GearScore;
     public List<int> Titles { get; set; }
-    public List<int> PrestigeRewardsClaimed { get; set; }
-    public List<PrestigeMission> PrestigeMissions = new();
 
     public Stats Stats;
 
@@ -217,7 +215,6 @@ public class Player
         TitleId = 0;
         InsigniaId = 0;
         Titles = new();
-        PrestigeRewardsClaimed = new();
         ChatSticker = new();
         FavoriteStickers = new();
         Emotes = new()
@@ -252,7 +249,6 @@ public class Player
         TrophyCount = new int[3];
         ReturnMapId = (int) Map.Tria;
         ReturnCoord = MapEntityMetadataStorage.GetRandomPlayerSpawn(ReturnMapId)?.Coord.ToFloat() ?? default;
-        PrestigeMissions = PrestigeLevelMissionMetadataStorage.GetPrestigeMissions;
         SkinColor = skinColor;
         UnlockedTaxis = new();
         UnlockedMaps = new();

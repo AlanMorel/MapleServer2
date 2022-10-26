@@ -1,4 +1,5 @@
 ﻿using Maple2Storage.Enums;
+using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -24,6 +25,9 @@ public class Account
     public int MesoMarketDailyListings { get; set; }
     public int MesoMarketMonthlyPurchases { get; set; }
 
+    public List<int> PrestigeRewardsClaimed { get; set; }
+    public List<PrestigeMission> PrestigeMissions = new();
+    
     public List<int> PremiumClubRewardsClaimed { get; set; }
 
     public long HomeId;
@@ -55,6 +59,8 @@ public class Account
         HomeId = data.home_id ?? 0;
         MesoMarketDailyListings = data.meso_market_daily_listings;
         MesoMarketMonthlyPurchases = data.meso_market_monthly_purchases;
+        PrestigeRewardsClaimed = JsonConvert.DeserializeObject<List<int>>(data.prestige_rewards_claimed);
+        PrestigeMissions = JsonConvert.DeserializeObject<List<PrestigeMission>>(data.prestige_missions);
         PremiumClubRewardsClaimed = JsonConvert.DeserializeObject<List<int>>(data.premium_rewards_claimed);
         AuthData = authData;
         EquippedMedals = new()
@@ -111,7 +117,9 @@ public class Account
         };
         Medals = new();
         MushkingRoyaleStats = new();
+        PrestigeRewardsClaimed = new();
         PremiumClubRewardsClaimed = new();
+        PrestigeMissions = PrestigeLevelMissionMetadataStorage.GetPrestigeMissions;
         Id = DatabaseManager.Accounts.Insert(this);
         AuthData = new(Id);
     }
