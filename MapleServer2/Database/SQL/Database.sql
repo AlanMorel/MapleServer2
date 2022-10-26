@@ -984,11 +984,11 @@ CREATE TABLE `shop_items`
   COLLATE = utf8mb4_0900_ai_ci;
 
 --
--- Table structure for table `player_shop_logs`
+-- Table structure for table `player_shop_infos`
 --
 
-DROP TABLE IF EXISTS `player_shop_logs`;
-CREATE TABLE `player_shop_logs`
+DROP TABLE IF EXISTS `player_shop_infos`;
+CREATE TABLE `player_shop_infos`
 (
     `uid`                    bigint      NOT NULL AUTO_INCREMENT,
     `shop_id`                int         NOT NULL,
@@ -998,22 +998,22 @@ CREATE TABLE `player_shop_logs`
     `total_restock_count`    int         DEFAULT 0,
     `is_persistant`          tinyint(1)  NOT NULL,
     CONSTRAINT `item_log_pk` PRIMARY KEY (`uid`),
-    KEY `ix_player_shop_log_shop_id` (`shop_id`),
-    KEY `ix_player_shop_log_character_id` (`character_id`),
-    KEY `ix_player_shop_log_account_id` (`account_id`),
-    CONSTRAINT `shop_logs_shop_uid_fk` FOREIGN KEY (`shop_id`) REFERENCES `shops` (`id`),
-    CONSTRAINT `shop_logs_character_id_fk`  FOREIGN KEY (`character_id`) REFERENCES  `characters` (`character_id`),
-    CONSTRAINT `shop_logs_account_id_fk` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`)
+    KEY `ix_player_shop_info_shop_id` (`shop_id`),
+    KEY `ix_player_shop_info_character_id` (`character_id`),
+    KEY `ix_player_shop_info_account_id` (`account_id`),
+    CONSTRAINT `shop_info_shop_uid_fk` FOREIGN KEY (`shop_id`) REFERENCES `shops` (`id`),
+    CONSTRAINT `shop_info_character_id_fk`  FOREIGN KEY (`character_id`) REFERENCES  `characters` (`character_id`),
+    CONSTRAINT `shop_info_account_id_fk` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
 
 --
--- Table structure for table `player_shop_item_logs`
+-- Table structure for table `player_shop_inventories`
 --
 
-DROP TABLE IF EXISTS `player_shop_item_logs`;
-CREATE TABLE `player_shop_item_logs`
+DROP TABLE IF EXISTS `player_shop_inventories`;
+CREATE TABLE `player_shop_inventories`
 (
     `uid`             bigint      NOT NULL AUTO_INCREMENT,
     `shop_item_uid`   int         NOT NULL,
@@ -1024,16 +1024,16 @@ CREATE TABLE `player_shop_item_logs`
     `purchase_count`  int         DEFAULT 0,
     `is_persistant`   tinyint(1)  NOT NULL,
     CONSTRAINT `item_log_pk` PRIMARY KEY (`uid`),
-    KEY `ix_player_shop_item_log_shop_item_uid` (`shop_item_uid`),
-    KEY `ix_player_shop_item_log_shop_id` (`shop_id`),
-    KEY `ix_player_shop_item_log_character_id` (`character_id`),
-    KEY `ix_player_shop_item_log_account_id` (`account_id`),
-    KEY `ix_player_shop_item_log_item_uid` (`item_uid`),
-    CONSTRAINT `shop_item_logs_shop_item_uid_fk` FOREIGN KEY (`shop_item_uid`) REFERENCES `shop_items` (`uid`),
-    CONSTRAINT `shop_item_logs_shop_id_fk` FOREIGN KEY (`shop_id`) REFERENCES `shops` (`id`),
-    CONSTRAINT `shop_item_logs_character_id_fk`  FOREIGN KEY (`character_id`) REFERENCES  `characters` (`character_id`),
-    CONSTRAINT `shop_item_logs_account_id_fk` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`),
-    CONSTRAINT `shop_item_logs_item_uid_fk` FOREIGN KEY (`item_uid`) REFERENCES `items` (`uid`)
+    KEY `ix_player_shop_inventories_shop_item_uid` (`shop_item_uid`),
+    KEY `ix_player_shop_inventories_shop_id` (`shop_id`),
+    KEY `ix_player_shop_inventories_character_id` (`character_id`),
+    KEY `ix_player_shop_inventories_account_id` (`account_id`),
+    KEY `ix_player_shop_inventories_item_uid` (`item_uid`),
+    CONSTRAINT `shop_inventories_shop_item_uid_fk` FOREIGN KEY (`shop_item_uid`) REFERENCES `shop_items` (`uid`),
+    CONSTRAINT `shop_inventories_shop_id_fk` FOREIGN KEY (`shop_id`) REFERENCES `shops` (`id`),
+    CONSTRAINT `shop_inventories_character_id_fk`  FOREIGN KEY (`character_id`) REFERENCES  `characters` (`character_id`),
+    CONSTRAINT `shop_inventories_account_id_fk` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`),
+    CONSTRAINT `shop_inventories_item_uid_fk` FOREIGN KEY (`item_uid`) REFERENCES `items` (`uid`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;

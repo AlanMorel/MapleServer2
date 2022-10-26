@@ -49,8 +49,8 @@ public static class DatabaseManager
     public static DatabaseQuest Quests { get; } = new();
     public static DatabaseShop Shops { get; } = new();
     public static DatabaseShopItem ShopItems { get; } = new();
-    public static DatabasePlayerShopLog ShopLogs { get; } = new();
-    public static DatabasePlayerShopItemLog ShopItemLogs { get; } = new();
+    public static DatabasePlayerShopInfo PlayerShopInfos { get; } = new();
+    public static DatabasePlayerShopInventory PlayerShopInventories { get; } = new();
     public static DatabaseBeautyShop BeautyShops { get; } = new();
     public static DatabaseBeautyShopItem BeautyShopItems { get; } = new();
     public static DatabaseSkillTab SkillTabs { get; } = new();

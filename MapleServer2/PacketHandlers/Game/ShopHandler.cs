@@ -191,7 +191,7 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
         instanceShop = ShopHelper.RecreateShop(session.Player, serverShop);
         instanceShop.RestockTime = restockTime;
 
-        DatabaseManager.ShopLogs.Update(session.Player.ShopLogs[instanceShop.Id]);
+        DatabaseManager.PlayerShopInfos.Update(session.Player.ShopInfos[instanceShop.Id]);
         session.Send(ShopPacket.InstantRestock());
         ShopHelper.LoadShop(session, instanceShop);
     }
@@ -238,11 +238,11 @@ public class ShopHandler : GamePacketHandler<ShopHandler>
             return;
         }
 
-        PlayerShopItemLog itemLog = session.Player.ShopItemLogs[shopItem.ShopItemUid];
+        PlayerShopInventory inventory = session.Player.ShopInventories[shopItem.ShopItemUid];
         shopItem.StockPurchased += quantity;
-        itemLog.StockPurchased += quantity;
+        inventory.StockPurchased += quantity;
 
-        DatabaseManager.ShopItemLogs.Update(itemLog);
+        DatabaseManager.PlayerShopInventories.Update(inventory);
         Item item = new(shopItem.Item)
         {
             Amount = quantity * shopItem.Quantity
