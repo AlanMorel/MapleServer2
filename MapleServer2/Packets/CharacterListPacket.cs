@@ -86,7 +86,7 @@ public static class CharacterListPacket
 
     private static void WriteCharacterEntry(this PacketWriter pWriter, Player player)
     {
-        pWriter.WriteCharacter(player);
+        pWriter.WriteClass(player);
 
         pWriter.WriteUnicodeString(player.ProfileUrl);
         pWriter.WriteLong(player.DeletionTime);
@@ -111,103 +111,6 @@ public static class CharacterListPacket
                 pWriter.WriteInt();
             }
         }
-    }
-
-    public static void WriteCharacter(this PacketWriter pWriter, Player player)
-    {
-        pWriter.WriteLong(player.AccountId);
-        pWriter.WriteLong(player.CharacterId);
-        pWriter.WriteUnicodeString(player.Name);
-        pWriter.Write(player.Gender);
-        pWriter.WriteByte(1);
-
-        pWriter.WriteLong(player.AccountId);
-        pWriter.WriteInt();
-        pWriter.WriteInt(player.MapId);
-        pWriter.WriteInt(player.MapId); // Sometimes 0
-        pWriter.WriteInt();
-        pWriter.WriteShort(player.Levels.Level);
-        pWriter.WriteShort(player.ChannelId);
-        pWriter.Write(player.JobCode);
-        pWriter.Write(player.SubJobCode);
-        pWriter.WriteInt(player.Stats[StatAttribute.Hp].Total);
-        pWriter.WriteInt(player.Stats[StatAttribute.Hp].Bonus);
-        pWriter.WriteShort();
-        pWriter.WriteLong();
-        pWriter.WriteLong(player.HouseStorageAccessTime);
-        pWriter.WriteLong(player.HouseDoctorAccessTime);
-        pWriter.WriteInt(player.ReturnMapId);
-        pWriter.Write(player.ReturnCoord);
-        pWriter.WriteInt(player.GearScore);
-        pWriter.Write(player.SkinColor);
-        pWriter.WriteLong(player.CreationTime);
-        foreach (int trophyCount in player.TrophyCount)
-        {
-            pWriter.WriteInt(trophyCount);
-        }
-        pWriter.WriteLong(player.GuildId);
-        pWriter.WriteUnicodeString(player.Guild?.Name ?? "");
-        pWriter.WriteUnicodeString(player.Motto);
-
-        pWriter.WriteUnicodeString(player.ProfileUrl);
-
-        pWriter.WriteByte((byte) player.Clubs.Count);
-        foreach (Club club in player.Clubs)
-        {
-            pWriter.WriteBool(club.IsEstablished);
-            if (club.IsEstablished)
-            {
-                pWriter.WriteLong(club.Id);
-                pWriter.WriteUnicodeString(club.Name);
-            }
-        }
-
-        pWriter.WriteByte(1);
-        pWriter.WriteInt();
-        foreach (MasteryExp mastery in player.Levels.MasteryExp)
-        {
-            pWriter.WriteInt((int) mastery.CurrentExp);
-        }
-
-        // Some function call on CCharacterList property
-        pWriter.WriteUnicodeString(); // login username
-        pWriter.WriteLong(player.SessionId); // THIS MUST BE CORRECT... BYPASS KEY...
-        pWriter.WriteLong(2000);
-        pWriter.WriteLong(3000);
-        // End
-
-        int countA = 0;
-        pWriter.WriteInt(countA);
-        for (int i = 0; i < countA; i++)
-        {
-            pWriter.WriteLong();
-        }
-
-        pWriter.WriteByte();
-        pWriter.WriteByte();
-        pWriter.WriteLong(player.Birthday);
-        pWriter.WriteInt(player.SuperChatId);
-        pWriter.WriteInt();
-        pWriter.WriteLong(); // Timestamp
-        pWriter.WriteInt(player.Levels.PrestigeLevel);
-        pWriter.WriteLong(); // Timestamp
-
-        int countB = 0;
-        pWriter.WriteInt(countB);
-        for (int i = 0; i < countB; i++)
-        {
-            pWriter.WriteLong();
-        }
-
-        int countC = 0;
-        pWriter.WriteInt(countC);
-        for (int i = 0; i < countC; i++)
-        {
-            pWriter.WriteLong();
-        }
-
-        pWriter.WriteShort();
-        pWriter.WriteLong();
     }
 
     // Note, the client actually uses item id to determine type

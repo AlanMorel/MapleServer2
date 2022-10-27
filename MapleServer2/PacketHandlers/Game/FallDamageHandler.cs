@@ -17,7 +17,7 @@ public class FallDamageHandler : GamePacketHandler<FallDamageHandler>
         float distance = packet.ReadFloat();
         if (distance > Block.BLOCK_SIZE * 6)
         {
-            if (session.Player.Mount != null && session.Player.Levels.PrestigeLevel < (int) PrestigePerk.SafeRiding)
+            if (session.Player.Mount != null && session.Player.Account.Prestige.Level < (int) PrestigePerk.SafeRiding)
             {
                 session.FieldManager.BroadcastPacket(MountPacket.StopRide(session.Player.FieldPlayer));
             }

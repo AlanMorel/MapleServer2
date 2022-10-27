@@ -1,4 +1,5 @@
 ﻿using Maple2Storage.Enums;
+using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -21,6 +22,7 @@ public class Account
     public Currency EventMeret { get; set; }
     public Currency MesoToken { get; private set; }
 
+    public Prestige Prestige { get; set; }
     public int MesoMarketDailyListings { get; set; }
     public int MesoMarketMonthlyPurchases { get; set; }
 
@@ -37,7 +39,8 @@ public class Account
 
     public Account() { }
 
-    public Account(long accountId, dynamic data, BankInventory bankInventory, MushkingRoyaleStats royaleStats, List<Medal> medals, AuthData? authData, GameSession? gameSession)
+    public Account(long accountId, dynamic data, BankInventory bankInventory, MushkingRoyaleStats royaleStats, Prestige prestige,
+        List<Medal> medals, AuthData? authData, GameSession? gameSession)
     {
         Id = accountId;
         Username = data.username;
@@ -51,6 +54,7 @@ public class Account
         MesoToken = new(CurrencyType.MesoToken, data.meso_token, gameSession);
         BankInventory = bankInventory;
         MushkingRoyaleStats = royaleStats;
+        Prestige = prestige;
         VIPExpiration = data.vip_expiration;
         HomeId = data.home_id ?? 0;
         MesoMarketDailyListings = data.meso_market_daily_listings;
@@ -110,6 +114,7 @@ public class Account
             }
         };
         Medals = new();
+        Prestige = new(1, 0);
         MushkingRoyaleStats = new();
         PremiumClubRewardsClaimed = new();
         Id = DatabaseManager.Accounts.Insert(this);

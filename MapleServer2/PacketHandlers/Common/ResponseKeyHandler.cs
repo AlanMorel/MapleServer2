@@ -145,7 +145,7 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
         session.Send(SyncValuePacket.SetSyncValue(120000)); // unknown what this value means
 
         session.Send(PrestigePacket.SetLevels(player));
-        session.Send(PrestigePacket.WeeklyMissions(player.PrestigeMissions));
+        session.Send(PrestigePacket.WeeklyMissions(player.Account.Prestige.Missions));
 
         // Load inventory tabs
         foreach (InventoryTab tab in Enum.GetValues(typeof(InventoryTab)))

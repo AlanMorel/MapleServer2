@@ -7,13 +7,13 @@ using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
-public class PrestigeParser : Exporter<PrestigeMetadata>
+public class PrestigeRewardParser : Exporter<List<PrestigeRewardMetadata>>
 {
-    public PrestigeParser(MetadataResources resources) : base(resources, MetadataName.Prestige) { }
+    public PrestigeRewardParser(MetadataResources resources) : base(resources, MetadataName.PrestigeReward) { }
 
-    protected override PrestigeMetadata Parse()
+    protected override List<PrestigeRewardMetadata> Parse()
     {
-        PrestigeMetadata prestigeMetadata = new();
+        List<PrestigeRewardMetadata> metadatas = new();
 
         foreach (PackFileEntry entry in Resources.XmlReader.Files)
         {
@@ -31,13 +31,15 @@ public class PrestigeParser : Exporter<PrestigeMetadata>
             {
                 int level = int.Parse(reward.Attributes["level"].Value);
                 string type = reward.Attributes["type"].Value;
-                int id = int.Parse(reward.Attributes["id"].Value.Length == 0 ? "0" : reward.Attributes["id"].Value);
-                int value = int.Parse(reward.Attributes["value"].Value);
+                int id = int.Parse(reward.Attributes["id"].Value == "" ? "0" : reward.Attributes["id"].Value);
+                int rarity = int.Parse(reward.Attributes["rank"]?.Value == "" ? "0" : reward.Attributes["rank"].Value);
+                int amount = int.Parse(reward.Attributes["value"].Value);
 
-                prestigeMetadata.Rewards.Add(new(level, type, id, value));
+                PrestigeRewardMetadata metadata = new(level, type, id, rarity, amount);
+                metadatas.Add(metadata);
             }
         }
 
-        return prestigeMetadata;
+        return metadatas;
     }
 }
