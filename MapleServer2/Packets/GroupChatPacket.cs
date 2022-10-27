@@ -30,7 +30,7 @@ public static class GroupChatPacket
         foreach (Player member in groupChat.Members)
         {
             pWriter.WriteByte(0x1);
-            pWriter.WriteCharacter(member);
+            pWriter.WriteClass(member);
         }
         return pWriter;
     }
@@ -78,7 +78,7 @@ public static class GroupChatPacket
         pWriter.WriteInt(groupChat.Id);
         pWriter.WriteUnicodeString(member.Name);
         pWriter.WriteByte(0x1);
-        pWriter.WriteCharacter(invitee);
+        pWriter.WriteClass(invitee);
         return pWriter;
     }
 

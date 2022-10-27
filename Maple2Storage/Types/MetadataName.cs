@@ -59,7 +59,7 @@ public static class MetadataName
     public const string PremiumClubDailyBenefit = "premium-club-daily-benefit";
     public const string PremiumClubEffect = "premium-club-effect";
     public const string PremiumClubPackage = "premium-club-package";
-    public const string Prestige = "prestige";
+    public const string PrestigeReward = "prestige-reward";
     public const string PrestigeLevelMission = "prestige-level-mission";
     public const string Quest = "quest";
     public const string Recipe = "recipe";

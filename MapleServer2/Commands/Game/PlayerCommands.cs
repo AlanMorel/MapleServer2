@@ -60,7 +60,7 @@ public class PrestigeExpCommand : InGameCommand
 
         if (exp > 0)
         {
-            trigger.Session.Player.Levels.GainPrestigeExp(exp);
+            trigger.Session.Player.Account.Prestige.GainExp(trigger.Session, exp);
             return;
         }
 
@@ -120,7 +120,7 @@ public class PrestigeLevelCommand : InGameCommand
 
         if (level > 0)
         {
-            trigger.Session.Player.Levels.SetPrestigeLevel(level);
+            trigger.Session.Player.Account.Prestige.SetLevel(trigger.Session, level);
             return;
         }
 

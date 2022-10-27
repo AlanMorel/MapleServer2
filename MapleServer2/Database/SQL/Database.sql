@@ -33,9 +33,8 @@ CREATE TABLE `accounts`
     `meso_token`                    bigint DEFAULT NULL,
     `bank_inventory_id`             bigint DEFAULT NULL,
     `mushking_royale_id`            bigint       NOT NULL,
+    `prestige_id`                   bigint       NOT NULL,
     `vip_expiration`                bigint       NOT NULL,
-    `prestige_rewards_claimed`      text,
-    `prestige_missions`             text,
     `premium_rewards_claimed`       text,
     `meso_market_daily_listings`    int          NOT NULL,
     `meso_market_monthly_purchases` int          NOT NULL,
@@ -558,9 +557,24 @@ CREATE TABLE `levels`
     `level`          smallint NOT NULL,
     `exp`            bigint   NOT NULL,
     `rest_exp`       bigint   NOT NULL,
-    `prestige_level` int      NOT NULL,
-    `prestige_exp`   bigint   NOT NULL,
     `mastery_exp`    text,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci;
+
+--
+-- Table structure for table `levels`
+--
+
+DROP TABLE IF EXISTS `prestiges`;
+CREATE TABLE `prestiges`
+(
+    `id`                   bigint   NOT NULL AUTO_INCREMENT,
+    `level`                int      NOT NULL,
+    `exp`                  bigint   NOT NULL,
+    `rewards_claimed`      text,
+    `missions`             text,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4

@@ -33,7 +33,7 @@ public class UnlockAll : InGameCommand
         trigger.Session.FieldManager.BroadcastPacket(StatPacket.SetStats(player.FieldPlayer), trigger.Session);
 
         player.Levels.SetLevel(90);
-        player.Levels.SetPrestigeLevel(100);
+        player.Account.Prestige.SetLevel(player.Session, 100);
         player.Wallet.Meso.SetAmount(10_000_000_000); // 10B
         player.Account.Meret.SetAmount(10_000_000_000); // 10B
 

@@ -159,7 +159,7 @@ public class InstrumentHandler : GamePacketHandler<InstrumentHandler>
 
         // get prestige exp
         int prestigeExpGain = (session.ServerTick - session.Player.Instrument.Value.InstrumentTick) / 1000 * 250;
-        session.Player.Levels.GainPrestigeExp(prestigeExpGain);
+        session.Player.Account.Prestige.GainExp(session, prestigeExpGain);
 
         //TODO: get exp for normal level
 

@@ -9,7 +9,7 @@ namespace GameDataParser.Parsers;
 
 public class PrestigeRewardParser : Exporter<List<PrestigeRewardMetadata>>
 {
-    public PrestigeRewardParser(MetadataResources resources) : base(resources, MetadataName.Prestige) { }
+    public PrestigeRewardParser(MetadataResources resources) : base(resources, MetadataName.PrestigeReward) { }
 
     protected override List<PrestigeRewardMetadata> Parse()
     {

@@ -49,7 +49,7 @@ public static class PartyPacket
 
         PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(Mode.Join);
-        pWriter.WriteCharacter(player);
+        pWriter.WriteClass(player);
         pWriter.WriteInt();
         pWriter.WriteSkills(skillTab, SkillType.Active);
         pWriter.WriteSkills(skillTab, SkillType.Passive);
@@ -87,7 +87,7 @@ public static class PartyPacket
         foreach (Player member in party.Members)
         {
             pWriter.WriteBool(!member.Session?.Connected() ?? false);
-            pWriter.WriteCharacter(member);
+            pWriter.WriteClass(member);
             WritePartyDungeonInfo(pWriter);
         }
 
@@ -103,7 +103,7 @@ public static class PartyPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(Mode.LoginNotice);
-        pWriter.WriteCharacter(player);
+        pWriter.WriteClass(player);
         pWriter.WriteLong();
         pWriter.WriteInt();
         pWriter.WriteShort();
@@ -148,7 +148,7 @@ public static class PartyPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(Mode.UpdateMemberLocation);
         pWriter.WriteLong(player.CharacterId);
-        pWriter.WriteCharacter(player);
+        pWriter.WriteClass(player);
         WritePartyDungeonInfo(pWriter);
         return pWriter;
     }
@@ -159,7 +159,7 @@ public static class PartyPacket
         pWriter.Write(Mode.UpdatePlayer);
         pWriter.WriteLong(player.CharacterId);
 
-        pWriter.WriteCharacter(player);
+        pWriter.WriteClass(player);
         WritePartyDungeonInfo(pWriter);
         return pWriter;
     }

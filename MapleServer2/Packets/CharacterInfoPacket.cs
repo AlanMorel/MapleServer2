@@ -27,7 +27,7 @@ public static class CharacterInfoPacket
         characterBuffer.Write(player.JobCode);
         characterBuffer.Write(player.SubJobCode);
         characterBuffer.WriteInt((int) player.Gender);
-        characterBuffer.WriteInt(player.Levels.PrestigeLevel);
+        characterBuffer.WriteInt(player.Account.Prestige.Level);
         characterBuffer.WriteByte();
         WriteStats(characterBuffer, player);
 

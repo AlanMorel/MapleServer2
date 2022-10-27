@@ -11,7 +11,7 @@ public static class PrestigeRewardMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = MetadataHelper.GetFileStream(MetadataName.Prestige);
+        using FileStream stream = MetadataHelper.GetFileStream(MetadataName.PrestigeReward);
         List<PrestigeRewardMetadata> rewardMetadata = Serializer.Deserialize<List<PrestigeRewardMetadata>>(stream);
         foreach (PrestigeRewardMetadata reward in rewardMetadata)
         {

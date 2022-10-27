@@ -16,5 +16,14 @@ public class PrestigeRewardMetadata
     [XmlElement(Order = 5)]
     public readonly int Amount;
     
-    public PrestigeRewardMetadata(int level, string type, int id, int rarity, int amount){}
+    public PrestigeRewardMetadata(){}
+
+    public PrestigeRewardMetadata(int level, string type, int id, int rarity, int amount)
+    {
+        Level = level;
+        Type = type;
+        Id = id;
+        Rarity = rarity;
+        Amount = amount;
+    }
 }

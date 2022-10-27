@@ -77,8 +77,9 @@ public class DatabaseCharacter : DatabaseTable
             .LeftJoin("homes", "homes.account_id", "accounts.id")
             .Select(
                 "characters.{*}",
-                "levels.{level, exp, rest_exp, prestige_level, prestige_exp, mastery_exp}",
-                "accounts.{username, password_hash, creation_time, last_log_time, character_slots, meret, game_meret, event_meret, meso_token, bank_inventory_id, mushking_royale_id, vip_expiration, premium_rewards_claimed, meso_market_daily_listings, meso_market_monthly_purchases}",
+                "levels.{level, exp, rest_exp, mastery_exp}",
+                "accounts.{username, password_hash, creation_time, last_log_time, character_slots, meret, game_meret, event_meret, meso_token, bank_inventory_id, mushking_royale_id, vip_expiration, " +
+                "prestige_id, premium_rewards_claimed, meso_market_daily_listings, meso_market_monthly_purchases}",
                 "game_options.{keybinds, active_hotbar_id}",
                 "wallets.{meso, valor_token, treva, rue, havi_fruit}",
                 "homes.id as home_id",
@@ -92,6 +93,7 @@ public class DatabaseCharacter : DatabaseTable
         BankInventory bankInventory = DatabaseManager.BankInventories.FindById(data.bank_inventory_id);
         MushkingRoyaleStats royaleStats = DatabaseManager.MushkingRoyaleStats.FindById(data.mushking_royale_id);
         List<Medal> medals = DatabaseManager.MushkingRoyaleMedals.FindAllByAccountId(data.account_id);
+        Prestige prestige = DatabaseManager.Prestiges.FindById(data.prestige_id);
         Dictionary<int, Trophy> trophies = DatabaseManager.Trophies.FindAllByCharacterId(data.character_id);
         List<ClubMember> clubMemberships = DatabaseManager.ClubMembers.FindAllClubIdsByCharacterId(data.character_id);
         List<Wardrobe> wardrobes = DatabaseManager.Wardrobes.FindAllByCharacterId(data.character_id);
@@ -111,7 +113,7 @@ public class DatabaseCharacter : DatabaseTable
             Session = session,
             CharacterId = data.character_id,
             AccountId = data.account_id,
-            Account = new(data.account_id, data, bankInventory, royaleStats, medals, authData, session),
+            Account = new(data.account_id, data, bankInventory, royaleStats, prestige, medals, authData, session),
             CreationTime = data.creation_time,
             Birthday = data.birthday,
             Name = data.name,
@@ -121,8 +123,7 @@ public class DatabaseCharacter : DatabaseTable
             InstanceId = data.instance_id,
             IsMigrating = data.is_migrating,
             JobCode = (JobCode) data.job,
-            Levels = new(data.level, data.exp, data.rest_exp, data.prestige_level, data.prestige_exp,
-                JsonConvert.DeserializeObject<List<MasteryExp>>(data.mastery_exp), session, data.levels_id),
+            Levels = new(data.level, data.exp, data.rest_exp, JsonConvert.DeserializeObject<List<MasteryExp>>(data.mastery_exp), session, data.levels_id),
             MapId = data.map_id,
             TitleId = data.title_id,
             InsigniaId = data.insignia_id,
@@ -175,7 +176,7 @@ public class DatabaseCharacter : DatabaseTable
             .LeftJoin("homes", "homes.account_id", "accounts.id")
             .Select(
                 "characters.{*}",
-                "levels.{level, exp, rest_exp, prestige_level, prestige_exp, mastery_exp}",
+                "levels.{level, exp, rest_exp, mastery_exp}",
                 "accounts.{username, password_hash, creation_time, last_log_time, character_slots, meret, game_meret, event_meret}",
                 "homes.{plot_map_id, plot_number, apartment_number, expiration, id as home_id}")
             .FirstOrDefault());
@@ -193,7 +194,7 @@ public class DatabaseCharacter : DatabaseTable
             .LeftJoin("homes", "homes.account_id", "accounts.id")
             .Select(
                 "characters.{*}",
-                "levels.{level, exp, rest_exp, prestige_level, prestige_exp, mastery_exp}",
+                "levels.{level, exp, rest_exp, mastery_exp}",
                 "accounts.{username, password_hash, creation_time, last_log_time, character_slots, meret, game_meret, event_meret}",
                 "homes.{plot_map_id, plot_number, apartment_number, expiration, id as home_id}")
             .FirstOrDefault());
@@ -211,7 +212,7 @@ public class DatabaseCharacter : DatabaseTable
             .LeftJoin("homes", "homes.account_id", "accounts.id")
             .Select(
                 "characters.{*}",
-                "levels.{level, exp, rest_exp, prestige_level, prestige_exp, mastery_exp}",
+                "levels.{level, exp, rest_exp, mastery_exp}",
                 "accounts.{username, password_hash, creation_time, last_log_time, character_slots, meret, game_meret, event_meret}",
                 "homes.{plotmap_id, plot_number, apartment_number, expiration, id as home_id}")
             .FirstOrDefault());
@@ -227,12 +228,19 @@ public class DatabaseCharacter : DatabaseTable
             is_deleted = false
         })
             .Join("levels", "levels.id", "characters.levels_id")
+            .Join("prestiges", "prestiges.id", "characters.account_id")
             .Select(
                 "characters.{*}",
-                "levels.{level, exp, rest_exp, prestige_level, prestige_exp, mastery_exp}").Get();
+                "prestiges.{id as prestige_id, level as prestige_level, exp as prestige_exp, rewards_claimed, missions}",
+                "levels.{level, exp, rest_exp, mastery_exp}").Get();
 
         foreach (dynamic data in result)
         {
+            Account account = new()
+            {
+                Prestige = new(data.prestige_id, data.prestige_level, data.prestige_exp, JsonConvert.DeserializeObject<List<int>>(data.rewards_claimed), 
+                    JsonConvert.DeserializeObject<List<PrestigeMission>>(data.missions))
+            };
             characters.Add(new()
             {
                 AccountId = data.account_id,
@@ -243,15 +251,15 @@ public class DatabaseCharacter : DatabaseTable
                 Gender = (Gender) data.gender,
                 Awakened = data.awakened,
                 JobCode = (JobCode) data.job,
-                Levels = new Levels(data.level, data.exp, data.rest_exp, data.prestige_level,
-                    data.prestige_exp, JsonConvert.DeserializeObject<List<MasteryExp>>(data.mastery_exp), null, data.levels_id),
+                Levels = new Levels(data.level, data.exp, data.rest_exp, JsonConvert.DeserializeObject<List<MasteryExp>>(data.mastery_exp), null, data.levels_id),
                 MapId = data.map_id,
                 Stats = JsonConvert.DeserializeObject<Stats>(data.stats),
                 TrophyCount = JsonConvert.DeserializeObject<int[]>(data.trophy_count),
                 Motto = data.motto,
                 ProfileUrl = data.profile_url,
                 Inventory = DatabaseManager.Inventories.FindById(data.inventory_id),
-                SkinColor = JsonConvert.DeserializeObject<SkinColor>(data.skin_color)
+                SkinColor = JsonConvert.DeserializeObject<SkinColor>(data.skin_color),
+                Account = account
             });
         }
 
@@ -389,8 +397,7 @@ public class DatabaseCharacter : DatabaseTable
             Gender = (Gender) data.gender,
             Awakened = data.awakened,
             JobCode = (JobCode) data.job,
-            Levels = new Levels(data.level, data.exp, data.rest_exp, data.prestige_level,
-                data.prestige_exp, JsonConvert.DeserializeObject<List<MasteryExp>>(data.mastery_exp), null, data.levels_id),
+            Levels = new Levels(data.level, data.exp, data.rest_exp, JsonConvert.DeserializeObject<List<MasteryExp>>(data.mastery_exp), null, data.levels_id),
             MapId = data.map_id,
             GuildApplications = JsonConvert.DeserializeObject<List<GuildApplication>>(data.guild_applications),
             Motto = data.motto,

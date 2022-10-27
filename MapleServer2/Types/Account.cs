@@ -21,13 +21,11 @@ public class Account
     public Currency GameMeret { get; set; }
     public Currency EventMeret { get; set; }
     public Currency MesoToken { get; private set; }
-
+    
+    public Prestige Prestige { get; set; }
     public int MesoMarketDailyListings { get; set; }
     public int MesoMarketMonthlyPurchases { get; set; }
 
-    public List<int> PrestigeRewardsClaimed { get; set; }
-    public List<PrestigeMission> PrestigeMissions = new();
-    
     public List<int> PremiumClubRewardsClaimed { get; set; }
 
     public long HomeId;
@@ -41,7 +39,8 @@ public class Account
 
     public Account() { }
 
-    public Account(long accountId, dynamic data, BankInventory bankInventory, MushkingRoyaleStats royaleStats, List<Medal> medals, AuthData? authData, GameSession? gameSession)
+    public Account(long accountId, dynamic data, BankInventory bankInventory, MushkingRoyaleStats royaleStats, Prestige prestige,
+        List<Medal> medals, AuthData? authData, GameSession? gameSession)
     {
         Id = accountId;
         Username = data.username;
@@ -55,27 +54,23 @@ public class Account
         MesoToken = new(CurrencyType.MesoToken, data.meso_token, gameSession);
         BankInventory = bankInventory;
         MushkingRoyaleStats = royaleStats;
+        Prestige = prestige;
         VIPExpiration = data.vip_expiration;
         HomeId = data.home_id ?? 0;
         MesoMarketDailyListings = data.meso_market_daily_listings;
         MesoMarketMonthlyPurchases = data.meso_market_monthly_purchases;
-        PrestigeRewardsClaimed = JsonConvert.DeserializeObject<List<int>>(data.prestige_rewards_claimed);
-        PrestigeMissions = JsonConvert.DeserializeObject<List<PrestigeMission>>(data.prestige_missions);
         PremiumClubRewardsClaimed = JsonConvert.DeserializeObject<List<int>>(data.premium_rewards_claimed);
         AuthData = authData;
         EquippedMedals = new()
         {
             {
-                MedalSlot.Tail,
-                null
+                MedalSlot.Tail, null
             },
             {
-                MedalSlot.GroundMount,
-                null
+                MedalSlot.GroundMount, null
             },
             {
-                MedalSlot.Glider,
-                null
+                MedalSlot.Glider, null
             }
         };
         Medals = medals;
@@ -103,23 +98,19 @@ public class Account
         EquippedMedals = new()
         {
             {
-                MedalSlot.Tail,
-                null
+                MedalSlot.Tail, null
             },
             {
-                MedalSlot.GroundMount,
-                null
+                MedalSlot.GroundMount, null
             },
             {
-                MedalSlot.Glider,
-                null
+                MedalSlot.Glider, null
             }
         };
         Medals = new();
+        Prestige = new(1, 0);
         MushkingRoyaleStats = new();
-        PrestigeRewardsClaimed = new();
         PremiumClubRewardsClaimed = new();
-        PrestigeMissions = PrestigeLevelMissionMetadataStorage.GetPrestigeMissions;
         Id = DatabaseManager.Accounts.Insert(this);
         AuthData = new(Id);
     }
