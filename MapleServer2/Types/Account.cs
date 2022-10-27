@@ -64,13 +64,16 @@ public class Account
         EquippedMedals = new()
         {
             {
-                MedalSlot.Tail, null
+                MedalSlot.Tail,
+                null
             },
             {
-                MedalSlot.GroundMount, null
+                MedalSlot.GroundMount,
+                null
             },
             {
-                MedalSlot.Glider, null
+                MedalSlot.Glider,
+                null
             }
         };
         Medals = medals;
@@ -98,13 +101,16 @@ public class Account
         EquippedMedals = new()
         {
             {
-                MedalSlot.Tail, null
+                MedalSlot.Tail,
+                null
             },
             {
-                MedalSlot.GroundMount, null
+                MedalSlot.GroundMount,
+                null
             },
             {
-                MedalSlot.Glider, null
+                MedalSlot.Glider,
+                null
             }
         };
         Medals = new();
