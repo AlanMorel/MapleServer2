@@ -223,10 +223,10 @@ public class DatabaseCharacter : DatabaseTable
         List<Player> characters = new();
 
         IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where(new
-        {
-            account_id = accountId,
-            is_deleted = false
-        })
+            {
+                account_id = accountId,
+                is_deleted = false
+            })
             .Join("levels", "levels.id", "characters.levels_id")
             .Join("prestiges", "prestiges.id", "characters.account_id")
             .Select(
@@ -238,7 +238,7 @@ public class DatabaseCharacter : DatabaseTable
         {
             Account account = new()
             {
-                Prestige = new(data.prestige_id, data.prestige_level, data.prestige_exp, JsonConvert.DeserializeObject<List<int>>(data.rewards_claimed), 
+                Prestige = new(data.prestige_id, data.prestige_level, data.prestige_exp, JsonConvert.DeserializeObject<List<int>>(data.rewards_claimed),
                     JsonConvert.DeserializeObject<List<PrestigeMission>>(data.missions))
             };
             characters.Add(new()

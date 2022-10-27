@@ -174,7 +174,7 @@ public unsafe class PacketWriter : IPacketWriter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteUnicodeString(string value = "")
     {
-        value??=string.Empty;
+        value ??= string.Empty;
         Write((ushort) value.Length);
         WriteRawUnicodeString(value);
     }

@@ -29,7 +29,7 @@ public class DatabasePrestiges : DatabaseTable
             missions = JsonConvert.SerializeObject(prestige.Missions)
         });
     }
-    
+
     public Prestige FindById(long id)
     {
         return ReadPrestige(QueryFactory.Query(TableName).Where("id", id).FirstOrDefault());
@@ -43,10 +43,10 @@ public class DatabasePrestiges : DatabaseTable
     private static Prestige ReadPrestige(dynamic data)
     {
         return new(
-            data.id, 
-            data.level, 
-            data.exp, 
-            JsonConvert.DeserializeObject<List<int>>(data.rewards_claimed), 
+            data.id,
+            data.level,
+            data.exp,
+            JsonConvert.DeserializeObject<List<int>>(data.rewards_claimed),
             JsonConvert.DeserializeObject<List<PrestigeMission>>(data.missions));
     }
 }

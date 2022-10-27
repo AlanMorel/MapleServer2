@@ -29,7 +29,7 @@ public class Prestige
         }
         Id = id;
     }
-    
+
     public Prestige(long id, int level, long exp, List<int> rewardsClaimed, List<PrestigeMission> missions)
     {
         Id = id;
@@ -49,7 +49,7 @@ public class Prestige
 
         session?.Send(PrestigePacket.LevelUp(session.Player.FieldPlayer.ObjectId, Level));
     }
-    
+
     public void SetLevel(GameSession session, int level)
     {
         Level = level;
@@ -57,7 +57,7 @@ public class Prestige
         session?.Send(PrestigePacket.ExpUp(0, 0));
         session?.Send(PrestigePacket.LevelUp(session.Player.FieldPlayer.ObjectId, Level));
     }
-    
+
     public void GainExp(GameSession session, long amount)
     {
         if (session.Player.Levels.Level < 50) // Can only gain prestige exp after level 50.
@@ -78,5 +78,4 @@ public class Prestige
         Exp = newPrestigeExp;
         session.Send(PrestigePacket.ExpUp(Exp, amount));
     }
-    
 }

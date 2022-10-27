@@ -21,7 +21,7 @@ public class Account
     public Currency GameMeret { get; set; }
     public Currency EventMeret { get; set; }
     public Currency MesoToken { get; private set; }
-    
+
     public Prestige Prestige { get; set; }
     public int MesoMarketDailyListings { get; set; }
     public int MesoMarketMonthlyPurchases { get; set; }

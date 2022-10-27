@@ -51,7 +51,7 @@ public class PrestigeHandler : GamePacketHandler<PrestigeHandler>
         switch (reward.Type)
         {
             case "item":
-                Item item = new(reward.Id, reward.Amount,reward.Rarity);
+                Item item = new(reward.Id, reward.Amount, reward.Rarity);
                 session.Player.Inventory.AddItem(session, item, true);
                 break;
             case "statPoint":
