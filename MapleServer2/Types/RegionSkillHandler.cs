@@ -5,6 +5,7 @@ using MapleServer2.Data.Static;
 using MapleServer2.Managers;
 using MapleServer2.Managers.Actors;
 using MapleServer2.Packets;
+using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using Serilog;
 
@@ -272,8 +273,8 @@ public static class RegionSkillHandler
             return;
         }
 
-        Servers.Game.GameSession session = null;
-        IFieldActor caster = skillCast.Caster;
+        GameSession? session = null;
+        IFieldActor? caster = skillCast.Caster;
 
         if (caster is Character character)
         {
@@ -315,21 +316,21 @@ public static class RegionSkillHandler
 
                     if (hitCrit)
                     {
-                        caster.SkillTriggerHandler.FireEvents(castInfo, EffectEvent.OnOwnerAttackCrit, skillCast.SkillId);
+                        caster?.SkillTriggerHandler.FireEvents(castInfo, EffectEvent.OnOwnerAttackCrit, skillCast.SkillId);
                     }
 
                     if (hitMissed)
                     {
-                        caster.SkillTriggerHandler.FireEvents(castInfo, EffectEvent.OnAttackMiss, skillCast.SkillId);
+                        caster?.SkillTriggerHandler.FireEvents(castInfo, EffectEvent.OnAttackMiss, skillCast.SkillId);
                         target.SkillTriggerHandler.FireEvents(new(target, caster, target), EffectEvent.OnEvade, skillCast.SkillId);
                     }
 
-                    caster.SkillTriggerHandler.FireEvents(castInfo, EffectEvent.OnOwnerAttackHit, skillCast.SkillId);
+                    caster?.SkillTriggerHandler.FireEvents(castInfo, EffectEvent.OnOwnerAttackHit, skillCast.SkillId);
                     target.SkillTriggerHandler.FireEvents(new(target, caster, target, caster), EffectEvent.OnAttacked, skillCast.SkillId);
                 });
             }
 
-            castInfo.Owner.SkillTriggerHandler.FireTriggerSkills(skillCast.SkillAttack.SkillConditions, skillCast, castInfo, -1, hitTarget);
+            castInfo.Owner?.SkillTriggerHandler.FireTriggerSkills(skillCast.SkillAttack.SkillConditions, skillCast, castInfo, -1, hitTarget);
 
             hitsRemaining--;
 
