@@ -10,7 +10,7 @@ public static class SkillCooldownPacket
 {
     public static PacketWriter SetCooldown(long skillId, int endTick)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SkillDamage);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.SkillCooldown);
 
         pWriter.WriteByte(1); // count
 
@@ -23,7 +23,7 @@ public static class SkillCooldownPacket
 
     public static PacketWriter SetCooldowns(long[] skillIds, int[] endTicks)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.SkillDamage);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.SkillCooldown);
 
         pWriter.WriteByte((byte) skillIds.Length); // count
 

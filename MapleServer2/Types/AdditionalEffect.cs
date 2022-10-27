@@ -133,7 +133,6 @@ public class AdditionalEffect
             parent.AdditionalEffects.AddEffect(new(affectedEffect.Id, affectedEffect.Level)
             {
                 Stacks = modifyOverlap.OffsetCounts[i],
-                AdjustDuration = false,
                 Caster = Caster
             });
         }

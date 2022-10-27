@@ -49,10 +49,7 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
             List<PremiumClubEffectMetadata> effectMetadatas = PremiumClubEffectMetadataStorage.GetBuffs();
             foreach (PremiumClubEffectMetadata effect in effectMetadatas)
             {
-                player.FieldPlayer.AdditionalEffects.AddEffect(new(effect.EffectId, effect.EffectLevel)
-                {
-                    IsBuff = true
-                });
+                player.FieldPlayer.AdditionalEffects.AddEffect(new(effect.EffectId, effect.EffectLevel));
             }
 
 

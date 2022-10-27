@@ -135,6 +135,8 @@ public static class RegionSkillHandler
                 continue;
             }
 
+            offSetCoord = -CoordF.Rotate(offSetCoord, skillCast.LookDirection);
+
             offSetCoord += Block.ClosestBlock(skillCast.Position);
 
             CoordS tempBlockCoord = offSetCoord.ToShort();
