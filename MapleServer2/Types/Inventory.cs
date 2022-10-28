@@ -145,14 +145,14 @@ public sealed class Inventory : IInventory
         {
             foreach (SetBonusMetadata bonus in setBonus.Bonuses.Parts)
             {
-                for (int i = 0; i < bonus.AdditionalEffectIds.Length; ++i)
+                foreach (int id in bonus.AdditionalEffectIds)
                 {
-                    int id = bonus.AdditionalEffectIds[i];
-
-                    if (id != 0)
+                    if (id == 0)
                     {
-                        session.Player.FieldPlayer?.AdditionalEffects.GetEffect(id)?.Stop(session.Player.FieldPlayer);
+                        continue;
                     }
+
+                    session.Player.FieldPlayer?.AdditionalEffects.GetEffect(id)?.Stop(session.Player.FieldPlayer);
                 }
             }
         }
@@ -944,10 +944,10 @@ public sealed class Inventory : IInventory
     }
 
     // Returns false if item doesn't exist or removing more than available
-    private int Remove(long uid, out Item removedItem, int amount = -1)
+    private int Remove(long uid, out Item? removedItem, int amount = -1)
     {
         // Removing more than available
-        if (!Items.TryGetValue(uid, out Item item) || item.Amount < amount)
+        if (!Items.TryGetValue(uid, out Item? item) || item.Amount < amount)
         {
             removedItem = null;
             return -1;
@@ -977,7 +977,7 @@ public sealed class Inventory : IInventory
         GetSlots(item.InventoryTab)[item.Slot] = item.Uid;
     }
 
-    private bool RemoveInternal(long uid, out Item item)
+    private bool RemoveInternal(long uid, out Item? item)
     {
         return Items.Remove(uid, out item) && GetSlots(item.InventoryTab).Remove(item.Slot);
     }
@@ -1028,15 +1028,9 @@ public sealed class Inventory : IInventory
             return;
         }
 
-        Home home = GameServer.HomeManager.GetHomeById(session.Player.Account.Home.Id);
+        Home? home = GameServer.HomeManager.GetHomeById(session.Player.Account.Home.Id);
         if (home == null)
         {
-            return;
-        }
-
-        if (item.Ugc?.Type is UGCType.Furniture)
-        {
-            _ = home.AddWarehouseUgcItem(session, item);
             return;
         }
 
