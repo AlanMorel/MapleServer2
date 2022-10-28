@@ -90,7 +90,7 @@ public class DatabaseCharacter : DatabaseTable
         List<Macro> macros = DatabaseManager.Macros.FindAllByCharacterId(data.character_id);
         List<SkillTab> skillTabs = DatabaseManager.SkillTabs.FindAllByCharacterId(data.character_id, data.job);
         IInventory inventory = DatabaseManager.Inventories.FindById(data.inventory_id);
-        BankInventory bankInventory = DatabaseManager.BankInventories.FindById(data.bank_inventory_id);
+        BankInventory bankInventory = DatabaseManager.BankInventories.FindById(data.bank_inventory_id, session);
         MushkingRoyaleStats royaleStats = DatabaseManager.MushkingRoyaleStats.FindById(data.mushking_royale_id);
         List<Medal> medals = DatabaseManager.MushkingRoyaleMedals.FindAllByAccountId(data.account_id);
         Prestige prestige = DatabaseManager.Prestiges.FindById(data.prestige_id);

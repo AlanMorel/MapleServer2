@@ -101,12 +101,12 @@ public class ItemStorageHandler : GamePacketHandler<ItemStorageHandler>
     private static void HandleMesos(GameSession session, PacketReader packet)
     {
         packet.ReadLong();
-        byte mode = packet.ReadByte();
+        bool deposit = packet.ReadBool();
         long amount = packet.ReadLong();
         Wallet wallet = session.Player.Wallet;
         BankInventory bankInventory = session.Player.Account.BankInventory;
 
-        if (mode == 1) // add mesos
+        if (deposit)
         {
             if (wallet.Meso.Modify(-amount))
             {
@@ -115,12 +115,9 @@ public class ItemStorageHandler : GamePacketHandler<ItemStorageHandler>
             return;
         }
 
-        if (mode == 0) // remove mesos
+        if (bankInventory.Mesos.Modify(-amount))
         {
-            if (bankInventory.Mesos.Modify(-amount))
-            {
-                wallet.Meso.Modify(amount);
-            }
+            wallet.Meso.Modify(amount);
         }
     }
 
