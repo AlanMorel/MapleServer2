@@ -2,6 +2,7 @@
 using System.Xml;
 using GameDataParser.Files;
 using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using Maple2.File.IO.Crypto.Common;
 using Maple2.File.Parser.Tools;
 using Maple2.File.Parser.Xml.Item;
@@ -68,7 +69,12 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                 },
                 Limit = new()
                 {
-                    JobRequirements = limit.jobLimit.Length == 0 ? new() { 0 } : limit.jobLimit.ToList(),
+                    JobRequirements = limit.jobLimit.Length == 0
+                        ? new()
+                        {
+                            0
+                        }
+                        : limit.jobLimit.ToList(),
                     JobRecommendations = limit.recommendJobs.ToList(),
                     LevelLimitMin = limit.levelLimit,
                     LevelLimitMax = limit.levelLimitMax,
@@ -186,7 +192,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
             if (property.globalRePackingLimitCount is not null)
             {
                 metadata.Property.RepackageCount = (byte) property.globalRePackingLimitCount;
-                metadata.Property.RepackageItemConsumeCount = (byte) property.globalRePackingItemConsumeCount;
+                metadata.Property.RepackageItemConsumeCount = (byte) (property.globalRePackingItemConsumeCount ?? 0);
             }
 
             // Item functions
@@ -284,11 +290,16 @@ public class ItemParser : Exporter<List<ItemMetadata>>
 
                     XmlDocument xmlParameter = new();
                     xmlParameter.LoadXml(decodedParameter);
-                    XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
+                    XmlNode? functionParameters = xmlParameter.SelectSingleNode("v");
+
+                    if (ParserHelper.CheckForNull(functionParameters, "id"))
+                    {
+                        break;
+                    }
 
                     ChatEmoticonAdd sticker = new()
                     {
-                        Id = byte.Parse(functionParameters.Attributes["id"].Value),
+                        Id = byte.Parse(functionParameters!.Attributes!["id"]!.Value),
                         Duration = int.Parse(functionParameters.Attributes["durationSec"]?.Value ?? "0")
                     };
 
@@ -303,13 +314,18 @@ public class ItemParser : Exporter<List<ItemMetadata>>
 
                     XmlDocument xmlParameter = new();
                     xmlParameter.LoadXml(decodedParameter);
-                    XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
+                    XmlNode? functionParameters = xmlParameter.SelectSingleNode("v");
+
+                    if (ParserHelper.CheckForNull(functionParameters, "fieldId", "portalDurationTick", "maxCount"))
+                    {
+                        break;
+                    }
 
                     OpenMassiveEvent massiveEvent = new()
                     {
-                        FieldId = int.Parse(functionParameters.Attributes["fieldID"].Value),
-                        Duration = int.Parse(functionParameters.Attributes["portalDurationTick"].Value),
-                        Capacity = byte.Parse(functionParameters.Attributes["maxCount"].Value)
+                        FieldId = int.Parse(functionParameters!.Attributes!["fieldID"]!.Value),
+                        Duration = int.Parse(functionParameters.Attributes["portalDurationTick"]!.Value),
+                        Capacity = byte.Parse(functionParameters.Attributes["maxCount"]!.Value)
                     };
                     metadata.Function.OpenMassiveEvent = massiveEvent;
                     break;
@@ -321,11 +337,16 @@ public class ItemParser : Exporter<List<ItemMetadata>>
 
                     XmlDocument xmlParameter = new();
                     xmlParameter.LoadXml(decodedParameter);
-                    XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
+                    XmlNode? functionParameters = xmlParameter.SelectSingleNode("v");
+
+                    if (ParserHelper.CheckForNull(functionParameters, "targetLevel"))
+                    {
+                        break;
+                    }
 
                     LevelPotion levelPotion = new()
                     {
-                        TargetLevel = byte.Parse(functionParameters.Attributes["targetLevel"].Value)
+                        TargetLevel = byte.Parse(functionParameters!.Attributes!["targetLevel"]!.Value)
                     };
                     metadata.Function.LevelPotion = levelPotion;
                     break;
@@ -337,11 +358,16 @@ public class ItemParser : Exporter<List<ItemMetadata>>
 
                     XmlDocument xmlParameter = new();
                     xmlParameter.LoadXml(decodedParameter);
-                    XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
+                    XmlNode? functionParameters = xmlParameter.SelectSingleNode("v");
+
+                    if (ParserHelper.CheckForNull(functionParameters, "period"))
+                    {
+                        break;
+                    }
 
                     VIPCoupon coupon = new()
                     {
-                        Duration = int.Parse(functionParameters.Attributes["period"].Value)
+                        Duration = int.Parse(functionParameters!.Attributes!["period"]!.Value)
                     };
                     metadata.Function.VIPCoupon = coupon;
                     break;
@@ -353,14 +379,19 @@ public class ItemParser : Exporter<List<ItemMetadata>>
 
                     XmlDocument xmlParameter = new();
                     xmlParameter.LoadXml(decodedParameter);
-                    XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
+                    XmlNode? functionParameters = xmlParameter.SelectSingleNode("v");
+
+                    if (ParserHelper.CheckForNull(functionParameters, "itemId", "totalCount", "totalUser", "durationSec"))
+                    {
+                        break;
+                    }
 
                     HongBaoData hongBao = new()
                     {
-                        Id = int.Parse(functionParameters.Attributes["itemId"].Value),
-                        Count = short.Parse(functionParameters.Attributes["totalCount"].Value),
-                        TotalUsers = byte.Parse(functionParameters.Attributes["totalUser"].Value),
-                        Duration = int.Parse(functionParameters.Attributes["durationSec"].Value)
+                        Id = int.Parse(functionParameters!.Attributes!["itemId"]!.Value),
+                        Count = short.Parse(functionParameters.Attributes["totalCount"]!.Value),
+                        TotalUsers = byte.Parse(functionParameters.Attributes["totalUser"]!.Value),
+                        Duration = int.Parse(functionParameters.Attributes["durationSec"]!.Value)
                     };
                     metadata.Function.HongBao = hongBao;
                     break;
@@ -395,16 +426,21 @@ public class ItemParser : Exporter<List<ItemMetadata>>
 
                     XmlDocument xmlParameter = new();
                     xmlParameter.LoadXml(decodedParameter);
-                    XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
+                    XmlNode? functionParameters = xmlParameter.SelectSingleNode("v");
+
+                    if (ParserHelper.CheckForNull(functionParameters, "interactID", "durationSec", "model", "normal", "reactable"))
+                    {
+                        break;
+                    }
 
                     InstallBillboard balloon = new()
                     {
-                        InteractId = int.Parse(functionParameters.Attributes["interactID"].Value),
-                        Duration = int.Parse(functionParameters.Attributes["durationSec"].Value),
-                        Model = functionParameters.Attributes["model"].Value,
+                        InteractId = int.Parse(functionParameters!.Attributes!["interactID"]!.Value),
+                        Duration = int.Parse(functionParameters.Attributes["durationSec"]!.Value),
+                        Model = functionParameters.Attributes["model"]!.Value,
                         Asset = functionParameters.Attributes["asset"]?.Value ?? "",
-                        NormalState = functionParameters.Attributes["normal"].Value,
-                        Reactable = functionParameters.Attributes["reactable"].Value,
+                        NormalState = functionParameters.Attributes["normal"]!.Value,
+                        Reactable = functionParameters.Attributes["reactable"]!.Value,
                         Scale = float.Parse(functionParameters.Attributes["scale"]?.Value ?? "0")
                     };
                     metadata.Function.InstallBillboard = balloon;
@@ -417,17 +453,22 @@ public class ItemParser : Exporter<List<ItemMetadata>>
 
                     XmlDocument xmlParameter = new();
                     xmlParameter.LoadXml(decodedParameter);
-                    XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
-                    MedalSlot medalSlot = functionParameters.Attributes["type"].Value switch
+                    XmlNode? functionParameters = xmlParameter.SelectSingleNode("v");
+                    if (ParserHelper.CheckForNull(functionParameters, "type", "id"))
+                    {
+                        break;
+                    }
+
+                    MedalSlot medalSlot = functionParameters!.Attributes!["type"]!.Value switch
                     {
                         "effectTail" => MedalSlot.Tail,
                         "riding" => MedalSlot.GroundMount,
                         "gliding" => MedalSlot.Glider,
-                        _ => throw new ArgumentException($"Unknown slot for: {functionParameters.Attributes["type"].Value}")
+                        _ => throw new ArgumentException($"Unknown slot for: {functionParameters.Attributes["type"]!.Value}")
                     };
                     metadata.Function.SurvivalSkin = new()
                     {
-                        Id = int.Parse(functionParameters.Attributes["id"].Value),
+                        Id = int.Parse(functionParameters.Attributes["id"]!.Value),
                         Slot = medalSlot
                     };
                 }
@@ -439,10 +480,15 @@ public class ItemParser : Exporter<List<ItemMetadata>>
 
                     XmlDocument xmlParameter = new();
                     xmlParameter.LoadXml(decodedParameter);
-                    XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
+                    XmlNode? functionParameters = xmlParameter.SelectSingleNode("v");
+                    if (ParserHelper.CheckForNull(functionParameters, "SurvivalExp"))
+                    {
+                        break;
+                    }
+
                     metadata.Function.SurvivalLevelExp = new()
                     {
-                        SurvivalExp = int.Parse(functionParameters.Attributes["SurvivalExp"].Value)
+                        SurvivalExp = int.Parse(functionParameters!.Attributes!["SurvivalExp"]!.Value)
                     };
                 }
                 break;
@@ -471,11 +517,21 @@ public class ItemParser : Exporter<List<ItemMetadata>>
             }
 
             XmlDocument innerDocument = Resources.XmlReader.GetXmlDocument(entry);
-            XmlNodeList nodes = innerDocument.SelectNodes("/ms2/key");
+            XmlNodeList? nodes = innerDocument.SelectNodes("/ms2/key");
+            if (nodes is null)
+            {
+                continue;
+            }
+
             foreach (XmlNode node in nodes)
             {
-                int itemId = int.Parse(node.Attributes["id"].Value);
-                int rarity = int.Parse(node.Attributes["grade"].Value);
+                if (ParserHelper.CheckForNull(node, "id", "grade"))
+                {
+                    continue;
+                }
+
+                int itemId = int.Parse(node.Attributes!["id"]!.Value);
+                int rarity = int.Parse(node.Attributes["grade"]!.Value);
                 rarities[itemId] = rarity;
             }
         }
@@ -494,16 +550,26 @@ public class ItemParser : Exporter<List<ItemMetadata>>
             }
 
             XmlDocument innerDocument = Resources.XmlReader.GetXmlDocument(entry);
-            XmlNodeList individualItems = innerDocument.SelectNodes("/ms2/item");
+            XmlNodeList? individualItems = innerDocument.SelectNodes("/ms2/item");
+            if (individualItems is null)
+            {
+                continue;
+            }
+
             foreach (XmlNode nodes in individualItems)
             {
-                string locale = nodes.Attributes["locale"]?.Value ?? "";
+                string locale = nodes.Attributes?["locale"]?.Value ?? "";
                 if (locale != "NA" && locale != "")
                 {
                     continue;
                 }
 
-                int itemID = int.Parse(nodes.Attributes["ItemID"].Value);
+                if (ParserHelper.CheckForNull(nodes, "ItemId"))
+                {
+                    continue;
+                }
+
+                int itemID = int.Parse(nodes.Attributes!["ItemID"]!.Value);
                 rewards[itemID] = new();
 
                 int ingredientItemID1 = int.Parse(nodes.Attributes["IngredientItemID1"]?.Value ?? "0");
@@ -525,7 +591,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
 
     private static void ParseHair(Slot slot, ItemMetadata metadata)
     {
-        Slot.Scale scaleNode = slot.scale?.FirstOrDefault();
+        Slot.Scale? scaleNode = slot.scale?.FirstOrDefault();
 
         switch (slot.asset.Count)
         {

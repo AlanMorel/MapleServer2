@@ -1,6 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -22,6 +23,11 @@ public class SurvivalGoldPassRewardParser : Exporter<List<SurvivalGoldPassReward
             }
 
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
+            if (document.DocumentElement?.ChildNodes is null)
+            {
+                continue;
+            }
+
             foreach (XmlNode node in document.DocumentElement.ChildNodes)
             {
                 if (node.Name != "survivalPassReward")
@@ -29,22 +35,27 @@ public class SurvivalGoldPassRewardParser : Exporter<List<SurvivalGoldPassReward
                     continue;
                 }
 
-                if (int.Parse(node.Attributes["id"].Value) > 1)
+                if (ParserHelper.CheckForNull(node, "id", "level", "type1", "id1", "value1", "count1", "type2", "id2", "value2", "count2"))
+                {
+                    continue;
+                }
+
+                if (int.Parse(node.Attributes!["id"]!.Value) > 1)
                 {
                     continue;
                 }
 
                 SurvivalGoldPassRewardMetadata metadata = new()
                 {
-                    Level = int.Parse(node.Attributes["level"].Value),
-                    Type1 = node.Attributes["type1"].Value,
-                    Id1 = node.Attributes["id1"].Value,
-                    Value1 = node.Attributes["value1"].Value,
-                    Count1 = node.Attributes["count1"].Value,
-                    Type2 = node.Attributes["type2"].Value,
-                    Id2 = node.Attributes["id2"].Value,
-                    Value2 = node.Attributes["value2"].Value,
-                    Count2 = node.Attributes["count2"].Value
+                    Level = int.Parse(node.Attributes["level"]!.Value),
+                    Type1 = node.Attributes["type1"]!.Value,
+                    Id1 = node.Attributes["id1"]!.Value,
+                    Value1 = node.Attributes["value1"]!.Value,
+                    Count1 = node.Attributes["count1"]!.Value,
+                    Type2 = node.Attributes["type2"]!.Value,
+                    Id2 = node.Attributes["id2"]!.Value,
+                    Value2 = node.Attributes["value2"]!.Value,
+                    Count2 = node.Attributes["count2"]!.Value
                 };
 
                 rewards.Add(metadata);

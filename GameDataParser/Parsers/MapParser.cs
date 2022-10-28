@@ -1,6 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using GameDataParser.Tools;
 using Maple2.File.Flat;
 using Maple2.File.Flat.maplestory2library;
@@ -20,12 +21,16 @@ public class MapParser : Exporter<List<MapMetadata>>
     private List<MapMetadata> MapMetadatas;
     private Dictionary<int, Dictionary<int, SpawnMetadata>> SpawnTagMap;
     private Dictionary<int, InteractObjectType> InteractTypes;
-    public MapParser(MetadataResources resources) : base(resources, MetadataName.Map) { }
+
+    public MapParser(MetadataResources resources) : base(resources, MetadataName.Map)
+    {
+        MapMetadatas = new();
+        SpawnTagMap = new();
+        InteractTypes = new();
+    }
 
     protected override List<MapMetadata> Parse()
     {
-        MapMetadatas = new();
-
         ParseInteractObjectTable();
         ParseMapSpawnTagTable();
         ParseMapMetadata();
@@ -48,7 +53,7 @@ public class MapParser : Exporter<List<MapMetadata>>
             return;
         }
 
-        MapMetadata mapMetadata = MapMetadatas.FirstOrDefault(x => x.XBlockName == xblock);
+        MapMetadata? mapMetadata = MapMetadatas.FirstOrDefault(x => x.XBlockName == xblock);
         if (mapMetadata is null)
         {
             return;
@@ -172,7 +177,7 @@ public class MapParser : Exporter<List<MapMetadata>>
 
                     break;
                 case IMS2RegionSpawnBase spawnBase:
-                    SpawnMetadata spawnData = SpawnTagMap.ContainsKey(mapMetadata.Id) && SpawnTagMap[mapMetadata.Id].ContainsKey(spawnBase.SpawnPointID)
+                    SpawnMetadata? spawnData = SpawnTagMap.ContainsKey(mapMetadata.Id) && SpawnTagMap[mapMetadata.Id].ContainsKey(spawnBase.SpawnPointID)
                         ? SpawnTagMap[mapMetadata.Id][spawnBase.SpawnPointID]
                         : null;
                     switch (spawnBase)
@@ -291,6 +296,7 @@ public class MapParser : Exporter<List<MapMetadata>>
                             mapEntity.VibrateObjects.Add(new(vibrate.EntityId, CoordF.FromVector3(physxProp.Position)));
                             break;
                     }
+
                     break;
             }
         }
@@ -313,12 +319,12 @@ public class MapParser : Exporter<List<MapMetadata>>
             List<WayPoint> wayPoints = new();
             for (int i = 0; i < wayPointIds.Count; i++)
             {
-                string wayPointId = wayPointIds.ElementAtOrDefault(i);
-                string approachAnimation = approachAnimations.ElementAtOrDefault(i);
-                string arriveAnimation = arriveAnimations.ElementAtOrDefault(i);
+                string? wayPointId = wayPointIds.ElementAtOrDefault(i);
+                string? approachAnimation = approachAnimations.ElementAtOrDefault(i);
+                string? arriveAnimation = arriveAnimations.ElementAtOrDefault(i);
                 int arriveAnimationTime = arriveAnimationTimes.ElementAtOrDefault(i);
 
-                IMS2WayPoint waypoint = tempWaypoints.FirstOrDefault(x => x.EntityId == wayPointId);
+                IMS2WayPoint? waypoint = tempWaypoints.FirstOrDefault(x => x.EntityId == wayPointId);
                 if (waypoint is null)
                 {
                     continue;
@@ -341,7 +347,7 @@ public class MapParser : Exporter<List<MapMetadata>>
         }
     }
 
-    private static void AddMobSpawn(SpawnMetadata mobSpawnDataBox, MapEntityMetadata metadata, IMS2RegionBoxSpawn boxSpawn)
+    private static void AddMobSpawn(SpawnMetadata? mobSpawnDataBox, MapEntityMetadata metadata, IMS2RegionBoxSpawn boxSpawn)
     {
         int mobNpcCountBox = mobSpawnDataBox?.Population ?? 6;
         int mobSpawnRadiusBox = 150;
@@ -361,26 +367,33 @@ public class MapParser : Exporter<List<MapMetadata>>
 
     private void ParseMapSpawnTagTable()
     {
-        SpawnTagMap = new();
-
-        PackFileEntry mapSpawnTag = Resources.XmlReader.Files.FirstOrDefault(x => x.Name.StartsWith("table/mapspawntag"));
+        PackFileEntry? mapSpawnTag = Resources.XmlReader.Files.FirstOrDefault(x => x.Name.StartsWith("table/mapspawntag"));
         XmlDocument mapSpawnTagXml = Resources.XmlReader.GetXmlDocument(mapSpawnTag);
-        XmlNodeList regionNodes = mapSpawnTagXml.SelectNodes("/ms2/region");
+        XmlNodeList? regionNodes = mapSpawnTagXml.SelectNodes("/ms2/region");
+        if (regionNodes is null)
+        {
+            return;
+        }
 
         foreach (XmlNode node in regionNodes)
         {
-            int mapId = int.Parse(node.Attributes["mapCode"].Value);
-            int spawnPointId = int.Parse(node.Attributes["spawnPointID"].Value);
+            if (ParserHelper.CheckForNull(node, "mapCode", "spawnPointID", "difficulty", "difficultyMin", "tag", "coolTime", "population"))
+            {
+                break;
+            }
 
-            int difficulty = int.Parse(node.Attributes["difficulty"].Value);
-            int minDifficulty = int.Parse(node.Attributes["difficultyMin"].Value);
-            string[] spawnTags = node.Attributes["tag"].Value.Split(",").Select(p => p.Trim()).ToArray();
-            if (!int.TryParse(node.Attributes["coolTime"].Value, out int spawnTime))
+            int mapId = int.Parse(node.Attributes!["mapCode"]!.Value);
+            int spawnPointId = int.Parse(node.Attributes["spawnPointID"]!.Value);
+
+            int difficulty = int.Parse(node.Attributes["difficulty"]!.Value);
+            int minDifficulty = int.Parse(node.Attributes["difficultyMin"]!.Value);
+            string[] spawnTags = node.Attributes["tag"]!.Value.Split(",").Select(p => p.Trim()).ToArray();
+            if (!int.TryParse(node.Attributes["coolTime"]!.Value, out int spawnTime))
             {
                 spawnTime = 0;
             }
 
-            if (!int.TryParse(node.Attributes["population"].Value, out int population))
+            if (!int.TryParse(node.Attributes["population"]!.Value, out int population))
             {
                 population = 0;
             }
@@ -400,8 +413,6 @@ public class MapParser : Exporter<List<MapMetadata>>
 
     private void ParseInteractObjectTable()
     {
-        InteractTypes = new();
-
         IEnumerable<PackFileEntry> interactObjectTables = Resources.XmlReader.Files.Where(x => x.Name.StartsWith("table/interactobject"));
         foreach (PackFileEntry interactObjectTable in interactObjectTables)
         {
@@ -409,14 +420,19 @@ public class MapParser : Exporter<List<MapMetadata>>
             XmlNodeList interactNodes = interactObjectTableXml.GetElementsByTagName("interact");
             foreach (XmlNode node in interactNodes)
             {
-                string locale = node.Attributes["locale"]?.Value ?? "";
+                string locale = node.Attributes?["locale"]?.Value ?? "";
                 if (locale != "NA" && locale != "")
                 {
                     continue;
                 }
 
-                int interactId = int.Parse(node.Attributes["id"].Value);
-                _ = Enum.TryParse(node.Attributes["type"].Value, out InteractObjectType objectType);
+                if (ParserHelper.CheckForNull(node, "id", "type"))
+                {
+                    continue;
+                }
+
+                int interactId = int.Parse(node.Attributes!["id"]!.Value);
+                _ = Enum.TryParse(node.Attributes["type"]!.Value, out InteractObjectType objectType);
 
                 InteractTypes[interactId] = objectType;
             }

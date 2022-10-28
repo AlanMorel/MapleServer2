@@ -1,6 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -23,9 +24,19 @@ public class ItemDropParser : Exporter<List<ItemDropMetadata>>
             }
 
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-            XmlNodeList individualBoxItems = document.SelectNodes("/ms2/individualDropBox");
+            XmlNodeList? individualBoxItems = document.SelectNodes("/ms2/individualDropBox");
+            if (individualBoxItems is null)
+            {
+                continue;
+            }
+
             foreach (XmlNode node in individualBoxItems)
             {
+                if (node.Attributes is null)
+                {
+                    continue;
+                }
+
                 string locale = node.Attributes["locale"]?.Value ?? "";
 
                 if (locale != "NA" && locale != "")
@@ -33,19 +44,24 @@ public class ItemDropParser : Exporter<List<ItemDropMetadata>>
                     continue;
                 }
 
-                int boxId = int.Parse(node.Attributes["individualDropBoxID"].Value);
-                int dropGroupId = int.Parse(node.Attributes["dropGroup"].Value);
+                if (ParserHelper.CheckForNull(node, "individualDropBoxID", "dropGroup", "item", "minCount", "maxCount"))
+                {
+                    continue;
+                }
+
+                int boxId = int.Parse(node.Attributes["individualDropBoxID"]!.Value);
+                int dropGroupId = int.Parse(node.Attributes["dropGroup"]!.Value);
 
                 DropGroupContent contents = new();
 
                 List<int> itemIds = new()
                 {
-                    int.Parse(node.Attributes["item"].Value)
+                    int.Parse(node.Attributes["item"]!.Value)
                 };
 
                 if (node.Attributes["item2"] != null)
                 {
-                    itemIds.Add(int.Parse(node.Attributes["item2"].Value));
+                    itemIds.Add(int.Parse(node.Attributes["item2"]!.Value));
                 }
 
                 contents.SmartDropRate = int.Parse(node.Attributes["smartDropRate"]?.Value ?? "0");
@@ -53,11 +69,11 @@ public class ItemDropParser : Exporter<List<ItemDropMetadata>>
 
                 if (node.Attributes["isApplySmartGenderDrop"] != null)
                 {
-                    contents.SmartGender = node.Attributes["isApplySmartGenderDrop"].Value.ToLower() == "true";
+                    contents.SmartGender = node.Attributes["isApplySmartGenderDrop"]!.Value.ToLower() == "true";
                 }
 
-                contents.MinAmount = float.Parse(node.Attributes["minCount"].Value);
-                contents.MaxAmount = float.Parse(node.Attributes["maxCount"].Value);
+                contents.MinAmount = float.Parse(node.Attributes["minCount"]!.Value);
+                contents.MaxAmount = float.Parse(node.Attributes["maxCount"]!.Value);
                 contents.Rarity = 1;
 
                 _ = byte.TryParse(node.Attributes["PackageUIShowGrade"]?.Value ?? "0", out contents.Rarity);
@@ -67,10 +83,10 @@ public class ItemDropParser : Exporter<List<ItemDropMetadata>>
 
                 if (itemGroups.ContainsKey(boxId))
                 {
-                    if (itemGroups[boxId].FirstOrDefault(x => x.Id == dropGroupId) != default)
+                    DropGroup? dropGroup = itemGroups[boxId].FirstOrDefault(x => x.Id == dropGroupId);
+                    if (dropGroup is not null)
                     {
-                        DropGroup group = itemGroups[boxId].FirstOrDefault(x => x.Id == dropGroupId);
-                        group.Contents.Add(contents);
+                        dropGroup.Contents.Add(contents);
                         continue;
                     }
 
