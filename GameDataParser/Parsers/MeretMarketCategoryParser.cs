@@ -1,6 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
@@ -23,6 +24,11 @@ public class MeretMarketCategoryParser : Exporter<List<MeretMarketCategoryMetada
             }
 
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
+            if (document.DocumentElement?.ChildNodes is null)
+            {
+                continue;
+            }
+
             foreach (XmlNode node in document.DocumentElement.ChildNodes)
             {
                 if (node.Name != "category")
@@ -30,7 +36,12 @@ public class MeretMarketCategoryParser : Exporter<List<MeretMarketCategoryMetada
                     continue;
                 }
 
-                MeretMarketSection section = (MeretMarketSection) int.Parse(node.Attributes["id"].Value);
+                if (ParserHelper.CheckForNull(node, "id"))
+                {
+                    continue;
+                }
+
+                MeretMarketSection section = (MeretMarketSection) int.Parse(node.Attributes!["id"]!.Value);
 
                 MeretMarketCategoryMetadata metadata = new()
                 {
@@ -39,30 +50,40 @@ public class MeretMarketCategoryParser : Exporter<List<MeretMarketCategoryMetada
 
                 foreach (XmlNode tabNode in node)
                 {
+                    if (ParserHelper.CheckForNull(tabNode, "id"))
+                    {
+                        continue;
+                    }
+
                     MeretMarketTab tab = new()
                     {
-                        Id = int.Parse(tabNode.Attributes["id"].Value),
+                        Id = int.Parse(tabNode.Attributes!["id"]!.Value),
                     };
 
                     foreach (XmlNode subTabNode in tabNode.ChildNodes)
                     {
-                        if (subTabNode.Attributes["category"] is not null)
+                        if (subTabNode.Attributes?["category"] is null)
                         {
-                            List<string> categoryList = subTabNode.Attributes["category"].Value.Split(",").ToList();
-                            MeretMarketTab subTab = new()
-                            {
-                                Id = int.Parse(subTabNode.Attributes["id"].Value),
-                                ItemCategories = categoryList
-                            };
-                            tab.ItemCategories.AddRange(categoryList);
-                            metadata.Tabs.Add(subTab);
+                            continue;
                         }
+
+                        List<string> categoryList = subTabNode.Attributes!["category"]!.Value.Split(",").ToList();
+                        MeretMarketTab subTab = new()
+                        {
+                            Id = int.Parse(subTabNode.Attributes["id"]!.Value),
+                            ItemCategories = categoryList
+                        };
+                        tab.ItemCategories.AddRange(categoryList);
+                        metadata.Tabs.Add(subTab);
                     }
+
                     metadata.Tabs.Add(tab);
                 }
+
                 categories.Add(metadata);
             }
         }
+
         return categories;
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
@@ -25,20 +26,30 @@ public class ItemOptionPickParser : Exporter<List<ItemOptionPickMetadata>>
             }
 
             XmlDocument innerDocument = Resources.XmlReader.GetXmlDocument(entry);
-            XmlNodeList nodeList = innerDocument.SelectNodes("/ms2/itemOptionPick");
+            XmlNodeList? nodeList = innerDocument.SelectNodes("/ms2/itemOptionPick");
+            if (nodeList is null)
+            {
+                continue;
+            }
+
             foreach (XmlNode node in nodeList)
             {
-                int id = int.Parse(node.Attributes["optionPickID"].Value);
+                if (ParserHelper.CheckForNull(node, "optionPickID", "itemGrade", "constant_value", "static_value", "static_rate"))
+                {
+                    continue;
+                }
+
+                int id = int.Parse(node.Attributes!["optionPickID"]!.Value);
 
                 ItemOptionPick optionPick = new()
                 {
-                    Rarity = byte.Parse(node.Attributes["itemGrade"].Value)
+                    Rarity = byte.Parse(node.Attributes["itemGrade"]!.Value)
                 };
 
                 //TODO: Add support for constant rates, random values, and random rates
-                List<string> constants = node.Attributes["constant_value"].Value.Split(",").ToList();
-                List<string> staticValues = node.Attributes["static_value"].Value.Split(",").ToList();
-                List<string> staticRates = node.Attributes["static_rate"].Value.Split(",").ToList();
+                List<string> constants = node.Attributes["constant_value"]!.Value.Split(",").ToList();
+                List<string> staticValues = node.Attributes["static_value"]!.Value.Split(",").ToList();
+                List<string> staticRates = node.Attributes["static_rate"]!.Value.Split(",").ToList();
 
                 for (int i = 0; i < constants.Count; i += 2)
                 {
@@ -46,6 +57,7 @@ public class ItemOptionPickParser : Exporter<List<ItemOptionPickMetadata>>
                     {
                         continue;
                     }
+
                     ConstantPick constantPick = new()
                     {
                         Stat = ParseItemOptionPickStat(constants[i]),
@@ -60,6 +72,7 @@ public class ItemOptionPickParser : Exporter<List<ItemOptionPickMetadata>>
                     {
                         continue;
                     }
+
                     StaticPick staticPick = new()
                     {
                         Stat = ParseItemOptionPickStat(staticValues[i]),
@@ -74,6 +87,7 @@ public class ItemOptionPickParser : Exporter<List<ItemOptionPickMetadata>>
                     {
                         continue;
                     }
+
                     StaticPick staticPick = new()
                     {
                         Stat = ParseItemOptionPickStat(staticRates[i]),
@@ -105,6 +119,7 @@ public class ItemOptionPickParser : Exporter<List<ItemOptionPickMetadata>>
                 items.Add(metadata);
             }
         }
+
         return items;
     }
 

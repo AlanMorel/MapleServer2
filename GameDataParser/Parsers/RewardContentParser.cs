@@ -1,6 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -25,24 +26,34 @@ public class RewardContentParser : Exporter<List<RewardContentMetadata>>
             XmlNodeList tableNodes = document.GetElementsByTagName("table");
             foreach (XmlNode tableNode in tableNodes)
             {
+                if (tableNode.Attributes?["itemTableID"] is null)
+                {
+                    continue;
+                }
+
                 RewardContentMetadata metadata = new()
                 {
-                    Id = int.Parse(tableNode.Attributes["itemTableID"].Value)
+                    Id = int.Parse(tableNode.Attributes!["itemTableID"]!.Value)
                 };
 
                 foreach (XmlNode childNode in tableNode)
                 {
                     RewardContentItemMetadata metadataItem = new()
                     {
-                        MinLevel = int.Parse(childNode.Attributes["minLevel"]?.Value ?? "0"),
+                        MinLevel = int.Parse(childNode.Attributes!["minLevel"]?.Value ?? "0"),
                         MaxLevel = int.Parse(childNode.Attributes["maxLevel"]?.Value ?? "0")
                     };
 
                     foreach (XmlNode itemNode in childNode)
                     {
-                        int itemId = int.Parse(itemNode.Attributes["itemID"].Value);
-                        int amount = int.Parse(itemNode.Attributes["count"].Value);
-                        int rarity = int.Parse(itemNode.Attributes["grade"].Value);
+                        if (ParserHelper.CheckForNull(itemNode, "itemID", "grade", "count"))
+                        {
+                            continue;
+                        }
+
+                        int itemId = int.Parse(itemNode.Attributes!["itemID"]!.Value);
+                        int amount = int.Parse(itemNode.Attributes["count"]!.Value);
+                        int rarity = int.Parse(itemNode.Attributes["grade"]!.Value);
                         metadataItem.Items.Add(new(itemId, amount, rarity));
                     }
 

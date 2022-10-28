@@ -1,6 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -22,6 +23,11 @@ public class SurvivalPeriodParser : Exporter<List<SurvivalPeriodMetadata>>
             }
 
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
+            if (document.DocumentElement?.ChildNodes is null)
+            {
+                continue;
+            }
+
             foreach (XmlNode node in document.DocumentElement.ChildNodes)
             {
                 if (node.Name != "period")
@@ -29,13 +35,18 @@ public class SurvivalPeriodParser : Exporter<List<SurvivalPeriodMetadata>>
                     continue;
                 }
 
+                if (ParserHelper.CheckForNull(node, "id", "survivalRewardID", "startTime", "endTime", "passPrice"))
+                {
+                    continue;
+                }
+
                 SurvivalPeriodMetadata metadata = new()
                 {
-                    Id = int.Parse(node.Attributes["id"].Value),
-                    RewardId = int.Parse(node.Attributes["survivalRewardID"].Value),
-                    StartTime = DateTime.ParseExact(node.Attributes["startTime"].Value, "yyyy-MM-dd-HH-mm", System.Globalization.CultureInfo.InvariantCulture),
-                    EndTime = DateTime.ParseExact(node.Attributes["endTime"].Value, "yyyy-MM-dd-HH-mm", System.Globalization.CultureInfo.InvariantCulture),
-                    PassPrice = int.Parse(node.Attributes["passPrice"].Value)
+                    Id = int.Parse(node.Attributes!["id"]!.Value),
+                    RewardId = int.Parse(node.Attributes["survivalRewardID"]!.Value),
+                    StartTime = DateTime.ParseExact(node.Attributes["startTime"]!.Value, "yyyy-MM-dd-HH-mm", System.Globalization.CultureInfo.InvariantCulture),
+                    EndTime = DateTime.ParseExact(node.Attributes["endTime"]!.Value, "yyyy-MM-dd-HH-mm", System.Globalization.CultureInfo.InvariantCulture),
+                    PassPrice = int.Parse(node.Attributes["passPrice"]!.Value)
                 };
 
                 periods.Add(metadata);
