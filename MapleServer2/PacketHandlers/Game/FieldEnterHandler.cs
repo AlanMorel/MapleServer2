@@ -81,10 +81,7 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
             session.Send(FunctionCubePacket.UpdateFunctionCube(cube.CoordF.ToByte(), 2, 1));
         }
 
-        if (player.Party is not null)
-        {
-            session.Send(PartyPacket.UpdatePlayer(player));
-        }
+        player.Party?.BroadcastPacketParty(PartyPacket.UpdatePlayer(player));
 
         GlobalEvent globalEvent = GameServer.GlobalEventManager.GetCurrentEvent();
         if (globalEvent is not null && !MapMetadataStorage.MapIsInstancedOnly(player.MapId))

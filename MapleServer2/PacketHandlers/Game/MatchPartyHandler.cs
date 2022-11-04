@@ -52,7 +52,7 @@ public class MatchPartyHandler : GamePacketHandler<MatchPartyHandler>
         bool approval = packet.ReadBool();
         int memberCountRecruit = packet.ReadInt();
 
-        Party party = GameServer.PartyManager.GetPartyByLeader(session.Player);
+        Party? party = GameServer.PartyManager.GetPartyByLeader(session.Player);
 
         if (party == null)
         {
@@ -83,7 +83,7 @@ public class MatchPartyHandler : GamePacketHandler<MatchPartyHandler>
 
     public static void HandleRemoveListing(GameSession session)
     {
-        Party party = session.Player.Party;
+        Party? party = session.Player.Party;
         if (party == null)
         {
             return;
@@ -131,7 +131,7 @@ public class MatchPartyHandler : GamePacketHandler<MatchPartyHandler>
         //Filter text
         if (searchText.Length > 0)
         {
-            partyList = partyList.Where(o => o.Name.ToLower().Contains(searchText)).ToList();
+            partyList = partyList.Where(o => o.Name?.ToLower().Contains(searchText) ?? false).ToList();
         }
 
         session.Send(MatchPartyPacket.SendListings(partyList));

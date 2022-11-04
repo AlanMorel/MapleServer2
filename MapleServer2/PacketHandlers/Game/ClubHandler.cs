@@ -78,7 +78,7 @@ public class ClubHandler : GamePacketHandler<ClubHandler>
 
     private static void HandleCreate(GameSession session, PacketReader packet)
     {
-        Party party = GameServer.PartyManager.GetPartyByLeader(session.Player);
+        Party? party = GameServer.PartyManager.GetPartyByLeader(session.Player);
         if (party is null || party.Leader.CharacterId != session.Player.CharacterId)
         {
             return;
