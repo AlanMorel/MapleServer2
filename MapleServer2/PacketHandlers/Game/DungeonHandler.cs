@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Types.Metadata;
+﻿using System.Diagnostics;
+using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
@@ -57,13 +58,22 @@ public class DungeonHandler : GamePacketHandler<DungeonHandler>
         }
     }
 
+    //if player has both party dungeon session always join the solo session
+    //because the solo session would be -1 outside of the solo 
     public static void HandleEnterDungeonPortal(GameSession session)
     {
-        DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSessionBySessionId(session.Player.DungeonSessionId);
-        if (dungeonSession == null)
-        {
-            return;
-        }
+        //if player dungeon session is -1 they must be in a group dungeon, otherwise
+        //they would not be in a dungeon lobby where this function is called from
+        int dungeonSessionId = session.Player.DungeonSessionId == -1
+            ? (session.Player.Party?.DungeonSessionId) ?? -1
+            : session.Player.DungeonSessionId;
+
+        Debug.Assert(dungeonSessionId != -1);
+
+        DungeonSession dungeonSession = GameServer.DungeonManager.GetBySessionId(dungeonSessionId);
+
+        Debug.Assert(dungeonSession != null);
+
         session.Player.Warp(dungeonSession.DungeonMapIds.First(), instanceId: dungeonSession.DungeonInstanceId);
 
     }
@@ -117,19 +127,22 @@ public class DungeonHandler : GamePacketHandler<DungeonHandler>
         //party.BroadcastPacketParty(DungeonWaitPacket.Show(dungeonId, DungeonStorage.GetDungeonByDungeonId(dungeonId).MaxUserCount)); 
     }
 
+    //party dungeon only button
     public static void HandleEnterDungeonButton(GameSession session)
     {
         Party party = session.Player.Party;
-        DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSessionBySessionId(party.DungeonSessionId);
+        DungeonSession dungeonSession = GameServer.DungeonManager.GetBySessionId(party.DungeonSessionId);
         if (dungeonSession == null) //Can be removed when enter dungeon button is removed on dungeonsession deletion.
         {
             return;
         }
-        if (dungeonSession.IsDungeonSessionMap(session.Player.MapId))
+
+        if (dungeonSession.IsDungeonReservedField(session.Player.MapId, session.Player.InstanceId))
         {
-            session.SendNotice("You are already in a dungeon");
+            session.SendNotice("You are already in the dungeon");
             return;
         }
+
         session.Player.Warp(dungeonSession.DungeonLobbyId, instanceId: dungeonSession.DungeonInstanceId);
     }
 

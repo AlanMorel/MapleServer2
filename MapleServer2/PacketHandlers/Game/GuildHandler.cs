@@ -862,7 +862,7 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
             return;
         }
 
-        session.Player.Warp(mapid, instanceId: guild.Id);
+        session.Player.Warp(mapid, instanceId: 1); //needs fixing (Guild guild) 
     }
 
     private static void HandleGuildDonate(GameSession session, PacketReader packet)

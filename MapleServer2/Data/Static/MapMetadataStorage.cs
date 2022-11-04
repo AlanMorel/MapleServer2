@@ -1,5 +1,6 @@
 ﻿using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
+using MapleServer2.Constants;
 using MapleServer2.Tools;
 using ProtoBuf;
 
@@ -146,8 +147,21 @@ public static class MapMetadataStorage
         return 99;
     }
 
-    public static bool MapIsInstancedOnly(int mapId)
+    public static bool IsInstancedOnly(int mapId)
     {
+        if (mapId is >= 50000001 and <= 50000014) // lobbyIds are capacity > 0, yet are instanced only
+        {
+            return true;
+        }
+
+        switch (mapId)
+        {
+            case (int) Map.RosettaBeautySalon:
+            case (int) Map.TriaPlasticSurgery:
+            case (int) Map.DouglasDyeWorkshop:
+                return true;
+        }
+
         MapMetadata? mapMetadata = GetMetadata(mapId);
         if (mapMetadata is null)
         {
@@ -157,7 +171,7 @@ public static class MapMetadataStorage
         return mapMetadata.Property.Capacity == 0;
     }
 
-    public static bool MapIsTutorial(int mapId)
+    public static bool IsTutorialMap(int mapId)
     {
         MapMetadata? mapMetadata = GetMetadata(mapId);
         return mapMetadata is not null && mapMetadata.Property.IsTutorialMap;

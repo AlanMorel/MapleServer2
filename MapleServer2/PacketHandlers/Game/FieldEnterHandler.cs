@@ -86,13 +86,13 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
         }
 
         GlobalEvent globalEvent = GameServer.GlobalEventManager.GetCurrentEvent();
-        if (globalEvent is not null && !MapMetadataStorage.MapIsInstancedOnly(player.MapId))
+        if (globalEvent is not null && !MapMetadataStorage.IsInstancedOnly(player.MapId))
         {
             session.Send(GlobalPortalPacket.Notice(globalEvent));
         }
 
         FieldWar fieldWar = GameServer.FieldWarManager.CurrentFieldWar;
-        if (fieldWar is not null && !MapMetadataStorage.MapIsInstancedOnly(player.MapId) && fieldWar.MapId != player.MapId)
+        if (fieldWar is not null && !MapMetadataStorage.IsInstancedOnly(player.MapId) && fieldWar.MapId != player.MapId)
         {
             session.Send(FieldWarPacket.LegionPopup(fieldWar.Id, fieldWar.EntryClosureTime.ToUnixTimeSeconds()));
         }

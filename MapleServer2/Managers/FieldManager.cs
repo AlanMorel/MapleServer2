@@ -72,15 +72,16 @@ public class FieldManager
         BoundingBox = MapEntityMetadataStorage.GetBoundingBox(MapId);
 
         // Capacity 0 means solo instances
-        if (Capacity == 0 || IsTutorialMap)
+        if (IsTutorialMap) //Capacity == 0 seems wrong
         {
             // Set instance id to player id so it's unique
-            InstanceId = player.CharacterId;
-            player.InstanceId = player.CharacterId;
+            int instanceId = NextGlobalId(); //InstanceManager.GetInstance()
+            InstanceId = instanceId;
+            player.InstanceId = instanceId;
         }
         else
         {
-            InstanceId = player.InstanceId;
+            InstanceId = player.InstanceId; //InstanceManager.GetInstance()
         }
 
         // Load triggers
@@ -604,6 +605,8 @@ public class FieldManager
         UGCBannerTimer ??= TaskScheduler.Instance.ScheduleTask(0, 0, 60, () => { GameServer.UGCBannerManager.UGCBannerLoop(this); });
 
         player.Inventory.RecomputeSetBonuses(player.Session);
+
+        player.Session.SendNotice($"added to field with capacity: {Capacity} instanceId: {InstanceId}");
     }
 
     public void RemovePlayer(Player player)
@@ -631,7 +634,8 @@ public class FieldManager
 
         if (Decrement() <= 0)
         {
-            FreezeField(player);
+
+            HandleEmptyField(player);
             return;
         }
 
@@ -1122,15 +1126,100 @@ public class FieldManager
         }
     }
 
-    private void FreezeField(Player player)
+    private void HandleEmptyField(Player player)
     {
-        UGCBannerTimer?.Dispose();
-        UGCBannerTimer = null;
-        MapLoopTask = null;
-        TriggerTask = null;
-        NpcMovementTask = null;
+        if (player.DungeonSessionId != -1) //player is in a solo session
+        {
+            player.Session?.SendNotice($"Leaving Field: Player Dungeon Session {player.DungeonSessionId}");
+            DungeonSession? dungeonSession = GameServer.DungeonManager.GetBySessionId(player.DungeonSessionId);
+            Debug.Assert(dungeonSession != null); // if the player id is not -1, there should always be a corresponding dungeon session
 
-        if (Capacity == 0 || IsTutorialMap)
+            int originMapId = MapId;
+            int originInstanceId = InstanceId;
+
+            if (dungeonSession.IsTravelingBetweenDungeonMaps(this, player))
+            {
+                player.Session?.SendNotice($"Leaving Field: traveled within dungeon maps {player.DungeonSessionId}");
+                //do idle state which is apparently different from frozen
+                FreezeField();
+                return;
+
+            }
+
+            //if not traveling between dungeon maps (including lobby<->dungeon) delete dungeon session and instance
+            //not traveling between dungeon maps -> destroy dungeon Session
+            //also checks the instance to ensure it is a dungeon session map
+            if (dungeonSession.IsDungeonReservedField(originMapId, originInstanceId))//is left map a dungeon map?
+            {
+                player.Session?.SendNotice($"Leaving Field: Dungeon Map was left session id{player.DungeonSessionId}");
+                GameServer.DungeonManager.ResetDungeonSession(player, dungeonSession);
+                FieldManagerFactory.ReleaseManager(this);
+                player.Session?.SendNotice($"Leaving Field: Dungeon Map was left. Dungeon session after {player.DungeonSessionId}");
+                return;
+            }
+
+            // potentially delete here if dungeonSession.IsCompleted
+            // Remove Dungeon Session and delete instance, if last player of a completed dungeon Session leaves
+
+
+            //check if player is in a group dungeon, so check whether player is in party, if not in party they cannot be in a dungeon session
+            //as removing from party is the same as not being in the dungeon session anymore
+            //if in party and if party has dungeonSessionId check whether dungeon is completed so instances can be deleted
+            //delete if dungeonSession is complete for group
+        }
+
+
+        //player is not in a solo dungeon session
+        if (player.Party is not null)
+        {
+            player.Session?.SendNotice($"Leaving Field: Party not null: Player Dungeon Session: {player.DungeonSessionId} Group Dungeon Session {player.Party?.DungeonSessionId}");
+
+
+            Party party = GameServer.PartyManager.GetPartyById(player.Party.Id);
+
+            if (party.DungeonSessionId != -1)
+            {
+
+                DungeonSession dungeonSession = GameServer.DungeonManager.GetBySessionId(party.DungeonSessionId);
+
+                Debug.Assert(dungeonSession != null); // if the dungeon session id is not -1, there should always be a corresponding dungeon session
+
+
+                player.Session?.SendNotice($"Leaving Field: Party DS not Null: Player Dungeon Session: {player.DungeonSessionId} Group Dungeon Session {player.Party?.DungeonSessionId}");
+
+                // if dungeonSession.IsCompleted == true remove field, do not reset dungeon session id as it is done manually or by disbanding the party
+                // set dungeonSession to completed if rewards have been distributed
+
+                if (dungeonSession.IsTravelingBetweenDungeonMaps(this, player))
+                {
+                    player.Session?.SendNotice($"Leaving Field: Group Dungeon: traveled within dungeon maps {player.DungeonSessionId}");
+                    //do idle state which is apparently different from frozen, so this case needs to be handled seperately here.
+
+                    FreezeField();
+
+                    player.Session?.SendNotice($"Froze map after group dungeon session travel id: {MapId}");
+                    return;
+
+                }
+            }
+        }
+
+
+        ////If instance is destroyed, reset dungeonSession
+        ////further conditions for dungeon completion could be checked here.
+        //if (dungeonSession is null || !dungeonSession.IsDungeonSessionMap(MapId))
+        //{
+        //    return;
+        //}
+
+        //set next map explicitly as variable, as destination, so that future changes wont break it
+
+
+        //guild house freeze
+        //when disbanding guild and last player leaves release instance
+        //house freeze - house deleted?
+
+        if (IsTutorialMap || MapMetadataStorage.IsInstancedOnly(MapId))
         {
             foreach (IFieldObject<Item> item in State.Items.Values)
             {
@@ -1139,26 +1228,21 @@ public class FieldManager
             }
 
             FieldManagerFactory.ReleaseManager(this);
-        }
-
-        // --- Dungeon Session ---
-        // Is only called if the leaving player is the last player on the map
-        // Get the DungeonSession that corresponds with the about to be released instance, in case that the player is in a party (group session) and solo session
-        if (GameServer.DungeonManager.IsDungeonUsingFieldInstance(this, player))
-        {
             return;
         }
 
-        DungeonSession? dungeonSession = GameServer.DungeonManager.GetDungeonSessionBySessionId(player.DungeonSessionId);
+        FreezeField();
 
-        //If instance is destroyed, reset dungeonSession
-        //further conditions for dungeon completion could be checked here.
-        if (dungeonSession is null || !dungeonSession.IsDungeonSessionMap(MapId))
-        {
-            return;
-        }
+        player.Session?.SendNotice($"Leaving Field: Froze map id: {MapId}");
+    }
 
-        GameServer.DungeonManager.ResetDungeonSession(player, dungeonSession);
+    private void FreezeField()
+    {
+        UGCBannerTimer?.Dispose();
+        UGCBannerTimer = null;
+        MapLoopTask = null;
+        TriggerTask = null;
+        NpcMovementTask = null;
     }
 
     #region Map loop
@@ -1340,7 +1424,7 @@ public class FieldManager
         int spawnTimer = mobSpawn.Value.SpawnData.SpawnTime * 1000;
         return Task.Run(async () =>
         {
-            await Task.Delay(spawnTimer);
+            await Task.Delay(spawnTimer); // change to tick based system
 
             if (mobSpawn.Value.Mobs.Count == 0)
             {

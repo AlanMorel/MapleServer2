@@ -15,7 +15,7 @@ public static class FieldManagerFactory
 
     public static FieldManager GetManager(Player player)
     {
-        if (!Managers.TryGetValue(player.MapId, out List<FieldManager>? list))
+        if (!Managers.TryGetValue(player.MapId, out List<FieldManager>? list)) // no fieldManager exists for mapId
         {
             list = new()
             {
@@ -24,7 +24,7 @@ public static class FieldManagerFactory
             Managers[player.MapId] = list;
         }
 
-        FieldManager? manager = list.FirstOrDefault(x => x.InstanceId == player.InstanceId);
+        FieldManager? manager = list.FirstOrDefault(x => x.InstanceId == player.InstanceId); // no fieldManager with instanceId of player.InstanceId
         if (manager is null)
         {
             manager = new(player);

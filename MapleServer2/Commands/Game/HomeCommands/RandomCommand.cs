@@ -61,7 +61,7 @@ public class RandomNumberCommand : InGameCommand
         Player player = trigger.Session.Player;
         bool mapIsHome = player.MapId == (int) Map.PrivateResidence;
 
-        DungeonSession? dungeonSession = GameServer.DungeonManager.GetDungeonSessionBySessionId(player.DungeonSessionId);
+        DungeonSession? dungeonSession = GameServer.DungeonManager.GetBySessionId(player.DungeonSessionId);
         if (mapIsHome || dungeonSession is not null || trigger.ChatType is ChatType.Party)
         {
             trigger.Session.FieldManager.BroadcastPacket(HomeActionPacket.Roll(trigger.Session.Player, Random.Shared.Next(100)));

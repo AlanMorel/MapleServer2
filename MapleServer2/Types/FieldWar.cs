@@ -17,7 +17,7 @@ public class FieldWar
         Id = id;
         MapId = FieldWarMetadataStorage.MapId(id) ?? 0;
 
-        List<Player> onlinePlayers = GameServer.PlayerManager.GetAllPlayers().Where(x => !MapMetadataStorage.MapIsInstancedOnly(x.MapId)).ToList();
+        List<Player> onlinePlayers = GameServer.PlayerManager.GetAllPlayers().Where(x => !MapMetadataStorage.IsInstancedOnly(x.MapId)).ToList();
 
         DateTimeOffset now = DateTimeOffset.UtcNow;
         EntryClosureTime = now.AddSeconds(-now.Second).AddMinutes(5);
