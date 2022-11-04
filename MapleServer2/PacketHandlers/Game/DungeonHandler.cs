@@ -137,7 +137,7 @@ public class DungeonHandler : GamePacketHandler<DungeonHandler>
             return;
         }
 
-        if (dungeonSession.IsDungeonReservedField(session.Player.MapId, session.Player.InstanceId))
+        if (dungeonSession.IsDungeonReservedField(session.Player.MapId, (int) session.Player.InstanceId))
         {
             session.SendNotice("You are already in the dungeon");
             return;

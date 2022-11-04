@@ -51,8 +51,8 @@ public class DungeonSession
     {
         int originId = fieldManager.MapId;
         int destinationId = player.MapId;
-        int originInstance = fieldManager.InstanceId;
-        int destinationInstance = player.InstanceId;
+        int originInstance = (int) fieldManager.InstanceId;
+        int destinationInstance = (int) player.InstanceId;
 
         //origin id and destination id are both dungeon maps
         return IsDungeonReservedField(originId, originInstance) && IsDungeonReservedField(destinationId, destinationInstance);

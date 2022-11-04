@@ -1135,7 +1135,7 @@ public class FieldManager
             Debug.Assert(dungeonSession != null); // if the player id is not -1, there should always be a corresponding dungeon session
 
             int originMapId = MapId;
-            int originInstanceId = InstanceId;
+            int originInstanceId = (int) InstanceId;
 
             if (dungeonSession.IsTravelingBetweenDungeonMaps(this, player))
             {
@@ -1203,6 +1203,7 @@ public class FieldManager
                 }
             }
         }
+
 
 
         ////If instance is destroyed, reset dungeonSession
