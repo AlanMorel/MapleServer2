@@ -299,7 +299,7 @@ public class Player
         }
     }
 
-    public void Warp(int mapId, CoordF? coord = null, CoordF? rotation = null, int instanceId = -1)
+    public void Warp(int mapId, CoordF? coord = null, CoordF? rotation = null, long instanceId = -1)
     {
         if (MapMetadataStorage.GetMetadata(mapId)?.Property.IsTutorialMap ?? true) //resolves to true by default
         {
@@ -339,12 +339,12 @@ public class Player
         }
     }
 
-    public void Warp(Map mapId, CoordF? coord = null, CoordF? rotation = null, int instanceId = 1)
+    public void Warp(Map mapId, CoordF? coord = null, CoordF? rotation = null, long instanceId = 1)
     {
         Warp((int) mapId, coord, rotation, instanceId);
     }
 
-    public void WarpGameToGame(int mapId, int instanceId, CoordF? coord = null, CoordF? rotation = null)
+    public void WarpGameToGame(int mapId, long instanceId, CoordF? coord = null, CoordF? rotation = null)
     {
         UpdateCoords(mapId, instanceId, coord, rotation);
 
@@ -558,7 +558,7 @@ public class Player
         return spawn;
     }
 
-    private void UpdateCoords(int mapId, int instanceId, CoordF? coord = null, CoordF? rotation = null)
+    private void UpdateCoords(int mapId, long instanceId, CoordF? coord = null, CoordF? rotation = null)
     {
         if (MapEntityMetadataStorage.HasSafePortal(MapId))
         {

@@ -242,7 +242,7 @@ public class MoveFieldHandler : GamePacketHandler<MoveFieldHandler>
         {
             player.IsInDecorPlanner = false;
             player.Guide = null;
-            player.WarpGameToGame((int) Map.PrivateResidence, instanceId: --player.InstanceId); //?????????
+            player.WarpGameToGame((int) Map.PrivateResidence, instanceId: --player.InstanceId);
             return;
         }
 
@@ -267,6 +267,6 @@ public class MoveFieldHandler : GamePacketHandler<MoveFieldHandler>
         home.DecorPlannerHeight = home.Height;
         home.DecorPlannerSize = home.Size;
         home.DecorPlannerInventory = new();
-        player.WarpGameToGame((int) Map.PrivateResidence, instanceId: ++player.InstanceId);//????????
+        player.WarpGameToGame((int) Map.PrivateResidence, instanceId: ++player.InstanceId);
     }
 }

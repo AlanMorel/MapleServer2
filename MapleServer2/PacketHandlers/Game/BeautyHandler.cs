@@ -332,7 +332,7 @@ public class BeautyHandler : GamePacketHandler<BeautyHandler>
             return;
         }
 
-        session.Player.Warp(mapId, instanceId: session.Player.FieldPlayer.ObjectId);
+        session.Player.Warp(mapId, instanceId: session.Player.CharacterId);
     }
 
     private static void HandleDeleteSavedHair(GameSession session, PacketReader packet)

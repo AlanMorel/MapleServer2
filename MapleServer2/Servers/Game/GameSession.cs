@@ -33,8 +33,6 @@ public class GameSession : Session
         Debug.Assert(player.FieldPlayer == null, "Not allowed to reinitialize player.");
 
         Player = player;
-
-        //get instance for map here
         FieldManager = FieldManagerFactory.GetManager(player);
         player.FieldPlayer = FieldManager.RequestCharacter(player);
         player.LastLogTime = TimeInfo.Now();
@@ -42,17 +40,13 @@ public class GameSession : Session
 
     public void EnterField(Player player)
     {
-
-        // do instance map checkign here
         // If changing maps, need to get the FieldManager for new map
         if (player.MapId != FieldManager.MapId || player.InstanceId != FieldManager.InstanceId)
         {
             // Initialize for new Map
             FieldManager = FieldManagerFactory.GetManager(player);
             player.FieldPlayer = FieldManager.RequestCharacter(player);
-
         }
-
         FieldManager.AddPlayer(this);
     }
 
@@ -99,7 +93,7 @@ public class GameSession : Session
 
             Player.IsMigrating = false;
 
-            //move to non-temporary instance
+            //move to safe map
             if (MapMetadataStorage.IsInstancedOnly(Player.MapId) && !MapMetadataStorage.IsTutorialMap(Player.MapId))
             {
                 Player.SavedCoord = Player.ReturnCoord;

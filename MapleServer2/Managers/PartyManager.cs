@@ -4,7 +4,7 @@ namespace MapleServer2.Managers;
 
 public class PartyManager
 {
-    private readonly Dictionary<int, Party> PartyList;
+    private readonly Dictionary<long, Party> PartyList;
 
     public PartyManager()
     {
@@ -26,7 +26,7 @@ public class PartyManager
         return PartyList.Values.Where(party => party.PartyFinderId != 0).ToList();
     }
 
-    public Party GetPartyById(int id)
+    public Party GetPartyById(long id)
     {
         return PartyList.TryGetValue(id, out Party foundParty) ? foundParty : null;
     }

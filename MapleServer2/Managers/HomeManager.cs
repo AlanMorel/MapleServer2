@@ -8,7 +8,7 @@ public class HomeManager
 {
     private readonly ConcurrentDictionary<long, Home> HomeList;
     private readonly List<int> MapIds; // cache for maps already loaded
-    private int InstanceCounter;
+    private long InstanceCounter;
 
     public HomeManager()
     {
@@ -97,7 +97,7 @@ public class HomeManager
     }
 
     // Each home have two instance id's, one for the home and one for the decor planner.
-    private int IncrementCounter()
+    private long IncrementCounter()
     {
         Interlocked.Increment(ref InstanceCounter);
         Interlocked.Increment(ref InstanceCounter);

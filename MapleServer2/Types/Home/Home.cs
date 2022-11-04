@@ -12,7 +12,7 @@ namespace MapleServer2.Types;
 public class Home
 {
     public long Id;
-    public int InstanceId;
+    public long InstanceId;
     public long AccountId { get; set; }
     public int MapId { get; set; }
     public int PlotMapId { get; set; }
