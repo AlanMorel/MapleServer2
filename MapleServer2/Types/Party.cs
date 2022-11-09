@@ -10,7 +10,7 @@ public class Party
     public int Id { get; }
     public long PartyFinderId { get; set; } //Show on party finder or not
     public long CreationTimestamp { get; set; }
-    public string Name { get; set; }
+    public string? Name { get; set; }
     public bool Approval { get; set; } //Require approval before someone can join
     public Player Leader { get; set; }
     public int RecruitMemberCount { get; set; }
@@ -57,10 +57,10 @@ public class Party
 
     public void RemoveMember(Player player)
     {
-        Members.Remove(player);
+        Members.RemoveAll(m => m.CharacterId == player.CharacterId);
         player.Party = null;
 
-        if (Leader.CharacterId == player.CharacterId && Members.Count > 2)
+        if (Leader.CharacterId == player.CharacterId && Members.Count >= 2)
         {
             FindNewLeader();
         }
@@ -99,13 +99,13 @@ public class Party
             return;
         }
         BroadcastPacketParty(PartyPacket.LogoutNotice(player.CharacterId));
-        if (Leader == player)
+        if (Leader.CharacterId == player.CharacterId)
         {
             FindNewLeader();
         }
     }
 
-    public void BroadcastPacketParty(PacketWriter packet, GameSession sender = null)
+    public void BroadcastPacketParty(PacketWriter packet, GameSession? sender = null)
     {
         BroadcastParty(session =>
         {
@@ -135,7 +135,7 @@ public class Party
         List<GameSession> sessions = new();
         foreach (Player member in Members)
         {
-            GameSession playerSession = GameServer.PlayerManager.GetPlayerById(member.CharacterId)?.Session;
+            GameSession? playerSession = GameServer.PlayerManager.GetPlayerById(member.CharacterId)?.Session;
             if (playerSession != null)
             {
                 sessions.Add(playerSession);

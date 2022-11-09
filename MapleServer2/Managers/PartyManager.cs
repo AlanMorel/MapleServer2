@@ -26,17 +26,17 @@ public class PartyManager
         return PartyList.Values.Where(party => party.PartyFinderId != 0).ToList();
     }
 
-    public Party GetPartyById(long id)
+    public Party? GetPartyById(long id)
     {
-        return PartyList.TryGetValue(id, out Party foundParty) ? foundParty : null;
+        return PartyList.TryGetValue(id, out Party? foundParty) ? foundParty : null;
     }
 
-    public Party GetPartyByMember(long characterId)
+    public Party? GetPartyByMember(long characterId)
     {
         return PartyList.Values.FirstOrDefault(x => x.Members.Any(z => z.CharacterId == characterId));
     }
 
-    public Party GetPartyByLeader(Player leader)
+    public Party? GetPartyByLeader(Player leader)
     {
         return (from entry in PartyList
                 where entry.Value.Leader.CharacterId == leader.CharacterId

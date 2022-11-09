@@ -133,7 +133,7 @@ public class Player : IPacketSerializable
 
     public List<Buddy> BuddyList;
 
-    public Party Party;
+    public Party? Party;
 
     public List<ClubMember> ClubMembers = new();
     public List<Club> Clubs = new();
@@ -430,7 +430,7 @@ public class Player : IPacketSerializable
         Session?.FieldManager.RemovePlayer(this);
         DatabaseManager.Characters.Update(this);
         Session?.Send(FieldEnterPacket.RequestEnter(FieldPlayer));
-        Party?.BroadcastPacketParty(PartyPacket.UpdateMemberLocation(this));
+        Party?.BroadcastPacketParty(PartyPacket.UpdatePlayer(this));
         Guild?.BroadcastPacketGuild(GuildPacket.UpdateMemberLocation(Name, MapId));
         foreach (Club club in Clubs)
         {
