@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Enums;
+﻿using System.Diagnostics;
+using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
@@ -74,12 +75,14 @@ public class MoveFieldHandler : GamePacketHandler<MoveFieldHandler>
             case PortalTypes.Field:
                 break;
             case PortalTypes.DungeonReturnToLobby:
-                DungeonSession dungeonSession = GameServer.DungeonManager.GetBySessionId(session.Player.DungeonSessionId);
-                if (dungeonSession == null)
-                {
-                    return;
-                }
-                session.Player.Warp(dungeonSession.DungeonLobbyId, instanceId: dungeonSession.DungeonInstanceId);
+                //if this portal is triggered, player has to be in a dungeon session
+                //if player dungeon session is -1 there must be a group dungeon session 
+                int playerDungeonSession = session.Player.DungeonSessionId;
+                int groupDungeonSession = session.Player.Party?.DungeonSessionId ?? -1;
+
+                DungeonSession dungeonSession = GameServer.DungeonManager.GetBySessionId(playerDungeonSession == -1 ? groupDungeonSession : playerDungeonSession);
+                Debug.Assert(dungeonSession != null, "Should never be null");
+                session.Player.Warp(dungeonSession.DungeonLobbyId, instanceId: dungeonSession.DungeonInstanceId, setReturnData:false);
                 return;
             case PortalTypes.LeaveDungeon:
                 HandleLeaveInstance(session);

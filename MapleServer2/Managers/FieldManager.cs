@@ -1149,77 +1149,40 @@ public class FieldManager
             //also checks the instance to ensure it is a dungeon session map
             if (dungeonSession.IsDungeonReservedField(originMapId, originInstanceId))//is left map a dungeon map?
             {
-                player.Session?.SendNotice($"Leaving Field: Solo DS {player.DungeonSessionId} Dungeon Map was left");
-                GameServer.DungeonManager.ResetDungeonSession(player, dungeonSession);
+                player.Session?.SendNotice($"Leaving Dungeon Field: Solo SD: Deleting DS {player.DungeonSessionId} and Instance {InstanceId}");
+                GameServer.DungeonManager.RemoveDungeonSession(dungeonSession.SessionId, DungeonType.Solo, player);
                 FieldManagerFactory.ReleaseManager(this);
-                player.Session?.SendNotice($"Leaving Field: Deleted DS {player.DungeonSessionId} and Instance {InstanceId}");
+
                 return;
             }
-
-            // potentially delete here if dungeonSession.IsCompleted
-            // Remove Dungeon Session and delete instance, if last player of a completed dungeon Session leaves
-
-
-            //check if player is in a group dungeon, so check whether player is in party, if not in party they cannot be in a dungeon session
-            //as removing from party is the same as not being in the dungeon session anymore
-            //if in party and if party has dungeonSessionId check whether dungeon is completed so instances can be deleted
-            //delete if dungeonSession is complete for group
         }
 
-
+        //check if player is in a group dungeon, so check whether player is in party, if not in party they cannot be in a dungeon session
+        //as removing from party is the same as not being in the dungeon session anymore
         //player is not in a solo dungeon session
         if (player.Party is not null)
         {
-            player.Session?.SendNotice($"Leaving Field: Party not null: Player DS: {player.DungeonSessionId} Group DS {player.Party?.DungeonSessionId}");
-
-
             Party party = GameServer.PartyManager.GetPartyById(player.Party.Id);
-
             if (party.DungeonSessionId != -1)
             {
-
                 DungeonSession dungeonSession = GameServer.DungeonManager.GetBySessionId(party.DungeonSessionId);
-
                 Debug.Assert(dungeonSession != null); // if the dungeon session id is not -1, there should always be a corresponding dungeon session
+                player.Session?.SendNotice($"Leaving Field: Party DS not -1: Player DS: {player.DungeonSessionId} Group DS {player.Party?.DungeonSessionId}");
 
-
-                player.Session?.SendNotice($"Leaving Field: Party DS not Null: Player DS: {player.DungeonSessionId} Group DS {player.Party?.DungeonSessionId}");
-
-
-                // if dungeonSession.IsCompleted == true remove field, do not reset dungeon session id as it is done manually or by disbanding the party
-                // set dungeonSession to completed if rewards have been distributed
+                //if dungeonSession.IsCompleted == true remove field, do not reset dungeon session id as it is done manually (by button) or by disbanding the party
+                //set dungeonSession to completed if rewards have been distributed then
+                //if in party and if party has dungeonSessionId check whether dungeon is completed so instances can be deleted
+                //Remove Dungeon Session and delete instance, if last player of a completed dungeon Session leaves
 
                 if (dungeonSession.IsTravelingBetweenDungeonMaps(this, player))
                 {
-                    player.Session?.SendNotice($"Leaving Field: Group Dungeon: traveled within dungeon maps {player.DungeonSessionId}");
-                    //do idle state which is apparently different from frozen, so this case needs to be handled seperately here.
-
+                    //do idle state which is apparently different from frozen, so this case needs to be handled separately here.
                     Freeze();
-
-                    player.Session?.SendNotice($"Leaving Field: Group Dungeon: Travel between Dungeon Maps: Froze Map {MapId}");
+                    player.Session?.SendNotice($"Leaving Dungeon Field: Group Dungeon: Travel between Dungeon Maps: Froze Map {MapId}");
                     return;
-
                 }
-
-
             }
         }
-
-
-
-        ////If instance is destroyed, reset dungeonSession
-        ////further conditions for dungeon completion could be checked here.
-        //if (dungeonSession is null || !dungeonSession.IsDungeonSessionMap(MapId))
-        //{
-        //    return;
-        //}
-
-        //set next map explicitly as variable, as destination, so that future changes wont break it
-
-
-        //guild house freeze
-        //when disbanding guild and last player leaves release instance
-        //house freeze - house deleted?
 
         if (IsTutorialMap || MapMetadataStorage.IsInstancedOnly(MapId))
         {
@@ -1230,12 +1193,11 @@ public class FieldManager
             }
 
             FieldManagerFactory.ReleaseManager(this);
-            player.Session?.SendNotice($"Leaving Field: Tutorial or Instanced map only {MapId}");
+            player.Session?.SendNotice($"Leaving Field: Tutorial or Instanced map only {MapId}, field was deleted");
             return;
         }
 
         Freeze();
-
         player.Session?.SendNotice($"Leaving Field: Froze map {MapId}");
     }
 

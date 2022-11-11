@@ -1,4 +1,5 @@
-﻿using MapleServer2.Types;
+﻿using System.Diagnostics;
+using MapleServer2.Types;
 
 namespace MapleServer2.Managers;
 
@@ -13,9 +14,9 @@ public class DungeonManager
 
     public DungeonManager()
     {
-        DungeonSessionList = new(); 
+        DungeonSessionList = new();
         RecyclableSessionIds = new();
-        RecyclableMapInstanceIds = new(); 
+        RecyclableMapInstanceIds = new();
     }
 
     public int GetMapInstanceId()
@@ -43,7 +44,7 @@ public class DungeonManager
         return dungeonSession;
     }
 
-    public void RemoveDungeonSession(int dungeonSessionId)
+    public void RemoveDungeonSession(int dungeonSessionId, DungeonType dungeonType, Player player = null)
     {
         if (!DungeonSessionList.ContainsKey(dungeonSessionId))
         {
@@ -56,6 +57,11 @@ public class DungeonManager
         RecyclableSessionIds.Add(currentDungeonSessionId);
         RecyclableMapInstanceIds.Add(currentDungeonInstanceId);
         DungeonSessionList.Remove(dungeonSessionId);
+
+        if (dungeonType == DungeonType.Solo)
+        {
+            player.DungeonSessionId = -1;
+        }
     }
 
     public int GetUniqueSessionId()
@@ -78,14 +84,6 @@ public class DungeonManager
 
     public void ResetDungeonSession(Player player, DungeonSession dungeonSession)
     {
-        RemoveDungeonSession(dungeonSession.SessionId);
-        // if last player leaves lobby or dungeon map -> destroy dungeonSession.
-        if (dungeonSession.DungeonType is DungeonType.Group && player.Party is not null)
-        {
-            player.Party.DungeonSessionId = -1;
-            return;
-        }
-
-        player.DungeonSessionId = -1;
+        //TODO: implement dungeon reset button, change dungeon info here
     }
 }

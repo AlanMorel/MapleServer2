@@ -19,7 +19,7 @@ public class DungeonSession
 
     public DungeonType DungeonType { get; }
 
-    public int PartyId { get; }
+    public bool IsCompleted { get; }
 
     public DungeonSession(int sessionId, int dungeonId, int dungeonInstanceId, DungeonType dungeonType, int partyId = -1)
     {
@@ -27,17 +27,11 @@ public class DungeonSession
         SessionId = sessionId;
         DungeonId = dungeonId;
         DungeonInstanceId = dungeonInstanceId;
-        DungeonMetadata dungeon = DungeonStorage.GetDungeonByDungeonId(dungeonId);
+        DungeonMetadata dungeon = DungeonStorage.GetDungeonById(dungeonId);
         DungeonMapIds = dungeon.FieldIds;
         DungeonLobbyId = dungeon.LobbyFieldId;
-        PartyId = partyId;
+        IsCompleted = false;
     }
-
-    public bool ContainsDungeonField(int mapId)
-    {
-        return DungeonMapIds.Contains(mapId);
-    }
-
 
     //lobby or dungeon map
     public bool IsDungeonReservedField(int mapId, int instanceId)

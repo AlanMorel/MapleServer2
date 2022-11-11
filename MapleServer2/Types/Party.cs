@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using System.Diagnostics;
+using MaplePacketLib2.Tools;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
@@ -81,12 +82,22 @@ public class Party
         {
             return;
         }
+        if (DungeonSessionId != -1) //remove dungeon session on party disband
+        {
+            DungeonSession dungeonSession = GameServer.DungeonManager.GetBySessionId(DungeonSessionId);
+
+            Debug.Assert(dungeonSession != null, "if dungeonSession id != -1 the dungeon session should never be null");
+            GameServer.DungeonManager.RemoveDungeonSession(DungeonSessionId, DungeonType.Group);
+
+        }
 
         BroadcastParty(session =>
         {
             session.Player.Party = null;
             session.Send(PartyPacket.Disband());
         });
+
+
         GameServer.PartyManager.RemoveParty(this);
     }
 

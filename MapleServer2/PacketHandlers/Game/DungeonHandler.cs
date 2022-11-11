@@ -74,7 +74,7 @@ public class DungeonHandler : GamePacketHandler<DungeonHandler>
 
         Debug.Assert(dungeonSession != null);
 
-        session.Player.Warp(dungeonSession.DungeonMapIds.First(), instanceId: dungeonSession.DungeonInstanceId);
+        session.Player.Warp(dungeonSession.DungeonMapIds.First(), instanceId: dungeonSession.DungeonInstanceId, setReturnData: false);
 
     }
 
@@ -90,7 +90,7 @@ public class DungeonHandler : GamePacketHandler<DungeonHandler>
             return;
         }
 
-        int dungeonLobbyId = DungeonStorage.GetDungeonByDungeonId(dungeonId).LobbyFieldId;
+        int dungeonLobbyId = DungeonStorage.GetDungeonById(dungeonId).LobbyFieldId;
         MapPlayerSpawn spawn = MapEntityMetadataStorage.GetRandomPlayerSpawn(dungeonLobbyId);
 
         DungeonSession dungeonSession = GameServer.DungeonManager.CreateDungeonSession(dungeonId, groupEnter ? DungeonType.Group : DungeonType.Solo);
@@ -115,6 +115,9 @@ public class DungeonHandler : GamePacketHandler<DungeonHandler>
             }
             party.DungeonSessionId = dungeonSession.SessionId;
             party.BroadcastPacketParty(PartyPacket.PartyHelp(dungeonId));
+
+            //This packet sets the banner in the dungeon that displays the dungeonname and the playersize it was created for.
+            party.BroadcastPacketParty(DungeonWaitPacket.Show(dungeonId, DungeonStorage.GetDungeonById(dungeonId).MaxUserCount));
             //TODO: Update Party with dungeon Info via party packets (0d,0e and others are involved).
         }
         else // solo join dungeon
@@ -123,8 +126,7 @@ public class DungeonHandler : GamePacketHandler<DungeonHandler>
         }
         session.Player.Warp(dungeonLobbyId, instanceId: dungeonSession.DungeonInstanceId);
         //TODO: things after map is created here: spawn doctor npc.
-        //This packet sets the banner in the dungeon that displays the dungeonname and the playersize it was created for.
-        //party.BroadcastPacketParty(DungeonWaitPacket.Show(dungeonId, DungeonStorage.GetDungeonByDungeonId(dungeonId).MaxUserCount)); 
+
     }
 
     //party dungeon only button

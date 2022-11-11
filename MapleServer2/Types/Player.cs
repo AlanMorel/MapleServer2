@@ -398,7 +398,7 @@ public class Player : IPacketSerializable
         }
     }
 
-    public void Warp(int mapId, CoordF? coord = null, CoordF? rotation = null, long instanceId = -1)
+    public void Warp(int mapId, CoordF? coord = null, CoordF? rotation = null, long instanceId = -1, bool setReturnData = true)
     {
         bool? isTutorialMap = MapMetadataStorage.GetMetadata(mapId)?.Property.IsTutorialMap;
         if (isTutorialMap == null)
@@ -432,7 +432,7 @@ public class Player : IPacketSerializable
             return;
         }
 
-        UpdateFieldData(mapId, instanceId, coord, rotation);
+        UpdatePlayerFieldInfo(mapId, instanceId, coord, rotation, setReturnData);
 
         Session?.FieldManager.RemovePlayer(this);
         DatabaseManager.Characters.Update(this);
@@ -452,7 +452,7 @@ public class Player : IPacketSerializable
 
     public void WarpGameToGame(int mapId, long instanceId, CoordF? coord = null, CoordF? rotation = null)
     {
-        UpdateFieldData(mapId, instanceId, coord, rotation);
+        UpdatePlayerFieldInfo(mapId, instanceId, coord, rotation);
 
         string ipAddress = (Session?.IsLocalHost() ?? true) ? Constant.LocalHost : Environment.GetEnvironmentVariable("IP")!;
         int port = int.Parse(Environment.GetEnvironmentVariable("GAME_PORT")!);
@@ -664,9 +664,9 @@ public class Player : IPacketSerializable
         return spawn;
     }
 
-    private void UpdateFieldData(int mapId, long instanceId, CoordF? coord = null, CoordF? rotation = null)
+    private void UpdatePlayerFieldInfo(int mapId, long instanceId, CoordF? coord = null, CoordF? rotation = null, bool setReturnData = true)
     {
-        if (MapEntityMetadataStorage.HasSafePortal(MapId))
+        if (MapEntityMetadataStorage.HasSafePortal(MapId) && setReturnData)
         {
             ReturnCoord = FieldPlayer.Coord;
             ReturnMapId = MapId;
