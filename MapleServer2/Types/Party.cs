@@ -82,6 +82,7 @@ public class Party
         {
             return;
         }
+
         if (DungeonSessionId != -1) //remove dungeon session on party disband
         {
             DungeonSession dungeonSession = GameServer.DungeonManager.GetBySessionId(DungeonSessionId);
@@ -96,7 +97,6 @@ public class Party
             session.Player.Party = null;
             session.Send(PartyPacket.Disband());
         });
-
 
         GameServer.PartyManager.RemoveParty(this);
     }

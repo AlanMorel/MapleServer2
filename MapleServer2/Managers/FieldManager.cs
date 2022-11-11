@@ -632,7 +632,6 @@ public class FieldManager
 
         if (Decrement() <= 0)
         {
-
             HandleEmptyField(player);
             return;
         }

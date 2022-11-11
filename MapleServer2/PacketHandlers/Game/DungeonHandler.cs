@@ -126,7 +126,6 @@ public class DungeonHandler : GamePacketHandler<DungeonHandler>
         }
         session.Player.Warp(dungeonLobbyId, instanceId: dungeonSession.DungeonInstanceId);
         //TODO: things after map is created here: spawn doctor npc.
-
     }
 
     //party dungeon only button
