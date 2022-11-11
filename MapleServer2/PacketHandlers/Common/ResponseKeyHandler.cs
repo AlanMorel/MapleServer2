@@ -105,6 +105,10 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
             }
         }
 
+        // Get Shop Logs
+        player.ShopInfos = DatabaseManager.PlayerShopInfos.FindAllByCharacterId(player.CharacterId);
+        player.ShopInventories = DatabaseManager.PlayerShopInventories.FindAllByCharacterId(player.CharacterId, player.AccountId);
+
         //session.Send(0x27, 0x01); // Meret market related...?
         session.Send(MushkingRoyaleSystemPacket.LoadStats(player.Account.MushkingRoyaleStats));
         session.Send(MushkingRoyaleSystemPacket.LoadMedals(player.Account));
@@ -141,7 +145,7 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
         session.Send(SyncValuePacket.SetSyncValue(120000)); // unknown what this value means
 
         session.Send(PrestigePacket.SetLevels(player));
-        session.Send(PrestigePacket.WeeklyMissions(player.PrestigeMissions));
+        session.Send(PrestigePacket.WeeklyMissions(player.Account.Prestige.Missions));
 
         // Load inventory tabs
         foreach (InventoryTab tab in Enum.GetValues(typeof(InventoryTab)))
@@ -237,7 +241,7 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
         //session.Send("16 00 00 41 75 19 03 00 01 8A 42 0F 00 00 00 00 00 00 C0 28 C4 00 40 03 44 00 00 16 44 00 00 00 00 00 00 00 00 55 FF 33 42 E8 49 01 00".ToByteArray());
         session.Send(FieldEnterPacket.RequestEnter(player.FieldPlayer));
 
-        Party party = GameServer.PartyManager.GetPartyByMember(player.CharacterId);
+        Party? party = GameServer.PartyManager.GetPartyByMember(player.CharacterId);
         if (party != null)
         {
             player.Party = party;
@@ -246,7 +250,7 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
                 party.BroadcastPacketParty(PartyPacket.LoginNotice(player), session);
             }
 
-            session.Send(PartyPacket.Create(party, false));
+            session.Send(PartyPacket.Create(party, !player.IsMigrating, player));
             party.BroadcastPacketParty(PartyPacket.UpdatePlayer(player));
             party.BroadcastPacketParty(PartyPacket.UpdateDungeonInfo(player));
         }

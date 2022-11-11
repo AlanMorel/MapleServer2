@@ -1,6 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -22,14 +23,23 @@ internal class MasteryFactorParser : Exporter<List<MasteryFactorMetadata>>
             }
 
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-            XmlNodeList factors = document.SelectNodes("/ms2/v");
+            XmlNodeList? factors = document.SelectNodes("/ms2/v");
+            if (factors is null)
+            {
+                continue;
+            }
 
             foreach (XmlNode factor in factors)
             {
+                if (ParserHelper.CheckForNull(factor, "differential", "factor"))
+                {
+                    continue;
+                }
+
                 MasteryFactorMetadata newFactor = new()
                 {
-                    Differential = int.Parse(factor.Attributes["differential"].Value),
-                    Factor = int.Parse(factor.Attributes["factor"].Value)
+                    Differential = int.Parse(factor.Attributes!["differential"]!.Value),
+                    Factor = int.Parse(factor.Attributes["factor"]!.Value)
                 };
                 masteryFactorList.Add(newFactor);
             }

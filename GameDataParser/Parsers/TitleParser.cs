@@ -1,6 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -15,23 +16,33 @@ public class TitleParser : Exporter<List<TitleMetadata>>
     {
         List<TitleMetadata> metadatas = new();
 
-        PackFileEntry file = Resources.XmlReader.Files.FirstOrDefault(x => x.Name.Contains("string/en/titlename.xml"));
+        PackFileEntry? file = Resources.XmlReader.Files.FirstOrDefault(x => x.Name.Contains("string/en/titlename.xml"));
         if (file is null)
         {
             throw new FileNotFoundException("File not found: string/en/titlename.xml");
         }
 
         XmlDocument document = Resources.XmlReader.GetXmlDocument(file);
-        XmlNodeList nodes = document.SelectNodes("/ms2/key");
+        XmlNodeList? nodes = document.SelectNodes("/ms2/key");
+        if (nodes is null)
+        {
+            return metadatas;
+        }
+
         foreach (XmlNode node in nodes)
         {
-            int id = int.Parse(node.Attributes["id"].Value);
+            if (ParserHelper.CheckForNull(node, "id", "name"))
+            {
+                continue;
+            }
+
+            int id = int.Parse(node.Attributes!["id"]!.Value);
             if (id < 4)
             {
                 continue;
             }
 
-            string name = node.Attributes["name"].Value;
+            string name = node.Attributes["name"]!.Value;
             string feature = node.Attributes["feature"]?.Value ?? string.Empty;
             metadatas.Add(new(id, name, feature));
         }

@@ -117,7 +117,7 @@ public class NpcTalkHandler : GamePacketHandler<NpcTalkHandler>
             case NpcKind.FixedShop:
             case NpcKind.RotatingShop:
                 npcTalk.DialogType |= DialogType.UI;
-                ShopHandler.HandleOpen(session, npc, npc.Value.Id);
+                ShopHelper.OpenShop(session, npc.Value.ShopId, npc.Value.Id);
                 break;
             case NpcKind.Storage:
             case NpcKind.BlackMarket:

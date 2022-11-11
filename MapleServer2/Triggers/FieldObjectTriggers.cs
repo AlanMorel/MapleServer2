@@ -177,8 +177,14 @@ public partial class TriggerContext
 
     public void SetSound(int soundId, bool isEnabled)
     {
-        Field.State.TriggerSounds[soundId].IsEnabled = isEnabled;
-        Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerSounds[soundId]));
+        TriggerSound? triggerSound = Field.State.TriggerSounds.GetValueOrDefault(soundId);
+        if (triggerSound is null)
+        {
+            return;
+        }
+
+        triggerSound.IsEnabled = isEnabled;
+        Field.BroadcastPacket(TriggerPacket.UpdateTrigger(triggerSound));
     }
 
     public void SetVisibleBreakableObject(int[] arg1, bool arg2) { }

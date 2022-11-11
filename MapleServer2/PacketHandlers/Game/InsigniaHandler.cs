@@ -41,7 +41,7 @@ public class InsigniaHandler : GamePacketHandler<InsigniaHandler>
                 int? titleId = InsigniaMetadataStorage.GetTitleId(insigniaId);
                 return titleId is not null && session.Player.Titles.Contains((int) titleId);
             case "adventure_level":
-                return session.Player.Levels.PrestigeLevel >= 100;
+                return session.Player.Account.Prestige.Level >= 100;
             default:
                 Logger.Warning("Unhandled condition type for insigniaid: {insigniaId}, type: {type}", insigniaId, type);
                 return false;

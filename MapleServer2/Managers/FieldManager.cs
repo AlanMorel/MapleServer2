@@ -1368,7 +1368,7 @@ public class FieldManager
     {
         foreach (Npc mob in State.Mobs.Values)
         {
-            mob.Behavior.Next();
+            mob.Behavior?.Next();
         }
 
         foreach (Pet pet in State.Pets.Values)

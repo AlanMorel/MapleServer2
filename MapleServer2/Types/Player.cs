@@ -2,6 +2,7 @@
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
@@ -14,7 +15,7 @@ using MapleServer2.Servers.Game;
 using Serilog;
 namespace MapleServer2.Types;
 
-public class Player
+public class Player : IPacketSerializable
 {
     public long SessionId;
     public GameSession? Session;
@@ -62,8 +63,6 @@ public class Player
     public short InsigniaId { get; set; }
     public int GearScore;
     public List<int> Titles { get; set; }
-    public List<int> PrestigeRewardsClaimed { get; set; }
-    public List<PrestigeMission> PrestigeMissions = new();
 
     public Stats Stats;
 
@@ -152,6 +151,11 @@ public class Player
     public Wallet Wallet { get; set; }
     public Dictionary<int, QuestStatus> QuestData;
 
+    public Dictionary<int, Shop> Shops = new();
+    public Dictionary<int, PlayerShopInfo> ShopInfos = new();
+    public Dictionary<int, PlayerShopInventory> ShopInventories = new();
+    public BuyBackItem?[] BuyBackItems = new BuyBackItem[12];
+
     public CancellationTokenSource OnlineCTS;
     public Task OnlineTimeThread;
     public Task TimeSyncTask;
@@ -186,7 +190,7 @@ public class Player
         GameOptions = new(jobCode);
         Macros = new();
         Wallet = new(meso: 0, valorToken: 0, treva: 0, rue: 0, haviFruit: 0, gameSession: null);
-        Levels = new(playerLevel: 1, exp: 0, restExp: 0, prestigeLevel: 1, prestigeExp: 0, masteryExp: new()
+        Levels = new(playerLevel: 1, exp: 0, restExp: 0, masteryExp: new()
         {
             new(MasteryType.Fishing),
             new(MasteryType.Performance),
@@ -211,7 +215,6 @@ public class Player
         TitleId = 0;
         InsigniaId = 0;
         Titles = new();
-        PrestigeRewardsClaimed = new();
         ChatSticker = new();
         FavoriteStickers = new();
         Emotes = new()
@@ -246,7 +249,6 @@ public class Player
         TrophyCount = new int[3];
         ReturnMapId = (int) Map.Tria;
         ReturnCoord = MapEntityMetadataStorage.GetRandomPlayerSpawn(ReturnMapId)?.Coord.ToFloat() ?? default;
-        PrestigeMissions = PrestigeLevelMissionMetadataStorage.GetPrestigeMissions;
         SkinColor = skinColor;
         UnlockedTaxis = new();
         UnlockedMaps = new();
@@ -271,6 +273,103 @@ public class Player
 
         // Add initial trophy for level
         TrophyManager.OnLevelUp(this);
+    }
+
+    public void WriteTo(PacketWriter pWriter)
+    {
+        pWriter.WriteLong(AccountId);
+        pWriter.WriteLong(CharacterId);
+        pWriter.WriteUnicodeString(Name);
+        pWriter.Write(Gender);
+        pWriter.WriteByte(1);
+
+        pWriter.WriteLong(AccountId);
+        pWriter.WriteInt();
+        pWriter.WriteInt(MapId);
+        pWriter.WriteInt(MapId); // Sometimes 0
+        pWriter.WriteInt();
+        pWriter.WriteShort(Levels.Level);
+        pWriter.WriteShort(ChannelId);
+        pWriter.Write(JobCode);
+        pWriter.Write(SubJobCode);
+        pWriter.WriteInt(Stats[StatAttribute.Hp].Total);
+        pWriter.WriteInt(Stats[StatAttribute.Hp].Bonus);
+        pWriter.WriteShort();
+        pWriter.WriteLong();
+        pWriter.WriteLong(HouseStorageAccessTime);
+        pWriter.WriteLong(HouseDoctorAccessTime);
+        pWriter.WriteInt(ReturnMapId);
+        pWriter.Write(ReturnCoord);
+        pWriter.WriteInt(GearScore);
+        pWriter.Write(SkinColor);
+        pWriter.WriteLong(CreationTime);
+        foreach (int trophyCount in TrophyCount)
+        {
+            pWriter.WriteInt(trophyCount);
+        }
+        pWriter.WriteLong(GuildId);
+        pWriter.WriteUnicodeString(Guild?.Name);
+        pWriter.WriteUnicodeString(Motto);
+
+        pWriter.WriteUnicodeString(ProfileUrl);
+
+        pWriter.WriteByte((byte) Clubs.Count);
+        foreach (Club club in Clubs)
+        {
+            pWriter.WriteBool(club.IsEstablished);
+            if (club.IsEstablished)
+            {
+                pWriter.WriteLong(club.Id);
+                pWriter.WriteUnicodeString(club.Name);
+            }
+        }
+
+        pWriter.WriteByte(1);
+        pWriter.WriteInt();
+        foreach (MasteryExp mastery in Levels.MasteryExp)
+        {
+            pWriter.WriteInt((int) mastery.CurrentExp);
+        }
+
+        // Some function call on CCharacterList property
+        pWriter.WriteUnicodeString(); // login username
+        pWriter.WriteLong(SessionId); // THIS MUST BE CORRECT... BYPASS KEY...
+        pWriter.WriteLong(2000);
+        pWriter.WriteLong(3000);
+        // End
+
+        int countA = 0;
+        pWriter.WriteInt(countA);
+        for (int i = 0; i < countA; i++)
+        {
+            pWriter.WriteLong();
+        }
+
+        pWriter.WriteByte();
+        pWriter.WriteByte();
+        pWriter.WriteLong(Birthday);
+        pWriter.WriteInt(SuperChatId);
+        pWriter.WriteInt();
+        pWriter.WriteLong(); // Timestamp
+        pWriter.WriteInt(Account.Prestige.Level);
+        pWriter.WriteLong(); // Timestamp
+
+        int countB = 0;
+        pWriter.WriteInt(countB);
+        for (int i = 0; i < countB; i++)
+        {
+            pWriter.WriteLong();
+        }
+
+        int countC = 0;
+        pWriter.WriteInt(countC);
+        for (int i = 0; i < countC; i++)
+        {
+            pWriter.WriteLong();
+        }
+
+        pWriter.WriteShort();
+        pWriter.WriteLong();
     }
 
     public void UpdateBuddies()
@@ -338,7 +437,7 @@ public class Player
         Session?.FieldManager.RemovePlayer(this);
         DatabaseManager.Characters.Update(this);
         Session?.Send(FieldEnterPacket.RequestEnter(FieldPlayer));
-        Party?.BroadcastPacketParty(PartyPacket.UpdateMemberLocation(this));
+        Party?.BroadcastPacketParty(PartyPacket.UpdatePlayer(this));
         Guild?.BroadcastPacketGuild(GuildPacket.UpdateMemberLocation(Name, MapId));
         foreach (Club club in Clubs)
         {
@@ -606,6 +705,15 @@ public class Player
         {
             UnlockedMaps.Add(MapId);
         }
+    }
+
+    public bool HasTrophy(int trophyId, int grade)
+    {
+        if (TrophyData.ContainsKey(trophyId))
+        {
+            return TrophyData[trophyId].GradeCondition.Grade == grade;
+        }
+        return false;
     }
 
     public void UpdateGearScore(Item item, int value)

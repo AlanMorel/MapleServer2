@@ -1,6 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -22,6 +23,11 @@ public class SurvivalLevelParser : Exporter<List<SurvivalLevelMetadata>>
             }
 
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
+            if (document.DocumentElement?.ChildNodes is null)
+            {
+                continue;
+            }
+
             foreach (XmlNode node in document.DocumentElement.ChildNodes)
             {
                 if (node.Name != "survivalLevelExp")
@@ -29,11 +35,16 @@ public class SurvivalLevelParser : Exporter<List<SurvivalLevelMetadata>>
                     continue;
                 }
 
+                if (ParserHelper.CheckForNull(node, "level", "reqExp", "grade"))
+                {
+                    continue;
+                }
+
                 SurvivalLevelMetadata metadata = new()
                 {
-                    Level = int.Parse(node.Attributes["level"].Value),
-                    RequiredExp = long.Parse(node.Attributes["reqExp"].Value),
-                    Grade = byte.Parse(node.Attributes["grade"].Value)
+                    Level = int.Parse(node.Attributes!["level"]!.Value),
+                    RequiredExp = long.Parse(node.Attributes["reqExp"]!.Value),
+                    Grade = byte.Parse(node.Attributes["grade"]!.Value)
                 };
 
                 levels.Add(metadata);

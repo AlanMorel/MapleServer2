@@ -1,6 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -22,19 +23,28 @@ public class PremiumClubEffectParser : Exporter<List<PremiumClubEffectMetadata>>
             }
 
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-            XmlNodeList nodes = document.SelectNodes("/ms2/benefit");
+            XmlNodeList? nodes = document.SelectNodes("/ms2/benefit");
+            if (nodes is null)
+            {
+                continue;
+            }
 
             foreach (XmlNode node in nodes)
             {
-                if (node.Attributes["locale"].Value != "NA")
+                if (ParserHelper.CheckForNull(node, "locale", "effectID", "effectLevel"))
+                {
+                    continue;
+                }
+
+                if (node.Attributes!["locale"]!.Value != "NA")
                 {
                     continue;
                 }
 
                 PremiumClubEffectMetadata metadata = new()
                 {
-                    EffectId = int.Parse(node.Attributes["effectID"].Value),
-                    EffectLevel = int.Parse(node.Attributes["effectLevel"].Value),
+                    EffectId = int.Parse(node.Attributes["effectID"]!.Value),
+                    EffectLevel = int.Parse(node.Attributes["effectLevel"]!.Value),
                 };
 
                 metadataList.Add(metadata);

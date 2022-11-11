@@ -44,23 +44,23 @@ internal static class Program
         int count = 1;
         foreach (Type parserClass in parserClassList)
         {
-            ConstructorInfo newConstructor = parserClass.GetConstructor(new[]
+            ConstructorInfo? newConstructor = parserClass.GetConstructor(new[]
             {
                 typeof(MetadataResources)
             });
-            MetadataExporter exporter;
+            MetadataExporter? exporter;
 
             // Verify if the new constructor doesn't need a parameter so can create an instances without a parameter.
             if (newConstructor != null)
             {
-                exporter = (MetadataExporter) Activator.CreateInstance(parserClass, resources);
+                exporter = (MetadataExporter) Activator.CreateInstance(parserClass, resources)!;
             }
             else
             {
-                exporter = (MetadataExporter) Activator.CreateInstance(parserClass);
+                exporter = (MetadataExporter) Activator.CreateInstance(parserClass)!;
             }
 
-            tasks.Add(Task.Run(() => exporter!.Export()).ContinueWith(t =>
+            tasks.Add(Task.Run(() => exporter.Export()).ContinueWith(t =>
             {
                 if (t.IsFaulted)
                 {

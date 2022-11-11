@@ -1,4 +1,5 @@
 ﻿using MapleServer2.Types;
+using Newtonsoft.Json;
 using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes;
@@ -22,9 +23,11 @@ public class DatabaseAccount : DatabaseTable
             meso_token = account.MesoToken.Amount,
             bank_inventory_id = account.BankInventory.Id,
             mushking_royale_id = account.MushkingRoyaleStats.Id,
+            prestige_id = account.Prestige.Id,
             vip_expiration = account.VIPExpiration,
             meso_market_daily_listings = account.MesoMarketDailyListings,
-            meso_market_monthly_purchases = account.MesoMarketMonthlyPurchases
+            meso_market_monthly_purchases = account.MesoMarketMonthlyPurchases,
+            premium_rewards_claimed = JsonConvert.SerializeObject(account.PremiumClubRewardsClaimed)
         });
     }
 
@@ -72,10 +75,12 @@ public class DatabaseAccount : DatabaseTable
             meso_token = account.MesoToken.Amount,
             vip_expiration = account.VIPExpiration,
             meso_market_daily_listings = account.MesoMarketDailyListings,
-            meso_market_monthly_purchases = account.MesoMarketMonthlyPurchases
+            meso_market_monthly_purchases = account.MesoMarketMonthlyPurchases,
+            premium_rewards_claimed = JsonConvert.SerializeObject(account.PremiumClubRewardsClaimed),
         });
         DatabaseManager.BankInventories.Update(account.BankInventory);
         DatabaseManager.MushkingRoyaleStats.Update(account.MushkingRoyaleStats);
+        DatabaseManager.Prestiges.Update(account.Prestige);
     }
 
     public bool Delete(long id)
@@ -88,7 +93,8 @@ public class DatabaseAccount : DatabaseTable
         BankInventory bankInventory = DatabaseManager.BankInventories.FindById(data.bank_inventory_id);
         MushkingRoyaleStats royaleStats = DatabaseManager.MushkingRoyaleStats.FindById(data.mushking_royale_id);
         List<Medal> medals = DatabaseManager.MushkingRoyaleMedals.FindAllByAccountId(data.id);
+        Prestige prestige = DatabaseManager.Prestiges.FindById(data.prestige_id);
 
-        return new(data.id, data, bankInventory, royaleStats, medals, null, null);
+        return new(data.id, data, bankInventory, royaleStats, prestige, medals, null, null);
     }
 }

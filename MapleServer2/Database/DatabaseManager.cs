@@ -43,12 +43,15 @@ public static class DatabaseManager
     public static DatabaseInventory Inventories { get; } = new();
     public static DatabaseItem Items { get; } = new();
     public static DatabaseLevels Levels { get; } = new();
+    public static DatabasePrestiges Prestiges { get; } = new();
     public static DatabaseMapleopoly Mapleopoly { get; } = new();
     public static DatabaseGameEventUserValue GameEventUserValue { get; } = new();
     public static DatabaseMeretMarket MeretMarket { get; } = new();
     public static DatabaseQuest Quests { get; } = new();
     public static DatabaseShop Shops { get; } = new();
     public static DatabaseShopItem ShopItems { get; } = new();
+    public static DatabasePlayerShopInfo PlayerShopInfos { get; } = new();
+    public static DatabasePlayerShopInventory PlayerShopInventories { get; } = new();
     public static DatabaseBeautyShop BeautyShops { get; } = new();
     public static DatabaseBeautyShopItem BeautyShopItems { get; } = new();
     public static DatabaseSkillTab SkillTabs { get; } = new();

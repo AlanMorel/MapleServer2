@@ -15,8 +15,6 @@ public class DatabaseLevels : DatabaseTable
             levels.Level,
             levels.Exp,
             rest_exp = levels.RestExp,
-            prestige_level = levels.PrestigeLevel,
-            prestige_exp = levels.PrestigeExp,
             mastery_exp = JsonConvert.SerializeObject(levels.MasteryExp)
         });
     }
@@ -28,8 +26,6 @@ public class DatabaseLevels : DatabaseTable
             levels.Level,
             levels.Exp,
             rest_exp = levels.RestExp,
-            prestige_level = levels.PrestigeLevel,
-            prestige_exp = levels.PrestigeExp,
             mastery_exp = JsonConvert.SerializeObject(levels.MasteryExp)
         });
     }

@@ -14,7 +14,7 @@ public static class FieldPlayerPacket
         Player player = fieldPlayer.Value;
         PacketWriter pWriter = PacketWriter.Of(SendOp.FieldAddPlayer);
         pWriter.WriteInt(fieldPlayer.ObjectId);
-        pWriter.WriteCharacter(player);
+        pWriter.WriteClass(player);
 
         // Skills
         pWriter.WriteJobInfo(player);

@@ -2,6 +2,7 @@
 using Autofac;
 using MapleServer2.Commands.Core;
 using MapleServer2.Database;
+using MapleServer2.Database.Types;
 using MapleServer2.Managers;
 using MapleServer2.Network;
 using MapleServer2.Types;
@@ -28,6 +29,7 @@ public class GameServer : Server<GameSession>
     public static readonly UgcMarketManager UgcMarketManager = new();
     public static readonly FieldWarManager FieldWarManager = new();
     public static readonly UGCBannerManager UGCBannerManager = new();
+    public static readonly ShopManager ShopManager = new();
     public static readonly MushkingRoyaleQueueManager MushkingRoyaleQueueManager = new();
     public static readonly MushkingRoyaleSessionManager MushkingRoyaleSessionManager = new();
 
@@ -44,6 +46,13 @@ public class GameServer : Server<GameSession>
         {
             GuildManager.AddGuild(guild);
         }
+
+        List<Shop> shops = DatabaseManager.Shops.FindAll();
+        foreach (Shop shop in shops)
+        {
+            ShopManager.AddShop(shop);
+        }
+        ShopManager.UpdateShops();
 
         ushort port = ushort.Parse(Environment.GetEnvironmentVariable("GAME_PORT"));
         Start(port);

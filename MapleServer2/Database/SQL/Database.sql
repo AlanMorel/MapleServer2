@@ -33,7 +33,9 @@ CREATE TABLE `accounts`
     `meso_token`                    bigint DEFAULT NULL,
     `bank_inventory_id`             bigint DEFAULT NULL,
     `mushking_royale_id`            bigint       NOT NULL,
+    `prestige_id`                   bigint       NOT NULL,
     `vip_expiration`                bigint       NOT NULL,
+    `premium_rewards_claimed`       text,
     `meso_market_daily_listings`    int          NOT NULL,
     `meso_market_monthly_purchases` int          NOT NULL,
     PRIMARY KEY (`id`),
@@ -129,8 +131,6 @@ CREATE TABLE `characters`
     `title_id`                 int              NOT NULL,
     `insignia_id`              smallint         NOT NULL,
     `titles`                   text,
-    `prestige_rewards_claimed` text,
-    `prestige_missions`        text,
     `gear_score`               int              NOT NULL,
     `max_skill_tabs`           int              NOT NULL,
     `active_skill_tab_id`      bigint           NOT NULL,
@@ -557,9 +557,24 @@ CREATE TABLE `levels`
     `level`          smallint NOT NULL,
     `exp`            bigint   NOT NULL,
     `rest_exp`       bigint   NOT NULL,
-    `prestige_level` int      NOT NULL,
-    `prestige_exp`   bigint   NOT NULL,
     `mastery_exp`    text,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci;
+
+--
+-- Table structure for table `levels`
+--
+
+DROP TABLE IF EXISTS `prestiges`;
+CREATE TABLE `prestiges`
+(
+    `id`                   bigint   NOT NULL AUTO_INCREMENT,
+    `level`                int      NOT NULL,
+    `exp`                  bigint   NOT NULL,
+    `rewards_claimed`      text,
+    `missions`             text,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
@@ -908,6 +923,131 @@ CREATE TABLE `pets`
     `potion_settings` mediumtext  NOT NULL,
     `loot_settings`   mediumtext  NOT NULL,
     CONSTRAINT `pets_pk` PRIMARY KEY (`uid`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci;
+
+--
+-- Table structure for table `shops`
+--
+
+DROP TABLE IF EXISTS `shops`;
+CREATE TABLE `shops`
+(
+    `id`                              int    NOT NULL,
+    `category`                        int    NOT NULL,
+    `name`                            varchar(25) DEFAULT NULL,
+    `shop_type`                       tinyint unsigned NOT NULL,
+    `hide_unuseable`                  tinyint(1) NOT NULL,
+    `hide_stats`                      tinyint(1) NOT NULL,
+    `disable_buyback`                 tinyint(1) NOT NULL,
+    `open_wallet`                     tinyint(1) NOT NULL,
+    `display_new`                     tinyint(1) NOT NULL,
+    `randomize_order`                 tinyint(1) NOT NULL,
+    `can_restock`                     tinyint(1) NOT NULL,
+    `next_restock_timestamp`          bigint NOT NULL,
+    `restock_min_interval`            int NOT NULL,
+    `restock_interval`                tinyint unsigned NOT NULL,
+    `restock_currency_type`           tinyint unsigned NOT NULL,
+    `excess_restock_currency_type`    tinyint unsigned NOT NULL,
+    `restock_cost`                    int NOT NULL,
+    `enable_restock_cost_multiplier`  tinyint(1) NOT NULL,
+    `disable_instant_restock`         tinyint(1) NOT NULL,
+    `persistant_inventory`            tinyint(1) NOT NULL,
+    `pull_count`                      int DEFAULT 0,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB 
+    DEFAULT CHARSET=utf8mb4 
+    COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Table structure for table `shop_items`
+--
+
+DROP TABLE IF EXISTS `shop_items`;
+CREATE TABLE `shop_items`
+(
+    `uid`                              int              NOT NULL AUTO_INCREMENT,
+    `auto_preview_equip`               tinyint(1)       NOT NULL,
+    `category`                         varchar(25) DEFAULT NULL,
+    `label`                             tinyint unsigned NOT NULL,
+    `guild_trophy`                     int              NOT NULL,
+    `item_id`                          int              NOT NULL,
+    `rarity`                        tinyint unsigned NOT NULL,
+    `price`                            int              NOT NULL,
+    `quantity`                         smallint         NOT NULL,
+    `required_achievement_grade`       int              NOT NULL,
+    `required_achievement_id`          int              NOT NULL,
+    `required_championship_grade`      tinyint unsigned NOT NULL,
+    `required_championship_join_count` smallint         NOT NULL,
+    `required_fame_grade`              int              NOT NULL,
+    `required_guild_merchant_level`    smallint         NOT NULL,
+    `required_guild_merchant_type`     tinyint unsigned NOT NULL,
+    `required_item_id`                 int              NOT NULL,
+    `required_quest_alliance`          smallint         NOT NULL,
+    `sale_price`                       int              NOT NULL,
+    `shop_id`                          int              DEFAULT NULL,
+    `stock_count`                      int              NOT NULL,
+    `currency_id`                    varchar(25) DEFAULT NULL,
+    `currency_type`                       tinyint unsigned NOT NULL,
+    PRIMARY KEY (`uid`),
+    KEY `ix_shopitems_shopid` (`shop_id`),
+    CONSTRAINT `fk_shopitems_shops_shopid` FOREIGN KEY (`shop_id`) REFERENCES `shops` (`id`) ON DELETE RESTRICT
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci;
+
+--
+-- Table structure for table `player_shop_infos`
+--
+
+DROP TABLE IF EXISTS `player_shop_infos`;
+CREATE TABLE `player_shop_infos`
+(
+    `uid`                    bigint      NOT NULL AUTO_INCREMENT,
+    `shop_id`                int         NOT NULL,
+    `character_id`           bigint      NOT NULL,
+    `account_id`             bigint      NOT NULL,
+    `restock_time`           bigint      NOT NULL,
+    `total_restock_count`    int         DEFAULT 0,
+    `is_persistant`          tinyint(1)  NOT NULL,
+    CONSTRAINT `item_log_pk` PRIMARY KEY (`uid`),
+    KEY `ix_player_shop_info_shop_id` (`shop_id`),
+    KEY `ix_player_shop_info_character_id` (`character_id`),
+    KEY `ix_player_shop_info_account_id` (`account_id`),
+    CONSTRAINT `shop_info_shop_uid_fk` FOREIGN KEY (`shop_id`) REFERENCES `shops` (`id`),
+    CONSTRAINT `shop_info_character_id_fk`  FOREIGN KEY (`character_id`) REFERENCES  `characters` (`character_id`),
+    CONSTRAINT `shop_info_account_id_fk` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci;
+
+--
+-- Table structure for table `player_shop_inventories`
+--
+
+DROP TABLE IF EXISTS `player_shop_inventories`;
+CREATE TABLE `player_shop_inventories`
+(
+    `uid`             bigint      NOT NULL AUTO_INCREMENT,
+    `shop_item_uid`   int         NOT NULL,
+    `shop_id`         int         NOT NULL,
+    `character_id`    bigint      NOT NULL,
+    `account_id`      bigint      NOT NULL,
+    `item_uid`        bigint      NOT NULL,
+    `purchase_count`  int         DEFAULT 0,
+    `is_persistant`   tinyint(1)  NOT NULL,
+    CONSTRAINT `item_log_pk` PRIMARY KEY (`uid`),
+    KEY `ix_player_shop_inventories_shop_item_uid` (`shop_item_uid`),
+    KEY `ix_player_shop_inventories_shop_id` (`shop_id`),
+    KEY `ix_player_shop_inventories_character_id` (`character_id`),
+    KEY `ix_player_shop_inventories_account_id` (`account_id`),
+    KEY `ix_player_shop_inventories_item_uid` (`item_uid`),
+    CONSTRAINT `shop_inventories_shop_item_uid_fk` FOREIGN KEY (`shop_item_uid`) REFERENCES `shop_items` (`uid`),
+    CONSTRAINT `shop_inventories_shop_id_fk` FOREIGN KEY (`shop_id`) REFERENCES `shops` (`id`),
+    CONSTRAINT `shop_inventories_character_id_fk`  FOREIGN KEY (`character_id`) REFERENCES  `characters` (`character_id`),
+    CONSTRAINT `shop_inventories_account_id_fk` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`),
+    CONSTRAINT `shop_inventories_item_uid_fk` FOREIGN KEY (`item_uid`) REFERENCES `items` (`uid`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;

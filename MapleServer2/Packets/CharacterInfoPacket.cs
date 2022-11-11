@@ -27,7 +27,7 @@ public static class CharacterInfoPacket
         characterBuffer.Write(player.JobCode);
         characterBuffer.Write(player.SubJobCode);
         characterBuffer.WriteInt((int) player.Gender);
-        characterBuffer.WriteInt(player.Levels.PrestigeLevel);
+        characterBuffer.WriteInt(player.Account.Prestige.Level);
         characterBuffer.WriteByte();
         WriteStats(characterBuffer, player);
 
@@ -36,19 +36,10 @@ public static class CharacterInfoPacket
 
         characterBuffer.WriteUnicodeString(player.ProfileUrl);
         characterBuffer.WriteUnicodeString(player.Motto);
+        characterBuffer.WriteUnicodeString(player.Guild?.Name);
+        characterBuffer.WriteUnicodeString(player.Guild?.Ranks[player.GuildMember.Rank]?.Name);
 
-        if (player.Guild == null)
-        {
-            characterBuffer.WriteUnicodeString(string.Empty);
-            characterBuffer.WriteUnicodeString(string.Empty);
-        }
-        else
-        {
-            characterBuffer.WriteUnicodeString(player.Guild.Name);
-            characterBuffer.WriteUnicodeString(player.Guild.Ranks[player.GuildMember.Rank].Name);
-        }
-
-        characterBuffer.WriteUnicodeString(player.Account.Home?.Name ?? string.Empty);
+        characterBuffer.WriteUnicodeString(player.Account.Home?.Name);
         characterBuffer.WriteZero(12);
         characterBuffer.WriteInt(player.TitleId);
         characterBuffer.WriteInt(player.Titles.Count);

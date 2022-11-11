@@ -20,11 +20,11 @@ public static class PrestigePacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Prestige);
         pWriter.Write(Mode.SetLevels);
-        pWriter.WriteLong(player.Levels.PrestigeExp);
-        pWriter.WriteInt(player.Levels.PrestigeLevel);
-        pWriter.WriteLong(player.Levels.PrestigeExp);
+        pWriter.WriteLong(player.Account.Prestige.Exp);
+        pWriter.WriteInt(player.Account.Prestige.Level);
+        pWriter.WriteLong(player.Account.Prestige.Exp);
 
-        List<int> rankRewardsClaimed = player.PrestigeRewardsClaimed;
+        List<int> rankRewardsClaimed = player.Account.Prestige.RewardsClaimed;
         pWriter.WriteInt(rankRewardsClaimed.Count);
         foreach (int rank in rankRewardsClaimed)
         {

@@ -1,6 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -24,10 +25,15 @@ public class MasteryUgcHousingParser : Exporter<List<MasteryUgcHousingMetadata>>
             XmlNodeList document = Resources.XmlReader.GetXmlDocument(entry).GetElementsByTagName("v");
             foreach (XmlNode node in document)
             {
+                if (ParserHelper.CheckForNull(node, "value", "grade"))
+                {
+                    continue;
+                }
+
                 MasteryUgcHousingMetadata metadata = new()
                 {
-                    Grade = byte.Parse(node.Attributes["grade"].Value),
-                    MasteryRequired = short.Parse(node.Attributes["value"].Value)
+                    Grade = byte.Parse(node.Attributes!["grade"]!.Value),
+                    MasteryRequired = short.Parse(node.Attributes["value"]!.Value)
                 };
 
                 _ = int.TryParse(node.Attributes["rewardJobItemID"]?.Value ?? "0", out metadata.ItemId);

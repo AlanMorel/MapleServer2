@@ -46,7 +46,7 @@ public static class BeautyPacket
         foreach (BeautyShopItem item in items)
         {
             pWriter.WriteInt(item.ItemId);
-            pWriter.Write(item.Flag);
+            pWriter.Write(item.Label);
             pWriter.WriteShort(item.RequiredLevel);
             pWriter.WriteInt(item.RequiredAchievementId);
             pWriter.WriteByte(item.RequiredAchievementGrade);

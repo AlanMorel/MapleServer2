@@ -19,18 +19,14 @@ public class Levels
     public short Level { get; private set; }
     public long Exp { get; private set; }
     public long RestExp { get; private set; }
-    public int PrestigeLevel { get; private set; }
-    public long PrestigeExp { get; private set; }
+
     public List<MasteryExp> MasteryExp { get; }
 
-    public Levels(short playerLevel, long exp, long restExp, int prestigeLevel, long prestigeExp,
-        List<MasteryExp> masteryExp, GameSession gameSession, long id = 0)
+    public Levels(short playerLevel, long exp, long restExp, List<MasteryExp> masteryExp, GameSession gameSession, long id = 0)
     {
         Level = playerLevel;
         Exp = exp;
         RestExp = restExp;
-        PrestigeLevel = prestigeLevel;
-        PrestigeExp = prestigeExp;
         MasteryExp = masteryExp;
         Session = gameSession;
 
@@ -72,25 +68,6 @@ public class Levels
         QuestHelper.GetNewQuests(Player);
 
         return true;
-    }
-
-    public void SetPrestigeLevel(int level)
-    {
-        PrestigeLevel = level;
-        PrestigeExp = 0;
-        Session.Send(PrestigePacket.ExpUp(0, 0));
-        Session.Send(PrestigePacket.LevelUp(FieldPlayer.ObjectId, PrestigeLevel));
-    }
-
-    public void PrestigeLevelUp()
-    {
-        PrestigeLevel++;
-        foreach (PrestigeMission mission in Session.Player.PrestigeMissions)
-        {
-            mission.LevelCount++;
-        }
-
-        Session.Send(PrestigePacket.LevelUp(FieldPlayer.ObjectId, PrestigeLevel));
     }
 
     public void GainExp(long amount)
@@ -148,27 +125,6 @@ public class Levels
 
         Session.Send(KeyTablePacket.SendFullOptions(Player.GameOptions));
         DatabaseManager.Characters.Update(Player);
-    }
-
-    public void GainPrestigeExp(long amount)
-    {
-        if (Level < 50) // Can only gain prestige exp after level 50.
-        {
-            return;
-        }
-        // Prestige exp can only be earned 1M exp per day. 
-        // TODO: After 1M exp, reduce the gain and reset the exp gained every midnight.
-
-        long newPrestigeExp = PrestigeExp + amount;
-
-        if (newPrestigeExp >= 1000000)
-        {
-            newPrestigeExp -= 1000000;
-            PrestigeLevelUp();
-        }
-
-        PrestigeExp = newPrestigeExp;
-        Session.Send(PrestigePacket.ExpUp(PrestigeExp, amount));
     }
 
     public void GainMasteryExp(MasteryType type, long amount)

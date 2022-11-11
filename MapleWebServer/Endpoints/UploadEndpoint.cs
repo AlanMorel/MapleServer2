@@ -21,14 +21,14 @@ public static class UploadEndpoint
 
         PacketReader pReader = new(memoryStream.ToArray());
 
-        int flagA = pReader.ReadInt();
+        pReader.ReadInt();
         UGCType mode = (UGCType) pReader.ReadInt();
-        long accountId = pReader.ReadLong();
+        pReader.ReadLong();
         long characterId = pReader.ReadLong();
         long ugcUid = pReader.ReadLong();
         int id = pReader.ReadInt(); // item id, guild id, others?
-        int flagB = pReader.ReadInt();
-        long unk = pReader.ReadLong();
+        pReader.ReadInt();
+        pReader.ReadLong();
 
         byte[]? fileBytes = pReader.ReadBytes(pReader.Available);
 
@@ -49,7 +49,7 @@ public static class UploadEndpoint
         string filePath = $"{Paths.DATA_DIR}/itemicon/{itemId}/";
         Directory.CreateDirectory(filePath);
 
-        UGC ugc = DatabaseManager.UGC.FindByUid(ugcUid);
+        UGC? ugc = DatabaseManager.UGC.FindByUid(ugcUid);
         if (ugc is null)
         {
             Log.Logger.Error($"Could not find ugc with uid {ugcUid}");
@@ -65,7 +65,7 @@ public static class UploadEndpoint
         string filePath = $"{Paths.DATA_DIR}/item/{itemId}/";
         Directory.CreateDirectory(filePath);
 
-        UGC ugc = DatabaseManager.UGC.FindByUid(ugcUid);
+        UGC? ugc = DatabaseManager.UGC.FindByUid(ugcUid);
         if (ugc is null)
         {
             Log.Logger.Error($"Could not find ugc with uid {ugcUid}");
@@ -103,7 +103,7 @@ public static class UploadEndpoint
         string filePath = $"{Paths.DATA_DIR}/guildmark/{guildId}/";
         Directory.CreateDirectory(filePath);
 
-        UGC ugc = DatabaseManager.UGC.FindByUid(ugcUid);
+        UGC? ugc = DatabaseManager.UGC.FindByUid(ugcUid);
         if (ugc is null)
         {
             Log.Logger.Error($"Could not find ugc with uid {ugcUid}");
@@ -131,7 +131,7 @@ public static class UploadEndpoint
         string filePath = $"{Paths.DATA_DIR}/guildmark/{guildId}/banner";
         Directory.CreateDirectory(filePath);
 
-        UGC ugc = DatabaseManager.UGC.FindByUid(ugcUid);
+        UGC? ugc = DatabaseManager.UGC.FindByUid(ugcUid);
         if (ugc is null)
         {
             Log.Logger.Error($"Could not find ugc with uid {ugcUid}");
@@ -152,7 +152,7 @@ public static class UploadEndpoint
         string filePath = $"{Paths.DATA_DIR}/banner/{bannerId}/";
         Directory.CreateDirectory(filePath);
 
-        UGC ugc = DatabaseManager.UGC.FindByUid(ugcUid);
+        UGC? ugc = DatabaseManager.UGC.FindByUid(ugcUid);
         if (ugc is null)
         {
             Log.Logger.Error($"Could not find ugc with uid {ugcUid}");

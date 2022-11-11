@@ -21,12 +21,12 @@ public class BankInventory
         Id = DatabaseManager.BankInventories.Insert(this);
     }
 
-    public BankInventory(long id, int extraSize, List<Item> items, long bankMesos)
+    public BankInventory(long id, int extraSize, List<Item> items, long bankMesos, GameSession session)
     {
         Id = id;
         ExtraSize = extraSize;
         Items = new Item[DEFAULT_SIZE + ExtraSize];
-        Mesos = new(CurrencyType.BankMesos, bankMesos);
+        Mesos = new(CurrencyType.BankMesos, bankMesos, session);
 
         for (int i = 0; i < items.Count; i++)
         {

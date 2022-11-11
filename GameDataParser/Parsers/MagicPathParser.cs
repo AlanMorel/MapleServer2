@@ -24,26 +24,35 @@ public class MagicPathParser : Exporter<List<MagicPathMetadata>>
             }
 
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
+            XmlNodeList? pathTypeList = document.SelectNodes("/ms2/type");
+            if (pathTypeList is null)
+            {
+                continue;
+            }
 
-            XmlNodeList pathTypeList = document.SelectNodes("/ms2/type");
             foreach (XmlNode pathType in pathTypeList)
             {
-                long id = long.Parse(pathType.Attributes["id"]?.Value ?? "0");
+                long id = long.Parse(pathType.Attributes?["id"]?.Value ?? "0");
 
                 List<MagicPathMove> pathMoves = new();
-                XmlNodeList pathMoveList = pathType.SelectNodes("move");
+                XmlNodeList? pathMoveList = pathType.SelectNodes("move");
+                if (pathMoveList is null)
+                {
+                    continue;
+                }
+
                 foreach (XmlNode pathMove in pathMoveList)
                 {
-                    int rotation = int.Parse(pathMove.Attributes["rotation"]?.Value ?? "0");
+                    int rotation = int.Parse(pathMove.Attributes?["rotation"]?.Value ?? "0");
 
-                    CoordF fireOffsetPosition = ParseCoordWithoutLastChar(pathMove.Attributes["fireOffsetPosition"]?.Value ?? "0,0,");
-                    CoordF direction = ParseCoordWithDuplicateDot(pathMove.Attributes["direction"]?.Value ?? "0");
-                    CoordF controlValue0 = ParseCoordFromString(pathMove.Attributes["controlValue0"]?.Value ?? "0,0,0");
-                    CoordF controlValue1 = ParseCoordFromString(pathMove.Attributes["controlValue1"]?.Value ?? "0,0,0");
+                    CoordF fireOffsetPosition = ParseCoordWithoutLastChar(pathMove.Attributes?["fireOffsetPosition"]?.Value ?? "0,0,");
+                    CoordF direction = ParseCoordWithDuplicateDot(pathMove.Attributes?["direction"]?.Value ?? "0");
+                    CoordF controlValue0 = ParseCoordFromString(pathMove.Attributes?["controlValue0"]?.Value ?? "0,0,0");
+                    CoordF controlValue1 = ParseCoordFromString(pathMove.Attributes?["controlValue1"]?.Value ?? "0,0,0");
 
-                    bool ignoreAdjust = pathMove.Attributes["ignoreAdjustCubePosition"] is null;
-                    bool traceTargetOffsetPos = pathMove.Attributes["traceTargetOffsetPos"]?.Value == "1";
-                    float distance = float.Parse(pathMove.Attributes["distance"]?.Value ?? "0");
+                    bool ignoreAdjust = pathMove.Attributes?["ignoreAdjustCubePosition"] is null;
+                    bool traceTargetOffsetPos = pathMove.Attributes?["traceTargetOffsetPos"]?.Value == "1";
+                    float distance = float.Parse(pathMove.Attributes?["distance"]?.Value ?? "0");
 
                     pathMoves.Add(new(rotation, fireOffsetPosition, direction, controlValue0, controlValue1, ignoreAdjust, traceTargetOffsetPos, distance));
                 }
@@ -84,7 +93,8 @@ public class MagicPathParser : Exporter<List<MagicPathMetadata>>
 
         if (floatArray.Length < 3)
         {
-            floatArray = new[]{
+            floatArray = new[]
+            {
                 floatArray[0], floatArray[1], 0
             };
         }

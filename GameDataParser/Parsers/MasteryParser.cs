@@ -1,6 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -22,20 +23,33 @@ internal class MasteryParser : Exporter<List<MasteryMetadata>>
             }
 
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-            XmlNodeList masteries = document.SelectNodes("/ms2/mastery");
+            XmlNodeList? masteries = document.SelectNodes("/ms2/mastery");
+            if (masteries is null)
+            {
+                continue;
+            }
 
             foreach (XmlNode mastery in masteries)
             {
+                if (ParserHelper.CheckForNull(mastery, "type"))
+                {
+                    continue;
+                }
+
                 MasteryMetadata newMastery = new()
                 {
-                    Type = int.Parse(mastery.Attributes["type"].Value)
+                    Type = int.Parse(mastery.Attributes!["type"]!.Value)
                 };
 
-                XmlNodeList grades = mastery.SelectNodes("v");
+                XmlNodeList? grades = mastery.SelectNodes("v");
+                if (grades is null)
+                {
+                    continue;
+                }
 
                 foreach (XmlNode grade in grades)
                 {
-                    if (grade == null)
+                    if (grade?.Attributes is null)
                     {
                         continue;
                     }

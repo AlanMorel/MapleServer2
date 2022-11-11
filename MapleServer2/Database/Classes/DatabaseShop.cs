@@ -1,4 +1,5 @@
 ﻿using MapleServer2.Database.Types;
+using MapleServer2.Types;
 using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes;
@@ -19,8 +20,28 @@ public class DatabaseShop : DatabaseTable
         return shop;
     }
 
+    public List<Shop> FindAll()
+    {
+        IEnumerable<dynamic> result = QueryFactory.Query(TableName).Get();
+        List<Shop> shops = new();
+        foreach (dynamic data in result)
+        {
+            shops.Add(ReadShop(data));
+        }
+
+        return shops;
+    }
+
+    public void UpdateRestockTime(Shop shop)
+    {
+        QueryFactory.Query(TableName).Where("id", shop.Id).Update(new
+        {
+            next_restock_timestamp = shop.RestockTime
+        });
+    }
+
     private static Shop ReadShop(dynamic data)
     {
-        return new Shop(data.id, data.category, data.name, data.shop_type, data.restrict_sales, data.can_restock, data.next_restock, data.allow_buyback);
+        return new(data);
     }
 }

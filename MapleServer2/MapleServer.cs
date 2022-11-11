@@ -9,6 +9,7 @@ using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Managers;
 using MapleServer2.Network;
+using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
 using MapleServer2.Tools;
@@ -178,6 +179,8 @@ public static class MapleServer
                 DatabaseManager.GameEventUserValue.Delete(userValue);
                 player.EventUserValues.Remove(userValue);
             }
+
+            player.Account.PremiumClubRewardsClaimed = new();
         }
 
         // Weekly reset
@@ -187,6 +190,7 @@ public static class MapleServer
         }
 
         DatabaseManager.RunQuery("UPDATE `characters` SET gathering_count = '[]'");
+        DatabaseManager.RunQuery("UPDATE `accounts` SET premium_rewards_claimed = '[]'");
 
         DatabaseManager.ServerInfo.SetLastDailyReset(TimeInfo.CurrentDate());
     }
@@ -195,11 +199,14 @@ public static class MapleServer
     {
         foreach (Player player in players)
         {
-            player.PrestigeMissions = PrestigeLevelMissionMetadataStorage.GetPrestigeMissions;
+            player.Account.Prestige.Missions = PrestigeLevelMissionMetadataStorage.GetPrestigeMissions;
+            // TODO: Reset prestige exp
+            player.Session?.Send(PrestigePacket.SetLevels(player));
+            player.Session?.Send(PrestigePacket.WeeklyMissions(player.Account.Prestige.Missions));
         }
 
         string missions = JsonConvert.SerializeObject(PrestigeLevelMissionMetadataStorage.GetPrestigeMissions);
-        DatabaseManager.RunQuery($"UPDATE `characters` SET prestige_missions = '{missions}'");
+        DatabaseManager.RunQuery($"UPDATE `prestiges` SET missions = '{missions}'");
     }
 
     public static void BroadcastPacketAll(PacketWriter packet, GameSession sender = null)

@@ -1,6 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -22,16 +23,25 @@ public class PremiumClubDailyBenefitParser : Exporter<List<PremiumClubDailyBenef
             }
 
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-            XmlNodeList nodes = document.SelectNodes("/ms2/benefit");
+            XmlNodeList? nodes = document.SelectNodes("/ms2/benefit");
+            if (nodes is null)
+            {
+                continue;
+            }
 
             foreach (XmlNode node in nodes)
             {
+                if (ParserHelper.CheckForNull(node, "id", "itemID", "itemCount", "itemRank"))
+                {
+                    continue;
+                }
+
                 PremiumClubDailyBenefitMetadata metadata = new()
                 {
-                    BenefitId = int.Parse(node.Attributes["id"].Value),
-                    ItemId = int.Parse(node.Attributes["itemID"].Value),
-                    ItemAmount = short.Parse(node.Attributes["itemCount"].Value),
-                    ItemRarity = byte.Parse(node.Attributes["itemRank"].Value)
+                    BenefitId = int.Parse(node.Attributes!["id"]!.Value),
+                    ItemId = int.Parse(node.Attributes["itemID"]!.Value),
+                    ItemAmount = short.Parse(node.Attributes["itemCount"]!.Value),
+                    ItemRarity = byte.Parse(node.Attributes["itemRank"]!.Value)
                 };
 
                 metadataList.Add(metadata);
