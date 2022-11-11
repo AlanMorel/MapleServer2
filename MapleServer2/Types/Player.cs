@@ -11,7 +11,7 @@ using MapleServer2.Managers.Actors;
 using MapleServer2.PacketHandlers.Game;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-
+using Serilog;
 namespace MapleServer2.Types;
 
 public class Player
@@ -301,7 +301,14 @@ public class Player
 
     public void Warp(int mapId, CoordF? coord = null, CoordF? rotation = null, long instanceId = -1)
     {
-        if (MapMetadataStorage.GetMetadata(mapId)?.Property.IsTutorialMap ?? true) //resolves to true by default
+        bool? isTutorialMap = MapMetadataStorage.GetMetadata(mapId)?.Property.IsTutorialMap;
+        if (isTutorialMap == null)
+        {
+            Log.Error("no metadata for IsTutorialMap check, might need to change in the future.");
+            return;
+        }
+
+        if ((bool) isTutorialMap)
         {
             WarpGameToGame(mapId, instanceId, coord, rotation);
             return;
@@ -326,7 +333,7 @@ public class Player
             return;
         }
 
-        UpdateCoords(mapId, instanceId, coord, rotation);
+        UpdateFieldData(mapId, instanceId, coord, rotation);
 
         Session?.FieldManager.RemovePlayer(this);
         DatabaseManager.Characters.Update(this);
@@ -339,14 +346,14 @@ public class Player
         }
     }
 
-    public void Warp(Map mapId, CoordF? coord = null, CoordF? rotation = null, long instanceId = 1)
+    public void Warp(Map mapId, CoordF? coord = null, CoordF? rotation = null, long instanceId = -1)
     {
         Warp((int) mapId, coord, rotation, instanceId);
     }
 
     public void WarpGameToGame(int mapId, long instanceId, CoordF? coord = null, CoordF? rotation = null)
     {
-        UpdateCoords(mapId, instanceId, coord, rotation);
+        UpdateFieldData(mapId, instanceId, coord, rotation);
 
         string ipAddress = (Session?.IsLocalHost() ?? true) ? Constant.LocalHost : Environment.GetEnvironmentVariable("IP")!;
         int port = int.Parse(Environment.GetEnvironmentVariable("GAME_PORT")!);
@@ -558,7 +565,7 @@ public class Player
         return spawn;
     }
 
-    private void UpdateCoords(int mapId, long instanceId, CoordF? coord = null, CoordF? rotation = null)
+    private void UpdateFieldData(int mapId, long instanceId, CoordF? coord = null, CoordF? rotation = null)
     {
         if (MapEntityMetadataStorage.HasSafePortal(MapId))
         {

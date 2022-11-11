@@ -179,7 +179,7 @@ public class MoveFieldHandler : GamePacketHandler<MoveFieldHandler>
     private static void HandleLeaveInstance(GameSession session)
     {
         Player player = session.Player;
-        player.Warp(player.ReturnMapId, player.ReturnCoord, session.Player.FieldPlayer.Rotation);
+        player.Warp(player.ReturnMapId, player.ReturnCoord, player.FieldPlayer.Rotation, instanceId: 1);
     }
 
     private static void HandleVisitHouse(GameSession session, PacketReader packet)

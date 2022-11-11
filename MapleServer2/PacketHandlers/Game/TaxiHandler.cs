@@ -89,7 +89,7 @@ internal class TaxiHandler : GamePacketHandler<TaxiHandler>
         {
             return;
         }
-        session.Player.Warp(mapId);
+        session.Player.Warp(mapId, instanceId: 1);
     }
 
     private static void HandleRotorMeso(GameSession session, int mapId)
@@ -98,7 +98,7 @@ internal class TaxiHandler : GamePacketHandler<TaxiHandler>
         Account account = session.Player.Account;
         if (account.IsVip())
         {
-            session.Player.Warp(mapId);
+            session.Player.Warp(mapId, instanceId: 1);
             return;
         }
 
@@ -125,7 +125,7 @@ internal class TaxiHandler : GamePacketHandler<TaxiHandler>
             return;
         }
 
-        session.Player.Warp(mapId);
+        session.Player.Warp(mapId, instanceId: 1);
     }
 
     private static void HandleDiscoverTaxi(GameSession session)

@@ -104,7 +104,7 @@ public class MapCommand : InGameCommand
             return;
         }
 
-        trigger.Session.Player.Warp(mapId);
+        trigger.Session.Player.Warp(mapId, instanceId: 1);
     }
 }
 

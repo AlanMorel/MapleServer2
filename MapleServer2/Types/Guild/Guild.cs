@@ -37,6 +37,7 @@ public class Guild
     public Guild(string name, Player leader)
     {
         GuildPropertyMetadata property = GuildPropertyMetadataStorage.GetMetadata(0);
+
         Name = name;
         LeaderAccountId = leader.AccountId;
         LeaderCharacterId = leader.CharacterId;
