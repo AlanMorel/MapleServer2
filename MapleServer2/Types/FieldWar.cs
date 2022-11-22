@@ -6,8 +6,8 @@ namespace MapleServer2.Types;
 
 public class FieldWar
 {
-    public int Id;
-    public int MapId;
+    public readonly int Id;
+    public readonly int MapId;
     public int PlayerCount;
 
     public DateTimeOffset EntryClosureTime;
@@ -24,7 +24,7 @@ public class FieldWar
 
         foreach (Player player in onlinePlayers)
         {
-            player.Session.Send(FieldWarPacket.LegionPopup(id, EntryClosureTime.ToUnixTimeSeconds()));
+            player.Session?.Send(FieldWarPacket.LegionPopup(id, EntryClosureTime.ToUnixTimeSeconds()));
         }
     }
 }

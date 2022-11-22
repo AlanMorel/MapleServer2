@@ -308,6 +308,7 @@ public class Player : IPacketSerializable
         {
             pWriter.WriteInt(trophyCount);
         }
+
         pWriter.WriteLong(GuildId);
         pWriter.WriteUnicodeString(Guild?.Name);
         pWriter.WriteUnicodeString(Motto);
@@ -401,14 +402,14 @@ public class Player : IPacketSerializable
 
     public void Warp(int mapId, CoordF? coord = null, CoordF? rotation = null, long instanceId = -1, bool setReturnData = true)
     {
-        bool? isTutorialMap = MapMetadataStorage.GetMetadata(mapId)?.Property.IsTutorialMap;
-        if (isTutorialMap == null)
+        MapMetadata? mapMetadata = MapMetadataStorage.GetMetadata(mapId);
+        if (mapMetadata is null)
         {
             Log.Logger.Error($"no metadata for IsTutorialMap check mapId {MapId} - this should never happen");
             return;
         }
 
-        if ((bool) isTutorialMap)
+        if (mapMetadata.Property.IsTutorialMap)
         {
             WarpGameToGame(mapId, instanceId, coord, rotation);
             return;
@@ -714,6 +715,7 @@ public class Player : IPacketSerializable
         {
             return TrophyData[trophyId].GradeCondition.Grade == grade;
         }
+
         return false;
     }
 

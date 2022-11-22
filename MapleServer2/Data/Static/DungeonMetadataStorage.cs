@@ -8,8 +8,8 @@ namespace MapleServer2.Data.Static;
 public static class DungeonStorage
 {
     private static readonly Dictionary<int, DungeonMetadata> Dungeons = new();
-    static List<int> DungeonMaps = new();
-    static List<int> LobbyMaps = new();
+    private static readonly List<int> DungeonMaps = new();
+    private static readonly List<int> LobbyMaps = new();
 
     public static void Init()
     {

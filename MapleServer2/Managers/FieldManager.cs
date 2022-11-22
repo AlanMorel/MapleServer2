@@ -28,9 +28,10 @@ public class FieldManager
 
     public readonly int MapId;
     public readonly long InstanceId;
-    public readonly int Capacity;
-    public readonly bool IsTutorialMap;
-    public bool IsDungeonMap { get; set; }
+    private readonly int Capacity;
+    private readonly bool IsTutorialMap;
+    // ReSharper disable once NotAccessedField.Local -- Remove when implemented
+    private bool IsDungeonMap;
     public readonly FieldState State = new();
     public readonly CoordS[]? BoundingBox;
     public readonly TriggerScript[] Triggers;
@@ -946,7 +947,7 @@ public class FieldManager
     {
         foreach (Character player in State.Players.Values)
         {
-            action?.Invoke(player.Value.Session);
+            action?.Invoke(player.Value.Session!);
         }
     }
 
@@ -1147,7 +1148,7 @@ public class FieldManager
             //if not traveling between dungeon maps (including lobby<->dungeon) delete dungeon session and instance
             //not traveling between dungeon maps -> destroy dungeon Session
             //also checks the instance to ensure it is a dungeon session map
-            if (dungeonSession.IsDungeonReservedField(originMapId, originInstanceId))//is left map a dungeon map?
+            if (dungeonSession.IsDungeonReservedField(originMapId, originInstanceId)) //is left map a dungeon map?
             {
                 //player.Session?.SendNotice($"Leaving Dungeon Field: Solo SD: Deleting DS {player.DungeonSessionId} and Instance {InstanceId}");
                 GameServer.DungeonManager.RemoveDungeonSession(dungeonSession.SessionId, DungeonType.Solo, player);
@@ -1161,10 +1162,10 @@ public class FieldManager
         //player is not in a solo dungeon session
         if (player.Party is not null)
         {
-            Party party = GameServer.PartyManager.GetPartyById(player.Party.Id);
-            if (party.DungeonSessionId != -1)
+            Party? party = GameServer.PartyManager.GetPartyById(player.Party.Id);
+            if (party is not null && party.DungeonSessionId != -1)
             {
-                DungeonSession dungeonSession = GameServer.DungeonManager.GetBySessionId(party.DungeonSessionId);
+                DungeonSession? dungeonSession = GameServer.DungeonManager.GetBySessionId(party.DungeonSessionId);
                 Debug.Assert(dungeonSession != null); // if the dungeon session id is not -1, there should always be a corresponding dungeon session
                 //player.Session?.SendNotice($"Leaving Field: Party DS not -1: Player DS: {player.DungeonSessionId} Group DS {player.Party?.DungeonSessionId}");
 

@@ -30,9 +30,13 @@ public class DungeonSession
         SessionId = sessionId;
         DungeonId = dungeonId;
         DungeonInstanceId = dungeonInstanceId;
-        DungeonMetadata dungeon = DungeonStorage.GetDungeonById(dungeonId);
-        DungeonMapIds = dungeon.FieldIds;
-        DungeonLobbyId = dungeon.LobbyFieldId;
+        DungeonMetadata? dungeon = DungeonStorage.GetDungeonById(dungeonId);
+        if (dungeon is not null)
+        {
+            DungeonMapIds = dungeon.FieldIds;
+            DungeonLobbyId = dungeon.LobbyFieldId;
+        }
+
         IsReset = false;
         IsCompleted = false;
     }

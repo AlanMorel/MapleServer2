@@ -168,7 +168,7 @@ public class DatabaseCharacter : DatabaseTable
     /// Return the player with the given id with the minimal amount of data needed for Buddy list and Guild members.
     /// </summary>
     /// <returns>Player</returns>
-    public Player FindPartialPlayerById(long characterId)
+    public Player? FindPartialPlayerById(long characterId)
     {
         return ReadPartialPlayer(QueryFactory.Query(TableName).Where("character_id", characterId)
             .Join("levels", "levels.id", "characters.levels_id")

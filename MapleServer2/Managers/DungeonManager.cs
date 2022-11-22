@@ -19,7 +19,7 @@ public class DungeonManager
         RecyclableMapInstanceIds = new();
     }
 
-    public int GetMapInstanceId()
+    private int GetMapInstanceId()
     {
         if (RecyclableMapInstanceIds.Count <= 0)
         {
@@ -44,7 +44,7 @@ public class DungeonManager
         return dungeonSession;
     }
 
-    public void RemoveDungeonSession(int dungeonSessionId, DungeonType dungeonType, Player player = null)
+    public void RemoveDungeonSession(int dungeonSessionId, DungeonType dungeonType, Player? player = null)
     {
         if (!DungeonSessionList.ContainsKey(dungeonSessionId))
         {
@@ -58,13 +58,13 @@ public class DungeonManager
         RecyclableMapInstanceIds.Add(currentDungeonInstanceId);
         DungeonSessionList.Remove(dungeonSessionId);
 
-        if (dungeonType == DungeonType.Solo)
+        if (dungeonType == DungeonType.Solo && player is not null)
         {
             player.DungeonSessionId = -1;
         }
     }
 
-    public int GetUniqueSessionId()
+    private int GetUniqueSessionId()
     {
         if (RecyclableSessionIds.Count <= 0)
         {

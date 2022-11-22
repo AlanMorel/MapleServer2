@@ -85,7 +85,7 @@ public class Party
 
         if (DungeonSessionId != -1) //remove dungeon session on party disband
         {
-            DungeonSession dungeonSession = GameServer.DungeonManager.GetBySessionId(DungeonSessionId);
+            DungeonSession? dungeonSession = GameServer.DungeonManager.GetBySessionId(DungeonSessionId);
             Debug.Assert(dungeonSession != null, "if dungeonSession id != -1 the dungeon session should never be null");
 
             Player lastPlayer = Members.First(); //First member is last member left in the party

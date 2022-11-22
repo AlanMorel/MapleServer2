@@ -177,11 +177,11 @@ public class PartyHandler : GamePacketHandler<PartyHandler>
     {
         Party? party = session.Player.Party;
 
-        if (party.DungeonSessionId != -1)
+        if (party is not null && party.DungeonSessionId != -1)
         {
-            DungeonSession dungeonSession = GameServer.DungeonManager.GetBySessionId(party.DungeonSessionId);
+            DungeonSession? dungeonSession = GameServer.DungeonManager.GetBySessionId(party.DungeonSessionId);
 
-            if (dungeonSession.IsDungeonReservedField(session.Player.MapId, (int) session.Player.InstanceId))
+            if (dungeonSession is not null && dungeonSession.IsDungeonReservedField(session.Player.MapId, (int) session.Player.InstanceId))
             {
                 session.Player.Warp(session.Player.ReturnMapId, session.Player.ReturnCoord, instanceId: 1);
             }
@@ -190,10 +190,7 @@ public class PartyHandler : GamePacketHandler<PartyHandler>
         session.Send(PartyPacket.Leave(session.Player, 1)); //1 = You're the player leaving
         party?.RemoveMember(session.Player);
 
-        if (party != null)
-        {
-            party.BroadcastPacketParty(PartyPacket.Leave(session.Player, 0));
-        }
+        party?.BroadcastPacketParty(PartyPacket.Leave(session.Player, 0));
     }
 
     private static void HandleSetLeader(GameSession session, PacketReader packet)
@@ -244,10 +241,10 @@ public class PartyHandler : GamePacketHandler<PartyHandler>
     {
         long playerId = packet.ReadLong();
 
-        Player kickedPlayer = GameServer.PlayerManager.GetPlayerById(playerId);
+        Player? kickedPlayer = GameServer.PlayerManager.GetPlayerById(playerId);
 
         Party? party = GameServer.PartyManager.GetPartyByLeader(session.Player);
-        if (party == null)
+        if (party is null || kickedPlayer is null)
         {
             return;
         }
@@ -288,15 +285,17 @@ public class PartyHandler : GamePacketHandler<PartyHandler>
 
         //if kicked player is in a dungeon session
         //that is party has a dungeon Session id != -1
-        if (party.DungeonSessionId != -1)
+        if (party.DungeonSessionId == -1)
         {
-            DungeonSession dungeonSession = GameServer.DungeonManager.GetBySessionId(party.DungeonSessionId);
+            return;
+        }
 
-            //if player is in a dungeon session map, warp them to last safe place
-            if (dungeonSession.IsDungeonReservedField(kickedPlayer.MapId, instanceId: (int) kickedPlayer.InstanceId))
-            {
-                kickedPlayer.Warp(kickedPlayer.ReturnMapId, kickedPlayer.ReturnCoord, instanceId: 1);
-            }
+        DungeonSession? dungeonSession = GameServer.DungeonManager.GetBySessionId(party.DungeonSessionId);
+
+        //if player is in a dungeon session map, warp them to last safe place
+        if (dungeonSession is not null && dungeonSession.IsDungeonReservedField(kickedPlayer.MapId, instanceId: (int) kickedPlayer.InstanceId))
+        {
+            kickedPlayer.Warp(kickedPlayer.ReturnMapId, kickedPlayer.ReturnCoord, instanceId: 1);
         }
     }
 
@@ -370,10 +369,12 @@ public class PartyHandler : GamePacketHandler<PartyHandler>
         party.BroadcastPacketParty(PartyPacket.ReadyCheck(session.Player, response));
 
         party.ReadyCheck.Add(session.Player);
-        if (party.ReadyCheck.Count == party.Members.Count)
+        if (party.ReadyCheck.Count != party.Members.Count)
         {
-            party.BroadcastPacketParty(PartyPacket.EndReadyCheck());
-            party.ReadyCheck.Clear();
+            return;
         }
+
+        party.BroadcastPacketParty(PartyPacket.EndReadyCheck());
+        party.ReadyCheck.Clear();
     }
 }
