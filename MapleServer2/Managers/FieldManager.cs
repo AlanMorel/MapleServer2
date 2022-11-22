@@ -1131,7 +1131,7 @@ public class FieldManager
         int originInstanceId = (int) InstanceId;
 
         if (player.DungeonSessionId != -1) //player is in a solo dungeon session
-        { 
+        {
             //player.Session?.SendNotice($"Leaving Field: Solo DS {player.DungeonSessionId}");
             DungeonSession? dungeonSession = GameServer.DungeonManager.GetBySessionId(player.DungeonSessionId);
             Debug.Assert(dungeonSession != null); // if the player id is not -1, there should always be a corresponding dungeon session
@@ -1148,7 +1148,7 @@ public class FieldManager
             //not traveling between dungeon maps -> destroy dungeon Session
             //also checks the instance to ensure it is a dungeon session map
             if (dungeonSession.IsDungeonReservedField(originMapId, originInstanceId))//is left map a dungeon map?
-            { 
+            {
                 //player.Session?.SendNotice($"Leaving Dungeon Field: Solo SD: Deleting DS {player.DungeonSessionId} and Instance {InstanceId}");
                 GameServer.DungeonManager.RemoveDungeonSession(dungeonSession.SessionId, DungeonType.Solo, player);
                 FieldManagerFactory.ReleaseManager(this);

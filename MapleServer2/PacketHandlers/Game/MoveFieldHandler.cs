@@ -82,7 +82,7 @@ public class MoveFieldHandler : GamePacketHandler<MoveFieldHandler>
 
                 DungeonSession dungeonSession = GameServer.DungeonManager.GetBySessionId(playerDungeonSession == -1 ? groupDungeonSession : playerDungeonSession);
                 Debug.Assert(dungeonSession != null, "Should never be null");
-                session.Player.Warp(dungeonSession.DungeonLobbyId, instanceId: dungeonSession.DungeonInstanceId, setReturnData:false);
+                session.Player.Warp(dungeonSession.DungeonLobbyId, instanceId: dungeonSession.DungeonInstanceId, setReturnData: false);
                 return;
             case PortalTypes.LeaveDungeon:
                 HandleLeaveInstance(session);

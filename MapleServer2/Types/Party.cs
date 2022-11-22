@@ -92,7 +92,7 @@ public class Party
             // warp last person in the to be disbanded party to last safe map if dungeon session is removed
             if (dungeonSession.IsDungeonReservedField(lastPlayer.MapId, dungeonSession.DungeonInstanceId))
             {
-                Members.First().Warp(lastPlayer.ReturnMapId, lastPlayer.ReturnCoord, instanceId: 1); 
+                Members.First().Warp(lastPlayer.ReturnMapId, lastPlayer.ReturnCoord, instanceId: 1);
             }
             GameServer.DungeonManager.RemoveDungeonSession(DungeonSessionId, DungeonType.Group);
         }
