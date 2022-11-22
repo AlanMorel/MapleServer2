@@ -606,7 +606,7 @@ public class FieldManager
 
         player.Inventory.RecomputeSetBonuses(player.Session);
 
-        player.Session.SendNotice($"added to field with capacity: {Capacity} instanceId: {InstanceId} IsDungeonMap {IsDungeonMap}");
+        //player.Session.SendNotice($"added to field with capacity: {Capacity} instanceId: {InstanceId} IsDungeonMap {IsDungeonMap}");
     }
 
     public void RemovePlayer(Player player)

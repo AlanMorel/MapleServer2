@@ -1,4 +1,7 @@
 ﻿using MapleServer2.Commands.Core;
+using MapleServer2.Database;
+using MapleServer2.Enums;
+using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 
@@ -15,8 +18,9 @@ public class DungeonTests : InGameCommand
         Description = "dungeon test";
         Parameters = new()
         {
+            new Parameter<bool>("isCompleted", "if true is given for this parameter, the dungeon session will be set to be completed", false)
         };
-        Usage = "";
+        Usage = "/dt [setIsCompleted?]";
     }
 
     public override void Execute(GameCommandTrigger trigger)
@@ -26,17 +30,17 @@ public class DungeonTests : InGameCommand
 
         if (trigger.Session.Player.Party is not null)
         {
-            DungeonSession dungeonSession =
-                GameServer.DungeonManager.GetBySessionId(trigger.Session.Player.Party.DungeonSessionId);
-
+            bool setIsCompleted = trigger.Get<bool>("isCompleted");
+            DungeonSession dungeonSession = GameServer.DungeonManager.GetBySessionId(trigger.Session.Player.Party.DungeonSessionId);
             trigger.Session.SendNotice($"party DS {trigger.Session.Player.Party?.DungeonSessionId} IsCompleted {dungeonSession.IsCompleted}");
 
-            dungeonSession.IsCompleted = true;
-
-            trigger.Session.SendNotice($"party DS {trigger.Session.Player.Party?.DungeonSessionId} IsCompleted {dungeonSession.IsCompleted} IsReset {dungeonSession.IsReset}");
+            if (setIsCompleted)
+            {
+                dungeonSession.IsCompleted = true;
+                trigger.Session.SendNotice($"Set IsCompleted: IsCompleted {dungeonSession.IsCompleted}");
+            }
             return;
         }
-
         trigger.Session.SendNotice($"No party for {trigger.Session.Player.Name}");
     }
 }

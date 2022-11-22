@@ -13,7 +13,6 @@ using MapleServer2.PacketHandlers.Game;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using Serilog;
-using Serilog.Events;
 
 namespace MapleServer2.Types;
 
