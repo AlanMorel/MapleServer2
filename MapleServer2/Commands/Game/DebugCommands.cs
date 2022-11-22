@@ -32,6 +32,11 @@ public class DungeonTests : InGameCommand
         {
             bool setIsCompleted = trigger.Get<bool>("isCompleted");
             DungeonSession dungeonSession = GameServer.DungeonManager.GetBySessionId(trigger.Session.Player.Party.DungeonSessionId);
+
+            if (dungeonSession == null)
+            {
+                return;
+            }
             trigger.Session.SendNotice($"party DS {trigger.Session.Player.Party?.DungeonSessionId} IsCompleted {dungeonSession.IsCompleted}");
 
             if (setIsCompleted)
