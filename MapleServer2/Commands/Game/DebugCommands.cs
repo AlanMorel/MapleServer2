@@ -1,4 +1,7 @@
 ﻿using MapleServer2.Commands.Core;
+using MapleServer2.Servers.Game;
+using MapleServer2.Types;
+
 namespace MapleServer2.Commands.Game;
 
 public class DungeonTests : InGameCommand
@@ -23,7 +26,14 @@ public class DungeonTests : InGameCommand
 
         if (trigger.Session.Player.Party is not null)
         {
-            trigger.Session.SendNotice($"party DS {trigger.Session.Player.Party?.DungeonSessionId}");
+            DungeonSession dungeonSession =
+                GameServer.DungeonManager.GetBySessionId(trigger.Session.Player.Party.DungeonSessionId);
+
+            trigger.Session.SendNotice($"party DS {trigger.Session.Player.Party?.DungeonSessionId} IsCompleted {dungeonSession.IsCompleted}");
+
+            dungeonSession.IsCompleted = true;
+
+            trigger.Session.SendNotice($"party DS {trigger.Session.Player.Party?.DungeonSessionId} IsCompleted {dungeonSession.IsCompleted} IsReset {dungeonSession.IsReset}");
             return;
         }
 

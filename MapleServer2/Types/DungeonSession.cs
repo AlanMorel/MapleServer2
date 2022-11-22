@@ -13,13 +13,16 @@ public class DungeonSession
 {
     public int SessionId { get; }
     public int DungeonId { get; }
+    // TODO: in the server instance ids are long, casting from long to int is a narrowing conversion
+    // TODO: change all dungeon instance ids to long and where they are used.
     public int DungeonInstanceId { get; }
     public List<int> DungeonMapIds { get; }
     public int DungeonLobbyId { get; }
 
     public DungeonType DungeonType { get; }
 
-    public bool IsCompleted { get; }
+    public bool IsReset { get; set; }
+    public bool IsCompleted { get; set; }
 
     public DungeonSession(int sessionId, int dungeonId, int dungeonInstanceId, DungeonType dungeonType, int partyId = -1)
     {
@@ -30,6 +33,7 @@ public class DungeonSession
         DungeonMetadata dungeon = DungeonStorage.GetDungeonById(dungeonId);
         DungeonMapIds = dungeon.FieldIds;
         DungeonLobbyId = dungeon.LobbyFieldId;
+        IsReset = false;
         IsCompleted = false;
     }
 
@@ -39,8 +43,7 @@ public class DungeonSession
         return instanceId == DungeonInstanceId && (DungeonMapIds.Contains(mapId) || DungeonLobbyId == mapId);
     }
 
-    //lobby id or dungeon map id
-    //contains an instance id check cannot be used for checking whether a dungeon map 
+    /// <returns>true if the fieldManager is either a dungeon lobby or map</returns>
     public bool IsTravelingBetweenDungeonMaps(FieldManager fieldManager, Player player)
     {
         int originId = fieldManager.MapId;
@@ -51,5 +54,4 @@ public class DungeonSession
         //origin id and destination id are both dungeon maps
         return IsDungeonReservedField(originId, originInstance) && IsDungeonReservedField(destinationId, destinationInstance);
     }
-
 }

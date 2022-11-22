@@ -1,10 +1,13 @@
 ﻿using System.Diagnostics;
+using Maple2.Trigger._03009023_in;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
+using MapleServer2.Managers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
@@ -31,6 +34,9 @@ public class DungeonHandler : GamePacketHandler<DungeonHandler>
 
         switch (mode)
         {
+            case Mode.ResetDungeon:
+                HandleResetDungeon(session);
+                break;
             case Mode.EnterDungeonPortal:
                 HandleEnterDungeonPortal(session);
                 break;
@@ -58,24 +64,34 @@ public class DungeonHandler : GamePacketHandler<DungeonHandler>
         }
     }
 
+    private void HandleResetDungeon(GameSession session)
+    {
+        Party party = session.Player.Party;
+        DungeonSession partyDungeonSession = GameServer.DungeonManager.GetBySessionId(party.DungeonSessionId);
+        partyDungeonSession.IsReset = true;
+        partyDungeonSession.IsCompleted = false;
+        session.SendNotice("Dungeon has been reset");
+    }
+
     //if player has both party dungeon session always join the solo session
     //because the solo session would be -1 outside of the solo 
     public static void HandleEnterDungeonPortal(GameSession session)
     {
-        //if player dungeon session is -1 they must be in a group dungeon, otherwise
+        Player player = session.Player;
+
+        //if player dungeon session is -1, aka they are in a player dungeon session, they must be in a group dungeon, otherwise
         //they would not be in a dungeon lobby where this function is called from
-        int dungeonSessionId = session.Player.DungeonSessionId == -1
-            ? (session.Player.Party?.DungeonSessionId) ?? -1
-            : session.Player.DungeonSessionId;
+        int dungeonSessionId = player.DungeonSessionId;
 
-        Debug.Assert(dungeonSessionId != -1);
+        if (player.DungeonSessionId == -1)
+        {
+            dungeonSessionId = player.Party.DungeonSessionId;
+        }
 
+        Debug.Assert(dungeonSessionId != -1, "Should never happen");
         DungeonSession dungeonSession = GameServer.DungeonManager.GetBySessionId(dungeonSessionId);
 
-        Debug.Assert(dungeonSession != null);
-
         session.Player.Warp(dungeonSession.DungeonMapIds.First(), instanceId: dungeonSession.DungeonInstanceId, setReturnData: false);
-
     }
 
     public static void HandleCreateDungeon(GameSession session, PacketReader packet)
@@ -90,21 +106,40 @@ public class DungeonHandler : GamePacketHandler<DungeonHandler>
             return;
         }
 
-        int dungeonLobbyId = DungeonStorage.GetDungeonById(dungeonId).LobbyFieldId;
-        MapPlayerSpawn spawn = MapEntityMetadataStorage.GetRandomPlayerSpawn(dungeonLobbyId);
+        DungeonType dungeonType = groupEnter ? DungeonType.Group : DungeonType.Solo;
 
-        DungeonSession dungeonSession = GameServer.DungeonManager.CreateDungeonSession(dungeonId, groupEnter ? DungeonType.Group : DungeonType.Solo);
+        int dungeonLobbyId = DungeonStorage.GetDungeonById(dungeonId).LobbyFieldId;
+        MapPlayerSpawn spawn = MapEntityMetadataStorage.GetPlayerSpawns(dungeonLobbyId).First(); //TODO: spawn at correct coords
+
+        if (dungeonType == DungeonType.Solo)
+        {
+            DungeonSession dungeonSession = GameServer.DungeonManager.CreateDungeonSession(dungeonId, dungeonType);
+            session.Player.Warp(dungeonLobbyId, instanceId: dungeonSession.DungeonInstanceId);
+            player.DungeonSessionId = dungeonSession.SessionId;
+        }
 
         //TODO: Send packet that greys out enter alone / enter as party when already in a dungeon session (sendRoomDungeon packet/s).
         //the session belongs to the party leader
-        if (groupEnter)
+        if (dungeonType == DungeonType.Group)
         {
             Party party = player.Party;
+            // the button to create a group dungeon only appears when in party
+            Debug.Assert(party != null, "No party when entering group dungeon");
+
             if (party.DungeonSessionId != -1)
             {
-                session.SendNotice("Need to reset dungeon before entering another instance");
-                return;
+                DungeonSession partyDungeonSession = GameServer.DungeonManager.GetBySessionId(party.DungeonSessionId);
+                Debug.Assert(partyDungeonSession != null, "There should always be a dungeon session if there is a dungeonSessionId != -1");
+
+                if (partyDungeonSession.IsReset == false)
+                {
+                    session.SendNotice("Need to reset dungeon before entering another instance");
+                    return;
+                }
             }
+
+            //TODO: ensure that everyone left the dungeon when resetting a dungeon, so that no one of the party
+            //is a player still in a solo dungeon?
             foreach (Player member in party.Members)
             {
                 if (member.DungeonSessionId != -1)
@@ -113,19 +148,16 @@ public class DungeonHandler : GamePacketHandler<DungeonHandler>
                     return;
                 }
             }
+
+            DungeonSession dungeonSession = GameServer.DungeonManager.CreateDungeonSession(dungeonId, dungeonType);
             party.DungeonSessionId = dungeonSession.SessionId;
             party.BroadcastPacketParty(PartyPacket.PartyHelp(dungeonId));
-
-            //This packet sets the banner in the dungeon that displays the dungeonname and the playersize it was created for.
+            //set the banner in the dungeon that displays the dungeonname and the playersize it was created for.
             party.BroadcastPacketParty(DungeonWaitPacket.Show(dungeonId, DungeonStorage.GetDungeonById(dungeonId).MaxUserCount));
+            session.Player.Warp(dungeonLobbyId, instanceId: dungeonSession.DungeonInstanceId);
+
             //TODO: Update Party with dungeon Info via party packets (0d,0e and others are involved).
         }
-        else // solo join dungeon
-        {
-            player.DungeonSessionId = dungeonSession.SessionId;
-        }
-        session.Player.Warp(dungeonLobbyId, instanceId: dungeonSession.DungeonInstanceId);
-        //TODO: things after map is created here: spawn doctor npc.
     }
 
     //party dungeon only button
@@ -133,8 +165,10 @@ public class DungeonHandler : GamePacketHandler<DungeonHandler>
     {
         Party party = session.Player.Party;
         DungeonSession dungeonSession = GameServer.DungeonManager.GetBySessionId(party.DungeonSessionId);
-        if (dungeonSession == null) //Can be removed when enter dungeon button is removed on dungeonsession deletion.
+
+        if (dungeonSession.IsCompleted)
         {
+            session.SendNotice("The dungeon is expired");
             return;
         }
 

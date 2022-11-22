@@ -13,6 +13,8 @@ using MapleServer2.PacketHandlers.Game;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using Serilog;
+using Serilog.Events;
+
 namespace MapleServer2.Types;
 
 public class Player : IPacketSerializable
@@ -403,7 +405,7 @@ public class Player : IPacketSerializable
         bool? isTutorialMap = MapMetadataStorage.GetMetadata(mapId)?.Property.IsTutorialMap;
         if (isTutorialMap == null)
         {
-            Log.Error("no metadata for IsTutorialMap check, might need to change in the future.");
+            Log.Logger.Error($"no metadata for IsTutorialMap check mapId {MapId} - this should never happen");
             return;
         }
 

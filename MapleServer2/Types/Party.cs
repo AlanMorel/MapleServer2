@@ -86,10 +86,15 @@ public class Party
         if (DungeonSessionId != -1) //remove dungeon session on party disband
         {
             DungeonSession dungeonSession = GameServer.DungeonManager.GetBySessionId(DungeonSessionId);
-
             Debug.Assert(dungeonSession != null, "if dungeonSession id != -1 the dungeon session should never be null");
-            GameServer.DungeonManager.RemoveDungeonSession(DungeonSessionId, DungeonType.Group);
 
+            Player lastPlayer = Members.First(); //First member is last member left in the party
+            // warp last person in the to be disbanded party to last safe map if dungeon session is removed
+            if (dungeonSession.IsDungeonReservedField(lastPlayer.MapId, dungeonSession.DungeonInstanceId))
+            {
+                Members.First().Warp(lastPlayer.ReturnMapId, lastPlayer.ReturnCoord, instanceId: 1); 
+            }
+            GameServer.DungeonManager.RemoveDungeonSession(DungeonSessionId, DungeonType.Group);
         }
 
         BroadcastParty(session =>

@@ -149,7 +149,7 @@ public static class MapMetadataStorage
 
     public static bool IsInstancedOnly(int mapId)
     {
-        if (mapId is >= 50000001 and <= 50000014) // lobbyIds are capacity > 0, yet are instanced only
+        if (DungeonStorage.IsDungeonMap(mapId)) // lobbyIds are capacity > 0, yet are instanced only
         {
             return true;
         }
