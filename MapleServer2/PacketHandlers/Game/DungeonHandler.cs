@@ -153,10 +153,16 @@ public class DungeonHandler : GamePacketHandler<DungeonHandler>
             // the button to create a group dungeon only appears when in party
             Debug.Assert(party != null, "No party when entering group dungeon");
 
+            if (party.IsAnyMemberInSoloDungeon())
+            {
+                return;
+            }
+
             if (party.DungeonSessionId != -1) //there is an existing dungeon session
             {
                 DungeonSession? partyDungeonSession = GameServer.DungeonManager.GetBySessionId(party.DungeonSessionId);
-                Debug.Assert(partyDungeonSession != null, "There should always be a dungeon session if there is a dungeonSessionId != -1");
+                Debug.Assert(partyDungeonSession != null,
+                    "There should always be a dungeon session if there is a dungeonSessionId != -1");
 
                 //TODO: resetting a dungeon resets IsReset to true, so resetting -> enter dungeon will update the dungeon session with a new dungeon
                 //TODO: When resetting an instance removes the enter dungeon button, this behavior will not be possible
@@ -167,30 +173,29 @@ public class DungeonHandler : GamePacketHandler<DungeonHandler>
                     return;
                 }
 
-                if (party.IsAnyMemberInSoloDungeon()
-                    || partyDungeonSession.IsPartyMemberInDungeonField(party))
+                if (partyDungeonSession.IsPartyMemberInDungeonField(party))
                 {
                     return;
                 }
 
                 partyDungeonSession.UpdateDungeonSession(dungeonId);
                 session.SendNotice("Dungeon session updated");
+                party.BroadcastPacketParty(PartyPacket.PartyHelp(dungeonId));
+                //set the banner in the dungeon that displays the dungeonname and the playersize it was created for.
+                party.BroadcastPacketParty(DungeonWaitPacket.Show(dungeonId, dungeonById.MaxUserCount));
+                session.Player.Warp(dungeonLobbyFieldId, instanceId: partyDungeonSession.DungeonInstanceId);
                 return;
             }
 
             //create new group dungeon session
-            if (party.IsAnyMemberInSoloDungeon())
-            {
-                return;
-            }
-
             DungeonSession dungeonSession = GameServer.DungeonManager.CreateDungeonSession(dungeonId, dungeonType);
             party.DungeonSessionId = dungeonSession.SessionId;
+            session.SendNotice("New Group Dungeon Created");
             party.BroadcastPacketParty(PartyPacket.PartyHelp(dungeonId));
             //set the banner in the dungeon that displays the dungeonname and the playersize it was created for.
             party.BroadcastPacketParty(DungeonWaitPacket.Show(dungeonId, dungeonById.MaxUserCount));
             session.Player.Warp(dungeonLobbyFieldId, instanceId: dungeonSession.DungeonInstanceId);
-            session.SendNotice("New Group Dungeon Created");
+
             //TODO: Update Party with dungeon Info via party packets (0d,0e and others are involved).
         }
     }

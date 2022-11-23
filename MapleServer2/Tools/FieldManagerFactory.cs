@@ -39,18 +39,11 @@ public static class FieldManagerFactory
     {
         if (!Managers.TryGetValue(mapId, out List<FieldManager>? list))
         {
-            Console.WriteLine($"no list of managers found for: {mapId}");
-            Console.WriteLine($"The manager has values:");
-            foreach (int mId in Managers.Keys)
-            {
-                Console.WriteLine($"{mId}\n");
-            }
             return;
         }
 
         if (list.Count == 0)
         {
-            Console.WriteLine($"the list of managers was empty for: {mapId} instance: {instanceId}");
             return;
         }
 
@@ -59,7 +52,6 @@ public static class FieldManagerFactory
         if (matchedFieldManager != null)
         {
             list.Remove(matchedFieldManager);
-            Console.WriteLine($"removed field: {matchedFieldManager.MapId} instance: {matchedFieldManager.InstanceId}");
         }
     }
 

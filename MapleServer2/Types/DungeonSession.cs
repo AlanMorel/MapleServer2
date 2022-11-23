@@ -82,7 +82,7 @@ public class DungeonSession
             DungeonMapIds = dungeon.FieldIds;
             DungeonLobbyId = dungeon.LobbyFieldId;
 
-            IsReset = true;
+            IsReset = false;
             IsCompleted = false;
         }
     }
