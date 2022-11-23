@@ -34,7 +34,8 @@ public class DungeonTests : InGameCommand
             {
                 return;
             }
-            trigger.Session.SendNotice($"party DS {trigger.Session.Player.Party?.DungeonSessionId} IsCompleted {dungeonSession.IsCompleted}");
+
+            trigger.Session.SendNotice($"party DS {trigger.Session.Player.Party?.DungeonSessionId} IsCompleted {dungeonSession.IsCompleted} IsReset {dungeonSession.IsReset}");
 
             if (!setIsCompleted)
             {

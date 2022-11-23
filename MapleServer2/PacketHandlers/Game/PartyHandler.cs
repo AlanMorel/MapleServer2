@@ -251,8 +251,13 @@ public class PartyHandler : GamePacketHandler<PartyHandler>
 
         if (party.DungeonSessionId != -1)
         {
-            session.Send(PartyPacket.Notice(session.Player, PartyNotice.UnableToKickInDungeonBoss));
-            return;
+            DungeonSession dungeonSession = GameServer.DungeonManager.GetBySessionId(party.DungeonSessionId);
+
+            if (dungeonSession.IsDungeonReservedField(kickedPlayer.MapId, (int) kickedPlayer.InstanceId))
+            {
+                session.Send(PartyPacket.Notice(session.Player, PartyNotice.UnableToKickInDungeonBoss));
+                return;
+            }
         }
 
         kickedPlayer.CharacterId = playerId;

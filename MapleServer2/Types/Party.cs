@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using MaplePacketLib2.Tools;
+using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
@@ -186,5 +187,18 @@ public class Party
             BroadcastPacketParty(PartyPacket.EndReadyCheck());
             ReadyCheck.Clear();
         });
+    }
+
+    public bool IsAnyMemberInSoloDungeon()
+    {
+        foreach (Player member in Members)
+        {
+            if (member.DungeonSessionId != -1)
+            {
+                BroadcastPacketParty(ChatPacket.Send(member, $"{member.Name} is still in a Dungeon Instance.", ChatType.Notice));
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -1,6 +1,9 @@
-﻿using Maple2Storage.Types.Metadata;
+﻿using Maple2.Trigger._02100009_bf;
+using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
+using MapleServer2.Enums;
 using MapleServer2.Managers;
+using MapleServer2.Packets;
 
 namespace MapleServer2.Types;
 
@@ -16,8 +19,8 @@ public class DungeonSession
     // TODO: in the server instance ids are long, casting from long to int is a narrowing conversion
     // TODO: change all dungeon instance ids to long and where they are used.
     public int DungeonInstanceId { get; }
-    public List<int> DungeonMapIds { get; }
-    public int DungeonLobbyId { get; }
+    public List<int> DungeonMapIds { get; set; }
+    public int DungeonLobbyId { get; set; }
 
     public DungeonType DungeonType { get; }
 
@@ -57,5 +60,30 @@ public class DungeonSession
 
         //origin id and destination id are both dungeon maps
         return IsDungeonReservedField(originId, originInstance) && IsDungeonReservedField(destinationId, destinationInstance);
+    }
+
+    public bool IsPartyMemberInDungeonField(Party party)
+    {
+        foreach (Player member in party.Members)
+        {
+            if (IsDungeonReservedField(member.MapId, (int) member.InstanceId))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void UpdateDungeonSession(int dungeonId)
+    {
+        DungeonMetadata? dungeon = DungeonStorage.GetDungeonById(dungeonId);
+        if (dungeon is not null)
+        {
+            DungeonMapIds = dungeon.FieldIds;
+            DungeonLobbyId = dungeon.LobbyFieldId;
+
+            IsReset = true;
+            IsCompleted = false;
+        }
     }
 }

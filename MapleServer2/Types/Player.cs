@@ -936,4 +936,9 @@ public class Player : IPacketSerializable
             FieldPlayer.SkillTriggerHandler.FireTriggerSkills(skillLevel.ConditionSkills, new(id, level, 0, 0), new(FieldPlayer, FieldPlayer, FieldPlayer));
         }
     }
+
+    public bool HasDungeonSession()
+    {
+        return DungeonSessionId != -1;
+    }
 }

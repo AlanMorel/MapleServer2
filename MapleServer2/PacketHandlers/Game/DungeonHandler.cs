@@ -5,6 +5,7 @@ using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
@@ -64,19 +65,27 @@ public class DungeonHandler : GamePacketHandler<DungeonHandler>
     private static void HandleResetDungeon(GameSession session)
     {
         Party? party = session.Player.Party;
-        if (party is null)
-        {
-            return;
-        }
-
+        Debug.Assert(party != null, "party was null - should never happen");
         DungeonSession? partyDungeonSession = GameServer.DungeonManager.GetBySessionId(party.DungeonSessionId);
-        if (partyDungeonSession is null)
+        Debug.Assert(partyDungeonSession != null, "partyDungeonSession was null - should never happen");
+
+        foreach (Player player in party.Members)
         {
-            return;
+            if (partyDungeonSession.IsDungeonReservedField(player.MapId, (int) player.InstanceId))
+            {
+                session.SendNotice($"{player.Name} is still in the dungeon");
+                return;
+            }
         }
 
+        foreach (int mapId in partyDungeonSession.DungeonMapIds)
+        {
+
+            FieldManagerFactory.ReleaseManagerById(mapId, partyDungeonSession.DungeonInstanceId);
+        }
+
+        FieldManagerFactory.ReleaseManagerById(partyDungeonSession.DungeonLobbyId, partyDungeonSession.DungeonInstanceId);
         partyDungeonSession.IsReset = true;
-        partyDungeonSession.IsCompleted = false;
         session.SendNotice("Dungeon has been reset");
     }
 
@@ -111,7 +120,8 @@ public class DungeonHandler : GamePacketHandler<DungeonHandler>
         bool groupEnter = packet.ReadBool();
         Player player = session.Player;
 
-        if (player.DungeonSessionId != -1)
+        //is player in solo dungeon?
+        if (player.HasDungeonSession())
         {
             session.SendNotice("Leave your current dungeon before opening another.");
             return;
@@ -125,13 +135,13 @@ public class DungeonHandler : GamePacketHandler<DungeonHandler>
             return;
         }
 
-        int dungeonLobbyId = dungeonById.LobbyFieldId;
-        MapPlayerSpawn? spawn = MapEntityMetadataStorage.GetPlayerSpawns(dungeonLobbyId)?.FirstOrDefault(); //TODO: spawn at correct coords
+        int dungeonLobbyFieldId = dungeonById.LobbyFieldId;
+        MapPlayerSpawn? spawn = MapEntityMetadataStorage.GetPlayerSpawns(dungeonLobbyFieldId)?.FirstOrDefault(); //TODO: spawn at correct coords
 
         if (dungeonType == DungeonType.Solo)
         {
             DungeonSession dungeonSession = GameServer.DungeonManager.CreateDungeonSession(dungeonId, dungeonType);
-            session.Player.Warp(dungeonLobbyId, instanceId: dungeonSession.DungeonInstanceId);
+            session.Player.Warp(dungeonLobbyFieldId, instanceId: dungeonSession.DungeonInstanceId);
             player.DungeonSessionId = dungeonSession.SessionId;
         }
 
@@ -143,27 +153,35 @@ public class DungeonHandler : GamePacketHandler<DungeonHandler>
             // the button to create a group dungeon only appears when in party
             Debug.Assert(party != null, "No party when entering group dungeon");
 
-            if (party.DungeonSessionId != -1)
+            if (party.DungeonSessionId != -1) //there is an existing dungeon session
             {
                 DungeonSession? partyDungeonSession = GameServer.DungeonManager.GetBySessionId(party.DungeonSessionId);
                 Debug.Assert(partyDungeonSession != null, "There should always be a dungeon session if there is a dungeonSessionId != -1");
 
+                //TODO: resetting a dungeon resets IsReset to true, so resetting -> enter dungeon will update the dungeon session with a new dungeon
+                //TODO: When resetting an instance removes the enter dungeon button, this behavior will not be possible
+                //TODO: until this is done, the current behavior seems sensible: it creates a new dungeon as intended by the player
                 if (partyDungeonSession.IsReset == false)
                 {
                     session.SendNotice("Need to reset dungeon before entering another instance");
                     return;
                 }
-            }
 
-            //TODO: ensure that everyone left the dungeon when resetting a dungeon, so that no one of the party
-            //is a player still in a solo dungeon?
-            foreach (Player member in party.Members)
-            {
-                if (member.DungeonSessionId != -1)
+                if (party.IsAnyMemberInSoloDungeon()
+                    || partyDungeonSession.IsPartyMemberInDungeonField(party))
                 {
-                    session.SendNotice($"{member.Name} is still in a Dungeon Instance.");
                     return;
                 }
+
+                partyDungeonSession.UpdateDungeonSession(dungeonId);
+                session.SendNotice("Dungeon session updated");
+                return;
+            }
+
+            //create new group dungeon session
+            if (party.IsAnyMemberInSoloDungeon())
+            {
+                return;
             }
 
             DungeonSession dungeonSession = GameServer.DungeonManager.CreateDungeonSession(dungeonId, dungeonType);
@@ -171,8 +189,8 @@ public class DungeonHandler : GamePacketHandler<DungeonHandler>
             party.BroadcastPacketParty(PartyPacket.PartyHelp(dungeonId));
             //set the banner in the dungeon that displays the dungeonname and the playersize it was created for.
             party.BroadcastPacketParty(DungeonWaitPacket.Show(dungeonId, dungeonById.MaxUserCount));
-            session.Player.Warp(dungeonLobbyId, instanceId: dungeonSession.DungeonInstanceId);
-
+            session.Player.Warp(dungeonLobbyFieldId, instanceId: dungeonSession.DungeonInstanceId);
+            session.SendNotice("New Group Dungeon Created");
             //TODO: Update Party with dungeon Info via party packets (0d,0e and others are involved).
         }
     }

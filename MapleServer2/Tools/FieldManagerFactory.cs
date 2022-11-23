@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using Maple2.Trigger._03009023_in;
 using MapleServer2.Managers;
 using MapleServer2.Types;
 
@@ -32,6 +33,34 @@ public static class FieldManagerFactory
         }
 
         return manager;
+    }
+
+    public static void ReleaseManagerById(int mapId, int instanceId)
+    {
+        if (!Managers.TryGetValue(mapId, out List<FieldManager>? list))
+        {
+            Console.WriteLine($"no list of managers found for: {mapId}");
+            Console.WriteLine($"The manager has values:");
+            foreach (int mId in Managers.Keys)
+            {
+                Console.WriteLine($"{mId}\n");
+            }
+            return;
+        }
+
+        if (list.Count == 0)
+        {
+            Console.WriteLine($"the list of managers was empty for: {mapId} instance: {instanceId}");
+            return;
+        }
+
+        FieldManager matchedFieldManager = list.FirstOrDefault(fieldManager => fieldManager.InstanceId == instanceId);
+
+        if (matchedFieldManager != null)
+        {
+            list.Remove(matchedFieldManager);
+            Console.WriteLine($"removed field: {matchedFieldManager.MapId} instance: {matchedFieldManager.InstanceId}");
+        }
     }
 
     public static void ReleaseManager(FieldManager manager)

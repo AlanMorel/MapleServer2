@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using MapleServer2.Types;
+﻿using MapleServer2.Types;
 
 namespace MapleServer2.Managers;
 
