@@ -195,7 +195,6 @@ public class DungeonHandler : GamePacketHandler<DungeonHandler>
             //set the banner in the dungeon that displays the dungeonname and the playersize it was created for.
             party.BroadcastPacketParty(DungeonWaitPacket.Show(dungeonId, dungeonById.MaxUserCount));
             session.Player.Warp(dungeonLobbyFieldId, instanceId: dungeonSession.DungeonInstanceId);
-
             //TODO: Update Party with dungeon Info via party packets (0d,0e and others are involved).
         }
     }
