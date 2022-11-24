@@ -28,20 +28,19 @@ public class PlayerManager
         NameStorage.Remove(player.Name, out _);
     }
 
-    public Player GetPlayerByName(string name)
+    public Player? GetPlayerByName(string name)
     {
-        return NameStorage.TryGetValue(name, out Player foundPlayer) ? foundPlayer : null;
+        return NameStorage.TryGetValue(name, out Player? foundPlayer) ? foundPlayer : null;
     }
 
-    public Player GetPlayerById(long id)
+    public Player? GetPlayerById(long id)
     {
-        return CharacterId.TryGetValue(id, out Player foundPlayer) ? foundPlayer : null;
+        return CharacterId.TryGetValue(id, out Player? foundPlayer) ? foundPlayer : null;
     }
 
-    public Player GetPlayerByAccountId(long accountId)
+    public Player? GetPlayerByAccountId(long accountId)
     {
-        Player player = CharacterId.Values.FirstOrDefault(p => p.AccountId == accountId);
-        return player == default ? null : player;
+        return CharacterId.Values.FirstOrDefault(p => p.AccountId == accountId);
     }
 
     public List<Player> GetAllPlayers()

@@ -139,7 +139,7 @@ public sealed class Inventory : IInventory
 
     #region Public Methods
 
-    public void RecomputeSetBonuses(GameSession session)
+    public void RecomputeSetBonuses(GameSession? session)
     {
         foreach (SetBonus setBonus in SetBonuses)
         {
@@ -152,7 +152,7 @@ public sealed class Inventory : IInventory
                         continue;
                     }
 
-                    session.Player.FieldPlayer?.AdditionalEffects.GetEffect(id)?.Stop(session.Player.FieldPlayer);
+                    session?.Player.FieldPlayer?.AdditionalEffects.GetEffect(id)?.Stop(session.Player.FieldPlayer);
                 }
             }
         }

@@ -64,7 +64,7 @@ public class MapCommand : InGameCommand
 
     public override void Execute(GameCommandTrigger trigger)
     {
-        string[] command = trigger.Get<string[]>("map");
+        string[]? command = trigger.Get<string[]?>("map");
         if (command is null)
         {
             return;
@@ -81,7 +81,7 @@ public class MapCommand : InGameCommand
 
         if (!int.TryParse(mapName, out int mapId))
         {
-            MapMetadata mapMetadata =
+            MapMetadata? mapMetadata =
                 MapMetadataStorage.GetAll().FirstOrDefault(x => string.Equals(x.Name, mapName, StringComparison.CurrentCultureIgnoreCase));
             if (mapMetadata is null)
             {
@@ -104,7 +104,7 @@ public class MapCommand : InGameCommand
             return;
         }
 
-        trigger.Session.Player.Warp(mapId);
+        trigger.Session.Player.Warp(mapId, instanceId: 1);
     }
 }
 
@@ -127,7 +127,7 @@ public class GotoPlayerCommand : InGameCommand
     public override void Execute(GameCommandTrigger trigger)
     {
         string name = trigger.Get<string>("name");
-        Player target = GameServer.PlayerManager.GetPlayerByName(name);
+        Player? target = GameServer.PlayerManager.GetPlayerByName(name);
 
         if (target is null)
         {
@@ -135,7 +135,11 @@ public class GotoPlayerCommand : InGameCommand
             return;
         }
 
-        IFieldObject<Player> targetFieldPlayer = target.Session.Player.FieldPlayer;
+        IFieldObject<Player>? targetFieldPlayer = target.Session?.Player.FieldPlayer;
+        if (targetFieldPlayer is null)
+        {
+            return;
+        }
 
         Player player = trigger.Session.Player;
         if (target.MapId == player.MapId && target.InstanceId == player.InstanceId && target.ChannelId == player.ChannelId)
@@ -177,7 +181,12 @@ public class GotoCoordCommand : InGameCommand
         CoordF coordF = trigger.Get<CoordF>("pos");
 
         Player player = trigger.Session.Player;
-        IFieldActor<Player> fieldPlayer = player.FieldPlayer;
+        IFieldActor<Player>? fieldPlayer = player.FieldPlayer;
+        if (fieldPlayer is null)
+        {
+            return;
+        }
+
         if (coordF == default)
         {
             trigger.Session.SendNotice($"Coord: {fieldPlayer.Coord}");

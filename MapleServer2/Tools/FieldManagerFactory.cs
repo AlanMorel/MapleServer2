@@ -34,6 +34,26 @@ public static class FieldManagerFactory
         return manager;
     }
 
+    public static void ReleaseManagerById(int mapId, int instanceId)
+    {
+        if (!Managers.TryGetValue(mapId, out List<FieldManager>? list))
+        {
+            return;
+        }
+
+        if (list.Count == 0)
+        {
+            return;
+        }
+
+        FieldManager matchedFieldManager = list.FirstOrDefault(fieldManager => fieldManager.InstanceId == instanceId);
+
+        if (matchedFieldManager != null)
+        {
+            list.Remove(matchedFieldManager);
+        }
+    }
+
     public static void ReleaseManager(FieldManager manager)
     {
         if (!Managers.TryGetValue(manager.MapId, out List<FieldManager>? list))

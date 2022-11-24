@@ -1,4 +1,6 @@
-﻿using MaplePacketLib2.Tools;
+﻿using System.Diagnostics;
+using MaplePacketLib2.Tools;
+using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
@@ -82,11 +84,26 @@ public class Party
             return;
         }
 
+        if (DungeonSessionId != -1) //remove dungeon session on party disband
+        {
+            DungeonSession? dungeonSession = GameServer.DungeonManager.GetBySessionId(DungeonSessionId);
+            Debug.Assert(dungeonSession != null, "if dungeonSession id != -1 the dungeon session should never be null");
+
+            Player lastPlayer = Members.First(); //First member is last member left in the party
+            // warp last person in the to be disbanded party to last safe map if dungeon session is removed
+            if (dungeonSession.IsDungeonReservedField(lastPlayer.MapId, dungeonSession.DungeonInstanceId))
+            {
+                Members.First().Warp(lastPlayer.ReturnMapId, lastPlayer.ReturnCoord, instanceId: 1);
+            }
+            GameServer.DungeonManager.RemoveDungeonSession(DungeonSessionId, DungeonType.Group);
+        }
+
         BroadcastParty(session =>
         {
             session.Player.Party = null;
             session.Send(PartyPacket.Disband());
         });
+
         GameServer.PartyManager.RemoveParty(this);
     }
 
@@ -170,5 +187,18 @@ public class Party
             BroadcastPacketParty(PartyPacket.EndReadyCheck());
             ReadyCheck.Clear();
         });
+    }
+
+    public bool IsAnyMemberInSoloDungeon()
+    {
+        foreach (Player member in Members)
+        {
+            if (member.DungeonSessionId != -1)
+            {
+                BroadcastPacketParty(ChatPacket.Send(member, $"{member.Name} is still in a Dungeon Instance.", ChatType.Notice));
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -1,7 +1,6 @@
 ﻿using MapleServer2.Commands.Core;
 using MapleServer2.Constants;
 using MapleServer2.Enums;
-using MapleServer2.Managers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -30,7 +29,7 @@ public class RandomUserCommand : InGameCommand
             return;
         }
 
-        string randomPlayer = trigger.Session.FieldManager.State.Players.Values.ToList().OrderBy(_ => Random.Shared.Next()).FirstOrDefault()?.Value.Name;
+        string? randomPlayer = trigger.Session.FieldManager.State.Players.Values.ToList().MinBy(_ => Random.Shared.Next())?.Value.Name;
         if (randomPlayer is null)
         {
             return;
@@ -61,7 +60,7 @@ public class RandomNumberCommand : InGameCommand
         Player player = trigger.Session.Player;
         bool mapIsHome = player.MapId == (int) Map.PrivateResidence;
 
-        DungeonSession? dungeonSession = GameServer.DungeonManager.GetDungeonSessionBySessionId(player.DungeonSessionId);
+        DungeonSession? dungeonSession = GameServer.DungeonManager.GetBySessionId(player.DungeonSessionId);
         if (mapIsHome || dungeonSession is not null || trigger.ChatType is ChatType.Party)
         {
             trigger.Session.FieldManager.BroadcastPacket(HomeActionPacket.Roll(trigger.Session.Player, Random.Shared.Next(100)));
