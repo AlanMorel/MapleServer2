@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using Maple2.Trigger._03009023_in;
 using MapleServer2.Managers;
 using MapleServer2.Types;
 

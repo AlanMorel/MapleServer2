@@ -1,9 +1,6 @@
-﻿using Maple2.Trigger._02100009_bf;
-using Maple2Storage.Types.Metadata;
+﻿using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
-using MapleServer2.Enums;
 using MapleServer2.Managers;
-using MapleServer2.Packets;
 
 namespace MapleServer2.Types;
 
