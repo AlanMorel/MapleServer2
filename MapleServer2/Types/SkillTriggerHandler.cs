@@ -1,19 +1,65 @@
-﻿using Maple2Storage.Enums;
+﻿using System.Runtime;
+using Maple2.PathEngine;
+using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Managers.Actors;
+using Org.BouncyCastle.Asn1.Mozilla;
+using Org.BouncyCastle.Asn1.X509;
 
 namespace MapleServer2.Types;
+
+public struct ExternalEventListener
+{
+    public bool TickEvent = false;
+    public bool TriggerEvent = false;
+    public AdditionalEffect Effect;
+    public EffectEventOrigin Origin;
+
+    public ExternalEventListener(AdditionalEffect effect, EffectEventOrigin origin)//, bool tickEvent, bool triggerEvent)
+    {
+        Effect = effect;
+        Origin = origin;
+        //TickEvent = tickEvent;
+        //TriggerEvent = triggerEvent;
+    }
+}
 
 public class SkillTriggerHandler
 {
     public IFieldActor Parent;
     public Dictionary<int, int> SkillFiredLast = new();
     public Dictionary<int, int> HostileSkillProccedLast = new();
+    private Dictionary<EffectEvent, List<ExternalEventListener>> ListeningEvents = new();
 
     public SkillTriggerHandler(IFieldActor parent)
     {
         Parent = parent;
+    }
+
+    public void AddListeningExternalEffect(EffectEvent effectEvent, AdditionalEffect effect, EffectEventOrigin origin)
+    {
+        List<ExternalEventListener> listeners = ListeningEvents.GetValueOrDefault(effectEvent, new List<ExternalEventListener>());
+
+        if (listeners.Exists(listener => listener.Effect == effect && listener.Origin == origin))
+        {
+            return;
+        }
+
+        listeners.Add(new(effect, origin));
+    }
+
+    public void RemoveListeningExternalEffect(EffectEvent effectEvent, AdditionalEffect effect)
+    {
+        List<ExternalEventListener> listeners = ListeningEvents[effectEvent];
+
+        for (int i = listeners.Count - 1; i >= 0; i--)
+        {
+            if (listeners[i].Effect == effect)
+            {
+                listeners.RemoveAt(i);
+            }
+        }
     }
 
     public IFieldActor? GetPetOwner()
@@ -97,11 +143,14 @@ public class SkillTriggerHandler
             }
         }
 
-        ConditionOperator buffOperator = subjectCondition.RequireBuffCount == 0 ? ConditionOperator.GreaterEquals : subjectCondition.RequireBuffCountCompare;
-
-        if (subjectCondition.RequireBuffId != 0 && !subject.AdditionalEffects.HasEffect(subjectCondition.RequireBuffId, subjectCondition.RequireBuffCount, buffOperator, subjectCondition.RequireBuffLevel))
+        for (int i = 0; i < subjectCondition.RequireBuffCount.Length; ++i)
         {
-            return false;
+            ConditionOperator buffOperator = subjectCondition.RequireBuffCount[i] == 0 ? ConditionOperator.GreaterEquals : subjectCondition.RequireBuffCountCompare[i];
+
+            if (subjectCondition.RequireBuffId != 0 && !subject.AdditionalEffects.HasEffect(subjectCondition.RequireBuffId, subjectCondition.RequireBuffCount[i], buffOperator, subjectCondition.RequireBuffLevel))
+            {
+                return false;
+            }
         }
 
         if (subjectCondition.HasNotBuffId != 0 && subject.AdditionalEffects.HasEffect(subjectCondition.HasNotBuffId))
@@ -182,15 +231,14 @@ public class SkillTriggerHandler
         return effectEvent == listener || listener == EffectEvent.Activate;
     }
 
-    public bool EventMatches(SkillBeginCondition condition, EffectEvent effectEvent)
+    public bool EventMatches(SkillBeginCondition condition, EffectEvent effectEvent, EffectEventOrigin origin)
     {
-        bool foundEvent = false;
-
-        bool noConflictsFound = EventMatches(effectEvent, GetEvent(condition.Owner), ref foundEvent);
-        noConflictsFound &= EventMatches(effectEvent, GetEvent(condition.Caster), ref foundEvent);
-        noConflictsFound &= EventMatches(effectEvent, GetEvent(condition.Target), ref foundEvent);
-
-        return foundEvent && noConflictsFound;
+        return origin switch
+        {
+            EffectEventOrigin.Owner => effectEvent == GetEvent(condition.Owner),
+            EffectEventOrigin.Caster => effectEvent == GetEvent(condition.Caster),
+            EffectEventOrigin.Target => effectEvent == GetEvent(condition.Target)
+        };
     }
 
     public static int GetEffectCooldown(int effectId, int effectLevel)
@@ -226,7 +274,7 @@ public class SkillTriggerHandler
 
     public bool ShouldTick(SkillBeginCondition beginCondition, ConditionSkillTarget castInfo, EffectEvent effectEvent, int eventIdArgument = 0)
     {
-        if (!EventMatches(beginCondition, effectEvent))
+        if (!EventMatches(beginCondition, effectEvent, castInfo.EventOrigin))
         {
             return false;
         }
@@ -236,7 +284,7 @@ public class SkillTriggerHandler
 
     public bool ShouldFireTrigger(SkillCondition trigger, ConditionSkillTarget castInfo, EffectEvent effectEvent, int eventIdArgument, int start = -1)
     {
-        if (!EventMatches(trigger.BeginCondition, effectEvent))
+        if (!EventMatches(trigger.BeginCondition, effectEvent, castInfo.EventOrigin))
         {
             return false;
         }
@@ -277,22 +325,46 @@ public class SkillTriggerHandler
     {
         if (trigger.IsSplash)
         {
-            RegionSkillHandler.HandleEffect(Parent.FieldManager, skillCast, castInfo.Target);
+            int removeDelay = trigger.RemoveDelay;
+
+            if (removeDelay == 0)
+            {
+                removeDelay = trigger.FireCount * trigger.Interval;
+            }
+
+            RegionSkillHandler.CastRegionSkill(Parent.FieldManager, skillCast, trigger.FireCount, removeDelay, trigger.Interval, castInfo.Target);
 
             return;
         }
 
-        for (int i = 0; i < trigger.SkillId.Length; ++i)
+        if (trigger.Interval == 0 || trigger.FireCount == 1)
         {
-            skillCast.SkillId = trigger.SkillId[i];
-            skillCast.SkillLevel = trigger.SkillLevel[i];
-
-            castInfo.Target.AdditionalEffects.AddEffect(new(trigger.SkillId[i], trigger.SkillLevel[i])
+            for (int i = 0; i < trigger.FireCount; ++i)
             {
-                Caster = castInfo.Caster,
-                ParentSkill = skillCast.ParentSkill
-            });
+                FireTriggerTick(trigger, skillCast, castInfo);
+            }
+
+            return;
         }
+
+        FireTriggerTick(trigger, skillCast, castInfo);
+
+        Parent.TaskScheduler.QueueTask(new(trigger.Interval)
+        {
+            Interval = trigger.Interval,
+            Executions = trigger.FireCount - 1
+        }, (currentTick, task) => FireTriggerTick(trigger, skillCast, castInfo));
+    }
+
+    public long FireTriggerTick(SkillCondition trigger, SkillCast skillCast, ConditionSkillTarget castInfo)
+    {
+        castInfo.Target.AdditionalEffects.AddEffect(new(trigger.SkillId[0], trigger.SkillLevel[0])
+        {
+            Caster = castInfo.Caster,
+            ParentSkill = skillCast.ParentSkill
+        });
+
+        return 0;
     }
 
     public void FireEvent(SkillCondition trigger, SkillCast? parentSkill, ConditionSkillTarget castInfo, EffectEvent effectEvent, int eventIdArgument, int start = -1)
@@ -305,56 +377,47 @@ public class SkillTriggerHandler
         }
 
         bool useDirection = trigger.UseDirection;
-        int duration = trigger.Interval;
+        int duration = trigger.RemoveDelay == 0 ? trigger.Interval : trigger.RemoveDelay;
 
         SkillCast skillCast = new(trigger.SkillId[0], trigger.SkillLevel[0], parentSkill?.SkillSn ?? 0, start)
         {
+            Owner = eventCastInfo.Owner,
             Caster = eventCastInfo.Caster,
             Position = eventCastInfo.Target.Coord,
             Rotation = useDirection ? eventCastInfo.Caster.Rotation : default,
             Direction = useDirection ? Maple2Storage.Types.CoordF.From(1, eventCastInfo.Caster.LookDirection) : default,
             LookDirection = useDirection ? eventCastInfo.Caster.LookDirection : default,
             Duration = duration,
-            ParentSkill = parentSkill
+            ParentSkill = parentSkill,
+            SkillAttack = parentSkill?.SkillAttack
         };
 
-        bool isImmediate = trigger.Delay == 0;
-        isImmediate &= trigger.Interval == 0 || (trigger.ImmediateActive && trigger.FireCount == 1);
+        int delay = (int)trigger.Delay;
 
-        if (isImmediate)
+        if (!trigger.ImmediateActive)
         {
-            for (int fire = 0; fire < trigger.FireCount; ++fire)
-            {
-                FireTrigger(trigger, skillCast, eventCastInfo);
-            }
+            delay += trigger.Interval;
+        }
+
+        if (delay == 0)
+        {
+            FireTrigger(trigger, skillCast, eventCastInfo);
 
             return;
         }
 
-        Task.Run(async () =>
+        Parent.TaskScheduler.QueueTask(new(trigger.Interval)
         {
-            uint delay = trigger.Delay;
+            Delay = delay,
+            Executions = 1
+        }, (currentTick, task) => FireTriggerDelayed(trigger, skillCast, eventCastInfo));
+    }
 
-            if (trigger.FireCount > 0 && !trigger.ImmediateActive)
-            {
-                delay += (uint) trigger.Interval;
-            }
+    public long FireTriggerDelayed(SkillCondition trigger, SkillCast skillCast, ConditionSkillTarget castInfo)
+    {
+        FireTrigger(trigger, skillCast, castInfo);
 
-            if (delay > 0)
-            {
-                await Task.Delay((int) trigger.Delay);
-            }
-
-            for (int fire = 0; fire < trigger.FireCount; ++fire)
-            {
-                FireTrigger(trigger, skillCast, eventCastInfo);
-
-                if (trigger.FireCount > 1)
-                {
-                    await Task.Delay(trigger.Interval);
-                }
-            }
-        });
+        return 0;
     }
 
     public void FireTriggerSkill(SkillCondition trigger, SkillCast parentSkill, ConditionSkillTarget castInfo, int start = -1, bool hitTarget = true)
@@ -403,7 +466,7 @@ public class SkillTriggerHandler
         }
     }
 
-    public void FireEvents(ConditionSkillTarget castInfo, EffectEvent effectEvent, int eventIdArgument, int start = -1)
+    public void FireEvents(IFieldActor? target, IFieldActor? attacker, EffectEvent effectEvent, int eventIdArgument, int start = -1)
     {
         if (start == -1)
         {
@@ -412,19 +475,78 @@ public class SkillTriggerHandler
 
         List<AdditionalEffect>? effects = Parent.AdditionalEffects.GetListeningEvents(effectEvent);
 
-        if (effects is not null)
+        if (effects is null)
         {
-            List<AdditionalEffect> EffectBuffer = new();
-            EffectBuffer.AddRange(effects);
+            return;
+        }
 
-            foreach (AdditionalEffect effect in EffectBuffer)
+        List<AdditionalEffect> EffectBuffer = new();
+        EffectBuffer.AddRange(effects);
+
+        foreach (AdditionalEffect effect in EffectBuffer)
+        {
+            ConditionSkillTarget effectCastInfo = new(Parent, target, effect?.ParentSkill?.Caster, attacker);
+
+            if (IsConditionMet(effect.LevelMetadata.BeginCondition, effectCastInfo, effectEvent, eventIdArgument))
             {
-                if (IsConditionMet(effect.LevelMetadata.BeginCondition, castInfo, effectEvent, eventIdArgument))
-                {
-                    FireEvents(effect.LevelMetadata.ConditionSkill, effect.ParentSkill, castInfo, effectEvent, eventIdArgument, start);
-                    FireEvents(effect.LevelMetadata.SplashSkill, effect.ParentSkill, castInfo, effectEvent, eventIdArgument, start);
-                }
+                FireEvents(effect.LevelMetadata.ConditionSkill, effect.ParentSkill, effectCastInfo, effectEvent, eventIdArgument, start);
+                FireEvents(effect.LevelMetadata.SplashSkill, effect.ParentSkill, effectCastInfo, effectEvent, eventIdArgument, start);
             }
         }
+
+        if (!ListeningEvents.TryGetValue(effectEvent, out List<ExternalEventListener>? listeners))
+        {
+            return;
+        }
+
+        foreach (ExternalEventListener listener in listeners)
+        {
+            AdditionalEffect effect = listener.Effect;
+            ConditionSkillTarget effectCastInfo = new(Parent, target, effect.ParentSkill?.Caster, attacker, listener.Origin);
+
+            if (IsConditionMet(effect.LevelMetadata.BeginCondition, effectCastInfo, effectEvent, eventIdArgument))
+            {
+                FireEvents(effect.LevelMetadata.ConditionSkill, effect.ParentSkill, effectCastInfo, effectEvent, eventIdArgument, start);
+                FireEvents(effect.LevelMetadata.SplashSkill, effect.ParentSkill, effectCastInfo, effectEvent, eventIdArgument, start);
+            }
+        }
+    }
+
+    public void OnAttacked(IFieldActor? attacker, int skillId, bool hit, bool crit, bool missed, bool blocked)
+    {
+        Parent.TaskScheduler.QueueTask(new(0)
+        {
+            Delay = 10,
+            Executions = 1
+        }, (currentTick, task) => OnAttackedTick(attacker, skillId, hit, crit, missed, blocked));
+    }
+
+    public long OnAttackedTick(IFieldActor? attacker, int skillId, bool hit, bool crit, bool missed, bool blocked)
+    {
+        SkillTriggerHandler? attackerTrigger = attacker?.SkillTriggerHandler;
+
+        if (crit)
+        {
+            attackerTrigger?.FireEvents(Parent, attacker, EffectEvent.OnOwnerAttackCrit, skillId);
+        }
+
+        if (missed)
+        {
+            attackerTrigger?.FireEvents(Parent, attacker, EffectEvent.OnAttackMiss, skillId);
+            FireEvents(Parent, attacker, EffectEvent.OnEvade, skillId);
+        }
+
+        if (blocked)
+        {
+            FireEvents(Parent, attacker, EffectEvent.OnBlock, skillId);
+        }
+
+        if (hit)
+        {
+            attackerTrigger?.FireEvents(Parent, attacker, EffectEvent.OnOwnerAttackHit, skillId);
+            FireEvents(Parent, attacker, EffectEvent.OnAttacked, skillId);
+        }
+
+        return -1;
     }
 }

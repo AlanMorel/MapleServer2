@@ -589,10 +589,13 @@ public class MapTriggerSkill : MapTriggerObject
     public short SkillLevel;
     [ProtoMember(30)]
     public int SkillId;
+    [ProtoMember(31)]
+    public int Interval;
 
-    public MapTriggerSkill(int id, int skillId, short skillLevel, byte count, CoordF position) : base(id)
+    public MapTriggerSkill(int id, int skillId, short skillLevel, int interval, byte count, CoordF position) : base(id)
     {
         Position = position;
+        Interval = interval;
         Count = count;
         SkillLevel = skillLevel;
         SkillId = skillId;

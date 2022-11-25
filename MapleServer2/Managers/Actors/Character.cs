@@ -82,7 +82,7 @@ public class Character : FieldActor<Player>
 
         float cooldown = skillLevel.BeginCondition.CooldownTime;
 
-        SkillTriggerHandler.FireEvents(new(this, this, this), EffectEvent.OnSkillCasted, skillCast.SkillId);
+        SkillTriggerHandler.FireEvents(this, null, EffectEvent.OnSkillCasted, skillCast.SkillId);
         SkillTriggerHandler.FireTriggerSkills(conditionSkills, skillCast, new(this, this, this));
 
         Value.Session.FieldManager.BroadcastPacket(SkillUsePacket.SkillUse(skillCast));

@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
+using Autofac.Features.Metadata;
 using Maple2.PathEngine;
 using Maple2.PathEngine.Types;
 using Maple2.Trigger;
+using Maple2.Trigger._52000029_qd;
 using Maple2.Trigger.Enum;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
@@ -33,6 +35,7 @@ public class FieldManager
     public readonly FieldState State = new();
     public readonly CoordS[]? BoundingBox;
     public readonly TriggerScript[] Triggers;
+    public readonly TickingTaskScheduler FieldTaskScheduler;
 
     private static int GlobalIdCounter = 1_000_000;
     private int LocalIdCounter = 10_000_000;
@@ -42,6 +45,7 @@ public class FieldManager
     private Task? MapLoopTask;
     private Task? TriggerTask;
     private Task? NpcMovementTask;
+    private Task? FieldLogicTask;
     private Timer? UGCBannerTimer;
     private static readonly TriggerLoader TriggerLoader = new();
     public readonly FieldNavigator? Navigator;
@@ -50,6 +54,8 @@ public class FieldManager
 
     public FieldManager(Player player)
     {
+        FieldTaskScheduler = new(this);
+
         MapMetadata? metadata = MapMetadataStorage.GetMetadata(player.MapId);
 
         if (metadata is null)
@@ -376,6 +382,7 @@ public class FieldManager
             TriggerSkill triggerSkill = new(mapTriggerSkill.Id,
                 mapTriggerSkill.SkillId,
                 mapTriggerSkill.SkillLevel,
+                mapTriggerSkill.Interval,
                 mapTriggerSkill.Count,
                 mapTriggerSkill.Position,
                 null);
@@ -599,10 +606,12 @@ public class FieldManager
 
         MapLoopTask ??= StartMapLoop();
         NpcMovementTask ??= StartNpcLoop();
+        FieldLogicTask ??= StartLogicLoop();
         TriggerTask ??= StartTriggerTask();
 
         UGCBannerTimer ??= TaskScheduler.Instance.ScheduleTask(0, 0, 60, () => { GameServer.UGCBannerManager.UGCBannerLoop(this); });
 
+        player.FieldPlayer.TaskScheduler.OnFieldMoved();
         player.Inventory.RecomputeSetBonuses(player.Session);
     }
 
@@ -1034,6 +1043,13 @@ public class FieldManager
         BroadcastPacket(RegionSkillPacket.Send(skillCast));
     }
 
+    //public void AddRegionSkillEffect(RegionSkill skill)
+    //{
+    //    skill.ObjectId = NextLocalId();
+    //
+    //    BroadcastPacket(RegionSkillPacket.Send(skill));
+    //}
+
     public bool RemoveRegionSkillEffect(SkillCast skillCast)
     {
         if (!RemoveSkillCast(skillCast.SkillSn, out skillCast))
@@ -1044,6 +1060,19 @@ public class FieldManager
         BroadcastPacket(RegionSkillPacket.Remove(skillCast.SkillObjectId));
         return true;
     }
+
+    //public bool RemoveRegionSkillEffect(RegionSkill skill)
+    //{
+    //    SkillCast skillCast = skill.SkillCast;
+    //
+    //    if (!RemoveSkillCast(skillCast.SkillSn, out skillCast))
+    //    {
+    //        return false;
+    //    }
+    //
+    //    BroadcastPacket(RegionSkillPacket.Remove(skill.ObjectId));
+    //    return true;
+    //}
 
     private void SpawnMobs(IFieldObject<MobSpawn> mobSpawn)
     {
@@ -1124,11 +1153,14 @@ public class FieldManager
 
     private void FreezeField(Player player)
     {
+        int originMapId = MapId;
+        int originInstanceId = (int) InstanceId;
         UGCBannerTimer?.Dispose();
         UGCBannerTimer = null;
         MapLoopTask = null;
         TriggerTask = null;
         NpcMovementTask = null;
+        FieldLogicTask = null;
 
         if (Capacity == 0 || IsTutorialMap)
         {
@@ -1175,6 +1207,99 @@ public class FieldManager
                 SendUpdates();
 
                 await Task.Delay(1000);
+            }
+        });
+    }
+
+    private long InternalLogicLoopTick = 0;
+    public long TickCount64 { get => InternalLogicLoopTick; }
+    public int TickCount { get => (int) TickCount64; }
+
+    private void UpdateActors(long delta)
+    {
+        try
+        {
+            FieldTaskScheduler.Update(delta);
+
+            foreach (Npc mob in State.Mobs.Values)
+            {
+                if (mob.IsDead)
+                {
+                    continue;
+                }
+
+                mob.TaskScheduler.Update(delta);
+            }
+
+            foreach (Npc npc in State.Npcs.Values)
+            {
+                if (npc.IsDead)
+                {
+                    continue;
+                }
+
+                npc.TaskScheduler.Update(delta);
+            }
+
+            foreach (Pet pet in State.Pets.Values)
+            {
+                if (pet.IsDead)
+                {
+                    continue;
+                }
+
+                pet.TaskScheduler.Update(delta);
+            }
+
+            foreach (Character player in State.Players.Values)
+            {
+                if (player.IsDead)
+                {
+                    continue;
+                }
+
+                player.TaskScheduler.Update(delta);
+            }
+        }
+        catch (Exception e)
+        {
+            Logger.Error("Error in field logic loop {0}", e);
+            throw;
+        }
+    }
+
+    private Task StartLogicLoop()
+    {
+        const int delta = 1; // use constant update interval to enforce deterministic behavior. required to be 1 to handle additional effects properly
+        const int maxIterations = 3; // maximum number of times an iteration can be attempted. more than one will be attempted in the case of lag spikes up to maxIterations
+
+        InternalLogicLoopTick = Environment.TickCount64;
+
+        return Task.Run(async () =>
+        {
+            while (PlayerCount > 0)
+            {
+                long lastTick = InternalLogicLoopTick;
+                long currentTick = Environment.TickCount64;
+
+                for (int i = 0; i < maxIterations - 1 && lastTick + delta < currentTick; ++i)
+                {
+                    lastTick = InternalLogicLoopTick;
+                    InternalLogicLoopTick += delta;
+
+                    UpdateActors(delta);
+                }
+                
+                if (lastTick + delta < currentTick)
+                {
+                    InternalLogicLoopTick = currentTick;
+
+                    UpdateActors(delta);
+                }
+
+
+                // Required to be 10 to handle additional effects properly
+                await Task.Delay(delta);
             }
         });
     }

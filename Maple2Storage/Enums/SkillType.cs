@@ -144,6 +144,13 @@ public enum EffectEvent : byte
     UnknownStrikerEvent = 103 // owner
 }
 
+public enum EffectEventOrigin : byte
+{
+    Owner,
+    Caster,
+    Target
+}
+
 public enum TargetAllieganceType : byte
 {
     None = 0,

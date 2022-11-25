@@ -400,7 +400,7 @@ public class BeginConditionSubject
     public int RequireBuffId;
 
     [XmlElement(Order = 4)]
-    public int RequireBuffCount;
+    public int[] RequireBuffCount;
 
     [XmlElement(Order = 5)]
     public int HasNotBuffId;
@@ -433,7 +433,7 @@ public class BeginConditionSubject
     public CompareStatCondition? CompareStat;
 
     [XmlElement(Order = 14)]
-    public ConditionOperator RequireBuffCountCompare;
+    public ConditionOperator[] RequireBuffCountCompare;
 
     [XmlElement(Order = 15)]
     public int RequireBuffLevel;

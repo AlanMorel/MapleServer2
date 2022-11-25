@@ -4,7 +4,9 @@ using GameDataParser.Files;
 using GameDataParser.Files.MetadataExporter;
 using GameDataParser.Parsers.Helpers;
 using GameDataParser.Tools;
+using M2dXmlGenerator;
 using Maple2.File.IO.Crypto.Common;
+using Maple2.File.Parser.Tools;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -18,6 +20,9 @@ public class SkillParser : Exporter<List<SkillMetadata>>
     protected override List<SkillMetadata> Parse()
     {
         List<SkillMetadata> skillList = new();
+
+        Filter.Load(Resources.XmlReader, "NA", "Live");
+
         foreach (PackFileEntry entry in Resources.XmlReader.Files)
         {
             // Parsing Skills
@@ -50,6 +55,12 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                 {
                     // Getting all skills level
                     string feature = level.Attributes?["feature"]?.Value ?? "";
+
+                    if (feature != "" && !FeatureLocaleFilter.Features.ContainsKey(feature))
+                    {
+                        continue;
+                    }
+
                     int levelValue = int.Parse(level.Attributes?["value"]?.Value ?? "0");
                     // We prevent duplicates levels from older balances.
                     if (skillLevels.Exists(x => x.Level == levelValue))
@@ -195,9 +206,9 @@ public class SkillParser : Exporter<List<SkillMetadata>>
         return skillList;
     }
 
-    private static void ParseConditionSkill(XmlNode? parentNode, List<SkillCondition> skillConditions)
+    public static void ParseConditionSkill(XmlNode? parentNode, List<SkillCondition> skillConditions, string nodeName = "conditionSkill")
     {
-        foreach (XmlNode? conditionNode in parentNode?.SelectNodes("conditionSkill")!)
+        foreach (XmlNode? conditionNode in parentNode?.SelectNodes(nodeName)!)
         {
             int[] conditionSkillId = conditionNode.Attributes["skillID"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>();
             short[] conditionSkillLevel = conditionNode.Attributes["level"]?.Value?.SplitAndParseToShort(',')?.ToArray() ?? Array.Empty<short>();
@@ -237,7 +248,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
         }
     }
 
-    private static SkillBeginCondition? ParseBeginCondition(XmlNode? parent)
+    public static SkillBeginCondition? ParseBeginCondition(XmlNode? parent)
     {
         SkillBeginCondition? beginCondition = null;
 
@@ -269,6 +280,16 @@ public class SkillParser : Exporter<List<SkillMetadata>>
         return beginCondition;
     }
 
+    private static ConditionOperator ParseConditionOperator(string operatorName)
+    {
+        if (!Enum.TryParse(operatorName, out ConditionOperator operatorValue))
+        {
+            return ConditionOperator.None;
+        }
+
+        return operatorValue;
+    }
+
     private static BeginConditionSubject? ParseConditionSubject(XmlNode? parentNode, string tagName)
     {
         foreach (XmlNode? ownerNode in parentNode?.SelectNodes(tagName)!)
@@ -291,8 +312,8 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                 EventEffectIDs = ownerNode.Attributes["eventEffectID"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>(),
                 RequireBuffId = int.Parse(ownerNode.Attributes["hasBuffID"].Value ?? "0"),
                 HasNotBuffId = int.Parse(ownerNode.Attributes["hasNotBuffID"]?.Value ?? "0"),
-                RequireBuffCount = int.Parse(ownerNode.Attributes["hasBuffCount"]?.Value ?? "0"),
-                RequireBuffCountCompare = hasBuffCountCompare,
+                RequireBuffCount = ownerNode.Attributes["hasBuffCount"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>(),
+                RequireBuffCountCompare = ownerNode?.Attributes?["hasBuffCountCompare"]?.Value?.Split(',')?.Select(x => ParseConditionOperator(x))?.ToArray() ?? Array.Empty<ConditionOperator>(),
                 RequireBuffLevel = int.Parse(ownerNode.Attributes["hasBuffLevel"]?.Value ?? "0"),
                 EventCondition = (EffectEvent) int.Parse(ownerNode.Attributes["eventCondition"]?.Value ?? "0"),
                 IgnoreOwnerEvent = int.Parse(ownerNode.Attributes["ignoreOwnerEvent"]?.Value ?? "0"),
@@ -300,7 +321,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                 TargetCheckMinRange = int.Parse(ownerNode.Attributes["targetCheckMinRange"]?.Value ?? "0"),
                 TargetInRangeCount = int.Parse(ownerNode.Attributes["targetInRangeCount"]?.Value ?? "0"),
                 TargetFriendly = (TargetAllieganceType) int.Parse(ownerNode.Attributes["targetFriendly"]?.Value ?? "0"),
-                TargetCountSign = targetCountSign
+                TargetCountSign = ParseConditionOperator(ownerNode.Attributes["targetCountSign"]?.Value ?? "")
             };
         }
 

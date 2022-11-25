@@ -1,4 +1,6 @@
-﻿using Maple2Storage.Enums;
+﻿using System.Reflection;
+using System.Threading.Tasks;
+using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
@@ -27,6 +29,7 @@ public class AdditionalEffect
     public bool HasEvents = false;
     private GameSession? Session = null;
     public IFieldActor Parent;
+    private bool WasActiveLastUpdate = false;
 
     public AdditionalEffect(IFieldActor parent, int id, int level, int stacks = 1)
     {
@@ -68,11 +71,39 @@ public class AdditionalEffect
         return Id == id;
     }
 
-    public void Invoke(IFieldActor parent)
+    public bool AreStatsStale(IFieldActor parent, EffectEvent effectEvent = EffectEvent.Tick)
+    {
+        if (!LevelMetadata.HasStats)
+        {
+            return false;
+        }
+
+        ConditionSkillTarget effectInfo = new ConditionSkillTarget(parent, parent, Caster);
+
+        bool shouldBeActive = parent.SkillTriggerHandler.ShouldTick(LevelMetadata.BeginCondition, effectInfo, effectEvent);
+
+        return shouldBeActive != WasActiveLastUpdate;
+    }
+
+    public bool UpdateStatStatus(IFieldActor parent, EffectEvent effectEvent = EffectEvent.Tick)
+    {
+        if (!LevelMetadata.HasStats)
+        {
+            return false;
+        }
+
+        ConditionSkillTarget effectInfo = new ConditionSkillTarget(parent, parent, Caster);
+
+        WasActiveLastUpdate = parent.SkillTriggerHandler.ShouldTick(LevelMetadata.BeginCondition, effectInfo, effectEvent);
+
+        return WasActiveLastUpdate;
+    }
+
+    public void Invoke(IFieldActor parent, EffectEvent effectEvent = EffectEvent.Tick)
     {
         ConditionSkillTarget effectInfo = new ConditionSkillTarget(parent, parent, Caster);
 
-        if (!parent.SkillTriggerHandler.ShouldTick(LevelMetadata.BeginCondition, effectInfo, EffectEvent.Tick))
+        if (!parent.SkillTriggerHandler.ShouldTick(LevelMetadata.BeginCondition, effectInfo, effectEvent))
         {
             return;
         }
@@ -107,7 +138,7 @@ public class AdditionalEffect
             DotDamage(parent, LevelMetadata.DotDamage);
         }
 
-        FireEvent(parent, effectInfo, EffectEvent.OnEffectApplied);
+        FireEvent(parent, Caster, EffectEvent.OnEffectApplied);
         parent.SkillTriggerHandler.FireTriggerSkills(LevelMetadata.ConditionSkill, ParentSkill, effectInfo);
         parent.SkillTriggerHandler.FireTriggerSkills(LevelMetadata.SplashSkill, ParentSkill, effectInfo);
     }
@@ -257,7 +288,9 @@ public class AdditionalEffect
 
         parent.AdditionalEffects.EffectStopped(this);
 
-        FireEvent(parent, new ConditionSkillTarget(parent, parent, Caster), EffectEvent.OnEffectRemoved);
+        FireEvent(parent, Caster, EffectEvent.OnEffectRemoved);
+
+        parent.TaskScheduler.RemoveTasksFromSubject(this);
     }
 
     public void ApplyStatuses(IFieldActor parent)
@@ -278,11 +311,11 @@ public class AdditionalEffect
         return true;
     }
 
-    public void FireEvent(IFieldActor parent, ConditionSkillTarget castInfo, EffectEvent effectEvent)
+    public void FireEvent(IFieldActor parent, IFieldActor? attacker, EffectEvent effectEvent)
     {
         if (LevelMetadata.Basic.InvokeEvent)
         {
-            parent.SkillTriggerHandler.FireEvents(castInfo, effectEvent, Id);
+            parent.SkillTriggerHandler.FireEvents(parent, attacker, effectEvent, Id);
         }
     }
 
@@ -293,9 +326,21 @@ public class AdditionalEffect
             return;
         }
 
-        FireEvent(parent, effectInfo, EffectEvent.OnBuffTimeExpiring);
+        FireEvent(parent, effectInfo.Caster, EffectEvent.OnBuffTimeExpiring);
 
         Stop(parent);
+    }
+
+    public long OnTick(IFieldActor parent, ConditionSkillTarget effectInfo)
+    {
+        if (!IsStillAlive(parent, effectInfo))
+        {
+            return TriggerTask.End;
+        }
+
+        Invoke(parent);
+
+        return TriggerTask.SameInterval;
     }
 
     public void Process(IFieldActor parent)
@@ -309,82 +354,46 @@ public class AdditionalEffect
 
         ConditionSkillTarget effectInfo = new(parent, parent, Caster);
 
-        FireEvent(parent, new ConditionSkillTarget(parent, parent, Caster), EffectEvent.OnEffectApplied);
+        FireEvent(parent, Caster, EffectEvent.OnEffectApplied);
 
-        if (LevelMetadata.Basic.IntervalTick == 0)
-        {
-            if (LevelMetadata.Basic.DotCondition != EffectDotCondition.ImmediateFire && LevelMetadata.Basic.DelayTick > 0)
-            {
-                Task.Run(async () =>
-                {
-                    await Task.Delay(LevelMetadata.Basic.IntervalTick);
+        int delay = LevelMetadata.Basic.DelayTick;
+        int duration = LevelMetadata.Basic.DurationTick;
+        int interval = LevelMetadata.Basic.IntervalTick;
 
-                    if (IsStillAlive(parent, effectInfo))
-                    {
-                        Invoke(parent);
-                    }
-
-                    TimedOut(parent, effectInfo);
-                });
-
-                return;
-            }
-
-            Invoke(parent);
-
-            if (LevelMetadata.Basic.KeepCondition != EffectKeepCondition.UnlimitedDuration)
-            {
-                Task.Run(async () =>
-                {
-                    while (IsAlive && (Environment.TickCount - Start < Duration))
-                    {
-                        await Task.Delay(100);
-                    }
-
-                    TimedOut(parent, effectInfo);
-                });
-            }
-
-            return;
-        }
-
-        if (LevelMetadata.Basic.DelayTick == 0 && LevelMetadata.Basic.DotCondition == EffectDotCondition.ImmediateFire)
+        if (delay == 0 && !(LevelMetadata.Basic.DotCondition != EffectDotCondition.ImmediateFire && interval != 0))
         {
             Invoke(parent);
         }
 
-        Task.Run(async () =>
+        if (LevelMetadata.Basic.DotCondition != EffectDotCondition.ImmediateFire)
         {
-            if (LevelMetadata.Basic.DelayTick > 0)
+            delay += LevelMetadata.Basic.IntervalTick;
+
+            if (duration > 0 && interval > 0 && duration % interval == 0)
             {
-                await Task.Delay(LevelMetadata.Basic.DelayTick);
-
-                if (!IsStillAlive(parent, effectInfo))
-                {
-                    return;
-                }
-
-                if (LevelMetadata.Basic.DotCondition == EffectDotCondition.ImmediateFire)
-                {
-                    Invoke(parent);
-                }
+                ++duration;
             }
+        }
 
-            bool repeatUntilRemoved = Duration == 0 && LevelMetadata.Basic.KeepCondition == EffectKeepCondition.UnlimitedDuration;
+        Action<long, TriggerTask>? taskFinishedCallback = null;
 
-            while (IsAlive && (Environment.TickCount - Start < Duration || repeatUntilRemoved))
-            {
-                await Task.Delay(LevelMetadata.Basic.IntervalTick);
+        if (LevelMetadata.Basic.KeepCondition != EffectKeepCondition.UnlimitedDuration)
+        {
+            taskFinishedCallback = (currentTick, task) => TimedOut(parent, effectInfo);
+        }
+        else
+        {
+            duration = -1;
+        }
 
-                if (!IsStillAlive(parent, effectInfo))
-                {
-                    break;
-                }
-
-                Invoke(parent);
-            }
-
-            TimedOut(parent, effectInfo);
-        });
+        parent.TaskScheduler.RemoveTasks(Caster, this);
+        parent.TaskScheduler.QueueTask(new(interval)
+        {
+            Delay = delay,
+            Duration = duration,
+            Executions = interval == 0 ? 1 : -1,
+            Origin = Caster,
+            Subject = this
+        }, (currentTick, task) => OnTick(parent, effectInfo), taskFinishedCallback);
     }
 }

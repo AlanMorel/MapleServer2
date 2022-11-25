@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Enums;
+﻿using System.Threading.Tasks;
+using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
@@ -14,54 +15,62 @@ public static class RegionSkillHandler
 {
     private static readonly ILogger Logger = Log.Logger.ForContext(typeof(RegionSkillHandler));
 
-    public static void HandleEffect(FieldManager field, SkillCast skillCast, IFieldActor? target = null)
+    public static void CastRegionSkill(FieldManager field, SkillCast skillCast, int fireCount, int removeDelay, int interval, IFieldActor? target = null)
     {
+        SkillCast regionCast = new(skillCast.SkillId, skillCast.SkillLevel, skillCast.SkillSn, skillCast.ServerTick, skillCast)
+        {
+            Rotation = skillCast.Rotation,
+            Direction = skillCast.Direction,
+            LookDirection = skillCast.LookDirection,
+            Duration = skillCast.Duration,
+            SkillAttack = skillCast.SkillAttack
+        };
+
+        regionCast.EffectCoords = GetEffectCoords(regionCast, field.MapId, 0, field);
+
+        field.AddRegionSkillEffect(regionCast);
+
         if (skillCast.Owner is not null && skillCast.Caster is not null)
         {
-            skillCast.Caster.SkillTriggerHandler.FireEvents(new(skillCast.Owner, target, skillCast.Caster), EffectEvent.OnSkillCasted,
-                skillCast.SkillId);
+            skillCast.Caster.SkillTriggerHandler.FireEvents(target, null, EffectEvent.OnSkillCasted, skillCast.SkillId);
         }
 
-        skillCast.EffectCoords = GetEffectCoords(skillCast, field.MapId, 0, field);
+        HandleRegionSkill(field, regionCast);
 
-        field.AddRegionSkillEffect(skillCast);
-
-        Task removeEffectTask = RemoveEffects(field, skillCast);
-
-        int interval = skillCast.Interval;
-
-        if (interval <= 0)
+        if (interval == 0)
         {
-            HandleRegionSkill(field, skillCast);
-            VibrateObjects(field, skillCast);
+            for (int i = 0; i < fireCount - 1; ++i)
+            {
+                HandleRegionSkill(field, regionCast);
+            }
+
             return;
         }
 
-        // Task to loop trough all entities in range to do damage/heal
-        Task.Run(async () =>
+        if (fireCount == 1)
         {
-            while (!removeEffectTask.IsCompleted)
-            {
-                HandleRegionSkill(field, skillCast);
-                VibrateObjects(field, skillCast);
+            return;
+        }
 
-                // TODO: Find the correct delay for the skill
-                await Task.Delay(interval);
-            }
-        });
+        field.FieldTaskScheduler.QueueTask(new(interval)
+        {
+            Executions = fireCount - 1
+        }, (currentTick, task) => TickRegionSkill(field, regionCast), (currentTick, task) => CleanUpRegionSkill(field, regionCast));
     }
 
-    private static Task RemoveEffects(FieldManager field, SkillCast skillCast)
+    private static long TickRegionSkill(FieldManager field, SkillCast regionCast)
     {
-        return Task.Run(async () =>
+        HandleRegionSkill(field, regionCast);
+
+        return 0;
+    }
+
+    private static void CleanUpRegionSkill(FieldManager field, SkillCast regionCast)
+    {
+        if (!field.RemoveRegionSkillEffect(regionCast))
         {
-            // TODO: Get the correct Region Skill Duration when calling chain Skills
-            await Task.Delay(Math.Max(skillCast.Duration, 10));
-            if (!field.RemoveRegionSkillEffect(skillCast))
-            {
-                Logger.Error("Failed to remove Region Skill");
-            }
-        });
+            Logger.Error("Failed to remove Region Skill");
+        }
     }
 
     /// <summary>
@@ -74,12 +83,12 @@ public static class RegionSkillHandler
         List<MagicPathMove> cubeMagicPathMoves = new();
         List<MagicPathMove> magicPathMoves = new();
 
-        if (skillAttack.CubeMagicPathId != 0)
+        if ((skillAttack?.CubeMagicPathId ?? 0) != 0)
         {
             cubeMagicPathMoves.AddRange(MagicPathMetadataStorage.GetMagicPath(skillAttack.CubeMagicPathId)?.MagicPathMoves ?? new());
         }
 
-        if (skillAttack.MagicPathId != 0)
+        if ((skillAttack?.MagicPathId ?? 0) != 0)
         {
             magicPathMoves.AddRange(MagicPathMetadataStorage.GetMagicPath(skillAttack.MagicPathId)?.MagicPathMoves ?? new());
         }
@@ -185,6 +194,8 @@ public static class RegionSkillHandler
 
     private static void HandleRegionSkill(FieldManager field, SkillCast skillCast)
     {
+        VibrateObjects(field, skillCast);
+
         List<DamageHandler> damages = new();
 
         foreach (SkillMotion skillMotion in skillCast.GetSkillMotions())
@@ -220,6 +231,11 @@ public static class RegionSkillHandler
                         break;
                 }
             }
+        }
+
+        if (damages.Count == 0)
+        {
+            return;
         }
 
         field.BroadcastPacket(SkillDamagePacket.RegionDamage(skillCast, damages));
@@ -311,24 +327,7 @@ public static class RegionSkillHandler
 
             if (damaging)
             {
-                Task.Run(async () =>
-                {
-                    await Task.Delay(10);
-
-                    if (hitCrit)
-                    {
-                        caster.SkillTriggerHandler.FireEvents(castInfo, EffectEvent.OnOwnerAttackCrit, skillCast.SkillId);
-                    }
-
-                    if (hitMissed)
-                    {
-                        caster.SkillTriggerHandler.FireEvents(castInfo, EffectEvent.OnAttackMiss, skillCast.SkillId);
-                        target.SkillTriggerHandler.FireEvents(new(target, caster, target), EffectEvent.OnEvade, skillCast.SkillId);
-                    }
-
-                    caster.SkillTriggerHandler.FireEvents(castInfo, EffectEvent.OnOwnerAttackHit, skillCast.SkillId);
-                    target.SkillTriggerHandler.FireEvents(new(target, caster, target, caster), EffectEvent.OnAttacked, skillCast.SkillId);
-                });
+                target.SkillTriggerHandler.OnAttacked(caster, skillCast.SkillId, hitTarget, hitCrit, hitMissed, false);
             }
 
             castInfo.Owner.SkillTriggerHandler.FireTriggerSkills(skillCast.SkillAttack.SkillConditions, skillCast, castInfo, -1, hitTarget);
@@ -341,6 +340,11 @@ public static class RegionSkillHandler
 
     private static void VibrateObjects(FieldManager field, SkillCast skillCast)
     {
+        if (skillCast.SkillAttack is null)
+        {
+            return;
+        }
+
         RangeProperty rangeProperty = skillCast.SkillAttack.RangeProperty;
         foreach ((string objectId, MapVibrateObject metadata) in field.State.VibrateObjects)
         {

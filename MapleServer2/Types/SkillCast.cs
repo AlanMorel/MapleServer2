@@ -20,7 +20,7 @@ public class SkillCast
     public int Interval;
     public SkillCast? ParentSkill;
 
-    public SkillAttack SkillAttack;
+    public SkillAttack? SkillAttack;
 
     public CoordF Position;
     public CoordF Direction;
@@ -31,8 +31,6 @@ public class SkillCast
     public IFieldActor? Caster;
     public IFieldActor Target;
     public IFieldActor? Owner; // who the skill was casted at, not necessarily the same as caster
-
-    public bool MetadataExists => GetSkillMetadata() is not null;
 
     public List<CoordF> EffectCoords = new();
 

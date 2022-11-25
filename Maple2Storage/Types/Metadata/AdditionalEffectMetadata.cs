@@ -64,9 +64,19 @@ public class AdditionalEffectLevelMetadata
     [XmlElement(Order = 24)]
     public EffectRideMetadata Ride;
     [XmlElement(Order = 25)]
-    public List<SkillCondition> SplashSkill;
+    public List<SkillCondition> SplashSkill = new();
     [XmlElement(Order = 26)]
-    public List<SkillCondition> ConditionSkill;
+    public List<SkillCondition> ConditionSkill = new();
+    [XmlElement(Order = 27)]
+    public string Feature;
+    [XmlElement(Order = 28)]
+    public bool HasStats;
+    [XmlElement(Order = 29)]
+    public bool HasConditionalStats;
+    [XmlElement(Order = 30)]
+    public string Name;
+    [XmlElement(Order = 31)]
+    public string Description;
 }
 
 [XmlType]
@@ -163,6 +173,9 @@ public class EffectBasicPropertyMetadata
 
     [XmlElement(Order = 23)]
     public EffectResetCondition ResetCondition;
+
+    [XmlElement(Order = 24)]
+    public int Level;
 }
 
 [XmlType]

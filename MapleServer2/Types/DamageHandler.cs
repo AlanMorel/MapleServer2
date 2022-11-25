@@ -15,10 +15,10 @@ public class DamageSourceParameters
     public Element Element;
     public SkillRangeType RangeType;
     public DamageType DamageType;
-    public int[] SkillGroups;
+    public int[]? SkillGroups;
     public int EventGroup;
     public float DamageRate;
-    public SkillCast ParentSkill;
+    public SkillCast? ParentSkill;
     public int Id;
 
     public DamageSourceParameters()
@@ -39,12 +39,12 @@ public class DamageSourceParameters
 
 public class DamageHandler
 {
-    public IFieldActor Source { get; }
+    public IFieldActor? Source { get; }
     public IFieldActor Target { get; }
     public double Damage { get; }
     public HitType HitType { get; }
 
-    private DamageHandler(IFieldActor source, IFieldActor target, double damage, HitType hitType)
+    private DamageHandler(IFieldActor? source, IFieldActor target, double damage, HitType hitType)
     {
         Source = source;
         Target = target;
@@ -52,7 +52,7 @@ public class DamageHandler
         HitType = hitType;
     }
 
-    public static DamageHandler CalculateDamage(SkillCast skill, IFieldActor source, IFieldActor target)
+    public static DamageHandler CalculateDamage(SkillCast skill, IFieldActor? source, IFieldActor target)
     {
         if (source is Managers.Actors.Character character)
         {
@@ -70,7 +70,7 @@ public class DamageHandler
         DamageSourceParameters parameters = new()
         {
             IsSkill = true,
-            GuaranteedCrit = skill.IsGuaranteedCrit() || source.AdditionalEffects.AlwaysCrit,
+            GuaranteedCrit = skill.IsGuaranteedCrit() || (source?.AdditionalEffects?.AlwaysCrit ?? false),
             Element = skill.GetElement(),
             RangeType = skill.GetRangeType(),
             DamageType = skill.GetSkillDamageType(),
@@ -79,13 +79,17 @@ public class DamageHandler
             Id = skill.SkillId
         };
 
-        // get luck coefficient from class. new stat recommended, can be refactored away like isCrit was
-        return CalculateDamage(parameters, source, target);
+        if (source is not null)
+        {
+            return CalculateDamage(parameters, source, target);
+        }
+
+        return CalculateFieldDamage(parameters, target);
     }
 
     public static double FetchMultiplier(Stats stats, StatAttribute attribute)
     {
-        if (stats.Data.TryGetValue(attribute, out Stat stat))
+        if (stats.Data.TryGetValue(attribute, out Stat? stat))
         {
             return (double) stat.Total / 1000;
         }
@@ -93,7 +97,7 @@ public class DamageHandler
         return 0;
     }
 
-    public static void ApplyDotDamage(GameSession session, IFieldActor sourceActor, IFieldActor target, DamageSourceParameters dotParameters)
+    public static void ApplyDotDamage(GameSession session, IFieldActor? sourceActor, IFieldActor target, DamageSourceParameters dotParameters)
     {
         if (sourceActor == null)
         {
@@ -102,16 +106,88 @@ public class DamageHandler
 
         if (target.AdditionalEffects.Invincible)
         {
-            target.FieldManager.BroadcastPacket(SkillDamagePacket.DotDamage(sourceActor.ObjectId, target.ObjectId, Environment.TickCount, HitType.Miss, 0));
+            target.FieldManager?.BroadcastPacket(SkillDamagePacket.DotDamage(sourceActor.ObjectId, target.ObjectId, Environment.TickCount, HitType.Miss, 0));
 
             return;
         }
 
-        DamageHandler damage = CalculateDamage(dotParameters, sourceActor, target);
+        DamageHandler damage = new(null, target, 0, HitType.Normal);
+
+        if (sourceActor is not null)
+        {
+            damage = CalculateDamage(dotParameters, sourceActor, target);
+        }
+        else
+        {
+            damage = CalculateFieldDamage(dotParameters, target);
+        }
 
         target.Damage(damage, session);
 
-        target.FieldManager.BroadcastPacket(SkillDamagePacket.DotDamage(sourceActor.ObjectId, target.ObjectId, Environment.TickCount, damage.HitType, (int) damage.Damage));
+        target.FieldManager?.BroadcastPacket(SkillDamagePacket.DotDamage(sourceActor?.ObjectId ?? 0, target.ObjectId, Environment.TickCount, damage.HitType, (int) damage.Damage));
+    }
+
+    public static DamageHandler CalculateFieldDamage(DamageSourceParameters parameters, IFieldActor target)
+    {
+        // super scuffed. there are a lot of unknowns relating to how skills from map triggers calculate damage
+
+        //double hitRate = (source.Stats[StatAttribute.Accuracy].Total + AccuracyWeakness) / Math.Max(target.Stats[StatAttribute.Evasion].Total, 0.1);
+        //
+        //if (Random.Shared.NextDouble() > hitRate)
+        //{
+        //    return new(source, target, 0, HitType.Miss); // we missed
+        //}
+
+        double attackDamage = 300; // need a better way to get the damage value
+
+        // attackDamage = minDamage + (maxDamage - minDamage) * Random.Shared.NextDouble();
+
+        // TODO: properly fetch enemy pierce resistance from enemy buff. new stat recommended
+        const double EnemyPierceResistance = 1;
+
+        double damageMultiplier = 1;
+
+        double defensePierce = 1 - Math.Min(0.3, EnemyPierceResistance * 1);
+        damageMultiplier *= 1 / (Math.Max(target.Stats[StatAttribute.Defense].Total, 1) * defensePierce);
+
+        DamageType damageType = parameters.DamageType;
+
+        bool isPhysical = damageType == DamageType.Physical;
+        double attackType = 0;
+
+        if (damageType == DamageType.Primary)
+        {
+            double physAttack = 0;//source.Stats[StatAttribute.PhysicalAtk].Total;
+            double magAttack = 0;//source.Stats[StatAttribute.MagicAtk].Total;
+
+            attackType = Math.Max(physAttack, magAttack) * 0.5f;
+            isPhysical = physAttack > magAttack;
+        }
+
+        StatAttribute resistanceStat = isPhysical ? StatAttribute.PhysicalRes : StatAttribute.MagicRes;
+        StatAttribute attackStat = isPhysical ? StatAttribute.PhysicalAtk : StatAttribute.MagicAtk;
+        StatAttribute piercingStat = isPhysical ? StatAttribute.PhysicalPiercing : StatAttribute.MagicPiercing;
+
+        if (damageType != DamageType.Primary)
+        {
+            attackType = 1;//source.Stats[attackStat].Total;
+        }
+
+        double targetRes = target.Stats[resistanceStat].Total;
+        double resistance = (1500.0 - Math.Max(0, targetRes)) / 1500;
+
+        // does this need to be divided by anything at all to account for raw physical attack?
+        damageMultiplier *= attackType * resistance;
+
+        // TODO: apply special standalone multipliers like Spicy Maple Noodles buff? it seems to have had it's own multiplier. new stat recommended
+        const double FinalDamageMultiplier = 1;
+        damageMultiplier *= FinalDamageMultiplier;
+
+        const double magicNumber = 4; // random constant of an unknown origin, but the formula this was pulled from was always off by a factor of 4
+
+        attackDamage *= damageMultiplier * magicNumber;
+
+        return new(null, target, Math.Max(1, attackDamage), HitType.Normal);
     }
 
     public static DamageHandler CalculateDamage(DamageSourceParameters parameters, IFieldActor source, IFieldActor target)
@@ -297,15 +373,19 @@ public class DamageHandler
 
     private static double GetWeaponBonusAttackMultiplier(Player player)
     {
-        player.Inventory.Equips.TryGetValue(ItemSlot.RH, out Item rightHand);
+        if (!player.Inventory.Equips.TryGetValue(ItemSlot.RH, out Item? rightHand))
+        {
+            return 0;
+        }
 
         double weaponBonusAttackCoeff = GetRarityBonusAttackMultiplier(rightHand);
 
-        if (rightHand != null && ItemMetadataStorage.GetItemSlots(rightHand.Id).Count < 2)
+        if (ItemMetadataStorage.GetItemSlots(rightHand.Id)?.Count < 2)
         {
-            player.Inventory.Equips.TryGetValue(ItemSlot.LH, out Item leftHand);
-
-            weaponBonusAttackCoeff = 0.5 * (weaponBonusAttackCoeff + GetRarityBonusAttackMultiplier(rightHand));
+            if (player.Inventory.Equips.TryGetValue(ItemSlot.LH, out Item? leftHand))
+            {
+                weaponBonusAttackCoeff = 0.5 * (weaponBonusAttackCoeff + GetRarityBonusAttackMultiplier(leftHand));
+            }
         }
 
         return weaponBonusAttackCoeff;
