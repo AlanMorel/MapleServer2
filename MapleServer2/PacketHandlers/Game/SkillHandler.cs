@@ -260,7 +260,7 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
 
     public static void HandleDamage(SkillCast skillCast, IFieldActor target, int count, int attackPoint, int attackCounter, CoordF position, CoordF rotation)
     {
-        
+
         IFieldActor? caster = skillCast.Caster;
         GameSession? session = (caster as Character)?.Value?.Session;
 

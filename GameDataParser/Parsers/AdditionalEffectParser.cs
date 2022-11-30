@@ -144,7 +144,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                 }
 
                 int id = int.Parse(key?.Attributes?["id"]?.Value ?? "0");
-                
+
                 if (!effectsById.TryGetValue(id, out AdditionalEffectMetadata? effect))
                 {
                     continue;

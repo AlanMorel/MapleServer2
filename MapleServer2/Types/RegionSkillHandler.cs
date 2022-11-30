@@ -11,10 +11,10 @@ using MapleServer2.Data.Static;
 using MapleServer2.Managers;
 using MapleServer2.Managers.Actors;
 using MapleServer2.Network;
+using MapleServer2.PacketHandlers.Game;
 using MapleServer2.Packets;
 using MapleServer2.Tools;
 using Org.BouncyCastle.Asn1.X509;
-using MapleServer2.PacketHandlers.Game;
 using Serilog;
 
 namespace MapleServer2.Types;
@@ -67,7 +67,7 @@ public static class RegionSkillHandler
         {
             CoordF offset = firstTarget.Coord - regionCast.EffectCoords[0];
 
-            regionCast.Rotation = offset / (float)Math.Sqrt(offset.X * offset.X + offset.Y * offset.Y + offset.Z * offset.Z);
+            regionCast.Rotation = offset / (float) Math.Sqrt(offset.X * offset.X + offset.Y * offset.Y + offset.Z * offset.Z);
         }
 
         field.FieldTaskScheduler.QueueTask(new(Math.Max(removeDelay, 1))
@@ -335,7 +335,7 @@ public static class RegionSkillHandler
             atkCount.Add(2 + i);
             sourceId.Add(skillCast.SkillObjectId);
             targetId.Add(targets[i].ObjectId);
-            animation.Add((short)(i << 0));
+            animation.Add((short) (i << 0));
         }
 
         if (targets.Count == 0)
@@ -363,7 +363,8 @@ public static class RegionSkillHandler
         {
             Duration = 25000,
             Executions = -1
-        }, (currentTick, task) => {
+        }, (currentTick, task) =>
+        {
             float distance = CoordF.Distance(skillCast.Position, targets[currentTarget].Coord);
             float nextTickDistance = pathMove.Velocity * 0.01f;
             skillCast.Rotation = (targets[currentTarget].Coord - skillCast.Position) / distance;
@@ -402,7 +403,8 @@ public static class RegionSkillHandler
 
                 skillCast.SkillAttack = skillAttack;
 
-                ProcessApplyTarget(field, skillAttack.RangeProperty.ApplyTarget, (target) => {
+                ProcessApplyTarget(field, skillAttack.RangeProperty.ApplyTarget, (target) =>
+                {
                     ProcessAttackApplyTarget(field, skillCast, ref hitsRemaining, damages, target, true);
                     return hitsRemaining > 0;
                 });

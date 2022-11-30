@@ -392,7 +392,7 @@ public class SkillTriggerHandler
             SkillAttack = parentSkill?.SkillAttack
         };
 
-        int delay = (int)trigger.Delay;
+        int delay = (int) trigger.Delay;
 
         if (!trigger.ImmediateActive)
         {

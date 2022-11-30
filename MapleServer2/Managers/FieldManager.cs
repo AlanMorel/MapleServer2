@@ -1291,7 +1291,7 @@ public class FieldManager
 
                     UpdateActors(delta);
                 }
-                
+
                 if (lastTick + delta < currentTick)
                 {
                     InternalLogicLoopTick = currentTick;

@@ -115,7 +115,7 @@ public class TickingTaskScheduler
 
     public void QueueBufferedTask(TriggerTaskParameters parameters, Func<long, TriggerTask, long> callback, Action<long, TriggerTask>? taskFinishedCallback = null)
     {
-        lock(BufferedTasks)
+        lock (BufferedTasks)
         {
             if (!MakeTask(parameters, callback, taskFinishedCallback, out TriggerTask? newTask) || newTask is null)
             {

@@ -138,7 +138,7 @@ public class AdditionalEffect
             DotDamage(parent, LevelMetadata.DotDamage);
         }
 
-        SkillCast skillCast = new(0, 0, ParentSkill?.SkillSn ?? 0, (int)parent.TaskScheduler.CurrentTick)
+        SkillCast skillCast = new(0, 0, ParentSkill?.SkillSn ?? 0, (int) parent.TaskScheduler.CurrentTick)
         {
             Owner = effectInfo.Owner,
             Caster = effectInfo.Caster,

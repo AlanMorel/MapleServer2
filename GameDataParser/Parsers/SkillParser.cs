@@ -368,7 +368,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
     {
         XmlNode? arrowNode = attackNode?.SelectSingleNode("arrowProperty");
 
-        BounceType bounceType = (BounceType)int.Parse(arrowNode?.Attributes?["bounceType"]?.Value ?? "0");
+        BounceType bounceType = (BounceType) int.Parse(arrowNode?.Attributes?["bounceType"]?.Value ?? "0");
         int bounceCount = int.Parse(arrowNode?.Attributes?["bounceCount"]?.Value ?? "0");
         bool bounceOverlap = int.Parse(arrowNode?.Attributes?["bounceOverlap"]?.Value ?? "0") == 1;
         int bounceRadius = int.Parse(arrowNode?.Attributes?["bounceRadius"]?.Value ?? "0");
