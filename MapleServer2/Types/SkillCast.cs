@@ -32,6 +32,7 @@ public class SkillCast
     public IFieldActor Target;
     public IFieldActor? Owner; // who the skill was casted at, not necessarily the same as caster
 
+    public long MagicPath = 0;
     public List<CoordF> EffectCoords = new();
 
     public SkillCast()

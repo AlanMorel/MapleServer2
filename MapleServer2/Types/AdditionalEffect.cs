@@ -138,9 +138,20 @@ public class AdditionalEffect
             DotDamage(parent, LevelMetadata.DotDamage);
         }
 
+        SkillCast skillCast = new(0, 0, ParentSkill?.SkillSn ?? 0, (int)parent.TaskScheduler.CurrentTick)
+        {
+            Owner = effectInfo.Owner,
+            Caster = effectInfo.Caster,
+            Position = effectInfo.Target?.Coord ?? default,
+            Rotation = effectInfo.Caster?.Rotation ?? default,
+            Direction = effectInfo.Caster is not null ? Maple2Storage.Types.CoordF.From(1, effectInfo.Caster.LookDirection) : default,
+            LookDirection = effectInfo.Caster?.LookDirection ?? default,
+            ParentSkill = ParentSkill
+        };
+
         FireEvent(parent, Caster, EffectEvent.OnEffectApplied);
-        parent.SkillTriggerHandler.FireTriggerSkills(LevelMetadata.ConditionSkill, ParentSkill, effectInfo);
-        parent.SkillTriggerHandler.FireTriggerSkills(LevelMetadata.SplashSkill, ParentSkill, effectInfo);
+        parent.SkillTriggerHandler.FireTriggerSkills(LevelMetadata.ConditionSkill, skillCast, effectInfo);
+        parent.SkillTriggerHandler.FireTriggerSkills(LevelMetadata.SplashSkill, skillCast, effectInfo);
     }
 
     public void ModifyOverlap(IFieldActor parent, EffectModifyOverlapCountMetadata modifyOverlap)

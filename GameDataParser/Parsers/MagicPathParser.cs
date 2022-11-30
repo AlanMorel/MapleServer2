@@ -44,8 +44,10 @@ public class MagicPathParser : Exporter<List<MagicPathMetadata>>
                     bool ignoreAdjust = pathMove.Attributes["ignoreAdjustCubePosition"] is null;
                     bool traceTargetOffsetPos = pathMove.Attributes["traceTargetOffsetPos"]?.Value == "1";
                     float distance = float.Parse(pathMove.Attributes["distance"]?.Value ?? "0");
+                    float velocity = float.Parse(pathMove.Attributes["vel"]?.Value ?? "0");
+                    int lookAtType = int.Parse(pathMove.Attributes["lookAtType"]?.Value ?? "0");
 
-                    pathMoves.Add(new(rotation, fireOffsetPosition, direction, controlValue0, controlValue1, ignoreAdjust, traceTargetOffsetPos, distance));
+                    pathMoves.Add(new(rotation, fireOffsetPosition, direction, controlValue0, controlValue1, ignoreAdjust, traceTargetOffsetPos, distance, lookAtType, velocity));
                 }
 
                 MagicPathMetadata newMagicPath = new(id, pathMoves);

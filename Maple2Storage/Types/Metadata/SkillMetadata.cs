@@ -161,10 +161,12 @@ public class SkillAttack
     public readonly int[] CompulsionType;
     [XmlElement(Order = 9)]
     public readonly SkillDirection Direction;
+    [XmlElement(Order = 10)]
+    public readonly ArrowProperty ArrowProperty;
 
     public SkillAttack() { }
 
-    public SkillAttack(byte attackPoint, short targetCount, long magicPathId, long cubeMagicPathId, RangeProperty rangeProperty,
+    public SkillAttack(byte attackPoint, short targetCount, long magicPathId, long cubeMagicPathId, RangeProperty rangeProperty, ArrowProperty arrowProperty,
         List<SkillCondition> skillConditions,
         DamageProperty damageProperty, int[] compulsionType, SkillDirection direction)
     {
@@ -173,6 +175,7 @@ public class SkillAttack
         MagicPathId = magicPathId;
         CubeMagicPathId = cubeMagicPathId;
         RangeProperty = rangeProperty;
+        ArrowProperty = arrowProperty;
         SkillConditions = skillConditions;
         DamageProperty = damageProperty;
         CompulsionType = compulsionType;
@@ -538,4 +541,36 @@ public class RangeProperty
         RangeOffset = rangeOffset;
         ApplyTarget = applyTarget;
     }
+}
+
+public enum BounceType : byte
+{
+    None = 0,
+    Unknown1 = 1,
+    Unknown2 = 2,
+    Unknown3 = 3,
+    Unknown5 = 5
+}
+
+[XmlType]
+public class ArrowProperty
+{
+    [XmlElement(Order = 1)]
+    public readonly BounceType BounceType;
+    [XmlElement(Order = 2)]
+    public readonly int BounceCount;
+    [XmlElement(Order = 3)]
+    public readonly bool BounceOverlap;
+    [XmlElement(Order = 4)]
+    public readonly int BounceRadius;
+
+    public ArrowProperty(BounceType bounceType, int bounceCount, bool bounceOverlap, int bounceRadius)
+    {
+        BounceType = bounceType;
+        BounceCount = bounceCount;
+        BounceOverlap = bounceOverlap;
+        BounceRadius = bounceRadius;
+    }
+
+    public ArrowProperty() { }
 }

@@ -49,6 +49,7 @@ public class FieldManager
     private Timer? UGCBannerTimer;
     private static readonly TriggerLoader TriggerLoader = new();
     public readonly FieldNavigator? Navigator;
+    public readonly MapMetadata Metadata;
 
     #region Constructors
 
@@ -62,6 +63,8 @@ public class FieldManager
         {
             throw new($"No metadata found for map {player.MapId}");
         }
+
+        Metadata = metadata;
 
         MapId = player.MapId;
         Capacity = metadata.Property.Capacity;
@@ -1264,7 +1267,6 @@ public class FieldManager
         catch (Exception e)
         {
             Logger.Error("Error in field logic loop {0}", e);
-            throw;
         }
     }
 

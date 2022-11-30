@@ -194,7 +194,7 @@ public class TickingTaskScheduler
         {
             TriggerTask nextTask = QueuedTasks.Peek();
 
-            if (!nextTask.Alive)
+            if (!(nextTask?.Alive ?? false))
             {
                 QueuedTasks.Dequeue();
 

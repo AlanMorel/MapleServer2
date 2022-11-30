@@ -92,6 +92,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                             // TODO: Parse other properties like: pause, arrow
                             DamageProperty damageProperty = ParseDamageProperty(attackNode);
                             RangeProperty rangeProperty = ParseRangeProperty(attackNode);
+                            ArrowProperty arrowProperty = ParseArrowProperty(attackNode);
 
                             byte attackPoint = byte.Parse(Regex.Match(attackNode.Attributes["point"]?.Value, @"\d").Value);
                             short targetCount = short.Parse(attackNode.Attributes["targetCount"].Value);
@@ -104,7 +105,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
 
                             ParseConditionSkill(attackNode, skillConditions);
 
-                            skillAttacks.Add(new(attackPoint, targetCount, magicPathId, cubeMagicPathId, rangeProperty, skillConditions, damageProperty, compulsionType, direction));
+                            skillAttacks.Add(new(attackPoint, targetCount, magicPathId, cubeMagicPathId, rangeProperty, arrowProperty, skillConditions, damageProperty, compulsionType, direction));
                         }
 
                         skillMotions.Add(new(sequenceName, motionEffect, skillAttacks));
@@ -361,6 +362,18 @@ public class SkillParser : Exporter<List<SkillMetadata>>
         ParseRange(rangeNode, out string rangeType, out int distance, out CoordF rangeAdd, out CoordF rangeOffset, out bool includeCaster, out ApplyTarget applyTarget);
 
         return new(includeCaster, rangeType, distance, rangeAdd, rangeOffset, applyTarget);
+    }
+
+    private static ArrowProperty ParseArrowProperty(XmlNode? attackNode)
+    {
+        XmlNode? arrowNode = attackNode?.SelectSingleNode("arrowProperty");
+
+        BounceType bounceType = (BounceType)int.Parse(arrowNode?.Attributes?["bounceType"]?.Value ?? "0");
+        int bounceCount = int.Parse(arrowNode?.Attributes?["bounceCount"]?.Value ?? "0");
+        bool bounceOverlap = int.Parse(arrowNode?.Attributes?["bounceOverlap"]?.Value ?? "0") == 1;
+        int bounceRadius = int.Parse(arrowNode?.Attributes?["bounceRadius"]?.Value ?? "0");
+
+        return new(bounceType, bounceCount, bounceOverlap, bounceRadius);
     }
 
     private static RangeProperty ParseDetectProperty(XmlNode attackNode)

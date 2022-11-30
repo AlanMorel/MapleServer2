@@ -75,15 +75,15 @@ public class Character : FieldActor<Player>
         SkillLevel? skillLevel = SkillMetadataStorage.GetSkill(skillCast.SkillId)?.SkillLevels
             ?.FirstOrDefault(level => level.Level == skillCast.SkillLevel);
         List<SkillCondition>? conditionSkills = skillLevel?.ConditionSkills;
-        if (conditionSkills is null)
-        {
-            return;
-        }
 
         float cooldown = skillLevel.BeginCondition.CooldownTime;
 
         SkillTriggerHandler.FireEvents(this, null, EffectEvent.OnSkillCasted, skillCast.SkillId);
-        SkillTriggerHandler.FireTriggerSkills(conditionSkills, skillCast, new(this, this, this));
+
+        if (conditionSkills is not null)
+        {
+            SkillTriggerHandler.FireTriggerSkills(conditionSkills, skillCast, new(this, this, this));
+        }
 
         Value.Session.FieldManager.BroadcastPacket(SkillUsePacket.SkillUse(skillCast));
         Value.Session.Send(StatPacket.SetStats(this));

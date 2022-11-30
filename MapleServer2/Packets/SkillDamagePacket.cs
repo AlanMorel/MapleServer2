@@ -21,7 +21,7 @@ public static class SkillDamagePacket
     }
 
     public static PacketWriter SyncDamage(SkillCast skillCast, CoordF position, CoordF rotation, IFieldObject<Player> player, List<int> sourceId, byte count,
-        List<int> atkCount, List<int> entityId, List<short> animation)
+        List<int> atkCount, List<int> entityId, List<short> animation, List<long>? uid = null)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.SkillDamage);
 
@@ -34,12 +34,12 @@ public static class SkillDamagePacket
         pWriter.WriteByte(skillCast.AttackPoint);
         pWriter.Write(position.ToShort());
         pWriter.Write(rotation);
-        pWriter.WriteByte();
+        pWriter.WriteByte(1);
         pWriter.WriteInt(skillCast.ServerTick);
         pWriter.WriteByte(count);
         for (int i = 0; i < count; i++)
         {
-            pWriter.WriteLong();
+            pWriter.WriteLong(uid?[i] ?? 0);
             pWriter.WriteInt(atkCount[i]);
             pWriter.WriteInt(sourceId[i]);
             pWriter.WriteInt(entityId[i]); // objectId of the Impact
