@@ -52,7 +52,7 @@ public static class CubePacket
         UpdateSizeHeight = 0x3E
     }
 
-    public static PacketWriter LoadFurnishingItem(IFieldObject<Player> player, int itemId, long itemUid, Item item = null)
+    public static PacketWriter LoadFurnishingItem(IFieldObject<Player> player, int itemId, long itemUid, Item? item = null)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(Mode.LoadFurnishingItem);
@@ -74,10 +74,8 @@ public static class CubePacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(Mode.EnablePlotFurnishing);
         pWriter.WriteByte(); // disable bool
-        pWriter.WriteInt(player.Account.Home.PlotNumber);
-        pWriter.WriteInt(player.Account.Home.ApartmentNumber);
-        pWriter.WriteUnicodeString(player.Name);
-        pWriter.WriteLong(player.Account.Home.Expiration);
+        pWriter.WritePlotInfo(player.Account.Home);
+        pWriter.WriteLong(player.Account.Home?.Expiration ?? 0);
         pWriter.WriteLong(player.CharacterId);
 
         return pWriter;
@@ -269,16 +267,14 @@ public static class CubePacket
         return pWriter;
     }
 
-    public static PacketWriter LoadHome(int playerObjectId, Home home)
+    public static PacketWriter LoadHome(int playerObjectId, Home? home)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(Mode.LoadHome);
         pWriter.WriteInt(playerObjectId);
         pWriter.WriteInt(home?.MapId ?? 0);
         pWriter.WriteInt(home?.PlotMapId ?? 0);
-        pWriter.WriteInt(home?.PlotNumber ?? 0);
-        pWriter.WriteInt(home?.ApartmentNumber ?? 0);
-        pWriter.WriteUnicodeString(home?.Name ?? "");
+        pWriter.WritePlotInfo(home);
         pWriter.WriteLong(home?.Expiration ?? 0);
         pWriter.WriteLong();
         pWriter.WriteByte(1);
@@ -292,9 +288,7 @@ public static class CubePacket
         pWriter.Write(Mode.HomeName);
         pWriter.WriteByte();
         pWriter.WriteLong(player.AccountId);
-        pWriter.WriteInt(player.Account.Home.PlotNumber);
-        pWriter.WriteInt(player.Account.Home.ApartmentNumber);
-        pWriter.WriteUnicodeString(player.Account.Home.Name);
+        pWriter.WritePlotInfo(player.Account.Home);
 
         return pWriter;
     }
@@ -415,7 +409,7 @@ public static class CubePacket
         return pWriter;
     }
 
-    public static PacketWriter DecorationScore(Home home)
+    public static PacketWriter DecorationScore(Home? home)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(Mode.Rewards);
@@ -424,12 +418,14 @@ public static class CubePacket
         pWriter.WriteLong(home?.DecorationLevel ?? 1);
         pWriter.WriteLong(home?.DecorationExp ?? 0);
         pWriter.WriteInt(home?.InteriorRewardsClaimed.Count ?? 0);
-        if (home != null)
+        if (home == null)
         {
-            foreach (int rewardId in home.InteriorRewardsClaimed)
-            {
-                pWriter.WriteInt(rewardId);
-            }
+            return pWriter;
+        }
+
+        foreach (int rewardId in home.InteriorRewardsClaimed)
+        {
+            pWriter.WriteInt(rewardId);
         }
 
         return pWriter;
@@ -488,12 +484,12 @@ public static class CubePacket
         return pWriter;
     }
 
-    public static PacketWriter ChangeBackground(byte lighthing)
+    public static PacketWriter ChangeBackground(byte lighting)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseCube);
         pWriter.Write(Mode.ChangeLighting);
         pWriter.WriteByte();
-        pWriter.WriteByte(lighthing);
+        pWriter.WriteByte(lighting);
 
         return pWriter;
     }
@@ -586,5 +582,12 @@ public static class CubePacket
         pWriter.WriteByte(height);
 
         return pWriter;
+    }
+
+    private static void WritePlotInfo(this PacketWriter pWriter, Home? home)
+    {
+        pWriter.WriteInt(home?.PlotNumber ?? 0);
+        pWriter.WriteInt(home?.ApartmentNumber ?? 0);
+        pWriter.WriteUnicodeString(home?.Name ?? string.Empty);
     }
 }

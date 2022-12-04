@@ -12,6 +12,7 @@ using MapleServer2.Managers.Actors;
 using MapleServer2.PacketHandlers.Game;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using Serilog;
 
 namespace MapleServer2.Types;
 
@@ -133,7 +134,7 @@ public class Player : IPacketSerializable
 
     public List<Buddy> BuddyList;
 
-    public Party Party;
+    public Party? Party;
 
     public List<ClubMember> ClubMembers = new();
     public List<Club> Clubs = new();
@@ -307,6 +308,7 @@ public class Player : IPacketSerializable
         {
             pWriter.WriteInt(trophyCount);
         }
+
         pWriter.WriteLong(GuildId);
         pWriter.WriteUnicodeString(Guild?.Name);
         pWriter.WriteUnicodeString(Motto);
@@ -398,15 +400,22 @@ public class Player : IPacketSerializable
         }
     }
 
-    public void Warp(int mapId, CoordF? coord = null, CoordF? rotation = null, long instanceId = -1)
+    public void Warp(int mapId, CoordF? coord = null, CoordF? rotation = null, long instanceId = -1, bool setReturnData = true)
     {
-        if (MapMetadataStorage.GetMetadata(mapId)?.Property.IsTutorialMap ?? true)
+        MapMetadata? mapMetadata = MapMetadataStorage.GetMetadata(mapId);
+        if (mapMetadata is null)
+        {
+            Log.Logger.Error($"no metadata for IsTutorialMap check mapId {MapId} - this should never happen");
+            return;
+        }
+
+        if (mapMetadata.Property.IsTutorialMap)
         {
             WarpGameToGame(mapId, instanceId, coord, rotation);
             return;
         }
 
-        if (mapId == MapId)
+        if (mapId == MapId && instanceId == InstanceId)
         {
             if (coord is null || rotation is null)
             {
@@ -425,12 +434,12 @@ public class Player : IPacketSerializable
             return;
         }
 
-        UpdateCoords(mapId, instanceId, coord, rotation);
+        UpdatePlayerFieldInfo(mapId, instanceId, coord, rotation, setReturnData);
 
         Session?.FieldManager.RemovePlayer(this);
         DatabaseManager.Characters.Update(this);
         Session?.Send(FieldEnterPacket.RequestEnter(FieldPlayer));
-        Party?.BroadcastPacketParty(PartyPacket.UpdateMemberLocation(this));
+        Party?.BroadcastPacketParty(PartyPacket.UpdatePlayer(this));
         Guild?.BroadcastPacketGuild(GuildPacket.UpdateMemberLocation(Name, MapId));
         foreach (Club club in Clubs)
         {
@@ -438,14 +447,14 @@ public class Player : IPacketSerializable
         }
     }
 
-    public void Warp(Map mapId, CoordF? coord = null, CoordF? rotation = null, long instanceId = 1)
+    public void Warp(Map mapId, CoordF? coord = null, CoordF? rotation = null, long instanceId = -1)
     {
         Warp((int) mapId, coord, rotation, instanceId);
     }
 
     public void WarpGameToGame(int mapId, long instanceId, CoordF? coord = null, CoordF? rotation = null)
     {
-        UpdateCoords(mapId, instanceId, coord, rotation);
+        UpdatePlayerFieldInfo(mapId, instanceId, coord, rotation);
 
         string ipAddress = (Session?.IsLocalHost() ?? true) ? Constant.LocalHost : Environment.GetEnvironmentVariable("IP")!;
         int port = int.Parse(Environment.GetEnvironmentVariable("GAME_PORT")!);
@@ -657,9 +666,9 @@ public class Player : IPacketSerializable
         return spawn;
     }
 
-    private void UpdateCoords(int mapId, long instanceId, CoordF? coord = null, CoordF? rotation = null)
+    private void UpdatePlayerFieldInfo(int mapId, long instanceId, CoordF? coord = null, CoordF? rotation = null, bool setReturnData = true)
     {
-        if (MapEntityMetadataStorage.HasSafePortal(MapId))
+        if (MapEntityMetadataStorage.HasSafePortal(MapId) && setReturnData)
         {
             ReturnCoord = FieldPlayer.Coord;
             ReturnMapId = MapId;
@@ -706,6 +715,7 @@ public class Player : IPacketSerializable
         {
             return TrophyData[trophyId].GradeCondition.Grade == grade;
         }
+
         return false;
     }
 
@@ -935,5 +945,10 @@ public class Player : IPacketSerializable
 
             FieldPlayer.SkillTriggerHandler.FireTriggerSkills(skillLevel.ConditionSkills, new(id, level, 0, 0), new(FieldPlayer, FieldPlayer, FieldPlayer));
         }
+    }
+
+    public bool HasDungeonSession()
+    {
+        return DungeonSessionId != -1;
     }
 }

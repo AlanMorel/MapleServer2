@@ -1,6 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
@@ -12,7 +13,15 @@ namespace GameDataParser.Parsers;
 public class SetItemOptionParser : Exporter<List<SetItemOptionMetadata>>
 {
     public SetItemOptionParser(MetadataResources resources) : base(resources, MetadataName.SetItemOption) { }
-    private static readonly List<string> Properties = new() { "count", "additionalEffectID", "additionalEffectLevel", "animationPrefix", "setEffect", "groundAttribute" };
+    // private static readonly List<string> Properties = new()
+    // {
+    //     "count",
+    //     "additionalEffectID",
+    //     "additionalEffectLevel",
+    //     "animationPrefix",
+    //     "setEffect",
+    //     "groundAttribute"
+    // };
 
     protected override List<SetItemOptionMetadata> Parse()
     {
@@ -26,11 +35,20 @@ public class SetItemOptionParser : Exporter<List<SetItemOptionMetadata>>
             }
 
             XmlDocument innerDocument = Resources.XmlReader.GetXmlDocument(fileEntry);
-            XmlNodeList nodeList = innerDocument.SelectNodes("/ms2/option");
+            XmlNodeList? nodeList = innerDocument.SelectNodes("/ms2/option");
+            if (nodeList is null)
+            {
+                continue;
+            }
 
             foreach (XmlNode node in nodeList)
             {
-                int id = int.Parse(node.Attributes["id"].Value);
+                if (ParserHelper.CheckForNull(node, "id"))
+                {
+                    continue;
+                }
+
+                int id = int.Parse(node.Attributes!["id"]!.Value);
                 List<SetBonusMetadata> bonuses = new();
                 SetItemOptionMetadata option = new()
                 {
@@ -38,11 +56,16 @@ public class SetItemOptionParser : Exporter<List<SetItemOptionMetadata>>
                     Parts = bonuses
                 };
 
-                foreach (XmlNode partNode in node.SelectNodes("part"))
+                foreach (XmlNode partNode in node.SelectNodes("part")!)
                 {
-                    int count = int.Parse(partNode.Attributes["count"].Value);
-                    int[] additionalEffectID = partNode.Attributes["additionalEffectID"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>();
-                    int[] additionalEffectLevel = partNode.Attributes["additionalEffectLevel"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>();
+                    if (ParserHelper.CheckForNull(partNode, "count"))
+                    {
+                        break;
+                    }
+
+                    int count = int.Parse(partNode.Attributes!["count"]!.Value);
+                    int[] additionalEffectID = partNode.Attributes["additionalEffectID"]?.Value.SplitAndParseToInt(',').ToArray() ?? Array.Empty<int>();
+                    int[] additionalEffectLevel = partNode.Attributes["additionalEffectLevel"]?.Value.SplitAndParseToInt(',').ToArray() ?? Array.Empty<int>();
                     Dictionary<StatAttribute, EffectStatMetadata> stats = new();
 
                     SetBonusMetadata setBonus = new()
@@ -141,9 +164,7 @@ public class SetItemOptionParser : Exporter<List<SetItemOptionMetadata>>
             return;
         }
 
-        EffectStatMetadata currentValue;
-
-        if (setBonus.Stats.TryGetValue(stat, out currentValue))
+        if (setBonus.Stats.TryGetValue(stat, out EffectStatMetadata? currentValue))
         {
             currentValue.Flat += (long) (flat * 1000);
             currentValue.Rate += rate;
@@ -166,9 +187,7 @@ public class SetItemOptionParser : Exporter<List<SetItemOptionMetadata>>
             return;
         }
 
-        EffectStatMetadata currentValue;
-
-        if (setBonus.Stats.TryGetValue(stat, out currentValue))
+        if (setBonus.Stats.TryGetValue(stat, out EffectStatMetadata? currentValue))
         {
             currentValue.Flat += flat;
             currentValue.Rate += rate;

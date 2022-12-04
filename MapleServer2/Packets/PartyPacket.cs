@@ -45,16 +45,10 @@ public static class PartyPacket
 
     public static PacketWriter Join(Player player)
     {
-        SkillTab skillTab = player.SkillTabs.First(x => x.TabId == player.ActiveSkillTabId);
-
         PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(Mode.Join);
         pWriter.WriteClass(player);
-        pWriter.WriteInt();
-        pWriter.WriteSkills(skillTab, SkillType.Active);
-        pWriter.WriteSkills(skillTab, SkillType.Passive);
-        pWriter.WriteShort(); // more skills?
-        pWriter.WriteLong();
+        WritePartyDungeonInfo(pWriter);
         return pWriter;
     }
 
@@ -75,27 +69,33 @@ public static class PartyPacket
         return pWriter;
     }
 
-    public static PacketWriter Create(Party party, bool joinNotice)
+    public static PacketWriter Create(Party party, bool joinNotice, Player? joiningPlayer = null)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(Mode.Create);
         pWriter.WriteBool(joinNotice);
         pWriter.WriteInt(party.Id);
         pWriter.WriteLong(party.Leader.CharacterId);
-        pWriter.WriteByte((byte) party.Members.Count);
 
+        pWriter.WriteByte((byte) party.Members.Count);
         foreach (Player member in party.Members)
         {
-            pWriter.WriteBool(!member.Session?.Connected() ?? false);
+            pWriter.WriteBool((joiningPlayer is null || member.CharacterId != joiningPlayer.CharacterId) && (!member.Session?.Connected() ?? false));
             pWriter.WriteClass(member);
             WritePartyDungeonInfo(pWriter);
         }
 
-        pWriter.WriteByte(); // is in dungeon? might be a bool.
+        pWriter.WriteBool(false); // is in dungeon? might be a bool.
         pWriter.WriteInt(); //dungeonid for "enter dungeon"
+        pWriter.WriteBool(false);
         pWriter.WriteByte();
-        pWriter.WriteByte();
-        pWriter.WriteByte();
+
+        bool isListed = party.PartyFinderId != 0;
+        pWriter.WriteBool(isListed);
+        if (isListed)
+        {
+            WritePartyMatchInfo(party, pWriter);
+        }
         return pWriter;
     }
 
@@ -104,10 +104,6 @@ public static class PartyPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(Mode.LoginNotice);
         pWriter.WriteClass(player);
-        pWriter.WriteLong();
-        pWriter.WriteInt();
-        pWriter.WriteShort();
-        pWriter.WriteByte();
         return pWriter;
     }
 
@@ -143,24 +139,12 @@ public static class PartyPacket
         return pWriter;
     }
 
-    public static PacketWriter UpdateMemberLocation(Player player)
-    {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
-        pWriter.Write(Mode.UpdateMemberLocation);
-        pWriter.WriteLong(player.CharacterId);
-        pWriter.WriteClass(player);
-        WritePartyDungeonInfo(pWriter);
-        return pWriter;
-    }
-
     public static PacketWriter UpdatePlayer(Player player)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(Mode.UpdatePlayer);
         pWriter.WriteLong(player.CharacterId);
-
         pWriter.WriteClass(player);
-        WritePartyDungeonInfo(pWriter);
         return pWriter;
     }
 
@@ -169,7 +153,6 @@ public static class PartyPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(Mode.UpdateDungeonInfo);
         pWriter.WriteLong(player.CharacterId);
-        pWriter.WriteInt(); //unknown: but value 100 was frequent
         WritePartyDungeonInfo(pWriter);
         return pWriter;
     }
@@ -182,7 +165,7 @@ public static class PartyPacket
         pWriter.WriteLong(player.AccountId);
         pWriter.WriteInt(player.Stats[StatAttribute.Hp].Bonus);
         pWriter.WriteInt(player.Stats[StatAttribute.Hp].Total);
-        pWriter.WriteShort();
+        pWriter.WriteShort(player.Levels.Level);
         return pWriter;
     }
 
@@ -202,18 +185,7 @@ public static class PartyPacket
         pWriter.WriteBool(createListing);
         if (createListing)
         {
-            pWriter.WriteLong(party.PartyFinderId);
-            pWriter.WriteInt(party.Id);
-            pWriter.WriteInt();
-            pWriter.WriteInt();
-            pWriter.WriteUnicodeString(party.Name);
-            pWriter.WriteBool(party.Approval);
-            pWriter.WriteInt(party.Members.Count);
-            pWriter.WriteInt(party.RecruitMemberCount);
-            pWriter.WriteLong(party.Leader.AccountId);
-            pWriter.WriteLong(party.Leader.CharacterId);
-            pWriter.WriteUnicodeString(party.Leader.Name);
-            pWriter.WriteLong(party.CreationTimestamp);
+            WritePartyMatchInfo(party, pWriter);
         }
         else
         {
@@ -223,11 +195,30 @@ public static class PartyPacket
         return pWriter;
     }
 
-    public static PacketWriter DungeonFindParty()
+    private static void WritePartyMatchInfo(Party party, PacketWriter pWriter)
+    {
+        pWriter.WriteLong(party.PartyFinderId);
+        pWriter.WriteInt(party.Id);
+        pWriter.WriteInt();
+        pWriter.WriteInt();
+        pWriter.WriteUnicodeString(party.Name);
+        pWriter.WriteBool(party.Approval);
+        pWriter.WriteInt(party.Members.Count);
+        pWriter.WriteInt(party.RecruitMemberCount);
+        pWriter.WriteLong(party.Leader.AccountId);
+        pWriter.WriteLong(party.Leader.CharacterId);
+        pWriter.WriteUnicodeString(party.Leader.Name);
+        pWriter.WriteLong(party.CreationTimestamp);
+    }
+
+    public static PacketWriter DungeonFindParty(byte type, bool start)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Party);
         pWriter.Write(Mode.DungeonFindParty);
-        pWriter.WriteInt(); // dungeon queue Id
+        pWriter.WriteByte(type); //Dungeon type (1: normal, 2: worldboss, 3: event, 4: lapenta)
+        pWriter.WriteBool(start); // Start/stop Search
+        pWriter.WriteBool(true); //unk
+        pWriter.WriteByte(); //unk
         return pWriter;
     }
 
@@ -284,8 +275,8 @@ public static class PartyPacket
 
     private static void WritePartyDungeonInfo(PacketWriter pWriter)
     {
-        pWriter.WriteInt(1); // dungeon info from player. Dungeon count (loop every dungeon)
-        pWriter.WriteInt(); // dungeonID
-        pWriter.WriteByte(); // dungeon clear count
+        pWriter.WriteInt(); // dungeon info from player. Dungeon count (loop every dungeon)
+        //pWriter.WriteInt(); // dungeonID
+        //pWriter.WriteByte(); // dungeon clear count
     }
 }

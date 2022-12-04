@@ -13,7 +13,7 @@ public class Cube
     public CoordF Rotation;
     public long HomeId;
     public long LayoutUid;
-    public CubePortalSettings PortalSettings;
+    public CubePortalSettings? PortalSettings;
     public bool InUse;
 
     public Cube() { }

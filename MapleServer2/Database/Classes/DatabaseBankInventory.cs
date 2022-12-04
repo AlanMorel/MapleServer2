@@ -1,4 +1,5 @@
-﻿using MapleServer2.Types;
+﻿using MapleServer2.Servers.Game;
+using MapleServer2.Types;
 using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes;
@@ -16,9 +17,9 @@ public class DatabaseBankInventory : DatabaseTable
         });
     }
 
-    public BankInventory FindById(long id)
+    public BankInventory FindById(long id, GameSession session = null)
     {
-        return ReadBankInventory(QueryFactory.Query(TableName).Where("id", id).FirstOrDefault());
+        return ReadBankInventory(QueryFactory.Query(TableName).Where("id", id).FirstOrDefault(), session);
     }
 
     public void Update(BankInventory bankInventory)
@@ -45,8 +46,8 @@ public class DatabaseBankInventory : DatabaseTable
         return QueryFactory.Query(TableName).Where("id", id).Delete() == 1;
     }
 
-    private static BankInventory ReadBankInventory(dynamic data)
+    private static BankInventory ReadBankInventory(dynamic data, GameSession session)
     {
-        return new BankInventory(data.id, data.extra_size, DatabaseManager.Items.FindAllByBankInventoryId(data.id), data.mesos);
+        return new BankInventory(data.id, data.extra_size, DatabaseManager.Items.FindAllByBankInventoryId(data.id), data.mesos, session);
     }
 }

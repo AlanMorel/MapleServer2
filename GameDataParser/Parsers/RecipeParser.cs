@@ -23,17 +23,21 @@ internal class RecipeParser : Exporter<List<RecipeMetadata>>
             }
 
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-            XmlNodeList recipes = document.SelectNodes("/ms2/receipe");
+            XmlNodeList? recipes = document.SelectNodes("/ms2/receipe");
+            if (recipes is null)
+            {
+                continue;
+            }
 
             foreach (XmlNode recipe in recipes)
             {
-                string locale = recipe.Attributes["locale"]?.Value ?? "";
+                string locale = recipe.Attributes?["locale"]?.Value ?? "";
                 if (locale != "NA" && locale != "")
                 {
                     continue;
                 }
 
-                if (string.IsNullOrEmpty(recipe.Attributes["id"]?.Value))
+                if (string.IsNullOrEmpty(recipe.Attributes?["id"]?.Value) || recipe.Attributes is null)
                 {
                     continue;
                 }
@@ -42,11 +46,11 @@ internal class RecipeParser : Exporter<List<RecipeMetadata>>
                 {
                     Id = int.Parse(recipe.Attributes["id"]?.Value ?? "0"),
                     MasteryType = short.Parse(recipe.Attributes["masteryType"]?.Value ?? "0"),
-                    ExceptRewardExp = int.Parse(recipe.Attributes["exceptRewardExp"].Value) == 1,
+                    ExceptRewardExp = int.Parse(recipe.Attributes["exceptRewardExp"]?.Value ?? "0") == 1,
                     RequireMastery = long.Parse(recipe.Attributes["requireMastery"]?.Value ?? "0"),
                     RequireQuest = recipe.Attributes["requireQuest"]?.Value.SplitAndParseToInt(',').ToList(),
                     RewardMastery = long.Parse(recipe.Attributes["rewardMastery"]?.Value ?? "0"),
-                    GatheringTime = recipe.Attributes["gatheringTime"].Value
+                    GatheringTime = recipe.Attributes["gatheringTime"]?.Value ?? "",
                 };
 
                 _ = long.TryParse(recipe.Attributes["requireMeso"]?.Value ?? "0", out newRecipe.RequireMeso);
@@ -56,28 +60,32 @@ internal class RecipeParser : Exporter<List<RecipeMetadata>>
 
                 for (int i = 1; i < 6; i++) // 6 being the max amount of required items there can be
                 {
-                    if (recipe.Attributes["requireItem" + i].Value != "")
+                    if (recipe.Attributes["requireItem" + i]?.Value == "")
                     {
-                        RecipeItem requiredItem = new();
-                        List<int> itemMetadata = recipe.Attributes["requireItem" + i].Value.SplitAndParseToInt(',').ToList();
-                        requiredItem.ItemId = itemMetadata[0];
-                        requiredItem.Rarity = itemMetadata[1];
-                        requiredItem.Amount = itemMetadata[2];
-                        newRecipe.RequiredItems.Add(requiredItem);
+                        continue;
                     }
+
+                    RecipeItem requiredItem = new();
+                    List<int> itemMetadata = recipe.Attributes["requireItem" + i]!.Value.SplitAndParseToInt(',').ToList();
+                    requiredItem.ItemId = itemMetadata[0];
+                    requiredItem.Rarity = itemMetadata[1];
+                    requiredItem.Amount = itemMetadata[2];
+                    newRecipe.RequiredItems.Add(requiredItem);
                 }
 
                 for (int i = 1; i < 6; i++) // 6 being the max amount of reward items there can be
                 {
-                    if (recipe.Attributes["rewardItem" + i].Value != "")
+                    if (recipe.Attributes["rewardItem" + i]?.Value == "")
                     {
-                        RecipeItem rewardItem = new();
-                        List<int> itemMetadata = recipe.Attributes["rewardItem" + i].Value.SplitAndParseToInt(',').ToList();
-                        rewardItem.ItemId = itemMetadata[0];
-                        rewardItem.Rarity = itemMetadata[1];
-                        rewardItem.Amount = itemMetadata[2];
-                        newRecipe.RewardItems.Add(rewardItem);
+                        continue;
                     }
+
+                    RecipeItem rewardItem = new();
+                    List<int> itemMetadata = recipe.Attributes["rewardItem" + i]!.Value.SplitAndParseToInt(',').ToList();
+                    rewardItem.ItemId = itemMetadata[0];
+                    rewardItem.Rarity = itemMetadata[1];
+                    rewardItem.Amount = itemMetadata[2];
+                    newRecipe.RewardItems.Add(rewardItem);
                 }
 
                 _ = int.TryParse(recipe.Attributes["habitatMapId"]?.Value ?? "0", out newRecipe.HabitatMapId);

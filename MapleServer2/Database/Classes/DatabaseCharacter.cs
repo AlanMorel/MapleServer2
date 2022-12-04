@@ -90,7 +90,7 @@ public class DatabaseCharacter : DatabaseTable
         List<Macro> macros = DatabaseManager.Macros.FindAllByCharacterId(data.character_id);
         List<SkillTab> skillTabs = DatabaseManager.SkillTabs.FindAllByCharacterId(data.character_id, data.job);
         IInventory inventory = DatabaseManager.Inventories.FindById(data.inventory_id);
-        BankInventory bankInventory = DatabaseManager.BankInventories.FindById(data.bank_inventory_id);
+        BankInventory bankInventory = DatabaseManager.BankInventories.FindById(data.bank_inventory_id, session);
         MushkingRoyaleStats royaleStats = DatabaseManager.MushkingRoyaleStats.FindById(data.mushking_royale_id);
         List<Medal> medals = DatabaseManager.MushkingRoyaleMedals.FindAllByAccountId(data.account_id);
         Prestige prestige = DatabaseManager.Prestiges.FindById(data.prestige_id);
@@ -168,7 +168,7 @@ public class DatabaseCharacter : DatabaseTable
     /// Return the player with the given id with the minimal amount of data needed for Buddy list and Guild members.
     /// </summary>
     /// <returns>Player</returns>
-    public Player FindPartialPlayerById(long characterId)
+    public Player? FindPartialPlayerById(long characterId)
     {
         return ReadPartialPlayer(QueryFactory.Query(TableName).Where("character_id", characterId)
             .Join("levels", "levels.id", "characters.levels_id")

@@ -583,7 +583,7 @@ public static class RegionSkillHandler
                 target.SkillTriggerHandler.OnAttacked(caster, skillCast.SkillId, hitTarget, hitCrit, hitMissed, false);
             }
 
-            castInfo.Owner.SkillTriggerHandler.FireTriggerSkills(skillCast.SkillAttack.SkillConditions, skillCast, castInfo, -1, hitTarget);
+            castInfo.Owner?.SkillTriggerHandler.FireTriggerSkills(skillCast.SkillAttack.SkillConditions, skillCast, castInfo, -1, hitTarget);
 
             hitsRemaining--;
 

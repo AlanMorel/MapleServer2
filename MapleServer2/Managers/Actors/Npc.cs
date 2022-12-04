@@ -21,7 +21,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
 
     public MobAI? AI;
     public readonly AIScript? Behavior;
-    public IFieldObject<MobSpawn> OriginSpawn;
+    public IFieldObject<MobSpawn>? OriginSpawn;
     public NpcState State { get; set; }
     public NpcAction Action { get; set; }
     public MobMovement Movement { get; set; }

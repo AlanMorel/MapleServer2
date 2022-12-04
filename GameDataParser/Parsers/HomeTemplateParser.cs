@@ -1,6 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using GameDataParser.Tools;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
@@ -36,27 +37,41 @@ public class HomeTemplateParser : Exporter<List<HomeTemplateMetadata>>
                 Id = filename
             };
 
-            XmlNode item = document.SelectSingleNode("ugcmap");
-            string[] size = item.Attributes["indoorSizeType"].Value.Split('x');
+            XmlNode? item = document.SelectSingleNode("ugcmap");
+            if (item?.Attributes is null)
+            {
+                continue;
+            }
+
+            if (ParserHelper.CheckForNull(item, "indoorSizeType", "baseCubePoint3"))
+            {
+                continue;
+            }
+
+            string[] size = item.Attributes["indoorSizeType"]!.Value.Split('x');
 
             homeTemplate.Size = byte.Parse(size[0]);
             homeTemplate.Height = byte.Parse(size[2]);
-            sbyte[] baseCoordB = item.Attributes["baseCubePoint3"].Value.SplitAndParseToSByte(',').ToArray();
+            sbyte[] baseCoordB = item.Attributes["baseCubePoint3"]!.Value.SplitAndParseToSByte(',').ToArray();
             CoordF baseCoordF = CoordF.From(baseCoordB[0] * Block.BLOCK_SIZE, baseCoordB[1] * Block.BLOCK_SIZE, baseCoordB[2] * Block.BLOCK_SIZE);
 
             XmlNodeList cubes = document.GetElementsByTagName("cube");
             foreach (XmlNode cube in cubes)
             {
-                int itemId = int.Parse(cube.Attributes["itemID"].Value);
+                if (ParserHelper.CheckForNull(cube, "itemID", "offsetCubePoint3", "rotation"))
+                {
+                    continue;
+                }
+                int itemId = int.Parse(cube.Attributes!["itemID"]!.Value);
 
-                byte[] coordsB = cube.Attributes["offsetCubePoint3"].Value.SplitAndParseToByte(',').ToArray();
+                byte[] coordsB = cube.Attributes["offsetCubePoint3"]!.Value.SplitAndParseToByte(',').ToArray();
                 CoordF cubeCoordF;
 
                 cubeCoordF = CoordF.From(coordsB[0] * Block.BLOCK_SIZE, coordsB[1] * Block.BLOCK_SIZE, coordsB[2] * Block.BLOCK_SIZE);
                 cubeCoordF.X += baseCoordF.X;
                 cubeCoordF.Y += baseCoordF.Y;
 
-                int rotation = int.Parse(cube.Attributes["rotation"].Value);
+                int rotation = int.Parse(cube.Attributes["rotation"]!.Value);
                 CoordF rotationF = CoordF.From(0, 0, rotation);
 
                 homeTemplate.Cubes.Add(new(itemId, cubeCoordF, rotationF));

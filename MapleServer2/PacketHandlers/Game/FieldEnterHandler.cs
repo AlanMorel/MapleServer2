@@ -25,6 +25,11 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
         // Self
         Player player = session.Player;
         Account account = player.Account;
+        if (player.FieldPlayer is null)
+        {
+            return;
+        }
+
         session.EnterField(player);
         session.Send(StatPacket.SetStats(player.FieldPlayer));
         session.Send(StatPointPacket.WriteTotalStatPoints(player));
@@ -34,7 +39,7 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
 
         if (player.ActivePet is not null)
         {
-            Pet pet = session.FieldManager.RequestPet(player.ActivePet, player.FieldPlayer);
+            Pet? pet = session.FieldManager.RequestPet(player.ActivePet, player.FieldPlayer);
             if (pet is not null)
             {
                 player.FieldPlayer.ActivePet = pet;
@@ -55,6 +60,7 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
 
             session.Send(PremiumClubPacket.ActivatePremium(player.FieldPlayer, account.VIPExpiration));
         }
+
         session.Send(PremiumClubPacket.LoadItems(account.PremiumClubRewardsClaimed));
 
         session.Send(EmotePacket.LoadEmotes(player));
@@ -63,6 +69,7 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
         {
             session.Send(WardrobePacket.Load(wardrobe));
         }
+
         session.Send(ChatStickerPacket.LoadChatSticker(player));
 
         session.Send(CubePacket.DecorationScore(account.Home));
@@ -78,19 +85,16 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
             session.Send(FunctionCubePacket.UpdateFunctionCube(cube.CoordF.ToByte(), 2, 1));
         }
 
-        if (player.Party is not null)
-        {
-            session.Send(PartyPacket.UpdatePlayer(player));
-        }
+        player.Party?.BroadcastPacketParty(PartyPacket.UpdatePlayer(player));
 
-        GlobalEvent globalEvent = GameServer.GlobalEventManager.GetCurrentEvent();
-        if (globalEvent is not null && !MapMetadataStorage.MapIsInstancedOnly(player.MapId))
+        GlobalEvent? globalEvent = GameServer.GlobalEventManager.GetCurrentEvent();
+        if (globalEvent is not null && !MapMetadataStorage.IsInstancedOnly(player.MapId))
         {
             session.Send(GlobalPortalPacket.Notice(globalEvent));
         }
 
-        FieldWar fieldWar = GameServer.FieldWarManager.CurrentFieldWar;
-        if (fieldWar is not null && !MapMetadataStorage.MapIsInstancedOnly(player.MapId) && fieldWar.MapId != player.MapId)
+        FieldWar? fieldWar = GameServer.FieldWarManager.CurrentFieldWar;
+        if (fieldWar is not null && !MapMetadataStorage.IsInstancedOnly(player.MapId) && fieldWar.MapId != player.MapId)
         {
             session.Send(FieldWarPacket.LegionPopup(fieldWar.Id, fieldWar.EntryClosureTime.ToUnixTimeSeconds()));
         }
@@ -102,10 +106,13 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
         QuestManager.OnMapEnter(player, player.MapId);
 
 
-        MapProperty mapProperty = MapMetadataStorage.GetMapProperty(player.MapId);
-        for (int i = 0; i < mapProperty.EnterBuffIds.Count; i++)
+        MapProperty? mapProperty = MapMetadataStorage.GetMapProperty(player.MapId);
+        if (mapProperty is not null)
         {
-            player.FieldPlayer.AdditionalEffects.AddEffect(new(mapProperty.EnterBuffIds[i], mapProperty.EnterBuffLevels[i]));
+            for (int i = 0; i < mapProperty.EnterBuffIds.Count; i++)
+            {
+                player.FieldPlayer.AdditionalEffects.AddEffect(new(mapProperty.EnterBuffIds[i], mapProperty.EnterBuffLevels[i]));
+            }
         }
 
         player.InitializeEffects();

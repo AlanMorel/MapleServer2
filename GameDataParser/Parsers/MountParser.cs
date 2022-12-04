@@ -27,7 +27,7 @@ public class RideParser : Exporter<List<MountMetadata>>
             XmlNodeList tableNodes = document.GetElementsByTagName("riding");
             foreach (XmlNode node in tableNodes)
             {
-                XmlNode basic = node.SelectSingleNode("basic");
+                XmlNode? basic = node.SelectSingleNode("basic");
 
                 if (!int.TryParse(basic?.Attributes?["id"]?.Value, out int id))
                 {
@@ -39,9 +39,15 @@ public class RideParser : Exporter<List<MountMetadata>>
                     continue;
                 }
 
-                XmlStats mountStats = StatParser.ParseStats(node.SelectSingleNode("stat").Attributes);
+                XmlAttributeCollection? xmlAttributeCollection = node.SelectSingleNode("stat")?.Attributes;
+                if (xmlAttributeCollection is null)
+                {
+                    continue;
+                }
 
-                if (node.Attributes["locale"]?.Value == "NA")
+                XmlStats mountStats = StatParser.ParseStats(xmlAttributeCollection);
+
+                if (node.Attributes?["locale"]?.Value == "NA")
                 {
                     mounts[id] = new()
                     {

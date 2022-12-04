@@ -4,13 +4,13 @@ namespace MapleServer2.Types;
 
 public struct ConditionSkillTarget
 {
-    public IFieldActor Owner;
+    public IFieldActor? Owner;
     public IFieldActor? Target;
-    public IFieldActor Caster;
+    public IFieldActor? Caster;
     public IFieldActor? Attacker = null;
     public EffectEventOrigin EventOrigin;
 
-    public ConditionSkillTarget(IFieldActor? owner, IFieldActor? target, IFieldActor? caster, IFieldActor? attacker = null, EffectEventOrigin eventOrigin = EffectEventOrigin.Owner)
+    public ConditionSkillTarget(IFieldActor? owner, IFieldActor? target, IFieldActor? caster, IFieldActor? attacker = null)
     {
         Owner = owner;
         Target = target;

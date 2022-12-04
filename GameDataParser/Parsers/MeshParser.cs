@@ -23,6 +23,6 @@ public class MeshParser : Exporter<object>
             File.WriteAllBytes(path, Resources.TokReader.GetBytes(file));
         }
 
-        return null;
+        return null!;
     }
 }

@@ -24,27 +24,19 @@ public class MagicPathParser : Exporter<List<MagicPathMetadata>>
             }
 
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-
             XmlNodeList? pathTypeList = document.SelectNodes("/ms2/type");
-
             if (pathTypeList is null)
             {
                 continue;
             }
 
-            foreach (XmlNode pathType in pathTypeList)
+            foreach (XmlNode pathType in document.SelectNodes("/ms2/type")!)
             {
                 long id = long.Parse(pathType.Attributes?["id"]?.Value ?? "0");
 
                 List<MagicPathMove> pathMoves = new();
-                XmlNodeList? pathMoveList = pathType.SelectNodes("move");
 
-                if (pathMoveList is null)
-                {
-                    continue;
-                }
-
-                foreach (XmlNode pathMove in pathMoveList)
+                foreach (XmlNode pathMove in pathType.SelectNodes("move")!)
                 {
                     int rotation = int.Parse(pathMove.Attributes?["rotation"]?.Value ?? "0");
 
@@ -98,7 +90,8 @@ public class MagicPathParser : Exporter<List<MagicPathMetadata>>
 
         if (floatArray.Length < 3)
         {
-            floatArray = new[]{
+            floatArray = new[]
+            {
                 floatArray[0], floatArray[1], 0
             };
         }

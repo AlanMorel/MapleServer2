@@ -89,6 +89,11 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                         List<SkillAttack> skillAttacks = new();
                         foreach (XmlNode attackNode in motionNode?.SelectNodes("attack")!)
                         {
+                            if (attackNode is null)
+                            {
+                                continue;
+                            }
+
                             // TODO: Parse other properties like: pause, arrow
                             DamageProperty damageProperty = ParseDamageProperty(attackNode);
                             RangeProperty rangeProperty = ParseRangeProperty(attackNode);
@@ -105,7 +110,8 @@ public class SkillParser : Exporter<List<SkillMetadata>>
 
                             ParseConditionSkill(attackNode, skillConditions);
 
-                            skillAttacks.Add(new(attackPoint, targetCount, magicPathId, cubeMagicPathId, rangeProperty, arrowProperty, skillConditions, damageProperty, compulsionType, direction));
+                            skillAttacks.Add(new(attackPoint, targetCount, magicPathId, cubeMagicPathId, rangeProperty, skillConditions, damageProperty,
+                                compulsionType, direction));
                         }
 
                         skillMotions.Add(new(sequenceName, motionEffect, skillAttacks));
@@ -200,25 +206,30 @@ public class SkillParser : Exporter<List<SkillMetadata>>
     {
         foreach (XmlNode conditionNode in parentNode?.SelectNodes(nodeName)!)
         {
-            int[] conditionSkillId = conditionNode.Attributes?["skillID"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>();
-            short[] conditionSkillLevel = conditionNode.Attributes?["level"]?.Value?.SplitAndParseToShort(',')?.ToArray() ?? Array.Empty<short>();
-            bool splash = conditionNode.Attributes?["splash"]?.Value == "1";
-            byte target = byte.Parse(conditionNode.Attributes?["skillTarget"]?.Value ?? "0");
-            byte owner = byte.Parse(conditionNode.Attributes?["skillOwner"]?.Value ?? "0");
-            bool immediateActive = conditionNode.Attributes?["immediateActive"]?.Value == "1";
-            short fireCount = short.Parse(conditionNode.Attributes?["fireCount"]?.Value ?? "0");
-            int interval = int.Parse(conditionNode.Attributes?["interval"]?.Value ?? "0");
-            uint delay = uint.Parse(conditionNode.Attributes?["delay"]?.Value ?? "0");
-            int removeDelay = int.Parse(conditionNode.Attributes?["removeDelay"]?.Value ?? "0");
-            bool useDirection = int.Parse(conditionNode.Attributes?["useDirection"]?.Value ?? "0") == 1;
-            bool randomCast = int.Parse(conditionNode.Attributes?["randomCast"]?.Value ?? "0") == 1;
-            int[] linkSkillID = conditionNode.Attributes?["linkSkillID"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>();
-            int overlapCount = int.Parse(conditionNode.Attributes?["overlapCount"]?.Value ?? "0");
-            bool nonTargetActive = int.Parse(conditionNode.Attributes?["nonTargetActive"]?.Value ?? "0") == 1;
-            bool onlySensingActive = int.Parse(conditionNode.Attributes?["onlySensingActive"]?.Value ?? "0") == 1;
-            bool dependOnCasterState = int.Parse(conditionNode.Attributes?["dependOnCasterState"]?.Value ?? "0") == 1;
-            bool activeByIntervalTick = int.Parse(conditionNode.Attributes?["activeByIntervalTick"]?.Value ?? "0") == 1;
-            bool dependOnDamageCount = int.Parse(conditionNode.Attributes?["dependOnDamageCount"]?.Value ?? "0") == 1;
+            if (conditionNode?.Attributes is null)
+            {
+                continue;
+            }
+
+            int[] conditionSkillId = conditionNode.Attributes["skillID"]?.Value.SplitAndParseToInt(',').ToArray() ?? Array.Empty<int>();
+            short[] conditionSkillLevel = conditionNode.Attributes["level"]?.Value.SplitAndParseToShort(',').ToArray() ?? Array.Empty<short>();
+            bool splash = conditionNode.Attributes["splash"]?.Value == "1";
+            byte target = byte.Parse(conditionNode.Attributes["skillTarget"]?.Value ?? "0");
+            byte owner = byte.Parse(conditionNode.Attributes["skillOwner"]?.Value ?? "0");
+            bool immediateActive = conditionNode.Attributes["immediateActive"]?.Value == "1";
+            short fireCount = short.Parse(conditionNode.Attributes["fireCount"]?.Value ?? "0");
+            int interval = int.Parse(conditionNode.Attributes["interval"]?.Value ?? "0");
+            uint delay = uint.Parse(conditionNode.Attributes["delay"]?.Value ?? "0");
+            int removeDelay = int.Parse(conditionNode.Attributes["removeDelay"]?.Value ?? "0");
+            bool useDirection = int.Parse(conditionNode.Attributes["useDirection"]?.Value ?? "0") == 1;
+            bool randomCast = int.Parse(conditionNode.Attributes["randomCast"]?.Value ?? "0") == 1;
+            int[] linkSkillID = conditionNode.Attributes["linkSkillID"]?.Value.SplitAndParseToInt(',').ToArray() ?? Array.Empty<int>();
+            int overlapCount = int.Parse(conditionNode.Attributes["overlapCount"]?.Value ?? "0");
+            bool nonTargetActive = int.Parse(conditionNode.Attributes["nonTargetActive"]?.Value ?? "0") == 1;
+            bool onlySensingActive = int.Parse(conditionNode.Attributes["onlySensingActive"]?.Value ?? "0") == 1;
+            bool dependOnCasterState = int.Parse(conditionNode.Attributes["dependOnCasterState"]?.Value ?? "0") == 1;
+            bool activeByIntervalTick = int.Parse(conditionNode.Attributes["activeByIntervalTick"]?.Value ?? "0") == 1;
+            bool dependOnDamageCount = int.Parse(conditionNode.Attributes["dependOnDamageCount"]?.Value ?? "0") == 1;
 
             skillConditions.Add(new(conditionSkillId, conditionSkillLevel, splash, target, owner, fireCount, interval, immediateActive)
             {
@@ -245,6 +256,10 @@ public class SkillParser : Exporter<List<SkillMetadata>>
         foreach (XmlNode beginNode in parent?.SelectNodes("beginCondition")!)
         {
             // <stat> can only contain hp, sp, and ep
+            if (beginNode is null)
+            {
+                continue;
+            }
 
             beginCondition = new()
             {
@@ -284,7 +299,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
     {
         foreach (XmlNode ownerNode in parentNode?.SelectNodes(tagName)!)
         {
-            if (!Enum.TryParse(ownerNode.Attributes?["targetCountSign"]?.Value ?? "", out ConditionOperator targetCountSign))
+            if (!Enum.TryParse(ownerNode.Attributes!["targetCountSign"]?.Value ?? "", out ConditionOperator targetCountSign))
             {
                 targetCountSign = ConditionOperator.None;
             }
@@ -318,7 +333,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
         return null;
     }
 
-    private static DamageProperty ParseDamageProperty(XmlNode? attack)
+    private static DamageProperty ParseDamageProperty(XmlNode attack)
     {
         float damageRate = float.Parse(attack?.SelectSingleNode("damageProperty")?.Attributes?["rate"]?.Value ?? "0");
         float hitSpeedRate = float.Parse(attack?.SelectSingleNode("damageProperty")?.Attributes?["hitSpeedRate"]?.Value ?? "0");
@@ -344,11 +359,12 @@ public class SkillParser : Exporter<List<SkillMetadata>>
         return new(upgradeLevel, upgradeSkills, upgradeSkillsLevel);
     }
 
-    private static RangeProperty ParseRangeProperty(XmlNode? attackNode)
+    private static RangeProperty ParseRangeProperty(XmlNode attackNode)
     {
-        XmlNode? rangeNode = attackNode?.SelectSingleNode("rangeProperty");
+        XmlNode? rangeNode = attackNode.SelectSingleNode("rangeProperty");
 
-        ParseRange(rangeNode, out string rangeType, out int distance, out CoordF rangeAdd, out CoordF rangeOffset, out bool includeCaster, out ApplyTarget applyTarget);
+        ParseRange(rangeNode, out string rangeType, out int distance, out CoordF rangeAdd, out CoordF rangeOffset, out bool includeCaster,
+            out ApplyTarget applyTarget);
 
         return new(includeCaster, rangeType, distance, rangeAdd, rangeOffset, applyTarget);
     }
@@ -369,7 +385,8 @@ public class SkillParser : Exporter<List<SkillMetadata>>
     {
         XmlNode? rangeNode = attackNode.SelectSingleNode("detectProperty");
 
-        ParseRange(rangeNode, out string rangeType, out int distance, out CoordF rangeAdd, out CoordF rangeOffset, out bool includeCaster, out ApplyTarget applyTarget);
+        ParseRange(rangeNode, out string rangeType, out int distance, out CoordF rangeAdd, out CoordF rangeOffset, out bool includeCaster,
+            out ApplyTarget applyTarget);
 
         return new(includeCaster, rangeType, distance, rangeAdd, rangeOffset, applyTarget);
     }

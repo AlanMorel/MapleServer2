@@ -30,8 +30,10 @@ public class FieldManager
 
     public readonly int MapId;
     public readonly long InstanceId;
-    public readonly int Capacity;
-    public readonly bool IsTutorialMap;
+    private readonly int Capacity;
+    private readonly bool IsTutorialMap;
+    // ReSharper disable once NotAccessedField.Local -- Remove when implemented
+    private bool IsDungeonMap;
     public readonly FieldState State = new();
     public readonly CoordS[]? BoundingBox;
     public readonly TriggerScript[] Triggers;
@@ -69,6 +71,7 @@ public class FieldManager
         MapId = player.MapId;
         Capacity = metadata.Property.Capacity;
         IsTutorialMap = metadata.Property.IsTutorialMap;
+        IsDungeonMap = DungeonStorage.IsDungeonMap(player.MapId);
         if (File.Exists(Paths.NAVMESH_DIR + $"/{metadata.XBlockName}.tok"))
         {
             Navigator = new(metadata.XBlockName);
@@ -80,8 +83,7 @@ public class FieldManager
 
         BoundingBox = MapEntityMetadataStorage.GetBoundingBox(MapId);
 
-        // Capacity 0 means solo instances
-        if (Capacity == 0 || IsTutorialMap)
+        if (IsTutorialMap)
         {
             // Set instance id to player id so it's unique
             InstanceId = player.CharacterId;
@@ -616,6 +618,8 @@ public class FieldManager
 
         player.FieldPlayer.TaskScheduler.OnFieldMoved();
         player.Inventory.RecomputeSetBonuses(player.Session);
+
+        //player.Session.SendNotice($"added to field with capacity: {Capacity} instanceId: {InstanceId} IsDungeonMap {IsDungeonMap}");
     }
 
     public void RemovePlayer(Player player)
@@ -643,7 +647,7 @@ public class FieldManager
 
         if (Decrement() <= 0)
         {
-            FreezeField(player);
+            HandleEmptyField(player);
             return;
         }
 
@@ -955,7 +959,7 @@ public class FieldManager
     {
         foreach (Character player in State.Players.Values)
         {
-            action?.Invoke(player.Value.Session);
+            action?.Invoke(player.Value.Session!);
         }
     }
 
@@ -1154,7 +1158,7 @@ public class FieldManager
         }
     }
 
-    private void FreezeField(Player player)
+    private void HandleEmptyField(Player player)
     {
         int originMapId = MapId;
         int originInstanceId = (int) InstanceId;
@@ -1165,7 +1169,72 @@ public class FieldManager
         NpcMovementTask = null;
         FieldLogicTask = null;
 
-        if (Capacity == 0 || IsTutorialMap)
+        if (player.DungeonSessionId != -1) //player is in a solo dungeon session
+        {
+            //player.Session?.SendNotice($"Leaving Field: Solo DS {player.DungeonSessionId}");
+            DungeonSession? dungeonSession = GameServer.DungeonManager.GetBySessionId(player.DungeonSessionId);
+            Debug.Assert(dungeonSession != null); // if the player id is not -1, there should always be a corresponding dungeon session
+
+            if (dungeonSession.IsTravelingBetweenDungeonMaps(this, player))
+            {
+                //player.Session?.SendNotice($"Leaving Field: Solo DS {player.DungeonSessionId} traveled within dungeon maps");
+                //do idle state which is apparently different from frozen
+                Freeze();
+                return;
+            }
+
+            //if not traveling between dungeon maps (including lobby<->dungeon) delete dungeon session and instance
+            //not traveling between dungeon maps -> destroy dungeon Session
+            //also checks the instance to ensure it is a dungeon session map
+            if (dungeonSession.IsDungeonReservedField(originMapId, originInstanceId)) //is left map a dungeon map?
+            {
+                //player.Session?.SendNotice($"Leaving Dungeon Field: Solo SD: Deleting DS {player.DungeonSessionId} and Instance {InstanceId}");
+                GameServer.DungeonManager.RemoveDungeonSession(dungeonSession.SessionId, DungeonType.Solo, player);
+                FieldManagerFactory.ReleaseManager(this);
+                return;
+            }
+        }
+
+        //check if player is in a group dungeon, so check whether player is in party, if not in party they cannot be in a dungeon session
+        //as removing from party is the same as not being in the dungeon session anymore
+        //player is not in a solo dungeon session
+        if (player.Party is not null)
+        {
+            Party? party = GameServer.PartyManager.GetPartyById(player.Party.Id);
+            if (party is not null && party.DungeonSessionId != -1)
+            {
+                DungeonSession? dungeonSession = GameServer.DungeonManager.GetBySessionId(party.DungeonSessionId);
+                Debug.Assert(dungeonSession != null); // if the dungeon session id is not -1, there should always be a corresponding dungeon session
+                //player.Session?.SendNotice($"Leaving Field: Party DS not -1: Player DS: {player.DungeonSessionId} Group DS {player.Party?.DungeonSessionId}");
+
+                if (dungeonSession.IsTravelingBetweenDungeonMaps(this, player))
+                {
+                    //do idle state which is apparently different from frozen, so this case needs to be handled separately here.
+                    Freeze();
+                    //player.Session?.SendNotice($"Leaving Dungeon Field: Group Dungeon: Travel between Dungeon Maps: Froze Map {MapId}");
+                    return;
+                }
+
+                if (dungeonSession.IsDungeonReservedField(originMapId, originInstanceId)) // leaving a completed dungeon map
+                {
+                    if (dungeonSession.IsCompleted == false)
+                    {
+                        //player.Session?.SendNotice($"Leaving Dungeon Field: Group SD: Dungeon is not completed, map Frozen {MapId}");
+                        Freeze();
+                        return;
+                    }
+
+                    //player.Session?.SendNotice($"Leaving Dungeon Field: Group SD: Dungeon is completed Deleting mapId: {MapId} with Instance {InstanceId}");
+                    FieldManagerFactory.ReleaseManager(this);
+                    dungeonSession.IsCompleted = true;
+                    return;
+                }
+            }
+        }
+
+        //2 people in party: one leaves the party-> both leave the dungeon map, last player will not be in a party
+        //this case is also handled by IsInstancedOnly
+        if (IsTutorialMap || MapMetadataStorage.IsInstancedOnly(MapId))
         {
             foreach (IFieldObject<Item> item in State.Items.Values)
             {
@@ -1174,26 +1243,21 @@ public class FieldManager
             }
 
             FieldManagerFactory.ReleaseManager(this);
-        }
-
-        // --- Dungeon Session ---
-        // Is only called if the leaving player is the last player on the map
-        // Get the DungeonSession that corresponds with the about to be released instance, in case that the player is in a party (group session) and solo session
-        if (GameServer.DungeonManager.IsDungeonUsingFieldInstance(this, player))
-        {
+            //player.Session?.SendNotice($"Leaving Field: Tutorial or Instanced map only {MapId}, field was deleted");
             return;
         }
 
-        DungeonSession? dungeonSession = GameServer.DungeonManager.GetDungeonSessionBySessionId(player.DungeonSessionId);
+        Freeze();
+        //player.Session?.SendNotice($"Leaving Field: Froze map {MapId}");
+    }
 
-        //If instance is destroyed, reset dungeonSession
-        //further conditions for dungeon completion could be checked here.
-        if (dungeonSession is null || !dungeonSession.IsDungeonSessionMap(MapId))
-        {
-            return;
-        }
-
-        GameServer.DungeonManager.ResetDungeonSession(player, dungeonSession);
+    private void Freeze()
+    {
+        UGCBannerTimer?.Dispose();
+        UGCBannerTimer = null;
+        MapLoopTask = null;
+        TriggerTask = null;
+        NpcMovementTask = null;
     }
 
     #region Map loop
@@ -1408,7 +1472,7 @@ public class FieldManager
     {
         foreach (Npc mob in State.Mobs.Values)
         {
-            mob.Behavior.Next();
+            mob.Behavior?.Next();
         }
 
         foreach (Pet pet in State.Pets.Values)
@@ -1467,7 +1531,7 @@ public class FieldManager
         int spawnTimer = mobSpawn.Value.SpawnData.SpawnTime * 1000;
         return Task.Run(async () =>
         {
-            await Task.Delay(spawnTimer);
+            await Task.Delay(spawnTimer); // change to tick based system
 
             if (mobSpawn.Value.Mobs.Count == 0)
             {

@@ -28,21 +28,21 @@ internal class TaxiHandler : GamePacketHandler<TaxiHandler>
         Mode mode = (Mode) packet.ReadByte();
 
         int mapId = 0;
-        long meretPrice = 15;
+        const long MeretPrice = 15;
 
         if (mode != Mode.DiscoverTaxi)
         {
             mapId = packet.ReadInt();
 
-            MapCashCall currentMapCall = MapMetadataStorage.GetMapCashCall(session.Player.MapId);
-            if (currentMapCall.DisableExitWithTaxi)
+            MapCashCall? currentMapCall = MapMetadataStorage.GetMapCashCall(session.Player.MapId);
+            if (currentMapCall is { DisableExitWithTaxi: true })
             {
                 session.Send(NoticePacket.Notice(SystemNotice.ErrCashTaxiCannotDeparture, NoticeType.Popup));
                 return;
             }
 
-            MapCashCall destinationMapCall = MapMetadataStorage.GetMapCashCall(mapId);
-            if (destinationMapCall.DisableEnterWithTaxi)
+            MapCashCall? destinationMapCall = MapMetadataStorage.GetMapCashCall(mapId);
+            if (destinationMapCall is { DisableEnterWithTaxi: true })
             {
                 session.Send(NoticePacket.Notice(SystemNotice.ErrCashTaxiCannotDestination, NoticeType.Popup));
                 return;
@@ -58,7 +58,7 @@ internal class TaxiHandler : GamePacketHandler<TaxiHandler>
                 HandleRotorMeso(session, mapId);
                 break;
             case Mode.RotorsMeret:
-                HandleRotorMeret(session, mapId, meretPrice);
+                HandleRotorMeret(session, mapId, MeretPrice);
                 break;
             case Mode.DiscoverTaxi:
                 HandleDiscoverTaxi(session);
@@ -77,10 +77,10 @@ internal class TaxiHandler : GamePacketHandler<TaxiHandler>
             return;
         }
 
-        Script script = ScriptLoader.GetScript("Functions/calcTaxiCost");
+        Script? script = ScriptLoader.GetScript("Functions/calcTaxiCost");
 
-        DynValue result = script.RunFunction("calcTaxiCost", mapCount, session.Player.Levels.Level);
-        if (result == null)
+        DynValue? result = script?.RunFunction("calcTaxiCost", mapCount, session.Player.Levels.Level);
+        if (result is null)
         {
             return;
         }
@@ -89,7 +89,7 @@ internal class TaxiHandler : GamePacketHandler<TaxiHandler>
         {
             return;
         }
-        session.Player.Warp(mapId);
+        session.Player.Warp(mapId, instanceId: 1);
     }
 
     private static void HandleRotorMeso(GameSession session, int mapId)
@@ -98,14 +98,14 @@ internal class TaxiHandler : GamePacketHandler<TaxiHandler>
         Account account = session.Player.Account;
         if (account.IsVip())
         {
-            session.Player.Warp(mapId);
+            session.Player.Warp(mapId, instanceId: 1);
             return;
         }
 
-        Script script = ScriptLoader.GetScript("Functions/calcAirTaxiCost");
+        Script? script = ScriptLoader.GetScript("Functions/calcAirTaxiCost");
 
-        DynValue result = script.RunFunction("calcAirTaxiCost", session.Player.Levels.Level);
-        if (result == null)
+        DynValue? result = script?.RunFunction("calcAirTaxiCost", session.Player.Levels.Level);
+        if (result is null)
         {
             return;
         }
@@ -125,7 +125,7 @@ internal class TaxiHandler : GamePacketHandler<TaxiHandler>
             return;
         }
 
-        session.Player.Warp(mapId);
+        session.Player.Warp(mapId, instanceId: 1);
     }
 
     private static void HandleDiscoverTaxi(GameSession session)

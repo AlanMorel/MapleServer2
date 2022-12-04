@@ -1,6 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -25,16 +26,25 @@ public class ItemSocketParser : Exporter<List<ItemSocketMetadata>>
 
             // Parse XML
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-            XmlNodeList properties = document.SelectNodes("/ms2/itemSocket");
+            XmlNodeList? properties = document.SelectNodes("/ms2/itemSocket");
+            if (properties is null)
+            {
+                continue;
+            }
 
             foreach (XmlNode property in properties)
             {
-                int id = int.Parse(property.Attributes["id"].Value);
+                if (ParserHelper.CheckForNull(property, "id", "grade", "maxCount", "fixOpenCount"))
+                {
+                    continue;
+                }
+
+                int id = int.Parse(property.Attributes!["id"]!.Value);
                 ItemSocketRarityData data = new()
                 {
-                    Rarity = int.Parse(property.Attributes["grade"].Value),
-                    MaxCount = int.Parse(property.Attributes["maxCount"].Value),
-                    FixedOpenCount = int.Parse(property.Attributes["fixOpenCount"].Value)
+                    Rarity = int.Parse(property.Attributes["grade"]!.Value),
+                    MaxCount = int.Parse(property.Attributes["maxCount"]!.Value),
+                    FixedOpenCount = int.Parse(property.Attributes["fixOpenCount"]!.Value)
                 };
 
                 if (socketDictionary.ContainsKey(id))
@@ -60,6 +70,7 @@ public class ItemSocketParser : Exporter<List<ItemSocketMetadata>>
             };
             itemSockets.Add(metadata);
         }
+
         return itemSockets;
     }
 }

@@ -13,8 +13,8 @@ public class Gemstone
     public string OwnerName = "";
     public bool IsLocked;
     public long UnlockTime;
-    public ItemStats Stats;
-    public ItemAdditionalEffectMetadata AdditionalEffects;
+    public ItemStats? Stats;
+    public ItemAdditionalEffectMetadata? AdditionalEffects;
 }
 
 public class GemSocket
@@ -25,7 +25,7 @@ public class GemSocket
 
 public class GemSockets
 {
-    public List<GemSocket> Sockets;
+    public readonly List<GemSocket> Sockets;
 
     public byte Count { get => (byte) Sockets.Count; }
 
@@ -46,19 +46,18 @@ public class GemSockets
 
     public void CreateSockets(Item parent)
     {
-
         if (!ItemMetadataStorage.IsValid(parent.Id))
         {
             return;
         }
 
-        float optionLevelFactor = ItemMetadataStorage.GetOptionMetadata(parent.Id).OptionLevelFactor;
+        float optionLevelFactor = ItemMetadataStorage.GetOptionMetadata(parent.Id)?.OptionLevelFactor ?? 0;
 
         // Check for predefined sockets
-        int socketId = ItemMetadataStorage.GetPropertyMetadata(parent.Id).SocketDataId;
+        int socketId = ItemMetadataStorage.GetPropertyMetadata(parent.Id)?.SocketDataId ?? 0;
         if (socketId != 0)
         {
-            ItemSocketRarityData socketData = ItemSocketMetadataStorage.GetMetadata(socketId, parent.Rarity);
+            ItemSocketRarityData? socketData = ItemSocketMetadataStorage.GetMetadata(socketId, parent.Rarity);
             if (socketData is not null)
             {
                 while (Sockets.Count > socketData.MaxCount)
@@ -84,8 +83,12 @@ public class GemSockets
             parent.Type = parent.GetItemType();
         }
 
-        Script script = ScriptLoader.GetScript("Functions/calcItemSocketMaxCount");
-        DynValue dynValue = script.RunFunction("calcItemSocketMaxCount", (int) parent.Type, parent.Rarity, optionLevelFactor, (int) parent.InventoryTab);
+        Script? script = ScriptLoader.GetScript("Functions/calcItemSocketMaxCount");
+        DynValue? dynValue = script?.RunFunction("calcItemSocketMaxCount", (int) parent.Type, parent.Rarity, optionLevelFactor, (int) parent.InventoryTab);
+        if (dynValue is null)
+        {
+            return;
+        }
         int slotAmount = (int) dynValue.Number;
         if (slotAmount <= 0)
         {
@@ -108,7 +111,7 @@ public class GemSockets
     public void OpenSockets()
     {
         // roll to unlock sockets
-        for (int i = 0; i < Sockets.Count; i++)
+        foreach (GemSocket socket in Sockets)
         {
             int successNumber = Random.Shared.Next(0, 100);
 
@@ -118,9 +121,7 @@ public class GemSockets
                 break;
             }
 
-            Sockets[i].IsUnlocked = true;
+            socket.IsUnlocked = true;
         }
-
-        return;
     }
 }

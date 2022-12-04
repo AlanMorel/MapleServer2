@@ -1,6 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -25,15 +26,24 @@ public class PrestigeRewardParser : Exporter<List<PrestigeRewardMetadata>>
 
             // Parse XML
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-            XmlNodeList rewards = document.SelectNodes("/ms2/reward");
+            XmlNodeList? rewards = document.SelectNodes("/ms2/reward");
+            if (rewards is null)
+            {
+                continue;
+            }
 
             foreach (XmlNode reward in rewards)
             {
-                int level = int.Parse(reward.Attributes["level"].Value);
-                string type = reward.Attributes["type"].Value;
-                int id = int.Parse(reward.Attributes["id"].Value == "" ? "0" : reward.Attributes["id"].Value);
-                int rarity = int.Parse(reward.Attributes["rank"]?.Value == "" ? "0" : reward.Attributes["rank"].Value);
-                int amount = int.Parse(reward.Attributes["value"].Value);
+                if (ParserHelper.CheckForNull(reward, "level", "type", "value", "id"))
+                {
+                    continue;
+                }
+
+                int level = int.Parse(reward.Attributes!["level"]!.Value);
+                string type = reward.Attributes["type"]!.Value;
+                int id = int.Parse(reward.Attributes["id"]!.Value == "" ? "0" : reward.Attributes["id"]!.Value);
+                int rarity = int.Parse(reward.Attributes["rank"]?.Value == "" ? "0" : reward.Attributes["rank"]!.Value);
+                int amount = int.Parse(reward.Attributes["value"]!.Value);
 
                 PrestigeRewardMetadata metadata = new(level, type, id, rarity, amount);
                 metadatas.Add(metadata);

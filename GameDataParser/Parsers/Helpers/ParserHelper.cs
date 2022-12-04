@@ -4,9 +4,9 @@ namespace GameDataParser.Parsers.Helpers;
 
 public static class ParserHelper
 {
-    public static bool CheckForNull(XmlNode node, params string[] attributes)
+    public static bool CheckForNull(XmlNode? node, params string[] attributes)
     {
-        if (node.Attributes is null)
+        if (node?.Attributes is null)
         {
             return true;
         }

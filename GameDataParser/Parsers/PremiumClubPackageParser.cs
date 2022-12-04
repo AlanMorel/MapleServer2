@@ -1,6 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using GameDataParser.Files.MetadataExporter;
+using GameDataParser.Parsers.Helpers;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -22,23 +23,32 @@ public class PremiumClubPackageParser : Exporter<List<PremiumClubPackageMetadata
             }
 
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-            XmlNodeList nodes = document.SelectNodes("/ms2/goods");
+            XmlNodeList? nodes = document.SelectNodes("/ms2/goods");
+            if (nodes is null)
+            {
+                continue;
+            }
 
             foreach (XmlNode node in nodes)
             {
+                if (ParserHelper.CheckForNull(node, "id", "vipPeriod", "price", "buyLimit", "bonusItemID", "bonusItemRank", "bonusItemCount"))
+                {
+                    continue;
+                }
+
                 PremiumClubPackageMetadata metadata = new()
                 {
-                    Id = int.Parse(node.Attributes["id"].Value),
-                    VipPeriod = int.Parse(node.Attributes["vipPeriod"].Value),
-                    Price = int.Parse(node.Attributes["price"].Value),
-                    BuyLimit = byte.Parse(node.Attributes["buyLimit"].Value)
+                    Id = int.Parse(node.Attributes!["id"]!.Value),
+                    VipPeriod = int.Parse(node.Attributes["vipPeriod"]!.Value),
+                    Price = int.Parse(node.Attributes["price"]!.Value),
+                    BuyLimit = byte.Parse(node.Attributes["buyLimit"]!.Value)
                 };
 
                 BonusItem bonusItem = new();
 
-                string[] itemId = node.Attributes["bonusItemID"].Value.Split(",");
-                string[] itemRarity = node.Attributes["bonusItemRank"].Value.Split(",");
-                string[] itemAmount = node.Attributes["bonusItemCount"].Value.Split(",");
+                string[] itemId = node.Attributes["bonusItemID"]!.Value.Split(",");
+                string[] itemRarity = node.Attributes["bonusItemRank"]!.Value.Split(",");
+                string[] itemAmount = node.Attributes["bonusItemCount"]!.Value.Split(",");
 
                 for (int i = 0; i < itemId.Length; i++)
                 {
