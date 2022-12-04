@@ -156,7 +156,8 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             return;
         }
 
-        session.Player.FieldPlayer?.TaskScheduler.QueueBufferedTask(() => {
+        session.Player.FieldPlayer?.TaskScheduler.QueueBufferedTask(() =>
+        {
             session.Player.FieldPlayer.SkillTriggerHandler.FireEvents(null, null, EffectEvent.OnSkillCastEnd, skillCast.SkillId);
 
             session.FieldManager.BroadcastPacket(SkillCancelPacket.SkillCancel(skillSn, session.Player.FieldPlayer.ObjectId), session);
