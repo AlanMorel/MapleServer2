@@ -34,7 +34,7 @@ public static class SkillDamagePacket
         pWriter.WriteByte(skillCast.AttackPoint);
         pWriter.Write(position.ToShort());
         pWriter.Write(rotation);
-        pWriter.WriteByte((byte) (isChaining ? 1 : 0));
+        pWriter.WriteBool(isChaining);
         pWriter.WriteInt(skillCast.ServerTick);
         pWriter.WriteByte(count);
         for (int i = 0; i < count; i++)
