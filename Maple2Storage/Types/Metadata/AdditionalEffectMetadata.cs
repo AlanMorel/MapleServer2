@@ -73,10 +73,6 @@ public class AdditionalEffectLevelMetadata
     public bool HasStats;
     [XmlElement(Order = 29)]
     public bool HasConditionalStats;
-    [XmlElement(Order = 30)]
-    public string Name;
-    [XmlElement(Order = 31)]
-    public string Description;
 }
 
 [XmlType]

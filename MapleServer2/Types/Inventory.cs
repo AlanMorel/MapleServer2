@@ -189,7 +189,7 @@ public sealed class Inventory : IInventory
 
                 if (id != 0)
                 {
-                    session.Player.FieldPlayer?.AdditionalEffects.AddEffect(new(id, level));
+                    session.Player.FieldPlayer?.TaskScheduler.QueueBufferedTask(() => session.Player.FieldPlayer?.AdditionalEffects.AddEffect(new(id, level)));
                 }
             }
 

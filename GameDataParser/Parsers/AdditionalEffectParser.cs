@@ -1,13 +1,10 @@
-﻿using System.Reflection.Metadata;
-using System.Xml;
+﻿using System.Xml;
 using GameDataParser.Files;
 using GameDataParser.Files.MetadataExporter;
 using GameDataParser.Tools;
 using M2dXmlGenerator;
 using Maple2.File.IO.Crypto.Common;
 using Maple2.File.Parser.Tools;
-using Maple2.File.Parser.Xml.AdditionalEffect;
-using Maple2.File.Parser.Xml.Skill;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -108,43 +105,6 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
 
                 levelMeta.HasStats = stats.Count > 0 || (levelMeta.InvokeEffect?.Types?.Length ?? 0) > 0;
                 levelMeta.HasConditionalStats = levelMeta.HasStats && !IsDefaultBeginCondition(levelMeta.BeginCondition);
-            }
-        }
-
-        foreach (PackFileEntry entry in Resources.XmlReader.Files)
-        {
-            if (!entry.Name.StartsWith("string/en/koradditionaldescription"))
-            {
-                continue;
-            }
-
-            XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-
-            foreach (XmlNode key in document.SelectNodes("/ms2/key")!)
-            {
-                string? feature = key.Attributes?["feature"]?.Value;
-
-                if (feature is not null && !FeatureLocaleFilter.Features.ContainsKey(feature))
-                {
-                    continue;
-                }
-
-                int id = int.Parse(key?.Attributes?["id"]?.Value ?? "0");
-
-                if (!effectsById.TryGetValue(id, out AdditionalEffectMetadata? effect))
-                {
-                    continue;
-                }
-
-                int level = int.Parse(key?.Attributes?["level"]?.Value ?? "0");
-
-                if (!effect.Levels.TryGetValue(level, out AdditionalEffectLevelMetadata? levelData))
-                {
-                    continue;
-                }
-
-                levelData.Name = key?.Attributes?["name"]?.Value ?? "";
-                levelData.Description = key?.Attributes?["tooltipDescription"]?.Value ?? "";
             }
         }
 

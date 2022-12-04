@@ -60,7 +60,7 @@ public class SkillTriggerHandler
         }
     }
 
-    public IFieldActor? GetPetOwner()
+    private IFieldActor? GetPetOwner()
     {
         if (Parent is Pet pet)
         {
@@ -70,7 +70,7 @@ public class SkillTriggerHandler
         return null;
     }
 
-    public IFieldActor? GetTarget(SkillTarget target, ConditionSkillTarget castInfo)
+    private IFieldActor? GetTarget(SkillTarget target, ConditionSkillTarget castInfo)
     {
         return target switch
         {
@@ -83,7 +83,7 @@ public class SkillTriggerHandler
         };
     }
 
-    public IFieldActor? GetOwner(SkillOwner owner, ConditionSkillTarget castInfo)
+    private IFieldActor? GetOwner(SkillOwner owner, ConditionSkillTarget castInfo)
     {
         return owner switch
         {
@@ -96,7 +96,7 @@ public class SkillTriggerHandler
         };
     }
 
-    public bool IsConditionMet(BeginConditionSubject? subjectCondition, IFieldActor? subject, EffectEvent effectEvent, int eventIdArgument)
+    private bool IsConditionMet(BeginConditionSubject? subjectCondition, IFieldActor? subject, EffectEvent effectEvent, int eventIdArgument)
     {
         if (subjectCondition is null)
         {
@@ -169,7 +169,7 @@ public class SkillTriggerHandler
         return true;
     }
 
-    public bool IsConditionMet(SkillBeginCondition condition, ConditionSkillTarget castInfo, EffectEvent effectEvent, int eventIdArgument)
+    private bool IsConditionMet(SkillBeginCondition condition, ConditionSkillTarget castInfo, EffectEvent effectEvent, int eventIdArgument)
     {
         if (!condition.AllowDeadState && Parent.IsDead)
         {
@@ -212,7 +212,7 @@ public class SkillTriggerHandler
         return true;
     }
 
-    public EffectEvent GetEvent(BeginConditionSubject? subjectCondition)
+    private EffectEvent GetEvent(BeginConditionSubject? subjectCondition)
     {
         if (subjectCondition is null)
         {
@@ -222,14 +222,7 @@ public class SkillTriggerHandler
         return subjectCondition.EventCondition;
     }
 
-    public bool EventMatches(EffectEvent effectEvent, EffectEvent listener, ref bool foundEvent)
-    {
-        foundEvent |= effectEvent == listener;
-
-        return effectEvent == listener || listener == EffectEvent.Activate;
-    }
-
-    public bool EventMatches(SkillBeginCondition condition, EffectEvent effectEvent, EffectEventOrigin origin)
+    private bool EventMatches(SkillBeginCondition condition, EffectEvent effectEvent, EffectEventOrigin origin)
     {
         return origin switch
         {
@@ -240,7 +233,7 @@ public class SkillTriggerHandler
         };
     }
 
-    public static int GetEffectCooldown(int effectId, int effectLevel)
+    private static int GetEffectCooldown(int effectId, int effectLevel)
     {
         AdditionalEffectLevelMetadata? levelMeta = AdditionalEffectMetadataStorage.GetLevelMetadata(effectId, effectLevel);
 
@@ -252,7 +245,7 @@ public class SkillTriggerHandler
         return 0;
     }
 
-    public bool IsEffectOnCooldown(ConditionSkillTarget castInfo, int skillId, int skillLevel, int start = -1)
+    private bool IsEffectOnCooldown(ConditionSkillTarget castInfo, int skillId, int skillLevel, int start = -1)
     {
         if (start == -1)
         {
@@ -281,7 +274,7 @@ public class SkillTriggerHandler
         return IsConditionMet(beginCondition, castInfo, effectEvent, eventIdArgument);
     }
 
-    public bool ShouldFireTrigger(SkillCondition trigger, ConditionSkillTarget castInfo, EffectEvent effectEvent, int eventIdArgument, int start = -1)
+    private bool ShouldFireTrigger(SkillCondition trigger, ConditionSkillTarget castInfo, EffectEvent effectEvent, int eventIdArgument, int start = -1)
     {
         if (!EventMatches(trigger.BeginCondition, effectEvent, castInfo.EventOrigin))
         {
@@ -325,7 +318,7 @@ public class SkillTriggerHandler
         return true;
     }
 
-    public void FireTrigger(SkillCondition trigger, SkillCast skillCast, ConditionSkillTarget castInfo)
+    private void FireTrigger(SkillCondition trigger, SkillCast skillCast, ConditionSkillTarget castInfo)
     {
         if (trigger.IsSplash)
         {
@@ -365,7 +358,7 @@ public class SkillTriggerHandler
         }, (currentTick, task) => FireTriggerTick(trigger, skillCast, castInfo));
     }
 
-    public long FireTriggerTick(SkillCondition trigger, SkillCast skillCast, ConditionSkillTarget castInfo)
+    private long FireTriggerTick(SkillCondition trigger, SkillCast skillCast, ConditionSkillTarget castInfo)
     {
         castInfo.Target?.AdditionalEffects.AddEffect(new(trigger.SkillId[0], trigger.SkillLevel[0])
         {
@@ -376,7 +369,7 @@ public class SkillTriggerHandler
         return 0;
     }
 
-    public void FireEvent(SkillCondition trigger, SkillCast? parentSkill, ConditionSkillTarget castInfo, EffectEvent effectEvent, int eventIdArgument, int start = -1)
+    private void FireEvent(SkillCondition trigger, SkillCast? parentSkill, ConditionSkillTarget castInfo, EffectEvent effectEvent, int eventIdArgument, int start = -1)
     {
         ConditionSkillTarget eventCastInfo = new(castInfo.Owner, GetTarget(trigger.Target, castInfo) ?? castInfo.Target, GetOwner(trigger.Owner, castInfo) ?? castInfo.Owner, castInfo.Attacker, castInfo.EventOrigin);
 
@@ -422,14 +415,14 @@ public class SkillTriggerHandler
         }, (currentTick, task) => FireTriggerDelayed(trigger, skillCast, eventCastInfo));
     }
 
-    public long FireTriggerDelayed(SkillCondition trigger, SkillCast skillCast, ConditionSkillTarget castInfo)
+    private long FireTriggerDelayed(SkillCondition trigger, SkillCast skillCast, ConditionSkillTarget castInfo)
     {
         FireTrigger(trigger, skillCast, castInfo);
 
         return 0;
     }
 
-    public void FireTriggerSkill(SkillCondition trigger, SkillCast parentSkill, ConditionSkillTarget castInfo, int start = -1, bool hitTarget = true)
+    private void FireTriggerSkill(SkillCondition trigger, SkillCast parentSkill, ConditionSkillTarget castInfo, int start = -1, bool hitTarget = true)
     {
         if (!hitTarget && trigger.DependOnDamageCount)
         {
@@ -439,7 +432,7 @@ public class SkillTriggerHandler
         FireEvent(trigger, parentSkill, castInfo, EffectEvent.Activate, 0, start);
     }
 
-    public void FireEvents(List<SkillCondition>? triggers, SkillCast? parentSkill, ConditionSkillTarget castInfo, EffectEvent effectEvent, int eventIdArgument, int start = -1)
+    private void FireEvents(List<SkillCondition>? triggers, SkillCast? parentSkill, ConditionSkillTarget castInfo, EffectEvent effectEvent, int eventIdArgument, int start = -1)
     {
         if (triggers is null)
         {
@@ -530,7 +523,7 @@ public class SkillTriggerHandler
         }, (currentTick, task) => OnAttackedTick(attacker, skillId, hit, crit, missed, blocked));
     }
 
-    public long OnAttackedTick(IFieldActor? attacker, int skillId, bool hit, bool crit, bool missed, bool blocked)
+    private long OnAttackedTick(IFieldActor? attacker, int skillId, bool hit, bool crit, bool missed, bool blocked)
     {
         SkillTriggerHandler? attackerTrigger = attacker?.SkillTriggerHandler;
 

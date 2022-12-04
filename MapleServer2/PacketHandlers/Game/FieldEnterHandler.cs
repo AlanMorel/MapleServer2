@@ -52,11 +52,14 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
         if (account.IsVip())
         {
             List<PremiumClubEffectMetadata> effectMetadatas = PremiumClubEffectMetadataStorage.GetBuffs();
-            foreach (PremiumClubEffectMetadata effect in effectMetadatas)
-            {
-                player.FieldPlayer.AdditionalEffects.AddEffect(new(effect.EffectId, effect.EffectLevel));
-            }
 
+            player.FieldPlayer.TaskScheduler.QueueBufferedTask(() =>
+            {
+                foreach (PremiumClubEffectMetadata effect in effectMetadatas)
+                {
+                    player.FieldPlayer.AdditionalEffects.AddEffect(new(effect.EffectId, effect.EffectLevel));
+                }
+            });
 
             session.Send(PremiumClubPacket.ActivatePremium(player.FieldPlayer, account.VIPExpiration));
         }
@@ -109,10 +112,13 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
         MapProperty? mapProperty = MapMetadataStorage.GetMapProperty(player.MapId);
         if (mapProperty is not null)
         {
-            for (int i = 0; i < mapProperty.EnterBuffIds.Count; i++)
+            player.FieldPlayer.TaskScheduler.QueueBufferedTask(() =>
             {
-                player.FieldPlayer.AdditionalEffects.AddEffect(new(mapProperty.EnterBuffIds[i], mapProperty.EnterBuffLevels[i]));
-            }
+                for (int i = 0; i < mapProperty.EnterBuffIds.Count; i++)
+                {
+                    player.FieldPlayer.AdditionalEffects.AddEffect(new(mapProperty.EnterBuffIds[i], mapProperty.EnterBuffLevels[i]));
+                }
+            });
         }
 
         player.InitializeEffects();

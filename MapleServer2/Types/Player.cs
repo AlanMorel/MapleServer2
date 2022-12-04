@@ -863,10 +863,13 @@ public class Player : IPacketSerializable
             return;
         }
 
-        for (int i = 0; i < effects.Level.Length; ++i)
+        FieldPlayer?.TaskScheduler.QueueBufferedTask(() =>
         {
-            AdditionalEffects.AddEffect(new(effects.Id[i], effects.Level[i]));
-        }
+            for (int i = 0; i < effects.Level.Length; ++i)
+            {
+                AdditionalEffects.AddEffect(new(effects.Id[i], effects.Level[i]));
+            }
+        });
     }
 
     public void RemoveEffects(ItemAdditionalEffectMetadata? effects)

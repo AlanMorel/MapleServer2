@@ -1050,13 +1050,6 @@ public class FieldManager
         BroadcastPacket(RegionSkillPacket.Send(skillCast));
     }
 
-    //public void AddRegionSkillEffect(RegionSkill skill)
-    //{
-    //    skill.ObjectId = NextLocalId();
-    //
-    //    BroadcastPacket(RegionSkillPacket.Send(skill));
-    //}
-
     public bool RemoveRegionSkillEffect(SkillCast skillCast)
     {
         if (!RemoveSkillCast(skillCast.SkillSn, out skillCast))
@@ -1067,19 +1060,6 @@ public class FieldManager
         BroadcastPacket(RegionSkillPacket.Remove(skillCast.SkillObjectId));
         return true;
     }
-
-    //public bool RemoveRegionSkillEffect(RegionSkill skill)
-    //{
-    //    SkillCast skillCast = skill.SkillCast;
-    //
-    //    if (!RemoveSkillCast(skillCast.SkillSn, out skillCast))
-    //    {
-    //        return false;
-    //    }
-    //
-    //    BroadcastPacket(RegionSkillPacket.Remove(skill.ObjectId));
-    //    return true;
-    //}
 
     private void SpawnMobs(IFieldObject<MobSpawn> mobSpawn)
     {
@@ -1493,7 +1473,7 @@ public class FieldManager
                     continue;
                 }
 
-                player.AdditionalEffects.AddEffect(new(70000018, 1)); // applies a healing effect to the player
+                player.TaskScheduler.QueueBufferedTask(() => player.AdditionalEffects.AddEffect(new(70000018, 1))); // applies a healing effect to the player
             }
         }
     }

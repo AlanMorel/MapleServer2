@@ -55,7 +55,7 @@ internal class InteractObjectHandler : GamePacketHandler<InteractObjectHandler>
             return;
         }
 
-        fieldPlayer.SkillTriggerHandler.FireEvents(fieldPlayer, null, isLifeSkillEvent ? EffectEvent.OnLifeSkillGather : EffectEvent.OnInvestigate, 0);
+        fieldPlayer.TaskScheduler.QueueBufferedTask(() => fieldPlayer.SkillTriggerHandler.FireEvents(fieldPlayer, null, isLifeSkillEvent ? EffectEvent.OnLifeSkillGather : EffectEvent.OnInvestigate, 0));
     }
 
     private static void HandleCast(GameSession session, PacketReader packet)

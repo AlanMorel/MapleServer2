@@ -156,13 +156,11 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             return;
         }
 
-        session.Player.FieldPlayer?.TaskScheduler.QueueBufferedTask(() =>
-            {
-                session.Player.FieldPlayer.SkillTriggerHandler.FireEvents(null, null, EffectEvent.OnSkillCastEnd, skillCast.SkillId);
+        session.Player.FieldPlayer?.TaskScheduler.QueueBufferedTask(() => {
+            session.Player.FieldPlayer.SkillTriggerHandler.FireEvents(null, null, EffectEvent.OnSkillCastEnd, skillCast.SkillId);
 
-                session.FieldManager.BroadcastPacket(SkillCancelPacket.SkillCancel(skillSn, session.Player.FieldPlayer.ObjectId), session);
-            }
-        );
+            session.FieldManager.BroadcastPacket(SkillCancelPacket.SkillCancel(skillSn, session.Player.FieldPlayer.ObjectId), session);
+        });
     }
 
     #region HandleDamage
@@ -323,7 +321,7 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
                     hitMissed = damage.HitType == Enums.HitType.Miss;
                 }
 
-                caster?.SkillTriggerHandler.FireTriggerSkills(attack.SkillConditions, skillCast, castInfo);
+                caster.TaskScheduler.QueueBufferedTask(() => caster?.SkillTriggerHandler.FireTriggerSkills(attack.SkillConditions, skillCast, castInfo));
 
                 target.SkillTriggerHandler.OnAttacked(caster, skillCast.SkillId, !hitMissed, hitCrit, hitMissed, false);
             }
