@@ -184,7 +184,7 @@ public class AdditionalEffect
     {
         int[] durationCodes = modifyDuration.EffectCodes;
 
-        if (durationCodes is null || durationCodes?.Length == 0)
+        if (durationCodes is null || durationCodes.Length == 0)
         {
             return;
         }
@@ -223,13 +223,16 @@ public class AdditionalEffect
             session = character.Value.Session;
         }
 
-        int healedAmount = (int) (Caster.Stats[StatAttribute.MagicAtk].TotalLong * recovery.RecoveryRate);
+        int healedAmount = (int) ((Caster?.Stats?[StatAttribute.MagicAtk]?.TotalLong ?? 0) * recovery.RecoveryRate);
         healedAmount += (int) (parent.Stats[StatAttribute.Hp].BonusLong * recovery.HpRate) + (int) recovery.HpValue;
 
-        float healRate = (float) (1000 + Caster.Stats[StatAttribute.Heal].TotalLong) / 1000;
-        InvokeStatValue invokeStat = Caster.Stats.GetEffectStats(Id, LevelMetadata.Basic.Group, InvokeEffectType.IncreaseHealing);
+        float healRate = (float) (1000 + (Caster?.Stats?[StatAttribute.Heal]?.TotalLong ?? 0)) / 1000;
+        InvokeStatValue? invokeStat = Caster?.Stats?.GetEffectStats(Id, LevelMetadata.Basic.Group, InvokeEffectType.IncreaseHealing);
 
-        healRate *= Math.Max(0, 1 + invokeStat.Rate);
+        if (invokeStat is not null)
+        {
+            healRate *= Math.Max(0, 1 + invokeStat.Rate);
+        }
 
         if (healedAmount > 0)
         {
@@ -261,7 +264,7 @@ public class AdditionalEffect
         DamageSourceParameters dotParameters = new()
         {
             IsSkill = false,
-            GuaranteedCrit = Caster.AdditionalEffects.AlwaysCrit,
+            GuaranteedCrit = Caster?.AdditionalEffects?.AlwaysCrit ?? false,
             CanCrit = LevelMetadata.DotDamage.UseGrade,
             Element = (Element) dotDamage.Element,
             RangeType = SkillRangeType.Special,

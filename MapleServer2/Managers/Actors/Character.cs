@@ -76,7 +76,7 @@ public class Character : FieldActor<Player>
             ?.FirstOrDefault(level => level.Level == skillCast.SkillLevel);
         List<SkillCondition>? conditionSkills = skillLevel?.ConditionSkills;
 
-        float cooldown = skillLevel.BeginCondition.CooldownTime;
+        float cooldown = skillLevel?.BeginCondition.CooldownTime ?? 0;
 
         SkillTriggerHandler.FireEvents(this, null, EffectEvent.OnSkillCasted, skillCast.SkillId);
 
@@ -85,8 +85,8 @@ public class Character : FieldActor<Player>
             SkillTriggerHandler.FireTriggerSkills(conditionSkills, skillCast, new(this, this, this));
         }
 
-        Value.Session.FieldManager.BroadcastPacket(SkillUsePacket.SkillUse(skillCast));
-        Value.Session.Send(StatPacket.SetStats(this));
+        Value.Session?.FieldManager.BroadcastPacket(SkillUsePacket.SkillUse(skillCast));
+        Value.Session?.Send(StatPacket.SetStats(this));
 
         InvokeStatValue skillModifier = Stats.GetSkillStats(skillCast.SkillId, InvokeEffectType.ReduceCooldown);
 
@@ -94,7 +94,7 @@ public class Character : FieldActor<Player>
         {
             cooldown = Math.Max(0, (1 - skillModifier.Rate) * cooldown - skillModifier.Value);
 
-            Value.Session.FieldManager.BroadcastPacket(SkillCooldownPacket.SetCooldown(skillCast.SkillId, Environment.TickCount + (int) (1000 * cooldown)));
+            Value.Session?.FieldManager.BroadcastPacket(SkillCooldownPacket.SetCooldown(skillCast.SkillId, Environment.TickCount + (int) (1000 * cooldown)));
         }
 
         StartCombatStance();
@@ -326,7 +326,7 @@ public class Character : FieldActor<Player>
 
     public override void StatsComputed()
     {
-        Value.Session.Send(StatPacket.SetStats(this));
+        Value.Session?.Send(StatPacket.SetStats(this));
     }
 
     public override void AddStats()

@@ -874,6 +874,16 @@ public class Player : IPacketSerializable
 
     public void UpdatePassiveSkills()
     {
+        FieldPlayer?.TaskScheduler.QueueBufferedTask(ProcessPassiveSkills);
+    }
+
+    public void ProcessPassiveSkills()
+    {
+        if (FieldPlayer is null)
+        {
+            return;
+        }
+
         foreach ((int id, short _) in PassiveSkillEffects)
         {
             PassiveSkillEffects[id] = -1;
@@ -904,7 +914,7 @@ public class Player : IPacketSerializable
                 {
                     foreach (int skillId in trigger.SkillId)
                     {
-                        AdditionalEffects.GetEffect(skillId, 0, ConditionOperator.GreaterEquals, level).Stop(FieldPlayer);
+                        AdditionalEffects.GetEffect(skillId, 0, ConditionOperator.GreaterEquals, level)?.Stop(FieldPlayer);
                     }
                 }
 

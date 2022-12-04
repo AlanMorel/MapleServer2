@@ -137,7 +137,7 @@ public class SkillCast
 
     public bool HasCompulsionType(int type)
     {
-        if (SkillAttack.CompulsionType == null)
+        if (SkillAttack?.CompulsionType is null)
         {
             return false;
         }
@@ -151,7 +151,7 @@ public class SkillCast
         return skillData.Type == SkillType.Active && skillData.SubType == SkillSubType.None;
     }
 
-    public List<SkillMotion> GetSkillMotions() => GetCurrentLevel()?.SkillMotions;
+    public List<SkillMotion> GetSkillMotions() => GetCurrentLevel()?.SkillMotions ?? new();
 
     private bool VerifySkillTypeOf(SkillType type, SkillSubType subType)
     {

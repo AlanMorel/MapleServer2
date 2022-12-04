@@ -40,33 +40,6 @@ public static class RegionSkillPacket
         return pWriter;
     }
 
-    //public static PacketWriter Send(RegionSkill skill)
-    //{
-    //    PacketWriter pWriter = PacketWriter.Of(SendOp.RegionSkill);
-    //
-    //    pWriter.Write(Mode.Add);
-    //    pWriter.WriteInt(skill.ObjectId);
-    //    pWriter.WriteInt(skill.SkillCast.Caster?.ObjectId ?? 0);
-    //    pWriter.WriteInt(skill.SkillCast.ServerTick);
-    //    pWriter.WriteByte((byte) skill.EffectCoords.Count);
-    //    if (skill.EffectCoords.Count == 0)
-    //    {
-    //        return pWriter;
-    //    }
-    //
-    //    foreach (CoordF effectCoord in skill.EffectCoords)
-    //    {
-    //        pWriter.Write(effectCoord);
-    //    }
-    //
-    //    pWriter.WriteInt(skill.SkillCast.SkillId);
-    //    pWriter.WriteShort(skill.SkillCast.SkillLevel);
-    //    pWriter.WriteFloat(skill.SkillCast.Rotation.Z);
-    //    pWriter.WriteFloat();
-    //
-    //    return pWriter;
-    //}
-
     public static PacketWriter Remove(int sourceObjectId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.RegionSkill);

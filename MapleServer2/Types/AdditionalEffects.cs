@@ -50,6 +50,11 @@ public class AdditionalEffects
 
     public void UpdateStatsIfStale(EffectEvent effectEvent = EffectEvent.Tick)
     {
+        if (Parent is null)
+        {
+            return;
+        }
+
         foreach (AdditionalEffect effect in Effects)
         {
             if (effect.AreStatsStale(Parent, effectEvent))
@@ -67,9 +72,9 @@ public class AdditionalEffects
 
         foreach (AdditionalEffect activeEffect in Effects)
         {
-            EffectImmuneEffectMetadata immune = activeEffect.LevelMetadata.ImmuneEffect;
+            EffectImmuneEffectMetadata? immune = activeEffect.LevelMetadata.ImmuneEffect;
 
-            if (immune.ImmuneEffectCodes.Contains(effect.Id))
+            if (immune?.ImmuneEffectCodes.Contains(effect.Id) ?? false)
             {
                 return false;
             }
@@ -94,7 +99,7 @@ public class AdditionalEffects
 
     public bool UpdateEffect(AdditionalEffect? effect, AdditionalEffect newEffect, AdditionalEffectParameters parameters)
     {
-        if (effect is null)
+        if (effect is null || Parent is null)
         {
             return false;
         }
@@ -140,6 +145,11 @@ public class AdditionalEffects
 
     public AdditionalEffect? AddEffect(AdditionalEffectParameters parameters)
     {
+        if (Parent is null)
+        {
+            return null;
+        }
+
         // current default behavior of remove and replace, and add stacks
         // doesnt check for shared buff categories (sigils, whetstones, etc)
         // TODO: add correct refreshing behavior based on attributes from the xmls
@@ -185,10 +195,11 @@ public class AdditionalEffects
 
         Effects.Add(effect);
 
-        Parent?.FieldManager?.BroadcastPacket(BuffPacket.AddBuff(effect, Parent.ObjectId));
+        Parent.FieldManager?.BroadcastPacket(BuffPacket.AddBuff(effect, Parent.ObjectId));
 
         AddListeningEvents(effect);
-        Parent?.EffectAdded(effect);
+
+        Parent.EffectAdded(effect);
         effect.Process(Parent);
 
         return effect;

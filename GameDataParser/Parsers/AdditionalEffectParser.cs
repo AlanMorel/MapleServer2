@@ -34,13 +34,6 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
 
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
 
-            XmlNodeList? levels = document.SelectNodes("/ms2/level");
-
-            if (levels is null)
-            {
-                continue;
-            }
-
             int effectId = int.Parse(Path.GetFileNameWithoutExtension(entry.Name));
 
             AdditionalEffectMetadata metadata = new()
@@ -52,7 +45,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
             effects.Add(metadata);
             effectsById.Add(effectId, metadata);
 
-            foreach (XmlNode level in levels)
+            foreach (XmlNode level in document.SelectNodes("/ms2/level")!)
             {
                 string? feature = level.Attributes?["feature"]?.Value;
 
@@ -73,7 +66,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                 AdditionalEffectLevelMetadata levelMeta = new()
                 {
                     Feature = feature ?? "",
-                    BeginCondition = SkillParser.ParseBeginCondition(level),
+                    BeginCondition = SkillParser.ParseBeginCondition(level) ?? new(),
                     Basic = ParseBasicProperty(level.SelectSingleNode("BasicProperty")),
                     CancelEffect = ParseCancelEffect(level.SelectSingleNode("CancelEffectProperty")),
                     ImmuneEffect = ParseImmuneEffect(level.SelectSingleNode("ImmuneEffectProperty")),
@@ -127,14 +120,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
 
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
 
-            XmlNodeList? keys = document.SelectNodes("/ms2/key");
-
-            if (keys is null)
-            {
-                continue;
-            }
-
-            foreach (XmlNode key in keys)
+            foreach (XmlNode key in document.SelectNodes("/ms2/key")!)
             {
                 string? feature = key.Attributes?["feature"]?.Value;
 
@@ -217,7 +203,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
             return;
         }
 
-        foreach (XmlNode stat in parentNode.SelectNodes(nodeName))
+        foreach (XmlNode stat in parentNode.SelectNodes(nodeName)!)
         {
             ParseStatNode(stat, stats);
         }
@@ -259,8 +245,8 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
         {
             CancelCheckSameCaster = int.Parse(parentNode?.Attributes?["cancelCheckSameCaster"]?.Value ?? "0") == 1,
             CancelPassiveEffect = int.Parse(parentNode?.Attributes?["cancelPassiveEffect"]?.Value ?? "0") == 1,
-            CancelEffectCodes = parentNode.Attributes["cancelEffectCodes"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>(),
-            CancelBuffCategories = parentNode.Attributes["cancelBuffCategories"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>()
+            CancelEffectCodes = parentNode?.Attributes?["cancelEffectCodes"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>(),
+            CancelBuffCategories = parentNode?.Attributes?["cancelBuffCategories"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>()
         };
     }
 
@@ -268,8 +254,8 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
     {
         return new()
         {
-            ImmuneEffectCodes = parentNode.Attributes["immuneEffectCodes"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>(),
-            ImmuneBuffCategories = parentNode.Attributes["immuneBuffCategories"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>()
+            ImmuneEffectCodes = parentNode?.Attributes?["immuneEffectCodes"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>(),
+            ImmuneBuffCategories = parentNode?.Attributes?["immuneBuffCategories"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>()
         };
     }
 
@@ -277,7 +263,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
     {
         return new()
         {
-            SkillCodes = parentNode.Attributes["skillCodes"]?.Value?.SplitAndParseToLong(',')?.ToArray() ?? Array.Empty<long>()
+            SkillCodes = parentNode?.Attributes?["skillCodes"]?.Value?.SplitAndParseToLong(',')?.ToArray() ?? Array.Empty<long>()
         };
     }
 
@@ -285,9 +271,9 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
     {
         return new()
         {
-            EffectCodes = parentNode.Attributes["effectCodes"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>(),
-            DurationFactors = parentNode.Attributes["durationFactors"]?.Value?.SplitAndParseToFloat(',')?.ToArray() ?? Array.Empty<float>(),
-            DurationValues = parentNode.Attributes["durationValues"]?.Value?.SplitAndParseToFloat(',')?.ToArray() ?? Array.Empty<float>()
+            EffectCodes = parentNode?.Attributes?["effectCodes"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>(),
+            DurationFactors = parentNode?.Attributes?["durationFactors"]?.Value?.SplitAndParseToFloat(',')?.ToArray() ?? Array.Empty<float>(),
+            DurationValues = parentNode?.Attributes?["durationValues"]?.Value?.SplitAndParseToFloat(',')?.ToArray() ?? Array.Empty<float>()
         };
     }
 
@@ -300,8 +286,8 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
 
         return new()
         {
-            EffectCodes = parentNode.Attributes["effectCodes"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>(),
-            OffsetCounts = parentNode.Attributes["offsetCounts"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>()
+            EffectCodes = parentNode.Attributes?["effectCodes"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>(),
+            OffsetCounts = parentNode.Attributes?["offsetCounts"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>()
         };
     }
 
@@ -321,11 +307,6 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
 
     private EffectDefesiveMetadata ParseDefensive(XmlNode? parentNode, Dictionary<StatAttribute, EffectStatMetadata> stats)
     {
-        //if (parentNode is not null)
-        //{
-        //    ParseStatNode(parentNode, stats, "DamageV", "DamageR");
-        //}
-
         return new()
         {
             Invincible = int.Parse(parentNode?.Attributes?["invincible"]?.Value ?? "0") == 1
@@ -372,10 +353,15 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
         };
     }
 
-    private Dictionary<string, bool> foundStat = new();
+    private Dictionary<string, bool> FoundStat = new();
 
     private void ParseStatNode(XmlNode statNode, Dictionary<StatAttribute, EffectStatMetadata> stats, string valueSuffix = "value", string rateSuffix = "rate", bool checkForUnknownValues = true)
     {
+        if (statNode.Attributes is null)
+        {
+            return;
+        }
+
         foreach (XmlAttribute attribute in statNode.Attributes)
         {
             string name = attribute.Name;
@@ -400,9 +386,9 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
 
             if (entry is null)
             {
-                if (foundSuffix && checkForUnknownValues && !foundStat.ContainsKey(name))
+                if (foundSuffix && checkForUnknownValues && !FoundStat.ContainsKey(name))
                 {
-                    foundStat.Add(name, true);
+                    FoundStat.Add(name, true);
                     foundSuffix = true;
                 }
 

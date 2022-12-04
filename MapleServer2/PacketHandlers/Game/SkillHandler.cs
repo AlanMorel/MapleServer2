@@ -74,6 +74,11 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             string unkString = packet.ReadUnicodeString();
         }
 
+        if (session.Player.FieldPlayer is null)
+        {
+            return;
+        }
+
         IFieldActor<Player> fieldPlayer = session.Player.FieldPlayer;
         SkillCast skillCast = new(skillId, skillLevel, skillSN, serverTick, fieldPlayer, clientTick, attackPoint)
         {
@@ -116,7 +121,12 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
         packet.ReadInt();
         packet.ReadByte();
 
-        SkillCast skillCast = session.Player.FieldPlayer.SkillCast;
+        if (session.Player.FieldPlayer is null)
+        {
+            return;
+        }
+
+        SkillCast? skillCast = session.Player.FieldPlayer.SkillCast;
         if (skillCast is null)
         {
             return;
@@ -135,13 +145,18 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
     {
         long skillSn = packet.ReadLong();
 
-        SkillCast skillCast = session.Player.FieldPlayer.SkillCast;
+        if (session.Player.FieldPlayer is null)
+        {
+            return;
+        }
+
+        SkillCast? skillCast = session.Player.FieldPlayer?.SkillCast;
         if (skillCast is null || skillCast.SkillSn != skillSn)
         {
             return;
         }
 
-        session.Player.FieldPlayer.TaskScheduler.QueueBufferedTask(() =>
+        session.Player.FieldPlayer?.TaskScheduler.QueueBufferedTask(() =>
             {
                 session.Player.FieldPlayer.SkillTriggerHandler.FireEvents(null, null, EffectEvent.OnSkillCastEnd, skillCast.SkillId);
 
@@ -201,7 +216,12 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             animation.Add(packet.ReadShort());
         }
 
-        SkillCast skillCast = session.Player.FieldPlayer.SkillCast;
+        if (session.Player.FieldPlayer is null)
+        {
+            return;
+        }
+
+        SkillCast? skillCast = session.Player.FieldPlayer.SkillCast;
         if (skillCast is null)
         {
             return;
@@ -228,7 +248,7 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
         int entityId = packet.ReadInt();
         packet.ReadByte();
 
-        session.Player.FieldPlayer.TaskScheduler.QueueBufferedTask(() => HandleDamage(session, skillSn, count, attackPoint, entityId, playerObjectId, attackCounter, position, rotation));
+        session.Player.FieldPlayer?.TaskScheduler.QueueBufferedTask(() => HandleDamage(session, skillSn, count, attackPoint, entityId, playerObjectId, attackCounter, position, rotation));
     }
 
     private static void HandleDamage(GameSession session, long skillSn, byte count, int attackPoint, int entityId, int playerObjectId, int attackCounter, CoordF position, CoordF rotation)
@@ -325,14 +345,14 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
         // TODO: Verify rest of skills to proc correctly.
         // TODO: Send status correctly when Region attacks are proc.
 
-        SkillCast parentSkill = session.Player.FieldPlayer.SkillCast;
+        SkillCast? parentSkill = session.Player.FieldPlayer?.SkillCast;
 
         if (parentSkill is null || parentSkill.SkillSn != skillSn)
         {
             return;
         }
 
-        SkillAttack skillAttack = parentSkill.GetSkillMotions().FirstOrDefault()?.SkillAttacks[attackIndex];
+        SkillAttack? skillAttack = parentSkill.GetSkillMotions().FirstOrDefault()?.SkillAttacks[attackIndex];
         if (skillAttack is null)
         {
             return;
@@ -354,8 +374,7 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
         };
         ConditionSkillTarget castInfo = new(parentSkill.Caster, parentSkill.Caster, parentSkill.Caster);
 
-        session.Player.FieldPlayer.TaskScheduler.QueueBufferedTask(() =>
-            //RegionSkillHandler.CastRegionSkill(session.FieldManager, skillCast, 
+        session.Player.FieldPlayer?.TaskScheduler.QueueBufferedTask(() =>
             parentSkill.Caster?.SkillTriggerHandler.FireTriggerSkills(skillAttack.SkillConditions, skillCast, castInfo)
         );
     }

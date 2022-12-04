@@ -16,12 +16,10 @@ public struct ExternalEventListener
     public AdditionalEffect Effect;
     public EffectEventOrigin Origin;
 
-    public ExternalEventListener(AdditionalEffect effect, EffectEventOrigin origin)//, bool tickEvent, bool triggerEvent)
+    public ExternalEventListener(AdditionalEffect effect, EffectEventOrigin origin)
     {
         Effect = effect;
         Origin = origin;
-        //TickEvent = tickEvent;
-        //TriggerEvent = triggerEvent;
     }
 }
 
@@ -119,20 +117,20 @@ public class SkillTriggerHandler
                 EffectEvent.OnBlock => true,
                 EffectEvent.OnAttacked => true,
                 EffectEvent.OnOwnerAttackCrit => true,
-                EffectEvent.OnOwnerAttackHit => (subjectCondition.EventSkillIDs?.Length ?? 0) == 0 || subjectCondition.EventSkillIDs.Contains(eventIdArgument),
-                EffectEvent.OnSkillCasted => (subjectCondition.EventSkillIDs?.Length ?? 0) == 0 || subjectCondition.EventSkillIDs.Contains(eventIdArgument),
+                EffectEvent.OnOwnerAttackHit => (subjectCondition.EventSkillIDs?.Length ?? 0) == 0 || (subjectCondition.EventSkillIDs?.Contains(eventIdArgument) ?? false),
+                EffectEvent.OnSkillCasted => (subjectCondition.EventSkillIDs?.Length ?? 0) == 0 || (subjectCondition.EventSkillIDs?.Contains(eventIdArgument) ?? false),
 
                 EffectEvent.OnBuffStacksReached => subjectCondition.RequireBuffId == eventIdArgument,
                 EffectEvent.OnInvestigate => true,
                 EffectEvent.OnBuffTimeExpiring => true, // check
-                EffectEvent.OnSkillCastEnd => (subjectCondition.EventSkillIDs?.Length ?? 0) == 0 || subjectCondition.EventSkillIDs.Contains(eventIdArgument),
-                EffectEvent.OnEffectApplied => subjectCondition.RequireBuffId == 0 ? (subjectCondition.EventEffectIDs?.Length ?? 0) == 0 || subjectCondition.EventEffectIDs.Contains(eventIdArgument) : subjectCondition.RequireBuffId == eventIdArgument,
-                EffectEvent.OnEffectRemoved => (subjectCondition.EventEffectIDs?.Length ?? 0) == 0 || subjectCondition.EventEffectIDs.Contains(eventIdArgument),
+                EffectEvent.OnSkillCastEnd => (subjectCondition.EventSkillIDs?.Length ?? 0) == 0 || (subjectCondition.EventSkillIDs?.Contains(eventIdArgument) ?? false),
+                EffectEvent.OnEffectApplied => (subjectCondition.EventEffectIDs?.Length ?? 0) == 0 || (subjectCondition.EventEffectIDs?.Contains(eventIdArgument) ?? false),
+                EffectEvent.OnEffectRemoved => (subjectCondition.EventEffectIDs?.Length ?? 0) == 0 || (subjectCondition.EventEffectIDs?.Contains(eventIdArgument) ?? false),
                 EffectEvent.OnLifeSkillGather => true,
                 EffectEvent.OnAttackMiss => true,
 
-                EffectEvent.UnknownKritiasPuzzleEvent => (subjectCondition.EventSkillIDs?.Length ?? 0) == 0 || subjectCondition.EventSkillIDs.Contains(eventIdArgument),
-                EffectEvent.UnknownWizardEvent => (subjectCondition.EventEffectIDs?.Length ?? 0) == 0 || subjectCondition.EventEffectIDs.Contains(eventIdArgument),
+                EffectEvent.UnknownKritiasPuzzleEvent => (subjectCondition.EventSkillIDs?.Length ?? 0) == 0 || (subjectCondition.EventSkillIDs?.Contains(eventIdArgument) ?? false),
+                EffectEvent.UnknownWizardEvent => (subjectCondition.EventEffectIDs?.Length ?? 0) == 0 || (subjectCondition.EventEffectIDs?.Contains(eventIdArgument) ?? false),
                 EffectEvent.UnknownStrikerEvent => subjectCondition.RequireBuffId == 0 || subjectCondition.RequireBuffId == eventIdArgument,
                 _ => true
             };
@@ -237,7 +235,8 @@ public class SkillTriggerHandler
         {
             EffectEventOrigin.Owner => effectEvent == GetEvent(condition.Owner),
             EffectEventOrigin.Caster => effectEvent == GetEvent(condition.Caster),
-            EffectEventOrigin.Target => effectEvent == GetEvent(condition.Target)
+            EffectEventOrigin.Target => effectEvent == GetEvent(condition.Target),
+            _ => false
         };
     }
 
@@ -267,7 +266,7 @@ public class SkillTriggerHandler
             return false;
         }
 
-        int lastProcced = castInfo.Target.SkillTriggerHandler.HostileSkillProccedLast.GetValueOrDefault(skillId, start - cooldown);
+        int lastProcced = castInfo.Target?.SkillTriggerHandler.HostileSkillProccedLast.GetValueOrDefault(skillId, start - cooldown) ?? start;
 
         return start - lastProcced < cooldown;
     }
@@ -314,6 +313,11 @@ public class SkillTriggerHandler
         {
             foreach (int skillId in trigger.SkillId)
             {
+                if (castInfo.Target is null)
+                {
+                    continue;
+                }
+
                 castInfo.Target.SkillTriggerHandler.HostileSkillProccedLast[skillId] = start;
             }
         }
@@ -330,6 +334,11 @@ public class SkillTriggerHandler
             if (removeDelay == 0)
             {
                 removeDelay = trigger.FireCount * trigger.Interval;
+            }
+
+            if (Parent.FieldManager is null)
+            {
+                return;
             }
 
             RegionSkillHandler.CastRegionSkill(Parent.FieldManager, skillCast, trigger.FireCount, removeDelay, trigger.Interval, castInfo.Target);
@@ -358,7 +367,7 @@ public class SkillTriggerHandler
 
     public long FireTriggerTick(SkillCondition trigger, SkillCast skillCast, ConditionSkillTarget castInfo)
     {
-        castInfo.Target.AdditionalEffects.AddEffect(new(trigger.SkillId[0], trigger.SkillLevel[0])
+        castInfo.Target?.AdditionalEffects.AddEffect(new(trigger.SkillId[0], trigger.SkillLevel[0])
         {
             Caster = castInfo.Caster,
             ParentSkill = skillCast.ParentSkill
@@ -383,7 +392,7 @@ public class SkillTriggerHandler
         {
             Owner = eventCastInfo.Owner,
             Caster = eventCastInfo.Caster,
-            Position = eventCastInfo.Target.Coord,
+            Position = eventCastInfo.Target?.Coord ?? default,
             Rotation = useDirection ? eventCastInfo.Caster.Rotation : default,
             Direction = useDirection ? Maple2Storage.Types.CoordF.From(1, eventCastInfo.Caster.LookDirection) : default,
             LookDirection = useDirection ? eventCastInfo.Caster.LookDirection : default,
@@ -430,7 +439,7 @@ public class SkillTriggerHandler
         FireEvent(trigger, parentSkill, castInfo, EffectEvent.Activate, 0, start);
     }
 
-    public void FireEvents(List<SkillCondition>? triggers, SkillCast parentSkill, ConditionSkillTarget castInfo, EffectEvent effectEvent, int eventIdArgument, int start = -1)
+    public void FireEvents(List<SkillCondition>? triggers, SkillCast? parentSkill, ConditionSkillTarget castInfo, EffectEvent effectEvent, int eventIdArgument, int start = -1)
     {
         if (triggers is null)
         {
@@ -485,7 +494,7 @@ public class SkillTriggerHandler
 
         foreach (AdditionalEffect effect in EffectBuffer)
         {
-            ConditionSkillTarget effectCastInfo = new(Parent, target, effect?.ParentSkill?.Caster, attacker);
+            ConditionSkillTarget effectCastInfo = new(Parent, target, effect.ParentSkill?.Caster, attacker);
 
             if (IsConditionMet(effect.LevelMetadata.BeginCondition, effectCastInfo, effectEvent, eventIdArgument))
             {

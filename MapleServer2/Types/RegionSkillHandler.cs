@@ -13,6 +13,7 @@ using MapleServer2.Managers.Actors;
 using MapleServer2.Network;
 using MapleServer2.PacketHandlers.Game;
 using MapleServer2.Packets;
+using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using Org.BouncyCastle.Asn1.X509;
 using Serilog;
@@ -145,8 +146,10 @@ public static class RegionSkillHandler
         // Set the height to the max allowed, which is one block above the cast coord.
         tempBlockCoord.Z += Block.BLOCK_SIZE * 2;
 
+        CoordS resultCoord = new();
+
         // Find the first block below the effect coord
-        bool foundBlock = field.Navigator.FindFirstCoordSBelow(offSetCoord.ToShort(), out CoordS resultCoord);
+        bool foundBlock = field?.Navigator?.FindFirstCoordSBelow(offSetCoord.ToShort(), out resultCoord) ?? false;
 
         if (!foundBlock || offSetCoord.Z - resultCoord.Z > Block.BLOCK_SIZE * 2)
         {
@@ -348,7 +351,7 @@ public static class RegionSkillHandler
         }
 
         field.BroadcastPacket(SkillDamagePacket.SyncDamage(skillCast, skillCast.EffectCoords[0], skillCast.Rotation, character, sourceId, (byte) atkCount.Count, atkCount,
-            targetId, animation, uid));
+            targetId, animation, true, uid));
 
         if (chainingAttack is null || targets.Count == 0)
         {
@@ -535,12 +538,17 @@ public static class RegionSkillHandler
             return;
         }
 
-        Servers.Game.GameSession session = null;
-        IFieldActor caster = skillCast.Caster;
+        GameSession? session = null;
+        IFieldActor? caster = skillCast.Caster;
 
         if (caster is Character character)
         {
             session = character.Value.Session;
+        }
+
+        if (skillCast.SkillAttack is null)
+        {
+            return;
         }
 
         foreach (CoordF effectCoord in skillCast.EffectCoords)

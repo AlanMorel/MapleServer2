@@ -21,7 +21,7 @@ public static class SkillDamagePacket
     }
 
     public static PacketWriter SyncDamage(SkillCast skillCast, CoordF position, CoordF rotation, IFieldObject<Player> player, List<int> sourceId, byte count,
-        List<int> atkCount, List<int> entityId, List<short> animation, List<long>? uid = null)
+        List<int> atkCount, List<int> entityId, List<short> animation, bool isChaining = false, List<long>? uid = null)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.SkillDamage);
 
@@ -34,7 +34,7 @@ public static class SkillDamagePacket
         pWriter.WriteByte(skillCast.AttackPoint);
         pWriter.Write(position.ToShort());
         pWriter.Write(rotation);
-        pWriter.WriteByte(1);
+        pWriter.WriteByte((byte) (isChaining ? 1 : 0));
         pWriter.WriteInt(skillCast.ServerTick);
         pWriter.WriteByte(count);
         for (int i = 0; i < count; i++)
@@ -56,8 +56,8 @@ public static class SkillDamagePacket
         pWriter.Write(Mode.Damage);
         pWriter.WriteLong(skillCast.SkillSn);
         pWriter.WriteInt(attackCount);
-        pWriter.WriteInt(skillCast.Caster.ObjectId);
-        pWriter.WriteInt(skillCast.Caster.ObjectId);
+        pWriter.WriteInt(skillCast.Caster?.ObjectId ?? 0);
+        pWriter.WriteInt(skillCast.Caster?.ObjectId ?? 0);
         pWriter.WriteInt(skillCast.SkillId);
         pWriter.WriteShort(skillCast.SkillLevel);
         // This values appears on some SkillsId, and others like BossSkill, sometimes is 0
@@ -120,7 +120,7 @@ public static class SkillDamagePacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.SkillDamage);
 
         pWriter.Write(Mode.Heal);
-        pWriter.WriteInt(effect.Caster.ObjectId);
+        pWriter.WriteInt(effect.Caster?.ObjectId ?? 0);
         pWriter.WriteInt(effect.Parent.ObjectId);
         pWriter.WriteInt(effect.BuffId);
         pWriter.WriteInt(healAmount);

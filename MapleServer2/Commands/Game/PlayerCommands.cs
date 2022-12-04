@@ -262,9 +262,12 @@ public class BuffCommand : InGameCommand
         int duration = trigger.Get<int>("duration") <= 3600 && trigger.Get<int>("duration") != 0 ? trigger.Get<int>("duration") * 1000 : 10000;
         int stacks = trigger.Get<int>("stacks") == 0 ? 1 : trigger.Get<int>("stacks");
 
-        trigger.Session.Player.AdditionalEffects.AddEffect(new(id, level)
+        trigger.Session.Player.FieldPlayer?.TaskScheduler.QueueBufferedTask(() =>
         {
-            Stacks = stacks,
+            trigger.Session.Player.AdditionalEffects.AddEffect(new(id, level)
+            {
+                Stacks = stacks,
+            });
         });
     }
 }
