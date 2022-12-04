@@ -307,7 +307,7 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
                     continue;
                 }
 
-                ConditionSkillTarget castInfo = new(caster, target, caster);
+                ConditionSkillTarget castInfo = new(caster, target, caster, caster, EffectEventOrigin.Caster);
                 bool hitCrit = false;
                 bool hitMissed = false;
 
@@ -372,7 +372,7 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             Direction = parentSkill.Direction,
             LookDirection = parentSkill.LookDirection
         };
-        ConditionSkillTarget castInfo = new(parentSkill.Caster, parentSkill.Caster, parentSkill.Caster);
+        ConditionSkillTarget castInfo = new(parentSkill.Caster, parentSkill.Caster, parentSkill.Caster, parentSkill.Caster, EffectEventOrigin.Caster);
 
         session.Player.FieldPlayer?.TaskScheduler.QueueBufferedTask(() =>
             parentSkill.Caster?.SkillTriggerHandler.FireTriggerSkills(skillAttack.SkillConditions, skillCast, castInfo)

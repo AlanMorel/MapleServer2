@@ -82,7 +82,7 @@ public class Character : FieldActor<Player>
 
         if (conditionSkills is not null)
         {
-            SkillTriggerHandler.FireTriggerSkills(conditionSkills, skillCast, new(this, this, this));
+            SkillTriggerHandler.FireTriggerSkills(conditionSkills, skillCast, new(this, this, this, this, EffectEventOrigin.Caster));
         }
 
         Value.Session?.FieldManager.BroadcastPacket(SkillUsePacket.SkillUse(skillCast));

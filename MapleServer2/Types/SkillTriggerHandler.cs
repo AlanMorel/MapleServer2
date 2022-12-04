@@ -378,7 +378,7 @@ public class SkillTriggerHandler
 
     public void FireEvent(SkillCondition trigger, SkillCast? parentSkill, ConditionSkillTarget castInfo, EffectEvent effectEvent, int eventIdArgument, int start = -1)
     {
-        ConditionSkillTarget eventCastInfo = new(castInfo.Owner, GetTarget(trigger.Target, castInfo) ?? castInfo.Target, GetOwner(trigger.Owner, castInfo) ?? castInfo.Owner, castInfo.Attacker);
+        ConditionSkillTarget eventCastInfo = new(castInfo.Owner, GetTarget(trigger.Target, castInfo) ?? castInfo.Target, GetOwner(trigger.Owner, castInfo) ?? castInfo.Owner, castInfo.Attacker, castInfo.EventOrigin);
 
         if (!ShouldFireTrigger(trigger, eventCastInfo, effectEvent, eventIdArgument, start))
         {
@@ -393,9 +393,9 @@ public class SkillTriggerHandler
             Owner = eventCastInfo.Owner,
             Caster = eventCastInfo.Caster,
             Position = eventCastInfo.Target?.Coord ?? default,
-            Rotation = useDirection ? eventCastInfo.Caster.Rotation : default,
-            Direction = useDirection ? Maple2Storage.Types.CoordF.From(1, eventCastInfo.Caster.LookDirection) : default,
-            LookDirection = useDirection ? eventCastInfo.Caster.LookDirection : default,
+            Rotation = useDirection ? eventCastInfo.Caster?.Rotation ?? default : default,
+            Direction = useDirection ? Maple2Storage.Types.CoordF.From(1, eventCastInfo.Caster?.LookDirection ?? 0) : default,
+            LookDirection = useDirection ? eventCastInfo.Caster?.LookDirection ?? default : default,
             Duration = duration,
             ParentSkill = parentSkill,
             SkillAttack = parentSkill?.SkillAttack

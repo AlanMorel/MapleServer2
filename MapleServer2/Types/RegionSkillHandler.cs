@@ -558,7 +558,7 @@ public static class RegionSkillHandler
                 continue;
             }
 
-            ConditionSkillTarget castInfo = new(caster, target, caster);
+            ConditionSkillTarget castInfo = new(caster, target, caster, caster);
             bool hitTarget = false;
             bool hitCrit = false;
             bool hitMissed = false;

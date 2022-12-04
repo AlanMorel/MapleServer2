@@ -10,7 +10,7 @@ public struct ConditionSkillTarget
     public IFieldActor? Attacker = null;
     public EffectEventOrigin EventOrigin;
 
-    public ConditionSkillTarget(IFieldActor? owner, IFieldActor? target, IFieldActor? caster, IFieldActor? attacker = null)
+    public ConditionSkillTarget(IFieldActor? owner, IFieldActor? target, IFieldActor? caster, IFieldActor? attacker = null, EffectEventOrigin eventOrigin = EffectEventOrigin.Owner)
     {
         Owner = owner;
         Target = target;

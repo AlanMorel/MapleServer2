@@ -110,7 +110,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
 
                             ParseConditionSkill(attackNode, skillConditions);
 
-                            skillAttacks.Add(new(attackPoint, targetCount, magicPathId, cubeMagicPathId, rangeProperty, skillConditions, damageProperty,
+                            skillAttacks.Add(new(attackPoint, targetCount, magicPathId, cubeMagicPathId, rangeProperty, arrowProperty, skillConditions, damageProperty,
                                 compulsionType, direction));
                         }
 
