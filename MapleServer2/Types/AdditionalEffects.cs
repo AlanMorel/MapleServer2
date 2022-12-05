@@ -169,6 +169,21 @@ public class AdditionalEffects
             return null;
         }
 
+        if (activeEffect is not null && activeEffect.Level != parameters.Level)
+        {
+            if (activeEffect.Level > parameters.Level)
+            {
+                return null;
+            }
+
+            if (activeEffect.Level < parameters.Level)
+            {
+                activeEffect.Stop(Parent);
+
+                activeEffect = null;
+            }
+        }
+
         if (UpdateEffect(activeEffect, effect, parameters))
         {
             return activeEffect;
