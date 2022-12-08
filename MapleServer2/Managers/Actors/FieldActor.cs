@@ -20,9 +20,9 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
     public SkillCast? SkillCast { get; set; }
     public bool OnCooldown { get; set; }
     public Agent? Agent { get; set; }
-    public virtual AdditionalEffects? AdditionalEffects { get; }
+    public virtual AdditionalEffects AdditionalEffects { get; }
     public SkillTriggerHandler SkillTriggerHandler { get; }
-    public TickingTaskScheduler TaskScheduler { get; }
+    public virtual TickingTaskScheduler TaskScheduler { get; }
 
     public virtual FieldManager? FieldManager { get; }
     public FieldNavigator Navigator { get; }
@@ -59,9 +59,9 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
 
     public virtual void Heal(GameSession session, AdditionalEffect effect, int amount)
     {
-        session.FieldManager.BroadcastPacket(SkillDamagePacket.Heal(effect, amount));
+        session?.FieldManager.BroadcastPacket(SkillDamagePacket.Heal(effect, amount));
         Stats[StatAttribute.Hp].AddValue(amount);
-        session.Send(StatPacket.UpdateStats(this, StatAttribute.Hp));
+        session?.Send(StatPacket.UpdateStats(this, StatAttribute.Hp));
     }
 
     public virtual void RecoverHp(int amount)
@@ -159,7 +159,9 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
     {
         Stat health = Stats[StatAttribute.Hp];
         health.AddValue(-(long) damage.Damage);
-        if (health.Total <= 0)
+        health.SetValue(Math.Max(health.TotalLong, AdditionalEffects.MinimumHp));
+
+        if (health.TotalLong <= 0)
         {
             Perish();
         }
@@ -174,7 +176,9 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
 
     public void IncreaseStats(AdditionalEffect effect)
     {
-        if (effect.LevelMetadata?.Status?.Stats is not null)
+        effect.ApplyStatuses(this);
+
+        if (effect.LevelMetadata.Status.Stats is not null)
         {
             foreach ((StatAttribute stat, EffectStatMetadata statValue) in effect.LevelMetadata.Status.Stats)
             {
@@ -267,6 +271,7 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
         long spiritValue = spirit.TotalLong;
         long staminaValue = stamina.TotalLong;
 
+        ComputeBaseStats();
         AddStats();
 
         hp.SetValue(hpValue);
@@ -276,7 +281,18 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
         StatsComputed();
     }
 
-    public virtual void AddStats() { }
+    public virtual void ComputeBaseStats()
+    {
+        AdditionalEffects.ResetStatus();
+    }
+
+    public virtual void AddStats()
+    {
+        foreach (AdditionalEffect effect in AdditionalEffects.Effects)
+        {
+            IncreaseStats(effect);
+        }
+    }
 
     public virtual void StatsComputed() { }
 }

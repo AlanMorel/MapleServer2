@@ -309,6 +309,7 @@ public class AdditionalEffect
     {
         parent.AdditionalEffects.AlwaysCrit |= LevelMetadata.Offensive.AlwaysCrit;
         parent.AdditionalEffects.Invincible |= LevelMetadata.Defesive.Invincible;
+        parent.AdditionalEffects.MinimumHp = Math.Max(parent.AdditionalEffects.MinimumHp, LevelMetadata.Status.DeathResistanceHp);
     }
 
     public bool IsStillAlive(IFieldActor parent, ConditionSkillTarget effectInfo)
@@ -361,8 +362,6 @@ public class AdditionalEffect
         {
             CancelEffects(parent, LevelMetadata.CancelEffect);
         }
-
-        ApplyStatuses(parent);
 
         ConditionSkillTarget effectInfo = new(parent, parent, Caster);
 

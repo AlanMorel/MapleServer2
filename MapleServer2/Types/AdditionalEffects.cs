@@ -34,14 +34,22 @@ public class AdditionalEffects
     public IFieldActor? Parent;
     public bool AlwaysCrit;
     public bool Invincible;
+    public long MinimumHp;
     private Dictionary<EffectEvent, List<AdditionalEffect>> ListeningEvents = new();
 
     public AdditionalEffects(IFieldActor? parent = null)
     {
         Effects = new();
         Parent = parent;
+
+        ResetStatus();
+    }
+
+    public void ResetStatus()
+    {
         AlwaysCrit = false;
         Invincible = false;
+        MinimumHp = 0;
     }
 
     public void UpdateStatsIfStale(EffectEvent effectEvent = EffectEvent.Tick)

@@ -5,6 +5,7 @@ using GameDataParser.Tools;
 using M2dXmlGenerator;
 using Maple2.File.IO.Crypto.Common;
 using Maple2.File.Parser.Tools;
+using Maple2.File.Parser.Xml.AdditionalEffect;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -60,6 +61,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                     continue;
                 }
 
+                XmlNode? statusProperty = level.SelectSingleNode("StatusProperty");
                 Dictionary<StatAttribute, EffectStatMetadata> stats = new();
 
                 AdditionalEffectLevelMetadata levelMeta = new()
@@ -76,10 +78,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                     Recovery = ParseRecovery(level.SelectSingleNode("RecoveryProperty")),
                     DotDamage = ParseDotDamage(level.SelectSingleNode("DotDamageProperty")),
                     InvokeEffect = ParseInvokeEffect(level.SelectSingleNode("InvokeEffectProperty")),
-                    Status = new()
-                    {
-                        Stats = stats
-                    },
+                    Status = ParseStatusProperty(level.SelectSingleNode("StatusProperty"), stats),
                     SplashSkill = new(),
                     ConditionSkill = new()
                 };
@@ -99,10 +98,8 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                 SkillParser.ParseConditionSkill(level, levelMeta.ConditionSkill);
                 SkillParser.ParseConditionSkill(level, levelMeta.SplashSkill, "splashSkill");
 
-                XmlNode? statusProperty = level.SelectSingleNode("StatusProperty");
-
-                ParseStatusProperty(statusProperty, "Stat", stats);
-                ParseStatusProperty(statusProperty, "SpecialAbility", stats);
+                ParseStats(statusProperty, "Stat", stats);
+                ParseStats(statusProperty, "SpecialAbility", stats);
 
                 levelMeta.HasStats = stats.Count > 0 || (levelMeta.InvokeEffect?.Types?.Length ?? 0) > 0;
                 levelMeta.HasConditionalStats = levelMeta.HasStats && !IsDefaultBeginCondition(levelMeta.BeginCondition);
@@ -157,7 +154,24 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
         return true;
     }
 
-    private void ParseStatusProperty(XmlNode? parentNode, string nodeName, Dictionary<StatAttribute, EffectStatMetadata> stats)
+    private EffectStatusMetadata ParseStatusProperty(XmlNode? statusNode, Dictionary<StatAttribute, EffectStatMetadata> stats)
+    {
+        if (statusNode is null)
+        {
+            return new()
+            {
+                Stats = stats
+            };
+        }
+
+        return new()
+        {
+            Stats = stats,
+            DeathResistanceHp = long.Parse(statusNode?.Attributes?["deathResistanceHP"]?.Value ?? "0")
+        };
+    }
+
+    private void ParseStats(XmlNode? parentNode, string nodeName, Dictionary<StatAttribute, EffectStatMetadata> stats)
     {
         if (parentNode is null)
         {

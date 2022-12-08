@@ -695,8 +695,10 @@ public class FieldManager
             // TODO: Find a better place to do this when buffs are implemented
             for (int i = 0; i < fieldNpc.Value.NpcMetadataEffect.EffectIds.Length; i++)
             {
-                SkillCast effectCast = new(fieldNpc.Value.NpcMetadataEffect.EffectIds[i], fieldNpc.Value.NpcMetadataEffect.EffectLevels[i]);
-                session.Send(BuffPacket.AddBuff(new(effectCast, fieldNpc.ObjectId, fieldNpc.ObjectId, 1)));
+                int effectId = fieldNpc.Value.NpcMetadataEffect.EffectIds[i];
+                byte effectLevel = fieldNpc.Value.NpcMetadataEffect.EffectLevels[i];
+
+                fieldNpc.TaskScheduler.QueueBufferedTask(() => fieldNpc.AdditionalEffects.AddEffect(new(effectId, effectLevel)));
             }
         });
     }

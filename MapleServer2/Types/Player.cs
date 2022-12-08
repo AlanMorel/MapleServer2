@@ -164,6 +164,7 @@ public class Player : IPacketSerializable
     public List<GatheringCount> GatheringCount;
 
     public AdditionalEffects AdditionalEffects = new();
+    public TickingTaskScheduler? TaskScheduler;
     public List<Status> StatusContainer = new();
     public List<int> UnlockedTaxis;
     public List<int> UnlockedMaps;
@@ -777,12 +778,15 @@ public class Player : IPacketSerializable
         }
     }
 
-    public void AddStats()
+    public void ComputeBaseStats()
     {
         Stats = new(JobCode);
         Stats.AddBaseStats(this, Levels.Level);
         Stats.RecomputeAllocations(StatPointDistribution);
+    }
 
+    public void AddStats()
+    {
         foreach ((ItemSlot _, Item item) in Inventory.Equips)
         {
             ComputeStatContribution(item.Stats);
@@ -804,11 +808,6 @@ public class Player : IPacketSerializable
             }
 
             ComputeStatContribution(ActivePet.Stats);
-        }
-
-        foreach (AdditionalEffect effect in AdditionalEffects.Effects)
-        {
-            FieldPlayer.IncreaseStats(effect);
         }
 
         foreach (SetBonus setBonus in Inventory.SetBonuses)

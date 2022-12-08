@@ -22,10 +22,12 @@ public class Character : FieldActor<Player>
     public IFieldObject<LiftableObject>? CarryingLiftable;
     public Pet? ActivePet;
     public override AdditionalEffects AdditionalEffects { get => Value.AdditionalEffects; }
+    public override TickingTaskScheduler TaskScheduler { get => PlayerTaskScheduler; }
 
     private DateTime LastConsumeStaminaTime;
 
     public override FieldManager? FieldManager { get => Value?.Session?.FieldManager; }
+    private TickingTaskScheduler PlayerTaskScheduler;
 
     public Character(int objectId, Player value, FieldManager fieldManager) : base(objectId, value, fieldManager)
     {
@@ -45,6 +47,7 @@ public class Character : FieldActor<Player>
         }
 
         value.AdditionalEffects.Parent = this;
+        PlayerTaskScheduler = value.TaskScheduler ?? new(fieldManager);
     }
 
     public override void Cast(SkillCast skillCast)
@@ -329,8 +332,15 @@ public class Character : FieldActor<Player>
         Value.Session?.Send(StatPacket.SetStats(this));
     }
 
+    public override void ComputeBaseStats()
+    {
+        base.ComputeBaseStats();
+        Value.ComputeBaseStats();
+    }
+
     public override void AddStats()
     {
+        base.AddStats();
         Value.AddStats();
     }
 }

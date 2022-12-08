@@ -246,6 +246,8 @@ public class EffectStatusMetadata
 {
     [XmlElement(Order = 1)]
     public Dictionary<StatAttribute, EffectStatMetadata> Stats;
+    [XmlElement(Order = 2)]
+    public long DeathResistanceHp;
 }
 
 [XmlType]
