@@ -374,7 +374,9 @@ public class AdditionalEffect
         int duration = LevelMetadata.Basic.DurationTick;
         int interval = LevelMetadata.Basic.IntervalTick;
 
-        if (delay == 0 && !(LevelMetadata.Basic.DotCondition != EffectDotCondition.ImmediateFire && interval != 0))
+        bool delayFirstInterval = LevelMetadata.Basic.DotCondition != EffectDotCondition.ImmediateFire && interval != 0;
+
+        if (delay == 0 && !delayFirstInterval)
         {
             Invoke(parent);
         }
