@@ -5,7 +5,10 @@ using MapleServer2.Enums;
 using MapleServer2.Managers.Actors;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using Org.BouncyCastle.Asn1.Cms;
+using Org.BouncyCastle.Asn1.X509;
 using Serilog;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace MapleServer2.Types;
 
@@ -25,8 +28,10 @@ public class AdditionalEffect
     public bool IsAlive = true;
     public SkillCast? ParentSkill;
     public bool HasEvents = false;
+    public long ShieldHealth = 0;
     private GameSession? Session = null;
     public IFieldActor Parent;
+    public IFieldObject<Mount>? Mount = null;
     private bool WasActiveLastUpdate = false;
 
     public AdditionalEffect(IFieldActor parent, int id, int level, int stacks = 1)
@@ -62,6 +67,7 @@ public class AdditionalEffect
 
         Metadata = metadata;
         LevelMetadata = levelMetadata;
+        ShieldHealth = LevelMetadata.Shield?.HpValue ?? 0;
     }
 
     public bool Matches(int id)
@@ -254,9 +260,22 @@ public class AdditionalEffect
 
     public void DotDamage(IFieldActor parent, EffectDotDamageMetadata dotDamage)
     {
-        if (dotDamage.Rate == 0 || Session is null || ParentSkill is null)
+        if ((dotDamage.Rate == 0 && dotDamage.Value == 0) || Session is null)
         {
             return;
+        }
+
+        AdditionalEffect? activeShield = parent.AdditionalEffects.ActiveShield;
+
+        if (activeShield is not null)
+        {
+            int[]? allowedSkills = activeShield.LevelMetadata?.Basic?.AllowedSkillAttacks;
+            int[]? allowedDotEffects = activeShield.LevelMetadata?.Basic?.AllowedDotEffectAttacks;
+
+            if ((allowedSkills?.Length > 0 || allowedDotEffects?.Length > 0) && allowedDotEffects?.Contains(Id) != true)
+            {
+                return;
+            }
         }
 
         DamageSourceParameters dotParameters = new()
@@ -268,12 +287,27 @@ public class AdditionalEffect
             RangeType = SkillRangeType.Special,
             DamageType = (DamageType) dotDamage.DamageType,
             DamageRate = dotDamage.Rate * Stacks,
+            DamageValue = dotDamage.Value,
             ParentSkill = ParentSkill,
             Id = Id,
             EventGroup = LevelMetadata.Basic.Group
         };
 
         DamageHandler.ApplyDotDamage(Session, Caster, parent, dotParameters);
+    }
+
+    public void DamageShield(IFieldActor parent, long amount)
+    {
+        ShieldHealth = Math.Max(0, ShieldHealth - amount);
+
+        if (ShieldHealth == 0)
+        {
+            Stop(parent);
+
+            return;
+        }
+
+        parent.FieldManager?.BroadcastPacket(BuffPacket.UpdateShieldBuff(this, parent.ObjectId));
     }
 
     public void CancelEffects(IFieldActor parent, EffectCancelEffectMetadata cancel)
@@ -298,6 +332,13 @@ public class AdditionalEffect
 
         IsAlive = false;
 
+        if (Mount is not null && parent is Character character)
+        {
+            character.Value.Mount = null; // Remove mount from player
+            Mount = null;
+            character.FieldManager?.BroadcastPacket(MountPacket.StopRide(character, true));
+        }
+
         parent.AdditionalEffects.EffectStopped(this);
 
         FireEvent(parent, Caster, EffectEvent.OnEffectRemoved);
@@ -310,6 +351,21 @@ public class AdditionalEffect
         parent.AdditionalEffects.AlwaysCrit |= LevelMetadata.Offensive.AlwaysCrit;
         parent.AdditionalEffects.Invincible |= LevelMetadata.Defesive.Invincible;
         parent.AdditionalEffects.MinimumHp = Math.Max(parent.AdditionalEffects.MinimumHp, LevelMetadata.Status.DeathResistanceHp);
+
+        if (LevelMetadata.Shield?.HpValue > 0)
+        {
+            parent.AdditionalEffects.ActiveShield = this;
+        }
+
+        if (LevelMetadata.Status.Resistances is null)
+        {
+            return;
+        }
+
+        foreach ((StatAttribute attribute, float value) in LevelMetadata.Status.Resistances)
+        {
+            parent.AdditionalEffects.Resistances[attribute] += value;
+        }
     }
 
     public bool IsStillAlive(IFieldActor parent, ConditionSkillTarget effectInfo)
@@ -397,6 +453,23 @@ public class AdditionalEffect
         else
         {
             duration = -1;
+        }
+
+        Character? character = parent as Character;
+
+        if (LevelMetadata.Ride is not null && parent.FieldManager is not null && character is not null)
+        {
+            Mount = parent.FieldManager.RequestFieldObject(new Mount
+            {
+                Type = RideType.AdditionalEffect,
+                Id = LevelMetadata.Ride.RideId,
+                Uid = 0
+            });
+
+            Mount.Value.Players[0] = character;
+            character.Value.Mount = Mount;
+
+            parent.FieldManager.BroadcastPacket(MountPacket.StartRide(character));
         }
 
         parent.TaskScheduler.RemoveTasks(Caster, this);

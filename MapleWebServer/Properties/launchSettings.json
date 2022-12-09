@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "MapleWebServer": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:61083;http://localhost:61084"
+    }
+  }
+}

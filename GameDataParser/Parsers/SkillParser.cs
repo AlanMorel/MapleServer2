@@ -336,10 +336,11 @@ public class SkillParser : Exporter<List<SkillMetadata>>
     private static DamageProperty ParseDamageProperty(XmlNode attack)
     {
         float damageRate = float.Parse(attack?.SelectSingleNode("damageProperty")?.Attributes?["rate"]?.Value ?? "0");
+        long damageValue = long.Parse(attack?.SelectSingleNode("damageProperty")?.Attributes?["value"]?.Value ?? "0");
         float hitSpeedRate = float.Parse(attack?.SelectSingleNode("damageProperty")?.Attributes?["hitSpeedRate"]?.Value ?? "0");
         int count = int.Parse(attack?.SelectSingleNode("damageProperty")?.Attributes?["count"]?.Value ?? "0");
 
-        return new(damageRate, hitSpeedRate, count);
+        return new(damageRate, hitSpeedRate, count, damageValue);
     }
 
     private static (int spirit, int stamina) ParseConsume(XmlNode level)

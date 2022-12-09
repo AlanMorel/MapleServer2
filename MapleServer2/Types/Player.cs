@@ -176,6 +176,7 @@ public class Player : IPacketSerializable
     public List<PlayerTrigger> Triggers = new();
 
     public Character? FieldPlayer;
+    public DebugPrintSettings DebugPrint = new();
 
     private Dictionary<int, short> PassiveSkillEffects = new();
     private Dictionary<int, SkillLevel> EnabledPassiveSkillEffects = new();

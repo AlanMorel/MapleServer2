@@ -555,14 +555,36 @@ public static class RegionSkillHandler
             bool hitCrit = false;
             bool hitMissed = false;
 
-            if (skillCast.SkillAttack.DamageProperty.DamageRate != 0)
+            AdditionalEffect? activeShield = target.AdditionalEffects.ActiveShield;
+            bool allowHit = true;
+
+            if (activeShield is not null)
+            {
+                int[]? allowedSkills = activeShield.LevelMetadata?.Basic?.AllowedSkillAttacks;
+                int[]? allowedDotEffects = activeShield.LevelMetadata?.Basic?.AllowedDotEffectAttacks;
+
+                if ((allowedSkills?.Length > 0 || allowedDotEffects?.Length > 0) && allowedSkills?.Contains(skillCast.SkillId) != true)
+                {
+                    allowHit = false;
+                }
+            }
+
+            if ((skillCast.SkillAttack.DamageProperty.DamageRate != 0 || skillCast.SkillAttack.DamageProperty.DamageValue != 0) && allowHit)
             {
                 for (int i = 0; i < skillCast.SkillAttack.DamageProperty.Count; ++i)
                 {
                     DamageHandler damage = DamageHandler.CalculateDamage(skillCast, caster, target);
-                    target.Damage(damage, session);
 
-                    damages.Add(damage);
+                    if (activeShield is not null)
+                    {
+                        activeShield.DamageShield(target, (long) damage.Damage);
+                    }
+                    else
+                    {
+                        target.Damage(damage, session);
+
+                        damages.Add(damage);
+                    }
 
                     hitCrit |= damage.HitType == Enums.HitType.Critical;
                     hitMissed |= damage.HitType == Enums.HitType.Miss;

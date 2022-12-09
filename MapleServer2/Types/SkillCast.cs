@@ -79,6 +79,8 @@ public class SkillCast
 
     public float GetDamageRate() => SkillAttack?.DamageProperty.DamageRate ?? 0;
 
+    public long GetDamageValue() => SkillAttack?.DamageProperty.DamageValue ?? 0;
+
     public double GetCriticalDamage() => 2 * GetDamageRate();
 
     public int GetSpCost() => GetCurrentLevel()?.Spirit ?? 15;

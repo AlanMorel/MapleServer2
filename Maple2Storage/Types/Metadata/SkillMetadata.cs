@@ -197,15 +197,18 @@ public class DamageProperty
     public readonly float HitSpeedRate;
     [XmlElement(Order = 3)]
     public readonly int Count;
+    [XmlElement(Order = 4)]
+    public readonly long DamageValue;
     // TODO: Parse push attributes.
 
     public DamageProperty() { }
 
-    public DamageProperty(float damageRate, float hitSpeedRate, int count)
+    public DamageProperty(float damageRate, float hitSpeedRate, int count, long damageValue)
     {
         DamageRate = damageRate;
         HitSpeedRate = hitSpeedRate;
         Count = count;
+        DamageValue = damageValue;
     }
 }
 

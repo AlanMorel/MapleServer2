@@ -242,7 +242,7 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
 
     public virtual void EffectAdded(AdditionalEffect? effect)
     {
-        if (!IsRemoved() && (effect?.LevelMetadata?.Status?.Stats?.Count ?? 0) > 0)
+        if (!IsRemoved() && (effect?.LevelMetadata?.HasStats ?? false))
         {
             ComputeStats();
         }
@@ -250,7 +250,7 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
 
     public virtual void EffectRemoved(AdditionalEffect? effect)
     {
-        if (!IsRemoved() && (effect?.LevelMetadata?.Status?.Stats?.Count ?? 0) > 0)
+        if (!IsRemoved() && (effect?.LevelMetadata?.HasStats ?? false))
         {
             ComputeStats();
         }

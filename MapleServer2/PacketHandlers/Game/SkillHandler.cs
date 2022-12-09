@@ -256,7 +256,7 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             return;
         }
 
-        SkillCast? skillCast = fieldPlayer?.SkillCast;
+        SkillCast? skillCast = fieldPlayer.SkillCast;
         if (skillCast is null || skillCast.SkillSn != skillSn)
         {
             return;
@@ -269,6 +269,14 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
         if (target is null)
         {
             return;
+        }
+
+        if (fieldPlayer.Value.DebugPrint.TargetsToPrint != 0)
+        {
+            if (fieldPlayer.Value.DebugPrint.TargetsToPrint > 0)
+                fieldPlayer.Value.DebugPrint.TargetsToPrint--;
+
+            session.SendNotice($"Attacked target object {target.ObjectId}!");
         }
 
         HandleDamage(skillCast, target, count, attackPoint, attackCounter, position, rotation);
@@ -303,17 +311,38 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
                     continue;
                 }
 
+                AdditionalEffect? activeShield = target.AdditionalEffects.ActiveShield;
+                bool allowHit = true;
+
+                if (activeShield is not null)
+                {
+                    int[]? allowedSkills = activeShield.LevelMetadata?.Basic?.AllowedSkillAttacks;
+                    int[]? allowedDotEffects = activeShield.LevelMetadata?.Basic?.AllowedDotEffectAttacks;
+
+                    if ((allowedSkills?.Length > 0 || allowedDotEffects?.Length > 0) && allowedSkills?.Contains(skillCast.SkillId) != true)
+                    {
+                        allowHit = false;
+                    }
+                }
+
                 ConditionSkillTarget castInfo = new(caster, target, caster, caster, EffectEventOrigin.Caster);
                 bool hitCrit = false;
                 bool hitMissed = false;
 
-                if (skillCast.GetDamageRate() != 0)
+                if ((skillCast.GetDamageRate() != 0 || skillCast.GetDamageValue() != 0) && allowHit)
                 {
                     DamageHandler damage = DamageHandler.CalculateDamage(skillCast, caster, target);
 
-                    target.Damage(damage, session);
+                    if (activeShield is not null)
+                    {
+                        activeShield.DamageShield(target, (long) damage.Damage);
+                    }
+                    else
+                    {
+                        target.Damage(damage, session);
 
-                    damages.Add(damage);
+                        damages.Add(damage);
+                    }
 
                     hitCrit = damage.HitType == Enums.HitType.Critical;
                     hitMissed = damage.HitType == Enums.HitType.Miss;

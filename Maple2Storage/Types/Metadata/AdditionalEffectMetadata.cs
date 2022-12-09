@@ -62,7 +62,7 @@ public class AdditionalEffectLevelMetadata
     [XmlElement(Order = 23)]
     public EffectSpecialMetadata SpecialEffect;
     [XmlElement(Order = 24)]
-    public EffectRideMetadata Ride;
+    public EffectRideMetadata? Ride;
     [XmlElement(Order = 25)]
     public List<SkillCondition> SplashSkill = new();
     [XmlElement(Order = 26)]
@@ -170,6 +170,12 @@ public class EffectBasicPropertyMetadata
 
     [XmlElement(Order = 24)]
     public int Level;
+
+    [XmlElement(Order = 25)]
+    public int[] AllowedSkillAttacks;
+
+    [XmlElement(Order = 26)]
+    public int[] AllowedDotEffectAttacks;
 }
 
 [XmlType]
@@ -248,6 +254,8 @@ public class EffectStatusMetadata
     public Dictionary<StatAttribute, EffectStatMetadata> Stats;
     [XmlElement(Order = 2)]
     public long DeathResistanceHp;
+    [XmlElement(Order = 3)]
+    public Dictionary<StatAttribute, float> Resistances;
 }
 
 [XmlType]
@@ -323,7 +331,7 @@ public class EffectDotDamageMetadata
     [XmlElement(Order = 2)]
     public float Rate;
     [XmlElement(Order = 3)]
-    public float Value;
+    public long Value;
     [XmlElement(Order = 4)]
     public int Element;
     [XmlElement(Order = 5)]
@@ -357,7 +365,8 @@ public class EffectUiMetadata
 [XmlType]
 public class EffectShieldMetadata
 {
-
+    [XmlElement(Order = 1)]
+    public int HpValue;
 }
 
 [XmlType]
@@ -394,7 +403,8 @@ public class EffectSpecialMetadata
 [XmlType]
 public class EffectRideMetadata
 {
-
+    [XmlElement(Order = 1)]
+    public int RideId;
 }
 
 [XmlType]

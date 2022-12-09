@@ -243,9 +243,11 @@ public class BuffCommand : InGameCommand
             new Parameter<int>("id", "ID of the status."),
             new Parameter<short>("level", "The level of the status. (OPTIONAL)"),
             new Parameter<int>("duration", "Duration for the status in seconds. (OPTIONAL)"),
-            new Parameter<int>("stacks", "Stacks for the status. (OPTIONAL)")
+            new Parameter<int>("stacks", "Stacks for the status. (OPTIONAL)"),
+            new Parameter<int>("targetId", "Target object id. (OPTIONAL)"),
+            new Parameter<bool>("setCaster", "Sets the caster as the command user. (OPTIONAL)"),
         };
-        Usage = "/buff [id] [level] [duration] [stacks]";
+        Usage = "/buff [id] [level] [duration] [stacks] [targetId] [setCaster]";
     }
 
     public override void Execute(GameCommandTrigger trigger)
@@ -261,12 +263,23 @@ public class BuffCommand : InGameCommand
         // The Status packet needs this in miliseconds, we are converting them here for the user to just input the actual seconds.
         int duration = trigger.Get<int>("duration") <= 3600 && trigger.Get<int>("duration") != 0 ? trigger.Get<int>("duration") * 1000 : 10000;
         int stacks = trigger.Get<int>("stacks") == 0 ? 1 : trigger.Get<int>("stacks");
+        int targetId = trigger.Get<int>("targetId") == 0 ? 0 : trigger.Get<int>("targetId");
+        bool setCaster = trigger.Get<bool>("setCaster");
 
-        trigger.Session.Player.FieldPlayer?.TaskScheduler.QueueBufferedTask(() =>
+        IFieldActor? target = trigger.Session.Player.FieldPlayer;
+
+        if (targetId != 0)
         {
-            trigger.Session.Player.AdditionalEffects.AddEffect(new(id, level)
+            target = trigger.Session.FieldManager.State.GetActor(targetId);
+        }
+
+        target?.TaskScheduler.QueueBufferedTask(() =>
+        {
+            target.AdditionalEffects.AddEffect(new(id, level)
             {
                 Stacks = stacks,
+                Duration = duration,
+                Caster = setCaster ? trigger.Session.Player.FieldPlayer : null
             });
         });
     }

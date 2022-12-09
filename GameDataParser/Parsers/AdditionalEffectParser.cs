@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using System.ComponentModel;
+using System.Xml;
 using GameDataParser.Files;
 using GameDataParser.Files.MetadataExporter;
 using GameDataParser.Tools;
@@ -79,6 +80,8 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                     DotDamage = ParseDotDamage(level.SelectSingleNode("DotDamageProperty")),
                     InvokeEffect = ParseInvokeEffect(level.SelectSingleNode("InvokeEffectProperty")),
                     Status = ParseStatusProperty(level.SelectSingleNode("StatusProperty"), stats),
+                    Ride = ParseRide(level.SelectSingleNode("RideeProperty")),
+                    Shield = ParseShield(level.SelectSingleNode("ShieldProperty")),
                     SplashSkill = new(),
                     ConditionSkill = new()
                 };
@@ -101,7 +104,14 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                 ParseStats(statusProperty, "Stat", stats);
                 ParseStats(statusProperty, "SpecialAbility", stats);
 
-                levelMeta.HasStats = stats.Count > 0 || (levelMeta.InvokeEffect?.Types?.Length ?? 0) > 0;
+                levelMeta.HasStats = stats.Count > 0;
+                levelMeta.HasStats |= levelMeta.Status.Resistances.Count > 0;
+                levelMeta.HasStats |= (levelMeta.InvokeEffect?.Types?.Length ?? 0) > 0;
+                levelMeta.HasStats |= levelMeta.Status.DeathResistanceHp != 0;
+                levelMeta.HasStats |= levelMeta.Offensive.AlwaysCrit;
+                levelMeta.HasStats |= levelMeta.Defesive.Invincible;
+                levelMeta.HasStats |= levelMeta.Shield?.HpValue > 0;
+                levelMeta.HasStats |= levelMeta.Basic.AllowedSkillAttacks.Length > 0 || levelMeta.Basic.AllowedDotEffectAttacks.Length > 0;
                 levelMeta.HasConditionalStats = levelMeta.HasStats && !IsDefaultBeginCondition(levelMeta.BeginCondition);
             }
         }
@@ -154,6 +164,16 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
         return true;
     }
 
+    private void AddResistance(Dictionary<StatAttribute, float> resistances, XmlAttribute? attribute, StatAttribute type)
+    {
+        if (attribute is null)
+        {
+            return;
+        }
+
+        resistances[type] = float.Parse(attribute?.Value ?? "0");
+    }
+
     private EffectStatusMetadata ParseStatusProperty(XmlNode? statusNode, Dictionary<StatAttribute, EffectStatMetadata> stats)
     {
         if (statusNode is null)
@@ -164,10 +184,21 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
             };
         }
 
+        Dictionary<StatAttribute, float> resistances = new();
+
+        AddResistance(resistances, statusNode?.Attributes?["resWapR"], StatAttribute.MaxWeaponAtk);
+        AddResistance(resistances, statusNode?.Attributes?["resBapR"], StatAttribute.BonusAtk);
+        AddResistance(resistances, statusNode?.Attributes?["resCadR"], StatAttribute.CritDamage);
+        AddResistance(resistances, statusNode?.Attributes?["resAtpR"], StatAttribute.Accuracy);
+        AddResistance(resistances, statusNode?.Attributes?["resEvpR"], StatAttribute.Evasion);
+        AddResistance(resistances, statusNode?.Attributes?["resPenR"], StatAttribute.Pierce);
+        AddResistance(resistances, statusNode?.Attributes?["resAspR"], StatAttribute.AttackSpeed);
+
         return new()
         {
             Stats = stats,
-            DeathResistanceHp = long.Parse(statusNode?.Attributes?["deathResistanceHP"]?.Value ?? "0")
+            DeathResistanceHp = long.Parse(statusNode?.Attributes?["deathResistanceHP"]?.Value ?? "0"),
+            Resistances = resistances
         };
     }
 
@@ -210,7 +241,9 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
             ClearDistanceFromCaster = float.Parse(parentNode?.Attributes?["clearDistanceFromCaster"]?.Value ?? "0"),
             ClearEffectFromPvpZone = int.Parse(parentNode?.Attributes?["clearEffectFromPVPZone"]?.Value ?? "0") == 1,
             DoNotClearEffectFromEnterPvpZone = int.Parse(parentNode?.Attributes?["doNotClearEffectFromEnterPVPZone"]?.Value ?? "0") == 1,
-            ClearCooldownFromPvpZone = int.Parse(parentNode?.Attributes?["clearCooldownFromPVPZone"]?.Value ?? "0") == 1
+            ClearCooldownFromPvpZone = int.Parse(parentNode?.Attributes?["clearCooldownFromPVPZone"]?.Value ?? "0") == 1,
+            AllowedSkillAttacks = parentNode?.Attributes?["attackPossibleSkillIDs"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>(),
+            AllowedDotEffectAttacks = parentNode?.Attributes?["attackPossibleDotEffectIDs"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>()
         };
     }
 
@@ -308,7 +341,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
         {
             DamageType = byte.Parse(parentNode?.Attributes?["type"]?.Value ?? "0"),
             Rate = float.Parse(parentNode?.Attributes?["rate"]?.Value ?? "0"),
-            Value = float.Parse(parentNode?.Attributes?["value"]?.Value ?? "0"),
+            Value = long.Parse(parentNode?.Attributes?["value"]?.Value ?? "0"),
             Element = int.Parse(parentNode?.Attributes?["element"]?.Value ?? "0"),
             UseGrade = int.Parse(parentNode?.Attributes?["useGrade"]?.Value ?? "0") == 1
         };
@@ -325,6 +358,31 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
             EffectGroupId = int.Parse(parentNode?.Attributes?["effectGroupID"]?.Value ?? "0"),
             SkillId = int.Parse(parentNode?.Attributes?["skillID"]?.Value ?? "0"),
             SkillGroupId = int.Parse(parentNode?.Attributes?["skillGroupID"]?.Value ?? "0")
+        };
+    }
+
+    private EffectRideMetadata? ParseRide(XmlNode? parentNode)
+    {
+        if (parentNode is null)
+        {
+            return null;
+        }
+
+        return new()
+        {
+            RideId = int.Parse(parentNode?.Attributes?["rideeID"]?.Value ?? "0")
+        };
+    }
+    private EffectShieldMetadata? ParseShield(XmlNode? parentNode)
+    {
+        if (parentNode is null)
+        {
+            return null;
+        }
+
+        return new()
+        {
+            HpValue = int.Parse(parentNode?.Attributes?["hpValue"]?.Value ?? "0")
         };
     }
 

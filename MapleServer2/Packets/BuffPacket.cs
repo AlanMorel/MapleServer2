@@ -60,7 +60,7 @@ public static class BuffPacket
 
         pWriter.WriteBuff(status.Start, status.End, status.Id, status.Level, status.Stacks);
         pWriter.WriteByte(1); // sniffs always get 1 but doesn't change behaviour
-        pWriter.WriteLong();
+        pWriter.WriteLong(status.ShieldHealth);
 
         return pWriter;
     }
@@ -78,6 +78,18 @@ public static class BuffPacket
         pWriter.WriteBuff(status.Start, status.End, status.Id, status.Level, status.Stacks);
 
         pWriter.WriteByte(1);
+        return pWriter;
+    }
+
+    public static PacketWriter UpdateShieldBuff(AdditionalEffect status, int target)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.Buff);
+        pWriter.Write(Mode.Update);
+        pWriter.WriteBuffOwner(target, status.BuffId, status.Caster.ObjectId);
+
+        pWriter.WriteInt(2);
+        pWriter.WriteLong(status.ShieldHealth);
+
         return pWriter;
     }
 
@@ -128,6 +140,6 @@ public static class BuffPacket
         pWriter.WriteBuff(status.Start, status.End, status.Id, status.Level, status.Stacks);
 
         pWriter.WriteByte(1);
-        pWriter.WriteLong();
+        pWriter.WriteLong(status.ShieldHealth);
     }
 }
