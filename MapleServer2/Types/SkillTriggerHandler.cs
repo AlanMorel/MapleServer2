@@ -165,7 +165,7 @@ public class SkillTriggerHandler
         return true;
     }
 
-    private bool IsConditionMet(SkillBeginCondition condition, ConditionSkillTarget castInfo, EffectEvent effectEvent, int eventIdArgument)
+    private bool IsConditionMet(SkillBeginCondition condition, ConditionSkillTarget castInfo, EffectEvent effectEvent, int eventIdArgument, ProximityQuery? query = null)
     {
         if (!condition.AllowDeadState && Parent.IsDead)
         {
@@ -182,6 +182,16 @@ public class SkillTriggerHandler
         bool subjectCondition = IsConditionMet(condition.Target, castInfo.Target, effectEvent, eventIdArgument);
         subjectCondition &= IsConditionMet(condition.Owner, castInfo.Owner, effectEvent, eventIdArgument);
         subjectCondition &= IsConditionMet(condition.Caster, castInfo.Caster, effectEvent, eventIdArgument);
+
+        if (subjectCondition && condition.Owner is not null && (condition.Owner.TargetCheckRange > 0 || condition.Owner.TargetCheckMinRange > 0))
+        {
+            if (query is null)
+            {
+                return false;
+            }
+
+            subjectCondition = AdditionalEffects.CompareValues(query.TargetCount, condition.Owner.TargetInRangeCount, condition.Owner.TargetCountSign);
+        }
 
         if (!subjectCondition)
         {
@@ -260,14 +270,14 @@ public class SkillTriggerHandler
         return start - lastProcced < cooldown;
     }
 
-    public bool ShouldTick(SkillBeginCondition beginCondition, ConditionSkillTarget castInfo, EffectEvent effectEvent, int eventIdArgument = 0)
+    public bool ShouldTick(SkillBeginCondition beginCondition, ConditionSkillTarget castInfo, EffectEvent effectEvent, int eventIdArgument = 0, ProximityQuery? query = null)
     {
         if (!EventMatches(beginCondition, effectEvent, castInfo.EventOrigin))
         {
             return false;
         }
 
-        return IsConditionMet(beginCondition, castInfo, effectEvent, eventIdArgument);
+        return IsConditionMet(beginCondition, castInfo, effectEvent, eventIdArgument, query);
     }
 
     private bool ShouldFireTrigger(SkillCondition trigger, ConditionSkillTarget castInfo, EffectEvent effectEvent, int eventIdArgument, int start = -1)
@@ -330,7 +340,7 @@ public class SkillTriggerHandler
                 return;
             }
 
-            RegionSkillHandler.CastRegionSkill(Parent.FieldManager, skillCast, trigger.FireCount, removeDelay, trigger.Interval, castInfo.Target);
+            RegionSkillHandler.CastRegionSkill(Parent.FieldManager, skillCast, trigger.FireCount, removeDelay, trigger.Interval, castInfo.Target, trigger);
 
             return;
         }
@@ -356,11 +366,27 @@ public class SkillTriggerHandler
 
     private long FireTriggerTick(SkillCondition trigger, SkillCast skillCast, ConditionSkillTarget castInfo)
     {
-        castInfo.Target?.AdditionalEffects.AddEffect(new(trigger.SkillId[0], trigger.SkillLevel[0])
+        if (trigger.RandomCast)
         {
-            Caster = castInfo.Caster,
-            ParentSkill = skillCast.ParentSkill
-        });
+            int index = Random.Shared.Next(trigger.SkillId.Length);
+
+            castInfo.Target?.AdditionalEffects.AddEffect(new(trigger.SkillId[index], trigger.SkillLevel[index])
+            {
+                Caster = castInfo.Caster,
+                ParentSkill = skillCast.ParentSkill
+            });
+
+            return 0;
+        }
+
+        for (int i = 0; i < trigger.SkillId.Length; ++i)
+        {
+            castInfo.Target?.AdditionalEffects.AddEffect(new(trigger.SkillId[i], trigger.SkillLevel[i])
+            {
+                Caster = castInfo.Caster,
+                ParentSkill = skillCast.ParentSkill
+            });
+        }
 
         return 0;
     }

@@ -33,6 +33,8 @@ public class AdditionalEffect
     public IFieldActor Parent;
     public IFieldObject<Mount>? Mount = null;
     private bool WasActiveLastUpdate = false;
+    private bool ShouldBeActive = false;
+    public ProximityQuery? ProximityQuery = null;
 
     public AdditionalEffect(IFieldActor parent, int id, int level, int stacks = 1)
     {
@@ -84,30 +86,28 @@ public class AdditionalEffect
 
         ConditionSkillTarget effectInfo = new ConditionSkillTarget(parent, parent, Caster);
 
-        bool shouldBeActive = parent.SkillTriggerHandler.ShouldTick(LevelMetadata.BeginCondition, effectInfo, effectEvent);
+        ShouldBeActive = parent.SkillTriggerHandler.ShouldTick(LevelMetadata.BeginCondition, effectInfo, effectEvent, 0, ProximityQuery);
 
-        return shouldBeActive != WasActiveLastUpdate;
+        return ShouldBeActive != WasActiveLastUpdate;
     }
 
-    public bool UpdateStatStatus(IFieldActor parent, EffectEvent effectEvent = EffectEvent.Tick)
+    public bool UpdateStatStatus(IFieldActor parent)
     {
         if (!LevelMetadata.HasStats)
         {
             return false;
         }
 
-        ConditionSkillTarget effectInfo = new ConditionSkillTarget(parent, parent, Caster);
+        WasActiveLastUpdate = ShouldBeActive;
 
-        WasActiveLastUpdate = parent.SkillTriggerHandler.ShouldTick(LevelMetadata.BeginCondition, effectInfo, effectEvent);
-
-        return WasActiveLastUpdate;
+        return ShouldBeActive;
     }
 
     public void Invoke(IFieldActor parent, EffectEvent effectEvent = EffectEvent.Tick)
     {
         ConditionSkillTarget effectInfo = new ConditionSkillTarget(parent, parent, Caster);
 
-        if (!parent.SkillTriggerHandler.ShouldTick(LevelMetadata.BeginCondition, effectInfo, effectEvent))
+        if (!parent.SkillTriggerHandler.ShouldTick(LevelMetadata.BeginCondition, effectInfo, effectEvent, 0, ProximityQuery))
         {
             return;
         }
@@ -344,6 +344,13 @@ public class AdditionalEffect
         FireEvent(parent, Caster, EffectEvent.OnEffectRemoved);
 
         parent.TaskScheduler.RemoveTasksFromSubject(this);
+
+        if (ProximityQuery is not null)
+        {
+            parent.ProximityTracker.Queries.Remove(ProximityQuery);
+
+            ProximityQuery = null;
+        }
     }
 
     public void ApplyStatuses(IFieldActor parent)
@@ -470,6 +477,20 @@ public class AdditionalEffect
             character.Value.Mount = Mount;
 
             parent.FieldManager.BroadcastPacket(MountPacket.StartRide(character));
+        }
+
+        BeginConditionSubject? owner = LevelMetadata.BeginCondition.Owner;
+
+        if (owner is not null && (owner.TargetCheckRange != 0 || owner.TargetCheckMinRange != 0))
+        {
+            ProximityQuery = new()
+            {
+                TargetRange = owner.TargetCheckRange,
+                TargetMinRange = owner.TargetCheckMinRange,
+                Type = owner.TargetFriendly
+            };
+
+            parent.ProximityTracker.Queries.Add(ProximityQuery);
         }
 
         parent.TaskScheduler.RemoveTasks(Caster, this);

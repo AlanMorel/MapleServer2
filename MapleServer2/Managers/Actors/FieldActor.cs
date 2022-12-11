@@ -1,4 +1,6 @@
-﻿using Maple2.PathEngine;
+﻿using System.Numerics;
+using Maple2.PathEngine;
+using Maple2.Trigger._52000029_qd;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -12,6 +14,7 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
 {
     public CoordF Velocity { get; set; }
     public short Animation { get; set; }
+    public short Animation2 { get; set; }
 
     public virtual Stats Stats { get; set; } = null!;
     public bool IsDead { get; set; }
@@ -23,6 +26,8 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
     public virtual AdditionalEffects AdditionalEffects { get; }
     public SkillTriggerHandler SkillTriggerHandler { get; }
     public virtual TickingTaskScheduler TaskScheduler { get; }
+    public virtual ProximityTracker ProximityTracker { get; }
+    public SkillCastTracker SkillCastTracker { get; }
 
     public virtual FieldManager? FieldManager { get; }
     public FieldNavigator Navigator { get; }
@@ -35,6 +40,8 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
         AdditionalEffects = new(this);
         SkillTriggerHandler = new(this);
         TaskScheduler = new(FieldManager);
+        ProximityTracker = new(this);
+        SkillCastTracker = new(this);
     }
 
     public virtual void Cast(SkillCast skillCast)
@@ -176,6 +183,13 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
 
     public void IncreaseStats(AdditionalEffect effect)
     {
+        ConditionSkillTarget effectInfo = new ConditionSkillTarget(this, this, effect.Caster);
+
+        if (!SkillTriggerHandler.ShouldTick(effect.LevelMetadata.BeginCondition, effectInfo, EffectEvent.Tick, 0, effect.ProximityQuery))
+        {
+            return;
+        }
+
         effect.ApplyStatuses(this);
 
         if (effect.LevelMetadata.Status.Stats is not null)
@@ -295,4 +309,17 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
     }
 
     public virtual void StatsComputed() { }
+
+    public void Update(long delta)
+    {
+        if (IsDead)
+        {
+            return;
+        }
+
+        AdditionalEffects.UpdateStatsIfStale();
+        ProximityTracker.Update();
+        SkillCastTracker.Update();
+        TaskScheduler.Update(delta);
+    }
 }

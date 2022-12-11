@@ -66,6 +66,7 @@ public class AdditionalEffects
         {
             if (effect.AreStatsStale(Parent, effectEvent))
             {
+                effect.UpdateStatStatus(Parent);
                 Parent.ComputeStats();
 
                 return;

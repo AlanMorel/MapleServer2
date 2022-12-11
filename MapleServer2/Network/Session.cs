@@ -378,7 +378,7 @@ public abstract class Session : IDisposable
             case RecvOp.State:
             case RecvOp.StateFallDamage:
             case RecvOp.Vibrate:
-                break;
+                //break;
             default:
                 string packetString = packet.ToString();
                 Logger.Debug("{mode} ({recvOp} - {hexa}): {packetString}",

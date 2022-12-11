@@ -165,6 +165,7 @@ public class Player : IPacketSerializable
 
     public AdditionalEffects AdditionalEffects = new();
     public TickingTaskScheduler? TaskScheduler;
+    public ProximityTracker? ProximityTracker;
     public List<Status> StatusContainer = new();
     public List<int> UnlockedTaxis;
     public List<int> UnlockedMaps;

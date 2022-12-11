@@ -1270,42 +1270,22 @@ public class FieldManager
 
             foreach (Npc mob in State.Mobs.Values)
             {
-                if (mob.IsDead)
-                {
-                    continue;
-                }
-
-                mob.TaskScheduler.Update(delta);
+                mob.Update(delta);
             }
 
             foreach (Npc npc in State.Npcs.Values)
             {
-                if (npc.IsDead)
-                {
-                    continue;
-                }
-
-                npc.TaskScheduler.Update(delta);
+                npc.Update(delta);
             }
 
             foreach (Pet pet in State.Pets.Values)
             {
-                if (pet.IsDead)
-                {
-                    continue;
-                }
-
-                pet.TaskScheduler.Update(delta);
+                pet.Update(delta);
             }
 
             foreach (Character player in State.Players.Values)
             {
-                if (player.IsDead)
-                {
-                    continue;
-                }
-
-                player.TaskScheduler.Update(delta);
+                player.Update(delta);
             }
         }
         catch (Exception e)

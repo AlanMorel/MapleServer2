@@ -7,7 +7,8 @@ namespace MapleServer2.Types;
 public interface IFieldActor : IFieldObject
 {
     public CoordF Velocity { get; }
-    public short Animation { get; set; }
+    public short Animation { get; set; } // State
+    public short Animation2 { get; set; } // Sub State
 
     public Stats Stats { get; }
     public bool IsDead { get; }
@@ -19,6 +20,8 @@ public interface IFieldActor : IFieldObject
     public AdditionalEffects AdditionalEffects { get; }
     public SkillTriggerHandler SkillTriggerHandler { get; }
     public TickingTaskScheduler TaskScheduler { get; }
+    public ProximityTracker ProximityTracker { get; }
+    public SkillCastTracker SkillCastTracker { get; }
 
     public FieldManager? FieldManager { get; }
     public FieldNavigator Navigator { get; }
@@ -45,6 +48,7 @@ public interface IFieldActor : IFieldObject
 
     public void ComputeStats();
     public void StatsComputed();
+    public void Update(long delta);
 }
 
 public interface IFieldActor<out T> : IFieldActor, IFieldObject<T>

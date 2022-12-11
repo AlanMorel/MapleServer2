@@ -85,6 +85,7 @@ public class UserSyncHandler : GamePacketHandler<UserSyncHandler>
 
         // not sure if this needs to be synced here
         fieldPlayer.Animation = syncStates[0].BoreAnimation;
+        fieldPlayer.Animation2 = syncStates[0].Animation2;
     }
 
     private static bool IsOutOfBounds(CoordF coord, CoordS[] boundingBox)

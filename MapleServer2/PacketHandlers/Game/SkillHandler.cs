@@ -39,7 +39,7 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
                 HandleSyncSkills(session, packet);
                 break;
             case Mode.SyncTick:
-                HandleSyncTick(packet);
+                HandleSyncTick(session, packet);
                 break;
             case Mode.Cancel:
                 HandleCancelSkill(session, packet);
@@ -100,6 +100,8 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             + also handle Splash Skills which trigger region effects
          */
 
+        fieldPlayer.SkillCastTracker.AddSkillCast(skillCast);
+
         // TODO: Check BeginCondition
         fieldPlayer.TaskScheduler.QueueBufferedTask(() => fieldPlayer.Cast(skillCast));
     }
@@ -123,7 +125,14 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             return;
         }
 
-        SkillCast? skillCast = session.Player.FieldPlayer.SkillCast;
+        CastedSkill? skill = session.Player.FieldPlayer.SkillCastTracker.GetSkillCast(skillSn);
+
+        if (skill is not null)
+        {
+            skill.CurrentMotion = motionPoint;
+        }
+
+        SkillCast? skillCast = skill?.Cast;
         if (skillCast is null)
         {
             return;
@@ -132,10 +141,12 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
         session.FieldManager.BroadcastPacket(SkillSyncPacket.Sync(skillCast, session.Player.FieldPlayer, position, rotation, toggle), session);
     }
 
-    private static void HandleSyncTick(PacketReader packet)
+    private static void HandleSyncTick(GameSession session, PacketReader packet)
     {
         long skillSN = packet.ReadLong();
         int serverTick = packet.ReadInt();
+        
+        CastedSkill? skill = session.Player.FieldPlayer?.SkillCastTracker.GetSkillCast(skillSN);
     }
 
     private static void HandleCancelSkill(GameSession session, PacketReader packet)
@@ -147,7 +158,9 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             return;
         }
 
-        SkillCast? skillCast = session.Player.FieldPlayer?.SkillCast;
+        CastedSkill? skill = session.Player.FieldPlayer.SkillCastTracker.GetSkillCast(skillSn);
+
+        SkillCast? skillCast = skill?.Cast;
         if (skillCast is null || skillCast.SkillSn != skillSn)
         {
             return;
@@ -217,7 +230,24 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             return;
         }
 
-        SkillCast? skillCast = session.Player.FieldPlayer.SkillCast;
+        CastedSkill? skill = session.Player.FieldPlayer.SkillCastTracker.GetSkillCast(skillSn);
+
+        if (skill is not null)
+        {
+            for (int i = 0; i < count; ++i)
+            {
+                skill.Damages.Add(new()
+                {
+                    AttackId = atkCount[i],
+                    SourceId = sourceId[i],
+                    TargetId = targetId[i],
+                    Animation = animation[i],
+                    AttackPoint = attackPoint
+                });
+            }
+        }
+
+        SkillCast? skillCast = skill?.Cast;
         if (skillCast is null)
         {
             return;
@@ -244,6 +274,18 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
         int entityId = packet.ReadInt();
         packet.ReadByte();
 
+        CastedSkill? skill = session.Player.FieldPlayer?.SkillCastTracker.GetSkillCast(skillSn);
+
+        if (skill is not null)
+        {
+            DamageInstance? damageInstance = skill.Damages.FirstOrDefault((instance) => instance.AttackId == attackCounter);
+
+            if (damageInstance is not null)
+            {
+                damageInstance.TargetId = entityId;
+            }
+        }
+
         session.Player.FieldPlayer?.TaskScheduler.QueueBufferedTask(() => HandleDamage(session, skillSn, count, attackPoint, entityId, playerObjectId, attackCounter, position, rotation));
     }
 
@@ -256,7 +298,9 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             return;
         }
 
-        SkillCast? skillCast = fieldPlayer.SkillCast;
+        CastedSkill? skill = fieldPlayer.SkillCastTracker.GetSkillCast(skillSn);
+
+        SkillCast? skillCast = skill?.Cast;
         if (skillCast is null || skillCast.SkillSn != skillSn)
         {
             return;
@@ -370,7 +414,9 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
         // TODO: Verify rest of skills to proc correctly.
         // TODO: Send status correctly when Region attacks are proc.
 
-        SkillCast? parentSkill = session.Player.FieldPlayer?.SkillCast;
+        CastedSkill? skill = session.Player.FieldPlayer?.SkillCastTracker.GetSkillCast(skillSn);
+
+        SkillCast? parentSkill = skill?.Cast;
 
         if (parentSkill is null || parentSkill.SkillSn != skillSn)
         {

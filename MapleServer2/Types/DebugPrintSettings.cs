@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace MapleServer2.Types;
 
-
 public class DebugPrintSettings
 {
     public int TargetsToPrint = 0;

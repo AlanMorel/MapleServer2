@@ -1,4 +1,11 @@
-﻿using Maple2Storage.Enums;
+using System.Collections.Generic;
+using System.Diagnostics.Metrics;
+using System.Drawing;
+using System.Numerics;
+using System.Threading.Tasks;
+using Google.Protobuf.WellKnownTypes;
+using Maple2.PathEngine.Types;
+using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
@@ -8,6 +15,9 @@ using MapleServer2.Network;
 using MapleServer2.PacketHandlers.Game;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Tools;
+using Org.BouncyCastle.Asn1.X509;
+using ProtoBuf.WellKnownTypes;
 using Serilog;
 
 namespace MapleServer2.Types;
@@ -16,7 +26,7 @@ public static class RegionSkillHandler
 {
     private static readonly ILogger Logger = Log.Logger.ForContext(typeof(RegionSkillHandler));
 
-    public static void CastRegionSkill(FieldManager field, SkillCast skillCast, int fireCount, int removeDelay, int interval, IFieldActor? target = null)
+    public static void CastRegionSkill(FieldManager field, SkillCast skillCast, int fireCount, int removeDelay, int interval, IFieldActor? target = null, SkillCondition? trigger = null)
     {
         SkillCast regionCast = new(skillCast.SkillId, skillCast.SkillLevel, skillCast.SkillSn, skillCast.ServerTick, skillCast)
         {
@@ -63,10 +73,34 @@ public static class RegionSkillHandler
             regionCast.Rotation = offset / (float) Math.Sqrt(offset.X * offset.X + offset.Y * offset.Y + offset.Z * offset.Z);
         }
 
-        field.FieldTaskScheduler.QueueTask(new(Math.Max(removeDelay, 1))
+        bool dependsOnCasterState = skillCast.Caster is not null && (trigger?.DependOnCasterState ?? false);
+
+        if (dependsOnCasterState && skillCast.Caster is not null)
         {
-            Executions = 1
-        }, (currentTick, task) => { CleanUpRegionSkill(field, regionCast); return -1; });
+            short startAnimation = skillCast.Caster.Animation;
+            short startAnimation2 = skillCast.Caster.Animation2;
+
+            Func<long, TriggerTask, long> tickCallback = (currentTick, task) =>
+            {
+                TickRegionSkill(field, regionCast);
+
+                return skillCast.Caster.Animation == startAnimation && skillCast.Caster.Animation2 == startAnimation2 ? 0 : -1;
+            };
+
+            Action<long, TriggerTask> cleanCallback = (currentTick, task) => CleanUpRegionSkill(field, regionCast);
+
+            field.FieldTaskScheduler.QueueTask(new(interval)
+            {
+                Executions = fireCount - 1
+            }, tickCallback, cleanCallback);
+        }
+        else
+        {
+            field.FieldTaskScheduler.QueueTask(new(Math.Max(removeDelay, 1))
+            {
+                Executions = 1
+            }, (currentTick, task) => { CleanUpRegionSkill(field, regionCast); return -1; });
+        }
 
         if (skillCast.Owner is not null && skillCast.Caster is not null)
         {
@@ -85,7 +119,7 @@ public static class RegionSkillHandler
             return;
         }
 
-        if (fireCount == 1)
+        if (fireCount == 1 || dependsOnCasterState)
         {
             return;
         }
@@ -283,6 +317,7 @@ public static class RegionSkillHandler
         bool hasChaining = false;
         SkillAttack? chainingAttack = null;
         int attackPoint = 0;
+        MagicPathMove? pathMove = null;
 
         foreach (SkillMotion skillMotion in skillCast.GetSkillMotions())
         {
@@ -290,11 +325,14 @@ public static class RegionSkillHandler
             {
                 SkillAttack skillAttack = skillMotion.SkillAttacks[i];
 
-                if (skillCast.EffectCoords.Count > 0 && skillAttack.ArrowProperty.BounceType == BounceType.Unknown2)
+                MagicPathMove? path = MagicPathMetadataStorage.GetMagicPath(chainingAttack.MagicPathId)?.MagicPathMoves[0];
+
+                if (skillCast.EffectCoords.Count > 0 && path?.Velocity > 0)//skillAttack.ArrowProperty.BounceType == BounceType.Unknown2)
                 {
                     hasChaining = true;
                     attackPoint = i;
                     chainingAttack = skillAttack;
+                    pathMove = path;
 
                     CoordF position = skillCast.EffectCoords[0];
 
@@ -345,14 +383,13 @@ public static class RegionSkillHandler
         field.BroadcastPacket(SkillDamagePacket.SyncDamage(skillCast, skillCast.EffectCoords[0], skillCast.Rotation, character, sourceId, (byte) atkCount.Count, atkCount,
             targetId, animation, true, uid));
 
-        if (chainingAttack is null || targets.Count == 0)
+        if (chainingAttack is null || targets.Count == 0 || pathMove is null)
         {
             return targets.Count != 0 ? targets[0] : null;
         }
 
         skillCast.Position = skillCast.EffectCoords[0];
         int currentTarget = 0;
-        MagicPathMove pathMove = MagicPathMetadataStorage.GetMagicPath(chainingAttack.MagicPathId)?.MagicPathMoves[0] ?? new();
 
         field.FieldTaskScheduler.QueueTask(new(10)
         {
