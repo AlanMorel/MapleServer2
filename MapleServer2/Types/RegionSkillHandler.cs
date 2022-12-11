@@ -325,7 +325,7 @@ public static class RegionSkillHandler
             {
                 SkillAttack skillAttack = skillMotion.SkillAttacks[i];
 
-                MagicPathMove? path = MagicPathMetadataStorage.GetMagicPath(chainingAttack.MagicPathId)?.MagicPathMoves[0];
+                MagicPathMove? path = MagicPathMetadataStorage.GetMagicPath(skillAttack.MagicPathId)?.MagicPathMoves[0];
 
                 if (skillCast.EffectCoords.Count > 0 && path?.Velocity > 0)//skillAttack.ArrowProperty.BounceType == BounceType.Unknown2)
                 {
