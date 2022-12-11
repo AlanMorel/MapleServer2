@@ -68,11 +68,9 @@ public class AdditionalEffectLevelMetadata
     [XmlElement(Order = 26)]
     public List<SkillCondition> ConditionSkill = new();
     [XmlElement(Order = 27)]
-    public string Feature;
+    public bool HasConditionalStats;
     [XmlElement(Order = 28)]
     public bool HasStats;
-    [XmlElement(Order = 29)]
-    public bool HasConditionalStats;
 }
 
 [XmlType]

@@ -56,8 +56,8 @@ public static class SkillDamagePacket
         pWriter.Write(Mode.Damage);
         pWriter.WriteLong(skillCast.SkillSn);
         pWriter.WriteInt(attackCount);
-        pWriter.WriteInt(skillCast.Caster?.ObjectId ?? 0);
-        pWriter.WriteInt(skillCast.Caster?.ObjectId ?? 0);
+        pWriter.WriteInt(skillCast.Caster?.ObjectId);
+        pWriter.WriteInt(skillCast.Caster?.ObjectId);
         pWriter.WriteInt(skillCast.SkillId);
         pWriter.WriteShort(skillCast.SkillLevel);
         // This values appears on some SkillsId, and others like BossSkill, sometimes is 0

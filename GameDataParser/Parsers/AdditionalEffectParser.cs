@@ -51,6 +51,8 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                     continue;
                 }
 
+                feature = feature ?? "";
+
                 string? locale = level.Attributes?["locale"]?.Value;
 
                 if (locale is not null && FeatureLocaleFilter.Locale != locale)
@@ -62,7 +64,6 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
 
                 AdditionalEffectLevelMetadata levelMeta = new()
                 {
-                    Feature = feature ?? "",
                     BeginCondition = SkillParser.ParseBeginCondition(level) ?? new(),
                     Basic = ParseBasicProperty(level.SelectSingleNode("BasicProperty")),
                     CancelEffect = ParseCancelEffect(level.SelectSingleNode("CancelEffectProperty")),
@@ -89,7 +90,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                 }
                 else
                 {
-                    if (metadata.Levels[levelMeta.Basic.Level].Feature == "")
+                    if (feature != "")
                     {
                         metadata.Levels[levelMeta.Basic.Level] = levelMeta;
                     }
