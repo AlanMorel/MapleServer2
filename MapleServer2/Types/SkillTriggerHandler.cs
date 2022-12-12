@@ -408,13 +408,19 @@ public class SkillTriggerHandler
             Owner = eventCastInfo.Owner,
             Caster = eventCastInfo.Caster,
             Position = eventCastInfo.Target?.Coord ?? default,
-            Rotation = useDirection ? eventCastInfo.Caster?.Rotation ?? default : default,
-            Direction = useDirection ? Maple2Storage.Types.CoordF.From(1, eventCastInfo.Caster?.LookDirection ?? 0) : default,
-            LookDirection = useDirection ? eventCastInfo.Caster?.LookDirection ?? default : default,
+            Rotation = eventCastInfo.Caster?.Rotation ?? default,
+            Direction = Maple2Storage.Types.CoordF.From(1, eventCastInfo.Caster?.LookDirection ?? 0),
+            LookDirection = eventCastInfo.Caster?.LookDirection ?? default,
+            UseDirection = useDirection,
             Duration = duration,
             ParentSkill = parentSkill,
             SkillAttack = parentSkill?.SkillAttack
         };
+
+        if (trigger.IsSplash && trigger.Target == SkillTarget.SkillTarget && parentSkill is not null && parentSkill.ActiveCoord != -1)
+        {
+            skillCast.Position = parentSkill.EffectCoords[parentSkill.ActiveCoord];
+        }
 
         int delay = (int) trigger.Delay;
 

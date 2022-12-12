@@ -46,12 +46,13 @@ public class MagicPathParser : Exporter<List<MagicPathMetadata>>
                     CoordF controlValue1 = ParseCoordFromString(pathMove.Attributes?["controlValue1"]?.Value ?? "0,0,0");
 
                     bool ignoreAdjust = pathMove.Attributes?["ignoreAdjustCubePosition"] is null;
+                    bool align = pathMove.Attributes?["align"] is null;
                     bool traceTargetOffsetPos = pathMove.Attributes?["traceTargetOffsetPos"]?.Value == "1";
                     float distance = float.Parse(pathMove.Attributes?["distance"]?.Value ?? "0");
                     float velocity = float.Parse(pathMove.Attributes?["vel"]?.Value ?? "0");
                     int lookAtType = int.Parse(pathMove.Attributes?["lookAtType"]?.Value ?? "0");
 
-                    pathMoves.Add(new(rotation, fireOffsetPosition, direction, controlValue0, controlValue1, ignoreAdjust, traceTargetOffsetPos, distance, lookAtType, velocity));
+                    pathMoves.Add(new(rotation, fireOffsetPosition, direction, controlValue0, controlValue1, ignoreAdjust, align, traceTargetOffsetPos, distance, lookAtType, velocity));
                 }
 
                 MagicPathMetadata newMagicPath = new(id, pathMoves);

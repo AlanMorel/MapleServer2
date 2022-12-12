@@ -47,10 +47,12 @@ public class MagicPathMove
     public readonly int LookAtType;
     [XmlElement(Order = 10)]
     public readonly float Velocity;
+    [XmlElement(Order = 11)]
+    public readonly bool Align;
 
     public MagicPathMove() { }
 
-    public MagicPathMove(int rotation, CoordF fireOffsetPosition, CoordF direction, CoordF controlValue0, CoordF controlValue1, bool ignoreAdjust,
+    public MagicPathMove(int rotation, CoordF fireOffsetPosition, CoordF direction, CoordF controlValue0, CoordF controlValue1, bool ignoreAdjust, bool align,
         bool traceTargetOffsetPosition, float distance, int lookAtType, float velocity)
     {
         Rotation = rotation;
@@ -63,6 +65,7 @@ public class MagicPathMove
         Distance = distance;
         LookAtType = lookAtType;
         Velocity = velocity;
+        Align = align;
     }
 
     public override string ToString()

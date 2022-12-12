@@ -31,6 +31,11 @@ public class VibrateHandler : GamePacketHandler<VibrateHandler>
 
         CastedSkill? skill = player.FieldPlayer?.SkillCastTracker.GetSkillCast(skillSN);
 
+        if (skill is null)
+        {
+            return;
+        }
+
         session.FieldManager.BroadcastPacket(VibratePacket.Vibrate(entityId, skill?.Cast));
     }
 }

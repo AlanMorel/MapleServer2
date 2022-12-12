@@ -27,6 +27,7 @@ public class SkillCast
     public CoordF Rotation;
     public short LookDirection;
     public float AimAngle;
+    public bool UseDirection = true;
 
     public IFieldActor? Caster;
     public IFieldActor Target;
@@ -34,6 +35,7 @@ public class SkillCast
 
     public long MagicPath = 0;
     public List<CoordF> EffectCoords = new();
+    public int ActiveCoord = -1;
 
     public SkillCast()
     {

@@ -282,7 +282,7 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
 
             if (damageInstance is not null)
             {
-                damageInstance.TargetId = entityId;
+                //damageInstance.TargetId = entityId;
             }
         }
 
@@ -334,6 +334,17 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
 
         List<DamageHandler> damages = new();
 
+        SkillCast triggerCast = new(skillCast.SkillId, skillCast.SkillLevel, GuidGenerator.Long(), session?.ServerTick ?? 0, skillCast)
+        {
+            Owner = skillCast.Caster,
+            Caster = skillCast.Caster,
+            Target = target,
+            SkillAttack = skillCast.SkillAttack,
+            Rotation = skillCast.Rotation,
+            Direction = skillCast.Direction,
+            LookDirection = skillCast.LookDirection
+        };
+
         for (int i = 0; i < count; i++)
         {
             skillCast.Target = target;
@@ -349,6 +360,7 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
                 }
 
                 skillCast.SkillAttack = attack;
+                triggerCast.SkillAttack = attack;
 
                 if (caster == target && attack.RangeProperty.ApplyTarget != ApplyTarget.Ally)
                 {
@@ -392,11 +404,13 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
                     hitMissed = damage.HitType == Enums.HitType.Miss;
                 }
 
-                caster.TaskScheduler.QueueBufferedTask(() => caster?.SkillTriggerHandler.FireTriggerSkills(attack.SkillConditions, skillCast, castInfo));
+                caster?.SkillTriggerHandler.FireTriggerSkills(attack.SkillConditions, triggerCast, castInfo);
 
                 target.SkillTriggerHandler.OnAttacked(caster, skillCast.SkillId, !hitMissed, hitCrit, hitMissed, false);
             }
         }
+
+        skillCast.Target = null;
 
         session?.FieldManager.BroadcastPacket(SkillDamagePacket.Damage(skillCast, attackCounter, position, rotation, damages));
     }
@@ -418,21 +432,21 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
 
         SkillCast? parentSkill = skill?.Cast;
 
-        if (parentSkill is null || parentSkill.SkillSn != skillSn)
+        if (skill is null || parentSkill is null || parentSkill.SkillSn != skillSn)
         {
             return;
         }
 
-        SkillAttack? skillAttack = parentSkill.GetSkillMotions().FirstOrDefault()?.SkillAttacks[attackIndex];
-        if (skillAttack is null)
+        SkillAttack? skillAttack = parentSkill.GetSkillMotions().FirstOrDefault()?.SkillAttacks[mode];
+        if (skillAttack is null || skillAttack.RangeProperty.ApplyTarget != 0)
         {
             return;
         }
 
-        if (skillAttack.CubeMagicPathId == 0 && skillAttack.MagicPathId == 0)
-        {
-            return;
-        }
+        //if (skillAttack.MagicPathId != 0)
+        //{
+        //    return;
+        //}
 
         SkillCast skillCast = new(parentSkill.SkillId, parentSkill.SkillLevel, GuidGenerator.Long(), session.ServerTick, parentSkill)
         {
