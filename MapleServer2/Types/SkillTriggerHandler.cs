@@ -280,7 +280,7 @@ public class SkillTriggerHandler
         return IsConditionMet(beginCondition, castInfo, effectEvent, eventIdArgument, query);
     }
 
-    private bool ShouldFireTrigger(SkillCondition trigger, ConditionSkillTarget castInfo, EffectEvent effectEvent, int eventIdArgument, int start = -1)
+    private bool ShouldFireTrigger(SkillCondition trigger, ConditionSkillTarget castInfo, EffectEvent effectEvent, int eventIdArgument, bool targetingNone, int start = -1)
     {
         if (!EventMatches(trigger.BeginCondition, effectEvent, castInfo.EventOrigin))
         {
@@ -290,6 +290,16 @@ public class SkillTriggerHandler
         if (start == -1)
         {
             start = Environment.TickCount;
+        }
+
+        if (castInfo.Target is null && !targetingNone)
+        {
+            return false;
+        }
+
+        if (targetingNone && castInfo.Target is not null)
+        {
+            return false;
         }
 
         if (!IsConditionMet(trigger.BeginCondition, castInfo, effectEvent, eventIdArgument))
@@ -395,7 +405,10 @@ public class SkillTriggerHandler
     {
         ConditionSkillTarget eventCastInfo = new(castInfo.Owner, GetTarget(trigger.Target, castInfo) ?? castInfo.Target, GetOwner(trigger.Owner, castInfo) ?? castInfo.Owner, castInfo.Attacker, castInfo.EventOrigin);
 
-        if (!ShouldFireTrigger(trigger, eventCastInfo, effectEvent, eventIdArgument, start))
+        SkillAttack? attack = parentSkill?.SkillAttack;
+        bool useTarget = attack?.RangeProperty.ApplyTarget == ApplyTarget.None || trigger.NonTargetActive || (attack?.CubeMagicPathId > 0 && attack?.MagicPathId == 0 && castInfo.Target is null);
+
+        if (!ShouldFireTrigger(trigger, eventCastInfo, effectEvent, eventIdArgument, useTarget, start))
         {
             return;
         }
@@ -407,17 +420,24 @@ public class SkillTriggerHandler
         {
             Owner = eventCastInfo.Owner,
             Caster = eventCastInfo.Caster,
-            Position = eventCastInfo.Target?.Coord ?? default,
-            Rotation = eventCastInfo.Caster?.Rotation ?? default,
-            Direction = Maple2Storage.Types.CoordF.From(1, eventCastInfo.Caster?.LookDirection ?? 0),
-            LookDirection = eventCastInfo.Caster?.LookDirection ?? default,
-            UseDirection = useDirection,
+            Position = useTarget ? parentSkill?.Position ?? default : eventCastInfo.Target?.Coord ?? default,
+            //Rotation = eventCastInfo.Caster?.Rotation ?? default,
+            //Direction = Maple2Storage.Types.CoordF.From(1, eventCastInfo.Caster?.LookDirection ?? 0),
+            //LookDirection = eventCastInfo.Caster?.LookDirection ?? default,
+            //Rotation = useDirection ? eventCastInfo.Caster?.Rotation ?? default : parentSkill?.Rotation ?? default,
+            //Direction = useDirection ? Maple2Storage.Types.CoordF.From(1, eventCastInfo.Caster?.LookDirection ?? 0) : parentSkill?.Direction ?? default,
+            //LookDirection = useDirection ? eventCastInfo.Caster?.LookDirection ?? default : parentSkill?.LookDirection ?? default,
+            Rotation = parentSkill?.Rotation ?? default,
+            Direction = parentSkill?.Direction ?? default,
+            LookDirection = parentSkill?.LookDirection ?? default,
+            UseDirection = useDirection || (!parentSkill?.UsingCasterDirection ?? false),//useDirection,
             Duration = duration,
             ParentSkill = parentSkill,
-            SkillAttack = parentSkill?.SkillAttack
+            SkillAttack = parentSkill?.SkillAttack,
+            UsingCasterDirection = parentSkill?.UsingCasterDirection ?? false
         };
 
-        if (trigger.IsSplash && trigger.Target == SkillTarget.SkillTarget && parentSkill is not null && parentSkill.ActiveCoord != -1)
+        if (trigger.IsSplash && trigger.Target == SkillTarget.SkillTarget && trigger.NonTargetActive && parentSkill is not null && parentSkill.ActiveCoord != -1)
         {
             skillCast.Position = parentSkill.EffectCoords[parentSkill.ActiveCoord];
         }

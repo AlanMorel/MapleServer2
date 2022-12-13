@@ -1052,12 +1052,15 @@ public class FieldManager
 
     public bool RemoveRegionSkillEffect(SkillCast skillCast)
     {
-        if (!RemoveSkillCast(skillCast.SkillSn, out skillCast))
+        if (!RemoveSkillCast(skillCast.SkillSn, out SkillCast outSkillCast) && skillCast.SkillObjectId == 0)
         {
             return false;
         }
 
         BroadcastPacket(RegionSkillPacket.Remove(skillCast.SkillObjectId));
+
+        skillCast.SkillObjectId = 0;
+
         return true;
     }
 

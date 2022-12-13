@@ -16,6 +16,7 @@ using MapleServer2.PacketHandlers.Game;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
+using MySqlX.XDevAPI;
 using Org.BouncyCastle.Asn1.X509;
 using ProtoBuf.WellKnownTypes;
 using Serilog;
@@ -321,7 +322,7 @@ public static class RegionSkillHandler
             return null;
         }
 
-        Session? session = character.Value?.Session;
+        GameSession? session = character.Value?.Session;
 
         if (session is null)
         {
@@ -426,7 +427,7 @@ public static class RegionSkillHandler
             {
                 skillCast.Position = targets[currentTarget].Coord;
 
-                SkillHandler.HandleDamage(skillCast, targets[currentTarget], 1, attackPoint, currentTarget + 2, skillCast.Position, skillCast.Rotation);
+                SkillHandler.HandleDamage(skillCast, targets[currentTarget], attackPoint, currentTarget + 2, skillCast.Position, skillCast.Rotation);
                 // do damage
 
                 ++currentTarget;
@@ -461,6 +462,8 @@ public static class RegionSkillHandler
                     ProcessAttackApplyTarget(field, skillCast, ref hitsRemaining, damages, target, true);
                     return hitsRemaining > 0;
                 });
+
+                ProcessFieldTarget(field, skillCast);
             }
         }
 
@@ -606,6 +609,7 @@ public static class RegionSkillHandler
             }
 
             ConditionSkillTarget castInfo = new(caster, target, caster, caster);
+
             bool hitTarget = false;
             bool hitCrit = false;
             bool hitMissed = false;
@@ -659,6 +663,27 @@ public static class RegionSkillHandler
             hitsRemaining--;
 
             return;
+        }
+    }
+
+    private static void ProcessFieldTarget(FieldManager field, SkillCast skillCast)
+    {
+        if (skillCast.SkillAttack is null)
+        {
+            return;
+        }
+
+        IFieldActor? caster = skillCast.Caster;
+
+        for (int i = 0; i < skillCast.EffectCoords.Count; ++i)
+        {
+            CoordF effectCoord = skillCast.EffectCoords[i];
+
+            ConditionSkillTarget castInfo = new(caster, null, caster);
+
+            skillCast.ActiveCoord = i;
+            castInfo.Owner?.SkillTriggerHandler.FireTriggerSkills(skillCast.SkillAttack.SkillConditions, skillCast, castInfo, -1, false);
+            skillCast.ActiveCoord = -1;
         }
     }
 

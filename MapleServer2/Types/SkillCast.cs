@@ -36,6 +36,7 @@ public class SkillCast
     public long MagicPath = 0;
     public List<CoordF> EffectCoords = new();
     public int ActiveCoord = -1;
+    public bool UsingCasterDirection = false;
 
     public SkillCast()
     {

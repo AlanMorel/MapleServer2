@@ -271,9 +271,6 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
 
         int tick = Environment.TickCount;
 
-        int entityId = packet.ReadInt();
-        packet.ReadByte();
-
         CastedSkill? skill = session.Player.FieldPlayer?.SkillCastTracker.GetSkillCast(skillSn);
 
         if (skill is not null)
@@ -286,7 +283,13 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             }
         }
 
-        session.Player.FieldPlayer?.TaskScheduler.QueueBufferedTask(() => HandleDamage(session, skillSn, count, attackPoint, entityId, playerObjectId, attackCounter, position, rotation));
+        for (int i = 0; i < count; ++i)
+        {
+            int entityId = packet.ReadInt();
+            packet.ReadByte();
+
+            session.Player.FieldPlayer?.TaskScheduler.QueueBufferedTask(() => HandleDamage(session, skillSn, count, attackPoint, entityId, playerObjectId, attackCounter, position, rotation));
+        }
     }
 
     private static void HandleDamage(GameSession session, long skillSn, byte count, int attackPoint, int entityId, int playerObjectId, int attackCounter, CoordF position, CoordF rotation)
@@ -323,10 +326,10 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             session.SendNotice($"Attacked target object {target.ObjectId}!");
         }
 
-        HandleDamage(skillCast, target, count, attackPoint, attackCounter, position, rotation);
+        HandleDamage(skillCast, target, attackPoint, attackCounter, position, rotation);
     }
 
-    public static void HandleDamage(SkillCast skillCast, IFieldActor target, int count, int attackPoint, int attackCounter, CoordF position, CoordF rotation)
+    public static void HandleDamage(SkillCast skillCast, IFieldActor target, int attackPoint, int attackCounter, CoordF position, CoordF rotation)
     {
 
         IFieldActor? caster = skillCast.Caster;
@@ -345,69 +348,66 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             LookDirection = skillCast.LookDirection
         };
 
-        for (int i = 0; i < count; i++)
+        skillCast.Target = target;
+        skillCast.AttackPoint = (byte) attackPoint;
+
+        foreach (SkillMotion motion in skillCast.GetSkillMotions())
         {
-            skillCast.Target = target;
-            skillCast.AttackPoint = (byte) attackPoint;
+            SkillAttack? attack = motion.SkillAttacks?[attackPoint];
 
-            foreach (SkillMotion motion in skillCast.GetSkillMotions())
+            if (attack is null)
             {
-                SkillAttack? attack = motion.SkillAttacks?[attackPoint];
+                continue;
+            }
 
-                if (attack is null)
+            skillCast.SkillAttack = attack;
+            triggerCast.SkillAttack = attack;
+
+            if (caster == target && attack.RangeProperty.ApplyTarget != ApplyTarget.Ally)
+            {
+                continue;
+            }
+
+            AdditionalEffect? activeShield = target.AdditionalEffects.ActiveShield;
+            bool allowHit = true;
+
+            if (activeShield is not null)
+            {
+                int[]? allowedSkills = activeShield.LevelMetadata?.Basic?.AllowedSkillAttacks;
+                int[]? allowedDotEffects = activeShield.LevelMetadata?.Basic?.AllowedDotEffectAttacks;
+
+                if ((allowedSkills?.Length > 0 || allowedDotEffects?.Length > 0) && allowedSkills?.Contains(skillCast.SkillId) != true)
                 {
-                    continue;
+                    allowHit = false;
                 }
+            }
 
-                skillCast.SkillAttack = attack;
-                triggerCast.SkillAttack = attack;
+            ConditionSkillTarget castInfo = new(caster, target, caster, caster, EffectEventOrigin.Caster);
+            bool hitCrit = false;
+            bool hitMissed = false;
 
-                if (caster == target && attack.RangeProperty.ApplyTarget != ApplyTarget.Ally)
-                {
-                    continue;
-                }
-
-                AdditionalEffect? activeShield = target.AdditionalEffects.ActiveShield;
-                bool allowHit = true;
+            if ((skillCast.GetDamageRate() != 0 || skillCast.GetDamageValue() != 0) && allowHit)
+            {
+                DamageHandler damage = DamageHandler.CalculateDamage(skillCast, caster, target);
 
                 if (activeShield is not null)
                 {
-                    int[]? allowedSkills = activeShield.LevelMetadata?.Basic?.AllowedSkillAttacks;
-                    int[]? allowedDotEffects = activeShield.LevelMetadata?.Basic?.AllowedDotEffectAttacks;
-
-                    if ((allowedSkills?.Length > 0 || allowedDotEffects?.Length > 0) && allowedSkills?.Contains(skillCast.SkillId) != true)
-                    {
-                        allowHit = false;
-                    }
+                    activeShield.DamageShield(target, (long) damage.Damage);
                 }
-
-                ConditionSkillTarget castInfo = new(caster, target, caster, caster, EffectEventOrigin.Caster);
-                bool hitCrit = false;
-                bool hitMissed = false;
-
-                if ((skillCast.GetDamageRate() != 0 || skillCast.GetDamageValue() != 0) && allowHit)
+                else
                 {
-                    DamageHandler damage = DamageHandler.CalculateDamage(skillCast, caster, target);
+                    target.Damage(damage, session);
 
-                    if (activeShield is not null)
-                    {
-                        activeShield.DamageShield(target, (long) damage.Damage);
-                    }
-                    else
-                    {
-                        target.Damage(damage, session);
-
-                        damages.Add(damage);
-                    }
-
-                    hitCrit = damage.HitType == Enums.HitType.Critical;
-                    hitMissed = damage.HitType == Enums.HitType.Miss;
+                    damages.Add(damage);
                 }
 
-                caster?.SkillTriggerHandler.FireTriggerSkills(attack.SkillConditions, triggerCast, castInfo);
-
-                target.SkillTriggerHandler.OnAttacked(caster, skillCast.SkillId, !hitMissed, hitCrit, hitMissed, false);
+                hitCrit = damage.HitType == Enums.HitType.Critical;
+                hitMissed = damage.HitType == Enums.HitType.Miss;
             }
+
+            caster?.SkillTriggerHandler.FireTriggerSkills(attack.SkillConditions, triggerCast, castInfo);
+
+            target.SkillTriggerHandler.OnAttacked(caster, skillCast.SkillId, !hitMissed, hitCrit, hitMissed, false);
         }
 
         skillCast.Target = null;
@@ -440,7 +440,7 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
         SkillAttack? skillAttack = parentSkill.GetSkillMotions().FirstOrDefault()?.SkillAttacks[mode];
         if (skillAttack is null || skillAttack.RangeProperty.ApplyTarget != 0)
         {
-            return;
+            //return;
         }
 
         //if (skillAttack.MagicPathId != 0)
@@ -453,11 +453,12 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             Owner = parentSkill.Caster,
             Caster = parentSkill.Caster,
             SkillAttack = skillAttack,
-            Rotation = parentSkill.Rotation,
-            Direction = parentSkill.Direction,
-            LookDirection = parentSkill.LookDirection
+            Rotation = rotation,
+            LookDirection = (short)(rotation.Z * 10),
+            UsingCasterDirection = true
         };
-        ConditionSkillTarget castInfo = new(parentSkill.Caster, parentSkill.Caster, parentSkill.Caster, parentSkill.Caster, EffectEventOrigin.Caster);
+        skillCast.Position = position;
+        ConditionSkillTarget castInfo = new(parentSkill.Caster, null, parentSkill.Caster, parentSkill.Caster, EffectEventOrigin.Caster);
 
         session.Player.FieldPlayer?.TaskScheduler.QueueBufferedTask(() =>
             parentSkill.Caster?.SkillTriggerHandler.FireTriggerSkills(skillAttack.SkillConditions, skillCast, castInfo)

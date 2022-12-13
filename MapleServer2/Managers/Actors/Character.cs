@@ -89,6 +89,7 @@ public class Character : FieldActor<Player>
 
         if (conditionSkills is not null)
         {
+            skillCast.SkillAttack = null;
             SkillTriggerHandler.FireTriggerSkills(conditionSkills, skillCast, new(this, this, this, this, EffectEventOrigin.Caster));
         }
 
