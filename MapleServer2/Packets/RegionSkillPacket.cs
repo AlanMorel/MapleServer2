@@ -19,7 +19,7 @@ public static class RegionSkillPacket
 
         pWriter.Write(Mode.Add);
         pWriter.WriteInt(skill.SkillObjectId);
-        pWriter.WriteInt(skill.Caster?.ObjectId ?? 0);
+        pWriter.WriteInt(skill.Caster?.ObjectId);
         pWriter.WriteInt(skill.ServerTick);
         pWriter.WriteByte((byte) skill.EffectCoords.Count);
         if (skill.EffectCoords.Count == 0)

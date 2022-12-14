@@ -111,7 +111,7 @@ public static class FieldObjectPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.FieldObject);
 
         pWriter.Write(Mode.UpdateEntity);
-        pWriter.WriteInt(player.FieldPlayer?.ObjectId ?? 0);
+        pWriter.WriteInt(player.FieldPlayer?.ObjectId);
         pWriter.Write(FieldObjectUpdate.Level);
         pWriter.WriteShort(player.Levels.Level);
 

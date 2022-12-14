@@ -39,7 +39,7 @@ public static class SkillDamagePacket
         pWriter.WriteByte(count);
         for (int i = 0; i < count; i++)
         {
-            pWriter.WriteLong(uid?[i] ?? 0);
+            pWriter.WriteLong(uid?[i]);
             pWriter.WriteInt(atkCount[i]);
             pWriter.WriteInt(sourceId[i]);
             pWriter.WriteInt(entityId[i]); // objectId of the Impact
@@ -120,7 +120,7 @@ public static class SkillDamagePacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.SkillDamage);
 
         pWriter.Write(Mode.Heal);
-        pWriter.WriteInt(effect.Caster?.ObjectId ?? 0);
+        pWriter.WriteInt(effect.Caster?.ObjectId);
         pWriter.WriteInt(effect.Parent.ObjectId);
         pWriter.WriteInt(effect.BuffId);
         pWriter.WriteInt(healAmount);
