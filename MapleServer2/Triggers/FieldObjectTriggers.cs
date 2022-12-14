@@ -171,7 +171,8 @@ public partial class TriggerContext
                 SkillObjectId = triggerSkill.ObjectId,
                 Position = triggerSkill.Coord
             };
-            RegionSkillHandler.HandleEffect(Field, skillCast);
+
+            RegionSkillHandler.CastRegionSkill(Field, skillCast, triggerSkill.Value.Count, triggerSkill.Value.Interval, triggerSkill.Value.Interval);
         }
     }
 

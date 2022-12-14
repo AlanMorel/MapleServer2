@@ -123,13 +123,13 @@ public class PremiumClubHandler : GamePacketHandler<PremiumClubHandler>
         }
 
         List<PremiumClubEffectMetadata> effectMetadatas = PremiumClubEffectMetadataStorage.GetBuffs();
-        foreach (PremiumClubEffectMetadata effect in effectMetadatas)
+        session.Player.FieldPlayer?.TaskScheduler.QueueBufferedTask(() =>
         {
-            session.Player.FieldPlayer.AdditionalEffects.AddEffect(new(effect.EffectId, effect.EffectLevel)
+            foreach (PremiumClubEffectMetadata effect in effectMetadatas)
             {
-                IsBuff = true
-            });
-        }
+                session.Player.FieldPlayer.AdditionalEffects.AddEffect(new(effect.EffectId, effect.EffectLevel));
+            }
+        });
 
         session.Send(PremiumClubPacket.ActivatePremium(session.Player.FieldPlayer, account.VIPExpiration));
     }

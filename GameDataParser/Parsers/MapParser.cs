@@ -267,7 +267,7 @@ public class MapParser : Exporter<List<MapMetadata>>
                             break;
                         case IMS2TriggerSkill triggerSkill:
                             mapEntity.TriggerSkills.Add(new(triggerSkill.TriggerObjectID, triggerSkill.skillID,
-                                (short) triggerSkill.skillLevel, (byte) triggerSkill.count, CoordF.FromVector3(triggerSkill.Position)));
+                                (short) triggerSkill.skillLevel, triggerSkill.Interval, (byte) triggerSkill.count, CoordF.FromVector3(triggerSkill.Position)));
                             break;
                     }
 

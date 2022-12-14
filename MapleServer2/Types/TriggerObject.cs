@@ -92,14 +92,16 @@ public class TriggerSkill : TriggerObject
 {
     public CoordF Position;
     public byte Count;
+    public int Interval;
     public short SkillLevel;
     public int SkillId;
     public SkillCondition? Condition;
 
-    public TriggerSkill(int id, int skillId, short skillLevel, byte count, CoordF position, SkillCondition? condition) : base(id)
+    public TriggerSkill(int id, int skillId, short skillLevel, int interval, byte count, CoordF position, SkillCondition? condition) : base(id)
     {
         SkillId = skillId;
         SkillLevel = skillLevel;
+        Interval = interval;
         Count = count;
         Position = position;
         Condition = condition;

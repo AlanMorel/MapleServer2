@@ -20,7 +20,7 @@ public class SkillCast
     public int Interval;
     public SkillCast? ParentSkill;
 
-    public SkillAttack SkillAttack;
+    public SkillAttack? SkillAttack;
 
     public CoordF Position;
     public CoordF Direction;
@@ -32,8 +32,7 @@ public class SkillCast
     public IFieldActor Target;
     public IFieldActor? Owner; // who the skill was casted at, not necessarily the same as caster
 
-    public bool MetadataExists => GetSkillMetadata() is not null;
-
+    public long MagicPath = 0;
     public List<CoordF> EffectCoords = new();
 
     public SkillCast()
@@ -138,7 +137,7 @@ public class SkillCast
 
     public bool HasCompulsionType(int type)
     {
-        if (SkillAttack.CompulsionType == null)
+        if (SkillAttack?.CompulsionType is null)
         {
             return false;
         }
@@ -152,7 +151,7 @@ public class SkillCast
         return skillData.Type == SkillType.Active && skillData.SubType == SkillSubType.None;
     }
 
-    public List<SkillMotion> GetSkillMotions() => GetCurrentLevel()?.SkillMotions;
+    public List<SkillMotion> GetSkillMotions() => GetCurrentLevel()?.SkillMotions ?? new();
 
     private bool VerifySkillTypeOf(SkillType type, SkillSubType subType)
     {

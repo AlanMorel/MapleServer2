@@ -163,13 +163,13 @@ public class StatEntry
         ["improve_honor_token"] = new(StatAttribute.ValorTokens, StatAttributeType.Rate, "improve_honor_token"),
         ["improve_pvp_exp"] = new(StatAttribute.PvPExp, StatAttributeType.Rate, "improve_pvp_exp"),
         ["improve_darkstream_damage"] = new(StatAttribute.DarkDescentDamageBonus, StatAttributeType.Rate, "improve_darkstream_damage"),
-        ["improve_darkstream_evp"] = new(StatAttribute.DarkDescentDamageReduce, StatAttributeType.Rate, "improve_darkstream_evp"),
         ["reduce_darkstream_recive_damage"] = new(StatAttribute.DarkDescentEvasion, StatAttributeType.Rate, "reduce_darkstream_recive_damage"),
+        ["improve_darkstream_evp"] = new(StatAttribute.DarkDescentDamageReduce, StatAttributeType.Rate, "improve_darkstream_evp"),
         ["fishing_double_mastery"] = new(StatAttribute.DoubleFishingMastery, StatAttributeType.Rate, "fishing_double_mastery"),
         ["playinstrument_double_mastery"] = new(StatAttribute.DoublePerformanceMastery, StatAttributeType.Rate, "playinstrument_double_mastery"),
         ["complete_fieldmission_msp"] = new(StatAttribute.ExploredAreasMovementSpeed, StatAttributeType.Rate, "complete_fieldmission_msp"),
         ["improve_glide_vertical_velocity"] = new(StatAttribute.AirMountAscentSpeed, StatAttributeType.Rate, "improve_glide_vertical_velocity"),
-        //AddStat(level.Status, StatAttribute.Unknown, special.additionaleffect_95000018value, special.additionaleffect_95000018rate); //
+        ["additionaleffect_95000018"] = new(StatAttribute.AdditionalEffect_95000018, StatAttributeType.Rate, "additionaleffect_95000018"),
         ["additionaleffect_95000012"] = new(StatAttribute.EnemyDefenseDecreaseOnHit, StatAttributeType.Rate, "additionaleffect_95000012"),
         ["additionaleffect_95000014"] = new(StatAttribute.EnemyAttackDecreaseOnHit, StatAttributeType.Rate, "additionaleffect_95000014"),
         ["additionaleffect_95000020"] = new(StatAttribute.IncreaseTotalDamageIf1NearbyEnemy, StatAttributeType.Rate, "additionaleffect_95000020"),
@@ -215,22 +215,110 @@ public class StatEntry
         ["gathering_multiaction"] = new(StatAttribute.ForagingEfficiency, StatAttributeType.Rate, "gathering_multiaction"),
         ["farming_multiaction"] = new(StatAttribute.FarmingEfficiency, StatAttributeType.Rate, "farming_multiaction"),
         ["reduce_damage_by_targetmaxhp"] = new(StatAttribute.HealthBasedDamageReduce, StatAttributeType.Rate, "reduce_damage_by_targetmaxhp"),
-        // TODO: add enum values for things after here. enum ended here so i stopped adding
-        //AddStat(level.Status, StatAttribute.Unknown, special.reduce_meso_revival_feevalue, special.reduce_meso_revival_feerate); //
-        //AddStat(level.Status, StatAttribute.Unknown, special.improve_riding_run_speedvalue, special.improve_riding_run_speedrate); //
-        //AddStat(level.Status, StatAttribute.Unknown, special.improve_dungeon_reward_mesovalue, special.improve_dungeon_reward_mesorate); //
-        //AddStat(level.Status, StatAttribute.Unknown, special.improve_shop_buying_mesovalue, special.improve_shop_buying_mesorate); //
-        //AddStat(level.Status, StatAttribute.Unknown, special.improve_itembox_reward_mesovalue, special.improve_itembox_reward_mesorate); //
-        //AddStat(level.Status, StatAttribute.Unknown, special.reduce_remakeoption_feevalue, special.reduce_remakeoption_feerate); //
-        //AddStat(level.Status, StatAttribute.Unknown, special.reduce_airtaxi_feevalue, special.reduce_airtaxi_feerate); //
-        //AddStat(level.Status, StatAttribute.Unknown, special.improve_socket_unlock_probabilityvalue, special.improve_socket_unlock_probabilityrate); //
-        //AddStat(level.Status, StatAttribute.Unknown, special.reduce_gemstone_upgrade_feevalue, special.reduce_gemstone_upgrade_feerate); //
-        //AddStat(level.Status, StatAttribute.Unknown, special.reduce_pet_remakeoption_feevalue, special.reduce_pet_remakeoption_feerate); //
-        //AddStat(level.Status, StatAttribute.Unknown, special.improve_riding_speedvalue, special.improve_riding_speedrate); //
-        //AddStat(level.Status, StatAttribute.Unknown, special.improve_survival_kill_expvalue, special.improve_survival_kill_exprate); //
-        //AddStat(level.Status, StatAttribute.Unknown, special.improve_survival_time_expvalue, special.improve_survival_time_exprate); //
-        ["offensive_physicaldamage"] = new(StatAttribute.PhysicalAtk, StatAttributeType.Rate, "offensive_physicaldamage"),
-        ["offensive_magicaldamage"] = new(StatAttribute.MagicAtk, StatAttributeType.Rate, "offensive_magicaldamage"),
-        //AddStat(level.Status, StatAttribute.Unknown, special.reduce_gameitem_socket_unlock_feevalue, special.reduce_gameitem_socket_unlock_feerate); //
+        ["reduce_meso_revival_fee"] = new(StatAttribute.ReduceMesoRevivalFee, StatAttributeType.Rate, "reduce_meso_revival_fee"),
+        ["improve_riding_run_speed"] = new(StatAttribute.ImproveRidingRunSpeed, StatAttributeType.Rate, "improve_riding_run_speed"),
+        ["improve_dungeon_reward_meso"] = new(StatAttribute.ImproveDungeonRewardMeso, StatAttributeType.Rate, "improve_dungeon_reward_meso"),
+        ["improve_shop_buying_meso"] = new(StatAttribute.ImproveShopBuyingMeso, StatAttributeType.Rate, "improve_shop_buying_meso"),
+        ["improve_itembox_reward_meso"] = new(StatAttribute.ImproveItemboxRewardMeso, StatAttributeType.Rate, "improve_itembox_reward_meso"),
+        ["reduce_remakeoption_fee"] = new(StatAttribute.ReduceRemakeOptionRee, StatAttributeType.Rate, "reduce_remakeoption_fee"),
+        ["reduce_airtaxi_fee"] = new(StatAttribute.ReduceAirTaxiFee, StatAttributeType.Rate, "reduce_airtaxi_fee"),
+        ["improve_socket_unlock_probability"] = new(StatAttribute.ImproveSocketUnlockProbability, StatAttributeType.Rate, "improve_socket_unlock_probability"),
+        ["reduce_gemstone_upgrade_fee"] = new(StatAttribute.ReduceGemstoneUpgradeFee, StatAttributeType.Rate, "reduce_gemstone_upgrade_fee"),
+        ["reduce_pet_remakeoption_fee"] = new(StatAttribute.ReducePetRemakeOptionFee, StatAttributeType.Rate, "reduce_pet_remakeoption_fee"),
+        ["improve_riding_speed"] = new(StatAttribute.ImproveRidingSpeed, StatAttributeType.Rate, "improve_riding_speed"),
+        ["improve_survival_kill_exp"] = new(StatAttribute.ImproveSurvivalKill_exp, StatAttributeType.Rate, "improve_survival_kill_exp"),
+        ["improve_survival_time_exp"] = new(StatAttribute.ImproveSurvivalTime_exp, StatAttributeType.Rate, "improve_survival_time_exp"),
+        ["offensive_physicaldamage"] = new(StatAttribute.OffensivePhysicalDamage, StatAttributeType.Rate, "offensive_physicaldamage"),
+        ["offensive_magicaldamage"] = new(StatAttribute.OffensiveMagicalDamage, StatAttributeType.Rate, "offensive_magicaldamage"),
+        ["reduce_gameitem_socket_unlock_fee"] = new(StatAttribute.ReduceGameitemSocketUnlockFee, StatAttributeType.Rate, "reduce_gameitem_socket_unlock_fee"),
     };
+
+    public static void AddStat(Dictionary<StatAttribute, EffectStatMetadata> stats, XmlAttribute attribute, StatEntry entry, bool isValue)
+    {
+        StatAttribute stat = entry.Attribute;
+
+        if (entry.Name == "sgi")
+        {
+            stat = StatAttribute.EliteDamage;
+        }
+
+        if (entry.Name == "sgi_boss")
+        {
+            stat = StatAttribute.BossDamage;
+        }
+
+        if (entry.AttributeType == StatAttributeType.Flat)
+        {
+            long flat = 0;
+            float rate = 0;
+
+            if (isValue)
+            {
+                flat = long.Parse(attribute.Value);
+            }
+            else
+            {
+                rate = float.Parse(attribute.Value);
+            }
+
+            AddStatFlat(stats, stat, flat, rate);
+        }
+
+        if (entry.AttributeType == StatAttributeType.Rate)
+        {
+            float value = float.Parse(attribute.Value);
+
+            AddStatRate(stats, stat, isValue ? value : 0, isValue ? 0 : value);
+        }
+    }
+
+    public static void AddStatRate(Dictionary<StatAttribute, EffectStatMetadata> stats, StatAttribute stat, float flat, float rate)
+    {
+        if (flat == 0 && rate == 0)
+        {
+            return;
+        }
+
+        EffectStatMetadata currentValue;
+
+        if (stats.TryGetValue(stat, out currentValue))
+        {
+            currentValue.Flat += (long) (flat * 1000);
+            currentValue.Rate += rate;
+
+            return;
+        }
+
+        stats.Add(stat, new()
+        {
+            Flat = (long) (flat * 1000),
+            Rate = rate,
+            AttributeType = StatAttributeType.Rate
+        });
+    }
+
+    public static void AddStatFlat(Dictionary<StatAttribute, EffectStatMetadata> stats, StatAttribute stat, long flat, float rate)
+    {
+        if (flat == 0 && rate == 0)
+        {
+            return;
+        }
+
+        EffectStatMetadata currentValue;
+
+        if (stats.TryGetValue(stat, out currentValue))
+        {
+            currentValue.Flat += flat;
+            currentValue.Rate += rate;
+
+            return;
+        }
+
+        stats.Add(stat, new()
+        {
+            Flat = flat,
+            Rate = rate,
+            AttributeType = StatAttributeType.Flat
+        });
+    }
 }

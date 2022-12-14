@@ -251,26 +251,23 @@ public class BuffCommand : InGameCommand
     public override void Execute(GameCommandTrigger trigger)
     {
         int id = trigger.Get<int>("id");
-        if (SkillMetadataStorage.GetSkill(id) == null)
+        short level = trigger.Get<short>("level") <= 10 && trigger.Get<short>("level") != 0 ? trigger.Get<short>("level") : (short) 1;
+        if (AdditionalEffectMetadataStorage.GetLevelMetadata(id, level) == null)
         {
             trigger.Session.SendNotice($"No skill found with id: {id}");
             return;
         }
 
-        short level = trigger.Get<short>("level") <= 10 && trigger.Get<short>("level") != 0 ? trigger.Get<short>("level") : (short) 1;
         // The Status packet needs this in miliseconds, we are converting them here for the user to just input the actual seconds.
         int duration = trigger.Get<int>("duration") <= 3600 && trigger.Get<int>("duration") != 0 ? trigger.Get<int>("duration") * 1000 : 10000;
         int stacks = trigger.Get<int>("stacks") == 0 ? 1 : trigger.Get<int>("stacks");
 
-        SkillCast skillCast = new(id, level);
-        if (skillCast.IsBuffToOwner() || skillCast.IsBuffToEntity() || skillCast.IsBuffShield() || skillCast.IsGM() || skillCast.IsGlobal() ||
-            skillCast.IsRecoveryFromBuff())
+        trigger.Session.Player.FieldPlayer?.TaskScheduler.QueueBufferedTask(() =>
         {
-            Status status = new(skillCast, trigger.Session.Player.FieldPlayer.ObjectId, trigger.Session.Player.FieldPlayer.ObjectId, stacks);
-            StatusHandler.Handle(trigger.Session, status);
-            return;
-        }
-
-        trigger.Session.SendNotice($"Skill with id: {id} is not a buff to the owner.");
+            trigger.Session.Player.AdditionalEffects.AddEffect(new(id, level)
+            {
+                Stacks = stacks,
+            });
+        });
     }
 }

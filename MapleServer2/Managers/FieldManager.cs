@@ -35,6 +35,7 @@ public class FieldManager
     public readonly FieldState State = new();
     public readonly CoordS[]? BoundingBox;
     public readonly TriggerScript[] Triggers;
+    public readonly TickingTaskScheduler FieldTaskScheduler;
 
     private static int GlobalIdCounter = 1_000_000;
     private int LocalIdCounter = 10_000_000;
@@ -44,20 +45,26 @@ public class FieldManager
     private Task? MapLoopTask;
     private Task? TriggerTask;
     private Task? NpcMovementTask;
+    private Task? FieldLogicTask;
     private Timer? UGCBannerTimer;
     private static readonly TriggerLoader TriggerLoader = new();
     public readonly FieldNavigator? Navigator;
+    public readonly MapMetadata Metadata;
 
     #region Constructors
 
     public FieldManager(Player player)
     {
+        FieldTaskScheduler = new(this);
+
         MapMetadata? metadata = MapMetadataStorage.GetMetadata(player.MapId);
 
         if (metadata is null)
         {
             throw new($"No metadata found for map {player.MapId}");
         }
+
+        Metadata = metadata;
 
         MapId = player.MapId;
         Capacity = metadata.Property.Capacity;
@@ -378,6 +385,7 @@ public class FieldManager
             TriggerSkill triggerSkill = new(mapTriggerSkill.Id,
                 mapTriggerSkill.SkillId,
                 mapTriggerSkill.SkillLevel,
+                mapTriggerSkill.Interval,
                 mapTriggerSkill.Count,
                 mapTriggerSkill.Position,
                 null);
@@ -601,10 +609,12 @@ public class FieldManager
 
         MapLoopTask ??= StartMapLoop();
         NpcMovementTask ??= StartNpcLoop();
+        FieldLogicTask ??= StartLogicLoop();
         TriggerTask ??= StartTriggerTask();
 
         UGCBannerTimer ??= TaskScheduler.Instance.ScheduleTask(0, 0, 60, () => { GameServer.UGCBannerManager.UGCBannerLoop(this); });
 
+        player.FieldPlayer.TaskScheduler.OnFieldMoved();
         player.Inventory.RecomputeSetBonuses(player.Session);
 
         //player.Session.SendNotice($"added to field with capacity: {Capacity} instanceId: {InstanceId} IsDungeonMap {IsDungeonMap}");
@@ -1130,6 +1140,12 @@ public class FieldManager
     {
         int originMapId = MapId;
         int originInstanceId = (int) InstanceId;
+        UGCBannerTimer?.Dispose();
+        UGCBannerTimer = null;
+        MapLoopTask = null;
+        TriggerTask = null;
+        NpcMovementTask = null;
+        FieldLogicTask = null;
 
         if (player.DungeonSessionId != -1) //player is in a solo dungeon session
         {
@@ -1236,6 +1252,98 @@ public class FieldManager
                 SendUpdates();
 
                 await Task.Delay(1000);
+            }
+        });
+    }
+
+    private long InternalLogicLoopTick = 0;
+    public long TickCount64 { get => InternalLogicLoopTick; }
+    public int TickCount { get => (int) TickCount64; }
+
+    private void UpdateActors(long delta)
+    {
+        try
+        {
+            FieldTaskScheduler.Update(delta);
+
+            foreach (Npc mob in State.Mobs.Values)
+            {
+                if (mob.IsDead)
+                {
+                    continue;
+                }
+
+                mob.TaskScheduler.Update(delta);
+            }
+
+            foreach (Npc npc in State.Npcs.Values)
+            {
+                if (npc.IsDead)
+                {
+                    continue;
+                }
+
+                npc.TaskScheduler.Update(delta);
+            }
+
+            foreach (Pet pet in State.Pets.Values)
+            {
+                if (pet.IsDead)
+                {
+                    continue;
+                }
+
+                pet.TaskScheduler.Update(delta);
+            }
+
+            foreach (Character player in State.Players.Values)
+            {
+                if (player.IsDead)
+                {
+                    continue;
+                }
+
+                player.TaskScheduler.Update(delta);
+            }
+        }
+        catch (Exception e)
+        {
+            Logger.Error("Error in field logic loop {0}", e);
+        }
+    }
+
+    private Task StartLogicLoop()
+    {
+        const int delta = 1; // use constant update interval to enforce deterministic behavior. required to be 1 to handle additional effects properly
+        const int maxIterations = 3; // maximum number of times an iteration can be attempted. more than one will be attempted in the case of lag spikes up to maxIterations
+
+        InternalLogicLoopTick = Environment.TickCount64;
+
+        return Task.Run(async () =>
+        {
+            while (PlayerCount > 0)
+            {
+                long lastTick = InternalLogicLoopTick;
+                long currentTick = Environment.TickCount64;
+
+                for (int i = 0; i < maxIterations - 1 && lastTick + delta < currentTick; ++i)
+                {
+                    lastTick = InternalLogicLoopTick;
+                    InternalLogicLoopTick += delta;
+
+                    UpdateActors(delta);
+                }
+
+                if (lastTick + delta < currentTick)
+                {
+                    InternalLogicLoopTick = currentTick;
+
+                    UpdateActors(delta);
+                }
+
+
+                // Required to be 10 to handle additional effects properly
+                await Task.Delay(delta);
             }
         });
     }
@@ -1363,7 +1471,7 @@ public class FieldManager
                     continue;
                 }
 
-                player.AdditionalEffects.AddEffect(new(70000018, 1)); // applies a healing effect to the player
+                player.TaskScheduler.QueueBufferedTask(() => player.AdditionalEffects.AddEffect(new(70000018, 1))); // applies a healing effect to the player
             }
         }
     }

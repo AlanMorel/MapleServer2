@@ -22,6 +22,7 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
     public Agent? Agent { get; set; }
     public virtual AdditionalEffects? AdditionalEffects { get; }
     public SkillTriggerHandler SkillTriggerHandler { get; }
+    public TickingTaskScheduler TaskScheduler { get; }
 
     public virtual FieldManager? FieldManager { get; }
     public FieldNavigator Navigator { get; }
@@ -33,6 +34,7 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
 
         AdditionalEffects = new(this);
         SkillTriggerHandler = new(this);
+        TaskScheduler = new(FieldManager);
     }
 
     public virtual void Cast(SkillCast skillCast)

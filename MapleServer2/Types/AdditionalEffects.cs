@@ -48,15 +48,33 @@ public class AdditionalEffects
         Invincible = false;
     }
 
+    public void UpdateStatsIfStale(EffectEvent effectEvent = EffectEvent.Tick)
+    {
+        if (Parent is null)
+        {
+            return;
+        }
+
+        foreach (AdditionalEffect effect in Effects)
+        {
+            if (effect.AreStatsStale(Parent, effectEvent))
+            {
+                Parent.ComputeStats();
+
+                return;
+            }
+        }
+    }
+
     public bool CanApplyEffect(AdditionalEffect effect, out AdditionalEffect? oldEffect)
     {
         oldEffect = null;
 
         foreach (AdditionalEffect activeEffect in Effects)
         {
-            EffectImmuneEffectMetadata immune = activeEffect.LevelMetadata.ImmuneEffect;
+            EffectImmuneEffectMetadata? immune = activeEffect.LevelMetadata.ImmuneEffect;
 
-            if (immune.ImmuneEffectCodes.Contains(effect.Id))
+            if (immune?.ImmuneEffectCodes.Contains(effect.Id) ?? false)
             {
                 return false;
             }
@@ -81,10 +99,12 @@ public class AdditionalEffects
 
     public bool UpdateEffect(AdditionalEffect? effect, AdditionalEffect newEffect, AdditionalEffectParameters parameters)
     {
-        if (effect is null)
+        if (effect is null || Parent is null)
         {
             return false;
         }
+
+        bool wasBelowMax = effect.Stacks < effect.LevelMetadata.Basic.MaxBuffCount;
 
         effect.Stacks = Math.Max(Math.Min(effect.LevelMetadata.Basic.MaxBuffCount, parameters.Stacks + effect.Stacks), 0);
 
@@ -107,16 +127,29 @@ public class AdditionalEffects
 
         if (effect.Stacks > 1)
         {
-            Parent.SkillTriggerHandler.FireEvents(new ConditionSkillTarget(Parent, Parent, newEffect.Caster ?? Parent), EffectEvent.OnBuffStacksReached, effect.Id);
+            Parent.SkillTriggerHandler.FireEvents(Parent, null, EffectEvent.OnBuffStacksReached, effect.Id);
+
+            if (wasBelowMax && effect.Stacks == effect.LevelMetadata.Basic.MaxBuffCount)
+            {
+                Parent.SkillTriggerHandler.FireEvents(Parent, null, EffectEvent.UnknownWizardEvent, effect.Id);
+                Parent.SkillTriggerHandler.FireEvents(Parent, null, EffectEvent.UnknownStrikerEvent, effect.Id);
+            }
         }
 
         Parent.FieldManager?.BroadcastPacket(BuffPacket.UpdateBuff(effect, Parent.ObjectId));
+
+        effect.Process(Parent);
 
         return true;
     }
 
     public AdditionalEffect? AddEffect(AdditionalEffectParameters parameters)
     {
+        if (Parent is null)
+        {
+            return null;
+        }
+
         // current default behavior of remove and replace, and add stacks
         // doesnt check for shared buff categories (sigils, whetstones, etc)
         // TODO: add correct refreshing behavior based on attributes from the xmls
@@ -134,6 +167,21 @@ public class AdditionalEffects
         if (!CanApplyEffect(effect, out AdditionalEffect? activeEffect))
         {
             return null;
+        }
+
+        if (activeEffect is not null && activeEffect.Level != parameters.Level)
+        {
+            if (activeEffect.Level > parameters.Level)
+            {
+                return null;
+            }
+
+            if (activeEffect.Level < parameters.Level)
+            {
+                activeEffect.Stop(Parent);
+
+                activeEffect = null;
+            }
         }
 
         if (UpdateEffect(activeEffect, effect, parameters))
@@ -162,10 +210,11 @@ public class AdditionalEffects
 
         Effects.Add(effect);
 
-        Parent?.FieldManager?.BroadcastPacket(BuffPacket.AddBuff(effect, Parent.ObjectId));
+        Parent.FieldManager?.BroadcastPacket(BuffPacket.AddBuff(effect, Parent.ObjectId));
 
         AddListeningEvents(effect);
-        Parent?.EffectAdded(effect);
+
+        Parent.EffectAdded(effect);
         effect.Process(Parent);
 
         return effect;
@@ -173,6 +222,14 @@ public class AdditionalEffects
 
     public void EffectStopped(AdditionalEffect effect)
     {
+        foreach (SkillCondition condition in effect.LevelMetadata.ConditionSkill)
+        {
+            if (condition.BeginCondition.Caster is not null)
+            {
+                effect.Caster?.SkillTriggerHandler.RemoveListeningExternalEffect(condition.BeginCondition.Caster.EventCondition, effect);
+            }
+        }
+
         Effects.Remove(effect);
         Parent?.EffectRemoved(effect);
         Parent?.FieldManager?.BroadcastPacket(BuffPacket.RemoveBuff(effect, Parent.ObjectId));
@@ -229,7 +286,7 @@ public class AdditionalEffects
 
     public void AddListeningEvent(AdditionalEffect effect, BeginConditionSubject subject)
     {
-        if (subject == null || subject.EventCondition == EffectEvent.Activate)
+        if (subject is null || subject.EventCondition == EffectEvent.Activate)
         {
             return;
         }
@@ -249,9 +306,21 @@ public class AdditionalEffects
         }
     }
 
+    public void AddListeningEvent(AdditionalEffect effect, BeginConditionSubject subject, IFieldActor? listeningTo, EffectEventOrigin origin)
+    {
+        if (subject is null || subject.EventCondition == EffectEvent.Activate || listeningTo is null)
+        {
+            return;
+        }
+
+        effect.HasEvents = true;
+
+        listeningTo.SkillTriggerHandler.AddListeningExternalEffect(subject.EventCondition, effect, origin);
+    }
+
     public void AddListeningEvents(AdditionalEffect effect)
     {
-        if (effect.LevelMetadata.ConditionSkill == null)
+        if (effect.LevelMetadata.ConditionSkill is null)
         {
             return;
         }
@@ -260,7 +329,7 @@ public class AdditionalEffects
         {
             AddListeningEvent(effect, condition.BeginCondition.Owner);
             AddListeningEvent(effect, condition.BeginCondition.Target);
-            AddListeningEvent(effect, condition.BeginCondition.Caster);
+            AddListeningEvent(effect, condition.BeginCondition.Caster, effect.Caster, EffectEventOrigin.Caster);
         }
     }
 

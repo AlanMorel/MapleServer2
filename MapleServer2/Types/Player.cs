@@ -863,10 +863,13 @@ public class Player : IPacketSerializable
             return;
         }
 
-        for (int i = 0; i < effects.Level.Length; ++i)
+        FieldPlayer?.TaskScheduler.QueueBufferedTask(() =>
         {
-            AdditionalEffects.AddEffect(new(effects.Id[i], effects.Level[i]));
-        }
+            for (int i = 0; i < effects.Level.Length; ++i)
+            {
+                AdditionalEffects.AddEffect(new(effects.Id[i], effects.Level[i]));
+            }
+        });
     }
 
     public void RemoveEffects(ItemAdditionalEffectMetadata? effects)
@@ -884,6 +887,16 @@ public class Player : IPacketSerializable
 
     public void UpdatePassiveSkills()
     {
+        FieldPlayer?.TaskScheduler.QueueBufferedTask(ProcessPassiveSkills);
+    }
+
+    public void ProcessPassiveSkills()
+    {
+        if (FieldPlayer is null)
+        {
+            return;
+        }
+
         foreach ((int id, short _) in PassiveSkillEffects)
         {
             PassiveSkillEffects[id] = -1;
@@ -914,7 +927,7 @@ public class Player : IPacketSerializable
                 {
                     foreach (int skillId in trigger.SkillId)
                     {
-                        AdditionalEffects.GetEffect(skillId, 0, ConditionOperator.GreaterEquals, level).Stop(FieldPlayer);
+                        AdditionalEffects.GetEffect(skillId, 0, ConditionOperator.GreaterEquals, level)?.Stop(FieldPlayer);
                     }
                 }
 

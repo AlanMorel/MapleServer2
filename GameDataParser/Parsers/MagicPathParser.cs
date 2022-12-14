@@ -30,18 +30,13 @@ public class MagicPathParser : Exporter<List<MagicPathMetadata>>
                 continue;
             }
 
-            foreach (XmlNode pathType in pathTypeList)
+            foreach (XmlNode pathType in document.SelectNodes("/ms2/type")!)
             {
                 long id = long.Parse(pathType.Attributes?["id"]?.Value ?? "0");
 
                 List<MagicPathMove> pathMoves = new();
-                XmlNodeList? pathMoveList = pathType.SelectNodes("move");
-                if (pathMoveList is null)
-                {
-                    continue;
-                }
 
-                foreach (XmlNode pathMove in pathMoveList)
+                foreach (XmlNode pathMove in pathType.SelectNodes("move")!)
                 {
                     int rotation = int.Parse(pathMove.Attributes?["rotation"]?.Value ?? "0");
 
@@ -53,8 +48,10 @@ public class MagicPathParser : Exporter<List<MagicPathMetadata>>
                     bool ignoreAdjust = pathMove.Attributes?["ignoreAdjustCubePosition"] is null;
                     bool traceTargetOffsetPos = pathMove.Attributes?["traceTargetOffsetPos"]?.Value == "1";
                     float distance = float.Parse(pathMove.Attributes?["distance"]?.Value ?? "0");
+                    float velocity = float.Parse(pathMove.Attributes?["vel"]?.Value ?? "0");
+                    int lookAtType = int.Parse(pathMove.Attributes?["lookAtType"]?.Value ?? "0");
 
-                    pathMoves.Add(new(rotation, fireOffsetPosition, direction, controlValue0, controlValue1, ignoreAdjust, traceTargetOffsetPos, distance));
+                    pathMoves.Add(new(rotation, fireOffsetPosition, direction, controlValue0, controlValue1, ignoreAdjust, traceTargetOffsetPos, distance, lookAtType, velocity));
                 }
 
                 MagicPathMetadata newMagicPath = new(id, pathMoves);

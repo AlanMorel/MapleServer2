@@ -418,7 +418,7 @@ public class Stats
 
     public void AddStat(StatAttribute attribute, StatAttributeType type, long flat, float rate)
     {
-        if (!Data.TryGetValue(attribute, out Stat stat))
+        if (!Data.TryGetValue(attribute, out Stat? stat))
         {
             stat = new();
             stat.Modifier.Type = type;
@@ -432,7 +432,7 @@ public class Stats
 
     public InvokeStatValue GetStat(InvokeStat stats, InvokeEffectType type)
     {
-        InvokeStatValue? stat = stats.Values.FirstOrDefault(stat => stat.Type == type, null);
+        InvokeStatValue? stat = stats.Values.FirstOrDefault(stat => stat?.Type == type, null);
 
         if (stat is null)
         {
@@ -449,7 +449,7 @@ public class Stats
 
     public InvokeStatValue GetStat(int id, Dictionary<int, InvokeStat> statDictionary, InvokeEffectType type)
     {
-        if (!statDictionary.TryGetValue(id, out InvokeStat stats))
+        if (!statDictionary.TryGetValue(id, out InvokeStat? stats))
         {
             stats = new InvokeStat();
             statDictionary[id] = stats;

@@ -98,9 +98,8 @@ public enum StatAttribute : short
     McKayXpOrb = 11058, //mc-kay experience orb value bonus
     FishingExp = 11059,
     ArcadeExp = 11060,
-    PerformanceExp = 11061,
-    AssistantMood = 11062, //assistant mood improvement rate
-    AssistantDiscount = 11063,
+
+    PerformanceExp = 11063,
     BlackMarketReduce = 11064,
     EnchantCatalystDiscount = 11065,
     MeretReviveFee = 11066,
@@ -113,7 +112,6 @@ public enum StatAttribute : short
     AlchemyMastery = 11073,
     CookingMastery = 11074,
     ForagingExp = 11075,
-    CraftingExp = 11076,
 
     //techs
     TECH = 11077, //level 1 skill
@@ -138,6 +136,7 @@ public enum StatAttribute : short
     LudiEscapeExp = 11095,
     SpringBeachExp = 11096,
     DanceDanceExp = 11097,
+
     OXMovementSpeed = 11098,
     TrapMasterMovementSpeed = 11099,
     SoleSurvivorMovementSpeed = 11100,
@@ -145,31 +144,38 @@ public enum StatAttribute : short
     LudiEscapeMovementSpeed = 11102,
     SpringBeachMovementSpeed = 11103,
     DanceDanceStopMovementSpeed = 11104,
+
     GenerateSpiritOrbs = 11105,
     GenerateStaminaOrbs = 11106,
     ValorTokens = 11107,
     PvPExp = 11108,
     DarkDescentDamageBonus = 11109,
-    DarkDescentDamageReduce = 11110,
-    DarkDescentEvasion = 11111,
+    DarkDescentEvasion = 11110,
+    DarkDescentDamageReduce = 11111,
+
     DoubleFishingMastery = 11112,
     DoublePerformanceMastery = 11113,
+
     ExploredAreasMovementSpeed = 11114,
     AirMountAscentSpeed = 11115,
+    AdditionalEffect_95000018 = 11116,
     EnemyDefenseDecreaseOnHit = 11117,
     EnemyAttackDecreaseOnHit = 11118,
+
     IncreaseTotalDamageIf1NearbyEnemy = 11119, // Increases damage if there is an enemy within 5m
     IncreaseTotalDamageIf3NearbyEnemies = 11120, // Increases damage if there is at least 3 enemies within 5m
     IncreaseTotalDamageIf80Spirit = 11121, // Increase damage if you have 80 or more spirit
     IncreaseTotalDamageIfFullStamina = 11122,
     IncreaseTotalDamageIfHerbEffectActive = 11123, // Increase damage if you have a herb-like effect active
     IncreaseTotalDamageToWorldBoss = 11124,
+
     Effect95000026 = 11125,
     Effect95000027 = 11126,
     Effect95000028 = 11127,
     Effect95000029 = 11128,
     StaminaRecoverySpeed = 11129,
     MaxWeaponAttack = 11130,
+
     DoubleMiningProduction = 11131,
     DoubleRanchingProduction = 11132,
     DoubleForagingProduction = 11133,
@@ -178,6 +184,7 @@ public enum StatAttribute : short
     DoubleHandicraftProduction = 11136,
     DoubleAlchemyProduction = 11137,
     DoubleCookingProduction = 11138,
+
     DoubleMiningMastery = 11139,
     DoubleRanchingMastery = 11140,
     DoubleForagingMastery = 11141,
@@ -186,23 +193,46 @@ public enum StatAttribute : short
     DoubleHandicraftMastery = 11144,
     DoubleAlchemyMastery = 11145,
     DoubleCookingMastery = 11146,
+
     ChaosRaidWeaponAttack = 11147,
     ChaosRaidAttackSpeed = 11148,
     ChaosRaidAccuracy = 11149,
     ChaosRaidHealth = 11150,
+
     StaminaAndSpiritFromOrbs = 11151,
+
     WorldBossExp = 11152,
     WorldBossDropRate = 11153,
     WorldBossDamageReduce = 11154,
+
     Effect9500016 = 11155,
     PetCaptureRewards = 11156,
+
     MiningEfficency = 11157,
     RanchingEfficiency = 11158,
     ForagingEfficiency = 11159,
     FarmingEfficiency = 11160,
+
     ShanghaiCrazyRunnersExp = 11161,
     ShanghaiCrazyRunnersMovementSpeed = 11162,
-    HealthBasedDamageReduce = 11163
+
+    HealthBasedDamageReduce = 11163,
+    ReduceMesoRevivalFee = 11164,
+    ImproveRidingRunSpeed = 11165,
+    ImproveDungeonRewardMeso = 11166,
+    ImproveShopBuyingMeso = 11167,
+    ImproveItemboxRewardMeso = 11168,
+    ReduceRemakeOptionRee = 11169,
+    ReduceAirTaxiFee = 11170,
+    ImproveSocketUnlockProbability = 11171,
+    ReduceGemstoneUpgradeFee = 11172,
+    ReducePetRemakeOptionFee = 11173,
+    ImproveRidingSpeed = 11174,
+    ImproveSurvivalKill_exp = 11175,
+    ImproveSurvivalTime_exp = 11176,
+    OffensivePhysicalDamage = 11177,
+    OffensiveMagicalDamage = 11178,
+    ReduceGameitemSocketUnlockFee = 11179,
 }
 
 public enum StatAttributeType

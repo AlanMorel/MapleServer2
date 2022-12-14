@@ -104,7 +104,7 @@ public class SetItemOptionParser : Exporter<List<SetItemOptionMetadata>>
                                 continue;
                             }
 
-                            AddStat(setBonus, attribute, entry, isValue);
+                            StatEntry.AddStat(setBonus.Stats, attribute, entry, isValue);
                         }
                     }
 

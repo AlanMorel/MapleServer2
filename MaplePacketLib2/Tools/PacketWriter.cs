@@ -104,10 +104,20 @@ public unsafe class PacketWriter : IPacketWriter
         Buffer[Length++] = value ? (byte) 1 : (byte) 0;
     }
 
+    public void WriteBool(bool? value)
+    {
+        WriteBool(value ?? false);
+    }
+
     public void WriteByte(byte value = 0)
     {
         EnsureCapacity(1);
         Buffer[Length++] = value;
+    }
+
+    public void WriteByte(byte? value)
+    {
+        WriteByte(value ?? 0);
     }
 
     public void WriteShort(short value = 0)
@@ -120,6 +130,11 @@ public unsafe class PacketWriter : IPacketWriter
         }
     }
 
+    public void WriteShort(short? value)
+    {
+        WriteShort(value ?? 0);
+    }
+
     public void WriteInt(int value = 0)
     {
         EnsureCapacity(4);
@@ -128,6 +143,11 @@ public unsafe class PacketWriter : IPacketWriter
             *(int*) ptr = value;
             Length += 4;
         }
+    }
+
+    public void WriteInt(int? value)
+    {
+        WriteInt(value ?? 0);
     }
 
     public void WriteFloat(float value = 0f)
@@ -140,6 +160,11 @@ public unsafe class PacketWriter : IPacketWriter
         }
     }
 
+    public void WriteFloat(float? value)
+    {
+        WriteFloat(value ?? 0);
+    }
+
     public void WriteLong(long value = 0)
     {
         EnsureCapacity(8);
@@ -148,6 +173,11 @@ public unsafe class PacketWriter : IPacketWriter
             *(long*) ptr = value;
             Length += 8;
         }
+    }
+
+    public void WriteLong(long? value)
+    {
+        WriteLong(value ?? 0);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

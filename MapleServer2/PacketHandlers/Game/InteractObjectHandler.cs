@@ -9,6 +9,7 @@ using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
+using Org.BouncyCastle.Asn1.X509;
 
 namespace MapleServer2.PacketHandlers.Game;
 
@@ -40,6 +41,23 @@ internal class InteractObjectHandler : GamePacketHandler<InteractObjectHandler>
         }
     }
 
+    private static void OnInteracted(IFieldActor? fieldPlayer, InteractObject interactObject, InteractObjectMetadata? meta, bool isLifeSkillEvent)
+    {
+        if (fieldPlayer is null || meta is null)
+        {
+            return;
+        }
+
+        bool shouldTriggerEvent = isLifeSkillEvent || false; // stub condition
+
+        if (shouldTriggerEvent)
+        {
+            return;
+        }
+
+        fieldPlayer.TaskScheduler.QueueBufferedTask(() => fieldPlayer.SkillTriggerHandler.FireEvents(fieldPlayer, null, isLifeSkillEvent ? EffectEvent.OnLifeSkillGather : EffectEvent.OnInvestigate, 0));
+    }
+
     private static void HandleCast(GameSession session, PacketReader packet)
     {
         string id = packet.ReadString();
@@ -68,6 +86,8 @@ internal class InteractObjectHandler : GamePacketHandler<InteractObjectHandler>
         InteractObjectMetadata metadata = InteractObjectMetadataStorage.GetInteractObjectMetadata(interactObject.InteractId);
         QuestManager.OnInteractObject(player, interactObject.InteractId);
 
+        OnInteracted(session.Player.FieldPlayer, interactObject, metadata, false);
+
         switch (interactObject.Type)
         {
             case InteractObjectType.Binoculars:
@@ -83,6 +103,8 @@ internal class InteractObjectHandler : GamePacketHandler<InteractObjectHandler>
                 session.Send(PlayerHostPacket.AdBalloonWindow((AdBalloon) interactObject));
                 break;
             case InteractObjectType.Gathering:
+                OnInteracted(session.Player.FieldPlayer, interactObject, metadata, true);
+
                 GatheringHelper.HandleGathering(session, metadata.Gathering.RecipeId, out int numDrop);
                 session.Send(InteractObjectPacket.Use(interactObject, (short) (numDrop > 0 ? 0 : 1), numDrop));
                 break;
