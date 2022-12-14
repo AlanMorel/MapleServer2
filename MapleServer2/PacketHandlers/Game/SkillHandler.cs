@@ -443,11 +443,6 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             //return;
         }
 
-        //if (skillAttack.MagicPathId != 0)
-        //{
-        //    return;
-        //}
-
         SkillCast skillCast = new(parentSkill.SkillId, parentSkill.SkillLevel, GuidGenerator.Long(), session.ServerTick, parentSkill)
         {
             Owner = parentSkill.Caster,
