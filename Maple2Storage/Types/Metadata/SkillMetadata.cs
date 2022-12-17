@@ -90,11 +90,13 @@ public class SkillLevel
     public readonly SkillBeginCondition BeginCondition;
     [XmlElement(Order = 11)]
     public readonly RangeProperty DetectProperty;
+    [XmlElement(Order = 12)]
+    public readonly RangeProperty SensorProperty;
 
     public SkillLevel() { }
 
     public SkillLevel(int level, int spirit, int stamina, string feature, List<SkillCondition> conditionSkills, List<SkillMotion> skillMotions,
-        SkillUpgrade skillUpgrade, float cooldownTime, SkillBeginCondition beginCondition, RangeProperty detectProperty)
+        SkillUpgrade skillUpgrade, float cooldownTime, SkillBeginCondition beginCondition, RangeProperty detectProperty, RangeProperty sensorProperty)
     {
         Level = level;
         Spirit = spirit;
@@ -106,6 +108,7 @@ public class SkillLevel
         CooldownTime = cooldownTime;
         BeginCondition = beginCondition;
         DetectProperty = detectProperty;
+        SensorProperty = sensorProperty;
     }
 
     public override string ToString()
@@ -436,12 +439,15 @@ public class BeginConditionSubject
     public ConditionOperator TargetCountSign;
 
     [XmlElement(Order = 13)]
-    public CompareStatCondition? CompareStat;
+    public CompareStatCondition? CompareStatLess;
 
     [XmlElement(Order = 14)]
-    public ConditionOperator[] RequireBuffCountCompare;
+    public CompareStatCondition? CompareStatGreater;
 
     [XmlElement(Order = 15)]
+    public ConditionOperator[] RequireBuffCountCompare;
+
+    [XmlElement(Order = 16)]
     public int RequireBuffLevel;
 }
 
@@ -449,9 +455,15 @@ public class BeginConditionSubject
 public class CompareStatCondition
 {
     [XmlElement(Order = 1)]
-    public int Hp;
+    public double Rate;
 
     [XmlElement(Order = 2)]
+    public long Value;
+
+    [XmlElement(Order = 3)]
+    public StatAttribute Attribute;
+
+    [XmlElement(Order = 4)]
     public ConditionOperator Func;
 }
 
@@ -566,13 +578,16 @@ public class ArrowProperty
     public readonly bool BounceOverlap;
     [XmlElement(Order = 4)]
     public readonly int BounceRadius;
+    [XmlElement(Order = 5)]
+    public readonly bool NonTarget;
 
-    public ArrowProperty(BounceType bounceType, int bounceCount, bool bounceOverlap, int bounceRadius)
+    public ArrowProperty(BounceType bounceType, int bounceCount, bool bounceOverlap, int bounceRadius, bool nonTarget)
     {
         BounceType = bounceType;
         BounceCount = bounceCount;
         BounceOverlap = bounceOverlap;
         BounceRadius = bounceRadius;
+        NonTarget = nonTarget;
     }
 
     public ArrowProperty() { }

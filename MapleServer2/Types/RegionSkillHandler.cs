@@ -27,7 +27,7 @@ public static class RegionSkillHandler
 {
     private static readonly ILogger Logger = Log.Logger.ForContext(typeof(RegionSkillHandler));
 
-    public static void CastRegionSkill(FieldManager field, SkillCast skillCast, int fireCount, int removeDelay, int interval, IFieldActor? target = null, SkillCondition? trigger = null)
+    public static void CastRegionSkill(FieldManager field, SkillCast skillCast, int fireCount, int removeDelay, int interval, IFieldActor? target = null, SkillCondition? trigger = null, bool isSensor = false)
     {
         SkillCast regionCast = new(skillCast.SkillId, skillCast.SkillLevel, skillCast.SkillSn, skillCast.ServerTick, skillCast)
         {
@@ -68,6 +68,13 @@ public static class RegionSkillHandler
         }
 
         field.AddRegionSkillEffect(regionCast);
+
+        if (isSensor)
+        {
+            HandleSensorSkill(field, regionCast, fireCount, removeDelay, interval, target);
+
+            return;
+        }
         
         IFieldActor? firstTarget = HandleRegionSkillChaining(field, regionCast, out bool isChained);
 
@@ -309,6 +316,23 @@ public static class RegionSkillHandler
         }
 
         return effectCoords;
+    }
+
+    private static void HandleSensorSkill(FieldManager field, SkillCast skillCast, int fireCount, int removeDelay, int interval, IFieldActor? target)
+    {
+        RangeProperty sensorProperty = skillCast.GetCurrentLevel().SensorProperty;
+        
+        if ()
+        field.FieldTaskScheduler.QueueTask(new(1)
+        {
+            Executions = -1
+        }, (currentTick, task) =>
+        {
+            return 0;
+        }, (currentTick, task) =>
+        {
+        
+        });
     }
 
     private static IFieldActor? HandleRegionSkillChaining(FieldManager field, SkillCast skillCast, out bool isChained)

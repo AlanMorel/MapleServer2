@@ -48,6 +48,8 @@ public class GameSession : Session
             FieldManager = FieldManagerFactory.GetManager(player);
             player.FieldPlayer = FieldManager.RequestCharacter(player);
             player.TaskScheduler = player.FieldPlayer.TaskScheduler;
+            player.TaskScheduler.FieldManager = FieldManager;
+            player.TaskScheduler.OnFieldMoved();
         }
         FieldManager.AddPlayer(this);
     }

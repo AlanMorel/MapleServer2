@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Numerics;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -179,8 +180,6 @@ public class Player : IPacketSerializable
     public Character? FieldPlayer;
     public DebugPrintSettings DebugPrint = new();
 
-    private Dictionary<int, short> PassiveSkillEffects = new();
-    private Dictionary<int, SkillLevel> EnabledPassiveSkillEffects = new();
     public Player() { }
 
     // Initializes all values to be saved into the database
@@ -846,15 +845,20 @@ public class Player : IPacketSerializable
     {
         AdditionalEffects.Parent = FieldPlayer;
 
-        foreach (Item? item in Inventory.LapenshardStorage)
+        FieldPlayer?.TaskScheduler.QueueBufferedTask(() =>
         {
-            if (item != null)
+            foreach (Item? item in Inventory.LapenshardStorage)
             {
-                LapenshardHandler.AddEffects(this, item);
+                if (item != null)
+                {
+                    LapenshardHandler.AddEffects(this, item);
+                }
             }
-        }
 
-        UpdatePassiveSkills();
+            ProcessPassiveSkills();
+
+            Inventory.RecomputeSetBonuses(Session);
+        });
     }
 
     public void AddEffects(ItemAdditionalEffectMetadata? effects)
@@ -875,20 +879,107 @@ public class Player : IPacketSerializable
 
     public void RemoveEffects(ItemAdditionalEffectMetadata? effects)
     {
-        if (effects?.Level == null || effects?.Id == null)
+        if (effects?.Level is null || effects?.Id is null || FieldPlayer is null)
         {
             return;
         }
 
         for (int i = 0; i < effects.Level.Length; ++i)
         {
-            AdditionalEffects.GetEffect(effects.Id[i], 0, ConditionOperator.GreaterEquals, effects.Level[i], FieldPlayer);
+            AdditionalEffects.GetEffect(effects.Id[i], 0, ConditionOperator.GreaterEquals, 0, FieldPlayer)?.Stop(FieldPlayer);
         }
     }
 
     public void UpdatePassiveSkills()
     {
         FieldPlayer?.TaskScheduler.QueueBufferedTask(ProcessPassiveSkills);
+    }
+
+    private void ProcessPassive(int effectId, short level)
+    {
+        if (FieldPlayer is null)
+        {
+            return;
+        }
+
+        AdditionalEffect? effect = AdditionalEffects.GetEffect(effectId, 0, ConditionOperator.GreaterEquals, 0);
+
+        if (effect is not null && (level == 0 || effect.Level != level))
+        {
+            effect.Stop(FieldPlayer);
+
+            effect = null;
+        }
+
+        if (level > 0 && effect is null)
+        {
+            AdditionalEffects.AddEffect(new(effectId, level)
+            {
+                Caster = FieldPlayer
+            });
+        }
+    }
+    
+    private void ProcessPassives(List<int> effectIds, List<short> effectLevels)
+    {
+        for (int i = 0; i < effectIds.Count; ++i)
+        {
+            ProcessPassive(effectIds[i], effectLevels[i]);
+        }
+    }
+
+    private void ProcessPassives(List<SkillCondition> triggers, int skillId = 0, short skillLevel = 0)
+    {
+        if (FieldPlayer is null)
+        {
+            return;
+        }
+
+        foreach (SkillCondition trigger in triggers)
+        {
+            if (trigger.IsSplash)
+            {
+                continue;
+            }
+
+            for (int i = 0; i < trigger.SkillId.Length; ++i)
+            {
+                short level = trigger.SkillLevel[i];
+                AdditionalEffect? effect = AdditionalEffects.GetEffect(trigger.SkillId[i], 0, ConditionOperator.GreaterEquals, 0);
+
+                if (effect is not null && (level == 0 || effect.Level != level))
+                {
+                    effect.Stop(FieldPlayer);
+                }
+            }
+        }
+
+        FieldPlayer.SkillTriggerHandler.FireTriggerSkills(triggers, new(skillId, skillLevel, 0, 0), new(FieldPlayer, null, FieldPlayer));
+    }
+
+    private void ProcessSkillPassives(int skillId, short level, SkillMetadata metadata)
+    {
+        if (metadata.SubType != SkillSubType.None || FieldPlayer is null)
+        {
+            return;
+        }
+
+        SkillLevel? skillLevel = null;
+
+        foreach (SkillLevel current in metadata.SkillLevels)
+        {
+            if (current.Level == level)
+            {
+                skillLevel = current;
+
+                break;
+            }
+        }
+
+        if (skillLevel is not null)
+        {
+            ProcessPassives(skillLevel.ConditionSkills, skillId, level);
+        }
     }
 
     public void ProcessPassiveSkills()
@@ -898,56 +989,31 @@ public class Player : IPacketSerializable
             return;
         }
 
-        foreach ((int id, short _) in PassiveSkillEffects)
-        {
-            PassiveSkillEffects[id] = -1;
-        }
+        SkillTab tab = SkillTabs[(int) ActiveSkillTabId - 1];
 
-        foreach ((int id, short level) in SkillTabs[(int) ActiveSkillTabId - 1].GetSkillsByType(SkillType.Passive))
+        foreach ((int skillId, SkillMetadata metadata) in tab.SkillJob)
         {
-            PassiveSkillEffects[id] = level;
-        }
-
-        foreach ((int id, short level) in PassiveSkillEffects)
-        {
-            SkillLevel? skillLevel;
-
-            if (level < 1)
+            if (!tab.SkillLevels.TryGetValue(skillId, out short level))
             {
-                if (!EnabledPassiveSkillEffects.TryGetValue(id, out skillLevel))
+                continue;
+            }
+           
+            ProcessSkillPassives(skillId, level, metadata);
+
+            foreach (int subSkillId in metadata.SubSkills)
+            {
+                SkillMetadata? subSkill = SkillMetadataStorage.GetSkill(subSkillId);
+
+                if (subSkill is null)
                 {
                     continue;
                 }
 
-                if (skillLevel.ConditionSkills == null)
+                if (tab.SkillLevels.TryGetValue(subSkillId, out level))
                 {
-                    continue;
+                    ProcessSkillPassives(subSkillId, level, subSkill);
                 }
-
-                foreach (SkillCondition trigger in skillLevel.ConditionSkills)
-                {
-                    foreach (int skillId in trigger.SkillId)
-                    {
-                        AdditionalEffects.GetEffect(skillId, 0, ConditionOperator.GreaterEquals, level)?.Stop(FieldPlayer);
-                    }
-                }
-
-                EnabledPassiveSkillEffects.Remove(id);
-
-                continue;
             }
-
-            SkillMetadata? skill = SkillMetadataStorage.GetSkill(id);
-            skillLevel = skill?.SkillLevels.FirstOrDefault(x => x.Level == level, skill.SkillLevels[0]);
-
-            if (skillLevel is null)
-            {
-                continue;
-            }
-
-            EnabledPassiveSkillEffects[id] = skillLevel;
-
-            FieldPlayer.SkillTriggerHandler.FireTriggerSkills(skillLevel.ConditionSkills, new(id, level, 0, 0), new(FieldPlayer, FieldPlayer, FieldPlayer));
         }
     }
 

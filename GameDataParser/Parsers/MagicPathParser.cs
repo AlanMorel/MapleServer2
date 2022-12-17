@@ -51,8 +51,11 @@ public class MagicPathParser : Exporter<List<MagicPathMetadata>>
                     float distance = float.Parse(pathMove.Attributes?["distance"]?.Value ?? "0");
                     float velocity = float.Parse(pathMove.Attributes?["vel"]?.Value ?? "0");
                     int lookAtType = int.Parse(pathMove.Attributes?["lookAtType"]?.Value ?? "0");
+                    float delayTime = float.Parse(pathMove.Attributes?["delayTime"]?.Value ?? "0");
+                    float spawnTime = float.Parse(pathMove.Attributes?["spawnTime"]?.Value ?? "0");
+                    float destroyTime = float.Parse(pathMove.Attributes?["destroyTime"]?.Value ?? "0");
 
-                    pathMoves.Add(new(rotation, fireOffsetPosition, direction, controlValue0, controlValue1, ignoreAdjust, align, traceTargetOffsetPos, distance, lookAtType, velocity));
+                    pathMoves.Add(new(rotation, fireOffsetPosition, direction, controlValue0, controlValue1, ignoreAdjust, align, traceTargetOffsetPos, distance, lookAtType, velocity, delayTime, spawnTime, destroyTime));
                 }
 
                 MagicPathMetadata newMagicPath = new(id, pathMoves);

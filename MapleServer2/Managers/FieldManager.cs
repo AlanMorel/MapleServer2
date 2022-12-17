@@ -614,6 +614,7 @@ public class FieldManager
 
         UGCBannerTimer ??= TaskScheduler.Instance.ScheduleTask(0, 0, 60, () => { GameServer.UGCBannerManager.UGCBannerLoop(this); });
 
+        player.FieldPlayer.TaskScheduler.FieldManager = this;
         player.FieldPlayer.TaskScheduler.OnFieldMoved();
         player.Inventory.RecomputeSetBonuses(player.Session);
 
@@ -1308,18 +1309,16 @@ public class FieldManager
         {
             while (PlayerCount > 0)
             {
-                long lastTick = InternalLogicLoopTick;
                 long currentTick = Environment.TickCount64;
 
-                for (int i = 0; i < maxIterations - 1 && lastTick + delta < currentTick; ++i)
+                for (int i = 0; i < maxIterations - 1 && InternalLogicLoopTick + delta < currentTick; ++i)
                 {
-                    lastTick = InternalLogicLoopTick;
                     InternalLogicLoopTick += delta;
 
                     UpdateActors(delta);
                 }
 
-                if (lastTick + delta < currentTick)
+                if (InternalLogicLoopTick + delta < currentTick)
                 {
                     InternalLogicLoopTick = currentTick;
 

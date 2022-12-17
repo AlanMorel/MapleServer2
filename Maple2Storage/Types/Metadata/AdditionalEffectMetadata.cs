@@ -336,6 +336,8 @@ public class EffectDotDamageMetadata
     public int Element;
     [XmlElement(Order = 5)]
     public bool UseGrade;
+    [XmlElement(Order = 6)]
+    public double DamageByTargetMaxHp;
 }
 
 [XmlType]

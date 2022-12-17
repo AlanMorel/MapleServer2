@@ -343,7 +343,8 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
             Rate = float.Parse(parentNode?.Attributes?["rate"]?.Value ?? "0"),
             Value = long.Parse(parentNode?.Attributes?["value"]?.Value ?? "0"),
             Element = int.Parse(parentNode?.Attributes?["element"]?.Value ?? "0"),
-            UseGrade = int.Parse(parentNode?.Attributes?["useGrade"]?.Value ?? "0") == 1
+            UseGrade = int.Parse(parentNode?.Attributes?["useGrade"]?.Value ?? "0") == 1,
+            DamageByTargetMaxHp = double.Parse(parentNode?.Attributes?["damageByTargetMaxHP"]?.Value ?? "0")
         };
     }
 

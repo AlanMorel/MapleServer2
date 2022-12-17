@@ -159,7 +159,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                 AdditionalEffect = new()
                 {
                     Id = additionalEffect.id,
-                    Level = additionalEffect.level
+                    Level = additionalEffect.level.Cast<short>().ToArray()
                 }
             };
 

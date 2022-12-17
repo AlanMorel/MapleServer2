@@ -260,7 +260,7 @@ public class AdditionalEffect
 
     public void DotDamage(IFieldActor parent, EffectDotDamageMetadata dotDamage)
     {
-        if ((dotDamage.Rate == 0 && dotDamage.Value == 0) || Session is null)
+        if ((dotDamage.Rate == 0 && dotDamage.Value == 0 && dotDamage.DamageByTargetMaxHp == 0) || Session is null)
         {
             return;
         }
@@ -278,6 +278,8 @@ public class AdditionalEffect
             }
         }
 
+        Stat hp = parent.Stats[StatAttribute.Hp];
+
         DamageSourceParameters dotParameters = new()
         {
             IsSkill = false,
@@ -287,7 +289,7 @@ public class AdditionalEffect
             RangeType = SkillRangeType.Special,
             DamageType = (DamageType) dotDamage.DamageType,
             DamageRate = dotDamage.Rate * Stacks,
-            DamageValue = dotDamage.Value,
+            DamageValue = dotDamage.Value + (long)(dotDamage.DamageByTargetMaxHp * hp.BonusLong),
             ParentSkill = ParentSkill,
             Id = Id,
             EventGroup = LevelMetadata.Basic.Group

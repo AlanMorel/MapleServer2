@@ -10,7 +10,7 @@ public class SetBonus
     public SetItemInfoMetadata SetInfo;
     public SetItemOptionMetadata Bonuses;
 
-    private SetBonus(SetItemInfoMetadata optionInfo)
+    public SetBonus(SetItemInfoMetadata optionInfo)
     {
         SetInfo = optionInfo;
         Bonuses = SetItemOptionMetadataStorage.GetMetadata(optionInfo.Id);

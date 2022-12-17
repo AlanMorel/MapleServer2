@@ -92,6 +92,26 @@ public class SkillTriggerHandler
         };
     }
 
+    private bool CompareStat(CompareStatCondition? statCondition)
+    {
+        if (statCondition is null)
+        {
+            return true;
+        }
+
+        if (!Parent.Stats.Data.TryGetValue(statCondition.Attribute, out Stat? stat))
+        {
+            return true;
+        }
+
+        if (statCondition.Value != 0)
+        {
+            return AdditionalEffects.CompareValues(stat.TotalLong, statCondition.Value, statCondition.Func);
+        }
+
+        return AdditionalEffects.CompareValues((double)stat.TotalLong / (double)stat.BonusLong, statCondition.Rate, statCondition.Func);
+    }
+
     private bool IsConditionMet(BeginConditionSubject? subjectCondition, IFieldActor? subject, EffectEvent effectEvent, int eventIdArgument)
     {
         if (subjectCondition is null)
@@ -152,14 +172,14 @@ public class SkillTriggerHandler
             return false;
         }
 
-        if (subjectCondition.CompareStat is not null)
+        if (!CompareStat(subjectCondition.CompareStatLess))
         {
-            Stat health = Parent.Stats[StatAttribute.Hp];
+            return false;
+        }
 
-            if (!AdditionalEffects.CompareValues(health.Total, subjectCondition.CompareStat.Hp, subjectCondition.CompareStat.Func))
-            {
-                return false;
-            }
+        if (!CompareStat(subjectCondition.CompareStatGreater))
+        {
+            return false;
         }
 
         return true;
@@ -350,7 +370,7 @@ public class SkillTriggerHandler
                 return;
             }
 
-            RegionSkillHandler.CastRegionSkill(Parent.FieldManager, skillCast, trigger.FireCount, removeDelay, trigger.Interval, castInfo.Target, trigger);
+            RegionSkillHandler.CastRegionSkill(Parent.FieldManager, skillCast, trigger.FireCount, removeDelay, trigger.Interval, castInfo.Target, trigger, trigger.OnlySensingActive);
 
             return;
         }
@@ -406,9 +426,9 @@ public class SkillTriggerHandler
         ConditionSkillTarget eventCastInfo = new(castInfo.Owner, GetTarget(trigger.Target, castInfo) ?? castInfo.Target, GetOwner(trigger.Owner, castInfo) ?? castInfo.Owner, castInfo.Attacker, castInfo.EventOrigin);
 
         SkillAttack? attack = parentSkill?.SkillAttack;
-        bool useTarget = attack?.RangeProperty.ApplyTarget == ApplyTarget.None || trigger.NonTargetActive || (attack?.CubeMagicPathId > 0 && attack?.MagicPathId == 0 && castInfo.Target is null);
+        bool targetingNone = ((trigger.NonTargetActive || attack?.CubeMagicPathId > 0) && attack?.MagicPathId == 0) || attack?.RangeProperty.ApplyTarget == ApplyTarget.None;
 
-        if (!ShouldFireTrigger(trigger, eventCastInfo, effectEvent, eventIdArgument, useTarget, start))
+        if (!ShouldFireTrigger(trigger, eventCastInfo, effectEvent, eventIdArgument, targetingNone && trigger.IsSplash, start))
         {
             return;
         }
@@ -420,7 +440,7 @@ public class SkillTriggerHandler
         {
             Owner = eventCastInfo.Owner,
             Caster = eventCastInfo.Caster,
-            Position = useTarget ? parentSkill?.Position ?? default : eventCastInfo.Target?.Coord ?? default,
+            Position = targetingNone ? parentSkill?.Position ?? default : eventCastInfo.Target?.Coord ?? default,
             Rotation = parentSkill?.Rotation ?? default,
             Direction = parentSkill?.Direction ?? default,
             LookDirection = parentSkill?.LookDirection ?? default,

@@ -289,7 +289,7 @@ public class ItemAdditionalEffectMetadata
     [XmlElement(Order = 1)]
     public int[] Id;
     [XmlElement(Order = 2)]
-    public int[] Level;
+    public short[] Level;
 }
 
 [XmlType]
