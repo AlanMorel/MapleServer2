@@ -6,12 +6,12 @@ namespace MapleServer2.Packets;
 
 public static class CharacterInfoPacket
 {
-    public static PacketWriter WriteCharacterInfo(long characterId, Player player)
+    public static PacketWriter WriteCharacterInfo(long characterId, Player? player)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.CharInfo);
         pWriter.WriteLong(characterId);
-        pWriter.WriteBool(player != null);
-        if (player == null)
+        pWriter.WriteBool(player is not null);
+        if (player is null)
         {
             return pWriter;
         }
@@ -36,8 +36,16 @@ public static class CharacterInfoPacket
 
         characterBuffer.WriteUnicodeString(player.ProfileUrl);
         characterBuffer.WriteUnicodeString(player.Motto);
-        characterBuffer.WriteUnicodeString(player.Guild?.Name);
-        characterBuffer.WriteUnicodeString(player.Guild?.Ranks[player.GuildMember.Rank]?.Name);
+        if (player.GuildMember is not null && player.Guild is not null)
+        {
+            characterBuffer.WriteUnicodeString(player.Guild.Name);
+            characterBuffer.WriteUnicodeString(player.Guild.Ranks[player.GuildMember.Rank].Name);
+        }
+        else
+        {
+            characterBuffer.WriteUnicodeString();
+            characterBuffer.WriteUnicodeString();
+        }
 
         characterBuffer.WriteUnicodeString(player.Account.Home?.Name);
         characterBuffer.WriteZero(12);
@@ -77,26 +85,26 @@ public static class CharacterInfoPacket
         return pWriter;
     }
 
-    private static void WriteStats(PacketWriter pWritter, Player player)
+    private static void WriteStats(PacketWriter pWriter, Player player)
     {
         foreach (Stat item in player.Stats.Data.Values)
         {
-            pWritter.WriteLong(item.Bonus);
+            pWriter.WriteLong(item.Bonus);
         }
 
         foreach (Stat item in player.Stats.Data.Values)
         {
-            pWritter.WriteLong(item.Base);
+            pWriter.WriteLong(item.Base);
         }
 
         foreach (Stat item in player.Stats.Data.Values)
         {
-            pWritter.WriteLong(item.Total);
+            pWriter.WriteLong(item.Total);
         }
 
-        foreach (Stat item in player.Stats.Data.Values)
+        foreach (Stat unused in player.Stats.Data.Values)
         {
-            pWritter.WriteLong();
+            pWriter.WriteLong();
         }
     }
 }

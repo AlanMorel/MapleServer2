@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Types;
+﻿using System.Diagnostics;
+using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
@@ -36,6 +37,7 @@ public class UserSyncHandler : GamePacketHandler<UserSyncHandler>
             packet.ReadInt(); // ServerTicks
         }
 
+        Debug.Assert(session.Player.FieldPlayer != null, "session.Player.FieldPlayer != null");
         PacketWriter syncPacket = SyncStatePacket.UserSync(session.Player.FieldPlayer, syncStates);
         session.FieldManager.BroadcastPacket(syncPacket, session);
         UpdatePlayer(session, syncStates);
@@ -44,7 +46,9 @@ public class UserSyncHandler : GamePacketHandler<UserSyncHandler>
     public static void UpdatePlayer(GameSession session, SyncState[] syncStates)
     {
         Player player = session.Player;
-        IFieldActor<Player> fieldPlayer = player.FieldPlayer;
+        IFieldActor<Player>? fieldPlayer = player.FieldPlayer;
+        Debug.Assert(fieldPlayer != null, nameof(fieldPlayer) + " != null");
+
 
         CoordF coord = syncStates[0].Coord.ToFloat();
 
@@ -73,7 +77,7 @@ public class UserSyncHandler : GamePacketHandler<UserSyncHandler>
             Z = syncStates[0].Rotation / 10
         };
 
-        if (IsOutOfBounds(fieldPlayer.Coord, session.FieldManager.BoundingBox))
+        if (session.FieldManager.BoundingBox != null && IsOutOfBounds(fieldPlayer.Coord, session.FieldManager.BoundingBox))
         {
             player.Move(player.SafeBlock, fieldPlayer.Rotation);
             player.FallDamage();
@@ -112,6 +116,8 @@ public class UserSyncHandler : GamePacketHandler<UserSyncHandler>
 
     private static bool IsCoordSafe(Player player, CoordS currentCoord, CoordF closestCoord)
     {
+        Debug.Assert(player.FieldPlayer != null, "player.FieldPlayer != null");
+
         // Check if current coord is safe to be used as a return point when the character falls off the map
         return MapMetadataStorage.BlockExists(player.MapId, closestCoord.ToShort())
                && !player.OnAirMount && (player.SafeBlock - closestCoord).Length() > 350 &&

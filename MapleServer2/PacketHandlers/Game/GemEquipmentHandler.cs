@@ -40,6 +40,11 @@ public class GemEquipmentHandler : GamePacketHandler<GemEquipmentHandler>
 
     private static void HandleEquipItem(GameSession session, PacketReader packet)
     {
+        if (session.Player.FieldPlayer is null)
+        {
+            return;
+        }
+
         long itemUid = packet.ReadLong();
 
         // Remove from inventory
@@ -51,48 +56,61 @@ public class GemEquipmentHandler : GamePacketHandler<GemEquipmentHandler>
         }
 
         // Unequip existing item in slot
-        Item[] badges = session.Player.Inventory.Badges;
-        int index = Array.FindIndex(badges, x => x != null && x.GemSlot == item.GemSlot);
+        Item?[] badges = session.Player.Inventory.Badges;
+        int index = Array.FindIndex(badges, x => x is not null && x.GemSlot == item.GemSlot);
         if (index >= 0)
         {
             // Add to inventory
-            badges[index].IsEquipped = false;
-            session.Player.Inventory.AddItem(session, badges[index], false);
+            Item? badge = badges[index];
+            if (badge is null)
+            {
+                return;
+            }
+
+            badge.IsEquipped = false;
+            session.Player.Inventory.AddItem(session, badge, false);
 
             // Unequip
-            badges[index] = default;
-            session.FieldManager.BroadcastPacket(GemPacket.UnequipItem(session, item.GemSlot));
+            badges[index] = null;
+            session.FieldManager.BroadcastPacket(GemPacket.UnequipItem(session.Player.FieldPlayer.ObjectId, item.GemSlot));
         }
 
         // Equip
         item.IsEquipped = true;
-        int emptyIndex = Array.FindIndex(badges, x => x == default);
+        int emptyIndex = Array.FindIndex(badges, x => x is null);
         if (emptyIndex == -1)
         {
             return;
         }
+
         badges[emptyIndex] = item;
-        session.FieldManager.BroadcastPacket(GemPacket.EquipItem(session, item, emptyIndex));
+        session.FieldManager.BroadcastPacket(GemPacket.EquipItem(session.Player.FieldPlayer.ObjectId, item, emptyIndex));
     }
 
     private static void HandleUnequipItem(GameSession session, PacketReader packet)
     {
         byte index = packet.ReadByte();
 
-        Item[] badges = session.Player.Inventory.Badges;
+        Item?[] badges = session.Player.Inventory.Badges;
 
-        Item item = badges[index];
-        if (item == null)
+        Item? item = badges[index];
+        if (item is null)
         {
             return;
         }
+
+        if (session.Player.FieldPlayer == null)
+        {
+            return;
+        }
+
         // Add to inventory
         item.IsEquipped = false;
         session.Player.Inventory.AddItem(session, item, false);
 
         // Unequip
-        badges[index] = default;
-        session.FieldManager.BroadcastPacket(GemPacket.UnequipItem(session, item.GemSlot));
+        badges[index] = null;
+        session.FieldManager.BroadcastPacket(GemPacket.UnequipItem(session.Player.FieldPlayer.ObjectId, item.GemSlot));
     }
 
     private static void HandleTransparency(GameSession session, PacketReader packet)
@@ -100,10 +118,15 @@ public class GemEquipmentHandler : GamePacketHandler<GemEquipmentHandler>
         byte index = packet.ReadByte();
         byte[] transparencyBools = packet.ReadBytes(10);
 
-        Item item = session.Player.Inventory.Badges[index];
+        Item? item = session.Player.Inventory.Badges[index];
+
+        if (item is null || session.Player.FieldPlayer is null)
+        {
+            return;
+        }
 
         item.TransparencyBadgeBools = transparencyBools;
 
-        session.FieldManager.BroadcastPacket(GemPacket.EquipItem(session, item, index));
+        session.FieldManager.BroadcastPacket(GemPacket.EquipItem(session.Player.FieldPlayer.ObjectId, item, index));
     }
 }

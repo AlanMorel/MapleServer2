@@ -15,7 +15,7 @@ public static class JobPacket
         Save = 0x09,
     }
 
-    public static PacketWriter UpdateSkillTab(IFieldObject<Player> fieldPlayer, HashSet<int> newSkillIds = null)
+    public static PacketWriter UpdateSkillTab(IFieldObject<Player> fieldPlayer, HashSet<int>? newSkillIds = null)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Job);
         pWriter.WriteInt(fieldPlayer.ObjectId);
@@ -46,7 +46,7 @@ public static class JobPacket
         return pWriter;
     }
 
-    public static PacketWriter Save(IFieldActor<Player> fieldPlayer, HashSet<int> newSkillIds = null)
+    public static PacketWriter Save(IFieldActor<Player> fieldPlayer, HashSet<int>? newSkillIds = null)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Job);
 
@@ -57,7 +57,7 @@ public static class JobPacket
         return pWriter;
     }
 
-    public static void WriteJobInfo(this PacketWriter pWriter, Player player, HashSet<int> newSkillIds = null)
+    public static void WriteJobInfo(this PacketWriter pWriter, Player player, HashSet<int>? newSkillIds = null)
     {
         SkillTab newTab = new(player.CharacterId, player.JobCode, player.SubJobCode, player.ActiveSkillTabId, "skills");
 
@@ -84,7 +84,7 @@ public static class JobPacket
         pWriter.WriteByte(); // More skills?
     }
 
-    public static void WriteSkills(this PacketWriter pWriter, SkillTab skillTab, SkillType type, HashSet<int> newSkillsId = null)
+    private static void WriteSkills(this PacketWriter pWriter, SkillTab skillTab, SkillType type, HashSet<int>? newSkillsId = null)
     {
         List<(int skillId, short skillLevel)> skills = skillTab.GetSkillsByType(type);
         pWriter.WriteByte((byte) skills.Count);

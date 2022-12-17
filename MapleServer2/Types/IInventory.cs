@@ -9,7 +9,7 @@ public interface IInventory
     long Id { get; }
     Dictionary<ItemSlot, Item> Equips { get; }
     Dictionary<ItemSlot, Item> Cosmetics { get; }
-    Item[] Badges { get; }
+    Item?[] Badges { get; }
     Item[] LapenshardStorage { get; }
     List<SetBonus> SetBonuses { get; }
     Dictionary<long, Item> TemporaryStorage { get; }

@@ -3,7 +3,7 @@ using MapleServer2.Constants;
 
 namespace MapleServer2.Packets;
 
-internal class FallDamagePacket
+public static class FallDamagePacket
 {
     public static PacketWriter FallDamage(int objectId, int hpLost)
     {

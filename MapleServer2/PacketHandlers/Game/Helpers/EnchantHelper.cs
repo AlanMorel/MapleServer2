@@ -15,8 +15,13 @@ public static class EnchantHelper
     public static Dictionary<StatAttribute, ItemStat> GetEnchantStats(int enchantLevel, ItemType itemType, int itemLevel)
     {
         Dictionary<StatAttribute, ItemStat> enchantStats = new();
-        Script script = ScriptLoader.GetScript("Functions/calcEnchantValues");
-        DynValue statValueScriptResult = script.RunFunction("calcEnchantBoostValues", enchantLevel, (int) itemType, itemLevel);
+        Script? script = ScriptLoader.GetScript("Functions/calcEnchantValues");
+        DynValue? statValueScriptResult = script?.RunFunction("calcEnchantBoostValues", enchantLevel, (int) itemType, itemLevel);
+
+        if (statValueScriptResult is null)
+        {
+            return enchantStats;
+        }
 
         for (int i = 0; i < statValueScriptResult.Tuple.Length; i += 2)
         {
@@ -59,16 +64,22 @@ public static class EnchantHelper
             EnchantType.Ophelia => 11000508,
             _ => 11000510
         };
-        ScriptMetadata scriptMetadata = ScriptMetadataStorage.GetNpcScriptMetadata(npcId);
-        NpcScript npcScript = scriptMetadata?.NpcScripts.FirstOrDefault(x => x.Id == 31);
+        ScriptMetadata? scriptMetadata = ScriptMetadataStorage.GetNpcScriptMetadata(npcId);
+        NpcScript? npcScript = scriptMetadata?.NpcScripts.FirstOrDefault(x => x.Id == 31);
         if (npcScript is null)
         {
             return;
         }
 
-        Script script = ScriptLoader.GetScript($"Npcs/{npcId}", session);
-        int eventId = (int) script.RunFunction("getProcessEventId", PlayerHasIngredients(itemEnchant, session.Player.Inventory),
-            PlayerHasRequiredCatalysts(itemEnchant)).Number;
+        Script? script = ScriptLoader.GetScript($"Npcs/{npcId}", session);
+        DynValue? runFunction = script?.RunFunction("getProcessEventId", PlayerHasIngredients(itemEnchant, session.Player.Inventory),
+            PlayerHasRequiredCatalysts(itemEnchant));
+        if (runFunction is null)
+        {
+            return;
+        }
+
+        int eventId = (int) runFunction.Number;
 
         if (eventId == 0)
         {
@@ -85,15 +96,15 @@ public static class EnchantHelper
             EnchantType.Ophelia => 11000508,
             _ => 11000510
         };
-        ScriptMetadata scriptMetadata = ScriptMetadataStorage.GetNpcScriptMetadata(npcId);
-        NpcScript npcScript = scriptMetadata?.NpcScripts.FirstOrDefault(x => x.Id == 31);
+        ScriptMetadata? scriptMetadata = ScriptMetadataStorage.GetNpcScriptMetadata(npcId);
+        NpcScript? npcScript = scriptMetadata?.NpcScripts.FirstOrDefault(x => x.Id == 31);
         if (npcScript is null)
         {
             return;
         }
 
-        Script script = ScriptLoader.GetScript($"Npcs/{npcId}", session);
-        DynValue excessCatalystFunction = script.RunFunction("getExcessCatalystEventId");
+        Script? script = ScriptLoader.GetScript($"Npcs/{npcId}", session);
+        DynValue? excessCatalystFunction = script?.RunFunction("getExcessCatalystEventId");
         if (excessCatalystFunction is null)
         {
             return;
@@ -111,7 +122,7 @@ public static class EnchantHelper
 
     public static void HandleNpcTalkEventType(GameSession session, NpcScript npcScript, int eventId)
     {
-        ScriptEvent scriptEvent = npcScript.Contents.First().Events.FirstOrDefault(x => x.Id == eventId);
+        ScriptEvent? scriptEvent = npcScript.Contents.First().Events.FirstOrDefault(x => x.Id == eventId);
         if (scriptEvent is null)
         {
             return;

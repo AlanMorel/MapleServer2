@@ -25,18 +25,18 @@ public class SyncState
 
     // Flag2
     public CoordF Flag2Unknown1;
-    public string Flag2Unknown2;
+    public string? Flag2Unknown2;
 
     // Flag3
     public int Flag3Unknown1;
-    public string Flag3Unknown2;
+    public string? Flag3Unknown2;
 
     // Flag4
-    public string InteractableObjectCoord;
+    public string? InteractableObjectCoord;
 
     // Flag5
     public int Flag5Unknown1;
-    public string Flag5Unknown2;
+    public string? Flag5Unknown2;
 
     // Flag6
     public int Flag6Unknown1;
@@ -49,5 +49,5 @@ public class SyncState
     public int OpponentObjectId;
     public byte RPSUnk1;
     public byte RPSUnk2;
-    public string RPSUnk3;
+    public string? RPSUnk3;
 }

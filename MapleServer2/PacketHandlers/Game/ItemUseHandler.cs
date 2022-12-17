@@ -471,7 +471,7 @@ public class ItemUseHandler : GamePacketHandler<ItemUseHandler>
 
         if (session.Player.Guild is not null)
         {
-            session.Player.Guild?.BroadcastPacketGuild(GuildPacket.UpdateMemberName(oldName, newName));
+            session.Player.Guild.BroadcastPacketGuild(GuildPacket.UpdateMemberName(oldName, newName));
             if (session.Player.Guild.LeaderCharacterId == session.Player.CharacterId)
             {
                 session.Player.Guild.LeaderName = newName;
@@ -485,14 +485,7 @@ public class ItemUseHandler : GamePacketHandler<ItemUseHandler>
 
     private static void HandleGenderVoucher(GameSession session, Item item)
     {
-        if (session.Player.Gender == Gender.Male)
-        {
-            session.Player.Gender = Gender.Female;
-        }
-        else
-        {
-            session.Player.Gender = Gender.Male;
-        }
+        session.Player.Gender = session.Player.Gender == Gender.Male ? Gender.Female : Gender.Male;
 
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
         ChangeToDefaultHair(session);
@@ -502,30 +495,18 @@ public class ItemUseHandler : GamePacketHandler<ItemUseHandler>
 
     private static void ChangeToDefaultHair(GameSession session)
     {
-        int hairId;
-        if (session.Player.Gender == Gender.Male)
-        {
-            hairId = 10200003; // Mega Mop-Top
-        }
-        else
-        {
-            hairId = 10200012; // Cutesy Twin Tails
-        }
+        int hairId = session.Player.Gender == Gender.Male
+            ? 10200003 // Mega Mop-Top
+            : 10200012; // Cutesy Twin Tails
 
         BeautyHelper.ChangeHair(session, hairId, out _, out _);
     }
 
     private static void ChangeToDefaultFace(GameSession session)
     {
-        int faceId;
-        if (session.Player.Gender == Gender.Male)
-        {
-            faceId = 10300002; // Mega Mop-Top
-        }
-        else
-        {
-            faceId = 10300004; // Bookworm
-        }
+        int faceId = session.Player.Gender == Gender.Male
+            ? 10300002 // Mega Mop-Top
+            : 10300004; // Bookworm
 
         BeautyHelper.ChangeFace(session, faceId, out _, out _);
     }
@@ -537,7 +518,7 @@ public class ItemUseHandler : GamePacketHandler<ItemUseHandler>
 
     private static void HandleItemSocketScroll(GameSession session, Item item)
     {
-        ItemSocketScrollMetadata metadata = ItemSocketScrollMetadataStorage.GetMetadata(item.Function.Id);
+        ItemSocketScrollMetadata? metadata = ItemSocketScrollMetadataStorage.GetMetadata(item.Function.Id);
         if (metadata is null)
         {
             return;

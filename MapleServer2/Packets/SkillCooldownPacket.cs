@@ -13,7 +13,7 @@ public static class SkillCooldownPacket
 
         pWriter.WriteLong(skillId);
         pWriter.WriteInt(endTick);
-        pWriter.WriteInt(0); // unknown
+        pWriter.WriteInt(); // unknown
 
         return pWriter;
     }
@@ -28,7 +28,7 @@ public static class SkillCooldownPacket
         {
             pWriter.WriteLong(skillIds[i]);
             pWriter.WriteInt(endTicks[i]);
-            pWriter.WriteInt(0); // unknown
+            pWriter.WriteInt(); // unknown
         }
 
         return pWriter;

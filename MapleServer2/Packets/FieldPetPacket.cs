@@ -22,10 +22,10 @@ public static class FieldPetPacket
 
         pWriter.WriteLong(pet.Item.Uid);
         pWriter.WriteByte();
-        pWriter.WriteShort(pet.Item.PetInfo.Level);
+        pWriter.WriteShort(pet.Item.PetInfo?.Level);
         pWriter.WriteShort(); // pet taming? calls lua calc_PetTamingRank
         pWriter.WriteInt();
-        pWriter.WriteUnicodeString(pet.Item.PetInfo.Name);
+        pWriter.WriteUnicodeString(pet.Item.PetInfo?.Name);
 
         return pWriter;
     }

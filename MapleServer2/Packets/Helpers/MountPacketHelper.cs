@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using System.Diagnostics;
+using MaplePacketLib2.Tools;
 using MapleServer2.Enums;
 using MapleServer2.Types;
 
@@ -6,8 +7,9 @@ namespace MapleServer2.Packets.Helpers;
 
 public static class MountPacketHelper
 {
-    public static void WriteMount(this PacketWriter pWriter, IFieldObject<Mount> mount)
+    public static void WriteMount(this PacketWriter pWriter, IFieldObject<Mount>? mount)
     {
+        Debug.Assert(mount != null, nameof(mount) + " != null");
         pWriter.WriteByte((byte) mount.Value.Type);
 
         // Base class constructor (RideOnAction)

@@ -1,8 +1,11 @@
-﻿using MaplePacketLib2.Tools;
+﻿using Maple2Storage.Enums;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
+using MapleServer2.Managers.Actors;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
@@ -19,8 +22,15 @@ public class InsigniaHandler : GamePacketHandler<InsigniaHandler>
             return;
         }
 
+        Character? character = session.Player.FieldPlayer;
+        if (character is null)
+        {
+            return;
+        }
+
         session.Player.InsigniaId = insigniaId;
-        session.FieldManager.BroadcastPacket(InsigniaPacket.UpdateInsignia(session, insigniaId, CanEquipInsignia(session, insigniaId)));
+        session.FieldManager.BroadcastPacket(InsigniaPacket.UpdateInsignia(character.ObjectId, insigniaId,
+            CanEquipInsignia(session, insigniaId)));
     }
 
     private static bool CanEquipInsignia(GameSession session, short insigniaId)
@@ -34,7 +44,8 @@ public class InsigniaHandler : GamePacketHandler<InsigniaHandler>
             case "level":
                 return session.Player.Levels.Level >= 50;
             case "enchant":
-                return session.Player.Inventory.Equips.FirstOrDefault(x => x.Value.EnchantLevel >= 12).Value != null;
+                KeyValuePair<ItemSlot, Item>? firstOrDefault = session.Player.Inventory.Equips.FirstOrDefault(x => x.Value.EnchantLevel >= 12);
+                return firstOrDefault?.Value is not null;
             case "trophy_point":
                 return session.Player.TrophyCount[0] + session.Player.TrophyCount[1] + session.Player.TrophyCount[2] > 1000;
             case "title":

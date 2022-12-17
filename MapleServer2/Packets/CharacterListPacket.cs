@@ -79,7 +79,7 @@ public static class CharacterListPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.CharMaxCount);
         pWriter.WriteInt(unlocked);
-        pWriter.WriteInt(int.Parse(ConstantsMetadataStorage.GetConstant("MaxCharacterSlots")));
+        pWriter.WriteInt(int.Parse(ConstantsMetadataStorage.GetConstant("MaxCharacterSlots") ?? "0"));
 
         return pWriter;
     }
@@ -141,15 +141,17 @@ public static class CharacterListPacket
         pWriter.WriteByte((byte) player.Inventory.Badges.Count(x => x != null));
         for (int i = 0; i < player.Inventory.Badges.Length; i++)
         {
-            Item badge = player.Inventory.Badges[i];
-            if (player.Inventory.Badges[i] != null)
+            Item? badge = player.Inventory.Badges[i];
+            if (badge is null)
             {
-                pWriter.WriteByte((byte) i);
-                pWriter.WriteInt(badge.Id);
-                pWriter.WriteLong(badge.Uid);
-                pWriter.WriteInt(badge.Rarity);
-                pWriter.WriteItem(badge);
+                continue;
             }
+
+            pWriter.WriteByte((byte) i);
+            pWriter.WriteInt(badge.Id);
+            pWriter.WriteLong(badge.Uid);
+            pWriter.WriteInt(badge.Rarity);
+            pWriter.WriteItem(badge);
         }
     }
 

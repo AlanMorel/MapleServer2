@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Diagnostics;
+using System.Net;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Network;
@@ -38,12 +39,14 @@ public class QuitHandler : CommonPacketHandler<QuitHandler>
                 {
                     HandleChangeCharacter(gameSession);
                 }
+
                 break;
             case Mode.Quit:
                 if (session is GameSession gameSession2)
                 {
                     HandleQuit(gameSession2);
                 }
+
                 session.Dispose();
                 break;
             default:
@@ -54,7 +57,10 @@ public class QuitHandler : CommonPacketHandler<QuitHandler>
 
     private void HandleChangeCharacter(GameSession session)
     {
-        session.SendFinal(MigrationPacket.GameToLogin(session.IsLocalHost() ? LoginLocalEndpoint : LoginEndpoint, session.Player.Account.AuthData), logoutNotice: true);
+        Debug.Assert(session.Player.Account.AuthData != null, "session.Player.Account.AuthData != null");
+
+        IPEndPoint loginLocalEndpoint = session.IsLocalHost() ? LoginLocalEndpoint : LoginEndpoint;
+        session.SendFinal(MigrationPacket.GameToLogin(loginLocalEndpoint, session.Player.Account.AuthData), logoutNotice: true);
     }
 
     private static void HandleQuit(GameSession session)

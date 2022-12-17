@@ -24,28 +24,30 @@ public static class NoticePacket
         {
             pWriter.WriteShort(durationSec);
         }
+
         return pWriter;
     }
 
-    public static PacketWriter Notice(SystemNotice notice, NoticeType type = NoticeType.Mint, List<string> parameters = null, short durationSec = 0)
+    public static PacketWriter Notice(SystemNotice notice, NoticeType type = NoticeType.Mint, List<string>? parameters = null, short durationSec = 0)
     {
         parameters ??= new();
         PacketWriter pWriter = PacketWriter.Of(SendOp.Notice);
         pWriter.Write(Mode.Send);
-        WriteNotice(pWriter, notice, type, parameters, durationSec);
+        WriteNotice(pWriter, notice, parameters, type, durationSec);
         return pWriter;
     }
 
-    public static PacketWriter QuitNotice(SystemNotice notice, NoticeType type = NoticeType.Mint, List<string> parameters = null, short durationSec = 0)
+    public static PacketWriter QuitNotice(SystemNotice notice, NoticeType type = NoticeType.Mint, List<string>? parameters = null, short durationSec = 0)
     {
         parameters ??= new();
         PacketWriter pWriter = PacketWriter.Of(SendOp.Notice);
         pWriter.Write(Mode.Quit);
-        WriteNotice(pWriter, notice, type, parameters, durationSec);
+        WriteNotice(pWriter, notice, parameters, type, durationSec);
         return pWriter;
     }
 
-    public static void WriteNotice(PacketWriter pWriter, SystemNotice notice, NoticeType type = NoticeType.Mint, List<string> parameters = null, short durationSec = 0)
+    private static void WriteNotice(PacketWriter pWriter, SystemNotice notice, List<string> parameters, NoticeType type = NoticeType.Mint,
+        short durationSec = 0)
     {
         pWriter.WriteShort((short) type);
         pWriter.WriteByte(0x1);
@@ -56,6 +58,7 @@ public static class NoticePacket
         {
             pWriter.WriteUnicodeString(parameter);
         }
+
         if (type.HasFlag(NoticeType.Mint))
         {
             pWriter.WriteShort(durationSec);

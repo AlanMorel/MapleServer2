@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Enums;
+﻿using System.Diagnostics;
+using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
@@ -44,7 +45,7 @@ public static class NpcTalkPacket
         return pWriter;
     }
 
-    public static PacketWriter Action(ActionType actionType, string window = "", string parameters = "", int portalId = 0, Item item = null)
+    public static PacketWriter Action(ActionType actionType, string window = "", string parameters = "", int portalId = 0, Item? item = null)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.NpcTalk);
         pWriter.Write(Mode.Action);
@@ -59,6 +60,7 @@ public static class NpcTalkPacket
                 pWriter.WriteUnicodeString(parameters);
                 break;
             case ActionType.ItemReward:
+                Debug.Assert(item != null, nameof(item) + " != null");
                 pWriter.WriteInt(1); // item count. TODO: support multiple items
                 pWriter.WriteInt(item.Id);
                 pWriter.WriteByte((byte) item.Rarity);

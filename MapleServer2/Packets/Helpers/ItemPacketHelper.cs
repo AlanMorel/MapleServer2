@@ -102,7 +102,7 @@ public static class ItemPacketHelper
         return pWriter;
     }
 
-    private static PacketWriter WriteAppearance(this PacketWriter pWriter, Item item)
+    private static void WriteAppearance(this PacketWriter pWriter, Item item)
     {
         pWriter.Write(item.Color);
         // Positioning Data
@@ -123,12 +123,10 @@ public static class ItemPacketHelper
                 pWriter.WriteBytes(item.FaceDecorationData);
                 break;
         }
-
-        return pWriter;
     }
 
     // 9 Blocks of stats, still missing some stats
-    private static PacketWriter WriteStats(this PacketWriter pWriter, ItemStats stats)
+    private static void WriteStats(this PacketWriter pWriter, ItemStats stats)
     {
         pWriter.WriteByte(); // Not part of appearance sub!
         List<BasicStat> basicConstantNormalStats = stats.Constants.Values.OfType<BasicStat>().ToList();
@@ -195,8 +193,6 @@ public static class ItemPacketHelper
         pWriter.WriteShort(); // Empowerment Attributes
         pWriter.WriteShort();
         pWriter.WriteInt();
-
-        return pWriter;
     }
 
     private static void WriteBasicStat(PacketWriter pWriter, BasicStat stat)
@@ -213,7 +209,7 @@ public static class ItemPacketHelper
         pWriter.WriteFloat(stat.Flat);
     }
 
-    private static PacketWriter WriteEnchantStats(this PacketWriter pWriter, Item item)
+    private static void WriteEnchantStats(this PacketWriter pWriter, Item item)
     {
         ItemStats stats = item.Stats;
         List<BasicStat> enchantStats = stats.Enchants.Values.OfType<BasicStat>().ToList();
@@ -240,8 +236,6 @@ public static class ItemPacketHelper
         {
             WriteSpecialStat(pWriter, stat);
         }
-
-        return pWriter;
     }
 
     // Writes UGC template data
@@ -259,14 +253,14 @@ public static class ItemPacketHelper
         pWriter.WriteUnicodeString();
     }
 
-    public static PacketWriter WriteSockets(this PacketWriter pWriter, ItemStats stats, List<GemSocket> sockets)
+    public static void WriteSockets(this PacketWriter pWriter, ItemStats stats, List<GemSocket>? sockets)
     {
         if (sockets == null)
         {
-            pWriter.WriteByte(0); // 0 sockets
-            pWriter.WriteByte(0); // 0 unlocked sockets
+            pWriter.WriteByte(); // 0 sockets
+            pWriter.WriteByte(); // 0 unlocked sockets
 
-            return pWriter;
+            return;
         }
 
         pWriter.WriteByte((byte) sockets.Count);
@@ -281,29 +275,32 @@ public static class ItemPacketHelper
         pWriter.WriteByte((byte) unlockedCount);
         for (int i = 0; i < unlockedCount; i++)
         {
-            pWriter.WriteBool(sockets[i].Gemstone != null);
-            if (sockets[i].Gemstone != null)
+            Gemstone? gemstone = sockets[i].Gemstone;
+            pWriter.WriteBool(gemstone is not null);
+            if (gemstone is null)
             {
-                pWriter.WriteInt(sockets[i].Gemstone.Id);
-                pWriter.WriteBool(sockets[i].Gemstone.OwnerId != 0);
-                if (sockets[i].Gemstone.OwnerId != 0)
-                {
-                    pWriter.WriteLong(sockets[i].Gemstone.OwnerId);
-                    pWriter.WriteUnicodeString(sockets[i].Gemstone.OwnerName);
-                }
-                pWriter.WriteBool(sockets[i].Gemstone.IsLocked);
-                if (sockets[i].Gemstone.IsLocked)
-                {
-                    pWriter.WriteBool(sockets[i].Gemstone.IsLocked);
-                    pWriter.WriteLong(sockets[i].Gemstone.UnlockTime);
-                }
+                continue;
             }
-        }
 
-        return pWriter;
+            pWriter.WriteInt(gemstone.Id);
+            pWriter.WriteBool(gemstone.OwnerId != 0);
+            if (gemstone.OwnerId != 0)
+            {
+                pWriter.WriteLong(gemstone.OwnerId);
+                pWriter.WriteUnicodeString(gemstone.OwnerName);
+            }
+            pWriter.WriteBool(gemstone.IsLocked);
+            if (!gemstone.IsLocked)
+            {
+                continue;
+            }
+
+            pWriter.WriteBool(gemstone.IsLocked);
+            pWriter.WriteLong(gemstone.UnlockTime);
+        }
     }
 
-    private static PacketWriter WriteMusicScore(this PacketWriter pWriter, Item item)
+    private static void WriteMusicScore(this PacketWriter pWriter, Item item)
     {
         pWriter.WriteInt(item.Score.Length);
         pWriter.WriteInt(item.Score.Type);
@@ -314,6 +311,5 @@ public static class ItemPacketHelper
         pWriter.WriteBool(item.Score.Locked);
         pWriter.WriteLong();
         pWriter.WriteLong();
-        return pWriter;
     }
 }

@@ -5,7 +5,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.Packets;
 
-public class MushkingRoyaleSystemPacket
+public static class MushkingRoyaleSystemPacket
 {
     private enum Mode : byte
     {

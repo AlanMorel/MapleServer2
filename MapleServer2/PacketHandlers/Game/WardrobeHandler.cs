@@ -60,7 +60,7 @@ public class WardrobeHandler : GamePacketHandler<WardrobeHandler>
             return;
         }
 
-        if (!session.Player.TryGetWardrobe(index, out Wardrobe wardrobe))
+        if (!session.Player.TryGetWardrobe(index, out Wardrobe? wardrobe))
         {
             return;
         }
@@ -75,7 +75,7 @@ public class WardrobeHandler : GamePacketHandler<WardrobeHandler>
             wardrobeEquips[equip.ItemSlot] = equip;
         }
 
-        wardrobe.Equips = new(wardrobeEquips);
+        wardrobe!.Equips = new(wardrobeEquips);
         wardrobe.Type = type;
 
         DatabaseManager.Wardrobes.Update(wardrobe, session.Player.CharacterId);
@@ -87,13 +87,13 @@ public class WardrobeHandler : GamePacketHandler<WardrobeHandler>
         int index = packet.ReadInt();
         int type = packet.ReadInt();
 
-        if (!session.Player.TryGetWardrobe(index, out Wardrobe wardrobe))
+        if (!session.Player.TryGetWardrobe(index, out Wardrobe? wardrobe))
         {
             return;
         }
 
         int failEquipCount = 0;
-        foreach (KeyValuePair<ItemSlot, Item> item in wardrobe.Equips)
+        foreach (KeyValuePair<ItemSlot, Item> item in wardrobe!.Equips)
         {
             if (!session.Player.Inventory.TryEquip(session, item.Value.Uid, item.Key))
             {
@@ -108,12 +108,12 @@ public class WardrobeHandler : GamePacketHandler<WardrobeHandler>
     private static void HandleReset(GameSession session, PacketReader packet)
     {
         int index = packet.ReadInt();
-        if (!session.Player.TryGetWardrobe(index, out Wardrobe wardrobe))
+        if (!session.Player.TryGetWardrobe(index, out Wardrobe? wardrobe))
         {
             return;
         }
 
-        wardrobe.Equips.Clear();
+        wardrobe!.Equips.Clear();
 
         DatabaseManager.Wardrobes.Update(wardrobe, session.Player.CharacterId);
         session.Send(WardrobePacket.Load(wardrobe));
@@ -124,12 +124,12 @@ public class WardrobeHandler : GamePacketHandler<WardrobeHandler>
         int index = packet.ReadInt();
         int keyCode = packet.ReadInt();
 
-        if (!session.Player.TryGetWardrobe(index, out Wardrobe wardrobe))
+        if (!session.Player.TryGetWardrobe(index, out Wardrobe? wardrobe))
         {
             return;
         }
 
-        wardrobe.Key = keyCode;
+        wardrobe!.Key = keyCode;
     }
 
     private static void HandleRename(GameSession session, PacketReader packet)
@@ -137,13 +137,13 @@ public class WardrobeHandler : GamePacketHandler<WardrobeHandler>
         int index = packet.ReadInt();
         string name = packet.ReadUnicodeString();
 
-        if (!session.Player.TryGetWardrobe(index, out Wardrobe wardrobe))
+        if (!session.Player.TryGetWardrobe(index, out Wardrobe? wardrobe))
         {
             session.Player.Wardrobes.Insert(index, new(0, 0, index, name, new(), session.Player));
             return;
         }
 
-        wardrobe.Name = name;
+        wardrobe!.Name = name;
         DatabaseManager.Wardrobes.Update(wardrobe, session.Player.CharacterId);
     }
 }

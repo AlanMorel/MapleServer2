@@ -1,9 +1,11 @@
-﻿using Maple2Storage.Enums;
+﻿using System.Diagnostics;
+using Maple2Storage.Enums;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Database.Types;
+using MapleServer2.Managers.Actors;
 using MapleServer2.Network;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
@@ -28,7 +30,7 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
             return;
         }
 
-        AuthData authData = DatabaseManager.AuthData.GetByAccountId(accountId);
+        AuthData? authData = DatabaseManager.AuthData.GetByAccountId(accountId);
         if (authData is null)
         {
             Logger.Error("AuthData with account ID {accountId} was not found in database.", accountId);
@@ -45,6 +47,8 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
         session.InitPlayer(dbPlayer);
 
         Player player = session.Player;
+        Character? character = session.Player.FieldPlayer;
+        Debug.Assert(character != null, "session.Player.FieldPlayer != null");
 
         player.BuddyList = GameServer.BuddyManager.GetBuddies(player.CharacterId);
         player.Mailbox = GameServer.MailManager.GetMails(player.CharacterId);
@@ -60,23 +64,26 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
 
         if (player.GuildId != 0)
         {
-            Guild guild = GameServer.GuildManager.GetGuildById(player.GuildId);
-            player.Guild = guild;
-            GuildMember guildMember = guild.Members.First(x => x.Id == player.CharacterId);
-            guildMember.Player = player;
-            player.GuildMember = guildMember;
-            session.Send(GuildPacket.UpdateGuild(guild));
-            guild.BroadcastPacketGuild(GuildPacket.UpdatePlayer(player));
-            if (!player.IsMigrating)
+            Guild? guild = GameServer.GuildManager.GetGuildById(player.GuildId);
+            if (guild is not null)
             {
-                guild.BroadcastPacketGuild(GuildPacket.MemberLoggedIn(player), session);
+                player.Guild = guild;
+                GuildMember guildMember = guild.Members.First(x => x.Id == player.CharacterId);
+                guildMember.Player = player;
+                player.GuildMember = guildMember;
+                session.Send(GuildPacket.UpdateGuild(guild));
+                guild.BroadcastPacketGuild(GuildPacket.UpdatePlayer(player));
+                if (!player.IsMigrating)
+                {
+                    guild.BroadcastPacketGuild(GuildPacket.MemberLoggedIn(player), session);
+                }
             }
         }
 
         // Get Clubs
         foreach (ClubMember member in player.ClubMembers)
         {
-            Club club = GameServer.ClubManager.GetClubById(member.ClubId);
+            Club? club = GameServer.ClubManager.GetClubById(member.ClubId);
 
             if (club is null)
             {
@@ -129,11 +136,11 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
         session.Send(TimeSyncPacket.SetInitial1());
         session.Send(TimeSyncPacket.SetInitial2());
 
-        session.Send(StatPacket.SetStats(session.Player.FieldPlayer));
+        session.Send(StatPacket.SetStats(character));
         // session.Send(StatPacket.SetStats(session.Player.FieldPlayer)); // Second packet is meant to send the stats initialized, for now we'll just send the first one
 
         session.Player.ClientTickSyncLoop();
-        session.Send(DynamicChannelPacket.DynamicChannel(short.Parse(ConstantsMetadataStorage.GetConstant("ChannelCount"))));
+        session.Send(DynamicChannelPacket.DynamicChannel(short.Parse(ConstantsMetadataStorage.GetConstant("ChannelCount") ?? "0")));
 
         session.Send(ServerEnterPacket.Enter(session));
         session.Send(UGCPacket.Unknown22());
@@ -155,24 +162,27 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
 
         if (player.Account.HomeId != 0)
         {
-            Home home = GameServer.HomeManager.GetHomeById(player.Account.HomeId);
-            player.Account.Home = home;
-            session.Send(WarehouseInventoryPacket.StartList());
-            int counter = 0;
-            foreach (KeyValuePair<long, Item> kvp in home.WarehouseInventory)
+            Home? home = GameServer.HomeManager.GetHomeById(player.Account.HomeId);
+            if (home is not null)
             {
-                session.Send(WarehouseInventoryPacket.Load(kvp.Value, ++counter));
+                player.Account.Home = home;
+                session.Send(WarehouseInventoryPacket.StartList());
+                int counter = 0;
+                foreach (KeyValuePair<long, Item> kvp in home.WarehouseInventory)
+                {
+                    session.Send(WarehouseInventoryPacket.Load(kvp.Value, ++counter));
+                }
+
+                session.Send(WarehouseInventoryPacket.EndList());
+
+                session.Send(FurnishingInventoryPacket.StartList());
+                foreach (Cube cube in home.FurnishingInventory.Values.Where(x => x.Item != null))
+                {
+                    session.Send(FurnishingInventoryPacket.Load(cube));
+                }
+
+                session.Send(FurnishingInventoryPacket.EndList());
             }
-
-            session.Send(WarehouseInventoryPacket.EndList());
-
-            session.Send(FurnishingInventoryPacket.StartList());
-            foreach (Cube cube in home.FurnishingInventory.Values.Where(x => x.Item != null))
-            {
-                session.Send(FurnishingInventoryPacket.Load(cube));
-            }
-
-            session.Send(FurnishingInventoryPacket.EndList());
         }
 
         session.Send(QuestPacket.StartList());
@@ -239,7 +249,7 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
         // 0xF0, ResponsePet P(0F 01)
         // RequestFieldEnter
         //session.Send("16 00 00 41 75 19 03 00 01 8A 42 0F 00 00 00 00 00 00 C0 28 C4 00 40 03 44 00 00 16 44 00 00 00 00 00 00 00 00 55 FF 33 42 E8 49 01 00".ToByteArray());
-        session.Send(FieldEnterPacket.RequestEnter(player.FieldPlayer));
+        session.Send(FieldEnterPacket.RequestEnter(character));
 
         Party? party = GameServer.PartyManager.GetPartyByMember(player.CharacterId);
         if (party != null)
@@ -287,8 +297,8 @@ public class ResponseKeyHandler : CommonPacketHandler<ResponseKeyHandler>
         int tokenB = packet.ReadInt();
 
         Logger.Information("LOGIN USER: {accountId}", accountId);
-        AuthData authData = DatabaseManager.AuthData.GetByAccountId(accountId);
-        if (authData == null)
+        AuthData? authData = DatabaseManager.AuthData.GetByAccountId(accountId);
+        if (authData is null)
         {
             throw new ArgumentException("Attempted connection to game with unauthorized account");
         }

@@ -26,8 +26,8 @@ public class GroupChatManager
         return GroupChatList.Values.Where(x => x.Members.FirstOrDefault(z => z.CharacterId == characterId) != null).ToList();
     }
 
-    public GroupChat GetGroupChatById(int id)
+    public GroupChat? GetGroupChatById(int id)
     {
-        return GroupChatList.TryGetValue(id, out GroupChat foundGroupChat) ? foundGroupChat : null;
+        return GroupChatList.TryGetValue(id, out GroupChat? foundGroupChat) ? foundGroupChat : null;
     }
 }

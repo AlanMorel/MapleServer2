@@ -9,7 +9,7 @@ public static class ShopHelper
 {
     public static void OpenShop(GameSession session, int shopId, int npcId)
     {
-        Shop shop = DatabaseManager.Shops.FindById(shopId);
+        Shop? shop = DatabaseManager.Shops.FindById(shopId);
         if (shop == null)
         {
             //Logger.Warning("Unknown shop ID: {shopId}", shopId);
@@ -105,7 +105,7 @@ public static class ShopHelper
         {
             foreach (PlayerShopInventory shopInventory in shopInventories)
             {
-                ShopItem shopItem = shopItems.FirstOrDefault(x => x.ShopItemUid == shopInventory.ShopItemUid);
+                ShopItem? shopItem = shopItems.FirstOrDefault(x => x.ShopItemUid == shopInventory.ShopItemUid);
                 if (shopItem is null)
                 {
                     continue;
@@ -120,13 +120,13 @@ public static class ShopHelper
 
         if (serverShop.PullCount > 0)
         {
-            shopItems = shopItems.OrderBy(x => Random.Shared.Next()).Take(serverShop.PullCount).ToList();
+            shopItems = shopItems.OrderBy(_ => Random.Shared.Next()).Take(serverShop.PullCount).ToList();
         }
 
         foreach (ShopItem shopItem in shopItems)
         {
-            Item item = null;
-            if (!player.ShopInventories.TryGetValue(shopItem.ShopItemUid, out PlayerShopInventory shopInventory))
+            Item? item = null;
+            if (!player.ShopInventories.TryGetValue(shopItem.ShopItemUid, out PlayerShopInventory? _))
             {
                 player.ShopInventories.Add(shopItem.ShopItemUid, new(shopItem, player, serverShop, out item));
             }

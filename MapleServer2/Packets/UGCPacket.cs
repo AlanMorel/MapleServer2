@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Enums;
+﻿using System.Diagnostics;
+using Maple2Storage.Enums;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
@@ -37,7 +38,7 @@ public static class UGCPacket
     public static PacketWriter Unknown0()
     {
         // SO MANY CASES...
-        return null;
+        return null!;
     }
 
     public static PacketWriter CreateUGC(UGC ugc)
@@ -256,7 +257,7 @@ public static class UGCPacket
         {
             long bannerSlotDate = long.Parse($"{bannerSlot.Date}00000") + bannerSlot.Hour; // yes. this is stupid. Who approved this?
             pWriter.WriteLong(bannerSlotDate);
-            pWriter.WriteUnicodeString(bannerSlot.UGC.CharacterName);
+            pWriter.WriteUnicodeString(bannerSlot.UGC?.CharacterName);
             pWriter.WriteBool(true); //  true = reserved, false = awaiting reservation, not sure when false is used
         }
     }
@@ -264,9 +265,9 @@ public static class UGCPacket
     private static void WriteActiveBannerSlot(this PacketWriter pWriter, UGCBanner ugcBanner)
     {
         pWriter.WriteLong(ugcBanner.Id);
-        BannerSlot activeSlot = ugcBanner.Slots.FirstOrDefault(x => x.Active);
+        BannerSlot? activeSlot = ugcBanner.Slots.FirstOrDefault(x => x.Active);
         pWriter.WriteBool(activeSlot is not null);
-        if (activeSlot is null)
+        if (activeSlot?.UGC is null)
         {
             return;
         }
@@ -299,6 +300,8 @@ public static class UGCPacket
 
     private static void WriteUGCItem(this PacketWriter pWriter, Item item)
     {
+        Debug.Assert(item.Ugc != null, "item.Ugc != null");
+
         pWriter.WriteLong(item.Uid);
         pWriter.WriteInt(item.Id);
         pWriter.WriteInt(item.Amount);

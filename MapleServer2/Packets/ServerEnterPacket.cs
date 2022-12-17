@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using System.Diagnostics;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -14,6 +15,7 @@ public static class ServerEnterPacket
         Wallet wallet = player.Wallet;
 
         PacketWriter pWriter = PacketWriter.Of(SendOp.ServerEnter);
+        Debug.Assert(player.FieldPlayer != null, "player.FieldPlayer != null");
         pWriter.WriteInt(player.FieldPlayer.ObjectId);
         pWriter.WriteLong(player.CharacterId);
         pWriter.WriteShort(player.ChannelId);

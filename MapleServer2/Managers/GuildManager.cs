@@ -20,11 +20,11 @@ public class GuildManager
         return allGuilds.Where(x => x.Name.Contains(name)).ToList();
     }
 
-    public Guild GetGuildById(long id) => GuildList.TryGetValue(id, out Guild foundGuild) ? foundGuild : null;
+    public Guild? GetGuildById(long id) => GuildList.TryGetValue(id, out Guild? foundGuild) ? foundGuild : null;
 
-    public Guild GetGuildByName(string name) => GuildList.Values.FirstOrDefault(guild => guild.Name == name);
+    public Guild? GetGuildByName(string name) => GuildList.Values.FirstOrDefault(guild => guild.Name == name);
 
-    public Guild GetGuildByLeader(Player leader) => GuildList.Values.FirstOrDefault(guild => guild.LeaderCharacterId == leader.CharacterId);
+    public Guild? GetGuildByLeader(Player leader) => GuildList.Values.FirstOrDefault(guild => guild.LeaderCharacterId == leader.CharacterId);
 
     public List<Guild> GetAllGuilds() => GuildList.Values.ToList();
 }

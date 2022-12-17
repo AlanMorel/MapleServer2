@@ -7,7 +7,7 @@ namespace MapleServer2.Types;
 public class Cube
 {
     public long Uid;
-    public Item Item;
+    public Item? Item;
     public int PlotNumber;
     public CoordF CoordF;
     public CoordF Rotation;
