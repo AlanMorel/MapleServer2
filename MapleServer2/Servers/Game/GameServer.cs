@@ -2,7 +2,6 @@
 using Autofac;
 using MapleServer2.Commands.Core;
 using MapleServer2.Database;
-using MapleServer2.Database.Types;
 using MapleServer2.Managers;
 using MapleServer2.Network;
 using MapleServer2.Types;

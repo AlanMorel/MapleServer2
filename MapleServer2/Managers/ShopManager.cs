@@ -1,6 +1,4 @@
-﻿using MapleServer2.Data.Static;
-using MapleServer2.Database;
-using MapleServer2.Database.Types;
+﻿using MapleServer2.Database;
 using MapleServer2.Types;
 using TaskScheduler = MapleServer2.Tools.TaskScheduler;
 

@@ -1,6 +1,5 @@
 ﻿using System.Xml;
 using Maple2Storage.Enums;
-using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace Maple2Storage.Types;

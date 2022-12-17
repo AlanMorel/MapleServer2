@@ -1,5 +1,4 @@
-﻿using MapleServer2.Managers;
-using MapleServer2.Managers.Actors;
+﻿using MapleServer2.Managers.Actors;
 using Serilog;
 
 namespace MapleServer2.AI.Functions;
