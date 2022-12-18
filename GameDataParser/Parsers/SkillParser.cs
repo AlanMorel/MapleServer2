@@ -419,7 +419,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
         ParseRange(rangeNode, out string rangeType, out int distance, out CoordF rangeAdd, out CoordF rangeOffset, out bool includeCaster,
             out ApplyTarget applyTarget);
 
-        return new(includeCaster, rangeType, distance, rangeAdd, rangeOffset, applyTarget);
+        return new(includeCaster, rangeType, distance, rangeAdd, rangeOffset, applyTarget, 0, 0, false, 0, 0, 0, false);
     }
 
     private static ArrowProperty ParseArrowProperty(XmlNode? attackNode)
@@ -442,19 +442,16 @@ public class SkillParser : Exporter<List<SkillMetadata>>
         ParseRange(rangeNode, out string rangeType, out int distance, out CoordF rangeAdd, out CoordF rangeOffset, out bool includeCaster,
             out ApplyTarget applyTarget);
 
-        if (rangeNode is not null)
-        {
-            int sensorStartDelay = int.Parse(rangeNode?.Attributes?["sensorStartDelay"]?.Value ?? "0");
-            int sensorSplashStartDelay = int.Parse(rangeNode?.Attributes?["sensorSplashStartDelay"]?.Value ?? "0");
-            bool sensorForceInvokeByInterval = int.Parse(rangeNode?.Attributes?["sensorForceInvokeByInterval"]?.Value ?? "0") == 1;
+        int sensorStartDelay = int.Parse(rangeNode?.Attributes?["sensorStartDelay"]?.Value ?? "0");
+        int sensorSplashStartDelay = int.Parse(rangeNode?.Attributes?["sensorSplashStartDelay"]?.Value ?? "0");
+        bool sensorForceInvokeByInterval = int.Parse(rangeNode?.Attributes?["sensorForceInvokeByInterval"]?.Value ?? "0") == 1;
 
-            int targetSelectType = int.Parse(rangeNode?.Attributes?["targetSelectType"]?.Value ?? "0");
-            int targetHasBuffID = int.Parse(rangeNode?.Attributes?["targetHasBuffID"]?.Value ?? "0");
-            int targetHasNotBuffID = int.Parse(rangeNode?.Attributes?["targetHasNotBuffID"]?.Value ?? "0");
-            bool targetHasBuffOwner = int.Parse(rangeNode?.Attributes?["targetHasBuffOwner"]?.Value ?? "0") == 1;
-        }
+        int targetSelectType = int.Parse(rangeNode?.Attributes?["targetSelectType"]?.Value ?? "0");
+        int targetHasBuffID = int.Parse(rangeNode?.Attributes?["targetHasBuffID"]?.Value ?? "0");
+        int targetHasNotBuffID = int.Parse(rangeNode?.Attributes?["targetHasNotBuffID"]?.Value ?? "0");
+        bool targetHasBuffOwner = int.Parse(rangeNode?.Attributes?["targetHasBuffOwner"]?.Value ?? "0") == 1;
 
-        return new(includeCaster, rangeType, distance, rangeAdd, rangeOffset, applyTarget);
+        return new(includeCaster, rangeType, distance, rangeAdd, rangeOffset, applyTarget, sensorStartDelay, sensorSplashStartDelay, sensorForceInvokeByInterval, targetSelectType, targetHasBuffID, targetHasNotBuffID, targetHasBuffOwner);
     }
 
     private static void ParseRange(XmlNode? rangeNode, out string rangeType, out int distance, out CoordF rangeAdd, out CoordF rangeOffset,

@@ -64,9 +64,10 @@ public class AdditionalEffects
 
         foreach (AdditionalEffect effect in Effects)
         {
-            if (effect.AreStatsStale(Parent, effectEvent))
+            bool recompute = effect.UpdateIfStale(Parent, effectEvent);
+
+            if (recompute)
             {
-                effect.UpdateStatStatus(Parent);
                 Parent.ComputeStats();
 
                 return;
@@ -144,7 +145,10 @@ public class AdditionalEffects
             }
         }
 
-        Parent.FieldManager?.BroadcastPacket(BuffPacket.UpdateBuff(effect, Parent.ObjectId));
+        if (effect.BuffId != 0)
+        {
+            Parent.FieldManager?.BroadcastPacket(BuffPacket.UpdateBuff(effect, Parent.ObjectId));
+        }
 
         effect.Process(Parent);
 
@@ -234,7 +238,6 @@ public class AdditionalEffects
         effect.Stacks = parameters.Stacks;
         effect.Start = start;
         effect.Duration = parameters.Duration != 0 ? parameters.Duration : effect.LevelMetadata.Basic.DurationTick;
-        effect.BuffId = GuidGenerator.Int();
 
         InvokeStatValue invokeStat = effect.Caster.Stats.GetEffectStats(effect.Id, effect.LevelMetadata.Basic.Group, InvokeEffectType.IncreaseDuration);
 
@@ -246,8 +249,6 @@ public class AdditionalEffects
         }
 
         Effects.Add(effect);
-
-        Parent.FieldManager?.BroadcastPacket(BuffPacket.AddBuff(effect, Parent.ObjectId));
 
         AddListeningEvents(effect);
 
@@ -276,7 +277,6 @@ public class AdditionalEffects
 
         Effects.Remove(effect);
         Parent?.EffectRemoved(effect);
-        Parent?.FieldManager?.BroadcastPacket(BuffPacket.RemoveBuff(effect, Parent.ObjectId));
 
         DebugPrint("Removed effect", effect, ownerPlayer, casterPlayer, debugPrintOwner, debugPrintCaster);
     }

@@ -72,26 +72,26 @@ public class Stat
         Modifier.Rate = 1;
     }
 
-    public Stat(int totalStat, StatAttributeType type = StatAttributeType.Flat) : this(totalStat, totalStat, totalStat, type) { }
+    public Stat(int totalStat, StatAttributeType type = StatAttributeType.Flat, float rate = 1) : this(totalStat, totalStat, totalStat, type, rate) { }
 
-    public Stat(int bonusStat, int baseStat, int totalStat, StatAttributeType type = StatAttributeType.Flat)
+    public Stat(int bonusStat, int baseStat, int totalStat, StatAttributeType type = StatAttributeType.Flat, float rate = 1)
     {
         Value.Bonus = bonusStat;
         Value.Base = baseStat;
         Value.Total = totalStat;
         Modifier.Type = type;
-        Modifier.Rate = 1;
+        Modifier.Rate = rate;
     }
 
-    public Stat(long totalStat, StatAttributeType type = StatAttributeType.Flat) : this(totalStat, totalStat, totalStat, type) { }
+    public Stat(long totalStat, StatAttributeType type = StatAttributeType.Flat, float rate = 1) : this(totalStat, totalStat, totalStat, type, rate) { }
 
-    public Stat(long bonusStat, long baseStat, long totalStat, StatAttributeType type = StatAttributeType.Flat)
+    public Stat(long bonusStat, long baseStat, long totalStat, StatAttributeType type = StatAttributeType.Flat, float rate = 1)
     {
         Value.BonusLong = bonusStat;
         Value.BaseLong = baseStat;
         Value.TotalLong = totalStat;
         Modifier.Type = type;
-        Modifier.Rate = 1;
+        Modifier.Rate = rate;
     }
 
     public int this[int i] => i switch

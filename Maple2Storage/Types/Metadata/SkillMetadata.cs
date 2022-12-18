@@ -85,7 +85,7 @@ public class SkillLevel
     [XmlElement(Order = 8)]
     public readonly float CooldownTime;
     [XmlElement(Order = 9)]
-    public readonly List<SkillCondition> ConditionSkills;
+    public readonly List<SkillCondition> ConditionSkills = new();
     [XmlElement(Order = 10)]
     public readonly SkillBeginCondition BeginCondition;
     [XmlElement(Order = 11)]
@@ -544,10 +544,24 @@ public class RangeProperty
     public readonly CoordF RangeOffset;
     [XmlElement(Order = 6)]
     public readonly ApplyTarget ApplyTarget;
+    [XmlElement(Order = 7)]
+    public readonly int SensorStartDelay;
+    [XmlElement(Order = 8)]
+    public readonly int SensorSplashStartDelay;
+    [XmlElement(Order = 9)]
+    public readonly bool SensorForceInvokeByInterval;
+    [XmlElement(Order = 10)]
+    public readonly int TargetSelectType;
+    [XmlElement(Order = 11)]
+    public readonly int TargetHasBuffID;
+    [XmlElement(Order = 12)]
+    public readonly int TargetHasNotBuffID;
+    [XmlElement(Order = 13)]
+    public readonly bool TargetHasBuffOwner;
 
     public RangeProperty() { }
 
-    public RangeProperty(bool includeCaster, string rangeType, int distance, CoordF rangeAdd, CoordF rangeOffset, ApplyTarget applyTarget)
+    public RangeProperty(bool includeCaster, string rangeType, int distance, CoordF rangeAdd, CoordF rangeOffset, ApplyTarget applyTarget, int sensorStartDelay, int sensorSplashStartDelay, bool sensorForceInvokeByInterval, int targetSelectType, int targetHasBuffId, int targetHasNotBuffId, bool targetHasBuffOwner)
     {
         IncludeCaster = includeCaster;
         RangeType = rangeType;
@@ -555,6 +569,13 @@ public class RangeProperty
         RangeAdd = rangeAdd;
         RangeOffset = rangeOffset;
         ApplyTarget = applyTarget;
+        SensorStartDelay = sensorStartDelay;
+        SensorSplashStartDelay = sensorSplashStartDelay;
+        SensorForceInvokeByInterval = sensorForceInvokeByInterval;
+        TargetSelectType = targetSelectType;
+        TargetHasBuffID = targetHasBuffId;
+        TargetHasNotBuffID = targetHasNotBuffId;
+        TargetHasBuffOwner = targetHasBuffOwner;
     }
 }
 

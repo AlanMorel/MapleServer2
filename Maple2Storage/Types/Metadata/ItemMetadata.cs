@@ -132,7 +132,7 @@ public class ItemSkillMetadata
     [XmlElement(Order = 1)]
     public int SkillId;
     [XmlElement(Order = 2)]
-    public int SkillLevel;
+    public short SkillLevel;
 }
 
 [XmlType]

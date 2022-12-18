@@ -362,7 +362,7 @@ public class SkillTriggerHandler
 
             if (removeDelay == 0)
             {
-                removeDelay = trigger.FireCount * trigger.Interval;
+                removeDelay = (trigger.OnlySensingActive && trigger.Delay > 0) ? (int)trigger.Delay : trigger.FireCount * trigger.Interval;
             }
 
             if (Parent.FieldManager is null)
@@ -463,7 +463,7 @@ public class SkillTriggerHandler
             delay += trigger.Interval;
         }
 
-        if (delay == 0)
+        if (delay == 0 || trigger.OnlySensingActive)
         {
             FireTrigger(trigger, skillCast, eventCastInfo);
 

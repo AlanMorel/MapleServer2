@@ -5,6 +5,7 @@ using MapleServer2.Enums;
 using MapleServer2.Managers.Actors;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Tools;
 using Org.BouncyCastle.Asn1.Cms;
 using Org.BouncyCastle.Asn1.X509;
 using Serilog;
@@ -77,9 +78,41 @@ public class AdditionalEffect
         return Id == id;
     }
 
+    public void SendBuffStatus(IFieldActor parent)
+    {
+        if (ShouldBeActive && IsAlive)
+        {
+            if (BuffId != -1)
+            {
+                return;
+            }
+
+            BuffId = GuidGenerator.Int();
+
+            parent.FieldManager?.BroadcastPacket(BuffPacket.AddBuff(this, Parent.ObjectId));
+
+            return;
+        }
+
+        if (BuffId == -1)
+        {
+            return;
+        }
+
+        parent?.FieldManager?.BroadcastPacket(BuffPacket.RemoveBuff(this, Parent.ObjectId));
+
+        BuffId = -1;
+    }
+
     public bool AreStatsStale(IFieldActor parent, EffectEvent effectEvent = EffectEvent.Tick)
     {
-        if (!LevelMetadata.HasStats)
+        bool hasSubjectCondition = LevelMetadata.BeginCondition.Owner is not null;
+        hasSubjectCondition |= LevelMetadata.BeginCondition.Caster is not null;
+        hasSubjectCondition |= LevelMetadata.BeginCondition.Target is not null;
+
+        bool shouldCheckStatus = LevelMetadata.HasStats || hasSubjectCondition;
+
+        if (!shouldCheckStatus && ShouldBeActive)
         {
             return false;
         }
@@ -88,19 +121,35 @@ public class AdditionalEffect
 
         ShouldBeActive = parent.SkillTriggerHandler.ShouldTick(LevelMetadata.BeginCondition, effectInfo, effectEvent, 0, ProximityQuery);
 
-        return ShouldBeActive != WasActiveLastUpdate;
+        parent.SkillTriggerHandler.ShouldTick(LevelMetadata.BeginCondition, effectInfo, effectEvent, 0, ProximityQuery);
+
+        return ShouldBeActive != WasActiveLastUpdate && IsAlive;
     }
 
     public bool UpdateStatStatus(IFieldActor parent)
     {
-        if (!LevelMetadata.HasStats)
-        {
-            return false;
-        }
-
         WasActiveLastUpdate = ShouldBeActive;
 
-        return ShouldBeActive;
+        SendBuffStatus(parent);
+
+        return LevelMetadata.HasStats;
+    }
+
+    public bool UpdateIfStale(IFieldActor parent, EffectEvent effectEvent = EffectEvent.Tick)
+    {
+        if (AreStatsStale(parent, effectEvent))
+        {
+            bool recompute = UpdateStatStatus(parent);
+
+            if (recompute)
+            {
+                parent.ComputeStats();
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void Invoke(IFieldActor parent, EffectEvent effectEvent = EffectEvent.Tick)
@@ -334,6 +383,8 @@ public class AdditionalEffect
 
         IsAlive = false;
 
+        SendBuffStatus(parent);
+
         if (Mount is not null && parent is Character character)
         {
             character.Value.Mount = null; // Remove mount from player
@@ -437,6 +488,8 @@ public class AdditionalEffect
         int interval = LevelMetadata.Basic.IntervalTick;
 
         bool delayFirstInterval = LevelMetadata.Basic.DotCondition != EffectDotCondition.ImmediateFire && interval != 0;
+
+        UpdateIfStale(parent);
 
         if (delay == 0 && !delayFirstInterval)
         {

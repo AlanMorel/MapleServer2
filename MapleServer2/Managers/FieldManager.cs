@@ -1309,22 +1309,22 @@ public class FieldManager
         {
             while (PlayerCount > 0)
             {
+                long lastTick = InternalLogicLoopTick;
                 long currentTick = Environment.TickCount64;
 
-                for (int i = 0; i < maxIterations - 1 && InternalLogicLoopTick + delta < currentTick; ++i)
+                for (int i = 0; i < maxIterations - 1 && lastTick + delta < currentTick; ++i)
                 {
                     InternalLogicLoopTick += delta;
 
                     UpdateActors(delta);
                 }
 
-                if (InternalLogicLoopTick + delta < currentTick)
+                if (lastTick + delta < currentTick)
                 {
                     InternalLogicLoopTick = currentTick;
 
                     UpdateActors(delta);
                 }
-
 
                 // Required to be 10 to handle additional effects properly
                 await Task.Delay(delta);

@@ -1,24 +1,12 @@
-using System.Collections.Generic;
-using System.Diagnostics.Metrics;
-using System.Drawing;
-using System.Numerics;
-using System.Threading.Tasks;
-using Google.Protobuf.WellKnownTypes;
-using Maple2.PathEngine.Types;
-using Maple2Storage.Enums;
+﻿using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Managers;
 using MapleServer2.Managers.Actors;
-using MapleServer2.Network;
 using MapleServer2.PacketHandlers.Game;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
-using MySqlX.XDevAPI;
-using Org.BouncyCastle.Asn1.X509;
-using ProtoBuf.WellKnownTypes;
 using Serilog;
 
 namespace MapleServer2.Types;
@@ -59,8 +47,9 @@ public static class RegionSkillHandler
         }
 
         int lookAtType = 0;
+        CoordF skillPosition = skillCast.Position;
 
-        regionCast.EffectCoords = GetCoords(skillCast.Position, skillCast.LookDirection, skillCast.UseDirection , magicPath, skillCast.SkillAttack?.CubeMagicPathId ?? 0, field, out lookAtType);
+        regionCast.EffectCoords = GetCoords(skillCast.Position, skillCast.LookDirection, skillCast.UseDirection , magicPath, skillCast.SkillAttack?.CubeMagicPathId ?? 0, field, out lookAtType, out skillPosition);
 
         if (lookAtType == 2)
         {
@@ -71,7 +60,7 @@ public static class RegionSkillHandler
 
         if (isSensor)
         {
-            HandleSensorSkill(field, regionCast, fireCount, removeDelay, interval, target);
+            HandleSensorSkill(field, regionCast, skillPosition, fireCount, removeDelay, interval, target);
 
             return;
         }
@@ -246,9 +235,10 @@ public static class RegionSkillHandler
         return true;
     }
 
-    public static List<CoordF> GetCoords(CoordF position, short lookDirection, bool useDirection, long magicPathId, long cubeMagicPathId, FieldManager field, out int lookAtType)
+    public static List<CoordF> GetCoords(CoordF position, short lookDirection, bool useDirection, long magicPathId, long cubeMagicPathId, FieldManager field, out int lookAtType, out CoordF skillPosition)
     {
         lookAtType = 0;
+        skillPosition = position;
 
         List<CoordF> cubeEffectCoords = new();
 
@@ -277,6 +267,11 @@ public static class RegionSkillHandler
                 {
                     cubeEffectCoords.Add(adjusted);
                 }
+            }
+
+            if (cubeEffectCoords.Count == 1)
+            {
+                skillPosition = cubeEffectCoords[0];
             }
 
             if (magicPathId == 0 || cubeEffectCoords.Count == 0)
@@ -318,21 +313,73 @@ public static class RegionSkillHandler
         return effectCoords;
     }
 
-    private static void HandleSensorSkill(FieldManager field, SkillCast skillCast, int fireCount, int removeDelay, int interval, IFieldActor? target)
+    private static void HandleSensorSkill(FieldManager field, SkillCast skillCast, CoordF position, int fireCount, int removeDelay, int interval, IFieldActor? target)
     {
         RangeProperty sensorProperty = skillCast.GetCurrentLevel().SensorProperty;
-        
-        if ()
-        field.FieldTaskScheduler.QueueTask(new(1)
+
+        long startTick = field.FieldTaskScheduler.CurrentTick;
+        int lastInterval = 0;
+        const int delta = 10;
+
+        if (sensorProperty.TargetHasBuffOwner)
+        {
+            target = skillCast.Caster;
+        }
+
+        field.FieldTaskScheduler.QueueTask(new(delta)
         {
             Executions = -1
         }, (currentTick, task) =>
         {
-            return 0;
+            lastInterval += delta;
+            removeDelay -= delta;
+
+            bool intervalActivated = !sensorProperty.SensorForceInvokeByInterval || lastInterval >= interval;
+            bool targetBuffConditionPassed = false;
+
+            if (intervalActivated && sensorProperty.TargetSelectType == 2 && target is not null)
+            {
+                targetBuffConditionPassed = sensorProperty.TargetHasBuffID == 0 || target.AdditionalEffects.HasEffect(sensorProperty.TargetHasBuffID);
+                targetBuffConditionPassed &= sensorProperty.TargetHasNotBuffID == 0 || !target.AdditionalEffects.HasEffect(sensorProperty.TargetHasNotBuffID);
+            }
+
+            bool activated = intervalActivated && (targetBuffConditionPassed || ShouldSensorActivate(field, skillCast, position, sensorProperty));
+
+            if ((intervalActivated && sensorProperty.SensorForceInvokeByInterval) || activated)
+            {
+                lastInterval = 0;
+                fireCount--;
+            }
+
+            if (activated)
+            {
+                HandleRegionSkill(field, skillCast);
+            }
+
+            return fireCount > 0 && removeDelay > 0 ? 0 : -1;
         }, (currentTick, task) =>
         {
-        
+            CleanUpRegionSkill(field, skillCast);
         });
+    }
+
+    private static bool ShouldSensorActivate(FieldManager field, SkillCast skillCast, CoordF position, RangeProperty sensorProperty)
+    {
+        bool sensorActivated = false;
+
+        ProcessApplyTarget(field, sensorProperty.ApplyTarget, (target) =>
+        {
+            sensorActivated = ProcessSensorTarget(field, skillCast, position, sensorProperty, target);
+
+            return !sensorActivated;
+        });
+
+        return sensorActivated;
+    }
+
+    private static bool ProcessSensorTarget(FieldManager field, SkillCast skillCast, CoordF position, RangeProperty sensorProperty, IFieldActor target)
+    {
+        return (target.Coord - position).Length() <= sensorProperty.Distance;
     }
 
     private static IFieldActor? HandleRegionSkillChaining(FieldManager field, SkillCast skillCast, out bool isChained)
@@ -674,6 +721,8 @@ public static class RegionSkillHandler
                     hitTarget |= damage.HitType != Enums.HitType.Miss;
                 }
             }
+
+            hitTarget |= allowHit && skillCast.SkillAttack.DamageProperty.DamageRate == 0 && skillCast.SkillAttack.DamageProperty.DamageValue == 0;
 
             if (damaging)
             {
