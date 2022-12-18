@@ -49,7 +49,7 @@ public static class RegionSkillHandler
         int lookAtType = 0;
         CoordF skillPosition = skillCast.Position;
 
-        regionCast.EffectCoords = GetCoords(skillCast.Position, skillCast.LookDirection, skillCast.UseDirection , magicPath, skillCast.SkillAttack?.CubeMagicPathId ?? 0, field, out lookAtType, out skillPosition);
+        regionCast.EffectCoords = GetCoords(skillCast.Position, skillCast.LookDirection, skillCast.UseDirection, magicPath, skillCast.SkillAttack?.CubeMagicPathId ?? 0, field, out lookAtType, out skillPosition);
 
         if (lookAtType == 2)
         {
@@ -64,7 +64,7 @@ public static class RegionSkillHandler
 
             return;
         }
-        
+
         IFieldActor? firstTarget = HandleRegionSkillChaining(field, regionCast, out bool isChained);
 
         if (firstTarget is not null)

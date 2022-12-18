@@ -109,7 +109,7 @@ public class SkillTriggerHandler
             return AdditionalEffects.CompareValues(stat.TotalLong, statCondition.Value, statCondition.Func);
         }
 
-        return AdditionalEffects.CompareValues((double)stat.TotalLong / (double)stat.BonusLong, statCondition.Rate, statCondition.Func);
+        return AdditionalEffects.CompareValues((double) stat.TotalLong / (double) stat.BonusLong, statCondition.Rate, statCondition.Func);
     }
 
     private bool IsConditionMet(BeginConditionSubject? subjectCondition, IFieldActor? subject, EffectEvent effectEvent, int eventIdArgument)
@@ -362,7 +362,7 @@ public class SkillTriggerHandler
 
             if (removeDelay == 0)
             {
-                removeDelay = (trigger.OnlySensingActive && trigger.Delay > 0) ? (int)trigger.Delay : trigger.FireCount * trigger.Interval;
+                removeDelay = (trigger.OnlySensingActive && trigger.Delay > 0) ? (int) trigger.Delay : trigger.FireCount * trigger.Interval;
             }
 
             if (Parent.FieldManager is null)

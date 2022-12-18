@@ -919,7 +919,7 @@ public class Player : IPacketSerializable
             });
         }
     }
-    
+
     private void ProcessPassives(List<int> effectIds, List<short> effectLevels)
     {
         for (int i = 0; i < effectIds.Count; ++i)
@@ -997,7 +997,7 @@ public class Player : IPacketSerializable
             {
                 continue;
             }
-           
+
             ProcessSkillPassives(skillId, level, metadata);
 
             foreach (int subSkillId in metadata.SubSkills)

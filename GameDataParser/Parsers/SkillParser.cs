@@ -1,5 +1,5 @@
-﻿using System.Runtime.CompilerServices;
-using System;
+﻿using System;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
@@ -10,10 +10,10 @@ using GameDataParser.Tools;
 using M2dXmlGenerator;
 using Maple2.File.IO.Crypto.Common;
 using Maple2.File.Parser.Tools;
+using Maple2.File.Parser.Xml.Skill;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
-using Maple2.File.Parser.Xml.Skill;
 
 namespace GameDataParser.Parsers;
 

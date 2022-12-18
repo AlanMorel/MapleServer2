@@ -338,7 +338,7 @@ public class AdditionalEffect
             RangeType = SkillRangeType.Special,
             DamageType = (DamageType) dotDamage.DamageType,
             DamageRate = dotDamage.Rate * Stacks,
-            DamageValue = dotDamage.Value + (long)(dotDamage.DamageByTargetMaxHp * hp.BonusLong),
+            DamageValue = dotDamage.Value + (long) (dotDamage.DamageByTargetMaxHp * hp.BonusLong),
             ParentSkill = ParentSkill,
             Id = Id,
             EventGroup = LevelMetadata.Basic.Group

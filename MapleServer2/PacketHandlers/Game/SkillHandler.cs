@@ -145,7 +145,7 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
     {
         long skillSN = packet.ReadLong();
         int serverTick = packet.ReadInt();
-        
+
         CastedSkill? skill = session.Player.FieldPlayer?.SkillCastTracker.GetSkillCast(skillSN);
     }
 
@@ -449,7 +449,7 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             Caster = parentSkill.Caster,
             SkillAttack = skillAttack,
             Rotation = rotation,
-            LookDirection = (short)(rotation.Z * 10),
+            LookDirection = (short) (rotation.Z * 10),
             UsingCasterDirection = true
         };
         skillCast.Position = position;
