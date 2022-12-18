@@ -1,12 +1,10 @@
-﻿using System.ComponentModel;
-using System.Xml;
+﻿using System.Xml;
 using GameDataParser.Files;
 using GameDataParser.Files.MetadataExporter;
 using GameDataParser.Tools;
 using M2dXmlGenerator;
 using Maple2.File.IO.Crypto.Common;
 using Maple2.File.Parser.Tools;
-using Maple2.File.Parser.Xml.AdditionalEffect;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;

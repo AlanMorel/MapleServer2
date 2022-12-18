@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using System.Numerics;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;

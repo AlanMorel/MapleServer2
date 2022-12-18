@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-using Maple2.PathEngine;
-using Maple2.Trigger._52000029_qd;
+﻿using Maple2.PathEngine;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;

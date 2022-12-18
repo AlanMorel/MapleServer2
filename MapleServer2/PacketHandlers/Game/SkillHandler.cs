@@ -273,16 +273,6 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
 
         CastedSkill? skill = session.Player.FieldPlayer?.SkillCastTracker.GetSkillCast(skillSn);
 
-        if (skill is not null)
-        {
-            DamageInstance? damageInstance = skill.Damages.FirstOrDefault((instance) => instance.AttackId == attackCounter);
-
-            if (damageInstance is not null)
-            {
-                //damageInstance.TargetId = entityId;
-            }
-        }
-
         for (int i = 0; i < count; ++i)
         {
             int entityId = packet.ReadInt();
@@ -321,7 +311,9 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
         if (fieldPlayer.Value.DebugPrint.TargetsToPrint != 0)
         {
             if (fieldPlayer.Value.DebugPrint.TargetsToPrint > 0)
+            {
                 fieldPlayer.Value.DebugPrint.TargetsToPrint--;
+            }
 
             session.SendNotice($"Attacked target object {target.ObjectId}!");
         }
@@ -438,10 +430,6 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
         }
 
         SkillAttack? skillAttack = parentSkill.GetSkillMotions().FirstOrDefault()?.SkillAttacks[mode];
-        if (skillAttack is null || skillAttack.RangeProperty.ApplyTarget != 0)
-        {
-            //return;
-        }
 
         SkillCast skillCast = new(parentSkill.SkillId, parentSkill.SkillLevel, GuidGenerator.Long(), session.ServerTick, parentSkill)
         {

@@ -106,11 +106,6 @@ public class SkillCastTracker
 
                 if (currentTick - skillCast.LastTick > 10000)
                 {
-                    if (Parent is Character character)
-                    {
-                        //character.Value.Session?.SendNotice($"Skill cast {skillCast.Cast.SkillSn} with id {skillCast.Cast.SkillId} [{skillCast.Cast.SkillLevel}] timed out.");
-                    }
-
                     ++removed;
 
                     continue;
