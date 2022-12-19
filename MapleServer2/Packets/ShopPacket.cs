@@ -1,6 +1,6 @@
-﻿using MaplePacketLib2.Tools;
+﻿using System.Diagnostics;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Database.Types;
 using MapleServer2.Enums;
 using MapleServer2.Packets.Helpers;
 using MapleServer2.Types;
@@ -83,14 +83,17 @@ public static class ShopPacket
         pWriter.WriteShort(itemCount);
         for (int i = 0; i < itemCount; i++)
         {
-            if (buyBackItems[i] is not null)
+            BuyBackItem? buyBackItem = buyBackItems[i];
+            if (buyBackItem is null)
             {
-                pWriter.WriteInt(i);
-                pWriter.WriteInt(buyBackItems[i].Item.Id);
-                pWriter.WriteByte((byte) buyBackItems[i].Item.Rarity);
-                pWriter.WriteLong(buyBackItems[i].Price);
-                pWriter.WriteItem(buyBackItems[i].Item);
+                continue;
             }
+
+            pWriter.WriteInt(i);
+            pWriter.WriteInt(buyBackItem.Item.Id);
+            pWriter.WriteByte((byte) buyBackItem.Item.Rarity);
+            pWriter.WriteLong(buyBackItem.Price);
+            pWriter.WriteItem(buyBackItem.Item);
         }
         return pWriter;
     }
@@ -127,6 +130,7 @@ public static class ShopPacket
         pWriter.WriteByte((byte) products.Count);
         foreach (ShopItem product in products)
         {
+            Debug.Assert(product.Item != null, "product.Item != null");
             pWriter.WriteInt(product.Item.Id);
             pWriter.WriteBool(false);
             pWriter.WriteByte((byte) product.Item.Rarity);

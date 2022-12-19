@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using System.Diagnostics;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
 
@@ -12,6 +13,7 @@ public static class SkillUsePacket
 
         pWriter.WriteLong(skillCast.SkillSn);
         pWriter.WriteInt(skillCast.ServerTick);
+        Debug.Assert(skillCast.Caster != null, "skillCast.Caster != null");
         pWriter.WriteInt(skillCast.Caster.ObjectId);
         pWriter.WriteInt(skillCast.SkillId);
         pWriter.WriteShort(skillCast.SkillLevel);

@@ -90,8 +90,13 @@ public static class MailHelper
 
     private static void SendBlackMarketSoldMail(BlackMarketListing listing, Item item, long price, bool removeListing)
     {
-        Script script = ScriptLoader.GetScript("Functions/calcBlackMarketCostRate");
-        DynValue scriptResults = script.RunFunction("calcBlackMarketCostRate");
+        Script? script = ScriptLoader.GetScript("Functions/calcBlackMarketCostRate");
+        DynValue? scriptResults = script?.RunFunction("calcBlackMarketCostRate");
+        if (scriptResults is null)
+        {
+            return;
+        }
+
         float salesFeeRate = (float) scriptResults.Number;
         long tax = (long) (salesFeeRate * (item.Amount * price));
         long revenue = item.Amount * price - tax;
@@ -180,7 +185,7 @@ public static class MailHelper
 
     private static void SendNotification(Mail mail, bool sendExpiryNotification = false)
     {
-        Player recipient = GameServer.PlayerManager.GetPlayerById(mail.RecipientCharacterId);
+        Player? recipient = GameServer.PlayerManager.GetPlayerById(mail.RecipientCharacterId);
         if (recipient == null)
         {
             return;

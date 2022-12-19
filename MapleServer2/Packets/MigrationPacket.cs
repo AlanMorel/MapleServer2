@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Diagnostics;
+using System.Net;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
@@ -51,6 +52,8 @@ public static class MigrationPacket
 
     public static PacketWriter GameToGame(IPEndPoint endpoint, Player player)
     {
+        Debug.Assert(player.Account.AuthData != null, "player.Account.AuthData != null");
+
         PacketWriter pWriter = PacketWriter.Of(SendOp.GameToGame);
         pWriter.WriteByte(); // 0 = Success
         pWriter.WriteInt(player.Account.AuthData.TokenA);

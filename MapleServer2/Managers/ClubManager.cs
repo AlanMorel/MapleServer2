@@ -38,8 +38,8 @@ public class ClubManager
         DatabaseManager.Clubs.Delete(club.Id);
     }
 
-    public Club GetClubById(long id)
+    public Club? GetClubById(long id)
     {
-        return ClubList.TryGetValue(id, out Club foundClub) ? foundClub : null;
+        return ClubList.TryGetValue(id, out Club? foundClub) ? foundClub : null;
     }
 }

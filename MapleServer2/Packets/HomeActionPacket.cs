@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Types;
+﻿using System.Diagnostics;
+using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Enums;
@@ -37,7 +38,8 @@ public static class HomeActionPacket
 
     public static PacketWriter SendCubePortalSettings(Cube cube, List<Cube> otherPortals)
     {
-        CubePortalSettings portalSettings = cube.PortalSettings;
+        CubePortalSettings? portalSettings = cube.PortalSettings;
+        Debug.Assert(portalSettings != null, nameof(portalSettings) + " != null");
 
         PacketWriter pWriter = PacketWriter.Of(SendOp.ResponseHomeAction);
 
@@ -48,11 +50,11 @@ public static class HomeActionPacket
         pWriter.WriteUnicodeString(portalSettings.PortalName);
         pWriter.Write(portalSettings.Method);
         pWriter.Write(portalSettings.Destination);
-        pWriter.WriteUnicodeString(portalSettings.DestinationTarget ?? "");
+        pWriter.WriteUnicodeString(portalSettings.DestinationTarget);
         pWriter.WriteInt(otherPortals.Count);
         foreach (Cube otherPortal in otherPortals)
         {
-            pWriter.WriteUnicodeString(otherPortal.PortalSettings.PortalName);
+            pWriter.WriteUnicodeString(otherPortal.PortalSettings?.PortalName);
         }
 
         return pWriter;

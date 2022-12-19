@@ -12,17 +12,19 @@ public static class GameEventHelper
         List<GameEventUserValue> userValues = DatabaseManager.GameEventUserValue.FindAllUserValuesByCharacterId(player.CharacterId);
 
         player.EventUserValues = userValues;
-        player.Session.Send(GameEventUserValuePacket.LoadValues(userValues));
+        player.Session?.Send(GameEventUserValuePacket.LoadValues(userValues));
     }
 
     public static GameEventUserValue GetUserValue(Player player, int eventId, long expirationTimestamp, GameEventUserValueType type)
     {
-        GameEventUserValue userValue = player.EventUserValues.FirstOrDefault(x => x.EventId == eventId && x.EventType == type);
-        if (userValue is null)
+        GameEventUserValue? userValue = player.EventUserValues.FirstOrDefault(x => x.EventId == eventId && x.EventType == type);
+        if (userValue is not null)
         {
-            userValue = new(player.CharacterId, type, "", eventId, expirationTimestamp);
-            player.EventUserValues.Add(userValue);
+            return userValue;
         }
+
+        userValue = new(player.CharacterId, type, "", eventId, expirationTimestamp);
+        player.EventUserValues.Add(userValue);
         return userValue;
     }
 }

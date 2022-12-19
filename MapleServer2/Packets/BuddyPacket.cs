@@ -151,7 +151,7 @@ public static class BuddyPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buddy);
         pWriter.Write(Mode.LoginLogoutNotification);
-        pWriter.WriteBool(!buddy.Friend?.Session?.Connected() ?? true);
+        pWriter.WriteBool(!buddy.Friend.Session?.Connected() ?? true);
         pWriter.WriteLong(buddy.SharedId);
         pWriter.WriteUnicodeString(buddy.Friend.Name);
         return pWriter;
@@ -181,7 +181,7 @@ public static class BuddyPacket
         return pWriter;
     }
 
-    public static void WriteBuddy(Buddy buddy, PacketWriter pWriter)
+    private static void WriteBuddy(Buddy buddy, PacketWriter pWriter)
     {
         pWriter.WriteLong(buddy.SharedId);
         pWriter.WriteLong(buddy.Friend.CharacterId);
@@ -196,7 +196,7 @@ public static class BuddyPacket
         pWriter.WriteBool(buddy.IsFriendRequest);
         pWriter.WriteBool(buddy.IsPending);
         pWriter.WriteBool(buddy.Blocked);
-        pWriter.WriteBool(buddy.Friend?.Session?.Connected() ?? false);
+        pWriter.WriteBool(buddy.Friend.Session?.Connected() ?? false);
         pWriter.WriteByte();
         pWriter.WriteLong(buddy.Timestamp);
         pWriter.WriteUnicodeString(buddy.Friend.ProfileUrl);

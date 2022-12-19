@@ -63,7 +63,7 @@ public static class EnchantScrollPacket
         return pWriter;
     }
 
-    public static PacketWriter UseScroll(short errorId, Item item = null)
+    public static PacketWriter UseScroll(short errorId, Item? item = null)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.EnchantScroll);
         pWriter.Write(Mode.UseScroll);

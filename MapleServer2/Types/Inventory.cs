@@ -22,7 +22,7 @@ public sealed class Inventory : IInventory
     private readonly Dictionary<long, Item> Items;
     public Dictionary<ItemSlot, Item> Equips { get; }
     public Dictionary<ItemSlot, Item> Cosmetics { get; }
-    public Item[] Badges { get; }
+    public Item?[] Badges { get; }
     public Item[] LapenshardStorage { get; }
     public List<SetBonus> SetBonuses { get; }
 

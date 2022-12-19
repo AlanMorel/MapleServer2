@@ -133,23 +133,22 @@ public static class StorageInventoryPacket
         return pWriter;
     }
 
-    private static PacketWriter LoadHelper(this PacketWriter pWriter, Item[] items)
+    private static void LoadHelper(this PacketWriter pWriter, Item?[] items)
     {
         pWriter.WriteLong();
         pWriter.WriteShort((short) items.Count(x => x != null));
         for (short i = 0; i < items.Length; i++)
         {
-            if (items[i] == null)
+            Item? item = items[i];
+            if (item == null)
             {
                 continue;
             }
-            pWriter.WriteInt(items[i].Id);
-            pWriter.WriteLong(items[i].Uid);
-            pWriter.WriteShort(items[i].Slot);
-            pWriter.WriteInt(items[i].Rarity);
-            pWriter.WriteItem(items[i]);
+            pWriter.WriteInt(item.Id);
+            pWriter.WriteLong(item.Uid);
+            pWriter.WriteShort(item.Slot);
+            pWriter.WriteInt(item.Rarity);
+            pWriter.WriteItem(item);
         }
-
-        return pWriter;
     }
 }

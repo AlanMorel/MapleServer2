@@ -15,12 +15,14 @@ public static class LapenshardPacket
         Upgrade = 5
     }
 
-    public static PacketWriter Load(Item[] items)
+    public static PacketWriter Load(Item?[] items)
     {
+        List<Item> itemList = items.Where(x => x is not null).ToList()!;
+
         PacketWriter pWriter = PacketWriter.Of(SendOp.ItemLapenshard);
         pWriter.Write(Mode.Load);
-        pWriter.WriteInt(items.Count(x => x is not null));
-        foreach (Item item in items.Where(x => x is not null))
+        pWriter.WriteInt(itemList.Count);
+        foreach (Item item in itemList)
         {
             pWriter.WriteInt(item.Slot);
             pWriter.WriteInt(item.Id);

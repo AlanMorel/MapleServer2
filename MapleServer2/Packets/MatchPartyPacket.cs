@@ -44,7 +44,7 @@ public static class MatchPartyPacket
         return pWriter;
     }
 
-    public static void WritePartyInformation(PacketWriter pWriter, Party party, bool header = true)
+    private static void WritePartyInformation(PacketWriter pWriter, Party party, bool header = true)
     {
         if (header)
         {

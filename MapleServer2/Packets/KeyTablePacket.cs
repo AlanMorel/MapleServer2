@@ -49,7 +49,7 @@ public static class KeyTablePacket
         return pWriter;
     }
 
-    private static PacketWriter WriteHotbars(this PacketWriter pWriter, GameOptions options)
+    private static void WriteHotbars(this PacketWriter pWriter, GameOptions options)
     {
         pWriter.WriteShort(options.ActiveHotbarId);
         pWriter.WriteShort((short) options.Hotbars.Count);
@@ -63,7 +63,5 @@ public static class KeyTablePacket
                 pWriter.Write(hotbar.Slots[slotIndex]);
             }
         }
-
-        return pWriter;
     }
 }

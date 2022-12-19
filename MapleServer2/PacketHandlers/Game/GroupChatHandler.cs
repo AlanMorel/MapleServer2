@@ -62,13 +62,13 @@ public class GroupChatHandler : GamePacketHandler<GroupChatHandler>
         string targetPlayer = packet.ReadUnicodeString();
         int groupChatId = packet.ReadInt();
 
-        GroupChat groupChat = GameServer.GroupChatManager.GetGroupChatById(groupChatId);
+        GroupChat? groupChat = GameServer.GroupChatManager.GetGroupChatById(groupChatId);
         if (groupChat is null)
         {
             return;
         }
 
-        Player other = GameServer.PlayerManager.GetPlayerByName(targetPlayer);
+        Player? other = GameServer.PlayerManager.GetPlayerByName(targetPlayer);
         if (other is null)
         {
             session.Send(GroupChatPacket.Error(session.Player, targetPlayer, (int) GroupChatError.OfflinePlayer));
@@ -87,15 +87,15 @@ public class GroupChatHandler : GamePacketHandler<GroupChatHandler>
 
         groupChat.AddMember(other);
 
-        other.Session.Send(GroupChatPacket.Update(groupChat));
-        other.Session.Send(GroupChatPacket.Join(session.Player, other, groupChat));
+        other.Session?.Send(GroupChatPacket.Update(groupChat));
+        other.Session?.Send(GroupChatPacket.Join(session.Player, other, groupChat));
     }
 
     private static void HandleLeave(GameSession session, PacketReader packet)
     {
         int groupChatId = packet.ReadInt();
 
-        GroupChat groupChat = GameServer.GroupChatManager.GetGroupChatById(groupChatId);
+        GroupChat? groupChat = GameServer.GroupChatManager.GetGroupChatById(groupChatId);
         if (groupChat is null)
         {
             return;
@@ -111,12 +111,8 @@ public class GroupChatHandler : GamePacketHandler<GroupChatHandler>
         string message = packet.ReadUnicodeString();
         int groupChatId = packet.ReadInt();
 
-        GroupChat groupChat = GameServer.GroupChatManager.GetGroupChatById(groupChatId);
-        if (groupChat is null)
-        {
-            return;
-        }
+        GroupChat? groupChat = GameServer.GroupChatManager.GetGroupChatById(groupChatId);
 
-        groupChat.BroadcastPacketGroupChat(GroupChatPacket.Chat(groupChat, session.Player, message));
+        groupChat?.BroadcastPacketGroupChat(GroupChatPacket.Chat(groupChat, session.Player, message));
     }
 }

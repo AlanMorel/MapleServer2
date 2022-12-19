@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Enums;
+﻿using System.Diagnostics;
+using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
@@ -11,37 +12,51 @@ namespace MapleServer2.PacketHandlers.Game.Helpers;
 
 public static class BeautyHelper
 {
-    public static void ChangeHair(GameSession session, int hairId, out Item previousHair, out Item newHair)
+    public static void ChangeHair(GameSession session, int hairId, out Item? previousHair, out Item? newHair)
     {
-        Random random = Random.Shared;
+        previousHair = null;
+        newHair = null;
 
         //Grab a preset hair and length of hair
-        ItemCustomizeMetadata customize = ItemMetadataStorage.GetMetadata(hairId).Customize;
-        int indexPreset = random.Next(customize.HairPresets.Count);
+        ItemCustomizeMetadata? customize = ItemMetadataStorage.GetMetadata(hairId)?.Customize;
+        if (customize is null)
+        {
+            return;
+        }
+
+        int indexPreset = Random.Shared.Next(customize.HairPresets.Count);
         HairPresets chosenPreset = customize.HairPresets[indexPreset];
 
         //Grab random front hair length
-        double chosenFrontLength = random.NextDouble() *
+        double chosenFrontLength = Random.Shared.NextDouble() *
             (customize.HairPresets[indexPreset].MaxScale - customize.HairPresets[indexPreset].MinScale) + customize.HairPresets[indexPreset].MinScale;
 
         //Grab random back hair length
-        double chosenBackLength = random.NextDouble() *
+        double chosenBackLength = Random.Shared.NextDouble() *
             (customize.HairPresets[indexPreset].MaxScale - customize.HairPresets[indexPreset].MinScale) + customize.HairPresets[indexPreset].MinScale;
 
         // Grab random preset color
-        ColorPaletteMetadata palette = ColorPaletteMetadataStorage.GetMetadata(2); // pick from palette 2. Seems like it's the correct palette for basic hair colors
+        // pick from palette 2. Seems like it's the correct palette for basic hair colors
+        ColorPaletteMetadata? palette = ColorPaletteMetadataStorage.GetMetadata(2);
 
-        int indexColor = random.Next(palette.DefaultColors.Count);
+        if (palette == null)
+        {
+            return;
+        }
+
+        int indexColor = Random.Shared.Next(palette.DefaultColors.Count);
         MixedColor color = palette.DefaultColors[indexColor];
 
         newHair = new(hairId)
         {
             Color = EquipColor.Argb(color, indexColor, palette.PaletteId),
-            HairData = new((float) chosenBackLength, (float) chosenFrontLength, chosenPreset.BackPositionCoord, chosenPreset.BackPositionRotation, chosenPreset.FrontPositionCoord, chosenPreset.FrontPositionRotation),
+            HairData = new((float) chosenBackLength, (float) chosenFrontLength, chosenPreset.BackPositionCoord, chosenPreset.BackPositionRotation,
+                chosenPreset.FrontPositionCoord, chosenPreset.FrontPositionRotation),
             IsEquipped = true,
             OwnerCharacterId = session.Player.CharacterId,
             OwnerCharacterName = session.Player.Name
         };
+
         Dictionary<ItemSlot, Item> cosmetics = session.Player.Inventory.Cosmetics;
 
         //Remove old hair
@@ -50,20 +65,27 @@ public static class BeautyHelper
             previousHair.Slot = -1;
             session.Player.HairInventory.RandomHair = previousHair; // store the previous hair
             DatabaseManager.Items.Delete(previousHair.Uid);
+
+            Debug.Assert(session.Player.FieldPlayer != null, "session.Player.FieldPlayer != null");
             session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.Player.FieldPlayer, previousHair));
         }
 
         cosmetics[ItemSlot.HR] = newHair;
     }
 
-    public static void ChangeFace(GameSession session, int faceId, out Item previousFace, out Item newFace)
+    public static void ChangeFace(GameSession session, int faceId, out Item? previousFace, out Item? newFace)
     {
-        Random random = Random.Shared;
-
         // Grab random preset color
-        ColorPaletteMetadata palette = ColorPaletteMetadataStorage.GetMetadata(1); // pick from palette 2. Seems like it's the correct palette for basic face colors
+        // pick from palette 2. Seems like it's the correct palette for basic face colors
+        ColorPaletteMetadata? palette = ColorPaletteMetadataStorage.GetMetadata(1);
+        if (palette is null)
+        {
+            previousFace = null!;
+            newFace = null!;
+            return;
+        }
 
-        int indexColor = random.Next(palette.DefaultColors.Count);
+        int indexColor = Random.Shared.Next(palette.DefaultColors.Count);
         MixedColor color = palette.DefaultColors[indexColor];
 
         newFace = new(faceId)
@@ -80,6 +102,7 @@ public static class BeautyHelper
         {
             previousFace.Slot = -1;
             DatabaseManager.Items.Delete(previousFace.Uid);
+            Debug.Assert(session.Player.FieldPlayer != null, "session.Player.FieldPlayer != null");
             session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.Player.FieldPlayer, previousFace));
         }
 

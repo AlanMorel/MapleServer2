@@ -61,11 +61,16 @@ public class HomeActionHandler : GamePacketHandler<HomeActionHandler>
 
         Player player = session.Player;
 
-        Home home = GameServer.HomeManager.GetHomeById(player.VisitingHomeId);
+        Home? home = GameServer.HomeManager.GetHomeById(player.VisitingHomeId);
+        if (home is null)
+        {
+            return;
+        }
+
         HomeSurvey homeSurvey = home.Survey;
 
         string option = homeSurvey.Options.Keys.ToList()[responseIndex];
-        if (!homeSurvey.Started || homeSurvey.Ended || homeSurvey.Id != surveyId || option is null || homeSurvey.Options[option].Contains(player.Name) || !homeSurvey.AvailableCharacters.Contains(player.Name))
+        if (!homeSurvey.Started || homeSurvey.Ended || homeSurvey.Id != surveyId || homeSurvey.Options[option].Contains(player.Name) || !homeSurvey.AvailableCharacters.Contains(player.Name))
         {
             return;
         }
@@ -88,8 +93,8 @@ public class HomeActionHandler : GamePacketHandler<HomeActionHandler>
     private static void HandleKick(PacketReader packet)
     {
         string characterName = packet.ReadUnicodeString();
-        Player target = GameServer.PlayerManager.GetPlayerByName(characterName);
-        if (target == null)
+        Player? target = GameServer.PlayerManager.GetPlayerByName(characterName);
+        if (target is null)
         {
             return;
         }
@@ -105,12 +110,13 @@ public class HomeActionHandler : GamePacketHandler<HomeActionHandler>
         CoordB coordB = packet.Read<CoordB>();
         packet.ReadByte();
 
-        IFieldObject<Cube> fieldCube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coordB.ToFloat());
-        if (fieldCube is null)
+        IFieldObject<Cube>? fieldCube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coordB.ToFloat());
+        Cube? cube = fieldCube?.Value;
+
+        if (cube?.PortalSettings == null)
         {
             return;
         }
-        Cube cube = fieldCube.Value;
 
         cube.PortalSettings.PortalName = packet.ReadUnicodeString();
         cube.PortalSettings.Method = (UgcPortalMethod) packet.ReadByte();
@@ -129,7 +135,7 @@ public class HomeActionHandler : GamePacketHandler<HomeActionHandler>
         CoordF coord = packet.Read<CoordF>();
         CoordF velocity1 = packet.Read<CoordF>();
 
-        if (!session.FieldManager.State.Guide.TryGetValue(objectId, out IFieldObject<GuideObject> ball))
+        if (!session.FieldManager.State.Guide.TryGetValue(objectId, out IFieldObject<GuideObject>? ball))
         {
             return;
         }
@@ -154,7 +160,7 @@ public class HomeActionHandler : GamePacketHandler<HomeActionHandler>
         CoordB coordB = packet.Read<CoordB>();
 
         // 50400158 = Portal Cube
-        IFieldObject<Cube> cube = session.FieldManager.State.Cubes.Values
+        IFieldObject<Cube>? cube = session.FieldManager.State.Cubes.Values
             .FirstOrDefault(x => x.Coord == coordB.ToFloat() && x.Value.Item.Id == 50400158);
         if (cube is null)
         {
@@ -179,6 +185,11 @@ public class HomeActionHandler : GamePacketHandler<HomeActionHandler>
         foreach (IFieldObject<Cube> fieldCubePortal in fieldCubePortals)
         {
             Cube cubePortal = fieldCubePortal.Value;
+            if (cubePortal.PortalSettings is null)
+            {
+                continue;
+            }
+
             Portal portal = new(GuidGenerator.Int())
             {
                 IsVisible = true,

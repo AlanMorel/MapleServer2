@@ -1,5 +1,4 @@
 ﻿using MapleServer2.AI.Functions;
-using MapleServer2.Managers.Actors;
 
 namespace MapleServer2.Types;
 

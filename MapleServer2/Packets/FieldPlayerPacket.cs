@@ -105,7 +105,7 @@ public static class FieldPlayerPacket
             pWriter.WriteDeflated(new byte[1], 0, 1); // Empty buffer
         }
 
-        List<Item> badges = player.Inventory.Badges.Where(x => x != null).ToList();
+        List<Item?> badges = player.Inventory.Badges.Where(x => x is not null).ToList();
         pWriter.WriteBool(badges.Count > 0);
         if (badges.Count > 0)
         {

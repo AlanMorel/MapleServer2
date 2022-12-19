@@ -54,7 +54,7 @@ public static class PetPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.ResponsePet);
         pWriter.Write(Mode.UpdateName);
         pWriter.WriteInt(pet.Owner.ObjectId);
-        pWriter.WriteUnicodeString(pet.Item.PetInfo.Name);
+        pWriter.WriteUnicodeString(pet.Item.PetInfo?.Name);
         pWriter.WriteLong();
         pWriter.WriteInt();
         pWriter.WriteShort();
@@ -69,14 +69,14 @@ public static class PetPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.ResponsePet);
         pWriter.Write(Mode.LoadPetSettings);
         pWriter.WriteInt(pet.Owner.ObjectId);
-        pWriter.WriteUnicodeString(pet.Item.PetInfo.Name);
-        pWriter.WriteLong(pet.Item.PetInfo.Exp);
+        pWriter.WriteUnicodeString(pet.Item.PetInfo?.Name);
+        pWriter.WriteLong(pet.Item.PetInfo?.Exp);
         pWriter.WriteInt();
         pWriter.WriteShort();
         pWriter.WriteShort();
         pWriter.WriteShort();
-        pWriter.WriteClass(pet.Item.PetInfo.PotionSettings);
-        pWriter.WriteClass(pet.Item.PetInfo.LootSettings);
+        pWriter.WriteClass(pet.Item.PetInfo?.PotionSettings);
+        pWriter.WriteClass(pet.Item.PetInfo?.LootSettings);
 
         return pWriter;
     }
@@ -86,7 +86,7 @@ public static class PetPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.ResponsePet);
         pWriter.Write(Mode.PotionSettings);
         pWriter.WriteInt(pet.Owner.ObjectId);
-        pWriter.WriteClass(pet.Item.PetInfo.PotionSettings);
+        pWriter.WriteClass(pet.Item.PetInfo?.PotionSettings);
 
         return pWriter;
     }
@@ -96,7 +96,7 @@ public static class PetPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.ResponsePet);
         pWriter.Write(Mode.LootSettings);
         pWriter.WriteInt(pet.Owner.ObjectId);
-        pWriter.WriteClass(pet.Item.PetInfo.LootSettings);
+        pWriter.WriteClass(pet.Item.PetInfo?.LootSettings);
 
         return pWriter;
     }

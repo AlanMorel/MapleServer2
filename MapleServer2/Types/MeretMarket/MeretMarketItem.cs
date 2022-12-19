@@ -39,7 +39,7 @@ public class PremiumMarketItem : MeretMarketItem
     public readonly bool RestockUnavailable;
     public readonly int ParentMarketId;
     public readonly long BannerId;
-    public Banner Banner;
+    public Banner? Banner;
     public readonly bool IsPromo;
     public readonly string PromoName = "";
     public readonly MeretMarketPromoFlag PromoFlag;

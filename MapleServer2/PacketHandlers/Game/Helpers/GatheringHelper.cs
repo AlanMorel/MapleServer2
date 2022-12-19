@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Types.Metadata;
+﻿using System.Diagnostics;
+using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Servers.Game;
@@ -10,8 +11,8 @@ public static class GatheringHelper
     public static void HandleGathering(GameSession session, int recipeId, out int numDrop)
     {
         numDrop = 0;
-        RecipeMetadata recipe = RecipeMetadataStorage.GetRecipe(recipeId);
-        if (recipe == null)
+        RecipeMetadata? recipe = RecipeMetadataStorage.GetRecipe(recipeId);
+        if (recipe is null)
         {
             return;
         }
@@ -47,6 +48,7 @@ public static class GatheringHelper
                 continue;
             }
 
+            Debug.Assert(session.Player.FieldPlayer != null, "session.Player.FieldPlayer != null");
             session.FieldManager.AddItem(session.Player.FieldPlayer, new(item.ItemId, item.Amount, item.Rarity, saveToDatabase: false));
 
             numDrop += item.Amount;

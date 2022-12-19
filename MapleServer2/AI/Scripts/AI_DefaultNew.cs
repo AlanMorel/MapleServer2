@@ -1,9 +1,5 @@
-﻿using Maple2Storage.Enums;
-using Maple2Storage.Types;
-using MapleServer2.AI.Functions;
-using MapleServer2.Data.Static;
+﻿using MapleServer2.AI.Functions;
 using MapleServer2.Enums;
-using MapleServer2.Managers.Actors;
 using MapleServer2.Types;
 
 namespace MapleServer2.AI.Scripts;

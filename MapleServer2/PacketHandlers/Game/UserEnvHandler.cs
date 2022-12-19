@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using System.Diagnostics;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -35,15 +36,16 @@ public class UserEnvHandler : GamePacketHandler<UserEnvHandler>
 
     private static void HandleTitleChange(GameSession session, PacketReader packet)
     {
-        int titleID = packet.ReadInt();
+        int titleId = packet.ReadInt();
 
-        if (titleID < 0)
+        if (titleId < 0)
         {
             return;
         }
+        Debug.Assert(session.Player.FieldPlayer != null, "session.Player.FieldPlayer != null");
 
-        session.Player.TitleId = titleID;
-        session.FieldManager.BroadcastPacket(UserEnvPacket.UpdateTitle(session, titleID));
+        session.Player.TitleId = titleId;
+        session.FieldManager.BroadcastPacket(UserEnvPacket.UpdateTitle(session.Player.FieldPlayer.ObjectId, titleId));
     }
 
     private static void HandleTrophy(GameSession session)

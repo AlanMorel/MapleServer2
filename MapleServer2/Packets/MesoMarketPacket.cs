@@ -31,14 +31,14 @@ public static class MesoMarketPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MesoMarket);
         pWriter.Write(Mode.LoadMarket);
-        pWriter.WriteFloat(float.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketTax")));
-        pWriter.WriteFloat(float.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketPriceRange")));
-        pWriter.WriteLong(long.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketAveragePrice"))); // TODO: Calculate average price
-        pWriter.WriteInt(int.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketTotaListingsLimit")));
-        pWriter.WriteInt(int.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketDailyListingsLimit")));
-        pWriter.WriteInt(int.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketMonthlyPurchaseLimit")));
-        pWriter.WriteInt(int.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketListingDayDuration")));
-        pWriter.WriteInt(int.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketListingsDisplayCount")));
+        pWriter.WriteFloat(float.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketTax") ?? "0"));
+        pWriter.WriteFloat(float.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketPriceRange") ?? "0"));
+        pWriter.WriteLong(long.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketAveragePrice") ?? "0")); // TODO: Calculate average price
+        pWriter.WriteInt(int.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketTotaListingsLimit") ?? "0"));
+        pWriter.WriteInt(int.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketDailyListingsLimit") ?? "0"));
+        pWriter.WriteInt(int.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketMonthlyPurchaseLimit") ?? "0"));
+        pWriter.WriteInt(int.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketListingDayDuration") ?? "0"));
+        pWriter.WriteInt(int.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketListingsDisplayCount") ?? "0"));
         pWriter.WriteInt(100); // unk
         pWriter.WriteInt(1000); // unk
         return pWriter;

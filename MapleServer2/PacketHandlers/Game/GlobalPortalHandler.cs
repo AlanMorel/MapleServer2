@@ -36,8 +36,8 @@ public class GlobalPortalHandler : GamePacketHandler<GlobalPortalHandler>
         int globalEventId = packet.ReadInt();
         int selectionIndex = packet.ReadInt();
 
-        GlobalEvent globalEvent = GameServer.GlobalEventManager.GetEventById(globalEventId);
-        if (globalEvent == null)
+        GlobalEvent? globalEvent = GameServer.GlobalEventManager.GetEventById(globalEventId);
+        if (globalEvent is null)
         {
             return;
         }
@@ -90,7 +90,7 @@ public class GlobalPortalHandler : GamePacketHandler<GlobalPortalHandler>
         }
 
         session.Player.Mount = null;
-        MapPortal portal = MapEntityMetadataStorage.GetPortals((int) map).FirstOrDefault(portal => portal.Id == 1);
+        MapPortal? portal = MapEntityMetadataStorage.GetPortals((int) map)?.FirstOrDefault(portal => portal.Id == 1);
         session.Player.Warp(map, portal?.Coord.ToFloat() ?? new(), portal?.Rotation.ToFloat() ?? new());
     }
 }

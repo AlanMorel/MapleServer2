@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Types.Metadata;
+﻿using System.Diagnostics;
+using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
@@ -195,6 +196,7 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
             session.Send(GuildPacket.ErrorNotice((byte) GuildErrorNotice.GuildWithSameNameExists));
             return;
         }
+
         Guild newGuild = new(guildName, session.Player);
 
         GameServer.GuildManager.AddGuild(newGuild);
@@ -204,7 +206,8 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
 
         string inviter = ""; // nobody because nobody invited the guild leader
 
-        GuildMember member = newGuild.Members.FirstOrDefault(x => x.Player == session.Player);
+        GuildMember? member = newGuild.Members.FirstOrDefault(x => x.Player == session.Player);
+        Debug.Assert(member != null, nameof(member) + " != null");
         session.Send(GuildPacket.UpdateGuild(newGuild));
         session.Send(GuildPacket.MemberBroadcastJoinNotice(member, inviter, false));
         session.Send(GuildPacket.UpdatePlayer(session.Player));
@@ -212,17 +215,21 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
         // Remove any applications
         foreach (GuildApplication application in session.Player.GuildApplications)
         {
-            Guild guild = GameServer.GuildManager.GetGuildById(application.GuildId);
-            application.Remove(session.Player, guild);
+            Guild? guild = GameServer.GuildManager.GetGuildById(application.GuildId);
+            if (guild is not null)
+            {
+                application.Remove(session.Player, guild);
+            }
         }
+
         DatabaseManager.Characters.Update(session.Player);
         TrophyManager.OnGuildJoin(session.Player);
     }
 
     private static void HandleDisband(GameSession session)
     {
-        Guild guild = GameServer.GuildManager.GetGuildByLeader(session.Player);
-        if (guild == null)
+        Guild? guild = GameServer.GuildManager.GetGuildByLeader(session.Player);
+        if (guild is null)
         {
             return;
         }
@@ -232,15 +239,17 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
         {
             foreach (GuildApplication application in guild.Applications)
             {
-                Player player = GameServer.PlayerManager.GetPlayerById(application.CharacterId);
-                if (player == null)
+                Player? player = GameServer.PlayerManager.GetPlayerById(application.CharacterId);
+                if (player is null)
                 {
                     continue;
                 }
+
                 application.Remove(player, guild);
                 // TODO: Send mail to player as rejected auto message
             }
         }
+
         session.Send(GuildPacket.DisbandConfirm());
         session.FieldManager.BroadcastPacket(GuildPacket.UpdateGuildTag(session.Player));
         guild.RemoveMember(session.Player);
@@ -252,19 +261,20 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
     {
         string targetPlayer = packet.ReadUnicodeString();
 
-        Guild guild = GameServer.GuildManager.GetGuildByLeader(session.Player);
-        if (guild == null)
+        Guild? guild = GameServer.GuildManager.GetGuildByLeader(session.Player);
+        if (guild is null)
         {
             return;
         }
 
-        Player playerInvited = GameServer.PlayerManager.GetPlayerByName(targetPlayer);
-        if (playerInvited == null)
+        Player? playerInvited = GameServer.PlayerManager.GetPlayerByName(targetPlayer);
+        if (playerInvited is null)
         {
             session.Send(GuildPacket.ErrorNotice((byte) GuildErrorNotice.UnableToSendInvite));
+            return;
         }
 
-        if (playerInvited.Guild != null)
+        if (playerInvited.Guild is not null)
         {
             session.Send(GuildPacket.ErrorNotice((byte) GuildErrorNotice.CharacterIsAlreadyInAGuild));
             return;
@@ -277,8 +287,7 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
         }
 
         session.Send(GuildPacket.InviteConfirm(playerInvited));
-        playerInvited.Session.Send(GuildPacket.SendInvite(session.Player, playerInvited, guild));
-
+        playerInvited.Session?.Send(GuildPacket.SendInvite(session.Player, playerInvited, guild));
     }
 
     private static void HandleInviteResponse(GameSession session, PacketReader packet)
@@ -290,33 +299,33 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
         string inviteeName = packet.ReadUnicodeString();
         byte response = packet.ReadByte(); // 01 accept 
 
-        Guild guild = GameServer.GuildManager.GetGuildById(guildId);
-        if (guild == null)
+        Guild? guild = GameServer.GuildManager.GetGuildById(guildId);
+        if (guild is null)
         {
             return;
         }
 
-        Player inviter = GameServer.PlayerManager.GetPlayerByName(inviterName);
-        if (inviter == null)
+        Player? inviter = GameServer.PlayerManager.GetPlayerByName(inviterName);
+        if (inviter is null)
         {
             return;
         }
 
         if (response == 00)
         {
-            inviter.Session.Send(GuildPacket.InviteNotification(inviteeName, 256));
+            inviter.Session?.Send(GuildPacket.InviteNotification(inviteeName, 256));
             session.Send(GuildPacket.InviteResponseConfirm(inviter, session.Player, guild, response));
             return;
         }
 
         guild.AddMember(session.Player);
-        GuildMember member = guild.Members.FirstOrDefault(x => x.Player == session.Player);
-        if (member == null)
+        GuildMember? member = guild.Members.FirstOrDefault(x => x.Player == session.Player);
+        if (member is null)
         {
             return;
         }
 
-        inviter.Session.Send(GuildPacket.InviteNotification(inviteeName, response));
+        inviter.Session?.Send(GuildPacket.InviteNotification(inviteeName, response));
         session.Send(GuildPacket.InviteResponseConfirm(inviter, session.Player, guild, response));
         session.FieldManager.BroadcastPacket(GuildPacket.UpdateGuildTag2(session.Player, guildName));
         guild.BroadcastPacketGuild(GuildPacket.MemberBroadcastJoinNotice(member, inviterName, true));
@@ -327,8 +336,8 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
 
     private static void HandleLeave(GameSession session)
     {
-        Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
-        if (guild == null)
+        Guild? guild = GameServer.GuildManager.GetGuildById(session.Player.Guild?.Id ?? 0);
+        if (guild is null)
         {
             return;
         }
@@ -343,14 +352,14 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
     {
         string target = packet.ReadUnicodeString();
 
-        Player targetPlayer = GameServer.PlayerManager.GetPlayerByName(target);
-        if (targetPlayer == null)
+        Player? targetPlayer = GameServer.PlayerManager.GetPlayerByName(target);
+        if (targetPlayer is null)
         {
             return;
         }
 
-        Guild guild = GameServer.GuildManager.GetGuildByLeader(session.Player);
-        if (guild == null)
+        Guild? guild = GameServer.GuildManager.GetGuildByLeader(session.Player);
+        if (guild is null)
         {
             return;
         }
@@ -361,8 +370,8 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
             return;
         }
 
-        GuildMember selfPlayer = guild.Members.FirstOrDefault(x => x.Player == session.Player);
-        if (selfPlayer == null)
+        GuildMember? selfPlayer = guild.Members.FirstOrDefault(x => x.Player == session.Player);
+        if (selfPlayer is null)
         {
             return;
         }
@@ -378,6 +387,7 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
             targetPlayer.Session.Send(GuildPacket.KickNotification(session.Player));
             targetPlayer.Session.FieldManager.BroadcastPacket(GuildPacket.UpdateGuildTag(targetPlayer));
         }
+
         guild.RemoveMember(targetPlayer);
         guild.BroadcastPacketGuild(GuildPacket.KickMember(targetPlayer, session.Player));
     }
@@ -387,14 +397,14 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
         string memberName = packet.ReadUnicodeString();
         byte rank = packet.ReadByte();
 
-        Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
-        if (guild == null || session.Player.CharacterId != guild.LeaderCharacterId)
+        Guild? guild = GameServer.GuildManager.GetGuildById(session.Player.Guild?.Id ?? 0);
+        if (guild is null || session.Player.CharacterId != guild.LeaderCharacterId)
         {
             return;
         }
 
-        GuildMember member = guild.Members.First(x => x.Player.Name == memberName);
-        if (member == null || member.Rank == rank)
+        GuildMember? member = guild.Members.FirstOrDefault(x => x.Player.Name == memberName);
+        if (member is null || member.Rank == rank)
         {
             return;
         }
@@ -408,29 +418,26 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
     {
         string message = packet.ReadUnicodeString();
 
-        Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
-        if (guild == null)
-        {
-            return;
-        }
+        Guild? guild = GameServer.GuildManager.GetGuildById(session.Player.Guild?.Id ?? 0);
 
-        GuildMember member = guild.Members.FirstOrDefault(x => x.Player == session.Player);
-        if (member == null)
+        GuildMember? member = guild?.Members.FirstOrDefault(x => x.Player == session.Player);
+        if (member is null)
         {
             return;
         }
 
         member.Motto = message;
-        guild.BroadcastPacketGuild(GuildPacket.UpdatePlayerMessage(session.Player, message));
+        guild?.BroadcastPacketGuild(GuildPacket.UpdatePlayerMessage(session.Player, message));
     }
 
     private static void HandleCheckIn(GameSession session)
     {
-        Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
-        if (guild == null)
+        Guild? guild = GameServer.GuildManager.GetGuildById(session.Player.Guild?.Id ?? 0);
+        if (guild is null)
         {
             return;
         }
+
         GuildMember member = guild.Members.First(x => x.Player == session.Player);
 
         // Check if attendance timestamp is today
@@ -460,23 +467,32 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
     {
         string target = packet.ReadUnicodeString();
 
-        Player newLeader = GameServer.PlayerManager.GetPlayerByName(target);
-        if (newLeader == null)
+        Player? newLeader = GameServer.PlayerManager.GetPlayerByName(target);
+        if (newLeader is null)
         {
             return;
         }
 
         Player oldLeader = session.Player;
 
-        Guild guild = GameServer.GuildManager.GetGuildByLeader(oldLeader);
-        if (guild == null || guild.LeaderCharacterId != oldLeader.CharacterId)
+        Guild? guild = GameServer.GuildManager.GetGuildByLeader(oldLeader);
+        if (guild is null || guild.LeaderCharacterId != oldLeader.CharacterId)
         {
             return;
         }
-        GuildMember newLeaderMember = guild.Members.FirstOrDefault(x => x.Player.CharacterId == newLeader.CharacterId);
-        GuildMember oldLeaderMember = guild.Members.FirstOrDefault(x => x.Player.CharacterId == oldLeader.CharacterId);
-        newLeaderMember.Rank = 0;
-        oldLeaderMember.Rank = 1;
+
+        GuildMember? newLeaderMember = guild.Members.FirstOrDefault(x => x.Player.CharacterId == newLeader.CharacterId);
+        GuildMember? oldLeaderMember = guild.Members.FirstOrDefault(x => x.Player.CharacterId == oldLeader.CharacterId);
+        if (newLeaderMember is not null)
+        {
+            newLeaderMember.Rank = 0;
+        }
+
+        if (oldLeaderMember is not null)
+        {
+            oldLeaderMember.Rank = 1;
+        }
+
         guild.LeaderCharacterId = newLeader.CharacterId;
         guild.LeaderAccountId = newLeader.AccountId;
         guild.LeaderName = newLeader.Name;
@@ -491,14 +507,10 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
         packet.ReadByte();
         string notice = packet.ReadUnicodeString();
 
-        Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
-        if (guild == null)
-        {
-            return;
-        }
+        Guild? guild = GameServer.GuildManager.GetGuildById(session.Player.Guild?.Id ?? 0);
 
-        GuildMember member = guild.Members.FirstOrDefault(x => x.Player == session.Player);
-        if (member == null)
+        GuildMember? member = guild?.Members.FirstOrDefault(x => x.Player == session.Player);
+        if (member is null || guild is null)
         {
             return;
         }
@@ -519,8 +531,8 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
         string rankName = packet.ReadUnicodeString();
         int rights = packet.ReadInt();
 
-        Guild guild = GameServer.GuildManager.GetGuildByLeader(session.Player);
-        if (guild == null || guild.LeaderCharacterId != session.Player.CharacterId)
+        Guild? guild = GameServer.GuildManager.GetGuildByLeader(session.Player);
+        if (guild is null || guild.LeaderCharacterId != session.Player.CharacterId)
         {
             return;
         }
@@ -535,8 +547,8 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
     {
         bool toggle = packet.ReadBool();
 
-        Guild guild = GameServer.GuildManager.GetGuildByLeader(session.Player);
-        if (guild == null)
+        Guild? guild = GameServer.GuildManager.GetGuildByLeader(session.Player);
+        if (guild is null)
         {
             return;
         }
@@ -552,9 +564,14 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
         string body = packet.ReadUnicodeString();
 
         Player sender = session.Player;
-        Guild guild = sender.Guild;
+        Guild? guild = sender.Guild;
 
-        if (guild == null)
+        if (guild is null)
+        {
+            return;
+        }
+
+        if (sender.GuildMember is null)
         {
             return;
         }
@@ -573,7 +590,7 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
         IEnumerable<long> recipientIds = guild.Members.Select(c => c.Player.CharacterId);
         foreach (long recipientId in recipientIds)
         {
-            MailHelper.SendMail(MailType.Player, recipientId, sender.CharacterId, sender.Name, title, body, "", "", new(), 0, 0, out Mail mail);
+            MailHelper.SendMail(MailType.Player, recipientId, sender.CharacterId, sender.Name, title, body, "", "", new(), 0, 0, out Mail _);
         }
     }
 
@@ -586,8 +603,8 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
             return;
         }
 
-        Guild guild = GameServer.GuildManager.GetGuildById(guildId);
-        if (guild == null)
+        Guild? guild = GameServer.GuildManager.GetGuildById(guildId);
+        if (guild is null)
         {
             return;
         }
@@ -600,7 +617,7 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
         {
             if (((GuildRights) guild.Ranks[member.Rank].Rights).HasFlag(GuildRights.CanInvite))
             {
-                member?.Player?.Session?.Send(GuildPacket.SendApplication(application, session.Player));
+                member.Player.Session?.Send(GuildPacket.SendApplication(application, session.Player));
             }
         }
     }
@@ -609,14 +626,14 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
     {
         long guildApplicationId = packet.ReadLong();
 
-        GuildApplication application = session.Player.GuildApplications.FirstOrDefault(x => x.Id == guildApplicationId);
-        if (application == null)
+        GuildApplication? application = session.Player.GuildApplications.FirstOrDefault(x => x.Id == guildApplicationId);
+        if (application is null)
         {
             return;
         }
 
-        Guild guild = GameServer.GuildManager.GetGuildById(application.GuildId);
-        if (guild == null)
+        Guild? guild = GameServer.GuildManager.GetGuildById(application.GuildId);
+        if (guild is null)
         {
             return;
         }
@@ -628,7 +645,7 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
         {
             if (((GuildRights) guild.Ranks[member.Rank].Rights).HasFlag(GuildRights.CanInvite))
             {
-                member.Player.Session.Send(GuildPacket.WithdrawApplicationGuildUpdate(application.Id));
+                member.Player.Session?.Send(GuildPacket.WithdrawApplicationGuildUpdate(application.Id));
             }
         }
     }
@@ -638,32 +655,34 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
         long guildApplicationId = packet.ReadLong();
         byte response = packet.ReadByte();
 
-        Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
-        if (guild == null)
+        Guild? guild = GameServer.GuildManager.GetGuildById(session.Player.Guild?.Id ?? 0);
+        if (guild is null)
         {
             return;
         }
 
-        GuildApplication application = guild.Applications.FirstOrDefault(x => x.Id == guildApplicationId);
-        if (application == null)
+        GuildApplication? application = guild.Applications.FirstOrDefault(x => x.Id == guildApplicationId);
+        if (application is null)
         {
             return;
         }
 
-        Player applier = GameServer.PlayerManager.GetPlayerById(application.CharacterId);
+        Player? applier = GameServer.PlayerManager.GetPlayerById(application.CharacterId);
+        if (applier is null)
+        {
+            return;
+        }
 
         session.Send(GuildPacket.ApplicationResponse(guildApplicationId, applier.Name, response));
         if (response == 1)
         {
             session.Send(GuildPacket.InviteNotification(applier.Name, response));
         }
+
         guild.BroadcastPacketGuild(GuildPacket.ApplicationResponseBroadcastNotice(session.Player.Name, applier.Name, response, guildApplicationId));
         application.Remove(applier, guild);
 
-        if (applier.Session != null)
-        {
-            applier.Session.Send(GuildPacket.ApplicationResponseToApplier(guild.Name, guildApplicationId, response));
-        }
+        applier.Session?.Send(GuildPacket.ApplicationResponseToApplier(guild.Name, guildApplicationId, response));
 
         if (response == 0)
         {
@@ -671,6 +690,7 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
             {
                 // TODO: Send System mail for rejection
             }
+
             return;
         }
 
@@ -681,7 +701,12 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
             applier.Session.FieldManager.BroadcastPacket(GuildPacket.UpdateGuildTag2(applier, guild.Name));
         }
 
-        GuildMember member = guild.Members.FirstOrDefault(x => x.Player == applier);
+        GuildMember? member = guild.Members.FirstOrDefault(x => x.Player == applier);
+        if (member is null)
+        {
+            return;
+        }
+
         guild.BroadcastPacketGuild(GuildPacket.MemberBroadcastJoinNotice(member, session.Player.Name, false));
         guild.BroadcastPacketGuild(GuildPacket.UpdatePlayer(applier));
         guild.BroadcastPacketGuild(GuildPacket.UpdateGuild(guild));
@@ -725,16 +750,16 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
     {
         int buffId = packet.ReadInt();
 
-        Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
-        if (guild == null)
+        Guild? guild = GameServer.GuildManager.GetGuildById(session.Player.Guild?.Id ?? 0);
+        if (guild is null)
         {
             return;
         }
 
-        int buffLevel = guild.Buffs.FirstOrDefault(x => x.Id == buffId).Level;
+        int buffLevel = guild.Buffs.FirstOrDefault(x => x.Id == buffId)?.Level ?? 0;
 
-        GuildBuffLevel buff = GuildBuffMetadataStorage.GetGuildBuffLevelData(buffId, buffLevel);
-        if (buff == null)
+        GuildBuffLevel? buff = GuildBuffMetadataStorage.GetGuildBuffLevelData(buffId, buffLevel);
+        if (buff is null)
         {
             return;
         }
@@ -752,8 +777,10 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
             {
                 return;
             }
+
             guild.Funds -= buff.Cost;
         }
+
         session.Send(GuildPacket.ActivateBuff(buffId));
         session.Send(GuildPacket.UseBuffNotice(buffId));
     }
@@ -762,8 +789,8 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
     {
         int buffId = packet.ReadInt();
 
-        Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
-        if (guild == null)
+        Guild? guild = GameServer.GuildManager.GetGuildById(session.Player.Guild?.Id ?? 0);
+        if (guild is null)
         {
             return;
         }
@@ -771,9 +798,14 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
         GuildBuff buff = guild.Buffs.First(x => x.Id == buffId);
 
         // get next level's data
-        GuildBuffLevel metadata = GuildBuffMetadataStorage.GetGuildBuffLevelData(buffId, buff.Level + 1);
+        GuildBuffLevel? metadata = GuildBuffMetadataStorage.GetGuildBuffLevelData(buffId, buff.Level + 1);
 
         GuildPropertyMetadata guildProperty = GuildPropertyMetadataStorage.GetMetadata(guild.Exp);
+
+        if (metadata is null)
+        {
+            return;
+        }
 
         if (guildProperty.Level < metadata.LevelRequirement)
         {
@@ -794,14 +826,14 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
     {
         int themeId = packet.ReadInt();
 
-        Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
-        if (guild == null || guild.LeaderCharacterId != session.Player.CharacterId)
+        Guild? guild = GameServer.GuildManager.GetGuildById(session.Player.Guild?.Id ?? 0);
+        if (guild is null || guild.LeaderCharacterId != session.Player.CharacterId)
         {
             return;
         }
 
-        GuildHouseMetadata houseMetadata = GuildHouseMetadataStorage.GetMetadataByThemeId(guild.HouseRank + 1, themeId);
-        if (houseMetadata == null)
+        GuildHouseMetadata? houseMetadata = GuildHouseMetadataStorage.GetMetadataByThemeId(guild.HouseRank + 1, themeId);
+        if (houseMetadata is null)
         {
             return;
         }
@@ -817,21 +849,22 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
         guild.ModifyFunds(session, guildProperty, -houseMetadata.UpgradeCost);
         guild.HouseRank = houseMetadata.Level;
         guild.HouseTheme = houseMetadata.Theme;
-        guild.BroadcastPacketGuild(GuildPacket.ChangeHouse(session.Player.Name, guild.HouseRank, guild.HouseTheme)); // need to confirm if this is the packet used when upgrading
+        guild.BroadcastPacketGuild(GuildPacket.ChangeHouse(session.Player.Name, guild.HouseRank,
+            guild.HouseTheme)); // need to confirm if this is the packet used when upgrading
     }
 
     private static void HandleChangeHomeTheme(GameSession session, PacketReader packet)
     {
         int themeId = packet.ReadInt();
 
-        Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
-        if (guild == null || guild.LeaderCharacterId != session.Player.CharacterId)
+        Guild? guild = GameServer.GuildManager.GetGuildById(session.Player.Guild?.Id ?? 0);
+        if (guild is null || guild.LeaderCharacterId != session.Player.CharacterId)
         {
             return;
         }
 
-        GuildHouseMetadata houseMetadata = GuildHouseMetadataStorage.GetMetadataByThemeId(guild.HouseRank, themeId);
-        if (houseMetadata == null)
+        GuildHouseMetadata? houseMetadata = GuildHouseMetadataStorage.GetMetadataByThemeId(guild.HouseRank, themeId);
+        if (houseMetadata is null)
         {
             return;
         }
@@ -850,19 +883,19 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
 
     private static void HandleEnterHouse(GameSession session)
     {
-        Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
-        if (guild == null)
+        Guild? guild = GameServer.GuildManager.GetGuildById(session.Player.Guild?.Id ?? 0);
+        if (guild is null)
         {
             return;
         }
 
-        int mapid = GuildHouseMetadataStorage.GetFieldId(guild.HouseRank, guild.HouseTheme);
-        if (mapid == 0)
+        int mapId = GuildHouseMetadataStorage.GetFieldId(guild.HouseRank, guild.HouseTheme);
+        if (mapId == 0)
         {
             return;
         }
 
-        session.Player.Warp(mapid, instanceId: guild.Id);
+        session.Player.Warp(mapId, instanceId: guild.Id);
     }
 
     private static void HandleGuildDonate(GameSession session, PacketReader packet)
@@ -870,8 +903,8 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
         int donateQuantity = packet.ReadInt();
         int donationAmount = donateQuantity * 10000;
 
-        Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
-        if (guild == null)
+        Guild? guild = GameServer.GuildManager.GetGuildById(session.Player.Guild?.Id ?? 0);
+        if (guild is null)
         {
             return;
         }
@@ -907,21 +940,21 @@ public class GuildHandler : GamePacketHandler<GuildHandler>
     {
         int serviceId = packet.ReadInt();
 
-        Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
-        if (guild == null)
+        Guild? guild = GameServer.GuildManager.GetGuildById(session.Player.Guild?.Id ?? 0);
+        if (guild is null)
         {
             return;
         }
 
         int currentLevel = 0;
-        GuildService service = guild.Services.FirstOrDefault(x => x.Id == serviceId);
-        if (service != null)
+        GuildService? service = guild.Services.FirstOrDefault(x => x.Id == serviceId);
+        if (service is not null)
         {
             service.Level = currentLevel;
         }
 
-        GuildServiceMetadata serviceMetadata = GuildServiceMetadataStorage.GetMetadata(serviceId, currentLevel);
-        if (serviceMetadata == null)
+        GuildServiceMetadata? serviceMetadata = GuildServiceMetadataStorage.GetMetadata(serviceId, currentLevel);
+        if (serviceMetadata is null)
         {
             return;
         }

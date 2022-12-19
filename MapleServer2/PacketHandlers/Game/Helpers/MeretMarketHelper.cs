@@ -1,4 +1,6 @@
-﻿using Maple2Storage.Enums;
+﻿using System.Diagnostics;
+using Maple2Storage.Enums;
+using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Types;
 
@@ -37,7 +39,9 @@ public static class MeretMarketHelper
             return true;
         }
 
-        Gender itemGender = ItemMetadataStorage.GetLimitMetadata(itemId).Gender;
+        ItemLimitMetadata? itemLimitMetadata = ItemMetadataStorage.GetLimitMetadata(itemId);
+        Debug.Assert(itemLimitMetadata != null, nameof(itemLimitMetadata) + " != null");
+        Gender itemGender = itemLimitMetadata.Gender;
 
         return (itemGender == Gender.Male && genderFlag.HasFlag(GenderFlag.Male)) || (itemGender == Gender.Female && genderFlag.HasFlag(GenderFlag.Female));
     }

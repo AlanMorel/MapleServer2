@@ -9,7 +9,6 @@ using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
-using Org.BouncyCastle.Asn1.X509;
 
 namespace MapleServer2.PacketHandlers.Game;
 

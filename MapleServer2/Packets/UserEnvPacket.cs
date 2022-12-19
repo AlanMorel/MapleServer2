@@ -1,6 +1,5 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 
 namespace MapleServer2.Packets;
@@ -23,11 +22,11 @@ public static class UserEnvPacket
         return pWriter;
     }
 
-    public static PacketWriter UpdateTitle(GameSession session, int titleId)
+    public static PacketWriter UpdateTitle(int playerObjectId, int titleId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UserEnvironment);
         pWriter.Write(Mode.UpdateTitles);
-        pWriter.WriteInt(session.Player.FieldPlayer.ObjectId);
+        pWriter.WriteInt(playerObjectId);
         pWriter.WriteInt(titleId);
         return pWriter;
     }

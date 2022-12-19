@@ -30,7 +30,13 @@ public static class ItemBoxHelper
 
             if (dropContent.SmartGender)
             {
-                Gender itemGender = ItemMetadataStorage.GetLimitMetadata(id).Gender;
+                ItemLimitMetadata? itemLimitMetadata = ItemMetadataStorage.GetLimitMetadata(id);
+                if (itemLimitMetadata is null)
+                {
+                    continue;
+                }
+
+                Gender itemGender = itemLimitMetadata.Gender;
                 if (itemGender != player.Gender && itemGender is not Gender.Neutral)
                 {
                     continue;
@@ -39,7 +45,13 @@ public static class ItemBoxHelper
 
 
             int rarity = dropContent.Rarity;
-            int constant = ItemMetadataStorage.GetOptionMetadata(sourceItem.Id).Constant;
+            ItemOptionMetadata? itemOptionMetadata = ItemMetadataStorage.GetOptionMetadata(sourceItem.Id);
+            if (itemOptionMetadata is null)
+            {
+                continue;
+            }
+
+            int constant = itemOptionMetadata.Constant;
             if (rarity == 0 && constant is > 0 and < 7)
             {
                 rarity = constant;
@@ -61,7 +73,7 @@ public static class ItemBoxHelper
         result = OpenBoxResult.Success;
 
         SelectItemBox box = sourceItem.Function.SelectItemBox;
-        ItemDropMetadata metadata = ItemDropMetadataStorage.GetItemDropMetadata(box.BoxId);
+        ItemDropMetadata? metadata = ItemDropMetadataStorage.GetItemDropMetadata(box.BoxId);
         if (metadata == null)
         {
             result = OpenBoxResult.UnableToOpen;
@@ -131,7 +143,7 @@ public static class ItemBoxHelper
         boxResult = OpenBoxResult.Success;
 
         OpenItemBox box = item.Function.OpenItemBox;
-        ItemDropMetadata metadata = ItemDropMetadataStorage.GetItemDropMetadata(box.BoxId);
+        ItemDropMetadata? metadata = ItemDropMetadataStorage.GetItemDropMetadata(box.BoxId);
         if (metadata == null)
         {
             session.Send(NoticePacket.Notice("No items found", NoticeType.Chat));
@@ -197,7 +209,7 @@ public static class ItemBoxHelper
         // Remove the box and required items
         if (box.RequiredItemId > 0)
         {
-            Item requiredItem = inventory.GetByUid(box.RequiredItemId);
+            Item? requiredItem = inventory.GetByUid(box.RequiredItemId);
             if (requiredItem is null)
             {
                 boxResult = OpenBoxResult.UnableToOpen;

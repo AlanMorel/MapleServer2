@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MapleServer2.Managers;
+﻿using MapleServer2.Managers;
 
 namespace MapleServer2.Types;
 

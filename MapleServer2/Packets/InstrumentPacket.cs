@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using System.Diagnostics;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets.Helpers;
 using MapleServer2.Types;
@@ -34,6 +35,8 @@ public static class InstrumentPacket
 
     public static PacketWriter PlayNote(int note, IFieldObject<Player> player)
     {
+        Debug.Assert(player.Value.Instrument != null, "player.Value.Instrument != null");
+
         PacketWriter pWriter = PacketWriter.Of(SendOp.PlayInstrument);
         pWriter.Write(Mode.PlayNote);
         pWriter.WriteInt(player.Value.Instrument.ObjectId);
@@ -44,6 +47,8 @@ public static class InstrumentPacket
 
     public static PacketWriter StopImprovise(IFieldObject<Player> player)
     {
+        Debug.Assert(player.Value.Instrument != null, "player.Value.Instrument != null");
+
         PacketWriter pWriter = PacketWriter.Of(SendOp.PlayInstrument);
         pWriter.Write(Mode.StopImprovise);
         pWriter.WriteInt(player.Value.Instrument.ObjectId);
@@ -72,6 +77,7 @@ public static class InstrumentPacket
         {
             pWriter.WriteUnicodeString(instrument.Value.Score.FileName);
         }
+
         return pWriter;
     }
 

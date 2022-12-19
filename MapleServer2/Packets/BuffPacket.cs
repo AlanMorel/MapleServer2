@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using System.Diagnostics;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
 
@@ -51,6 +52,8 @@ public static class BuffPacket
 
     public static PacketWriter AddBuff(AdditionalEffect status, int target)
     {
+        Debug.Assert(status.Caster != null, "status.Caster != null");
+
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buff);
         pWriter.Write(Mode.Add);
         pWriter.WriteBuffOwner(target, status.BuffId, status.Caster.ObjectId);
@@ -64,6 +67,8 @@ public static class BuffPacket
 
     public static PacketWriter UpdateBuff(AdditionalEffect status, int target)
     {
+        Debug.Assert(status.Caster != null, "status.Caster != null");
+
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buff);
         pWriter.Write(Mode.Update);
         pWriter.WriteBuffOwner(target, status.BuffId, status.Caster.ObjectId);
@@ -78,6 +83,8 @@ public static class BuffPacket
 
     public static PacketWriter RemoveBuff(AdditionalEffect status, int target)
     {
+        Debug.Assert(status.Caster != null, "status.Caster != null");
+
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buff);
         pWriter.Write(Mode.Remove);
         pWriter.WriteBuffOwner(target, status.BuffId, status.Caster.ObjectId);
@@ -103,6 +110,8 @@ public static class BuffPacket
 
     public static void WriteFieldEnterBuffs(this PacketWriter pWriter, AdditionalEffects effects)
     {
+        Debug.Assert(effects.Parent != null, "effects.Parent != null");
+
         pWriter.WriteShort((short) effects.Effects.Count);
 
         foreach (AdditionalEffect effect in effects.Effects)
@@ -111,8 +120,10 @@ public static class BuffPacket
         }
     }
 
-    public static void WriteFieldEnterBuff(this PacketWriter pWriter, AdditionalEffect status, int target)
+    private static void WriteFieldEnterBuff(this PacketWriter pWriter, AdditionalEffect status, int target)
     {
+        Debug.Assert(status.Caster != null, "status.Caster != null");
+
         pWriter.WriteBuffOwner(target, status.BuffId, status.Caster.ObjectId);
         pWriter.WriteBuff(status.Start, status.End, status.Id, status.Level, status.Stacks);
 

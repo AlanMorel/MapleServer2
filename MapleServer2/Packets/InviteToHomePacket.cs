@@ -4,7 +4,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.Packets;
 
-public class InviteToHomePacket
+public static class InviteToHomePacket
 {
     public static PacketWriter InviteToHome(Player sourcePlayer)
     {

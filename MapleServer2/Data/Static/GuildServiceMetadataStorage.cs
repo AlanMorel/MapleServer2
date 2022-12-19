@@ -19,8 +19,8 @@ public static class GuildServiceMetadataStorage
         }
     }
 
-    public static GuildServiceMetadata GetMetadata(int id, int level)
+    public static GuildServiceMetadata? GetMetadata(int id, int level)
     {
-        return Services.Values.First(x => x.Id == id && x.Level == level + 1);
+        return Services.Values.FirstOrDefault(x => x.Id == id && x.Level == level + 1);
     }
 }
