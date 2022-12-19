@@ -372,6 +372,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
             RideId = int.Parse(parentNode?.Attributes?["rideeID"]?.Value ?? "0")
         };
     }
+
     private EffectShieldMetadata? ParseShield(XmlNode? parentNode)
     {
         if (parentNode is null)

@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Maple2Storage.Enums;
-using Maple2Storage.Types;
-using MapleServer2.Managers;
-using MapleServer2.Managers.Actors;
+﻿using MapleServer2.Managers.Actors;
 
 namespace MapleServer2.Types;
 
