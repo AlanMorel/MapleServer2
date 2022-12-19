@@ -6,7 +6,7 @@ namespace MapleServer2.Types;
 public class SyncState
 {
     public byte BoreAnimation;
-    public byte Animation2;
+    public byte SubAnimation;
     public SyncStateFlag Flag = SyncStateFlag.None;
     public CoordS Coord;
     public short Rotation;

@@ -8,7 +8,7 @@ public interface IFieldActor : IFieldObject
 {
     public CoordF Velocity { get; }
     public short Animation { get; set; } // State
-    public short Animation2 { get; set; } // Sub State
+    public short SubAnimation { get; set; } // Sub State
 
     public Stats Stats { get; }
     public bool IsDead { get; }

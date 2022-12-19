@@ -61,7 +61,7 @@ public class UserSyncHandler : GamePacketHandler<UserSyncHandler>
             CoordF safeBlock = Block.ClosestBlock(coord);
             // TODO: Knowing the state of the player using the animation is probably not the correct way to do this
             // we will need to know the state of the player for other things like counting time spent on ropes/running/walking/swimming
-            if (syncStates[0].Animation2 is 7 or 132) // swimming
+            if (syncStates[0].SubAnimation is 7 or 132) // swimming
             {
                 safeBlock.Z += Block.BLOCK_SIZE; // Without this player will spawn under the water
             }
@@ -85,7 +85,7 @@ public class UserSyncHandler : GamePacketHandler<UserSyncHandler>
 
         // not sure if this needs to be synced here
         fieldPlayer.Animation = syncStates[0].BoreAnimation;
-        fieldPlayer.Animation2 = syncStates[0].Animation2;
+        fieldPlayer.SubAnimation = syncStates[0].SubAnimation;
     }
 
     private static bool IsOutOfBounds(CoordF coord, CoordS[] boundingBox)

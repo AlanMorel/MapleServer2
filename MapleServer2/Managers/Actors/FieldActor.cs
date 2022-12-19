@@ -12,7 +12,7 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
 {
     public CoordF Velocity { get; set; }
     public short Animation { get; set; }
-    public short Animation2 { get; set; }
+    public short SubAnimation { get; set; }
 
     public virtual Stats Stats { get; set; } = null!;
     public bool IsDead { get; set; }

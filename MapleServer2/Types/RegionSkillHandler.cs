@@ -79,13 +79,13 @@ public static class RegionSkillHandler
         if (dependsOnCasterState && skillCast.Caster is not null)
         {
             short startAnimation = skillCast.Caster.Animation;
-            short startAnimation2 = skillCast.Caster.Animation2;
+            short startAnimation2 = skillCast.Caster.SubAnimation;
 
             Func<long, TriggerTask, long> tickCallback = (currentTick, task) =>
             {
                 TickRegionSkill(field, regionCast);
 
-                return skillCast.Caster.Animation == startAnimation && skillCast.Caster.Animation2 == startAnimation2 ? 0 : -1;
+                return skillCast.Caster.Animation == startAnimation && skillCast.Caster.SubAnimation == startAnimation2 ? 0 : -1;
             };
 
             Action<long, TriggerTask> cleanCallback = (currentTick, task) => CleanUpRegionSkill(field, regionCast);
