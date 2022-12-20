@@ -322,6 +322,69 @@ public class BaseStats
         };
     }
 
+    public static long SpiritRegen(JobCode jobCode)
+    {
+        return jobCode switch
+        {
+            JobCode.Beginner => 1,
+            JobCode.Knight => 0,
+            JobCode.Berserker => 1,
+            JobCode.Wizard => 1,
+            JobCode.Priest => 8,
+            JobCode.Archer => 7,
+            JobCode.HeavyGunner => 0,
+            JobCode.Thief => 1,
+            JobCode.Assassin => 1,
+            JobCode.Runeblade => 1,
+            JobCode.Striker => 1,
+            JobCode.SoulBinder => 1,
+            _ => 0,
+        };
+    }
+
+    public static long SpiritRegenInterval(JobCode jobCode)
+    {
+        return jobCode switch
+        {
+            JobCode.Beginner => 100,
+            JobCode.Knight => 300,
+            JobCode.Berserker => 100,
+            JobCode.Wizard => 100,
+            JobCode.Priest => 500,
+            JobCode.Archer => 500,
+            JobCode.HeavyGunner => 0,
+            JobCode.Thief => 100,
+            JobCode.Assassin => 100,
+            JobCode.Runeblade => 100,
+            JobCode.Striker => 100,
+            JobCode.SoulBinder => 1000,
+            _ => 0,
+        };
+    }
+
+    public static float SpiritRegenIntervalRate(JobCode jobCode)
+    {
+        const float normal = 1; // The normal spirit regen interval rate
+        const float adjusted = 2; // An adjusted spirit regen interval rate to compensate for values that appear in the xmls
+
+        return jobCode switch
+        {
+            JobCode.Beginner => normal,
+            JobCode.Knight => normal,
+            JobCode.Berserker => normal,
+            JobCode.Wizard => adjusted,
+            JobCode.Priest => normal,
+            JobCode.Archer => normal,
+            JobCode.HeavyGunner => normal,
+            JobCode.Thief => normal,
+            JobCode.Assassin => normal,
+            JobCode.Runeblade => adjusted,
+            JobCode.Striker => normal,
+            JobCode.SoulBinder => normal,
+            _ => 35,
+        };
+    }
+
     private const float Primary = 19.0f / 30.0f;
     private const float Secondary = 1.0f / 6.0f;
 

@@ -214,11 +214,11 @@ public class Stats
             },
             {
                 StatAttribute.SpRegen,
-                new(Constant.SpiritRegen(jobCode))
+                new(BaseStats.SpiritRegen(jobCode))
             },
             {
                 StatAttribute.SpRegenInterval,
-                new(Constant.SpiritRegenInterval(jobCode), StatAttributeType.Flat, Constant.SpiritRegenIntervalRate(jobCode)) // base (200ms)
+                new(BaseStats.SpiritRegenInterval(jobCode), StatAttributeType.Flat, BaseStats.SpiritRegenIntervalRate(jobCode)) // base (200ms)
             },
             {
                 StatAttribute.Stamina,
