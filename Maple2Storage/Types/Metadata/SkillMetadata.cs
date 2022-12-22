@@ -69,7 +69,7 @@ public class SkillMetadata
 public class SkillLevel
 {
     [XmlElement(Order = 1)]
-    public readonly int Level;
+    public readonly short Level;
     [XmlElement(Order = 2)]
     public readonly int Spirit;
     [XmlElement(Order = 3)]
@@ -95,7 +95,7 @@ public class SkillLevel
 
     public SkillLevel() { }
 
-    public SkillLevel(int level, int spirit, int stamina, string feature, List<SkillCondition> conditionSkills, List<SkillMotion> skillMotions,
+    public SkillLevel(short level, int spirit, int stamina, string feature, List<SkillCondition> conditionSkills, List<SkillMotion> skillMotions,
         SkillUpgrade skillUpgrade, float cooldownTime, SkillBeginCondition beginCondition, RangeProperty detectProperty, RangeProperty sensorProperty)
     {
         Level = level;

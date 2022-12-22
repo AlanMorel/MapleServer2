@@ -61,7 +61,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                         continue;
                     }
 
-                    int levelValue = int.Parse(level.Attributes?["value"]?.Value ?? "0");
+                    short levelValue = short.Parse(level.Attributes?["value"]?.Value ?? "0");
                     // We prevent duplicates levels from older balances.
                     if (skillLevels.Exists(x => x.Level == levelValue))
                     {
@@ -189,7 +189,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
 
             foreach (XmlNode levelNode in document.SelectNodes("/ms2/level")!)
             {
-                int currentLevel = int.Parse(levelNode.SelectSingleNode("BasicProperty")?.Attributes?["level"]?.Value ?? "0");
+                short currentLevel = short.Parse(levelNode.SelectSingleNode("BasicProperty")?.Attributes?["level"]?.Value ?? "0");
                 SkillLevel? skillLevel = skill.SkillLevels.FirstOrDefault(x => x.Level == currentLevel);
                 if (skillLevel is null)
                 {
