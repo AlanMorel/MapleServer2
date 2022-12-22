@@ -2,7 +2,7 @@
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Packets;
-using MapleServer2.Tools;
+using MapleServer2.Managers.Actors;
 
 namespace MapleServer2.Types;
 
