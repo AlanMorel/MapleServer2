@@ -1,6 +1,4 @@
-﻿using MapleServer2.Enums;
-
-namespace MapleServer2.Constants;
+﻿namespace MapleServer2.Constants;
 
 public static class Constant
 {

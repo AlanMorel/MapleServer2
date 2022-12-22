@@ -100,7 +100,7 @@ public static class ConstantStats
             DynValue result = script.RunFunction(calcScript, statValue, constantPick.DeviationValue, (int) item.Type,
                 (int) item.RecommendJobs.First(), optionLevelFactor, item.Rarity, item.Level);
 
-            constantStats[constantPick.Stat].SetValue((float) result.Number);
+            constantStats[constantPick.Stat].SetValue((float) (result?.Number ?? 0));
             if (constantStats[constantPick.Stat].GetValue() <= 0.0000f)
             {
                 constantStats.Remove(constantPick.Stat);
