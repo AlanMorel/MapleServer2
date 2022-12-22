@@ -439,7 +439,7 @@ public class AdditionalEffect
 
     public void FireEvent(IFieldActor parent, IFieldActor? attacker, EffectEvent effectEvent)
     {
-        if (LevelMetadata.Basic.InvokeEvent)
+        if (LevelMetadata.Basic.InvokeEvent || true)
         {
             parent.SkillTriggerHandler.FireEvents(parent, attacker, effectEvent, Id);
         }

@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Runtime.InteropServices;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -178,6 +179,7 @@ public class Player : IPacketSerializable
 
     public Character? FieldPlayer;
     public DebugPrintSettings DebugPrint = new();
+    public bool DamageVarianceEnabled = true;
 
     public Player() { }
 
@@ -854,9 +856,21 @@ public class Player : IPacketSerializable
                 }
             }
 
+            foreach ((ItemSlot slot, Item item) in Inventory.Equips)
+            {
+                if (item != null)
+                {
+                    LapenshardHandler.AddEffects(this, item);
+                }
+            }
+
             ProcessPassiveSkills();
 
-            Inventory.RecomputeSetBonuses(Session);
+            if (Session is not null)
+            {
+                Inventory.RecomputeSetBonuses(Session);
+                Inventory.RefreshRequippedItemEffects(Session);
+            }
         });
     }
 
@@ -876,6 +890,30 @@ public class Player : IPacketSerializable
         });
     }
 
+    public short FindLevel(int id, int[]? ids, short[]? levels)
+    {
+        if (ids is null || levels is null)
+        {
+            return -1;
+        }
+
+        int index = Array.FindIndex(ids, (arrayId) => id == arrayId);
+
+        if (index == -1)
+        {
+            return -1;
+        }
+
+        return levels[index];
+    }
+
+    public bool FindLevel(int id, int[]? ids, short[]? levels, out short level)
+    {
+        level = FindLevel(id, ids, levels);
+
+        return level != -1;
+    }
+
     public void RemoveEffects(ItemAdditionalEffectMetadata? effects)
     {
         if (effects?.Level is null || effects?.Id is null || FieldPlayer is null)
@@ -885,7 +923,46 @@ public class Player : IPacketSerializable
 
         for (int i = 0; i < effects.Level.Length; ++i)
         {
-            AdditionalEffects.GetEffect(effects.Id[i], 0, ConditionOperator.GreaterEquals, 0, FieldPlayer)?.Stop(FieldPlayer);
+            int effectId = effects.Id[i];
+
+            short otherItemGivesEffectLevel = -1;
+
+            foreach ((ItemSlot slot, Item item) in Inventory.Equips)
+            {
+                if (FindLevel(effectId, item.AdditionalEffects?.Id, item.AdditionalEffects?.Level, out otherItemGivesEffectLevel))
+                {
+                    break;
+                }
+
+                foreach (GemSocket socket in item.GemSockets.Sockets)
+                {
+                    if (FindLevel(effectId, socket.Gemstone?.AdditionalEffects?.Id, socket.Gemstone?.AdditionalEffects?.Level, out otherItemGivesEffectLevel))
+                    {
+                        break;
+                    }
+                }
+
+                if (otherItemGivesEffectLevel != -1)
+                {
+                    break;
+                }
+            }
+
+            AdditionalEffect? effect = AdditionalEffects.GetEffect(effectId, 0, ConditionOperator.GreaterEquals, 0, FieldPlayer);
+
+            if (otherItemGivesEffectLevel != -1)
+            {
+                if (effect is not null && effect.Level != otherItemGivesEffectLevel)
+                {
+                    effect.Stop(FieldPlayer);
+
+                    AdditionalEffects.AddEffect(new(effectId, otherItemGivesEffectLevel));
+                }
+
+                continue;
+            }
+
+            effect?.Stop(FieldPlayer);
         }
     }
 

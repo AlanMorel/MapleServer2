@@ -107,20 +107,5 @@ public class FieldEnterHandler : GamePacketHandler<FieldEnterHandler>
         TrophyManager.OnMapEntered(player, player.MapId);
 
         QuestManager.OnMapEnter(player, player.MapId);
-
-
-        MapProperty? mapProperty = MapMetadataStorage.GetMapProperty(player.MapId);
-        if (mapProperty is not null)
-        {
-            player.FieldPlayer.TaskScheduler.QueueBufferedTask(() =>
-            {
-                for (int i = 0; i < mapProperty.EnterBuffIds.Count; i++)
-                {
-                    player.FieldPlayer.AdditionalEffects.AddEffect(new(mapProperty.EnterBuffIds[i], mapProperty.EnterBuffLevels[i]));
-                }
-            });
-        }
-
-        player.InitializeEffects();
     }
 }
