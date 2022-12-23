@@ -296,22 +296,24 @@ public class DamageVarianceCommand : InGameCommand
         Description = "Level up all the skills available.";
         Parameters = new()
         {
-            new Parameter<bool>("id", "ID of the status.")
+            new Parameter<string>("id", "ID of the status.")
         };
         Usage = "/damagevariance [enabled]";
     }
 
     public override void Execute(GameCommandTrigger trigger)
     {
-        bool? enabled = trigger.Get<bool>("enabled");
+        string? enabled = trigger.Get<string>("enabled");
 
-        if (enabled is null)
+        if (string.IsNullOrEmpty(enabled))
         {
             trigger.Session.Player.DamageVarianceEnabled ^= true;
 
             return;
         }
 
-        trigger.Session.Player.DamageVarianceEnabled = enabled == true;
+        enabled = enabled.ToLower();
+
+        trigger.Session.Player.DamageVarianceEnabled = enabled == "true" || enabled == "1";
     }
 }

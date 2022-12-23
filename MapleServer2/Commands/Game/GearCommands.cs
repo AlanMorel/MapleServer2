@@ -30,7 +30,8 @@ public enum KitCategory
     Lapenshard,
     Unreleased,
     PvP,
-    Reverse
+    Reverse,
+    Gemstone
 }
 
 public class GearKit
@@ -142,6 +143,50 @@ public class GearKit
 
     public static List<GearKit> Kits = new()
     {
+        new("4SideGems", ProgressionTier.General, new()
+        {
+            new(ItemType.None, 4, 10, 40200010), // Wisdom
+            new(ItemType.None, 4, 10, 40200110), // Luck
+            new(ItemType.None, 4, 10, 40200310), // Life
+            new(ItemType.None, 4, 10, 40200410), // Power
+            new(ItemType.None, 4, 10, 40200510), // Dexterity
+            new(ItemType.None, 4, 10, 40200610), // Accuracy
+            new(ItemType.None, 4, 10, 40200710), // Offense
+        }, KitCategory.Gemstone),
+        new("5SideGems", ProgressionTier.General, new()
+        {
+            new(ItemType.None, 4, 10, 40200810), // Wisdom
+            new(ItemType.None, 4, 10, 40200910), // Luck
+            new(ItemType.None, 4, 10, 40201110), // Life
+            new(ItemType.None, 4, 10, 40201210), // Power
+            new(ItemType.None, 4, 10, 40201310), // Dexterity
+            new(ItemType.None, 4, 10, 40201410), // Accuracy
+            new(ItemType.None, 4, 10, 40201510), // Offense
+        }, KitCategory.Gemstone, KitCategory.Unreleased),
+        new("RoughGems", ProgressionTier.General, new()
+        {
+            new(ItemType.None, 4, 10, 40210010), // Health
+            new(ItemType.None, 4, 10, 40210110), // Health
+            new(ItemType.None, 4, 10, 40210210), // Health
+            new(ItemType.None, 4, 10, 40210310), // Health
+            new(ItemType.None, 4, 10, 40210410), // Health
+            new(ItemType.None, 4, 10, 40210510), // Health
+            new(ItemType.None, 4, 10, 40210610), // Health
+            new(ItemType.None, 4, 10, 40210710), // Health
+        }, KitCategory.Gemstone, KitCategory.Unreleased),
+        new("ElliniumGems", ProgressionTier.General, new()
+        {
+            new(ItemType.None, 4, 10, 40220123), // Weapon Atk
+            new(ItemType.None, 4, 10, 40220133), // Accuracy
+            new(ItemType.None, 4, 10, 40220143), // Bonus Atk
+            new(ItemType.None, 4, 10, 40220153), // Weapon Atk
+            new(ItemType.None, 4, 10, 40220163), // Health
+            new(ItemType.None, 4, 10, 40220173), // Bonus Atk
+            new(ItemType.None, 4, 10, 40220183), // Health
+            new(ItemType.None, 4, 10, 40220193), // Bonus Atk
+            new(ItemType.None, 4, 10, 40220203), // Health
+            new(ItemType.None, 4, 10, 40220301), // Bonus Atk
+        }, KitCategory.Gemstone, KitCategory.Unreleased),
         new("Lapenshards", ProgressionTier.General, new()
         {
             new(ItemType.Lapenshard, 3, 41000020), // Celine
@@ -520,7 +565,7 @@ public class GearKit
             new(ItemType.Necklace, 4, 11900073), // Shuabritze
             new(ItemType.Ring, 4, 12000063), // Shuabritze
             new(ItemType.Earring, 4, 11200057), // Shuabritze
-        }, KitCategory.Accessory, KitCategory.Named),
+        }, KitCategory.Accessory, KitCategory.Named, KitCategory.Unreleased),
         new("Eternal", ProgressionTier.ChaosUnreleased, new()
         {
             new(ItemType.Longsword, 6, (job) => SelectItem(job, 13200149, 15000153, 15200152, 13300148, 15100146, 15300146, 13100153, 13400146, 15400091, 15500065, 15600065)), // Weapon
@@ -540,7 +585,7 @@ public class GearKit
             new(ItemType.Pants, 5, (job) => 11500862 + JobOffset(job)),
             new(ItemType.Gloves, 5, (job) => 11601031 + JobOffset(job)),
             new(ItemType.Shoes, 5, (job) => 11701106 + JobOffset(job)),
-        }, KitCategory.Armor),
+        }, KitCategory.Armor, KitCategory.Unreleased),
         new("Reverse3", ProgressionTier.ChaosUnreleased, new()
         {
             new(ItemType.Longsword, 6, (job) => SelectItem(job, 13260226, 15060230, 15260229, 13360225, 15160222, 15360225, 13160231, 13460224, 15460115, 15560153, 15660142)), // Weapon
@@ -550,7 +595,7 @@ public class GearKit
             new(ItemType.Pants, 6, (job) => 11560705 + JobOffset(job)),
             new(ItemType.Gloves, 6, (job) => 11660839 + JobOffset(job)),
             new(ItemType.Shoes, 6, (job) => 11760909 + JobOffset(job)),
-        }, KitCategory.Armor, KitCategory.Reverse),
+        }, KitCategory.Armor, KitCategory.Reverse, KitCategory.Unreleased),
         new("Reverse2", ProgressionTier.ChaosUnreleased, new()
         {
             new(ItemType.Longsword, 5, (job) => SelectItem(job, 13200227, 15000231, 15200230, 13300226, 15100223, 15300226, 13100232, 13400225, 15400116, 15500154, 15600143)), // Weapon
@@ -560,7 +605,7 @@ public class GearKit
             new(ItemType.Pants, 5, (job) => 11500716 + JobOffset(job)),
             new(ItemType.Gloves, 5, (job) => 11600850 + JobOffset(job)),
             new(ItemType.Shoes, 5, (job) => 11700920 + JobOffset(job)),
-        }, KitCategory.Armor, KitCategory.Reverse),
+        }, KitCategory.Armor, KitCategory.Reverse, KitCategory.Unreleased),
         new("Reverse", ProgressionTier.ChaosUnreleased, new()
         {
             new(ItemType.Longsword, 5, (job) => SelectItem(job, 13200226, 15000230, 15200229, 13300225, 15100222, 15300225, 13100231, 13400224, 15400115, 15500153, 15600142)), // Weapon
@@ -570,22 +615,22 @@ public class GearKit
             new(ItemType.Pants, 5, (job) => 11500705 + JobOffset(job)),
             new(ItemType.Gloves, 5, (job) => 11600839 + JobOffset(job)),
             new(ItemType.Shoes, 5, (job) => 11700909 + JobOffset(job)),
-        }, KitCategory.Armor, KitCategory.Reverse),
+        }, KitCategory.Armor, KitCategory.Reverse, KitCategory.Unreleased),
         new("UnleashedNarubashan", ProgressionTier.ChaosUnreleased, new()
         {
             new(ItemType.Longsword, 5, (job) => SelectItem(job, 13200190, 15000194, 15200193, 13300190, 15100186, 15300189, 13100195, 13400187, 15400093, 15500124, 15600118)), // Weapon
             new(ItemType.Longsword, 5, (job) => SelectItem(job, 14100164, 0, 0, 14000155, 0, 0, 13100195, 13400187, 0, 0, 0)), // Offhand
-        }, KitCategory.Armor, KitCategory.Reverse),
+        }, KitCategory.Armor, KitCategory.Unreleased),
         new("LimitlessNarubashan", ProgressionTier.ChaosUnreleased, new()
         {
             new(ItemType.Longsword, 5, (job) => SelectItem(job, 13200189, 15000193, 15200192, 13300189, 15100185, 15300188, 13100194, 13400186, 15400092, 15500123, 15600117)), // Weapon
             new(ItemType.Longsword, 5, (job) => SelectItem(job, 14100163, 0, 0, 14000154, 0, 0, 13100194, 13400186, 0, 0, 0)), // Offhand
-        }, KitCategory.Armor, KitCategory.Reverse),
+        }, KitCategory.Armor, KitCategory.Unreleased),
         new("Might", ProgressionTier.ChaosUnreleased, new()
         {
             new(ItemType.Longsword, 5, (job) => SelectItem(job, 13200188, 15000192, 15200191, 13300188, 15100184, 15300187, 13100193, 13400185, 15400253, 15500122, 15600207)), // Weapon
             new(ItemType.Longsword, 5, (job) => SelectItem(job, 14130044, 0, 0, 14000030, 0, 0, 13100193, 13400185, 0, 0, 0)), // Offhand
-        }, KitCategory.Armor, KitCategory.Reverse),
+        }, KitCategory.Armor, KitCategory.Unreleased),
         new("Fervor", ProgressionTier.ChaosUnreleased, new()
         {
             new(ItemType.Longsword, 5, (job) => SelectItem(job, 13200191, 15000195, 15200194, 13300191, 15100187, 15300190, 13100196, 13400188, 15400094, 15500125, 15600119)), // Weapon
@@ -595,7 +640,7 @@ public class GearKit
             new(ItemType.Pants, 5, (job) => 11500496 + JobOffset(job)),
             new(ItemType.Gloves, 5, (job) => 11600607 + JobOffset(job)),
             new(ItemType.Shoes, 5, (job) => 11700637 + JobOffset(job)),
-        }, KitCategory.Armor, KitCategory.Reverse),
+        }, KitCategory.Armor, KitCategory.Unreleased),
         new("Lodestar", ProgressionTier.ChaosUnreleased, new()
         {
             new(ItemType.Hat, 5, (job) => 11351106 + JobOffset(job)),
@@ -603,7 +648,7 @@ public class GearKit
             new(ItemType.Pants, 5, (job) => 11550850 + JobOffset(job)),
             new(ItemType.Gloves, 5, (job) => 11651019 + JobOffset(job)),
             new(ItemType.Shoes, 5, (job) => 11751094 + JobOffset(job)),
-        }, KitCategory.Armor),
+        }, KitCategory.Armor, KitCategory.Unreleased),
         new("Papulatus", ProgressionTier.StoryUnreleased, new()
         {
             new(ItemType.Longsword, 5, (job) => SelectItem(job, 13200091, 15000090, 0, 0, 0, 0, 0, 0, 0, 0, 0)), // Weapon
@@ -673,6 +718,7 @@ public class KitItem
     public ItemType Type;
     public int Id;
     public int Rarity;
+    public int Amount;
     public Func<JobCode, int> ItemCallback;
 
     public KitItem(ItemType type, int rarity, int id)
@@ -680,6 +726,7 @@ public class KitItem
         Type = type;
         Id = id;
         Rarity = rarity;
+        Amount = 1;
         ItemCallback = (code) => Id;
     }
 
@@ -688,6 +735,24 @@ public class KitItem
         Type = type;
         Id = 0;
         Rarity = rarity;
+        Amount = 1;
+        ItemCallback = callback;
+    }
+    public KitItem(ItemType type, int rarity, int amount, int id)
+    {
+        Type = type;
+        Id = id;
+        Rarity = rarity;
+        Amount = amount;
+        ItemCallback = (code) => Id;
+    }
+
+    public KitItem(ItemType type, int rarity, int amount, Func<JobCode, int> callback)
+    {
+        Type = type;
+        Id = 0;
+        Rarity = rarity;
+        Amount = amount;
         ItemCallback = callback;
     }
 }
@@ -752,7 +817,7 @@ public class KitCommand : InGameCommand
                 continue;
             }
 
-            Item item = new(id, 1, kitItem.Rarity);
+            Item item = new(id, Math.Max(1, kitItem.Amount), kitItem.Rarity);
 
             trigger.Session.Player.Inventory.AddItem(trigger.Session, item, true);
         }
@@ -787,7 +852,7 @@ public class KitListCommand : InGameCommand
 
         if (categoryName == "list")
         {
-            foreach (string name in Enum.GetValues(typeof(KitCategory)))
+            foreach (string name in Enum.GetNames(typeof(KitCategory)))
             {
                 trigger.Session.Send(NoticePacket.Notice(name, NoticeType.Chat));
             }
