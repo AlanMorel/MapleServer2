@@ -29,8 +29,13 @@ public class VibrateHandler : GamePacketHandler<VibrateHandler>
             return;
         }
 
-        Debug.Assert(player.FieldPlayer != null, "player.FieldPlayer != null");
-        Debug.Assert(player.FieldPlayer.SkillCast != null, "player.FieldPlayer.SkillCast != null");
-        session.FieldManager.BroadcastPacket(VibratePacket.Vibrate(entityId, player.FieldPlayer.SkillCast));
+        CastedSkill? skill = player.FieldPlayer?.SkillCastTracker.GetSkillCast(skillSN);
+
+        if (skill is null)
+        {
+            return;
+        }
+
+        session.FieldManager.BroadcastPacket(VibratePacket.Vibrate(entityId, skill?.Cast));
     }
 }

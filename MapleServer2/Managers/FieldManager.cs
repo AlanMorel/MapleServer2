@@ -614,6 +614,7 @@ public class FieldManager
 
         UGCBannerTimer ??= TaskScheduler.Instance.ScheduleTask(0, 0, 60, () => { GameServer.UGCBannerManager.UGCBannerLoop(this); });
 
+        player.FieldPlayer.TaskScheduler.FieldManager = this;
         player.FieldPlayer.TaskScheduler.OnFieldMoved();
         player.Inventory.RecomputeSetBonuses(player.Session);
 
@@ -695,8 +696,10 @@ public class FieldManager
             // TODO: Find a better place to do this when buffs are implemented
             for (int i = 0; i < fieldNpc.Value.NpcMetadataEffect.EffectIds.Length; i++)
             {
-                SkillCast effectCast = new(fieldNpc.Value.NpcMetadataEffect.EffectIds[i], fieldNpc.Value.NpcMetadataEffect.EffectLevels[i]);
-                session.Send(BuffPacket.AddBuff(new(effectCast, fieldNpc.ObjectId, fieldNpc.ObjectId, 1)));
+                int effectId = fieldNpc.Value.NpcMetadataEffect.EffectIds[i];
+                byte effectLevel = fieldNpc.Value.NpcMetadataEffect.EffectLevels[i];
+
+                fieldNpc.TaskScheduler.QueueBufferedTask(() => fieldNpc.AdditionalEffects.AddEffect(new(effectId, effectLevel)));
             }
         });
     }
@@ -1050,12 +1053,15 @@ public class FieldManager
 
     public bool RemoveRegionSkillEffect(SkillCast skillCast)
     {
-        if (!RemoveSkillCast(skillCast.SkillSn, out skillCast))
+        if (!RemoveSkillCast(skillCast.SkillSn, out SkillCast outSkillCast) && skillCast.SkillObjectId == 0)
         {
             return false;
         }
 
         BroadcastPacket(RegionSkillPacket.Remove(skillCast.SkillObjectId));
+
+        skillCast.SkillObjectId = 0;
+
         return true;
     }
 
@@ -1268,42 +1274,22 @@ public class FieldManager
 
             foreach (Npc mob in State.Mobs.Values)
             {
-                if (mob.IsDead)
-                {
-                    continue;
-                }
-
-                mob.TaskScheduler.Update(delta);
+                mob.Update(delta);
             }
 
             foreach (Npc npc in State.Npcs.Values)
             {
-                if (npc.IsDead)
-                {
-                    continue;
-                }
-
-                npc.TaskScheduler.Update(delta);
+                npc.Update(delta);
             }
 
             foreach (Pet pet in State.Pets.Values)
             {
-                if (pet.IsDead)
-                {
-                    continue;
-                }
-
-                pet.TaskScheduler.Update(delta);
+                pet.Update(delta);
             }
 
             foreach (Character player in State.Players.Values)
             {
-                if (player.IsDead)
-                {
-                    continue;
-                }
-
-                player.TaskScheduler.Update(delta);
+                player.Update(delta);
             }
         }
         catch (Exception e)
@@ -1328,7 +1314,6 @@ public class FieldManager
 
                 for (int i = 0; i < maxIterations - 1 && lastTick + delta < currentTick; ++i)
                 {
-                    lastTick = InternalLogicLoopTick;
                     InternalLogicLoopTick += delta;
 
                     UpdateActors(delta);
@@ -1340,7 +1325,6 @@ public class FieldManager
 
                     UpdateActors(delta);
                 }
-
 
                 // Required to be 10 to handle additional effects properly
                 await Task.Delay(delta);

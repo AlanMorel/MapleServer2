@@ -35,6 +35,7 @@ public class GameSession : Session
         Player = player;
         FieldManager = FieldManagerFactory.GetManager(player);
         player.FieldPlayer = FieldManager.RequestCharacter(player);
+        player.TaskScheduler = player.FieldPlayer.TaskScheduler;
         player.LastLogTime = TimeInfo.Now();
     }
 
@@ -46,6 +47,9 @@ public class GameSession : Session
             // Initialize for new Map
             FieldManager = FieldManagerFactory.GetManager(player);
             player.FieldPlayer = FieldManager.RequestCharacter(player);
+            player.TaskScheduler = player.FieldPlayer.TaskScheduler;
+            player.TaskScheduler.FieldManager = FieldManager;
+            player.TaskScheduler.OnFieldMoved();
         }
         FieldManager.AddPlayer(this);
     }

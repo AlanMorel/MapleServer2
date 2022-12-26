@@ -1,5 +1,6 @@
 ﻿using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
+using MapleServer2.Constants;
 using MapleServer2.Enums;
 
 namespace MapleServer2.Types;
@@ -213,11 +214,11 @@ public class Stats
             },
             {
                 StatAttribute.SpRegen,
-                new(1)
+                new(BaseStats.SpiritRegen(jobCode))
             },
             {
                 StatAttribute.SpRegenInterval,
-                new(200) // base (200ms)
+                new(BaseStats.SpiritRegenInterval(jobCode), StatAttributeType.Flat, BaseStats.SpiritRegenIntervalRate(jobCode)) // base (200ms)
             },
             {
                 StatAttribute.Stamina,

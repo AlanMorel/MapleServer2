@@ -1,8 +1,8 @@
 ﻿using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
+using MapleServer2.Managers.Actors;
 using MapleServer2.Packets;
-using MapleServer2.Tools;
 
 namespace MapleServer2.Types;
 
@@ -13,7 +13,7 @@ public struct AdditionalEffectParameters
     public int Stacks;
     public IFieldActor? Caster;
     public bool IsBuff;
-    public bool AdjustDuration;
+    public int Duration = 0;
     public SkillCast? ParentSkill;
 
     public AdditionalEffectParameters(int id, int level)
@@ -23,7 +23,6 @@ public struct AdditionalEffectParameters
         Stacks = 1;
         Caster = null;
         IsBuff = false;
-        AdjustDuration = true;
         ParentSkill = null;
     }
 }
@@ -34,14 +33,26 @@ public class AdditionalEffects
     public IFieldActor? Parent;
     public bool AlwaysCrit;
     public bool Invincible;
+    public long MinimumHp;
+    public Dictionary<StatAttribute, float> Resistances = new();
+    public AdditionalEffect? ActiveShield = null;
     private Dictionary<EffectEvent, List<AdditionalEffect>> ListeningEvents = new();
 
     public AdditionalEffects(IFieldActor? parent = null)
     {
         Effects = new();
         Parent = parent;
+
+        ResetStatus();
+    }
+
+    public void ResetStatus()
+    {
         AlwaysCrit = false;
         Invincible = false;
+        MinimumHp = 0;
+        Resistances.Clear();
+        ActiveShield = null;
     }
 
     public void UpdateStatsIfStale(EffectEvent effectEvent = EffectEvent.Tick)
@@ -53,7 +64,9 @@ public class AdditionalEffects
 
         foreach (AdditionalEffect effect in Effects)
         {
-            if (effect.AreStatsStale(Parent, effectEvent))
+            bool recompute = effect.UpdateIfStale(Parent, effectEvent);
+
+            if (recompute)
             {
                 Parent.ComputeStats();
 
@@ -132,11 +145,34 @@ public class AdditionalEffects
             }
         }
 
-        Parent.FieldManager?.BroadcastPacket(BuffPacket.UpdateBuff(effect, Parent.ObjectId));
+        if (effect.BuffId != 0)
+        {
+            Parent.FieldManager?.BroadcastPacket(BuffPacket.UpdateBuff(effect, Parent.ObjectId));
+        }
 
         effect.Process(Parent);
 
         return true;
+    }
+
+    private void DebugPrint(string message, AdditionalEffect effect, Player? ownerPlayer, Player? casterPlayer, bool debugPrintOwner, bool debugPrintCaster)
+    {
+        if (debugPrintOwner)
+        {
+            if (effect.Caster is not null)
+            {
+                ownerPlayer?.Session?.SendNotice($"{message} {effect.Id} from caster {effect.Caster.ObjectId}");
+            }
+            else
+            {
+                ownerPlayer?.Session?.SendNotice($"{message} {effect.Id}");
+            }
+        }
+
+        if (debugPrintCaster)
+        {
+            casterPlayer?.Session?.SendNotice($"{message} {effect.Id} to target {Parent.ObjectId}");
+        }
     }
 
     public AdditionalEffect? AddEffect(AdditionalEffectParameters parameters)
@@ -160,8 +196,15 @@ public class AdditionalEffects
         effect.Caster = parameters.Caster ?? Parent;
         effect.ParentSkill = parameters.ParentSkill;
 
+        Player? ownerPlayer = (Parent as Character)?.Value;
+        Player? casterPlayer = (effect.Caster as Character)?.Value;
+        bool debugPrintOwner = ownerPlayer is not null && ownerPlayer.DebugPrint.PrintOwnEffects && (effect.Caster == Parent || ownerPlayer.DebugPrint.PrintEffectsFromOthers);
+        bool debugPrintCaster = casterPlayer is not null && casterPlayer.DebugPrint.PrintCastedEffects;
+
         if (!CanApplyEffect(effect, out AdditionalEffect? activeEffect))
         {
+            DebugPrint("Failed to apply effect", effect, ownerPlayer, casterPlayer, debugPrintOwner, debugPrintCaster);
+
             return null;
         }
 
@@ -182,6 +225,8 @@ public class AdditionalEffects
 
         if (UpdateEffect(activeEffect, effect, parameters))
         {
+            DebugPrint("Updated effect", effect, ownerPlayer, casterPlayer, debugPrintOwner, debugPrintCaster);
+
             return activeEffect;
         }
 
@@ -192,8 +237,7 @@ public class AdditionalEffects
 
         effect.Stacks = parameters.Stacks;
         effect.Start = start;
-        effect.Duration = effect.LevelMetadata.Basic.DurationTick;
-        effect.BuffId = GuidGenerator.Int();
+        effect.Duration = parameters.Duration != 0 ? parameters.Duration : effect.LevelMetadata.Basic.DurationTick;
 
         InvokeStatValue invokeStat = effect.Caster.Stats.GetEffectStats(effect.Id, effect.LevelMetadata.Basic.Group, InvokeEffectType.IncreaseDuration);
 
@@ -206,18 +250,23 @@ public class AdditionalEffects
 
         Effects.Add(effect);
 
-        Parent.FieldManager?.BroadcastPacket(BuffPacket.AddBuff(effect, Parent.ObjectId));
-
         AddListeningEvents(effect);
 
         Parent.EffectAdded(effect);
         effect.Process(Parent);
+
+        DebugPrint("Applied effect", effect, ownerPlayer, casterPlayer, debugPrintOwner, debugPrintCaster);
 
         return effect;
     }
 
     public void EffectStopped(AdditionalEffect effect)
     {
+        Player? ownerPlayer = (Parent as Character)?.Value;
+        Player? casterPlayer = (effect.Caster as Character)?.Value;
+        bool debugPrintOwner = ownerPlayer is not null && ownerPlayer.DebugPrint.PrintOwnEffects && (effect.Caster == Parent || ownerPlayer.DebugPrint.PrintEffectsFromOthers);
+        bool debugPrintCaster = casterPlayer is not null && casterPlayer.DebugPrint.PrintCastedEffects;
+
         foreach (SkillCondition condition in effect.LevelMetadata.ConditionSkill)
         {
             if (condition.BeginCondition.Caster is not null)
@@ -228,7 +277,8 @@ public class AdditionalEffects
 
         Effects.Remove(effect);
         Parent?.EffectRemoved(effect);
-        Parent?.FieldManager?.BroadcastPacket(BuffPacket.RemoveBuff(effect, Parent.ObjectId));
+
+        DebugPrint("Removed effect", effect, ownerPlayer, casterPlayer, debugPrintOwner, debugPrintCaster);
     }
 
     public static bool CompareValues<T>(T target, T value, ConditionOperator comparison) where T : IComparable

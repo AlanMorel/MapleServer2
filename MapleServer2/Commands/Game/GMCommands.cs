@@ -515,6 +515,89 @@ public class BonusPointsCommand : InGameCommand
     }
 }
 
+public class DebugPrintCommand : InGameCommand
+{
+    private enum DebugType
+    {
+        HitTarget,
+        CastedEffects,
+        OwnEffects,
+        EffectsFromOthers
+    }
+
+    public DebugPrintCommand()
+    {
+        Aliases = new()
+        {
+            "debugprint"
+        };
+        Description = "Enables and disables debug print settings";
+        Usage = "/debugprint type [option]";
+        Parameters = new()
+        {
+            new Parameter<string>("type", "The debug setting type to configure: int HitTarget, bool CastedEffects, bool OwnEffects, bool EffectsFromOthers"),
+            new Parameter<string>("option", "The value to set the setting to. true/false for bool or the number of times to perform the action for int (-1 for infinite, 0 for none/off)")
+        };
+    }
+
+    public override void Execute(GameCommandTrigger trigger)
+    {
+        Player player = trigger.Session.Player;
+
+        string type = trigger.Get<string>("type");
+        string source = trigger.Get<string>("option");
+
+        if (string.IsNullOrEmpty(type))
+        {
+            trigger.Session.SendNotice("Enter a setting to set");
+
+            return;
+        }
+
+        if (!Enum.TryParse(type, ignoreCase: true, out DebugType typeValue))
+        {
+            trigger.Session.SendNotice($"{type} is not a valid debug print setting type. Available: int HitTarget, bool CastedEffects, bool OwnEffects, bool EffectsFromOthers");
+
+            return;
+        }
+
+        switch (typeValue)
+        {
+            case DebugType.HitTarget:
+                if (string.IsNullOrEmpty(source))
+                {
+                    player.DebugPrint.TargetsToPrint = player.DebugPrint.TargetsToPrint != 0 ? 0 : -1;
+                }
+                else
+                {
+                    player.DebugPrint.TargetsToPrint = int.Parse(source);
+                }
+
+                trigger.Session.SendNotice($"Set HitTarget to {player.DebugPrint.TargetsToPrint}");
+
+                break;
+            case DebugType.CastedEffects:
+                player.DebugPrint.PrintCastedEffects = source is null ? !player.DebugPrint.PrintCastedEffects : source == "true";
+
+                trigger.Session.SendNotice($"Set CastedEffects to {player.DebugPrint.PrintCastedEffects}");
+
+                break;
+            case DebugType.OwnEffects:
+                player.DebugPrint.PrintOwnEffects = source is null ? !player.DebugPrint.PrintOwnEffects : source == "true";
+
+                trigger.Session.SendNotice($"Set OwnEffects to {player.DebugPrint.PrintOwnEffects}");
+
+                break;
+            case DebugType.EffectsFromOthers:
+                player.DebugPrint.PrintEffectsFromOthers = source is null ? !player.DebugPrint.PrintEffectsFromOthers : source == "true";
+
+                trigger.Session.SendNotice($"Set EffectsFromOthers to {player.DebugPrint.PrintEffectsFromOthers}");
+
+                break;
+        }
+    }
+}
+
 public class GMShopCommand : InGameCommand
 {
     public GMShopCommand()

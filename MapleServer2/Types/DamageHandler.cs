@@ -18,6 +18,7 @@ public class DamageSourceParameters
     public int[]? SkillGroups;
     public int EventGroup;
     public float DamageRate;
+    public long DamageValue;
     public SkillCast? ParentSkill;
     public int Id;
 
@@ -76,6 +77,7 @@ public class DamageHandler
             DamageType = skill.GetSkillDamageType(),
             SkillGroups = skill.GetSkillGroups(),
             DamageRate = skill.GetDamageRate(),
+            DamageValue = skill.GetDamageValue(),
             Id = skill.SkillId
         };
 
@@ -122,6 +124,13 @@ public class DamageHandler
             damage = CalculateFieldDamage(dotParameters, target);
         }
 
+        if (target.AdditionalEffects.ActiveShield is not null)
+        {
+            target.AdditionalEffects.ActiveShield.DamageShield(target, (long) damage.Damage);
+
+            return;
+        }
+
         target.Damage(damage, session);
 
         target.FieldManager?.BroadcastPacket(SkillDamagePacket.DotDamage(sourceActor?.ObjectId ?? 0, target.ObjectId, Environment.TickCount, damage.HitType, (int) damage.Damage));
@@ -138,7 +147,7 @@ public class DamageHandler
         //    return new(source, target, 0, HitType.Miss); // we missed
         //}
 
-        double attackDamage = 300; // need a better way to get the damage value
+        double attackDamage = 0; // need a better way to get the damage value
 
         // attackDamage = minDamage + (maxDamage - minDamage) * Random.Shared.NextDouble();
 
@@ -186,15 +195,26 @@ public class DamageHandler
         const double magicNumber = 4; // random constant of an unknown origin, but the formula this was pulled from was always off by a factor of 4
 
         attackDamage *= damageMultiplier * magicNumber;
+        attackDamage += parameters.DamageValue;
 
         return new(null, target, Math.Max(1, attackDamage), HitType.Normal);
     }
 
+    private static double GetResistance(IFieldActor actor, StatAttribute attribute)
+    {
+        if (!actor.AdditionalEffects.Resistances.TryGetValue(attribute, out float resistance))
+        {
+            return 0;
+        }
+
+        return resistance;
+    }
+
     public static DamageHandler CalculateDamage(DamageSourceParameters parameters, IFieldActor source, IFieldActor target)
     {
-        // TODO: get accuracyWeakness from enemy stats from enemy buff. new stat recommended
-        const double AccuracyWeakness = 0;
-        double hitRate = (source.Stats[StatAttribute.Accuracy].Total + AccuracyWeakness) / Math.Max(target.Stats[StatAttribute.Evasion].Total, 0.1);
+        double AccuracyWeakness = GetResistance(source, StatAttribute.Accuracy);
+        double EvasionWeakness = GetResistance(target, StatAttribute.Evasion);
+        double hitRate = (source.Stats[StatAttribute.Accuracy].Total * (1 + EvasionWeakness)) / Math.Max(target.Stats[StatAttribute.Evasion].Total * (1 + AccuracyWeakness), 0.1);
 
         if (Random.Shared.NextDouble() > hitRate)
         {
@@ -202,7 +222,7 @@ public class DamageHandler
         }
 
         double luckCoefficient = 1;
-        double attackDamage = 300;
+        double attackDamage = 0;
 
         if (source is IFieldActor<Player> player)
         {
@@ -210,12 +230,12 @@ public class DamageHandler
 
             double bonusAttack = player.Stats[StatAttribute.BonusAtk].Total + Constant.PetAttackMultiplier * player.Stats[StatAttribute.PetBonusAtk].Total;
 
-            // TODO: properly fetch enemy bonus attack weakness from enemy buff. new stat recommended
-            const double BonusAttackWeakness = 1;
+            double BonusAttackWeakness = 1 / (1 + GetResistance(target, StatAttribute.BonusAtk));
+            double WeaponAttackWeakness = 1 / (1 + GetResistance(target, StatAttribute.MaxWeaponAtk));
 
             double bonusAttackCoeff = BonusAttackWeakness * GetBonusAttackCoefficient(player.Value);
-            double minDamage = player.Stats[StatAttribute.MinWeaponAtk].Total + bonusAttackCoeff * bonusAttack;
-            double maxDamage = player.Stats[StatAttribute.MaxWeaponAtk].Total + bonusAttackCoeff * bonusAttack;
+            double minDamage = WeaponAttackWeakness * player.Stats[StatAttribute.MinWeaponAtk].Total + bonusAttackCoeff * bonusAttack;
+            double maxDamage = WeaponAttackWeakness * player.Stats[StatAttribute.MaxWeaponAtk].Total + bonusAttackCoeff * bonusAttack;
 
             attackDamage = minDamage + (maxDamage - minDamage) * Random.Shared.NextDouble();
         }
@@ -226,8 +246,7 @@ public class DamageHandler
 
         if (isCrit)
         {
-            // TODO: get critResist from enemy stats from enemy buff. new stat recommended
-            const double CritResist = 1;
+            double CritResist = 1 / (1 + GetResistance(target, StatAttribute.CritDamage));
             double critDamage = 1000 + source.Stats[StatAttribute.CritDamage].Total + source.Stats[StatAttribute.CriticalDamage].Total;
             finalCritDamage = CritResist * ((critDamage / 1000) - 1) + 1;
         }
@@ -274,8 +293,7 @@ public class DamageHandler
 
         damageBonus += isBoss ? FetchMultiplier(source.Stats, StatAttribute.BossDamage) : 0;
 
-        // TODO: properly fetch enemy attack speed weakness from enemy buff. new stat recommended
-        const double AttackSpeedWeakness = 0;
+        double AttackSpeedWeakness = -GetResistance(target, StatAttribute.AttackSpeed);
 
         damageBonus += AttackSpeedWeakness * FetchMultiplier(source.Stats, StatAttribute.AttackSpeed);
 
@@ -292,8 +310,7 @@ public class DamageHandler
 
         double damageMultiplier = damageBonus * (1 + skillModifier.Rate) * (parameters.DamageRate + skillModifier.Value);
 
-        // TODO: properly fetch enemy pierce resistance from enemy buff. new stat recommended
-        const double EnemyPierceResistance = 1;
+        double EnemyPierceResistance = 1 / (1 + GetResistance(target, StatAttribute.Pierce));
 
         double defensePierce = 1 - Math.Min(0.3, EnemyPierceResistance * (FetchMultiplier(source.Stats, StatAttribute.Pierce) - 1));
         damageMultiplier *= 1 / (Math.Max(target.Stats[StatAttribute.Defense].Total, 1) * defensePierce);
@@ -335,6 +352,7 @@ public class DamageHandler
         const double magicNumber = 4; // random constant of an unknown origin, but the formula this was pulled from was always off by a factor of 4
 
         attackDamage *= damageMultiplier * magicNumber;
+        attackDamage += parameters.DamageValue;
 
         return new(source, target, Math.Max(1, attackDamage), isCrit ? HitType.Critical : HitType.Normal);
     }

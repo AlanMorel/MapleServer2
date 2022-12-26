@@ -56,22 +56,22 @@ public class LapenshardHandler : GamePacketHandler<LapenshardHandler>
 
     public static void AddEffects(Player player, Item lapenshard)
     {
-        if (lapenshard.AdditionalEffects.Id == null)
+        if (lapenshard.AdditionalEffects is null)
         {
             return;
         }
 
-        player.AddEffects(lapenshard.AdditionalEffects);
+        player.FieldPlayer?.TaskScheduler.QueueBufferedTask(() => player.AddEffects(lapenshard.AdditionalEffects));
     }
 
     public static void RemoveEffects(Player player, Item lapenshard)
     {
-        if (lapenshard.AdditionalEffects.Id == null)
+        if (lapenshard.AdditionalEffects is null)
         {
             return;
         }
 
-        player.RemoveEffects(lapenshard.AdditionalEffects);
+        player.FieldPlayer?.TaskScheduler.QueueBufferedTask(() => player.RemoveEffects(lapenshard.AdditionalEffects));
     }
 
     private static void HandleEquip(GameSession session, PacketReader packet)

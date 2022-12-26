@@ -27,6 +27,7 @@ public class SkillCast
     public CoordF Rotation;
     public short LookDirection;
     public float AimAngle;
+    public bool UseDirection = true;
 
     public IFieldActor? Caster;
     public IFieldActor Target;
@@ -34,6 +35,8 @@ public class SkillCast
 
     public long MagicPath = 0;
     public List<CoordF> EffectCoords = new();
+    public int ActiveCoord = -1;
+    public bool UsingCasterDirection = false;
 
     public SkillCast()
     {
@@ -78,6 +81,8 @@ public class SkillCast
     }
 
     public float GetDamageRate() => SkillAttack?.DamageProperty.DamageRate ?? 0;
+
+    public long GetDamageValue() => SkillAttack?.DamageProperty.DamageValue ?? 0;
 
     public double GetCriticalDamage() => 2 * GetDamageRate();
 
@@ -220,7 +225,7 @@ public class SkillCast
 
     private SkillMetadata GetSkillMetadata() => SkillMetadataStorage.GetSkill(SkillId);
 
-    private SkillLevel GetCurrentLevel() => GetSkillMetadata()?.SkillLevels.FirstOrDefault(s => s.Level == SkillLevel);
+    public SkillLevel GetCurrentLevel() => GetSkillMetadata()?.SkillLevels.FirstOrDefault(s => s.Level == SkillLevel);
 
     // Some skills don't have SkillAdditionalData for specific levels, if its null try to use the first level
     private SkillAdditionalData GetAdditionalData() =>

@@ -22,10 +22,14 @@ public class Character : FieldActor<Player>
     public IFieldObject<LiftableObject>? CarryingLiftable;
     public Pet? ActivePet;
     public override AdditionalEffects AdditionalEffects { get => Value.AdditionalEffects; }
+    public override TickingTaskScheduler TaskScheduler { get => PlayerTaskScheduler; }
+    public override ProximityTracker ProximityTracker { get => PlayerProximityTracker; }
 
     private DateTime LastConsumeStaminaTime;
 
     public override FieldManager? FieldManager { get => Value?.Session?.FieldManager; }
+    private TickingTaskScheduler PlayerTaskScheduler;
+    private ProximityTracker PlayerProximityTracker;
 
     public Character(int objectId, Player value, FieldManager fieldManager) : base(objectId, value, fieldManager)
     {
@@ -45,6 +49,9 @@ public class Character : FieldActor<Player>
         }
 
         value.AdditionalEffects.Parent = this;
+        PlayerTaskScheduler = value.TaskScheduler ?? new(fieldManager);
+        PlayerProximityTracker = value.ProximityTracker ?? new(this);
+        PlayerProximityTracker.Parent = this;
     }
 
     public override void Cast(SkillCast skillCast)
@@ -82,6 +89,7 @@ public class Character : FieldActor<Player>
 
         if (conditionSkills is not null)
         {
+            skillCast.SkillAttack = null;
             SkillTriggerHandler.FireTriggerSkills(conditionSkills, skillCast, new(this, this, this, this, EffectEventOrigin.Caster));
         }
 
@@ -329,8 +337,15 @@ public class Character : FieldActor<Player>
         Value.Session?.Send(StatPacket.SetStats(this));
     }
 
+    public override void ComputeBaseStats()
+    {
+        base.ComputeBaseStats();
+        Value.ComputeBaseStats();
+    }
+
     public override void AddStats()
     {
+        base.AddStats();
         Value.AddStats();
     }
 }

@@ -4,7 +4,6 @@ using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Managers;
 using MapleServer2.Managers.Actors;
-using MapleServer2.Network;
 using MapleServer2.PacketHandlers.Game;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -16,26 +15,30 @@ public static class RegionSkillHandler
 {
     private static readonly ILogger Logger = Log.Logger.ForContext(typeof(RegionSkillHandler));
 
-    public static void CastRegionSkill(FieldManager field, SkillCast skillCast, int fireCount, int removeDelay, int interval, IFieldActor? target = null)
+    public static void CastRegionSkill(FieldManager field, SkillCast skillCast, int fireCount, int removeDelay, int interval, IFieldActor? target = null, SkillCondition? trigger = null, bool isSensor = false)
     {
         SkillCast regionCast = new(skillCast.SkillId, skillCast.SkillLevel, skillCast.SkillSn, skillCast.ServerTick, skillCast)
         {
-            Rotation = skillCast.Rotation,
-            Direction = skillCast.Direction,
-            LookDirection = skillCast.LookDirection,
+            Rotation = skillCast.UseDirection ? skillCast.Rotation : default,
+            Direction = skillCast.UseDirection ? skillCast.Direction : default,
+            LookDirection = skillCast.UseDirection ? skillCast.LookDirection : default,
             Duration = skillCast.Duration,
             SkillAttack = skillCast.SkillAttack,
-            ParentSkill = skillCast
+            ParentSkill = skillCast,
+            UseDirection = skillCast.UseDirection
         };
 
         List<SkillMotion> motions = skillCast.GetSkillMotions();
 
         long magicPath = skillCast.MagicPath;
+        SkillAttack? skillAttack = null;
 
         if (magicPath == 0 && motions.Count > 0 && motions[0].SkillAttacks.Count > 0)
         {
             foreach (SkillAttack attack in motions[0].SkillAttacks)
             {
+                skillAttack = attack;
+
                 if (attack.MagicPathId != 0)
                 {
                     magicPath = attack.MagicPathId;
@@ -44,8 +47,9 @@ public static class RegionSkillHandler
         }
 
         int lookAtType = 0;
+        CoordF skillPosition = skillCast.Position;
 
-        regionCast.EffectCoords = GetCoords(skillCast.Position, skillCast.LookDirection, magicPath, skillCast.SkillAttack?.CubeMagicPathId ?? 0, field, out lookAtType);
+        regionCast.EffectCoords = GetCoords(skillCast.Position, skillCast.LookDirection, skillCast.UseDirection, magicPath, skillCast.SkillAttack?.CubeMagicPathId ?? 0, field, out lookAtType, out skillPosition);
 
         if (lookAtType == 2)
         {
@@ -54,7 +58,14 @@ public static class RegionSkillHandler
 
         field.AddRegionSkillEffect(regionCast);
 
-        IFieldActor? firstTarget = HandleRegionSkillChaining(field, regionCast);
+        if (isSensor)
+        {
+            HandleSensorSkill(field, regionCast, skillPosition, fireCount, removeDelay, interval, target);
+
+            return;
+        }
+
+        IFieldActor? firstTarget = HandleRegionSkillChaining(field, regionCast, out bool isChained);
 
         if (firstTarget is not null)
         {
@@ -63,14 +74,43 @@ public static class RegionSkillHandler
             regionCast.Rotation = offset / (float) Math.Sqrt(offset.X * offset.X + offset.Y * offset.Y + offset.Z * offset.Z);
         }
 
-        field.FieldTaskScheduler.QueueTask(new(Math.Max(removeDelay, 1))
+        bool dependsOnCasterState = skillCast.Caster is not null && (trigger?.DependOnCasterState ?? false);
+
+        if (dependsOnCasterState && skillCast.Caster is not null)
         {
-            Executions = 1
-        }, (currentTick, task) => { CleanUpRegionSkill(field, regionCast); return -1; });
+            short startAnimation = skillCast.Caster.Animation;
+            short startAnimation2 = skillCast.Caster.SubAnimation;
+
+            Func<long, TriggerTask, long> tickCallback = (currentTick, task) =>
+            {
+                TickRegionSkill(field, regionCast);
+
+                return skillCast.Caster.Animation == startAnimation && skillCast.Caster.SubAnimation == startAnimation2 ? 0 : -1;
+            };
+
+            Action<long, TriggerTask> cleanCallback = (currentTick, task) => CleanUpRegionSkill(field, regionCast);
+
+            field.FieldTaskScheduler.QueueTask(new(interval)
+            {
+                Executions = fireCount - 1
+            }, tickCallback, cleanCallback);
+        }
+        else
+        {
+            field.FieldTaskScheduler.QueueTask(new(Math.Max(removeDelay, 10))
+            {
+                Executions = 1
+            }, (currentTick, task) => { CleanUpRegionSkill(field, regionCast); return -1; });
+        }
 
         if (skillCast.Owner is not null && skillCast.Caster is not null)
         {
             skillCast.Caster.SkillTriggerHandler.FireEvents(target, null, EffectEvent.OnSkillCasted, skillCast.SkillId);
+        }
+
+        if (isChained)
+        {
+            return;
         }
 
         HandleRegionSkill(field, regionCast);
@@ -85,7 +125,7 @@ public static class RegionSkillHandler
             return;
         }
 
-        if (fireCount == 1)
+        if (fireCount == 1 || dependsOnCasterState)
         {
             return;
         }
@@ -117,8 +157,10 @@ public static class RegionSkillHandler
 
         CoordF offSetCoord = move.FireOffsetPosition;
 
+        bool foundBlock;
+
         // If false, rotate the offset based on the look direction. Example: Wizard's Tornado
-        if (!move.IgnoreAdjust)
+        if (!move.IgnoreAdjust || !move.Align)
         {
             // Rotate the offset coord based on the look direction
             CoordF rotatedOffset = -CoordF.Rotate(offSetCoord, lookDirection);
@@ -126,10 +168,19 @@ public static class RegionSkillHandler
             // Create new effect coord based on offset rotation and source coord
             adjusted = rotatedOffset + position;
 
+            if (!move.Align)
+            {
+                CoordS closestBlockPosShort = new();
+
+                foundBlock = field?.Navigator?.FindFirstCoordSBelow(adjusted.ToShort(), out closestBlockPosShort) ?? false;
+
+                CoordF closestBlockPos = Block.ClosestBlock(closestBlockPosShort);
+
+                adjusted.Z = closestBlockPos.Z + Block.BLOCK_SIZE + 1;
+            }
+
             return true;
         }
-
-        offSetCoord = -CoordF.Rotate(offSetCoord, lookDirection);
 
         offSetCoord += Block.ClosestBlock(position);
 
@@ -141,7 +192,7 @@ public static class RegionSkillHandler
         CoordS resultCoord = new();
 
         // Find the first block below the effect coord
-        bool foundBlock = field?.Navigator?.FindFirstCoordSBelow(offSetCoord.ToShort(), out resultCoord) ?? false;
+        foundBlock = field?.Navigator?.FindFirstCoordSBelow(offSetCoord.ToShort(), out resultCoord) ?? false;
 
         if (!foundBlock || offSetCoord.Z - resultCoord.Z > Block.BLOCK_SIZE * 2)
         {
@@ -184,9 +235,10 @@ public static class RegionSkillHandler
         return true;
     }
 
-    public static List<CoordF> GetCoords(CoordF position, short lookDirection, long magicPathId, long cubeMagicPathId, FieldManager field, out int lookAtType)
+    public static List<CoordF> GetCoords(CoordF position, short lookDirection, bool useDirection, long magicPathId, long cubeMagicPathId, FieldManager field, out int lookAtType, out CoordF skillPosition)
     {
         lookAtType = 0;
+        skillPosition = position;
 
         List<CoordF> cubeEffectCoords = new();
 
@@ -215,6 +267,11 @@ public static class RegionSkillHandler
                 {
                     cubeEffectCoords.Add(adjusted);
                 }
+            }
+
+            if (cubeEffectCoords.Count == 1)
+            {
+                skillPosition = cubeEffectCoords[0];
             }
 
             if (magicPathId == 0 || cubeEffectCoords.Count == 0)
@@ -246,7 +303,7 @@ public static class RegionSkillHandler
             {
                 lookAtType = magicPathMove.LookAtType;
 
-                if (AdjustCoord(field, mapMetadata, magicPathMove, cubeEffectCoords[i], lookDirection, out CoordF adjusted))
+                if (AdjustCoord(field, mapMetadata, magicPathMove, cubeEffectCoords[i], useDirection ? lookDirection : default, out CoordF adjusted))
                 {
                     effectCoords.Add(adjusted);
                 }
@@ -256,16 +313,87 @@ public static class RegionSkillHandler
         return effectCoords;
     }
 
-    private static IFieldActor? HandleRegionSkillChaining(FieldManager field, SkillCast skillCast)
+    private static void HandleSensorSkill(FieldManager field, SkillCast skillCast, CoordF position, int fireCount, int removeDelay, int interval, IFieldActor? target)
+    {
+        RangeProperty sensorProperty = skillCast.GetCurrentLevel().SensorProperty;
+
+        long startTick = field.FieldTaskScheduler.CurrentTick;
+        int lastInterval = 0;
+        const int delta = 10;
+
+        if (sensorProperty.TargetHasBuffOwner)
+        {
+            target = skillCast.Caster;
+        }
+
+        field.FieldTaskScheduler.QueueTask(new(delta)
+        {
+            Executions = -1
+        }, (currentTick, task) =>
+        {
+            lastInterval += delta;
+            removeDelay -= delta;
+
+            bool intervalActivated = !sensorProperty.SensorForceInvokeByInterval || lastInterval >= interval;
+            bool targetBuffConditionPassed = false;
+
+            if (intervalActivated && sensorProperty.TargetSelectType == 2 && target is not null)
+            {
+                targetBuffConditionPassed = sensorProperty.TargetHasBuffID == 0 || target.AdditionalEffects.HasEffect(sensorProperty.TargetHasBuffID);
+                targetBuffConditionPassed &= sensorProperty.TargetHasNotBuffID == 0 || !target.AdditionalEffects.HasEffect(sensorProperty.TargetHasNotBuffID);
+            }
+
+            bool activated = intervalActivated && (targetBuffConditionPassed || ShouldSensorActivate(field, skillCast, position, sensorProperty));
+
+            if ((intervalActivated && sensorProperty.SensorForceInvokeByInterval) || activated)
+            {
+                lastInterval = 0;
+                fireCount--;
+            }
+
+            if (activated)
+            {
+                HandleRegionSkill(field, skillCast);
+            }
+
+            return fireCount > 0 && removeDelay > 0 ? 0 : -1;
+        }, (currentTick, task) =>
+        {
+            CleanUpRegionSkill(field, skillCast);
+        });
+    }
+
+    private static bool ShouldSensorActivate(FieldManager field, SkillCast skillCast, CoordF position, RangeProperty sensorProperty)
+    {
+        bool sensorActivated = false;
+
+        ProcessApplyTarget(field, sensorProperty.ApplyTarget, (target) =>
+        {
+            sensorActivated = ProcessSensorTarget(field, skillCast, position, sensorProperty, target);
+
+            return !sensorActivated;
+        });
+
+        return sensorActivated;
+    }
+
+    private static bool ProcessSensorTarget(FieldManager field, SkillCast skillCast, CoordF position, RangeProperty sensorProperty, IFieldActor target)
+    {
+        return (target.Coord - position).Length() <= sensorProperty.Distance;
+    }
+
+    private static IFieldActor? HandleRegionSkillChaining(FieldManager field, SkillCast skillCast, out bool isChained)
     {
         Character? character = skillCast.Caster as Character;
+
+        isChained = false;
 
         if (character is null)
         {
             return null;
         }
 
-        Session? session = character.Value?.Session;
+        GameSession? session = character.Value?.Session;
 
         if (session is null)
         {
@@ -280,9 +408,9 @@ public static class RegionSkillHandler
         List<int> targetId = new();
         List<short> animation = new();
 
-        bool hasChaining = false;
         SkillAttack? chainingAttack = null;
         int attackPoint = 0;
+        MagicPathMove? pathMove = null;
 
         foreach (SkillMotion skillMotion in skillCast.GetSkillMotions())
         {
@@ -290,15 +418,18 @@ public static class RegionSkillHandler
             {
                 SkillAttack skillAttack = skillMotion.SkillAttacks[i];
 
-                if (skillCast.EffectCoords.Count > 0 && skillAttack.ArrowProperty.BounceType == BounceType.Unknown2)
+                MagicPathMove? path = MagicPathMetadataStorage.GetMagicPath(skillAttack.MagicPathId)?.MagicPathMoves[0];
+
+                if (skillCast.EffectCoords.Count > 0 && path?.Velocity > 0)
                 {
-                    hasChaining = true;
+                    isChained = true;
                     attackPoint = i;
                     chainingAttack = skillAttack;
+                    pathMove = path;
 
                     CoordF position = skillCast.EffectCoords[0];
 
-                    for (int j = 0; j < skillAttack.ArrowProperty.BounceCount - 1 && targets.Count == j; ++j)
+                    for (int j = 0; j < skillAttack.ArrowProperty.BounceCount + 1 && targets.Count == j; ++j)
                     {
                         IFieldActor? closest = null;
 
@@ -319,7 +450,7 @@ public static class RegionSkillHandler
             }
         }
 
-        if (!hasChaining)
+        if (!isChained)
         {
             return null;
         }
@@ -343,16 +474,15 @@ public static class RegionSkillHandler
         }
 
         field.BroadcastPacket(SkillDamagePacket.SyncDamage(skillCast, skillCast.EffectCoords[0], skillCast.Rotation, character, sourceId, (byte) atkCount.Count, atkCount,
-            targetId, animation, true, uid));
+            targetId, animation, isChained, uid));
 
-        if (chainingAttack is null || targets.Count == 0)
+        if (chainingAttack is null || targets.Count == 0 || pathMove is null)
         {
             return targets.Count != 0 ? targets[0] : null;
         }
 
         skillCast.Position = skillCast.EffectCoords[0];
         int currentTarget = 0;
-        MagicPathMove pathMove = MagicPathMetadataStorage.GetMagicPath(chainingAttack.MagicPathId)?.MagicPathMoves[0] ?? new();
 
         field.FieldTaskScheduler.QueueTask(new(10)
         {
@@ -368,7 +498,7 @@ public static class RegionSkillHandler
             {
                 skillCast.Position = targets[currentTarget].Coord;
 
-                SkillHandler.HandleDamage(skillCast, targets[currentTarget], 1, attackPoint, currentTarget + 2, skillCast.Position, skillCast.Rotation);
+                SkillHandler.HandleDamage(skillCast, targets[currentTarget], attackPoint, currentTarget + 2, skillCast.Position, skillCast.Rotation);
                 // do damage
 
                 ++currentTarget;
@@ -403,12 +533,9 @@ public static class RegionSkillHandler
                     ProcessAttackApplyTarget(field, skillCast, ref hitsRemaining, damages, target, true);
                     return hitsRemaining > 0;
                 });
-            }
-        }
 
-        if (damages.Count == 0)
-        {
-            return;
+                ProcessFieldTarget(field, skillCast);
+            }
         }
 
         field.BroadcastPacket(SkillDamagePacket.RegionDamage(skillCast, damages));
@@ -543,26 +670,51 @@ public static class RegionSkillHandler
             return;
         }
 
-        foreach (CoordF effectCoord in skillCast.EffectCoords)
+        for (int i = 0; i < skillCast.EffectCoords.Count; ++i)
         {
+            CoordF effectCoord = skillCast.EffectCoords[i];
+
             if ((target.Coord - effectCoord).Length() > skillCast.SkillAttack.RangeProperty.Distance)
             {
                 continue;
             }
 
             ConditionSkillTarget castInfo = new(caster, target, caster, caster);
+
             bool hitTarget = false;
             bool hitCrit = false;
             bool hitMissed = false;
 
-            if (skillCast.SkillAttack.DamageProperty.DamageRate != 0)
+            AdditionalEffect? activeShield = target.AdditionalEffects.ActiveShield;
+            bool allowHit = true;
+
+            if (activeShield is not null)
             {
-                for (int i = 0; i < skillCast.SkillAttack.DamageProperty.Count; ++i)
+                int[]? allowedSkills = activeShield.LevelMetadata?.Basic?.AllowedSkillAttacks;
+                int[]? allowedDotEffects = activeShield.LevelMetadata?.Basic?.AllowedDotEffectAttacks;
+
+                if ((allowedSkills?.Length > 0 || allowedDotEffects?.Length > 0) && allowedSkills?.Contains(skillCast.SkillId) != true)
+                {
+                    allowHit = false;
+                }
+            }
+
+            if ((skillCast.SkillAttack.DamageProperty.DamageRate != 0 || skillCast.SkillAttack.DamageProperty.DamageValue != 0) && allowHit)
+            {
+                for (int j = 0; j < skillCast.SkillAttack.DamageProperty.Count; ++j)
                 {
                     DamageHandler damage = DamageHandler.CalculateDamage(skillCast, caster, target);
-                    target.Damage(damage, session);
 
-                    damages.Add(damage);
+                    if (activeShield is not null)
+                    {
+                        activeShield.DamageShield(target, (long) damage.Damage);
+                    }
+                    else
+                    {
+                        target.Damage(damage, session);
+
+                        damages.Add(damage);
+                    }
 
                     hitCrit |= damage.HitType == Enums.HitType.Critical;
                     hitMissed |= damage.HitType == Enums.HitType.Miss;
@@ -570,16 +722,41 @@ public static class RegionSkillHandler
                 }
             }
 
+            hitTarget |= allowHit && skillCast.SkillAttack.DamageProperty.DamageRate == 0 && skillCast.SkillAttack.DamageProperty.DamageValue == 0;
+
             if (damaging)
             {
                 target.SkillTriggerHandler.OnAttacked(caster, skillCast.SkillId, hitTarget, hitCrit, hitMissed, false);
             }
 
+            skillCast.ActiveCoord = i;
             castInfo.Owner?.SkillTriggerHandler.FireTriggerSkills(skillCast.SkillAttack.SkillConditions, skillCast, castInfo, -1, hitTarget);
+            skillCast.ActiveCoord = -1;
 
             hitsRemaining--;
 
             return;
+        }
+    }
+
+    private static void ProcessFieldTarget(FieldManager field, SkillCast skillCast)
+    {
+        if (skillCast.SkillAttack is null)
+        {
+            return;
+        }
+
+        IFieldActor? caster = skillCast.Caster;
+
+        for (int i = 0; i < skillCast.EffectCoords.Count; ++i)
+        {
+            CoordF effectCoord = skillCast.EffectCoords[i];
+
+            ConditionSkillTarget castInfo = new(caster, null, caster);
+
+            skillCast.ActiveCoord = i;
+            castInfo.Owner?.SkillTriggerHandler.FireTriggerSkills(skillCast.SkillAttack.SkillConditions, skillCast, castInfo, -1, false);
+            skillCast.ActiveCoord = -1;
         }
     }
 

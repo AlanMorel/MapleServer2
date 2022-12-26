@@ -12,7 +12,7 @@ public static class SyncStateHelper
         SyncState state = new();
 
         state.BoreAnimation = packet.ReadByte();
-        state.Animation2 = packet.ReadByte();
+        state.SubAnimation = packet.ReadByte();
         state.Flag = (SyncStateFlag) packet.ReadByte();
         if (state.Flag.HasFlag(SyncStateFlag.Flag1))
         {
@@ -77,7 +77,7 @@ public static class SyncStateHelper
     public static PacketWriter WriteSyncState(this PacketWriter pWriter, SyncState entry)
     {
         pWriter.WriteByte(entry.BoreAnimation);
-        pWriter.WriteByte(entry.Animation2);
+        pWriter.WriteByte(entry.SubAnimation);
         pWriter.WriteByte((byte) entry.Flag);
         if (entry.Flag.HasFlag(SyncStateFlag.Flag1))
         {
