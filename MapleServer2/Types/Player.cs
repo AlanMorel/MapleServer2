@@ -1104,7 +1104,7 @@ public class Player : IPacketSerializable
                             }
                         }
 
-                        level = (short)skillLevel.Level;
+                        level = (short) skillLevel.Level;
                     }
                     ProcessSkillPassives(subSkillId, level, subSkill);
                 }

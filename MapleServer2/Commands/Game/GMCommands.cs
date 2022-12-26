@@ -711,7 +711,7 @@ public class DebugPrintCommand : InGameCommand
         };
 
         trigger.Session.Send(NoticePacket.Notice($"{modeName} {listName} items: {string.Join(", ", idList)}", NoticeType.Chat));
-        
+
         if (mode == ListMode.Set)
         {
             listToSet.Clear();

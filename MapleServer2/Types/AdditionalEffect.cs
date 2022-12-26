@@ -155,7 +155,7 @@ public class AdditionalEffect
         ConditionSkillTarget effectInfo = new ConditionSkillTarget(parent, parent, Caster);
 
         parent.AdditionalEffects.DebugPrint(this, EffectEvent.Tick, effectInfo);
-        
+
         if (!parent.SkillTriggerHandler.ShouldTick(LevelMetadata.BeginCondition, effectInfo, effectEvent, 0, ProximityQuery))
         {
             return;

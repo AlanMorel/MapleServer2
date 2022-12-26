@@ -193,7 +193,7 @@ public class SkillTriggerHandler
             return false;
         }
 
-        if (condition.RequireDurationWithoutMove > 0 && condition.RequireDurationWithoutMove > (float)Parent.TimeSinceLastMove / 1000)
+        if (condition.RequireDurationWithoutMove > 0 && condition.RequireDurationWithoutMove > (float) Parent.TimeSinceLastMove / 1000)
         {
             return false;
         }
