@@ -42,16 +42,38 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
             effects.Add(metadata);
             effectsById.Add(effectId, metadata);
 
+            Dictionary<int, int> effectFeatureLevels = new();
+
             foreach (XmlNode level in document.SelectNodes("/ms2/level")!)
             {
-                string? feature = level.Attributes?["feature"]?.Value;
+                int levelValue = int.Parse(level.SelectSingleNode("BasicProperty")?.Attributes?["level"]?.Value ?? "0");
 
-                if (feature is not null && !FeatureLocaleFilter.Features.ContainsKey(feature))
+                string? feature = level.Attributes?["feature"]?.Value;
+                int featureLevel = 0;
+
+                if (feature is not null && !FeatureLocaleFilter.Features.TryGetValue(feature, out featureLevel))
                 {
                     continue;
                 }
 
                 feature = feature ?? "";
+
+                if (effectFeatureLevels.TryGetValue(levelValue, out int oldFeatureLevel) && oldFeatureLevel > featureLevel)
+                {
+                    continue;
+                }
+
+                if (!effectFeatureLevels.ContainsKey(levelValue))
+                {
+                    effectFeatureLevels.Add(levelValue, featureLevel);
+                }
+                else
+                {
+                    effectFeatureLevels[levelValue] = levelValue;
+                }
+
+                // We prevent duplicates levels from older balances.
+                metadata.Levels.Remove(levelValue);
 
                 string? locale = level.Attributes?["locale"]?.Value;
 
@@ -110,6 +132,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
                 levelMeta.HasStats |= levelMeta.Defesive.Invincible;
                 levelMeta.HasStats |= levelMeta.Shield?.HpValue > 0;
                 levelMeta.HasStats |= levelMeta.Basic.AllowedSkillAttacks.Length > 0 || levelMeta.Basic.AllowedDotEffectAttacks.Length > 0;
+                levelMeta.HasStats |= levelMeta.Status.CompulsionEventType != CompulsionEventType.None;
                 levelMeta.HasConditionalStats = levelMeta.HasStats && !IsDefaultBeginCondition(levelMeta.BeginCondition);
             }
         }
@@ -172,6 +195,23 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
         resistances[type] = float.Parse(attribute?.Value ?? "0");
     }
 
+    public delegate bool TryParseHandler<T>(string value, out T result);
+
+    private Type ParseOptional<Type>(string? value, TryParseHandler<Type> parseFunction, Type defaultValue)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return defaultValue;
+        }
+
+        if (parseFunction(value, out Type result))
+        {
+            return result;
+        }
+
+        return defaultValue;
+    }
+
     private EffectStatusMetadata ParseStatusProperty(XmlNode? statusNode, Dictionary<StatAttribute, EffectStatMetadata> stats)
     {
         if (statusNode is null)
@@ -196,6 +236,9 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
         {
             Stats = stats,
             DeathResistanceHp = long.Parse(statusNode?.Attributes?["deathResistanceHP"]?.Value ?? "0"),
+            CompulsionEventType = (CompulsionEventType) ParseOptional(statusNode?.Attributes?["compulsionEventTypes"]?.Value, int.TryParse, 0),
+            CompulsionEventRate = ParseOptional<float>(statusNode?.Attributes?["compulsionEventRate"]?.Value, float.TryParse, 0),
+            CompulsionEventSkillCodes = statusNode?.Attributes?["compulsionEventSkillCodes"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>(),
             Resistances = resistances
         };
     }
@@ -269,7 +312,7 @@ public class AdditionalEffectParser : Exporter<List<AdditionalEffectMetadata>>
     {
         return new()
         {
-            SkillCodes = parentNode?.Attributes?["skillCodes"]?.Value?.SplitAndParseToLong(',')?.ToArray() ?? Array.Empty<long>()
+            SkillCodes = parentNode?.Attributes?["skillCodes"]?.Value?.SplitAndParseToInt(',')?.ToArray() ?? Array.Empty<int>()
         };
     }
 

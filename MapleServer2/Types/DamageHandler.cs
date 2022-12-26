@@ -12,6 +12,9 @@ public class DamageSourceParameters
     public bool IsSkill;
     public bool GuaranteedCrit;
     public bool CanCrit;
+    public float CritRateOverride = 0;
+    public float EvadeRateOverride = 0;
+    public float BlockRate = 0;
     public Element Element;
     public SkillRangeType RangeType;
     public DamageType DamageType;
@@ -65,6 +68,9 @@ public class DamageHandler
         {
             IsSkill = true,
             GuaranteedCrit = skill.IsGuaranteedCrit() || (source?.AdditionalEffects?.AlwaysCrit ?? false),
+            CritRateOverride = source?.AdditionalEffects.GetCompulsionRate(CompulsionEventType.CritChanceOverride, skill.SkillId) ?? 0,
+            EvadeRateOverride = target.AdditionalEffects.GetCompulsionRate(CompulsionEventType.EvasionChanceOverride, skill.SkillId),
+            BlockRate = target.AdditionalEffects.GetCompulsionRate(CompulsionEventType.BlockChance, skill.SkillId),
             Element = skill.GetElement(),
             RangeType = skill.GetRangeType(),
             DamageType = skill.GetSkillDamageType(),
@@ -141,6 +147,16 @@ public class DamageHandler
 
     public static DamageHandler CalculateFieldDamage(DamageSourceParameters parameters, IFieldActor target)
     {
+        if (parameters.BlockRate >= 1 || (parameters.BlockRate > 0 && Random.Shared.NextDouble() <= parameters.BlockRate))
+        {
+            return new(null, target, 0, HitType.Block); // blocked
+        }
+
+        if (parameters.EvadeRateOverride > 0 && Random.Shared.NextDouble() <= parameters.EvadeRateOverride)
+        {
+            return new(null, target, 0, HitType.Miss); // we missed
+        }
+
         // super scuffed. there are a lot of unknowns relating to how skills from map triggers calculate damage
 
         //double hitRate = (source.Stats[StatAttribute.Accuracy].Total + AccuracyWeakness) / Math.Max(target.Stats[StatAttribute.Evasion].Total, 0.1);
@@ -215,6 +231,16 @@ public class DamageHandler
 
     public static DamageHandler CalculateDamage(DamageSourceParameters parameters, IFieldActor source, IFieldActor target)
     {
+        if (parameters.BlockRate >= 1 || (parameters.BlockRate > 0 && Random.Shared.NextDouble() <= parameters.BlockRate))
+        {
+            return new(source, target, 0, HitType.Block); // blocked
+        }
+
+        if (parameters.EvadeRateOverride > 0 && Random.Shared.NextDouble() <= parameters.EvadeRateOverride)
+        {
+            return new(source, target, 0, HitType.Miss); // we missed
+        }
+
         double AccuracyWeakness = GetResistance(source, StatAttribute.Accuracy);
         double EvasionWeakness = GetResistance(target, StatAttribute.Evasion);
         double hitRate = (source.Stats[StatAttribute.Accuracy].Total * (1 + EvasionWeakness)) / Math.Max(target.Stats[StatAttribute.Evasion].Total * (1 + AccuracyWeakness), 0.1);
@@ -245,7 +271,7 @@ public class DamageHandler
             attackDamage = minDamage + (maxDamage - minDamage) * damageRoll;
         }
 
-        bool isCrit = parameters.CanCrit && (parameters.GuaranteedCrit || RollCrit(source, target, luckCoefficient));
+        bool isCrit = parameters.CanCrit && (parameters.GuaranteedCrit || RollCrit(source, target, luckCoefficient, parameters.CritRateOverride));
 
         double finalCritDamage = 1;
 
@@ -257,8 +283,6 @@ public class DamageHandler
         }
 
         double damageBonus = 1 + FetchMultiplier(source.Stats, StatAttribute.TotalDamage) + FetchMultiplier(source.Stats, StatAttribute.Damage);
-
-        damageBonus *= finalCritDamage;
 
         switch (parameters.Element)
         {
@@ -301,6 +325,8 @@ public class DamageHandler
         double AttackSpeedWeakness = -GetResistance(target, StatAttribute.AttackSpeed);
 
         damageBonus += AttackSpeedWeakness * FetchMultiplier(source.Stats, StatAttribute.AttackSpeed);
+
+        damageBonus *= finalCritDamage;
 
         InvokeStatValue skillModifier;
 
@@ -362,7 +388,7 @@ public class DamageHandler
         return new(source, target, Math.Max(1, attackDamage), isCrit ? HitType.Critical : HitType.Normal);
     }
 
-    private static bool RollCrit(IFieldActor source, IFieldActor target, double luckCoefficient)
+    private static bool RollCrit(IFieldActor source, IFieldActor target, double luckCoefficient, double critRateOverride)
     {
         // used to weigh crit rate in the formula, like how class luck coefficients weigh luck
         const double CritConstant = 5.3;
@@ -377,7 +403,7 @@ public class DamageHandler
         double critEvasion = Math.Max(target.Stats[StatAttribute.CritEvasion].Total, 1) * 2;
         double critChance = Math.Min(critRate / critEvasion * PercentageConversion, MaxCritRate);
 
-        return Random.Shared.Next(1000) < 1000 * critChance;
+        return Random.Shared.NextDouble() < Math.Max(critChance, critRateOverride);
     }
 
     private static double GetRarityBonusAttackMultiplier(Item item)

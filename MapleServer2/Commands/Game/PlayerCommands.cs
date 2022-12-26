@@ -296,7 +296,7 @@ public class DamageVarianceCommand : InGameCommand
         Description = "Level up all the skills available.";
         Parameters = new()
         {
-            new Parameter<string>("id", "ID of the status.")
+            new Parameter<string>("enabled", "1/true to enable damage variance, 0/false to disable")
         };
         Usage = "/damagevariance [enabled]";
     }

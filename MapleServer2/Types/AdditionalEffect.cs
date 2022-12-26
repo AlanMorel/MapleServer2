@@ -33,6 +33,7 @@ public class AdditionalEffect
     private bool WasActiveLastUpdate = false;
     private bool ShouldBeActive = false;
     public ProximityQuery? ProximityQuery = null;
+    public bool IsActive { get => ShouldBeActive; }
 
     public AdditionalEffect(IFieldActor parent, int id, int level, int stacks = 1)
     {
@@ -77,13 +78,20 @@ public class AdditionalEffect
 
     public void SendBuffStatus(IFieldActor parent)
     {
-        if (ShouldBeActive && IsAlive)
+        if (!IsAlive)
         {
             if (BuffId != -1)
             {
-                return;
+                parent?.FieldManager?.BroadcastPacket(BuffPacket.RemoveBuff(this, Parent.ObjectId));
+
+                BuffId = -1;
             }
 
+            return;
+        }
+
+        if (BuffId == -1)
+        {
             BuffId = GuidGenerator.Int();
 
             parent.FieldManager?.BroadcastPacket(BuffPacket.AddBuff(this, Parent.ObjectId));
@@ -91,36 +99,46 @@ public class AdditionalEffect
             return;
         }
 
-        if (BuffId == -1)
+        if (ShieldHealth > 0)
         {
+            parent.FieldManager?.BroadcastPacket(BuffPacket.UpdateShieldBuff(this, Parent.ObjectId));
+
             return;
         }
 
-        parent?.FieldManager?.BroadcastPacket(BuffPacket.RemoveBuff(this, Parent.ObjectId));
-
-        BuffId = -1;
+        parent.FieldManager?.BroadcastPacket(BuffPacket.UpdateBuff(this, Parent.ObjectId));
     }
 
-    public bool AreStatsStale(IFieldActor parent, EffectEvent effectEvent = EffectEvent.Tick)
+    public bool AreStatsStale(IFieldActor parent, bool forceCheck = false, EffectEvent effectEvent = EffectEvent.Tick, ConditionSkillTarget? eventEffectInfo = null, int eventIdArgument = 0)
     {
         bool hasSubjectCondition = LevelMetadata.BeginCondition.Owner is not null;
         hasSubjectCondition |= LevelMetadata.BeginCondition.Caster is not null;
         hasSubjectCondition |= LevelMetadata.BeginCondition.Target is not null;
 
-        bool shouldCheckStatus = LevelMetadata.HasStats || hasSubjectCondition;
+        if (hasSubjectCondition && effectEvent == EffectEvent.Tick)
+        {
+            bool hasEvent = (LevelMetadata.BeginCondition.Owner?.EventCondition ?? EffectEvent.Tick) != EffectEvent.Tick;
+            hasEvent |= (LevelMetadata.BeginCondition.Caster?.EventCondition ?? EffectEvent.Tick) != EffectEvent.Tick;
+            hasEvent |= (LevelMetadata.BeginCondition.Target?.EventCondition ?? EffectEvent.Tick) != EffectEvent.Tick;
 
-        if (!shouldCheckStatus && ShouldBeActive)
+            if (hasEvent)
+            {
+                return false;
+            }
+        }
+
+        bool shouldCheckStatus = LevelMetadata.HasStats || hasSubjectCondition || LevelMetadata.BeginCondition.RequireSkillCodes?.Codes.Length > 0;
+
+        if (!shouldCheckStatus && !forceCheck)// && ShouldBeActive)
         {
             return false;
         }
 
-        ConditionSkillTarget effectInfo = new ConditionSkillTarget(parent, parent, Caster);
+        ConditionSkillTarget effectInfo = eventEffectInfo ?? new ConditionSkillTarget(parent, parent, Caster);
 
-        ShouldBeActive = parent.SkillTriggerHandler.ShouldTick(LevelMetadata.BeginCondition, effectInfo, effectEvent, 0, ProximityQuery);
+        ShouldBeActive = parent.SkillTriggerHandler.ShouldTick(LevelMetadata.BeginCondition, effectInfo, effectEvent, eventIdArgument, ProximityQuery);
 
-        parent.SkillTriggerHandler.ShouldTick(LevelMetadata.BeginCondition, effectInfo, effectEvent, 0, ProximityQuery);
-
-        return ShouldBeActive != WasActiveLastUpdate && IsAlive;
+        return (ShouldBeActive != WasActiveLastUpdate || forceCheck) && IsAlive;
     }
 
     public bool UpdateStatStatus(IFieldActor parent)
@@ -132,9 +150,9 @@ public class AdditionalEffect
         return LevelMetadata.HasStats;
     }
 
-    public bool UpdateIfStale(IFieldActor parent, EffectEvent effectEvent = EffectEvent.Tick)
+    public bool UpdateIfStale(IFieldActor parent, bool forceCheck = false, EffectEvent effectEvent = EffectEvent.Tick, ConditionSkillTarget? eventEffectInfo = null, int eventIdArgument = 0)
     {
-        if (AreStatsStale(parent, effectEvent))
+        if (AreStatsStale(parent, forceCheck, effectEvent, eventEffectInfo, eventIdArgument))
         {
             bool recompute = UpdateStatStatus(parent);
 
@@ -149,13 +167,35 @@ public class AdditionalEffect
         return false;
     }
 
-    public void Invoke(IFieldActor parent, EffectEvent effectEvent = EffectEvent.Tick)
+    private bool FirstInvoke = false;
+
+    public void InvokeInitial(IFieldActor parent)
     {
-        ConditionSkillTarget effectInfo = new ConditionSkillTarget(parent, parent, Caster);
+        if (FirstInvoke)
+        {
+            return;
+        }
+
+        FirstInvoke = true;
+
+        if (LevelMetadata.CancelEffect is not null)
+        {
+            CancelEffects(parent, LevelMetadata.CancelEffect);
+        }
+
+        if (LevelMetadata.ResetCoolDownTime is not null)
+        {
+            ResetCooldown(parent, LevelMetadata.ResetCoolDownTime);
+        }
+    }
+
+    public void Invoke(IFieldActor parent, EffectEvent effectEvent = EffectEvent.Tick, ConditionSkillTarget? effectEventInfo = null, int eventIdArgument = 0)
+    {
+        ConditionSkillTarget effectInfo = effectEventInfo ?? new ConditionSkillTarget(parent, parent, Caster);
 
         parent.AdditionalEffects.DebugPrint(this, EffectEvent.Tick, effectInfo);
 
-        if (!parent.SkillTriggerHandler.ShouldTick(LevelMetadata.BeginCondition, effectInfo, effectEvent, 0, ProximityQuery))
+        if (!parent.SkillTriggerHandler.ShouldTick(LevelMetadata.BeginCondition, effectInfo, effectEvent, eventIdArgument, ProximityQuery))
         {
             return;
         }
@@ -165,6 +205,8 @@ public class AdditionalEffect
             Session = character.Value.Session;
         }
 
+        InvokeInitial(parent);
+
         if (LevelMetadata.ModifyOverlapCount is not null)
         {
             ModifyOverlap(parent, LevelMetadata.ModifyOverlapCount);
@@ -173,11 +215,6 @@ public class AdditionalEffect
         if (LevelMetadata.ModifyEffectDuration is not null)
         {
             ModifyDuration(parent, LevelMetadata.ModifyEffectDuration);
-        }
-
-        if (LevelMetadata.ResetCoolDownTime is not null)
-        {
-            ResetCooldown(parent, LevelMetadata.ResetCoolDownTime);
         }
 
         if (LevelMetadata.Recovery is not null)
@@ -263,7 +300,14 @@ public class AdditionalEffect
             return;
         }
 
-        parent.FieldManager?.BroadcastPacket(SkillCooldownPacket.SetCooldowns(resetCooldown.SkillCodes, new int[resetCooldown.SkillCodes.Length]));
+        int[] originSkillIds = new int[resetCooldown.SkillCodes.Length];
+
+        for (int i = 0; i < resetCooldown.SkillCodes.Length; ++i)
+        {
+            originSkillIds[i] = SkillMetadataStorage.GetChangeOriginSkillId(resetCooldown.SkillCodes[i]);
+        }
+
+        parent.SkillTriggerHandler.SetSkillCooldowns(resetCooldown.SkillCodes, originSkillIds, null);
     }
 
     public void Recovery(IFieldActor parent, EffectRecoveryMetadata recovery)
@@ -339,6 +383,9 @@ public class AdditionalEffect
         {
             IsSkill = false,
             GuaranteedCrit = Caster?.AdditionalEffects?.AlwaysCrit ?? false,
+            CritRateOverride = Caster?.AdditionalEffects?.GetCompulsionRate(CompulsionEventType.CritChanceOverride) ?? 0,
+            EvadeRateOverride = Parent.AdditionalEffects.GetCompulsionRate(CompulsionEventType.EvasionChanceOverride),
+            BlockRate = Parent.AdditionalEffects.GetCompulsionRate(CompulsionEventType.BlockChance),
             CanCrit = LevelMetadata.DotDamage.UseGrade,
             Element = (Element) dotDamage.Element,
             RangeType = SkillRangeType.Special,
@@ -377,6 +424,7 @@ public class AdditionalEffect
             if (cancel?.CancelEffectCodes?.Contains(oldEffect.Id) == true)
             {
                 oldEffect.Stop(parent);
+                --i;
             }
         }
     }
@@ -401,7 +449,7 @@ public class AdditionalEffect
 
         parent.AdditionalEffects.EffectStopped(this);
 
-        FireEvent(parent, Caster, EffectEvent.OnEffectRemoved);
+        parent.TaskScheduler.QueueBufferedTask(() => FireEvent(parent, Caster, EffectEvent.OnEffectRemoved));
 
         parent.TaskScheduler.RemoveTasksFromSubject(this);
 
@@ -424,6 +472,16 @@ public class AdditionalEffect
             parent.AdditionalEffects.ActiveShield = this;
         }
 
+        if (LevelMetadata.Status.CompulsionEventType != CompulsionEventType.None)
+        {
+            parent.AdditionalEffects.CompulsionEvents.Add(new()
+            {
+                Type = LevelMetadata.Status.CompulsionEventType,
+                Rate = LevelMetadata.Status.CompulsionEventRate * Stacks,
+                SkillCodes = LevelMetadata.Status.CompulsionEventSkillCodes
+            });
+        }
+
         if (LevelMetadata.Status.Resistances is null)
         {
             return;
@@ -431,6 +489,7 @@ public class AdditionalEffect
 
         foreach ((StatAttribute attribute, float value) in LevelMetadata.Status.Resistances)
         {
+            parent.AdditionalEffects.Resistances.TryAdd(attribute, 0);
             parent.AdditionalEffects.Resistances[attribute] += value;
         }
     }
@@ -462,8 +521,6 @@ public class AdditionalEffect
             return;
         }
 
-        FireEvent(parent, effectInfo.Caster, EffectEvent.OnBuffTimeExpiring);
-
         Stop(parent);
     }
 
@@ -481,11 +538,6 @@ public class AdditionalEffect
 
     public void Process(IFieldActor parent)
     {
-        if (LevelMetadata.CancelEffect is not null)
-        {
-            CancelEffects(parent, LevelMetadata.CancelEffect);
-        }
-
         ConditionSkillTarget effectInfo = new(parent, parent, Caster);
 
         FireEvent(parent, Caster, EffectEvent.OnEffectApplied);
@@ -496,7 +548,7 @@ public class AdditionalEffect
 
         bool delayFirstInterval = LevelMetadata.Basic.DotCondition != EffectDotCondition.ImmediateFire && interval != 0;
 
-        UpdateIfStale(parent);
+        UpdateIfStale(parent, true);
 
         if (delay == 0 && !delayFirstInterval)
         {
@@ -556,13 +608,25 @@ public class AdditionalEffect
         }
 
         parent.TaskScheduler.RemoveTasks(Caster, this);
+
         parent.TaskScheduler.QueueTask(new(interval)
         {
             Delay = delay,
             Duration = duration,
             Executions = interval == 0 ? 1 : -1,
             Origin = Caster,
-            Subject = this
-        }, (currentTick, task) => OnTick(parent, effectInfo), taskFinishedCallback);
+            Subject = this,
+        }, (currentTick, task) => OnTick(parent, effectInfo));
+
+        if (taskFinishedCallback is not null)
+        {
+            parent.TaskScheduler.QueueTask(new(delay + duration)
+            {
+                Delay = delay + duration,
+                Executions = 1,
+                Origin = Caster,
+                Subject = this,
+            }, (currentTick, task) => { taskFinishedCallback(currentTick, task); return 0; });
+        }
     }
 }

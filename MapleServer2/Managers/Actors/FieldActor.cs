@@ -28,6 +28,7 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
     public virtual TickingTaskScheduler TaskScheduler { get; }
     public virtual ProximityTracker ProximityTracker { get; }
     public SkillCastTracker SkillCastTracker { get; }
+    public AnimationHandler AnimationHandler { get; }
 
     public virtual FieldManager? FieldManager { get; }
     public FieldNavigator Navigator { get; }
@@ -42,6 +43,7 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
         TaskScheduler = new(FieldManager);
         ProximityTracker = new(this);
         SkillCastTracker = new(this);
+        AnimationHandler = new(this);
     }
 
     public virtual void Cast(SkillCast skillCast)
@@ -176,6 +178,8 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
 
     public virtual void Perish()
     {
+        SkillTriggerHandler.FireEvents(this, null, EffectEvent.OnDeath, 0);
+
         IsDead = true;
     }
 
@@ -196,7 +200,7 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
         {
             foreach ((StatAttribute stat, EffectStatMetadata statValue) in effect.LevelMetadata.Status.Stats)
             {
-                Stats.AddStat(stat, statValue.AttributeType, statValue.Flat, statValue.Rate);
+                Stats.AddStat(stat, statValue.AttributeType, statValue.Flat * effect.Stacks, statValue.Rate * effect.Stacks);
             }
         }
 
@@ -262,6 +266,14 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
         }
     }
 
+    public virtual void EffectUpdated(AdditionalEffect effect)
+    {
+        if (!IsRemoved() && (effect?.LevelMetadata?.HasStats ?? false))
+        {
+            ComputeStats();
+        }
+    }
+
     public virtual void EffectRemoved(AdditionalEffect? effect)
     {
         if (!IsRemoved() && (effect?.LevelMetadata?.HasStats ?? false))
@@ -288,9 +300,11 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
         ComputeBaseStats();
         AddStats();
 
-        hp.SetValue(hpValue);
-        spirit.SetValue(spiritValue);
-        stamina.SetValue(staminaValue);
+        Stats.ComputeStatBonuses();
+
+        Stats[StatAttribute.Hp].SetValue(hpValue);
+        Stats[StatAttribute.Spirit].SetValue(spiritValue);
+        Stats[StatAttribute.Stamina].SetValue(staminaValue);
 
         StatsComputed();
     }
@@ -326,6 +340,8 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
 
         LastCoord = Coord;
 
+        AnimationHandler.Update();
+        SkillTriggerHandler.Update((int) delta);
         AdditionalEffects.UpdateStatsIfStale();
         ProximityTracker.Update();
         SkillCastTracker.Update();

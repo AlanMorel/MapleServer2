@@ -30,7 +30,7 @@ public class SkillCast
     public bool UseDirection = true;
 
     public IFieldActor? Caster;
-    public IFieldActor Target;
+    public IFieldActor? Target;
     public IFieldActor? Owner; // who the skill was casted at, not necessarily the same as caster
 
     public long MagicPath = 0;

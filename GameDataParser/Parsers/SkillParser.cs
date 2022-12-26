@@ -52,21 +52,40 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                 bool immediateActive = int.Parse(kinds?.Attributes?["immediateActive"]?.Value ?? "0") == 1;
 
                 List<SkillLevel> skillLevels = new();
+                Dictionary<int, int> skillFeatureLevels = new();
                 foreach (XmlNode level in levels)
                 {
+                    int levelValue = int.Parse(level.Attributes?["value"]?.Value ?? "0");
+
                     // Getting all skills level
                     string feature = level.Attributes?["feature"]?.Value ?? "";
+                    int featureLevel = 0;
 
-                    if (feature != "" && !FeatureLocaleFilter.Features.ContainsKey(feature))
+                    if (feature != "" && !FeatureLocaleFilter.Features.TryGetValue(feature, out featureLevel))
                     {
                         continue;
                     }
 
-                    short levelValue = short.Parse(level.Attributes?["value"]?.Value ?? "0");
-                    // We prevent duplicates levels from older balances.
-                    if (skillLevels.Exists(x => x.Level == levelValue))
+                    if (skillFeatureLevels.TryGetValue(levelValue, out int oldFeatureLevel) && oldFeatureLevel > featureLevel)
                     {
                         continue;
+                    }
+
+                    if (!skillFeatureLevels.ContainsKey(levelValue))
+                    {
+                        skillFeatureLevels.Add(levelValue, featureLevel);
+                    }
+                    else
+                    {
+                        skillFeatureLevels[levelValue] = levelValue;
+                    }
+
+                    int levelIndex = skillLevels.FindIndex(x => x.Level == levelValue);
+
+                    // We prevent duplicates levels from older balances.
+                    if (levelIndex != -1)
+                    {
+                        skillLevels.RemoveAt(levelIndex);
                     }
 
                     float cooldown = 0;
@@ -84,8 +103,11 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                     List<SkillMotion> skillMotions = new();
                     foreach (XmlNode motionNode in level.SelectNodes("motion")!)
                     {
-                        string sequenceName = motionNode.SelectSingleNode("motionProperty")?.Attributes?["sequenceName"]?.Value ?? "";
-                        string motionEffect = motionNode.SelectSingleNode("motionProperty")?.Attributes?["motionEffect"]?.Value ?? "";
+                        XmlNode? motionPropertyNode = motionNode.SelectSingleNode("motionProperty");
+                        string sequenceName = motionPropertyNode?.Attributes?["sequenceName"]?.Value ?? "";
+                        string motionEffect = motionPropertyNode?.Attributes?["motionEffect"]?.Value ?? "";
+                        int splashLifeTick = int.Parse(motionPropertyNode?.Attributes?["splashLifeTick"]?.Value ?? "0");
+                        int splashInvokeCoolTick = int.Parse(motionPropertyNode?.Attributes?["splashInvokeCoolTick"]?.Value ?? "0");
 
                         List<SkillAttack> skillAttacks = new();
                         foreach (XmlNode attackNode in motionNode?.SelectNodes("attack")!)
@@ -115,16 +137,18 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                                 compulsionType, direction));
                         }
 
-                        skillMotions.Add(new(sequenceName, motionEffect, skillAttacks));
+                        skillMotions.Add(new(sequenceName, motionEffect, splashLifeTick, splashInvokeCoolTick, skillAttacks));
                     }
 
                     SkillUpgrade skillUpgrade = ParseSkillUpgrade(level);
                     (int spirit, int stamina) = ParseConsume(level);
                     RangeProperty rangePropertySkill = ParseDetectProperty(level, "detectProperty");
                     RangeProperty sensorPropertySkill = ParseDetectProperty(level, "sensorProperty");
+                    ChangeSkillProperty changeSkill = ParseChangeSkill(level);
+                    ComboProperty combo = ParseCombo(level);
 
                     skillLevels.Add(new(levelValue, spirit, stamina, feature, levelSkillConditions, skillMotions, skillUpgrade, cooldown,
-                        ParseBeginCondition(level), rangePropertySkill, sensorPropertySkill));
+                        ParseBeginCondition(level), rangePropertySkill, sensorPropertySkill, changeSkill, combo));
                 }
 
                 skillList.Add(new(skillId, skillLevels, skillState, skillAttackType, skillType, skillSubType, skillElement, skillSuperArmor, skillRecovery,
@@ -215,6 +239,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
 
             int[] conditionSkillId = conditionNode.Attributes["skillID"]?.Value.SplitAndParseToInt(',').ToArray() ?? Array.Empty<int>();
             short[] conditionSkillLevel = conditionNode.Attributes["level"]?.Value.SplitAndParseToShort(',').ToArray() ?? Array.Empty<short>();
+            int linkSkillId = int.Parse(conditionNode.Attributes["linkSkillID"]?.Value ?? "0");
             bool splash = conditionNode.Attributes["splash"]?.Value == "1";
             byte target = byte.Parse(conditionNode.Attributes["skillTarget"]?.Value ?? "0");
             byte owner = byte.Parse(conditionNode.Attributes["skillOwner"]?.Value ?? "0");
@@ -225,7 +250,6 @@ public class SkillParser : Exporter<List<SkillMetadata>>
             int removeDelay = int.Parse(conditionNode.Attributes["removeDelay"]?.Value ?? "0");
             bool useDirection = int.Parse(conditionNode.Attributes["useDirection"]?.Value ?? "0") == 1;
             bool randomCast = int.Parse(conditionNode.Attributes["randomCast"]?.Value ?? "0") == 1;
-            int[] linkSkillID = conditionNode.Attributes["linkSkillID"]?.Value.SplitAndParseToInt(',').ToArray() ?? Array.Empty<int>();
             int overlapCount = int.Parse(conditionNode.Attributes["overlapCount"]?.Value ?? "0");
             bool nonTargetActive = int.Parse(conditionNode.Attributes["nonTargetActive"]?.Value ?? "0") == 1;
             bool onlySensingActive = int.Parse(conditionNode.Attributes["onlySensingActive"]?.Value ?? "0") == 1;
@@ -239,7 +263,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                 RemoveDelay = removeDelay,
                 UseDirection = useDirection,
                 RandomCast = randomCast,
-                LinkSkillId = linkSkillID,
+                LinkSkillId = linkSkillId,
                 OverlapCount = overlapCount,
                 NonTargetActive = nonTargetActive,
                 OnlySensingActive = onlySensingActive,
@@ -275,7 +299,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                 AllowDeadState = int.Parse(beginNode.Attributes?["allowDeadState"]?.Value ?? "0") == 1,
                 RequireDurationWithoutMove = float.Parse(beginNode.Attributes?["requireDurationWithoutMove"]?.Value ?? "0"),
                 UseTargetCountFactor = int.Parse(beginNode.Attributes?["useTargetCountFactor"]?.Value ?? "0") == 1,
-                //RequireSkillCodes = new(),
+                RequireSkillCodes = ParseRequireSkillCodes(beginNode),
                 //RequireMapCodes = new(),
                 //RequireMapCategoryCodes = new(),
                 //RequireDungeonRooms = new(),
@@ -382,6 +406,31 @@ public class SkillParser : Exporter<List<SkillMetadata>>
         return null;
     }
 
+    private static RequireSkillCodeCondition? ParseRequireSkillCodes(XmlNode beginNode)
+    {
+        List<int> requireCodes = new();
+
+        foreach (XmlNode requireNode in beginNode?.SelectNodes("requireSkillCodes")!)
+        {
+            int code = int.Parse(requireNode.Attributes?["code"]?.Value ?? "0");
+
+            if (code != 0)
+            {
+                requireCodes.Add(code);
+            }
+        }
+
+        if (requireCodes.Count == 0)
+        {
+            return null;
+        }
+
+        return new()
+        {
+            Codes = requireCodes.ToArray()
+        };
+    }
+
     private static DamageProperty ParseDamageProperty(XmlNode attack)
     {
         float damageRate = float.Parse(attack?.SelectSingleNode("damageProperty")?.Attributes?["rate"]?.Value ?? "0");
@@ -430,6 +479,37 @@ public class SkillParser : Exporter<List<SkillMetadata>>
         bool nonTarget = int.Parse(arrowNode?.Attributes?["nonTarget"]?.Value ?? "0") == 1;
 
         return new(bounceType, bounceCount, bounceOverlap, bounceRadius, nonTarget);
+    }
+
+    public static ChangeSkillProperty ParseChangeSkill(XmlNode levelNode)
+    {
+        XmlNode? changeSkillNode = levelNode.SelectSingleNode("changeSkill");
+
+        if (changeSkillNode is null)
+        {
+            return new();
+        }
+
+        return new()
+        {
+            OriginSkillId = int.Parse(changeSkillNode.Attributes?["originSkillID"]?.Value ?? "0"),
+            OriginSkillLevel = short.Parse(changeSkillNode.Attributes?["originSkillLevel"]?.Value ?? "0"),
+        };
+    }
+
+    public static ComboProperty ParseCombo(XmlNode levelNode)
+    {
+        XmlNode? comboNode = levelNode.SelectSingleNode("combo");
+
+        if (comboNode is null)
+        {
+            return new();
+        }
+
+        return new()
+        {
+            ComboOriginSkill = int.Parse(comboNode.Attributes?["comboOriginSkill"]?.Value ?? "0")
+        };
     }
 
     private static RangeProperty ParseDetectProperty(XmlNode attackNode, string nodeName)

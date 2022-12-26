@@ -299,18 +299,6 @@ public sealed class Inventory : IInventory
 
     public void ItemEquipped(GameSession session, Item item)
     {
-        foreach (SetBonus setBonus in SetBonuses)
-        {
-            if (!setBonus.HasItem(item))
-            {
-                continue;
-            }
-
-            IncrementSetBonus(session, setBonus);
-
-            return;
-        }
-
         if (item.AdditionalEffects != null)
         {
             session.Player.AddEffects(item.AdditionalEffects);
@@ -322,6 +310,18 @@ public sealed class Inventory : IInventory
                     session.Player.AddEffects(socket.Gemstone.AdditionalEffects);
                 }
             }
+        }
+
+        foreach (SetBonus setBonus in SetBonuses)
+        {
+            if (!setBonus.HasItem(item))
+            {
+                continue;
+            }
+
+            IncrementSetBonus(session, setBonus);
+
+            return;
         }
 
         SetBonus? newBonus = SetBonus.From(item);

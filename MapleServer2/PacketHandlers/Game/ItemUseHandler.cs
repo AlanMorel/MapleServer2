@@ -487,6 +487,8 @@ public class ItemUseHandler : GamePacketHandler<ItemUseHandler>
     {
         session.Player.Gender = session.Player.Gender == Gender.Male ? Gender.Female : Gender.Male;
 
+        session.Player.FieldPlayer?.AnimationHandler.SetActorId(session.Player.Gender == Gender.Male ? "male" : "female");
+
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
         ChangeToDefaultHair(session);
         ChangeToDefaultFace(session);

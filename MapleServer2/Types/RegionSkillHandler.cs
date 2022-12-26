@@ -1,7 +1,9 @@
-﻿using Maple2Storage.Enums;
+﻿using Maple2.PathEngine;
+using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
+using MapleServer2.Enums;
 using MapleServer2.Managers;
 using MapleServer2.Managers.Actors;
 using MapleServer2.PacketHandlers.Game;
@@ -15,7 +17,7 @@ public static class RegionSkillHandler
 {
     private static readonly ILogger Logger = Log.Logger.ForContext(typeof(RegionSkillHandler));
 
-    public static void CastRegionSkill(FieldManager field, SkillCast skillCast, int fireCount, int removeDelay, int interval, IFieldActor? target = null, SkillCondition? trigger = null, bool isSensor = false)
+    public static void CastRegionSkill(FieldManager field, SkillCast skillCast, int fireCount, int delay, int removeDelay, int interval, IFieldActor? target = null, SkillCondition? trigger = null, bool isSensor = false)
     {
         SkillCast regionCast = new(skillCast.SkillId, skillCast.SkillLevel, skillCast.SkillSn, skillCast.ServerTick, skillCast)
         {
@@ -46,6 +48,11 @@ public static class RegionSkillHandler
             }
         }
 
+        if (motions.Count > 0 && motions[0].SplashLifeTick != 0)
+        {
+            removeDelay = motions[0].SplashLifeTick;
+        }
+
         int lookAtType = 0;
         CoordF skillPosition = skillCast.Position;
 
@@ -60,7 +67,7 @@ public static class RegionSkillHandler
 
         if (isSensor)
         {
-            HandleSensorSkill(field, regionCast, skillPosition, fireCount, removeDelay, interval, target);
+            HandleSensorSkill(field, regionCast, skillPosition, fireCount, delay, removeDelay, interval, target);
 
             return;
         }
@@ -74,21 +81,23 @@ public static class RegionSkillHandler
             regionCast.Rotation = offset / (float) Math.Sqrt(offset.X * offset.X + offset.Y * offset.Y + offset.Z * offset.Z);
         }
 
+        bool hasLinkSkills = InitializeLinkSkills(field, regionCast, interval, target);
         bool dependsOnCasterState = skillCast.Caster is not null && (trigger?.DependOnCasterState ?? false);
 
         if (dependsOnCasterState && skillCast.Caster is not null)
         {
-            short startAnimation = skillCast.Caster.Animation;
-            short startAnimation2 = skillCast.Caster.SubAnimation;
-
             Func<long, TriggerTask, long> tickCallback = (currentTick, task) =>
             {
                 TickRegionSkill(field, regionCast);
 
-                return skillCast.Caster.Animation == startAnimation && skillCast.Caster.SubAnimation == startAnimation2 ? 0 : -1;
+                bool isSkillAnimation = skillCast.Caster.Animation == 16;
+                SkillCast? currentSkill = skillCast.Caster.AnimationHandler.CurrentSkill;
+                bool skillMatchesCurrent = currentSkill?.SkillId == skillCast.ParentSkill?.SkillId;
+
+                return (isSkillAnimation && (skillMatchesCurrent || currentSkill is null)) || skillMatchesCurrent ? 0 : -1;
             };
 
-            Action<long, TriggerTask> cleanCallback = (currentTick, task) => CleanUpRegionSkill(field, regionCast);
+            Action<long, TriggerTask> cleanCallback = (currentTick, task) => CleanUpRegionSkill(field, regionCast, hasLinkSkills);
 
             field.FieldTaskScheduler.QueueTask(new(interval)
             {
@@ -97,15 +106,16 @@ public static class RegionSkillHandler
         }
         else
         {
-            field.FieldTaskScheduler.QueueTask(new(Math.Max(removeDelay, 10))
+            field.FieldTaskScheduler.QueueTask(new(Math.Max(removeDelay, delay + 10))
             {
                 Executions = 1
-            }, (currentTick, task) => { CleanUpRegionSkill(field, regionCast); return -1; });
+            }, (currentTick, task) => { CleanUpRegionSkill(field, regionCast, hasLinkSkills); return -1; });
         }
 
-        if (skillCast.Owner is not null && skillCast.Caster is not null)
+        if (skillCast.Caster is not null)
         {
             skillCast.Caster.SkillTriggerHandler.FireEvents(target, null, EffectEvent.OnSkillCasted, skillCast.SkillId);
+            skillCast.Caster.SkillTriggerHandler.LinkSkillCasted(skillCast.SkillId);
         }
 
         if (isChained)
@@ -113,27 +123,39 @@ public static class RegionSkillHandler
             return;
         }
 
-        HandleRegionSkill(field, regionCast);
-
-        if (interval == 0)
+        if (fireCount == 0)
         {
-            for (int i = 0; i < fireCount - 1; ++i)
-            {
-                HandleRegionSkill(field, regionCast);
-            }
-
             return;
         }
 
+        if (delay == 0)
+        {
+            HandleRegionSkillTicks(field, regionCast, fireCount, interval, dependsOnCasterState);
+
+            return;
+        };
+
+        field.FieldTaskScheduler.QueueTask(new(delay)
+        {
+            Executions = 1
+        }, (currentTick, task) => HandleRegionSkillTicks(field, regionCast, fireCount, interval, dependsOnCasterState));
+    }
+
+    private static long HandleRegionSkillTicks(FieldManager field, SkillCast regionCast, int fireCount, int interval, bool dependsOnCasterState)
+    {
+        HandleRegionSkill(field, regionCast);
+
         if (fireCount == 1 || dependsOnCasterState)
         {
-            return;
+            return 0;
         }
 
         field.FieldTaskScheduler.QueueTask(new(interval)
         {
             Executions = fireCount - 1
         }, (currentTick, task) => TickRegionSkill(field, regionCast));
+
+        return 0;
     }
 
     private static long TickRegionSkill(FieldManager field, SkillCast regionCast)
@@ -143,8 +165,13 @@ public static class RegionSkillHandler
         return 0;
     }
 
-    private static void CleanUpRegionSkill(FieldManager field, SkillCast regionCast)
+    private static void CleanUpRegionSkill(FieldManager field, SkillCast regionCast, bool isLinked)
     {
+        if (isLinked)
+        {
+            regionCast.Caster?.SkillTriggerHandler.RemoveListeningRegionLinkSkill(regionCast);
+        }
+
         if (!field.RemoveRegionSkillEffect(regionCast))
         {
             Logger.Error("Failed to remove Region Skill");
@@ -313,7 +340,27 @@ public static class RegionSkillHandler
         return effectCoords;
     }
 
-    private static void HandleSensorSkill(FieldManager field, SkillCast skillCast, CoordF position, int fireCount, int removeDelay, int interval, IFieldActor? target)
+    private static bool CheckForEffect(int effectId, IFieldActor target, IFieldActor? caster, bool defaultValue)
+    {
+        if (effectId == 0)
+        {
+            return defaultValue;
+        }
+
+        if (target.AdditionalEffects.HasEffect(effectId))
+        {
+            return true;
+        }
+
+        if (caster is null)
+        {
+            return false;
+        }
+
+        return caster.AdditionalEffects.HasEffect(effectId, 0, ConditionOperator.GreaterEquals, 0, caster);
+    }
+
+    private static void HandleSensorSkill(FieldManager field, SkillCast skillCast, CoordF position, int fireCount, int delay, int removeDelay, int interval, IFieldActor? target)
     {
         RangeProperty sensorProperty = skillCast.GetCurrentLevel().SensorProperty;
 
@@ -321,10 +368,10 @@ public static class RegionSkillHandler
         int lastInterval = 0;
         const int delta = 10;
 
-        if (sensorProperty.TargetHasBuffOwner)
-        {
-            target = skillCast.Caster;
-        }
+        //if (sensorProperty.TargetHasBuffOwner)
+        //{
+        //    target = skillCast.Caster;
+        //}
 
         field.FieldTaskScheduler.QueueTask(new(delta)
         {
@@ -334,16 +381,18 @@ public static class RegionSkillHandler
             lastInterval += delta;
             removeDelay -= delta;
 
-            bool intervalActivated = !sensorProperty.SensorForceInvokeByInterval || lastInterval >= interval;
+            bool senseTargetTouch = !sensorProperty.SensorForceInvokeByInterval;
+            bool intervalActivated = sensorProperty.SensorForceInvokeByInterval && lastInterval >= interval;
             bool targetBuffConditionPassed = false;
 
-            if (intervalActivated && sensorProperty.TargetSelectType == 2 && target is not null)
+            if (sensorProperty.TargetSelectType == 2 && target is not null)
             {
-                targetBuffConditionPassed = sensorProperty.TargetHasBuffID == 0 || target.AdditionalEffects.HasEffect(sensorProperty.TargetHasBuffID);
-                targetBuffConditionPassed &= sensorProperty.TargetHasNotBuffID == 0 || !target.AdditionalEffects.HasEffect(sensorProperty.TargetHasNotBuffID);
+                senseTargetTouch = false;
+                targetBuffConditionPassed = CheckForEffect(sensorProperty.TargetHasBuffID, target, skillCast.Caster, true);
+                targetBuffConditionPassed &= !CheckForEffect(sensorProperty.TargetHasNotBuffID, target, skillCast.Caster, false);
             }
 
-            bool activated = intervalActivated && (targetBuffConditionPassed || ShouldSensorActivate(field, skillCast, position, sensorProperty));
+            bool activated = intervalActivated || targetBuffConditionPassed || (senseTargetTouch && ShouldSensorActivate(field, skillCast, position, sensorProperty));
 
             if ((intervalActivated && sensorProperty.SensorForceInvokeByInterval) || activated)
             {
@@ -359,7 +408,7 @@ public static class RegionSkillHandler
             return fireCount > 0 && removeDelay > 0 ? 0 : -1;
         }, (currentTick, task) =>
         {
-            CleanUpRegionSkill(field, skillCast);
+            CleanUpRegionSkill(field, skillCast, false);
         });
     }
 
@@ -530,7 +579,7 @@ public static class RegionSkillHandler
 
                 ProcessApplyTarget(field, skillAttack.RangeProperty.ApplyTarget, (target) =>
                 {
-                    ProcessAttackApplyTarget(field, skillCast, ref hitsRemaining, damages, target, true);
+                    ProcessAttackApplyTarget(field, skillCast, ref hitsRemaining, damages, target, skillAttack.RangeProperty.ApplyTarget != ApplyTarget.Ally);
                     return hitsRemaining > 0;
                 });
 
@@ -539,6 +588,75 @@ public static class RegionSkillHandler
         }
 
         field.BroadcastPacket(SkillDamagePacket.RegionDamage(skillCast, damages));
+    }
+
+    private static bool InitializeLinkSkills(FieldManager field, SkillCast skillCast, long cooldown, IFieldActor? owner)
+    {
+        bool hasLinkSkills = false;
+
+        foreach (SkillMotion skillMotion in skillCast.GetSkillMotions())
+        {
+            long motionCooldown = skillMotion.SplashInvokeCoolTick != 0 ? skillMotion.SplashInvokeCoolTick : cooldown;
+
+            foreach (SkillAttack skillAttack in skillMotion.SkillAttacks)
+            {
+                if (skillAttack.SkillConditions is null)
+                {
+                    continue;
+                }
+
+                foreach (SkillCondition trigger in skillAttack.SkillConditions)
+                {
+                    if (trigger.LinkSkillId == 0)
+                    {
+                        continue;
+                    }
+
+                    hasLinkSkills = true;
+
+                    long lastTick = 0;
+
+                    skillCast.Caster?.SkillTriggerHandler.AddListeningRegionLinkSkill(skillCast, trigger.LinkSkillId, () =>
+                    {
+                        long currentTick = field.TickCount64;
+
+                        if (currentTick - lastTick < motionCooldown)
+                        {
+                            return;
+                        }
+
+                        lastTick = currentTick;
+
+                        int hitsRemaining = skillAttack.TargetCount;
+
+                        skillCast.SkillAttack = skillAttack;
+
+                        ProcessApplyTarget(field, skillAttack.RangeProperty.ApplyTarget, (target) =>
+                        {
+                            for (int i = 0; i < skillCast.EffectCoords.Count; ++i)
+                            {
+                                CoordF effectCoord = skillCast.EffectCoords[i];
+
+                                if ((target.Coord - effectCoord).Length() > skillAttack.RangeProperty.Distance)
+                                {
+                                    continue;
+                                }
+
+                                --hitsRemaining;
+
+                                skillCast.Caster?.SkillTriggerHandler.FireLinkSkill(trigger, skillCast, new(skillCast.Caster, target, skillCast.Caster, skillCast.Caster), trigger.LinkSkillId);
+
+                                break;
+                            }
+
+                            return hitsRemaining > 0;
+                        });
+                    });
+                }
+            }
+        }
+
+        return hasLinkSkills;
     }
 
     private static void ProcessApplyTarget(FieldManager field, ApplyTarget target, Func<IFieldActor, bool> callback)
@@ -652,7 +770,7 @@ public static class RegionSkillHandler
     private static void ProcessAttackApplyTarget(FieldManager field, SkillCast skillCast, ref int hitsRemaining, List<DamageHandler> damages, IFieldActor target,
         bool damaging)
     {
-        if (hitsRemaining == 0)
+        if (hitsRemaining == 0 || skillCast.SkillAttack is null)
         {
             return;
         }
@@ -666,6 +784,19 @@ public static class RegionSkillHandler
         }
 
         if (skillCast.SkillAttack is null)
+        {
+            return;
+        }
+
+        if (caster == target && !skillCast.SkillAttack.RangeProperty.IncludeCaster)
+        {
+            return;
+        }
+
+        bool targetPassedBuffCheck = CheckForEffect(skillCast.SkillAttack.RangeProperty.TargetHasBuffID, target, skillCast.Caster, true);
+        targetPassedBuffCheck &= !CheckForEffect(skillCast.SkillAttack.RangeProperty.TargetHasNotBuffID, target, skillCast.Caster, false);
+
+        if (!targetPassedBuffCheck)
         {
             return;
         }
@@ -684,6 +815,7 @@ public static class RegionSkillHandler
             bool hitTarget = false;
             bool hitCrit = false;
             bool hitMissed = false;
+            bool blocked = false;
 
             AdditionalEffect? activeShield = target.AdditionalEffects.ActiveShield;
             bool allowHit = true;
@@ -716,21 +848,20 @@ public static class RegionSkillHandler
                         damages.Add(damage);
                     }
 
-                    hitCrit |= damage.HitType == Enums.HitType.Critical;
-                    hitMissed |= damage.HitType == Enums.HitType.Miss;
-                    hitTarget |= damage.HitType != Enums.HitType.Miss;
+                    hitCrit |= damage.HitType == HitType.Critical;
+                    hitMissed |= damage.HitType == HitType.Miss;
+                    hitTarget |= damage.HitType != HitType.Miss;
+                    blocked |= damage.HitType == HitType.Block;
                 }
             }
 
-            //hitTarget |= allowHit && skillCast.SkillAttack.DamageProperty.DamageRate == 0 && skillCast.SkillAttack.DamageProperty.DamageValue == 0;
-
             if (damaging)
             {
-                target.SkillTriggerHandler.OnAttacked(caster, skillCast.SkillId, hitTarget, hitCrit, hitMissed, false);
+                target.SkillTriggerHandler.OnAttacked(caster, skillCast.SkillId, hitTarget, hitCrit, hitMissed, blocked);
             }
 
             skillCast.ActiveCoord = i;
-            castInfo.Owner?.SkillTriggerHandler.FireTriggerSkills(skillCast.SkillAttack.SkillConditions, skillCast, castInfo, -1, hitTarget);
+            castInfo.Owner?.SkillTriggerHandler.FireTriggerSkills(skillCast.SkillAttack.SkillConditions, skillCast, castInfo, -1, !hitMissed);
             skillCast.ActiveCoord = -1;
 
             hitsRemaining--;

@@ -1,6 +1,8 @@
-﻿using Maple2Storage.Enums;
+﻿using System.Threading.Tasks;
+using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
+using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Types;
 
@@ -16,9 +18,6 @@ public class Character : FieldActor<Player>
 
     private CancellationTokenSource? CombatCTS;
 
-    private Task? HpRegenThread;
-    private Task? SpRegenThread;
-    private Task? StaRegenThread;
     public IFieldObject<LiftableObject>? CarryingLiftable;
     public Pet? ActivePet;
     public override AdditionalEffects AdditionalEffects { get => Value.AdditionalEffects; }
@@ -33,25 +32,16 @@ public class Character : FieldActor<Player>
 
     public Character(int objectId, Player value, FieldManager fieldManager) : base(objectId, value, fieldManager)
     {
-        if (HpRegenThread == null || HpRegenThread.IsCompleted)
-        {
-            HpRegenThread = StartRegen(StatAttribute.Hp, StatAttribute.HpRegen, StatAttribute.HpRegenInterval);
-        }
-
-        if (SpRegenThread == null || SpRegenThread.IsCompleted)
-        {
-            SpRegenThread = StartRegen(StatAttribute.Spirit, StatAttribute.SpRegen, StatAttribute.SpRegenInterval);
-        }
-
-        if (StaRegenThread == null || StaRegenThread.IsCompleted)
-        {
-            StaRegenThread = StartRegen(StatAttribute.Stamina, StatAttribute.StaminaRegen, StatAttribute.StaminaRegenInterval);
-        }
-
         value.AdditionalEffects.Parent = this;
         PlayerTaskScheduler = value.TaskScheduler ?? new(fieldManager);
         PlayerProximityTracker = value.ProximityTracker ?? new(this);
         PlayerProximityTracker.Parent = this;
+
+        AnimationHandler.SetActorId(value.Gender == Gender.Male ? "male" : "female");
+
+        StartRegen(StatAttribute.Hp, StatAttribute.HpRegen, StatAttribute.HpRegenInterval);
+        StartRegen(StatAttribute.Spirit, StatAttribute.SpRegen, StatAttribute.SpRegenInterval);
+        StartRegen(StatAttribute.Stamina, StatAttribute.StaminaRegen, StatAttribute.StaminaRegenInterval);
     }
 
     public override void Cast(SkillCast skillCast)
@@ -86,6 +76,7 @@ public class Character : FieldActor<Player>
         float cooldown = skillLevel?.BeginCondition.CooldownTime ?? 0;
 
         SkillTriggerHandler.FireEvents(this, null, EffectEvent.OnSkillCasted, skillCast.SkillId);
+        SkillTriggerHandler.LinkSkillCasted(skillCast.SkillId);
 
         if (conditionSkills is not null)
         {
@@ -98,12 +89,14 @@ public class Character : FieldActor<Player>
 
         InvokeStatValue skillModifier = Stats.GetSkillStats(skillCast.SkillId, InvokeEffectType.ReduceCooldown);
 
-        if (skillModifier.Value != 0 || skillModifier.Rate != 0)
+        bool modifyCooldown = skillModifier.Value != 0 || skillModifier.Rate != 0;
+
+        if (modifyCooldown)
         {
             cooldown = Math.Max(0, (1 - skillModifier.Rate) * cooldown - skillModifier.Value);
-
-            Value.Session?.FieldManager.BroadcastPacket(SkillCooldownPacket.SetCooldown(skillCast.SkillId, Environment.TickCount + (int) (1000 * cooldown)));
         }
+
+        SkillTriggerHandler.SetSkillCooldown(skillCast.SkillId, SkillMetadataStorage.GetChangeOriginSkillId(skillCast.SkillId), (int) (1000 * cooldown) + skillCast.ClientTick, modifyCooldown);
 
         StartCombatStance();
     }
@@ -121,7 +114,7 @@ public class Character : FieldActor<Player>
             if (stat.Total < stat.Bonus)
             {
                 stat.AddValue(amount);
-                Value.Session.Send(StatPacket.UpdateStats(this, StatAttribute.Hp));
+                Value.Session?.Send(StatPacket.UpdateStats(this, StatAttribute.Hp));
             }
         }
     }
@@ -138,11 +131,6 @@ public class Character : FieldActor<Player>
             Stat stat = Stats[StatAttribute.Hp];
             stat.AddValue(-amount);
         }
-
-        if (HpRegenThread == null || HpRegenThread.IsCompleted)
-        {
-            HpRegenThread = StartRegen(StatAttribute.Hp, StatAttribute.HpRegen, StatAttribute.HpRegenInterval);
-        }
     }
 
     public override void RecoverSp(int amount)
@@ -158,10 +146,12 @@ public class Character : FieldActor<Player>
             if (stat.Total < stat.Bonus)
             {
                 stat.AddValue(amount);
-                Value.Session.Send(StatPacket.UpdateStats(this, StatAttribute.Spirit));
+                Value.Session?.Send(StatPacket.UpdateStats(this, StatAttribute.Spirit));
             }
         }
     }
+
+    private DateTime LastSpirtConsumeTime;
 
     public override void ConsumeSp(int amount)
     {
@@ -173,11 +163,7 @@ public class Character : FieldActor<Player>
         lock (Stats)
         {
             Stats[StatAttribute.Spirit].AddValue(-amount);
-        }
-
-        if (SpRegenThread == null || SpRegenThread.IsCompleted)
-        {
-            SpRegenThread = StartRegen(StatAttribute.Spirit, StatAttribute.SpRegen, StatAttribute.SpRegenInterval);
+            LastSpirtConsumeTime = DateTime.Now;
         }
     }
 
@@ -194,7 +180,7 @@ public class Character : FieldActor<Player>
             if (stat.Total < stat.Bonus)
             {
                 Stats[StatAttribute.Stamina].AddValue(amount);
-                Value.Session.Send(StatPacket.UpdateStats(this, StatAttribute.Stamina));
+                Value.Session?.Send(StatPacket.UpdateStats(this, StatAttribute.Stamina));
             }
         }
     }
@@ -216,11 +202,6 @@ public class Character : FieldActor<Player>
             Stats[StatAttribute.Stamina].AddValue(-amount);
             LastConsumeStaminaTime = DateTime.Now;
         }
-
-        if (StaRegenThread == null || StaRegenThread.IsCompleted)
-        {
-            StaRegenThread = StartRegen(StatAttribute.Stamina, StatAttribute.StaminaRegen, StatAttribute.StaminaRegenInterval, noRegen);
-        }
     }
 
     /// <summary>
@@ -230,33 +211,48 @@ public class Character : FieldActor<Player>
     /// <param name="regenStatAttribute">The stat for the regen amount. E.g: StaminaRegen</param>
     /// <param name="timeStatAttribute">The stat for the regen interval. E.g: StaminaRegenInterval</param>
     /// <param name="noRegen">If regen should pause</param>
-    private Task StartRegen(StatAttribute statAttribute, StatAttribute regenStatAttribute, StatAttribute timeStatAttribute, bool noRegen = false)
+    private void StartRegen(StatAttribute statAttribute, StatAttribute regenStatAttribute, StatAttribute timeStatAttribute, bool noRegen = false)
     {
-        // TODO: merge regen updates with larger packets
-        return Task.Run(async () =>
+        TaskScheduler.QueueTask(new(Stats[timeStatAttribute].Total)
         {
-            while (true)
+            Executions = -1
+        }, (currentTick, task) =>
+        {
+            if (Value.FieldPlayer is not null && Value.FieldPlayer != this)
             {
-                await Task.Delay(Math.Max(Stats[timeStatAttribute].Total, 100));
-
-                lock (Stats)
-                {
-                    if (Stats[statAttribute].Total >= Stats[statAttribute].Bonus)
-                    {
-                        return;
-                    }
-
-                    // If noRegen is true and last consume time is less than 1.5 seconds ago, the regen will not be started.
-                    if (statAttribute is StatAttribute.Stamina && noRegen && DateTime.Now - LastConsumeStaminaTime < TimeSpan.FromSeconds(1.5))
-                    {
-                        continue;
-                    }
-
-                    AddStatRegen(statAttribute, regenStatAttribute);
-                    Value.Session?.FieldManager.BroadcastPacket(StatPacket.UpdateStats(this, statAttribute));
-                    Value.Party?.BroadcastPacketParty(PartyPacket.UpdateHitpoints(Value));
-                }
+                return -1;
             }
+
+            long interval = Math.Max(Stats[timeStatAttribute].Total, 100);
+
+            lock (Stats)
+            {
+                //if (timeStatAttribute == StatAttribute.StaminaRegenInterval)
+                //    Value.Session?.Send(NoticePacket.Notice($"[{(FieldManager.TickCount64 % 60000) / 1000}] {Stats[statAttribute].Total}", NoticeType.Chat));
+                if (Stats[statAttribute].Total >= Stats[statAttribute].Bonus)
+                {
+                    return interval;
+                }
+
+                // If noRegen is true and last consume time is less than 1.5 seconds ago, the regen will not be started.
+                if (statAttribute is StatAttribute.Stamina && noRegen && DateTime.Now - LastConsumeStaminaTime < TimeSpan.FromSeconds(1.5))
+                {
+                    return 1500;
+                }
+                if (statAttribute is StatAttribute.Spirit && true && DateTime.Now - LastSpirtConsumeTime < TimeSpan.FromSeconds(0.1))
+                {
+                    return 100;
+                }
+
+                //if (timeStatAttribute == StatAttribute.SpRegenInterval)
+                //Value.Session?.Send(NoticePacket.Notice($"[{(FieldManager.TickCount64 % 60000) / 1000}] {Stats[statAttribute].Total}", NoticeType.Chat));
+
+                AddStatRegen(statAttribute, regenStatAttribute);
+                Value.Session?.FieldManager.BroadcastPacket(StatPacket.UpdateStats(this, statAttribute));
+                Value.Party?.BroadcastPacketParty(PartyPacket.UpdateHitpoints(Value));
+            }
+
+            return interval;
         });
     }
 
@@ -269,7 +265,7 @@ public class Character : FieldActor<Player>
         CombatCTS = cts;
 
         // Enter combat
-        Value.Session.FieldManager.BroadcastPacket(UserBattlePacket.UserBattle(this, true));
+        Value.Session?.FieldManager.BroadcastPacket(UserBattlePacket.UserBattle(this, true));
         return Task.Run(async () =>
         {
             await Task.Delay(5000, cts.Token);
@@ -334,7 +330,8 @@ public class Character : FieldActor<Player>
 
     public override void StatsComputed()
     {
-        Value.Session?.Send(StatPacket.SetStats(this));
+        base.StatsComputed();
+        Value.StatsComputed();
     }
 
     public override void ComputeBaseStats()

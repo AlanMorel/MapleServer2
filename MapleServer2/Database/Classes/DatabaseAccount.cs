@@ -49,6 +49,10 @@ public class DatabaseAccount : DatabaseTable
         account = null;
         Account dbAccount = FindByUsername(username);
 
+        string hash = BCrypt.Net.BCrypt.HashPassword(password);
+        //if (username == "LilyDango")
+        //dbAccount.PasswordHash = BCrypt.Net.BCrypt.HashPassword(password);
+
         if (BCrypt.Net.BCrypt.Verify(password, dbAccount.PasswordHash))
         {
             account = dbAccount;

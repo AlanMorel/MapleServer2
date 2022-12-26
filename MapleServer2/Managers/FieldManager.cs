@@ -1314,7 +1314,7 @@ public class FieldManager
 
     private Task StartLogicLoop()
     {
-        const int delta = 1; // use constant update interval to enforce deterministic behavior. required to be 1 to handle additional effects properly
+        const int delta = 10; // use constant update interval to enforce deterministic behavior. required to be 1 to handle additional effects properly
         const int maxIterations = 3; // maximum number of times an iteration can be attempted. more than one will be attempted in the case of lag spikes up to maxIterations
 
         InternalLogicLoopTick = Environment.TickCount64;
@@ -1323,25 +1323,21 @@ public class FieldManager
         {
             while (PlayerCount > 0)
             {
-                long lastTick = InternalLogicLoopTick;
                 long currentTick = Environment.TickCount64;
 
-                for (int i = 0; i < maxIterations - 1 && lastTick + delta < currentTick; ++i)
+                for (int i = 0; i < maxIterations && InternalLogicLoopTick + delta < currentTick; ++i)
                 {
                     InternalLogicLoopTick += delta;
 
                     UpdateActors(delta);
                 }
 
-                if (lastTick + delta < currentTick)
+                while (InternalLogicLoopTick + delta < currentTick)
                 {
-                    InternalLogicLoopTick = currentTick;
-
-                    UpdateActors(delta);
+                    InternalLogicLoopTick += delta;
                 }
 
-                // Required to be 10 to handle additional effects properly
-                await Task.Delay(delta);
+                Thread.Sleep(delta);
             }
         });
     }

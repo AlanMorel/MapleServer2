@@ -3,6 +3,7 @@ using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Enums;
 using MapleServer2.Managers.Actors;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -99,8 +100,18 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             ++++++ if an additional skill exists, check the proc and requirements (proc is a chance, requirement is a buff ID), and determine whether or not to proc additional effects for said proc)
             + also handle Splash Skills which trigger region effects
          */
+        //fieldPlayer.TaskScheduler.QueueBufferedTask(() => );
 
-        fieldPlayer.SkillCastTracker.AddSkillCast(skillCast);
+        List<SkillMotion> motions = skillCast.GetSkillMotions();
+        long castEnd = 0;
+
+        if (motions.Count > 0)
+        {
+            fieldPlayer.AnimationHandler.SetSequence(motions[0].SequenceName, skillCast, 0);
+            castEnd = fieldPlayer.AnimationHandler.SequenceEnd;
+        }
+
+        fieldPlayer.SkillCastTracker.AddSkillCast(skillCast, castEnd);
 
         // TODO: Check BeginCondition
         fieldPlayer.TaskScheduler.QueueBufferedTask(() => fieldPlayer.Cast(skillCast));
@@ -117,8 +128,8 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
         CoordF rotation = packet.Read<CoordF>();
         CoordF unknown = packet.Read<CoordF>();
         bool toggle = packet.ReadBool();
-        packet.ReadInt();
-        packet.ReadByte();
+        int unknownInt = packet.ReadInt();
+        byte unknownByte = packet.ReadByte();
 
         if (session.Player.FieldPlayer is null)
         {
@@ -133,10 +144,17 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
         }
 
         SkillCast? skillCast = skill?.Cast;
-        if (skillCast is null)
+        SkillLevel? skillLevelData = skillCast?.GetCurrentLevel();
+
+        if (skill is null || skillCast is null || skillLevelData is null)
         {
             return;
         }
+
+        AnimationHandler animationHandler = session.Player.FieldPlayer.AnimationHandler;
+
+        animationHandler.LoopSequence(skillLevelData.SkillMotions[motionPoint]?.SequenceName ?? "", skillCast, motionPoint);
+        skill.InitialCastEnd = animationHandler.SequenceEnd;
 
         session.FieldManager.BroadcastPacket(SkillSyncPacket.Sync(skillCast, session.Player.FieldPlayer, position, rotation, toggle), session);
     }
@@ -164,6 +182,11 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
         if (skillCast is null || skillCast.SkillSn != skillSn)
         {
             return;
+        }
+
+        if (session.Player.FieldPlayer.AnimationHandler.CurrentSkill?.SkillId == skillCast.SkillId)
+        {
+            session.Player.FieldPlayer.AnimationHandler.SetSequence("");
         }
 
         session.Player.FieldPlayer?.TaskScheduler.QueueBufferedTask(() =>
@@ -231,11 +254,17 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
         }
 
         CastedSkill? skill = session.Player.FieldPlayer.SkillCastTracker.GetSkillCast(skillSn);
+        int syncDamageCount = 0;
 
         if (skill is not null)
         {
             for (int i = 0; i < count; ++i)
             {
+                if (targetId[i] != 0)
+                {
+                    syncDamageCount++;
+                }
+
                 skill.Damages.Add(new()
                 {
                     AttackId = atkCount[i],
@@ -253,6 +282,7 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             return;
         }
 
+        session.Player.FieldPlayer.TaskScheduler.QueueBufferedTask(() => session.Player.FieldPlayer.SkillCastTracker.QueueSyncDamages(skillSn, syncDamageCount));
         session.FieldManager.BroadcastPacket(SkillDamagePacket.SyncDamage(skillCast, position, rotation, session.Player.FieldPlayer, sourceId, count, atkCount,
             targetId, animation));
     }
@@ -318,12 +348,12 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
             session.SendNotice($"Attacked target object {target.ObjectId}!");
         }
 
+        caster?.SkillCastTracker.DamageProcessed(skillCast.SkillSn, 1);
         HandleDamage(skillCast, target, attackPoint, attackCounter, position, rotation);
     }
 
     public static void HandleDamage(SkillCast skillCast, IFieldActor target, int attackPoint, int attackCounter, CoordF position, CoordF rotation)
     {
-
         IFieldActor? caster = skillCast.Caster;
         GameSession? session = (caster as Character)?.Value?.Session;
 
@@ -342,6 +372,12 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
 
         skillCast.Target = target;
         skillCast.AttackPoint = (byte) attackPoint;
+
+        if (caster is not null && caster.SkillTriggerHandler.TrackNextTargetHit && !caster.SkillTriggerHandler.TrackTargetsForCooldowns.Contains(target))
+        {
+            caster.SkillTriggerHandler.TrackNextTargetHit = false;
+            caster.SkillTriggerHandler.TrackTargetsForCooldowns.Add(target);
+        }
 
         foreach (SkillMotion motion in skillCast.GetSkillMotions())
         {
@@ -376,7 +412,8 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
 
             ConditionSkillTarget castInfo = new(caster, target, caster, caster, EffectEventOrigin.Caster);
             bool hitCrit = false;
-            bool hitMissed = true;
+            bool hitMissed = false;
+            bool hitBlocked = false;
 
             if ((skillCast.GetDamageRate() != 0 || skillCast.GetDamageValue() != 0) && allowHit)
             {
@@ -393,13 +430,23 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
                     damages.Add(damage);
                 }
 
-                hitCrit = damage.HitType == Enums.HitType.Critical;
-                hitMissed = damage.HitType == Enums.HitType.Miss;
+                hitCrit = damage.HitType == HitType.Critical;
+                hitMissed = damage.HitType == HitType.Miss;
+                hitBlocked = damage.HitType == HitType.Block;
             }
 
             caster?.SkillTriggerHandler.FireTriggerSkills(attack.SkillConditions, triggerCast, castInfo);
 
-            target.SkillTriggerHandler.OnAttacked(caster, skillCast.SkillId, !hitMissed, hitCrit, hitMissed, false);
+            if (caster == target)
+            {
+                castInfo.Target = null;
+
+                caster?.SkillTriggerHandler.FireTriggerSkills(attack.SkillConditions, triggerCast, castInfo);
+            }
+            else
+            {
+                target.SkillTriggerHandler.OnAttacked(caster, skillCast.SkillId, !hitMissed, hitCrit, hitMissed, hitBlocked);
+            }
         }
 
         skillCast.Target = null;
@@ -444,7 +491,7 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
         ConditionSkillTarget castInfo = new(parentSkill.Caster, null, parentSkill.Caster, parentSkill.Caster, EffectEventOrigin.Caster);
 
         session.Player.FieldPlayer?.TaskScheduler.QueueBufferedTask(() =>
-            parentSkill.Caster?.SkillTriggerHandler.FireTriggerSkills(skillAttack.SkillConditions, skillCast, castInfo)
+            parentSkill.Caster?.SkillTriggerHandler.FireTriggerSkills(skillAttack?.SkillConditions, skillCast, castInfo)
         );
     }
 

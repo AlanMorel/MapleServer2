@@ -4,7 +4,8 @@ public enum HitType : byte
 {
     Normal = 0,
     Critical = 1,
-    Miss = 2
+    Miss = 2,
+    Block = 3
 }
 
 public enum DamageType : byte

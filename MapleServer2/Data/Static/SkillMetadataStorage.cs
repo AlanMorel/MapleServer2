@@ -23,6 +23,20 @@ public static class SkillMetadataStorage
 
     public static SkillMetadata? GetSkill(int id) => Skills.GetValueOrDefault(id);
 
+    public static int GetChangeOriginSkillId(int id)
+    {
+        SkillMetadata? skillMeta = GetSkill(id);
+
+        if (skillMeta is null || skillMeta.SkillLevels.Count == 0)
+        {
+            return 0;
+        }
+
+        SkillLevel level = skillMeta.SkillLevels.First();
+
+        return level.ChangeSkill.OriginSkillId != 0 ? level.ChangeSkill.OriginSkillId : level.Combo.ComboOriginSkill;
+    }
+
     public static List<int> GetEmotes() => Skills.Values.Where(x => x.SkillId / 100000 == 902).Select(x => x.SkillId).ToList();
 
     // Get a List of Skills corresponding to the Job
