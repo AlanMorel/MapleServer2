@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Linq;
+using System.Net;
 using System.Runtime.InteropServices;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
@@ -1035,7 +1036,7 @@ public class Player : IPacketSerializable
 
     private void ProcessSkillPassives(int skillId, short level, SkillMetadata metadata)
     {
-        if (metadata.SubType != SkillSubType.None || FieldPlayer is null)
+        if (metadata.Type != SkillType.Passive || FieldPlayer is null)
         {
             return;
         }
@@ -1087,6 +1088,24 @@ public class Player : IPacketSerializable
 
                 if (tab.SkillLevels.TryGetValue(subSkillId, out level))
                 {
+                    if (subSkill.SkillLevels.First((skillLevel) => skillLevel.Level == level) is null)
+                    {
+                        SkillLevel skillLevel = subSkill.SkillLevels.First();
+                        int closest = Math.Abs(skillLevel.Level - level);
+
+                        foreach (SkillLevel current in subSkill.SkillLevels)
+                        {
+                            int difference = Math.Abs(current.Level - level);
+
+                            if (difference < closest)
+                            {
+                                closest = difference;
+                                skillLevel = current;
+                            }
+                        }
+
+                        level = (short)skillLevel.Level;
+                    }
                     ProcessSkillPassives(subSkillId, level, subSkill);
                 }
             }

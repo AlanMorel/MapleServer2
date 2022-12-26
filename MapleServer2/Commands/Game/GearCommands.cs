@@ -580,11 +580,11 @@ public class GearKit
         {
             new(ItemType.Longsword, 6, (job) => SelectItem(job, 13200043, 15000041, 15200142, 13300138, 15100136, 15300136, 13100028, 13400136, 15400064, 15500064, 15600064)), // Weapon
             new(ItemType.Longsword, 6, (job) => SelectItem(job, 14100126, 0, 0, 14000118, 0, 0, 13100028, 13400136, 0, 0, 0)), // Offhand
-            new(ItemType.Hat, 5, (job) => 11301118 + JobOffset(job)),
-            new(ItemType.Clothes, 5, (job) => 11400958 + JobOffset(job)),
-            new(ItemType.Pants, 5, (job) => 11500862 + JobOffset(job)),
-            new(ItemType.Gloves, 5, (job) => 11601031 + JobOffset(job)),
-            new(ItemType.Shoes, 5, (job) => 11701106 + JobOffset(job)),
+            new(ItemType.Hat, 5, (job) => 11301117 + JobOffset(job)),
+            new(ItemType.Clothes, 5, (job) => 11400957 + JobOffset(job)),
+            new(ItemType.Pants, 5, (job) => 11500861 + JobOffset(job)),
+            new(ItemType.Gloves, 5, (job) => 11601030 + JobOffset(job)),
+            new(ItemType.Shoes, 5, (job) => 11701105 + JobOffset(job)),
         }, KitCategory.Armor, KitCategory.Unreleased),
         new("Reverse3", ProgressionTier.ChaosUnreleased, new()
         {
@@ -689,18 +689,18 @@ public class GearKit
         }, KitCategory.Armor),
         new("Murpagoth", ProgressionTier.Chaos, new()
         {
-            new(ItemType.Longsword, 4, (job) => SelectItem(job, 13250284, 15050288, 15250287, 13350283, 15150280, 15350283, 13150289, 13450282, 15450283, 15550523, 15650512)), // Weapon
-            new(ItemType.Longsword, 4, (job) => SelectItem(job, 14150254, 0, 0, 14050245, 0, 0, 13150289, 13450282, 0, 0, 0)), // Offhand
+            new(ItemType.Longsword, 4, (job) => SelectItem(job, 13250283, 15050287, 15250286, 13350282, 15150279, 15350282, 13150288, 13450281, 15450283, 15550523, 15650524)), // Weapon
+            new(ItemType.Longsword, 4, (job) => SelectItem(job, 14150253, 0, 0, 14050244, 0, 0, 13150288, 13450281, 0, 0, 0)), // Offhand
         }, KitCategory.Armor),
         new("AncientRune", ProgressionTier.Chaos, new()
         {
-            new(ItemType.Longsword, 4, (job) => SelectItem(job, 13250285, 15050289, 15250288, 13350284, 15150281, 15350284, 13150290, 13450283, 15450284, 15550524, 15650513)), // Weapon
-            new(ItemType.Longsword, 4, (job) => SelectItem(job, 14150255, 0, 0, 14050246, 0, 0, 13150290, 13450283, 0, 0, 0)), // Offhand
+            new(ItemType.Longsword, 4, (job) => SelectItem(job, 13250284, 15050288, 15250287, 13350283, 15150280, 15350283, 13150289, 13450282, 15450284, 15550524, 15650525)), // Weapon
+            new(ItemType.Longsword, 4, (job) => SelectItem(job, 14150254, 0, 0, 14050245, 0, 0, 13150289, 13450282, 0, 0, 0)), // Offhand
         }, KitCategory.Armor),
         new("MSLOnyx", ProgressionTier.Chaos, new()
         {
-            new(ItemType.Longsword, 4, (job) => SelectItem(job, 13250286, 15050290, 15250289, 13350285, 15150282, 15350285, 13150291, 13450284, 15450285, 15550525, 15650514)), // Weapon
-            new(ItemType.Longsword, 4, (job) => SelectItem(job, 14150256, 0, 0, 14050247, 0, 0, 13150291, 13450284, 0, 0, 0)), // Offhand
+            new(ItemType.Longsword, 4, (job) => SelectItem(job, 13250285, 15050289, 15250288, 13350284, 15150281, 15350284, 13150290, 13450283, 15450284, 15550524, 15650513)), // Weapon
+            new(ItemType.Longsword, 4, (job) => SelectItem(job, 14150255, 0, 0, 14050246, 0, 0, 13150290, 13450283, 0, 0, 0)), // Offhand
         }, KitCategory.Armor),
         new("Exquisite", ProgressionTier.Chaos, new()
         {

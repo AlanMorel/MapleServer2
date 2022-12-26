@@ -155,23 +155,58 @@ public class AdditionalEffects
         return true;
     }
 
-    private void DebugPrint(string message, AdditionalEffect effect, Player? ownerPlayer, Player? casterPlayer, bool debugPrintOwner, bool debugPrintCaster)
+    public void DebugPrint(AdditionalEffect effect, EffectEvent effectEvent, ConditionSkillTarget effectInfo, int parameter = 0)
     {
+        Player? ownerPlayer = (Parent as Character)?.Value;
+        Player? casterPlayer = (effect.Caster as Character)?.Value;
+        bool debugPrintOwner = false;
+        bool debugPrintCaster = false;
+
+        if (ownerPlayer is not null)
+        {
+            debugPrintOwner = ownerPlayer.DebugPrint.PrintOwnEffects && (effect.Caster == Parent || ownerPlayer.DebugPrint.PrintEffectsFromOthers);
+            debugPrintOwner &= ownerPlayer.DebugPrint.PrintEffectEvents && (effectEvent != EffectEvent.Tick || ownerPlayer.DebugPrint.IncludeEffectTickEvent);
+        }
+
+        if (casterPlayer is not null && casterPlayer != ownerPlayer)
+        {
+            debugPrintCaster = casterPlayer.DebugPrint.PrintCastedEffects;
+            debugPrintCaster &= casterPlayer.DebugPrint.PrintEffectEvents && (effectEvent != EffectEvent.Tick || casterPlayer.DebugPrint.IncludeEffectTickEvent);
+        }
+
+        if (debugPrintOwner)
+        {
+            ownerPlayer?.Session?.Send(NoticePacket.Notice($"Event {effectEvent} ({parameter}) fired on {effect.Id} [{effect.Level}] x{effect.Stacks}", NoticeType.Chat));
+        }
+
+        if (debugPrintCaster)
+        {
+            casterPlayer?.Session?.Send(NoticePacket.Notice($"Event {effectEvent} ({parameter}) fired on {effect.Id} [{effect.Level}] x{effect.Stacks} on target {Parent?.ObjectId}", NoticeType.Chat));
+        }
+    }
+
+    private void DebugPrint(string message, AdditionalEffect effect)
+    {
+        Player? ownerPlayer = (Parent as Character)?.Value;
+        Player? casterPlayer = (effect.Caster as Character)?.Value;
+        bool debugPrintOwner = ownerPlayer is not null && ownerPlayer.DebugPrint.PrintOwnEffects && (effect.Caster == Parent || ownerPlayer.DebugPrint.PrintEffectsFromOthers);
+        bool debugPrintCaster = casterPlayer is not null && casterPlayer != ownerPlayer && casterPlayer.DebugPrint.PrintCastedEffects;
+
         if (debugPrintOwner)
         {
             if (effect.Caster is not null)
             {
-                ownerPlayer?.Session?.SendNotice($"{message} {effect.Id} from caster {effect.Caster.ObjectId}");
+                ownerPlayer?.Session?.Send(NoticePacket.Notice($"{message} {effect.Id} [{effect.Level}] x{effect.Stacks} from caster {effect.Caster.ObjectId}", NoticeType.Chat));
             }
             else
             {
-                ownerPlayer?.Session?.SendNotice($"{message} {effect.Id}");
+                ownerPlayer?.Session?.Send(NoticePacket.Notice($"{message} {effect.Id} [{effect.Level}] x{effect.Stacks}", NoticeType.Chat));
             }
         }
 
         if (debugPrintCaster)
         {
-            casterPlayer?.Session?.SendNotice($"{message} {effect.Id} to target {Parent.ObjectId}");
+            casterPlayer?.Session?.Send(NoticePacket.Notice($"{message} {effect.Id} [{effect.Level}] x{effect.Stacks} to target {Parent?.ObjectId}", NoticeType.Chat));
         }
     }
 
@@ -196,14 +231,9 @@ public class AdditionalEffects
         effect.Caster = parameters.Caster ?? Parent;
         effect.ParentSkill = parameters.ParentSkill;
 
-        Player? ownerPlayer = (Parent as Character)?.Value;
-        Player? casterPlayer = (effect.Caster as Character)?.Value;
-        bool debugPrintOwner = ownerPlayer is not null && ownerPlayer.DebugPrint.PrintOwnEffects && (effect.Caster == Parent || ownerPlayer.DebugPrint.PrintEffectsFromOthers);
-        bool debugPrintCaster = casterPlayer is not null && casterPlayer.DebugPrint.PrintCastedEffects;
-
         if (!CanApplyEffect(effect, out AdditionalEffect? activeEffect))
         {
-            DebugPrint("Failed to apply effect", effect, ownerPlayer, casterPlayer, debugPrintOwner, debugPrintCaster);
+            DebugPrint("Failed to apply effect", effect);
 
             return null;
         }
@@ -225,20 +255,23 @@ public class AdditionalEffects
 
         if (UpdateEffect(activeEffect, effect, parameters))
         {
-            DebugPrint("Updated effect", effect, ownerPlayer, casterPlayer, debugPrintOwner, debugPrintCaster);
+            DebugPrint("Updated effect", activeEffect);
 
             return activeEffect;
         }
 
         if (parameters.Stacks == 0)
         {
+            DebugPrint("Attempted to add effect with 0 stacks", effect);
+
             return null;
         }
 
         effect.Stacks = parameters.Stacks;
         effect.Start = start;
-        effect.Duration = parameters.Duration != 0 ? parameters.Duration : effect.LevelMetadata.Basic.DurationTick;
-
+        effect.Duration = parameters.Duration != 0 ? parameters.Duration : (effect.LevelMetadata?.Basic?.DurationTick ?? 0);
+        if (effect.LevelMetadata is null)
+            return null;
         InvokeStatValue invokeStat = effect.Caster.Stats.GetEffectStats(effect.Id, effect.LevelMetadata.Basic.Group, InvokeEffectType.IncreaseDuration);
 
         effect.Duration = Math.Max(0, (int) invokeStat.Value + (int) ((1 + invokeStat.Rate) * effect.Duration));
@@ -255,7 +288,7 @@ public class AdditionalEffects
         Parent.EffectAdded(effect);
         effect.Process(Parent);
 
-        DebugPrint("Applied effect", effect, ownerPlayer, casterPlayer, debugPrintOwner, debugPrintCaster);
+        DebugPrint("Applied effect", effect);
 
         return effect;
     }
@@ -278,7 +311,12 @@ public class AdditionalEffects
         Effects.Remove(effect);
         Parent?.EffectRemoved(effect);
 
-        DebugPrint("Removed effect", effect, ownerPlayer, casterPlayer, debugPrintOwner, debugPrintCaster);
+        if (effect.HasEvents)
+        {
+            RefreshEffectEvents();
+        }
+
+        DebugPrint("Removed effect", effect);
     }
 
     public static bool CompareValues<T>(T target, T value, ConditionOperator comparison) where T : IComparable

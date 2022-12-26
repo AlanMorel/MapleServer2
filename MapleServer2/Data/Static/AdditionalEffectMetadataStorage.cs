@@ -27,12 +27,13 @@ public static class AdditionalEffectMetadataStorage
     {
         AdditionalEffectMetadata? meta = GetMetadata(effectId);
 
-        if (meta is null)
+        if (meta is null || meta.Levels is null)
         {
             return null;
         }
 
-        AdditionalEffectLevelMetadata? levelMeta;
+        AdditionalEffectLevelMetadata? levelMeta = null;
+
         meta.Levels.TryGetValue(level, out levelMeta);
 
         return levelMeta;

@@ -6,6 +6,7 @@ using MapleServer2.Managers.Actors;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
+using Org.BouncyCastle.Asn1.X509;
 using Serilog;
 
 namespace MapleServer2.Types;
@@ -153,6 +154,8 @@ public class AdditionalEffect
     {
         ConditionSkillTarget effectInfo = new ConditionSkillTarget(parent, parent, Caster);
 
+        parent.AdditionalEffects.DebugPrint(this, EffectEvent.Tick, effectInfo);
+        
         if (!parent.SkillTriggerHandler.ShouldTick(LevelMetadata.BeginCondition, effectInfo, effectEvent, 0, ProximityQuery))
         {
             return;
@@ -324,6 +327,13 @@ public class AdditionalEffect
             }
         }
 
+        bool damageVarianceEnabled = true;
+
+        if (Caster is Managers.Actors.Character character)
+        {
+            damageVarianceEnabled = character.Value.DamageVarianceEnabled;
+        }
+
         Stat hp = parent.Stats[StatAttribute.Hp];
 
         DamageSourceParameters dotParameters = new()
@@ -338,7 +348,8 @@ public class AdditionalEffect
             DamageValue = dotDamage.Value + (long) (dotDamage.DamageByTargetMaxHp * hp.BonusLong),
             ParentSkill = ParentSkill,
             Id = Id,
-            EventGroup = LevelMetadata.Basic.Group
+            EventGroup = LevelMetadata.Basic.Group,
+            DamageVarianceEnabled = damageVarianceEnabled
         };
 
         DamageHandler.ApplyDotDamage(Session, Caster, parent, dotParameters);

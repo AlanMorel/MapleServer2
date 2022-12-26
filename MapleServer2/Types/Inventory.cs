@@ -312,17 +312,6 @@ public sealed class Inventory : IInventory
             return;
         }
 
-        SetBonus? newBonus = SetBonus.From(item);
-
-        if (newBonus is null)
-        {
-            return;
-        }
-
-        SetBonuses.Add(newBonus);
-
-        IncrementSetBonus(session, newBonus);
-
         if (item.AdditionalEffects != null)
         {
             session.Player.AddEffects(item.AdditionalEffects);
@@ -335,6 +324,17 @@ public sealed class Inventory : IInventory
                 }
             }
         }
+
+        SetBonus? newBonus = SetBonus.From(item);
+
+        if (newBonus is null)
+        {
+            return;
+        }
+
+        SetBonuses.Add(newBonus);
+
+        IncrementSetBonus(session, newBonus);
     }
 
     public void RefreshRequippedItemEffects(GameSession session)

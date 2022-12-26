@@ -3,6 +3,7 @@ using Maple2.Trigger.Enum;
 using Maple2Storage.Enums;
 using MaplePacketLib2.Tools;
 using MapleServer2.Commands.Core;
+using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Extensions;
@@ -522,7 +523,19 @@ public class DebugPrintCommand : InGameCommand
         HitTarget,
         CastedEffects,
         OwnEffects,
-        EffectsFromOthers
+        EffectsFromOthers,
+        EffectEvents,
+        IncludeTickEvent,
+        WatchList,
+        IgnoreList
+    }
+
+    private enum ListMode
+    {
+        Add,
+        Set,
+        Disable,
+        Remove
     }
 
     public DebugPrintCommand()
@@ -532,11 +545,12 @@ public class DebugPrintCommand : InGameCommand
             "debugprint"
         };
         Description = "Enables and disables debug print settings";
-        Usage = "/debugprint type [option]";
+        Usage = "/debugprint type [setting] [settingList]";
         Parameters = new()
         {
-            new Parameter<string>("type", "The debug setting type to configure: int HitTarget, bool CastedEffects, bool OwnEffects, bool EffectsFromOthers"),
-            new Parameter<string>("option", "The value to set the setting to. true/false for bool or the number of times to perform the action for int (-1 for infinite, 0 for none/off)")
+            new Parameter<string>("type", "The debug setting type to configure. Enter 'list' to display available types."),
+            new Parameter<string>("setting", "The value to set the setting to. Enter 'List' to display what the valid values are."),
+            new Parameter<string>("settingList", "Used to set the watch & ignore lists. Multiple values can be entered by separating with commas without spaces.")
         };
     }
 
@@ -545,55 +559,216 @@ public class DebugPrintCommand : InGameCommand
         Player player = trigger.Session.Player;
 
         string type = trigger.Get<string>("type");
-        string source = trigger.Get<string>("option");
+        string setting = trigger.Get<string>("setting");
+        string? settingList = trigger.Get<string>("settingList");
 
         if (string.IsNullOrEmpty(type))
         {
-            trigger.Session.SendNotice("Enter a setting to set");
+            trigger.Session.Send(NoticePacket.Notice("Enter a setting to set", NoticeType.Chat));
+
+            return;
+        }
+
+        type = type.ToLower();
+
+        if (type == "list")
+        {
+            trigger.Session.Send(NoticePacket.Notice($"/debugprint HitTarget amount - Displays the target ids of hit targets. 'amount' is the number of targets to print. -1 means no limit while 0 means disabling it.", NoticeType.Chat));
+            trigger.Session.Send(NoticePacket.Notice($"/debugprint CastedEffects enabled - Prints out additional effects that get applied on targets in chat", NoticeType.Chat));
+            trigger.Session.Send(NoticePacket.Notice($"/debugprint OwnEffects enabled - Enables & disables printing effects originating from you", NoticeType.Chat));
+            trigger.Session.Send(NoticePacket.Notice($"/debugprint EffectsFromOthers enabled - Enables & disables printing effects applied to you by something else", NoticeType.Chat));
+            trigger.Session.Send(NoticePacket.Notice($"/debugprint EffectEvents enabled - Enables & disables printing events that get fired on effects", NoticeType.Chat));
+            trigger.Session.Send(NoticePacket.Notice($"/debugprint IncludeTickEvent enabled - Enables & disables printing the tick event with EffectEvents", NoticeType.Chat));
+            trigger.Session.Send(NoticePacket.Notice($"/debugprint WatchList mode idList - Sets the watch list to filter which effects are printed. Valid modes are: add, set, disable, remove", NoticeType.Chat));
+            trigger.Session.Send(NoticePacket.Notice($"/debugprint IgnoreList mode idList - Sets the ignore list to filter which effects are printed", NoticeType.Chat));
 
             return;
         }
 
         if (!Enum.TryParse(type, ignoreCase: true, out DebugType typeValue))
         {
-            trigger.Session.SendNotice($"{type} is not a valid debug print setting type. Available: int HitTarget, bool CastedEffects, bool OwnEffects, bool EffectsFromOthers");
+            trigger.Session.Send(NoticePacket.Notice($"{type} is not a valid debug print setting type. Available: int HitTarget, bool CastedEffects, bool OwnEffects, bool EffectsFromOthers", NoticeType.Chat));
 
             return;
         }
 
+        List<int>? listToSet = null;
+        string listName = "";
+
         switch (typeValue)
         {
             case DebugType.HitTarget:
-                if (string.IsNullOrEmpty(source))
+                if (string.IsNullOrEmpty(setting))
                 {
                     player.DebugPrint.TargetsToPrint = player.DebugPrint.TargetsToPrint != 0 ? 0 : -1;
                 }
                 else
                 {
-                    player.DebugPrint.TargetsToPrint = int.Parse(source);
+                    player.DebugPrint.TargetsToPrint = int.Parse(setting);
                 }
 
-                trigger.Session.SendNotice($"Set HitTarget to {player.DebugPrint.TargetsToPrint}");
+                trigger.Session.Send(NoticePacket.Notice($"Set HitTarget to {player.DebugPrint.TargetsToPrint}", NoticeType.Chat));
 
                 break;
             case DebugType.CastedEffects:
-                player.DebugPrint.PrintCastedEffects = source is null ? !player.DebugPrint.PrintCastedEffects : source == "true";
+                player.DebugPrint.PrintCastedEffects = setting is null ? !player.DebugPrint.PrintCastedEffects : (setting == "true" || setting == "1");
 
-                trigger.Session.SendNotice($"Set CastedEffects to {player.DebugPrint.PrintCastedEffects}");
+                trigger.Session.Send(NoticePacket.Notice($"Set CastedEffects to {player.DebugPrint.PrintCastedEffects}", NoticeType.Chat));
 
                 break;
             case DebugType.OwnEffects:
-                player.DebugPrint.PrintOwnEffects = source is null ? !player.DebugPrint.PrintOwnEffects : source == "true";
+                player.DebugPrint.PrintOwnEffects = setting is null ? !player.DebugPrint.PrintOwnEffects : (setting == "true" || setting == "1");
 
-                trigger.Session.SendNotice($"Set OwnEffects to {player.DebugPrint.PrintOwnEffects}");
+                trigger.Session.Send(NoticePacket.Notice($"Set OwnEffects to {player.DebugPrint.PrintOwnEffects}", NoticeType.Chat));
 
                 break;
             case DebugType.EffectsFromOthers:
-                player.DebugPrint.PrintEffectsFromOthers = source is null ? !player.DebugPrint.PrintEffectsFromOthers : source == "true";
+                player.DebugPrint.PrintEffectsFromOthers = setting is null ? !player.DebugPrint.PrintEffectsFromOthers : (setting == "true" || setting == "1");
 
-                trigger.Session.SendNotice($"Set EffectsFromOthers to {player.DebugPrint.PrintEffectsFromOthers}");
+                trigger.Session.Send(NoticePacket.Notice($"Set EffectsFromOthers to {player.DebugPrint.PrintEffectsFromOthers}", NoticeType.Chat));
 
                 break;
+            case DebugType.EffectEvents:
+                player.DebugPrint.PrintEffectEvents = setting is null ? !player.DebugPrint.PrintEffectEvents : (setting == "true" || setting == "1");
+
+                trigger.Session.Send(NoticePacket.Notice($"Set EffectEvents to {player.DebugPrint.PrintEffectEvents}", NoticeType.Chat));
+
+                break;
+            case DebugType.IncludeTickEvent:
+                player.DebugPrint.IncludeEffectTickEvent = setting is null ? !player.DebugPrint.IncludeEffectTickEvent : (setting == "true" || setting == "1");
+
+                trigger.Session.Send(NoticePacket.Notice($"Set IncludeTickEvent to {player.DebugPrint.IncludeEffectTickEvent}", NoticeType.Chat));
+
+                break;
+            case DebugType.WatchList:
+                listToSet = player.DebugPrint.EffectWatchList;
+                listName = "WatchList";
+
+                break;
+            case DebugType.IgnoreList:
+                listToSet = player.DebugPrint.EffectIgnoreList;
+                listName = "IgnoreList";
+
+                break;
+        }
+
+        if (listToSet is null)
+        {
+            return;
+        }
+
+        if (string.IsNullOrEmpty(setting))
+        {
+            trigger.Session.Send(NoticePacket.Notice("Please enter a list modification mode. Valid modes are: add, set, disable, remove", NoticeType.Chat));
+
+            return;
+        }
+
+        setting = setting.ToLower();
+
+        if (!Enum.TryParse(setting, true, out ListMode mode))
+        {
+            trigger.Session.Send(NoticePacket.Notice($"Invalid mode '{setting}'. Please enter a mode. Valid modes are: add, set, disable, remove", NoticeType.Chat));
+
+            return;
+        }
+
+        if (mode == ListMode.Disable)
+        {
+            listToSet.Clear();
+
+            trigger.Session.Send(NoticePacket.Notice($"Cleared {listName}", NoticeType.Chat));
+
+            return;
+        }
+
+        if (string.IsNullOrEmpty(settingList))
+        {
+            trigger.Session.Send(NoticePacket.Notice($"Please enter a list of ids to {setting}", NoticeType.Chat));
+
+            return;
+        }
+
+        int[] idList = settingList.Split(',')
+            .Where(x => !string.IsNullOrEmpty(x))
+            .Select(int.Parse)
+            .Except(new int[] { 0 })
+            .ToArray();
+
+        if (idList.Length == 0)
+        {
+            trigger.Session.Send(NoticePacket.Notice("Invalid id list entered. Please enter at least one valid id.", NoticeType.Chat));
+
+            return;
+        }
+
+        string modeName = mode switch
+        {
+            ListMode.Add => "Adding",
+            ListMode.Set => "Setting",
+            ListMode.Remove => "Removing",
+            _ => "[error]"
+        };
+
+        trigger.Session.Send(NoticePacket.Notice($"{modeName} {listName} items: {string.Join(", ", idList)}", NoticeType.Chat));
+        
+        if (mode == ListMode.Set)
+        {
+            listToSet.Clear();
+        }
+
+        if (mode != ListMode.Remove)
+        {
+            listToSet.AddRange(idList);
+        }
+
+        if (mode == ListMode.Remove)
+        {
+            int removing = 0;
+
+            for (int i = 0; i < listToSet.Count; ++i)
+            {
+                if (idList.Contains(listToSet[i]))
+                {
+                    ++removing;
+                }
+                else
+                {
+                    listToSet[i - removing] = listToSet[i];
+                }
+            }
+
+            if (removing > 0)
+            {
+                listToSet.RemoveRange(listToSet.Count - removing, removing);
+            }
+        }
+
+        trigger.Session.Send(NoticePacket.Notice($"{listName} items: {string.Join(", ", listToSet)}", NoticeType.Chat));
+    }
+}
+
+public class PrintEffectsCommand : InGameCommand
+{
+    public PrintEffectsCommand()
+    {
+        Aliases = new()
+        {
+            "printeffects"
+        };
+        Description = "Prints the effects currently applied to you.";
+        Usage = "/printeffects";
+    }
+
+    public override void Execute(GameCommandTrigger trigger)
+    {
+        Player player = trigger.Session.Player;
+
+        trigger.Session.Send(NoticePacket.Notice($"Effects currently on {player.Name}:", NoticeType.Chat));
+
+        foreach (AdditionalEffect effect in player.AdditionalEffects.Effects)
+        {
+            trigger.Session.Send(NoticePacket.Notice($"\tEffect: {effect.Id} Level {effect.Level} with {effect.Stacks} stacks", NoticeType.Chat));
         }
     }
 }

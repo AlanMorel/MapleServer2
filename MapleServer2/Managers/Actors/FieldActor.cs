@@ -13,6 +13,8 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
     public CoordF Velocity { get; set; }
     public short Animation { get; set; }
     public short SubAnimation { get; set; }
+    public long LastMovedTick { get; set; }
+    public long TimeSinceLastMove { get => (FieldManager?.TickCount64 ?? LastMovedTick) - LastMovedTick; }
 
     public virtual Stats Stats { get; set; } = null!;
     public bool IsDead { get; set; }
@@ -308,12 +310,21 @@ public abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
 
     public virtual void StatsComputed() { }
 
+    private CoordF LastCoord;
+
     public void Update(long delta)
     {
         if (IsDead)
         {
             return;
         }
+
+        if (Coord != LastCoord)
+        {
+            LastMovedTick = FieldManager?.TickCount64 ?? LastMovedTick;
+        }
+
+        LastCoord = Coord;
 
         AdditionalEffects.UpdateStatsIfStale();
         ProximityTracker.Update();

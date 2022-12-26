@@ -9,6 +9,8 @@ public interface IFieldActor : IFieldObject
     public CoordF Velocity { get; }
     public short Animation { get; set; } // State
     public short SubAnimation { get; set; } // Sub State
+    public long LastMovedTick { get; set; }
+    public long TimeSinceLastMove { get; }
 
     public Stats Stats { get; }
     public bool IsDead { get; }
