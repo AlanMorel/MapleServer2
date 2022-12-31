@@ -6,7 +6,6 @@ using MapleServer2.Managers.Actors;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
-using Org.BouncyCastle.Asn1.X509;
 using Serilog;
 
 namespace MapleServer2.Types;
