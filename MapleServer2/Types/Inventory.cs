@@ -311,6 +311,19 @@ public sealed class Inventory : IInventory
             return;
         }
 
+        if (item.AdditionalEffects != null)
+        {
+            session.Player.AddEffects(item.AdditionalEffects);
+
+            foreach (GemSocket socket in item.GemSockets.Sockets)
+            {
+                if (socket.Gemstone != null)
+                {
+                    session.Player.AddEffects(socket.Gemstone.AdditionalEffects);
+                }
+            }
+        }
+
         SetBonus? newBonus = SetBonus.From(item);
 
         if (newBonus is null)
@@ -321,6 +334,25 @@ public sealed class Inventory : IInventory
         SetBonuses.Add(newBonus);
 
         IncrementSetBonus(session, newBonus);
+    }
+
+    public void RefreshRequippedItemEffects(GameSession session)
+    {
+        foreach ((ItemSlot slot, Item item) in Equips)
+        {
+            if (item.AdditionalEffects != null)
+            {
+                session.Player.AddEffects(item.AdditionalEffects);
+
+                foreach (GemSocket socket in item.GemSockets.Sockets)
+                {
+                    if (socket.Gemstone != null)
+                    {
+                        session.Player.AddEffects(socket.Gemstone.AdditionalEffects);
+                    }
+                }
+            }
+        }
     }
 
     public void ItemUnequipped(GameSession session, Item item)
@@ -371,6 +403,19 @@ public sealed class Inventory : IInventory
         }
 
         SetBonuses.RemoveRange(SetBonuses.Count - removeCount, removeCount);
+
+        if (item.AdditionalEffects != null)
+        {
+            session.Player.RemoveEffects(item.AdditionalEffects);
+
+            foreach (GemSocket socket in item.GemSockets.Sockets)
+            {
+                if (socket.Gemstone != null)
+                {
+                    session.Player.RemoveEffects(socket.Gemstone.AdditionalEffects);
+                }
+            }
+        }
     }
 
     public void AddItem(GameSession session, Item item, bool isNew)
@@ -706,19 +751,6 @@ public sealed class Inventory : IInventory
         ItemEquipped(session, newEquip);
         player.FieldPlayer?.ComputeStats();
 
-        if (newEquip.AdditionalEffects != null)
-        {
-            player.AddEffects(newEquip.AdditionalEffects);
-
-            foreach (GemSocket socket in newEquip.GemSockets.Sockets)
-            {
-                if (socket.Gemstone != null)
-                {
-                    player.AddEffects(socket.Gemstone.AdditionalEffects);
-                }
-            }
-        }
-
         return true;
     }
 
@@ -744,20 +776,8 @@ public sealed class Inventory : IInventory
             prevItem.IsEquipped = false;
             player.Inventory.AddItem(session, prevItem, false);
             session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(player.FieldPlayer, prevItem));
+
             player.FieldPlayer?.ComputeStats();
-
-            if (item.AdditionalEffects != null)
-            {
-                player.RemoveEffects(item.AdditionalEffects);
-
-                foreach (GemSocket socket in item.GemSockets.Sockets)
-                {
-                    if (socket.Gemstone != null)
-                    {
-                        player.RemoveEffects(socket.Gemstone.AdditionalEffects);
-                    }
-                }
-            }
 
             return true;
         }

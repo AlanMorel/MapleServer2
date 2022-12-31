@@ -49,6 +49,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                 byte skillSuperArmor = byte.Parse(stateAttr?.Attributes?["superArmor"]?.Value ?? "0");
                 bool skillRecovery = int.Parse(kinds?.Attributes?["spRecoverySkill"]?.Value ?? "0") == 1;
                 int[] groupIds = kinds?.Attributes?["groupIDs"]?.Value.SplitAndParseToInt(',').ToArray() ?? Array.Empty<int>();
+                bool immediateActive = int.Parse(kinds?.Attributes?["immediateActive"]?.Value ?? "0") == 1;
 
                 List<SkillLevel> skillLevels = new();
                 foreach (XmlNode level in levels)
@@ -127,7 +128,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                 }
 
                 skillList.Add(new(skillId, skillLevels, skillState, skillAttackType, skillType, skillSubType, skillElement, skillSuperArmor, skillRecovery,
-                    skillRangeType, groupIds));
+                    skillRangeType, groupIds, immediateActive));
             }
 
             // Parsing SubSkills
@@ -272,7 +273,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                 CooldownTime = float.Parse(beginNode.Attributes?["cooldownTime"]?.Value ?? "0"),
                 DefaultRechargingCooldownTime = float.Parse(beginNode.Attributes?["defaultRechargingCooldownTime"]?.Value ?? "0"),
                 AllowDeadState = int.Parse(beginNode.Attributes?["allowDeadState"]?.Value ?? "0") == 1,
-                RequireDurationWithoutMove = float.Parse(beginNode.Attributes?["beginCondition.requireDurationWithoutMove"]?.Value ?? "0"),
+                RequireDurationWithoutMove = float.Parse(beginNode.Attributes?["requireDurationWithoutMove"]?.Value ?? "0"),
                 UseTargetCountFactor = int.Parse(beginNode.Attributes?["useTargetCountFactor"]?.Value ?? "0") == 1,
                 //RequireSkillCodes = new(),
                 //RequireMapCodes = new(),

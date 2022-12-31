@@ -276,7 +276,7 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
         for (int i = 0; i < count; ++i)
         {
             int entityId = packet.ReadInt();
-            packet.ReadByte();
+            byte someByte = packet.ReadByte();
 
             session.Player.FieldPlayer?.TaskScheduler.QueueBufferedTask(() => HandleDamage(session, skillSn, count, attackPoint, entityId, playerObjectId, attackCounter, position, rotation));
         }
@@ -376,7 +376,7 @@ public class SkillHandler : GamePacketHandler<SkillHandler>
 
             ConditionSkillTarget castInfo = new(caster, target, caster, caster, EffectEventOrigin.Caster);
             bool hitCrit = false;
-            bool hitMissed = false;
+            bool hitMissed = true;
 
             if ((skillCast.GetDamageRate() != 0 || skillCast.GetDamageValue() != 0) && allowHit)
             {

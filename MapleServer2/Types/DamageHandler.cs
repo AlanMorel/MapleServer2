@@ -21,6 +21,7 @@ public class DamageSourceParameters
     public long DamageValue;
     public SkillCast? ParentSkill;
     public int Id;
+    public bool DamageVarianceEnabled = true;
 
     public DamageSourceParameters()
     {
@@ -55,14 +56,6 @@ public class DamageHandler
 
     public static DamageHandler CalculateDamage(SkillCast skill, IFieldActor? source, IFieldActor target)
     {
-        if (source is Managers.Actors.Character character)
-        {
-            if (character.Value.GmFlags.Contains("oneshot"))
-            {
-                return new(source, target, target.Stats[StatAttribute.Hp].Total, HitType.Critical);
-            }
-        }
-
         if (target.AdditionalEffects.Invincible)
         {
             return new(source, target, 0, HitType.Miss);
@@ -80,6 +73,16 @@ public class DamageHandler
             DamageValue = skill.GetDamageValue(),
             Id = skill.SkillId
         };
+
+        if (source is Managers.Actors.Character character)
+        {
+            if (character.Value.GmFlags.Contains("oneshot"))
+            {
+                return new(source, target, target.Stats[StatAttribute.Hp].Total, HitType.Critical);
+            }
+
+            parameters.DamageVarianceEnabled = character.Value.DamageVarianceEnabled;
+        }
 
         if (source is not null)
         {
@@ -237,7 +240,9 @@ public class DamageHandler
             double minDamage = WeaponAttackWeakness * player.Stats[StatAttribute.MinWeaponAtk].Total + bonusAttackCoeff * bonusAttack;
             double maxDamage = WeaponAttackWeakness * player.Stats[StatAttribute.MaxWeaponAtk].Total + bonusAttackCoeff * bonusAttack;
 
-            attackDamage = minDamage + (maxDamage - minDamage) * Random.Shared.NextDouble();
+            double damageRoll = parameters.DamageVarianceEnabled ? Random.Shared.NextDouble() : 1;
+
+            attackDamage = minDamage + (maxDamage - minDamage) * damageRoll;
         }
 
         bool isCrit = parameters.CanCrit && (parameters.GuaranteedCrit || RollCrit(source, target, luckCoefficient));

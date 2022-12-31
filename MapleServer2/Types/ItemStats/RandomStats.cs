@@ -163,7 +163,7 @@ public static class RandomStats
         return newBonus;
     }
 
-    private static Dictionary<StatAttribute, List<ParserStat>> GetRange(int itemId)
+    public static Dictionary<StatAttribute, List<ParserStat>> GetRange(int itemId)
     {
         List<ItemSlot> slots = ItemMetadataStorage.GetItemSlots(itemId);
         if (Item.IsAccessory(slots))
@@ -184,7 +184,7 @@ public static class RandomStats
         return ItemOptionRangeStorage.GetPetRanges();
     }
 
-    private static Dictionary<StatAttribute, List<ParserSpecialStat>> GetSpecialRange(int itemId)
+    public static Dictionary<StatAttribute, List<ParserSpecialStat>> GetSpecialRange(int itemId)
     {
         List<ItemSlot> slots = ItemMetadataStorage.GetItemSlots(itemId);
         if (Item.IsAccessory(slots))

@@ -153,6 +153,8 @@ public class AdditionalEffect
     {
         ConditionSkillTarget effectInfo = new ConditionSkillTarget(parent, parent, Caster);
 
+        parent.AdditionalEffects.DebugPrint(this, EffectEvent.Tick, effectInfo);
+
         if (!parent.SkillTriggerHandler.ShouldTick(LevelMetadata.BeginCondition, effectInfo, effectEvent, 0, ProximityQuery))
         {
             return;
@@ -324,6 +326,13 @@ public class AdditionalEffect
             }
         }
 
+        bool damageVarianceEnabled = true;
+
+        if (Caster is Managers.Actors.Character character)
+        {
+            damageVarianceEnabled = character.Value.DamageVarianceEnabled;
+        }
+
         Stat hp = parent.Stats[StatAttribute.Hp];
 
         DamageSourceParameters dotParameters = new()
@@ -338,7 +347,8 @@ public class AdditionalEffect
             DamageValue = dotDamage.Value + (long) (dotDamage.DamageByTargetMaxHp * hp.BonusLong),
             ParentSkill = ParentSkill,
             Id = Id,
-            EventGroup = LevelMetadata.Basic.Group
+            EventGroup = LevelMetadata.Basic.Group,
+            DamageVarianceEnabled = damageVarianceEnabled
         };
 
         DamageHandler.ApplyDotDamage(Session, Caster, parent, dotParameters);
@@ -439,7 +449,7 @@ public class AdditionalEffect
 
     public void FireEvent(IFieldActor parent, IFieldActor? attacker, EffectEvent effectEvent)
     {
-        if (LevelMetadata.Basic.InvokeEvent)
+        if (LevelMetadata.Basic.InvokeEvent || true)
         {
             parent.SkillTriggerHandler.FireEvents(parent, attacker, effectEvent, Id);
         }

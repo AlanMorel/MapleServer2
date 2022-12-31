@@ -242,13 +242,13 @@ public class Item
     public static bool IsAccessory(List<ItemSlot> slots)
     {
         return slots.Contains(ItemSlot.FH) || slots.Contains(ItemSlot.EA) || slots.Contains(ItemSlot.PD) || slots.Contains(ItemSlot.BE) ||
-               slots.Contains(ItemSlot.RI);
+               slots.Contains(ItemSlot.RI) || slots.Contains(ItemSlot.MT);
     }
 
     public static bool IsArmor(List<ItemSlot> slots)
     {
         return slots.Contains(ItemSlot.CP) || slots.Contains(ItemSlot.CL) || slots.Contains(ItemSlot.GL) || slots.Contains(ItemSlot.SH) ||
-               slots.Contains(ItemSlot.MT);
+               slots.Contains(ItemSlot.PA);
     }
 
     public bool IsPet()

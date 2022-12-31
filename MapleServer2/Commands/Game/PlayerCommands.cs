@@ -284,3 +284,36 @@ public class BuffCommand : InGameCommand
         });
     }
 }
+
+public class DamageVarianceCommand : InGameCommand
+{
+    public DamageVarianceCommand()
+    {
+        Aliases = new()
+        {
+            "damagevariance"
+        };
+        Description = "Level up all the skills available.";
+        Parameters = new()
+        {
+            new Parameter<string>("id", "ID of the status.")
+        };
+        Usage = "/damagevariance [enabled]";
+    }
+
+    public override void Execute(GameCommandTrigger trigger)
+    {
+        string? enabled = trigger.Get<string>("enabled");
+
+        if (string.IsNullOrEmpty(enabled))
+        {
+            trigger.Session.Player.DamageVarianceEnabled ^= true;
+
+            return;
+        }
+
+        enabled = enabled.ToLower();
+
+        trigger.Session.Player.DamageVarianceEnabled = enabled == "true" || enabled == "1";
+    }
+}

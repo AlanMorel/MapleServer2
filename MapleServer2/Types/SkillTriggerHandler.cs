@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Enums;
+﻿using Maple2.PathEngine;
+using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Managers.Actors;
@@ -66,7 +67,7 @@ public class SkillTriggerHandler
         return null;
     }
 
-    private IFieldActor? GetTarget(SkillTarget target, ConditionSkillTarget castInfo)
+    public IFieldActor? GetTarget(SkillTarget target, ConditionSkillTarget castInfo)
     {
         return target switch
         {
@@ -79,7 +80,7 @@ public class SkillTriggerHandler
         };
     }
 
-    private IFieldActor? GetOwner(SkillOwner owner, ConditionSkillTarget castInfo)
+    public IFieldActor? GetOwner(SkillOwner owner, ConditionSkillTarget castInfo)
     {
         return owner switch
         {
@@ -188,6 +189,11 @@ public class SkillTriggerHandler
     private bool IsConditionMet(SkillBeginCondition condition, ConditionSkillTarget castInfo, EffectEvent effectEvent, int eventIdArgument, ProximityQuery? query = null)
     {
         if (!condition.AllowDeadState && Parent.IsDead)
+        {
+            return false;
+        }
+
+        if (condition.RequireDurationWithoutMove > 0 && condition.RequireDurationWithoutMove > (float) Parent.TimeSinceLastMove / 1000)
         {
             return false;
         }
@@ -421,7 +427,7 @@ public class SkillTriggerHandler
         return 0;
     }
 
-    private void FireEvent(SkillCondition trigger, SkillCast? parentSkill, ConditionSkillTarget castInfo, EffectEvent effectEvent, int eventIdArgument, int start = -1)
+    private void FireEvent(SkillCondition trigger, SkillCast? parentSkill, ConditionSkillTarget castInfo, EffectEvent effectEvent, int eventIdArgument, int start = -1, AdditionalEffect? triggeredEffect = null)
     {
         ConditionSkillTarget eventCastInfo = new(castInfo.Owner, GetTarget(trigger.Target, castInfo) ?? castInfo.Target, GetOwner(trigger.Owner, castInfo) ?? castInfo.Owner, castInfo.Attacker, castInfo.EventOrigin);
 
@@ -431,6 +437,11 @@ public class SkillTriggerHandler
         if (!ShouldFireTrigger(trigger, eventCastInfo, effectEvent, eventIdArgument, targetingNone && trigger.IsSplash, start))
         {
             return;
+        }
+
+        if (triggeredEffect is not null)
+        {
+            Parent.AdditionalEffects.DebugPrint(triggeredEffect, effectEvent, eventCastInfo, eventIdArgument);
         }
 
         bool useDirection = trigger.UseDirection;
@@ -494,7 +505,7 @@ public class SkillTriggerHandler
         FireEvent(trigger, parentSkill, castInfo, EffectEvent.Activate, 0, start);
     }
 
-    private void FireEvents(List<SkillCondition>? triggers, SkillCast? parentSkill, ConditionSkillTarget castInfo, EffectEvent effectEvent, int eventIdArgument, int start = -1)
+    private void FireEvents(List<SkillCondition>? triggers, SkillCast? parentSkill, ConditionSkillTarget castInfo, EffectEvent effectEvent, int eventIdArgument, int start = -1, AdditionalEffect? triggeredEffect = null)
     {
         if (triggers is null)
         {
@@ -508,7 +519,7 @@ public class SkillTriggerHandler
 
         foreach (SkillCondition trigger in triggers)
         {
-            FireEvent(trigger, parentSkill, castInfo, effectEvent, eventIdArgument, start);
+            FireEvent(trigger, parentSkill, castInfo, effectEvent, eventIdArgument, start, triggeredEffect);
         }
     }
 
@@ -553,8 +564,8 @@ public class SkillTriggerHandler
 
             if (IsConditionMet(effect.LevelMetadata.BeginCondition, effectCastInfo, effectEvent, eventIdArgument))
             {
-                FireEvents(effect.LevelMetadata.ConditionSkill, effect.ParentSkill, effectCastInfo, effectEvent, eventIdArgument, start);
-                FireEvents(effect.LevelMetadata.SplashSkill, effect.ParentSkill, effectCastInfo, effectEvent, eventIdArgument, start);
+                FireEvents(effect.LevelMetadata.ConditionSkill, effect.ParentSkill, effectCastInfo, effectEvent, eventIdArgument, start, effect);
+                FireEvents(effect.LevelMetadata.SplashSkill, effect.ParentSkill, effectCastInfo, effectEvent, eventIdArgument, start, effect);
             }
         }
 
@@ -570,8 +581,8 @@ public class SkillTriggerHandler
 
             if (IsConditionMet(effect.LevelMetadata.BeginCondition, effectCastInfo, effectEvent, eventIdArgument))
             {
-                FireEvents(effect.LevelMetadata.ConditionSkill, effect.ParentSkill, effectCastInfo, effectEvent, eventIdArgument, start);
-                FireEvents(effect.LevelMetadata.SplashSkill, effect.ParentSkill, effectCastInfo, effectEvent, eventIdArgument, start);
+                FireEvents(effect.LevelMetadata.ConditionSkill, effect.ParentSkill, effectCastInfo, effectEvent, eventIdArgument, start, effect);
+                FireEvents(effect.LevelMetadata.SplashSkill, effect.ParentSkill, effectCastInfo, effectEvent, eventIdArgument, start, effect);
             }
         }
     }

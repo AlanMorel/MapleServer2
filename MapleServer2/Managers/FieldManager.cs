@@ -618,6 +618,20 @@ public class FieldManager
         player.FieldPlayer.TaskScheduler.OnFieldMoved();
         player.Inventory.RecomputeSetBonuses(player.Session);
 
+        MapProperty? mapProperty = MapMetadataStorage.GetMapProperty(player.MapId);
+        if (mapProperty is not null)
+        {
+            player.FieldPlayer.TaskScheduler.QueueBufferedTask(() =>
+            {
+                for (int i = 0; i < mapProperty.EnterBuffIds.Count; i++)
+                {
+                    player.FieldPlayer.AdditionalEffects.AddEffect(new(mapProperty.EnterBuffIds[i], mapProperty.EnterBuffLevels[i]));
+                }
+            });
+        }
+
+        player.InitializeEffects();
+
         //player.Session.SendNotice($"added to field with capacity: {Capacity} instanceId: {InstanceId} IsDungeonMap {IsDungeonMap}");
     }
 

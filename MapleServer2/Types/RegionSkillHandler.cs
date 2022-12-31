@@ -722,7 +722,7 @@ public static class RegionSkillHandler
                 }
             }
 
-            hitTarget |= allowHit && skillCast.SkillAttack.DamageProperty.DamageRate == 0 && skillCast.SkillAttack.DamageProperty.DamageValue == 0;
+            //hitTarget |= allowHit && skillCast.SkillAttack.DamageProperty.DamageRate == 0 && skillCast.SkillAttack.DamageProperty.DamageValue == 0;
 
             if (damaging)
             {

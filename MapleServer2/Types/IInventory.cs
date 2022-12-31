@@ -14,6 +14,7 @@ public interface IInventory
     List<SetBonus> SetBonuses { get; }
     Dictionary<long, Item> TemporaryStorage { get; }
     void RecomputeSetBonuses(GameSession? session);
+    void RefreshRequippedItemEffects(GameSession session);
     void ItemEquipped(GameSession session, Item item);
     void ItemUnequipped(GameSession session, Item item);
     void AddItem(GameSession session, Item item, bool isNew);
