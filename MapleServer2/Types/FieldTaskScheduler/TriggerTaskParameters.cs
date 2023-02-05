@@ -8,6 +8,7 @@ public struct TriggerTaskParameters
     public long Delay = 0;
     public long Duration = -1;
     public int Executions = 1;
+    public bool FinishAfterDuration = false;
 
     public TriggerTaskParameters(int interval)
     {

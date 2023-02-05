@@ -327,11 +327,11 @@ public class BaseStats
         return jobCode switch
         {
             JobCode.Beginner => 1,
-            JobCode.Knight => 0,
+            JobCode.Knight => 3,
             JobCode.Berserker => 1,
             JobCode.Wizard => 1,
             JobCode.Priest => 8,
-            JobCode.Archer => 7,
+            JobCode.Archer => 7, // unsure if the archer passive is added to base (7 vs 12)
             JobCode.HeavyGunner => 0,
             JobCode.Thief => 1,
             JobCode.Assassin => 1,

@@ -13,10 +13,13 @@ public class DamageInstance
 
 public class CastedSkill
 {
-    public long LastTick;
+    public long LastTick = 0;
+    public long InitialCastEnd = 0;
     public SkillCast Cast;
     public int CurrentMotion = 0;
     public List<DamageInstance> Damages = new();
+    public int DamagesProcessed = 0;
+    public int QueuedSyncDamages = 0;
 
     public CastedSkill(SkillCast cast)
     {
@@ -35,13 +38,16 @@ public class SkillCastTracker
         Parent = parent;
     }
 
-    public void AddSkillCast(SkillCast skillCast)
+    public void AddSkillCast(SkillCast skillCast, long initialCastEnd)
     {
         lock (SkillCasts)
         {
+            long currentTick = Parent.FieldManager?.TickCount64 ?? 0;
+
             SkillCasts.Add(new(skillCast)
             {
-                LastTick = Parent.FieldManager?.TickCount64 ?? 0
+                LastTick = currentTick,
+                InitialCastEnd = initialCastEnd
             });
         }
     }
@@ -66,12 +72,36 @@ public class SkillCastTracker
 
         if (skillCast is not null && currentTick != 0)
         {
-            LongestRefreshTime = Math.Max(LongestRefreshTime, currentTick - skillCast.LastTick);
+            LongestRefreshTime = Math.Max(LongestRefreshTime, Math.Max(0, currentTick - Math.Max(skillCast.LastTick, skillCast.InitialCastEnd)));
 
             skillCast.LastTick = currentTick;
         }
 
         return skillCast;
+    }
+
+    public void QueueSyncDamages(long skillSn, int count)
+    {
+        CastedSkill? skillCast = GetSkillCast(skillSn);
+
+        if (skillCast is null)
+        {
+            return;
+        }
+
+        skillCast.QueuedSyncDamages += count;
+    }
+
+    public void DamageProcessed(long skillSn, int count = 1)
+    {
+        CastedSkill? skillCast = GetSkillCast(skillSn);
+
+        if (skillCast is null)
+        {
+            return;
+        }
+
+        skillCast.DamagesProcessed += count;
     }
 
     public void Update()
@@ -96,7 +126,10 @@ public class SkillCastTracker
             {
                 CastedSkill skillCast = SkillCasts[i];
 
-                if (currentTick - skillCast.LastTick > 10000)
+                long timeElapsed = currentTick - Math.Max(skillCast.LastTick, skillCast.InitialCastEnd);
+                long timeout = skillCast.DamagesProcessed >= skillCast.QueuedSyncDamages ? 500 : 10000;
+
+                if (timeElapsed > timeout)
                 {
                     ++removed;
 

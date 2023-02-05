@@ -95,11 +95,15 @@ public class SkillLevel
     public readonly RangeProperty DetectProperty;
     [XmlElement(Order = 12)]
     public readonly RangeProperty SensorProperty;
+    [XmlElement(Order = 13)]
+    public readonly ChangeSkillProperty ChangeSkill;
+    [XmlElement(Order = 14)]
+    public readonly ComboProperty Combo;
 
     public SkillLevel() { }
 
     public SkillLevel(short level, int spirit, int stamina, string feature, List<SkillCondition> conditionSkills, List<SkillMotion> skillMotions,
-        SkillUpgrade skillUpgrade, float cooldownTime, SkillBeginCondition beginCondition, RangeProperty detectProperty, RangeProperty sensorProperty)
+        SkillUpgrade skillUpgrade, float cooldownTime, SkillBeginCondition beginCondition, RangeProperty detectProperty, RangeProperty sensorProperty, ChangeSkillProperty changeSkill, ComboProperty combo)
     {
         Level = level;
         Spirit = spirit;
@@ -112,6 +116,8 @@ public class SkillLevel
         BeginCondition = beginCondition;
         DetectProperty = detectProperty;
         SensorProperty = sensorProperty;
+        ChangeSkill = changeSkill;
+        Combo = combo;
     }
 
     public override string ToString()
@@ -228,14 +234,20 @@ public class SkillMotion
     public string MotionEffect = "";
     [XmlElement(Order = 3)]
     public List<SkillAttack> SkillAttacks = new();
+    [XmlElement(Order = 4)]
+    public int SplashLifeTick;
+    [XmlElement(Order = 5)]
+    public int SplashInvokeCoolTick;
 
     public SkillMotion() { }
 
-    public SkillMotion(string sequenceName, string motionEffect, List<SkillAttack> skillAttacks)
+    public SkillMotion(string sequenceName, string motionEffect, int splashLifeTick, int splashInvokeCoolTick, List<SkillAttack> skillAttacks)
     {
         SequenceName = sequenceName;
         MotionEffect = motionEffect;
         SkillAttacks = skillAttacks;
+        SplashLifeTick = splashLifeTick;
+        splashInvokeCoolTick = splashInvokeCoolTick;
     }
 
     public override string ToString()
@@ -310,7 +322,7 @@ public class SkillCondition
     [XmlElement(Order = 13)]
     public bool RandomCast;
     [XmlElement(Order = 14)]
-    public int[] LinkSkillId;
+    public int LinkSkillId;
     [XmlElement(Order = 15)]
     public int OverlapCount;
     [XmlElement(Order = 16)]
@@ -381,7 +393,7 @@ public class SkillBeginCondition
     public StatCondition? Stat;
 
     [XmlElement(Order = 12)]
-    public List<RequireSkillCodeCondition> RequireSkillCodes;
+    public RequireSkillCodeCondition? RequireSkillCodes;
 
     [XmlElement(Order = 13)]
     public List<RequireMapCodeCondition> RequireMapCodes;
@@ -484,7 +496,7 @@ public class StatCondition
 public class RequireSkillCodeCondition
 {
     [XmlElement(Order = 1)]
-    public int[] Code;
+    public int[] Codes;
 }
 
 [XmlType]
@@ -530,6 +542,22 @@ public class WeaponCondition
 
     [XmlElement(Order = 2)]
     public ItemPresetType RightHand;
+}
+
+[XmlType]
+public class ChangeSkillProperty
+{
+    [XmlElement(Order = 1)]
+    public int OriginSkillId;
+    [XmlElement(Order = 2)]
+    public short OriginSkillLevel;
+}
+
+[XmlType]
+public class ComboProperty
+{
+    [XmlElement(Order = 1)]
+    public int ComboOriginSkill;
 }
 
 [XmlType]

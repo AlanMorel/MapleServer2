@@ -172,7 +172,7 @@ public partial class TriggerContext
                 Position = triggerSkill.Coord
             };
 
-            RegionSkillHandler.CastRegionSkill(Field, skillCast, triggerSkill.Value.Count, triggerSkill.Value.Interval, triggerSkill.Value.Interval);
+            RegionSkillHandler.CastRegionSkill(Field, skillCast, triggerSkill.Value.Count, 0, triggerSkill.Value.Interval, triggerSkill.Value.Interval);
         }
     }
 

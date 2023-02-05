@@ -24,6 +24,7 @@ public interface IFieldActor : IFieldObject
     public TickingTaskScheduler TaskScheduler { get; }
     public ProximityTracker ProximityTracker { get; }
     public SkillCastTracker SkillCastTracker { get; }
+    public AnimationHandler AnimationHandler { get; }
 
     public FieldManager? FieldManager { get; }
     public FieldNavigator Navigator { get; }
@@ -45,6 +46,7 @@ public interface IFieldActor : IFieldObject
     public void Animate(string sequenceName, float duration = -1);
 
     public void EffectAdded(AdditionalEffect effect);
+    public void EffectUpdated(AdditionalEffect effect);
     public void EffectRemoved(AdditionalEffect effect);
     public void InitializeEffects();
 

@@ -1,9 +1,8 @@
-﻿using System.Drawing;
-using Maple2.Trigger.Enum;
+﻿using Maple2.Trigger.Enum;
 using Maple2Storage.Enums;
+using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Commands.Core;
-using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Extensions;
@@ -74,8 +73,8 @@ public class SetJobCommand : InGameCommand
             string[] classes = Enum.GetNames(typeof(JobCode));
 
             player.Session.Send(NoticePacket.Notice(
-                "You have to give a classname and specify awakening (1 or 0)\nAvailable classes:\n".Bold().Color(Color.DarkOrange) +
-                $"{string.Join(", ", classes).Color(Color.Aquamarine)}", NoticeType.Chat));
+                "You have to give a classname and specify awakening (1 or 0)\nAvailable classes:\n".Bold().Color(System.Drawing.Color.DarkOrange) +
+                $"{string.Join(", ", classes).Color(System.Drawing.Color.Aquamarine)}", NoticeType.Chat));
 
             return;
         }
@@ -768,8 +767,261 @@ public class PrintEffectsCommand : InGameCommand
 
         foreach (AdditionalEffect effect in player.AdditionalEffects.Effects)
         {
-            trigger.Session.Send(NoticePacket.Notice($"\tEffect: {effect.Id} Level {effect.Level} with {effect.Stacks} stacks", NoticeType.Chat));
+            string enabledTag = effect.IsActive ? "" : " [Disabled]";
+
+            trigger.Session.Send(NoticePacket.Notice($"\tEffect: {effect.Id} Level {effect.Level} with {effect.Stacks} stacks{enabledTag}", NoticeType.Chat));
         }
+    }
+}
+
+public class ResetCooldownsCommand : InGameCommand
+{
+    private enum CooldownType
+    {
+        Both = 0,
+        Skill = 1,
+        Skills = 1,
+        Effect = 2,
+        Effects = 2,
+        TrackNextHit = 3,
+        ClearTracked = 4,
+    }
+
+    public ResetCooldownsCommand()
+    {
+        Aliases = new()
+        {
+            "resetcooldowns"
+        };
+        Description = "Resets cooldowns of skills or effects on yourself or another entity";
+        Usage = "/resetcooldowns [type] [ids] [targets]";
+        Parameters = new()
+        {
+            new Parameter<string>("type", "Picks whether to reset cooldowns of skills, effects, or both. Use: skill(s), effect(s), both. Use TrackNextHit or ClearTracked to track other objects."),
+            new Parameter<string>("ids", "Picks which ids to reset. Use commas without spaces to separate ids. Leave blank or use '0' to reset all."),
+            new Parameter<string>("targets", "Picks targets to reset cooldowns on")
+        };
+    }
+
+    public override void Execute(GameCommandTrigger trigger)
+    {
+        string typeString = trigger.Get<string>("type");
+        string idsString = trigger.Get<string>("ids");
+        string targetsString = trigger.Get<string>("targets");
+
+        CooldownType type = CooldownType.Both;
+
+        Enum.TryParse(typeString, true, out type);
+
+        if (type == CooldownType.TrackNextHit)
+        {
+            if (trigger.Session.Player.FieldPlayer is not null)
+            {
+                trigger.Session.Player.FieldPlayer.SkillTriggerHandler.TrackNextTargetHit = true;
+            }
+
+            return;
+        }
+
+        if (type == CooldownType.ClearTracked)
+        {
+            if (trigger.Session.Player.FieldPlayer is not null)
+            {
+                trigger.Session.Player.FieldPlayer.SkillTriggerHandler.TrackTargetsForCooldowns.Clear();
+            }
+
+            return;
+        }
+
+        int[]? ids = null;
+
+        if (!string.IsNullOrEmpty(idsString))
+        {
+            ids = targetsString.Split(',')
+                .Where(x => !string.IsNullOrEmpty(x))
+                .Select(int.Parse)
+                .Except(new int[] { 0 })
+                .ToArray();
+        }
+
+        Player player = trigger.Session.Player;
+
+        List<IFieldActor> targets = new();
+
+        if (string.IsNullOrEmpty(targetsString))
+        {
+            if (player.FieldPlayer is not null)
+            {
+                targets.Add(player.FieldPlayer);
+                targets.AddRange(player.FieldPlayer.SkillTriggerHandler.TrackTargetsForCooldowns);
+            }
+        }
+        else
+        {
+            int[] idList = targetsString.Split(',')
+                .Where(x => !string.IsNullOrEmpty(x))
+                .Select(int.Parse)
+                .Except(new int[] { 0 })
+                .ToArray();
+
+            foreach (int targetId in idList)
+            {
+                IFieldActor? target = trigger.Session.FieldManager.State.GetActor(targetId);
+
+                if (target is not null)
+                {
+                    targets.Add(target);
+                }
+            }
+        }
+
+        foreach (IFieldActor target in targets)
+        {
+            if (type == CooldownType.Both || type == CooldownType.Skill)
+            {
+                target.SkillTriggerHandler.ResetSkillCooldowns(ids);
+            }
+
+            if (type == CooldownType.Both || type == CooldownType.Effect)
+            {
+                target.SkillTriggerHandler.ResetEffectCooldowns(ids);
+            }
+        }
+    }
+}
+
+public class SimulateHitCommand : InGameCommand
+{
+    private enum SimulateHitType
+    {
+        Hit,
+        Missed,
+        Blocked,
+        Crit,
+        Natural
+    }
+
+    public SimulateHitCommand()
+    {
+        Aliases = new()
+        {
+            "simulatehit"
+        };
+        Description = "Simulates a hit to the user from the nearest mob";
+        Usage = "/simulatehit [type] [times] [interval]";
+        Parameters = new()
+        {
+            new Parameter<string>("type", "The type of hit to simulate. Options are: Hit, Missed, Blocked, Crit, Natural"),
+            new Parameter<string>("times", "The number of times to hit. Default is 1"),
+            new Parameter<string>("interval", "The time between hits in milliseconds. Default is 1000 ms"),
+        };
+    }
+
+    private void RollHit(GameCommandTrigger trigger, IFieldActor character, IFieldActor attacker, SimulateHitType simulateType)
+    {
+        HitType type = simulateType switch
+        {
+            SimulateHitType.Hit => HitType.Normal,
+            SimulateHitType.Missed => HitType.Miss,
+            SimulateHitType.Blocked => HitType.Block,
+            SimulateHitType.Crit => HitType.Critical,
+            SimulateHitType.Natural => HitType.Normal,
+            _ => HitType.Normal
+        };
+
+        if (simulateType == SimulateHitType.Natural)
+        {
+            DamageHandler damage = DamageHandler.CalculateDamage(new SkillCast(1000001, 1), character, attacker); // basic attack id
+
+            type = damage.HitType;
+        }
+
+        bool missed = type == HitType.Miss;
+        bool crit = type == HitType.Critical;
+        bool blocked = type == HitType.Block;
+
+        trigger.Session.Send(NoticePacket.Notice($"{type}", NoticeType.Chat));
+
+        trigger.Session.FieldManager.BroadcastPacket(SkillDamagePacket.DotDamage(attacker.ObjectId, character.ObjectId, Environment.TickCount, type, 100));
+
+        character.SkillTriggerHandler.OnAttacked(attacker, 0, true, crit, missed, blocked);
+    }
+
+    public override void Execute(GameCommandTrigger trigger)
+    {
+        IFieldActor? character = trigger.Session.Player.FieldPlayer;
+
+        if (trigger.Session.FieldManager is null || character is null)
+        {
+            return;
+        }
+
+        IFieldActor? attacker = null;
+        float closest = float.MaxValue;
+
+        foreach ((int uid, Npc mob) in trigger.Session.FieldManager.State.Mobs)
+        {
+            float distance = CoordF.Distance(mob.Coord, character.Coord);
+
+            if (distance < closest)
+            {
+                closest = distance;
+                attacker = mob;
+            }
+        }
+
+        if (attacker is null)
+        {
+            return;
+        }
+
+        string typeString = trigger.Get<string>("type");
+        int times = 1;
+        int interval = 1000;
+
+        int.TryParse(trigger.Get<string>("times") ?? "1", out times);
+        int.TryParse(trigger.Get<string>("times") ?? "1000", out interval);
+
+        SimulateHitType type = SimulateHitType.Hit;
+
+        Enum.TryParse(typeString, true, out type);
+
+        int fires = 3;
+
+        trigger.Session.Send(NoticePacket.Notice($"Hit in {fires}", NoticeType.Chat));
+
+        character.TaskScheduler.QueueTask(new(1000)
+        {
+            Executions = 3,
+        }, (currentTick, task) =>
+        {
+            --fires;
+
+            if (fires > 0)
+            {
+                trigger.Session.Send(NoticePacket.Notice($"Hit in {fires}", NoticeType.Chat));
+            }
+
+            return 0;
+        }, (currentTick, task) =>
+        {
+            RollHit(trigger, character, attacker, type);
+
+            if (times <= 1)
+            {
+                return;
+            }
+
+            character.TaskScheduler.QueueTask(new(Math.Max(10, interval))
+            {
+                Executions = times - 1
+            }, (currentTick, task) =>
+            {
+                RollHit(trigger, character, attacker, type);
+
+                return 0;
+            });
+        });
     }
 }
 

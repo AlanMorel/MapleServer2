@@ -15,6 +15,23 @@ public class TickingTaskScheduler
         FieldManager = fieldManager;
     }
 
+    private long GetFieldTickCount()
+    {
+        long currentTick = FieldManager.TickCount64;
+
+        if (LastFieldTick == 0)
+        {
+            LastFieldTick = FieldManager.TickCount64;
+        }
+
+        if (currentTick == 0)
+        {
+            currentTick = LastFieldTick;
+        }
+
+        return currentTick;
+    }
+
     private bool MakeTask(TriggerTaskParameters parameters, Func<long, TriggerTask, long> callback, Action<long, TriggerTask>? taskFinishedCallback, out TriggerTask? newTask)
     {
         newTask = null;
@@ -29,15 +46,18 @@ public class TickingTaskScheduler
             return false;
         }
 
+        long currentTick = GetFieldTickCount();
+
         newTask = new(callback, parameters.Origin)
         {
-            LastExecutionTick = FieldManager.TickCount64,
+            LastExecutionTick = currentTick,
             Interval = parameters.Interval,
             RemainingDuration = parameters.Duration,
             Delay = parameters.Delay,
             RemainingExecutions = parameters.Executions,
             Subject = parameters.Subject,
-            TaskFinishedCallback = taskFinishedCallback
+            TaskFinishedCallback = taskFinishedCallback,
+            FinishAfterDuration = parameters.FinishAfterDuration,
         };
 
         return true;
@@ -108,12 +128,18 @@ public class TickingTaskScheduler
     }
 
     private long LastFieldTick = 0;
+    private bool NeedsToRequeue = false;
 
     public void Update(long delta)
     {
         if (FieldManager is null)
         {
             return;
+        }
+
+        if (NeedsToRequeue)
+        {
+            RequeueTasks();
         }
 
         lock (BufferedTasks)
@@ -126,7 +152,7 @@ public class TickingTaskScheduler
             BufferedTasks.Clear();
         }
 
-        long currentTick = FieldManager.TickCount64;
+        long currentTick = GetFieldTickCount();
 
         LastFieldTick = currentTick;
 
@@ -142,6 +168,13 @@ public class TickingTaskScheduler
             }
 
             long timeToNextTick = nextTask.NextExecutionTick - currentTick;
+            long desiredDelta = nextTask.GetNextExecutionTick(0);
+
+            if (timeToNextTick > desiredDelta)
+            {
+                nextTask.LastExecutionTick = nextTask.GetNextExecutionTick(currentTick) - desiredDelta;
+                timeToNextTick = nextTask.NextExecutionTick - currentTick;
+            }
 
             if (timeToNextTick > 0)
             {
@@ -210,9 +243,9 @@ public class TickingTaskScheduler
         }
     }
 
-    public void OnFieldMoved()
+    public void RequeueTasks()
     {
-        long currentTick = FieldManager.TickCount64;
+        long currentTick = GetFieldTickCount();
 
         List<(TriggerTask, long)> newTaskQueue = new(QueuedTasks.Count);
 
@@ -227,5 +260,12 @@ public class TickingTaskScheduler
         QueuedTasks.EnqueueRange(newTaskQueue);
 
         LastFieldTick = currentTick;
+
+        NeedsToRequeue = false;
+    }
+
+    public void OnFieldMoved()
+    {
+        NeedsToRequeue = true;
     }
 }

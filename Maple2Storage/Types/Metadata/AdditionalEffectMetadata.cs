@@ -216,11 +216,11 @@ public class EffectImmuneEffectMetadata
 public class EffectResetSkillCooldownTimeMetadata
 {
     [XmlElement(Order = 1)]
-    public long[] SkillCodes;
+    public int[] SkillCodes;
 
     public EffectResetSkillCooldownTimeMetadata()
     {
-        SkillCodes = Array.Empty<long>();
+        SkillCodes = Array.Empty<int>();
     }
 }
 
@@ -256,6 +256,12 @@ public class EffectStatusMetadata
     public long DeathResistanceHp;
     [XmlElement(Order = 3)]
     public Dictionary<StatAttribute, float> Resistances;
+    [XmlElement(Order = 4)]
+    public CompulsionEventType CompulsionEventType;
+    [XmlElement(Order = 5)]
+    public float CompulsionEventRate;
+    [XmlElement(Order = 6)]
+    public int[] CompulsionEventSkillCodes = Array.Empty<int>();
 }
 
 [XmlType]

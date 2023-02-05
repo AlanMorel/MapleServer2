@@ -28,6 +28,13 @@ public struct AdditionalEffectParameters
     }
 }
 
+public class CompulsionEventRate
+{
+    public CompulsionEventType Type = CompulsionEventType.None;
+    public float Rate = 0;
+    public int[] SkillCodes = Array.Empty<int>();
+}
+
 public class AdditionalEffects
 {
     public readonly List<AdditionalEffect> Effects;
@@ -37,7 +44,9 @@ public class AdditionalEffects
     public long MinimumHp;
     public Dictionary<StatAttribute, float> Resistances = new();
     public AdditionalEffect? ActiveShield = null;
+    public List<CompulsionEventRate> CompulsionEvents = new();
     private Dictionary<EffectEvent, List<AdditionalEffect>> ListeningEvents = new();
+    private Dictionary<EffectEvent, List<AdditionalEffect>> ListeningTickEvents = new();
 
     public AdditionalEffects(IFieldActor? parent = null)
     {
@@ -54,6 +63,22 @@ public class AdditionalEffects
         MinimumHp = 0;
         Resistances.Clear();
         ActiveShield = null;
+        CompulsionEvents.Clear();
+    }
+
+    public float GetCompulsionRate(CompulsionEventType type, int skillCode = 0)
+    {
+        float rate = 0;
+
+        foreach (CompulsionEventRate compulsion in CompulsionEvents)
+        {
+            if (compulsion.Type == type && (compulsion.SkillCodes.Length == 0 || compulsion.SkillCodes.Contains(skillCode)))
+            {
+                rate += compulsion.Rate;
+            }
+        }
+
+        return rate;
     }
 
     public void UpdateStatsIfStale(EffectEvent effectEvent = EffectEvent.Tick)
@@ -65,7 +90,7 @@ public class AdditionalEffects
 
         foreach (AdditionalEffect effect in Effects)
         {
-            bool recompute = effect.UpdateIfStale(Parent, effectEvent);
+            bool recompute = effect.UpdateIfStale(Parent, false, effectEvent);
 
             if (recompute)
             {
@@ -80,8 +105,14 @@ public class AdditionalEffects
     {
         oldEffect = null;
 
+        int effectId = effect.Id;
+        int effectGroup = effect.LevelMetadata.Basic.Group;
+
         foreach (AdditionalEffect activeEffect in Effects)
         {
+            int activeId = activeEffect.Id;
+            int activeGroup = activeEffect.LevelMetadata.Basic.Group;
+
             EffectImmuneEffectMetadata? immune = activeEffect.LevelMetadata.ImmuneEffect;
 
             if (immune?.ImmuneEffectCodes.Contains(effect.Id) ?? false)
@@ -89,7 +120,7 @@ public class AdditionalEffects
                 return false;
             }
 
-            if (activeEffect.Id != effect.Id && effect.LevelMetadata.Basic.Group != activeEffect.Id)
+            if (effectId != activeId && effectGroup != activeId && effectId != activeGroup && (effectGroup + activeGroup == 0 || effectGroup != activeGroup))
             {
                 continue;
             }
@@ -151,6 +182,7 @@ public class AdditionalEffects
             Parent.FieldManager?.BroadcastPacket(BuffPacket.UpdateBuff(effect, Parent.ObjectId));
         }
 
+        Parent.EffectUpdated(effect);
         effect.Process(Parent);
 
         return true;
@@ -254,7 +286,7 @@ public class AdditionalEffects
             }
         }
 
-        if (UpdateEffect(activeEffect, effect, parameters))
+        if (activeEffect is not null && UpdateEffect(activeEffect, effect, parameters))
         {
             DebugPrint("Updated effect", activeEffect);
 
@@ -270,9 +302,8 @@ public class AdditionalEffects
 
         effect.Stacks = parameters.Stacks;
         effect.Start = start;
-        effect.Duration = parameters.Duration != 0 ? parameters.Duration : (effect.LevelMetadata?.Basic?.DurationTick ?? 0);
-        if (effect.LevelMetadata is null)
-            return null;
+        effect.Duration = parameters.Duration != 0 ? parameters.Duration : effect.LevelMetadata.Basic.DurationTick;
+
         InvokeStatValue invokeStat = effect.Caster.Stats.GetEffectStats(effect.Id, effect.LevelMetadata.Basic.Group, InvokeEffectType.IncreaseDuration);
 
         effect.Duration = Math.Max(0, (int) invokeStat.Value + (int) ((1 + invokeStat.Rate) * effect.Duration));
@@ -334,7 +365,7 @@ public class AdditionalEffects
         };
     }
 
-    public AdditionalEffect? GetEffect(int effectId, int stacks = 0, ConditionOperator comparison = ConditionOperator.GreaterEquals, int level = 0, IFieldActor? caster = null)
+    public AdditionalEffect? GetEffect(int effectId, int stacks = 0, ConditionOperator comparison = ConditionOperator.GreaterEquals, int level = 0, IFieldActor? caster = null, bool allowInactive = true)
     {
         foreach (AdditionalEffect effect in Effects)
         {
@@ -353,6 +384,11 @@ public class AdditionalEffects
                 continue;
             }
 
+            if (!allowInactive && !effect.IsActive)
+            {
+                continue;
+            }
+
             if (!CompareValues(effect.Stacks, stacks, comparison))
             {
                 continue;
@@ -366,7 +402,29 @@ public class AdditionalEffects
 
     public bool HasEffect(int effectId, int stacks = 0, ConditionOperator comparison = ConditionOperator.GreaterEquals, int level = 0, IFieldActor? caster = null)
     {
-        return GetEffect(effectId, stacks, comparison, level, caster) is not null;
+        return GetEffect(effectId, stacks, comparison, level, caster, false) is not null;
+    }
+
+    public void AddListeningEventTick(AdditionalEffect effect, BeginConditionSubject subject)
+    {
+        if (subject is null || subject.EventCondition == EffectEvent.Activate)
+        {
+            return;
+        }
+
+        effect.HasEvents = true;
+
+        if (!ListeningTickEvents.TryGetValue(subject.EventCondition, out List<AdditionalEffect>? list))
+        {
+            list = new();
+
+            ListeningTickEvents.Add(subject.EventCondition, list);
+        }
+
+        if (!list.Contains(effect))
+        {
+            list.Add(effect);
+        }
     }
 
     public void AddListeningEvent(AdditionalEffect effect, BeginConditionSubject subject)
@@ -405,6 +463,9 @@ public class AdditionalEffects
 
     public void AddListeningEvents(AdditionalEffect effect)
     {
+        AddListeningEventTick(effect, effect.LevelMetadata.BeginCondition.Owner);
+        AddListeningEventTick(effect, effect.LevelMetadata.BeginCondition.Target);
+
         if (effect.LevelMetadata.ConditionSkill is null)
         {
             return;
@@ -425,9 +486,21 @@ public class AdditionalEffects
         return events;
     }
 
+    public List<AdditionalEffect>? GetListeningTickEvents(EffectEvent effectEvent)
+    {
+        ListeningTickEvents.TryGetValue(effectEvent, out List<AdditionalEffect>? events);
+
+        return events;
+    }
+
     public void RefreshEffectEvents()
     {
         foreach ((EffectEvent type, List<AdditionalEffect> listeners) in ListeningEvents)
+        {
+            listeners.Clear();
+        }
+
+        foreach ((EffectEvent type, List<AdditionalEffect> listeners) in ListeningTickEvents)
         {
             listeners.Clear();
         }

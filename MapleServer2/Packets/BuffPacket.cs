@@ -56,10 +56,10 @@ public static class BuffPacket
 
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buff);
         pWriter.Write(Mode.Add);
-        pWriter.WriteBuffOwner(target, status.BuffId, status.Caster.ObjectId);
+        pWriter.WriteBuffOwner(target, status.BuffId, status.Caster?.ObjectId ?? 0);
 
         pWriter.WriteBuff(status.Start, status.End, status.Id, status.Level, status.Stacks);
-        pWriter.WriteByte(1); // sniffs always get 1 but doesn't change behaviour
+        pWriter.WriteBool(status.IsActive); // sniffs always get 1 but doesn't change behaviour
         pWriter.WriteLong(status.ShieldHealth);
 
         return pWriter;
@@ -71,13 +71,13 @@ public static class BuffPacket
 
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buff);
         pWriter.Write(Mode.Update);
-        pWriter.WriteBuffOwner(target, status.BuffId, status.Caster.ObjectId);
+        pWriter.WriteBuffOwner(target, status.BuffId, status.Caster?.ObjectId ?? 0);
 
         pWriter.WriteInt(1);
 
         pWriter.WriteBuff(status.Start, status.End, status.Id, status.Level, status.Stacks);
 
-        pWriter.WriteByte(1);
+        pWriter.WriteBool(status.IsActive);
         return pWriter;
     }
 
@@ -85,7 +85,7 @@ public static class BuffPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buff);
         pWriter.Write(Mode.Update);
-        pWriter.WriteBuffOwner(target, status.BuffId, status.Caster.ObjectId);
+        pWriter.WriteBuffOwner(target, status.BuffId, status.Caster?.ObjectId ?? 0);
 
         pWriter.WriteInt(2);
         pWriter.WriteLong(status.ShieldHealth);
@@ -99,7 +99,7 @@ public static class BuffPacket
 
         PacketWriter pWriter = PacketWriter.Of(SendOp.Buff);
         pWriter.Write(Mode.Remove);
-        pWriter.WriteBuffOwner(target, status.BuffId, status.Caster.ObjectId);
+        pWriter.WriteBuffOwner(target, status.BuffId, status.Caster?.ObjectId ?? 0);
 
         return pWriter;
     }
@@ -128,18 +128,16 @@ public static class BuffPacket
 
         foreach (AdditionalEffect effect in effects.Effects)
         {
-            WriteFieldEnterBuff(pWriter, effect, effects.Parent.ObjectId);
+            WriteFieldEnterBuff(pWriter, effect, effects.Parent?.ObjectId ?? 0);
         }
     }
 
     private static void WriteFieldEnterBuff(this PacketWriter pWriter, AdditionalEffect status, int target)
     {
-        Debug.Assert(status.Caster != null, "status.Caster != null");
-
-        pWriter.WriteBuffOwner(target, status.BuffId, status.Caster.ObjectId);
+        pWriter.WriteBuffOwner(target, status.BuffId, status.Caster?.ObjectId ?? 0);
         pWriter.WriteBuff(status.Start, status.End, status.Id, status.Level, status.Stacks);
 
-        pWriter.WriteByte(1);
+        pWriter.WriteBool(status.IsActive);
         pWriter.WriteLong(status.ShieldHealth);
     }
 }

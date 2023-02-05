@@ -39,6 +39,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
     private bool IsInAnimation;
 
     public int SpawnPointId;
+    public NpcMetadata Metadata;
 
     public Npc(int objectId, int mobId, FieldManager fieldManager) : this(objectId, NpcMetadataStorage.GetNpcMetadata(mobId), fieldManager) { }
 
@@ -49,6 +50,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
         Stats = new(metadata);
         State = NpcState.Normal;
         Action = NpcAction.Idle;
+        Metadata = metadata;
 
         if (string.IsNullOrEmpty(metadata.AiInfo))
         {
@@ -58,6 +60,11 @@ public class Npc : FieldActor<NpcMetadata>, INpc
         AIContext aiContext = new(this);
         AIState aiState = AIHelper.GetAIState(metadata.AiInfo.Split(".")[0], aiContext);
         Behavior = new(aiContext, aiState);
+    }
+    public override void ComputeBaseStats()
+    {
+        base.ComputeBaseStats();
+        Stats = new(Metadata);
     }
 
     public void Attack()
@@ -118,7 +125,7 @@ public class Npc : FieldActor<NpcMetadata>, INpc
 
         base.Damage(damage, session);
 
-        session.FieldManager.BroadcastPacket(StatPacket.UpdateStats(this, StatAttribute.Hp));
+        session?.FieldManager.BroadcastPacket(StatPacket.UpdateStats(this, StatAttribute.Hp));
         if (IsDead)
         {
             HandleMobKill(session, this);

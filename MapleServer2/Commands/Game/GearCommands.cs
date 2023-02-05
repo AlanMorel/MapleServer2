@@ -578,8 +578,8 @@ public class GearKit
         }, KitCategory.Armor, KitCategory.Unreleased),
         new("CrimsonBalrog", ProgressionTier.ChaosUnreleased, new()
         {
-            new(ItemType.Longsword, 6, (job) => SelectItem(job, 13200043, 15000041, 15200142, 13300138, 15100136, 15300136, 13100028, 13400136, 15400064, 15500064, 15600064)), // Weapon
-            new(ItemType.Longsword, 6, (job) => SelectItem(job, 14100126, 0, 0, 14000118, 0, 0, 13100028, 13400136, 0, 0, 0)), // Offhand
+            new(ItemType.Longsword, 5, (job) => SelectItem(job, 13200043, 15000041, 15200142, 13300138, 15100136, 15300136, 13100028, 13400136, 15400064, 15500064, 15600064)), // Weapon
+            new(ItemType.Longsword, 5, (job) => SelectItem(job, 14100126, 0, 0, 14000118, 0, 0, 13100028, 13400136, 0, 0, 0)), // Offhand
             new(ItemType.Hat, 5, (job) => 11301117 + JobOffset(job)),
             new(ItemType.Clothes, 5, (job) => 11400957 + JobOffset(job)),
             new(ItemType.Pants, 5, (job) => 11500861 + JobOffset(job)),
@@ -679,8 +679,8 @@ public class GearKit
         }, KitCategory.Armor),
         new("Rage", ProgressionTier.Chaos, new()
         {
-            new(ItemType.Longsword, 5, (job) => SelectItem(job, 13250283, 15050287, 15250286, 13350282, 15150279, 15350282, 13150288, 13450281, 15450282, 15550522, 15650511)), // Weapon
-            new(ItemType.Longsword, 5, (job) => SelectItem(job, 14150253, 0, 0, 14050244, 0, 0, 13150288, 13450281, 0, 0, 0)), // Offhand
+            new(ItemType.Longsword, 5, (job) => SelectItem(job, 13250282, 15050286, 15250285, 13350281, 15150278, 15350281, 13150287, 13450280, 15450281, 15550521, 15650510)), // Weapon
+            new(ItemType.Longsword, 5, (job) => SelectItem(job, 14150252, 0, 0, 14050243, 0, 0, 13150287, 13450280, 0, 0, 0)), // Offhand
             new(ItemType.Hat, 5, (job) => 11350695 + JobOffset(job)),
             new(ItemType.Clothes, 5, (job) => 11450979 + JobOffset(job)),
             new(ItemType.Pants, 5, (job) => 11550883 + JobOffset(job)),
@@ -919,12 +919,14 @@ public class GearBuildCommand : InGameCommand
             new Parameter<float>("value2", "Sets which value in the stat type's possible rolls will be picked."),
             new Parameter<string>("line3", "Sets the stat type of the first random line. No effect if it's a duplicate line or a second offensive line on armor."),
             new Parameter<float>("value3", "Sets which value in the stat type's possible rolls will be picked."),
+            new Parameter<string>("line4", "Sets the stat type of the first random line. No effect if it's a duplicate line or not on a legendary pet."),
+            new Parameter<float>("value4", "Sets which value in the stat type's possible rolls will be picked."),
         };
-        Usage = "/gearbuild slot line1 value1 [line2] [value2] [line3] [value3]";
+        Usage = "/gearbuild slot line1 value1 [line2] [value2] [line3] [value3] [line4] [value4]";
     }
 
-    private readonly string[] Lines = new[] { "line1", "line2", "line3" };
-    private readonly string[] Values = new[] { "value1", "value2", "value3" };
+    private readonly string[] Lines = new[] { "line1", "line2", "line3", "line4" };
+    private readonly string[] Values = new[] { "value1", "value2", "value3", "value4" };
     private readonly ItemSlot[] ArmorSlots = new[] { ItemSlot.CP, ItemSlot.CL, ItemSlot.PA, ItemSlot.GL, ItemSlot.SH };
     private readonly ItemSlot[] AccessorySlots = new[] { ItemSlot.PD, ItemSlot.EA, ItemSlot.RI, ItemSlot.MT, ItemSlot.BE };
 

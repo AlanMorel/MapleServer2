@@ -792,9 +792,9 @@ public class Player : IPacketSerializable
         {
             ComputeStatContribution(item.Stats);
 
-            foreach (GemSocket? socket in item.GemSockets.Sockets)
+            foreach (GemSocket socket in item.GemSockets.Sockets)
             {
-                if (socket.Gemstone != null)
+                if (socket.Gemstone?.Stats != null)
                 {
                     ComputeStatContribution(socket.Gemstone.Stats);
                 }
@@ -826,15 +826,23 @@ public class Player : IPacketSerializable
                 }
             }
         }
+    }
 
-        Stats.ComputeStatBonuses();
-
+    public void StatsComputed()
+    {
         if (JobCode == JobCode.Runeblade)
         {
             Stats.Data[StatAttribute.Int].AddBonus((long) (0.7f * Stats.Data[StatAttribute.Str].TotalLong));
         }
 
         Stats.AddAttackBonus(this);
+
+        if (FieldPlayer is null)
+        {
+            return;
+        }
+
+        Session?.Send(StatPacket.SetStats(FieldPlayer));
     }
 
     public void EffectAdded(AdditionalEffect effect) { }
@@ -1003,34 +1011,7 @@ public class Player : IPacketSerializable
         }
     }
 
-    private void ProcessPassives(List<SkillCondition> triggers, int skillId = 0, short skillLevel = 0)
-    {
-        if (FieldPlayer is null)
-        {
-            return;
-        }
-
-        foreach (SkillCondition trigger in triggers)
-        {
-            if (trigger.IsSplash)
-            {
-                continue;
-            }
-
-            for (int i = 0; i < trigger.SkillId.Length; ++i)
-            {
-                short level = trigger.SkillLevel[i];
-                AdditionalEffect? effect = AdditionalEffects.GetEffect(trigger.SkillId[i], 0, ConditionOperator.GreaterEquals, 0);
-
-                if (effect is not null && (level == 0 || effect.Level != level))
-                {
-                    effect.Stop(FieldPlayer);
-                }
-            }
-        }
-
-        FieldPlayer.SkillTriggerHandler.FireTriggerSkills(triggers, new(skillId, skillLevel, 0, 0), new(FieldPlayer, null, FieldPlayer));
-    }
+    private Dictionary<int, short> ActiveSkillPassives = new();
 
     private void ProcessSkillPassives(int skillId, short level, SkillMetadata metadata)
     {
@@ -1039,22 +1020,37 @@ public class Player : IPacketSerializable
             return;
         }
 
-        SkillLevel? skillLevel = null;
-
-        foreach (SkillLevel current in metadata.SkillLevels)
+        if (ActiveSkillPassives.TryGetValue(skillId, out short currentLevel) && currentLevel > 0)
         {
-            if (current.Level == level)
-            {
-                skillLevel = current;
+            SkillLevel currentSkillLevel = metadata.SkillLevels.First((levelMeta) => levelMeta.Level == currentLevel);
 
-                break;
+            foreach (SkillCondition trigger in currentSkillLevel.ConditionSkills)
+            {
+                if (trigger.IsSplash)
+                {
+                    continue;
+                }
+
+                foreach (int effectId in trigger.SkillId)
+                {
+                    AdditionalEffect? effect = AdditionalEffects.GetEffect(effectId, 0, ConditionOperator.GreaterEquals, 0);
+
+                    if (effect is not null)
+                    {
+                        effect.Stop(FieldPlayer);
+                    }
+                }
             }
         }
 
-        if (skillLevel is not null)
+        if (level > 0)
         {
-            ProcessPassives(skillLevel.ConditionSkills, skillId, level);
+            SkillLevel skillLevel = metadata.SkillLevels.First((levelMeta) => levelMeta.Level == level);
+
+            FieldPlayer.SkillTriggerHandler.FireTriggerSkills(skillLevel.ConditionSkills, new(skillId, level, 0, 0), new(FieldPlayer, FieldPlayer, FieldPlayer));
         }
+
+        ActiveSkillPassives[skillId] = level;
     }
 
     public void ProcessPassiveSkills()
@@ -1086,7 +1082,7 @@ public class Player : IPacketSerializable
 
                 if (tab.SkillLevels.TryGetValue(subSkillId, out level))
                 {
-                    if (subSkill.SkillLevels.First((skillLevel) => skillLevel.Level == level) is null)
+                    if (level > 0 && subSkill.SkillLevels.Count > 0 && subSkill.SkillLevels.FirstOrDefault((skillLevel) => skillLevel.Level == level) is null)
                     {
                         SkillLevel skillLevel = subSkill.SkillLevels.First();
                         int closest = Math.Abs(skillLevel.Level - level);
@@ -1104,6 +1100,7 @@ public class Player : IPacketSerializable
 
                         level = (short) skillLevel.Level;
                     }
+
                     ProcessSkillPassives(subSkillId, level, subSkill);
                 }
             }

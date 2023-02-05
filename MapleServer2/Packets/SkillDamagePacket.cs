@@ -20,14 +20,14 @@ public static class SkillDamagePacket
         UnkMode8 = 0x8
     }
 
-    public static PacketWriter SyncDamage(SkillCast skillCast, CoordF position, CoordF rotation, IFieldObject<Player> player, List<int> sourceId, byte count,
+    public static PacketWriter SyncDamage(SkillCast skillCast, CoordF position, CoordF rotation, IFieldObject? player, List<int> sourceId, byte count,
         List<int> atkCount, List<int> entityId, List<short> animation, bool isChaining = false, List<long>? uid = null)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.SkillDamage);
 
         pWriter.Write(Mode.SyncDamage);
         pWriter.WriteLong(skillCast.SkillSn);
-        pWriter.WriteInt(player.ObjectId);
+        pWriter.WriteInt(player?.ObjectId);
         pWriter.WriteInt(skillCast.SkillId);
         pWriter.WriteShort(skillCast.SkillLevel);
         pWriter.WriteByte(skillCast.MotionPoint);
@@ -71,7 +71,7 @@ public static class SkillDamagePacket
         {
             pWriter.WriteInt(handler.Target.ObjectId);
 
-            bool flag = handler.Damage > 0;
+            bool flag = true;// handler.Damage > 0;
 
             pWriter.WriteBool(flag);
             if (!flag)
@@ -145,7 +145,7 @@ public static class SkillDamagePacket
         foreach (DamageHandler damageHandler in damageHandlers)
         {
             pWriter.WriteInt(damageHandler.Target.ObjectId);
-            bool flag = damageHandler.Damage > 0;
+            bool flag = true;//damageHandler.Damage > 0;
             pWriter.WriteBool(flag);
             if (!flag)
             {
