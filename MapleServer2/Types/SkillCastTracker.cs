@@ -1,5 +1,4 @@
-﻿using MapleServer2.Data.Static;
-using MapleServer2.Managers.Actors;
+﻿using MapleServer2.Managers.Actors;
 
 namespace MapleServer2.Types;
 

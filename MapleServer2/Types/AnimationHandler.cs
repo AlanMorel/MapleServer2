@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using Maple2Storage.Types.Metadata;
+﻿using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
-using MapleServer2.Enums;
-using MapleServer2.Packets;
 
 namespace MapleServer2.Types;
 

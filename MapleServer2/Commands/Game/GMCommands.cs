@@ -1,21 +1,15 @@
-﻿using System.Drawing;
-using System.Threading.Tasks;
-using Maple2.Trigger.Enum;
+﻿using Maple2.Trigger.Enum;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Commands.Core;
-using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Extensions;
 using MapleServer2.Managers.Actors;
-using MapleServer2.PacketHandlers.Game;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Types;
-using Org.BouncyCastle.Asn1.X509;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace MapleServer2.Commands.Game;
 
@@ -999,7 +993,8 @@ public class SimulateHitCommand : InGameCommand
         character.TaskScheduler.QueueTask(new(1000)
         {
             Executions = 3,
-        }, (currentTick, task) => {
+        }, (currentTick, task) =>
+        {
             --fires;
 
             if (fires > 0)
@@ -1008,7 +1003,8 @@ public class SimulateHitCommand : InGameCommand
             }
 
             return 0;
-        }, (currentTick, task) => {
+        }, (currentTick, task) =>
+        {
             RollHit(trigger, character, attacker, type);
 
             if (times <= 1)

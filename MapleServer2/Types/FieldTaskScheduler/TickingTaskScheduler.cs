@@ -238,11 +238,11 @@ public class TickingTaskScheduler
 
                 continue;
             }
-            
+
             QueuedTasks.EnqueueDequeue(nextTask, nextTask.NextExecutionTick);
         }
     }
-    
+
     public void RequeueTasks()
     {
         long currentTick = GetFieldTickCount();

@@ -350,7 +350,7 @@ public class BaseStats
             JobCode.Knight => 300,
             JobCode.Berserker => 100,
             JobCode.Wizard => 100,
-            JobCode.Priest => 500,                                                                                                      
+            JobCode.Priest => 500,
             JobCode.Archer => 500,
             JobCode.HeavyGunner => 0,
             JobCode.Thief => 100,

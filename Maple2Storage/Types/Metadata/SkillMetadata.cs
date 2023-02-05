@@ -102,7 +102,7 @@ public class SkillLevel
 
     public SkillLevel() { }
 
-    public SkillLevel(int level, int spirit, int stamina, string feature, List<SkillCondition> conditionSkills, List<SkillMotion> skillMotions,
+    public SkillLevel(short level, int spirit, int stamina, string feature, List<SkillCondition> conditionSkills, List<SkillMotion> skillMotions,
         SkillUpgrade skillUpgrade, float cooldownTime, SkillBeginCondition beginCondition, RangeProperty detectProperty, RangeProperty sensorProperty, ChangeSkillProperty changeSkill, ComboProperty combo)
     {
         Level = level;

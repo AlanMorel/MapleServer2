@@ -1,14 +1,8 @@
-﻿using Autofac.Features.Metadata;
-using Maple2.PathEngine;
-using Maple2.Trigger._02100009_bf;
-using Maple2Storage.Enums;
+﻿using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
-using MapleServer2.Enums;
 using MapleServer2.Managers.Actors;
 using MapleServer2.Packets;
-using Org.BouncyCastle.Asn1.Crmf;
-using Org.BouncyCastle.Asn1.X509;
 
 namespace MapleServer2.Types;
 
@@ -582,7 +576,7 @@ public class SkillTriggerHandler
                 return;
             }
 
-            RegionSkillHandler.CastRegionSkill(Parent.FieldManager, skillCast, trigger.FireCount, (int)trigger.Delay, removeDelay, interval, castInfo.Target, trigger, trigger.OnlySensingActive);
+            RegionSkillHandler.CastRegionSkill(Parent.FieldManager, skillCast, trigger.FireCount, (int) trigger.Delay, removeDelay, interval, castInfo.Target, trigger, trigger.OnlySensingActive);
 
             return;
         }

@@ -33,7 +33,7 @@ public class AnimationData
 
     public AnimationData(AnimationMetadata metadata, Dictionary<short, SequenceMetadata> sequencesById, Dictionary<string, SequenceMetadata> sequencesByName)
     {
-        Metadata= metadata;
+        Metadata = metadata;
         SequencesById = sequencesById;
         SequencesByName = sequencesByName;
     }

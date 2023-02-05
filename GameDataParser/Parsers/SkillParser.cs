@@ -55,7 +55,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                 Dictionary<int, int> skillFeatureLevels = new();
                 foreach (XmlNode level in levels)
                 {
-                    int levelValue = int.Parse(level.Attributes?["value"]?.Value ?? "0");
+                    short levelValue = short.Parse(level.Attributes?["value"]?.Value ?? "0");
 
                     // Getting all skills level
                     string feature = level.Attributes?["feature"]?.Value ?? "";
