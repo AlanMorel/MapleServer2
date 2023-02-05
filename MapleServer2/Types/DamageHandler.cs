@@ -241,9 +241,15 @@ public class DamageHandler
             return new(source, target, 0, HitType.Miss); // we missed
         }
 
-        double AccuracyWeakness = GetResistance(source, StatAttribute.Accuracy);
-        double EvasionWeakness = GetResistance(target, StatAttribute.Evasion);
-        double hitRate = (source.Stats[StatAttribute.Accuracy].Total * (1 + EvasionWeakness)) / Math.Max(target.Stats[StatAttribute.Evasion].Total * (1 + AccuracyWeakness), 0.1);
+        double AccuracyWeakness = GetResistance(target, StatAttribute.Accuracy);
+        double EvasionWeakness = GetResistance(source, StatAttribute.Evasion);
+
+        double accuracy = source.Stats[StatAttribute.Accuracy].Total * (1 - AccuracyWeakness);
+        double evasion = target.Stats[StatAttribute.Evasion].Total * (1 - EvasionWeakness);
+        int dexterity = target.Stats[StatAttribute.Dex].Total;
+        int luck = source.Stats[StatAttribute.Luk].Total;
+
+        double hitRate = (accuracy - 10) / (evasion + (0.8 * accuracy)) * 2 + Math.Min(0.05, dexterity / (dexterity + 50) * 0.05) - Math.Min(0.05, luck / (luck + 50) * 0.05);
 
         if (Random.Shared.NextDouble() > hitRate)
         {
