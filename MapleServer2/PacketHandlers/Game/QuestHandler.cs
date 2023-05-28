@@ -71,7 +71,6 @@ public class QuestHandler : GamePacketHandler<QuestHandler>
     private static void HandleAcceptQuest(GameSession session, PacketReader packet)
     {
         int questId = packet.ReadInt();
-        int objectId = packet.ReadInt();
 
         if (!session.Player.QuestData.TryGetValue(questId, out QuestStatus questStatus))
         {
@@ -81,15 +80,30 @@ public class QuestHandler : GamePacketHandler<QuestHandler>
         questStatus.State = QuestState.Started;
         questStatus.StartTimestamp = TimeInfo.Now();
         questStatus.Accepted = true;
+        
+        AddRewardItemToPlayerInventory(session, questStatus.AcceptRewardItems);
+        
         DatabaseManager.Quests.Update(questStatus);
         session.Send(QuestPacket.AcceptQuest(questStatus));
         TrophyManager.OnAcceptQuest(session.Player, questId);
+    }
+    
+    private static void AddRewardItemToPlayerInventory(GameSession session, IEnumerable<QuestRewardItem> rewardItems)
+    {
+        foreach (QuestRewardItem reward in rewardItems)
+        {
+            Item newItem = new(reward.Code, reward.Count, reward.Rank);
+            List<int> limitJobRequirements = ItemMetadataStorage.GetMetadata(reward.Code).Limit.JobRequirements;
+            if (limitJobRequirements.Contains((int) session.Player.JobCode) || limitJobRequirements.Contains(0))
+            {
+                session.Player.Inventory.AddItem(session, newItem, true);
+            }
+        }
     }
 
     private static void HandleCompleteQuest(GameSession session, PacketReader packet)
     {
         int questId = packet.ReadInt();
-        int objectId = packet.ReadInt();
 
         if (!session.Player.QuestData.TryGetValue(questId, out QuestStatus questStatus))
         {
@@ -108,15 +122,7 @@ public class QuestHandler : GamePacketHandler<QuestHandler>
         session.Player.Levels.GainExp(questStatus.Reward.Exp);
         session.Player.Wallet.Meso.Modify(questStatus.Reward.Money);
 
-        foreach (QuestRewardItem reward in questStatus.RewardItems)
-        {
-            Item newItem = new(reward.Code, reward.Count, reward.Rank);
-            List<int> limitJobRequirements = ItemMetadataStorage.GetMetadata(reward.Code).Limit.JobRequirements;
-            if (limitJobRequirements.Contains((int) session.Player.JobCode) || limitJobRequirements.Contains(0))
-            {
-                session.Player.Inventory.AddItem(session, newItem, true);
-            }
-        }
+        AddRewardItemToPlayerInventory(session, questStatus.RewardItems);
 
         DatabaseManager.Quests.Update(questStatus);
         session.Send(QuestPacket.CompleteQuest(questId, true));

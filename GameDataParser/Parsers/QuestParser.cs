@@ -83,10 +83,13 @@ public class QuestParser : Exporter<List<QuestMetadata>>
 
             List<Reward.Item> essentialItem = data.completeReward.essentialItem;
             List<Reward.Item> essentialJobItem = data.completeReward.essentialJobItem;
+            List<Reward.Item> acceptEssentialItem = data.acceptReward.essentialItem;
+            
             if (FeatureLocaleFilter.FeatureEnabled("GlobalQuestRewardItem"))
             {
                 essentialItem = data.completeReward.globalEssentialItem.Count == 0 ? essentialItem : data.completeReward.globalEssentialItem;
                 essentialJobItem = data.completeReward.globalEssentialJobItem.Count == 0 ? essentialJobItem : data.completeReward.globalEssentialJobItem;
+                acceptEssentialItem = data.acceptReward.globalEssentialItem.Count == 0 ? acceptEssentialItem : data.acceptReward.globalEssentialItem;
             }
 
             metadata.RewardItem = essentialItem.Where(x => x.code != 0).Select(x => new QuestRewardItem()
@@ -102,6 +105,13 @@ public class QuestParser : Exporter<List<QuestMetadata>>
                 Count = x.count,
                 Rank = (byte) x.rank
             }).ToList());
+            
+            metadata.AcceptRewardItem = acceptEssentialItem.Where(x => x.code != 0).Select(x => new QuestRewardItem()
+            {
+                Code = x.code,
+                Count = x.count,
+                Rank = (byte) x.rank
+            }).ToList();
 
             quests.Add(metadata);
         }

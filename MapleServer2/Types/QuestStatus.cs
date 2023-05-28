@@ -21,6 +21,7 @@ public class QuestStatus
     public long CompleteNpcId { get; private set; }
     public QuestReward Reward { get; private set; }
 
+    public List<QuestRewardItem> AcceptRewardItems { get; private set; }
     public List<QuestRewardItem> RewardItems { get; private set; }
     public readonly long CharacterId;
 
@@ -67,6 +68,7 @@ public class QuestStatus
         StartNpcId = metadata.StartNpc;
         CompleteNpcId = metadata.CompleteNpc;
         Reward = metadata.Reward;
+        AcceptRewardItems = metadata.AcceptRewardItem;
         RewardItems = metadata.RewardItem;
     }
 
