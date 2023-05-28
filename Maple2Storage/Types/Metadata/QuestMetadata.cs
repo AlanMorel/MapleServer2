@@ -15,22 +15,24 @@ public class QuestMetadata
     [XmlElement(Order = 4)]
     public int CompleteNpc;
     [XmlElement(Order = 5)]
-    public QuestReward Reward = new();
+    public List<QuestRewardItem> AcceptRewardItem = new();
     [XmlElement(Order = 6)]
-    public List<QuestRewardItem> RewardItem = new();
+    public QuestReward Reward = new();
     [XmlElement(Order = 7)]
-    public List<int> ProgressMap = new();
+    public List<QuestRewardItem> RewardItem = new();
     [XmlElement(Order = 8)]
-    public QuestNpc Npc = new();
+    public List<int> ProgressMap = new();
     [XmlElement(Order = 9)]
-    public QuestDungeon Dungeon = new();
+    public QuestNpc Npc = new();
     [XmlElement(Order = 10)]
-    public QuestSummonPortal SummonPortal = new();
+    public QuestDungeon Dungeon = new();
     [XmlElement(Order = 11)]
-    public List<QuestCondition> Condition = new();
+    public QuestSummonPortal SummonPortal = new();
     [XmlElement(Order = 12)]
-    public QuestDispatch Dispatch = new();
+    public List<QuestCondition> Condition = new();
     [XmlElement(Order = 13)]
+    public QuestDispatch Dispatch = new();
+    [XmlElement(Order = 14)]
     public string Name = "";
 }
 
