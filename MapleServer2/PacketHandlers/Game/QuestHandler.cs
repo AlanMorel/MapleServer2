@@ -80,14 +80,14 @@ public class QuestHandler : GamePacketHandler<QuestHandler>
         questStatus.State = QuestState.Started;
         questStatus.StartTimestamp = TimeInfo.Now();
         questStatus.Accepted = true;
-        
+
         AddRewardItemToPlayerInventory(session, questStatus.AcceptRewardItems);
-        
+
         DatabaseManager.Quests.Update(questStatus);
         session.Send(QuestPacket.AcceptQuest(questStatus));
         TrophyManager.OnAcceptQuest(session.Player, questId);
     }
-    
+
     private static void AddRewardItemToPlayerInventory(GameSession session, IEnumerable<QuestRewardItem> rewardItems)
     {
         foreach (QuestRewardItem reward in rewardItems)
