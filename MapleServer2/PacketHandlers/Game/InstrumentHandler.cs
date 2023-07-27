@@ -98,7 +98,7 @@ public class InstrumentHandler : GamePacketHandler<InstrumentHandler>
     {
         int note = packet.ReadInt();
 
-        session.FieldManager.BroadcastPacket(InstrumentPacket.PlayNote(note, session.Player.FieldPlayer));
+        session.FieldManager.BroadcastPacket(InstrumentPacket.PlayNote(note, session.Player.FieldPlayer), session);
     }
 
     private static void HandleStopImprovise(GameSession session)
